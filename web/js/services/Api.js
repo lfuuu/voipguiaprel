@@ -1,0 +1,596 @@
+app.factory('Operator', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/operator/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {config_version_id: $rootScope.version.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		},
+		save: function(data) {
+			list = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			list = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/prefixlist/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {config_version_id: $rootScope.version.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		},
+		save: function(data) {
+			list = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			list = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+app.factory('Billing', function (ApiLoader) {
+	var url = '/json/billing/';
+	return {
+		countries: function() {
+			return ApiLoader.post(url + 'countries');
+		},
+		regions: function() {
+			return ApiLoader.post(url + 'regions');
+		},
+		cities: function(geo) {
+			return ApiLoader.post(url + 'cities', geo);
+		},
+		operators: function() {
+			return ApiLoader.post(url + 'operators');
+		},
+		networkTypes: function() {
+			return ApiLoader.post(url + 'network-types');
+		}
+	};
+});
+
+app.factory('RouteCase', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/route-case/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {config_version_id: $rootScope.version.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		},
+		save: function(data) {
+			list = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			list = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+
+app.factory('Outcome', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/outcome/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {config_version_id: $rootScope.version.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		},
+		save: function(data) {
+			list = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			list = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+
+app.factory('Number', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/number/';
+	var listA = undefined;
+	var listB = undefined;
+	var promiseA = undefined;
+	var promiseB = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function(type) {
+			if (type == 1) {
+				if (promiseA !== undefined) return promiseA;
+
+				var deferred = $q.defer();
+				if (listA !== undefined) {
+					deferred.resolve(listA);
+					return deferred.promise;
+				} else {
+					var data = {config_version_id: $rootScope.version.id};
+					ApiLoader.post(url + 'list', data)
+						.then(function(data){
+							listA = [];
+							for(var i in data) {
+								if (data[i].type_id == 1) {
+									listA.push(data[i]);
+								}
+							}
+							promiseA = undefined;
+							deferred.resolve(listA);
+						}, function(data){
+							promiseA = undefined;
+							deferred.reject(data);
+						});
+					promiseA = deferred.promise;
+				}
+				return deferred.promise;
+			} else
+			if (type == 2) {
+				if (promiseB !== undefined) return promiseB;
+
+				var deferred = $q.defer();
+				if (listB !== undefined) {
+					deferred.resolve(listB);
+					return deferred.promise;
+				} else {
+					var data = {config_version_id: $rootScope.version.id};
+					ApiLoader.post(url + 'list', data)
+						.then(function(data){
+							listB = [];
+							for(var i in data) {
+								if (data[i].type_id == 2) {
+									listB.push(data[i]);
+								}
+							}
+							promiseB = undefined;
+							deferred.resolve(listB);
+						}, function(data){
+							promiseB = undefined;
+							deferred.reject(data);
+						});
+					promiseB = deferred.promise;
+				}
+				return deferred.promise;
+			}
+		},
+		save: function(data) {
+			listA = listB = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			listA = listB = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+app.factory('Settings', function ($q, ApiLoader) {
+	var url = '/json/settings/';
+	return {
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		save: function(data) {
+			return ApiLoader.post(url + 'save', data);
+		},
+		clone: function(data) {
+			return ApiLoader.post(url + 'clone', data);
+		}
+	};
+});
+
+app.factory('Airp', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/airp/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {config_version_id: $rootScope.version.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		},
+		save: function(data) {
+			list = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			list = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+app.factory('Cpc', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/cpc/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {config_version_id: $rootScope.version.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		},
+		save: function(data) {
+			list = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			list = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+app.factory('ReleaseReason', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/release-reason/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {config_version_id: $rootScope.version.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		},
+		save: function(data) {
+			list = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			list = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+app.factory('RouteTable', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/route-table/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {config_version_id: $rootScope.version.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		},
+		save: function(data) {
+			list = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			list = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/trunk/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {config_version_id: $rootScope.version.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		},
+		save: function(data) {
+			list = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			list = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/trunk-group/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		read: function(data) {
+			return ApiLoader.post(url + 'read', data);
+		},
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {config_version_id: $rootScope.version.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		},
+		save: function(data) {
+			list = undefined;
+			return ApiLoader.post(url + 'save', data);
+		},
+		delete: function(id) {
+			list = undefined;
+			return ApiLoader.post(url + 'delete', {id: id});
+		}
+	};
+});
+
+
+app.factory('List', function (Operator, Prefixlist, RouteCase, Outcome, Number, Airp, Cpc, ReleaseReason, RouteTable, Trunk, TrunkGroup) {
+	return {
+		operator: function() {
+			return Operator.list();
+		},
+		prefixlist: function() {
+			return Prefixlist.list();
+		},
+		routeCase: function() {
+			return RouteCase.list();
+		},
+		outcome: function() {
+			return Outcome.list();
+		},
+		number: function(type) {
+			return Number.list(type);
+		},
+		airp: function() {
+			return Airp.list();
+		},
+		cpc: function() {
+			return Cpc.list();
+		},
+		releaseReason: function() {
+			return ReleaseReason.list();
+		},
+		routeTable: function() {
+			return RouteTable.list();
+		},
+		trunk: function() {
+			return Trunk.list();
+		},
+		trunkGroup: function() {
+			return TrunkGroup.list();
+		}
+	};
+});

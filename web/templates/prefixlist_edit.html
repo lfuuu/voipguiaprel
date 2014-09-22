@@ -1,0 +1,223 @@
+<form class="form-horizontal" name="form" ng-if="item">
+<div class="modal-header">
+    <h3 ng-if="item.id">Cпискок префиксов {{item.name}}</h3>
+    <h3 ng-if="!item.id">Создание списка префиксов</h3>
+</div>
+<div class="modal-body">
+
+    <div class="form-group" ng-if="version.editable">
+        <label class="col-sm-2 control-label">Название</label>
+        <div class="col-sm-10">
+            <input class="form-control" placeholder="Название" ng-model="item.name" required>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="col-sm-2 control-label"></span>
+        <div class="col-sm-10">
+            <div class="btn-group">
+                <button type="button" class="btn {{item.type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(1)">Вручную</button>
+                <button type="button" class="btn {{item.type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(2)">Местные префиксы</button>
+                <button type="button" class="btn {{item.type_id == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(3)">РосСвязь</button>
+                <button type="button" class="btn {{item.type_id == 4 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(4)">CSV</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" ng-if="item.id">
+        <label class="col-sm-2 control-label">Количество</label>
+        <div class="col-sm-10">
+            {{item.count}}
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-default" href="/prefixlist/show?id={{item.id}}" target="_blank">Открыть</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-default" href="/prefixlist/download?id={{item.id}}">Скачать</a>
+        </div>
+    </div>
+
+    <div ng-if="item.type_id == 1">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Префиксы</label>
+            <div class="col-sm-10">
+                <table class="table table-striped">
+                    <tr ng-if="version.editable">
+                        <td colspan="2">
+                            <button type="button" class="btn btn-success btn-sm" ng-click="addPrefix()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
+                        </td>
+                    </tr>
+                    <tr ng-repeat="line in item.manual_list">
+                        <td width="100%">
+                            <input class="form-control input-sm" ng-model="line.prefix" ng-pattern="/^\d*(\[\d+\]|)+$/" required>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePrefix($index)"></button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="item.type_id == 2">
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Оператор</label>
+            <div class="col-sm-10">
+                <select-box list="operator" model="item.operator_id" placeholder="Выберите Оператора" required="true"></select-box>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Настройки смежности</label>
+            <div class="col-sm-10">
+                <table class="table table-striped">
+                    <tr ng-if="version.editable">
+                        <td colspan="2">
+                            <button type="button" class="btn btn-success btn-sm" ng-click="addSmezhnost()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
+                        </td>
+                    </tr>
+                    <tr ng-repeat="line in item.smezhnost_list">
+                        <td width="100%">
+                            <select ui-select2 ng-model="line.network_type_id" ng-required="true" style="width: 100%" >
+                                <option value="">-- Выберите... --</option>
+                                <option ng-repeat="networkType in networkTypes" value="{{networkType.id}}">{{networkType.name}}</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeSmezhnost($index)"></button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="item.type_id == 3">
+
+        <div class="form-group">
+            <span class="col-sm-2 control-label"></span>
+            <div class="col-sm-10">
+                <div class="btn-group">
+                    <button type="button" class="btn {{item.rossvyaz_mob !== true && item.rossvyaz_mob !== false ? 'btn-primary active' : 'btn-default'}}" ng-click="item.rossvyaz_mob = null">Любой</button>
+                    <button type="button" class="btn {{item.rossvyaz_mob === true ? 'btn-primary active' : 'btn-default'}}" ng-click="item.rossvyaz_mob = true">Мобильный</button>
+                    <button type="button" class="btn {{item.rossvyaz_mob === false ? 'btn-primary active' : 'btn-default'}}" ng-click="item.rossvyaz_mob = false">Стационарный</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Страна</label>
+            <div class="col-sm-10">
+                <select ui-select2 ng-model="item.rossvyaz_country_id" style="width: 100%" >
+                    <option value="">-- Выберите страну --</option>
+                    <option ng-repeat="country in countries" value="{{country.id}}">{{country.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="item.rossvyaz_country_id == 7">
+            <label class="col-sm-2 control-label">Регион</label>
+            <div class="col-sm-10">
+                <select ui-select2 ng-model="item.rossvyaz_region_id" style="width: 100%" >
+                    <option value="">-- Выберите регион --</option>
+                    <option ng-repeat="region in regions" value="{{region.id}}">{{region.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="item.rossvyaz_region_id">
+            <label class="col-sm-2 control-label">Город</label>
+            <div class="col-sm-10">
+                <select ui-select2 ng-model="item.rossvyaz_city_id" style="width: 100%" >
+                    <option value="">-- Выберите город --</option>
+                    <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Оператор</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <span class="col-sm-2 control-label"></span>
+                    <div class="col-sm-10">
+                        <div class="btn-group">
+                            <button type="button" class="btn {{item.exclude_operators === false ? 'btn-primary active' : 'btn-default'}}" ng-click="item.exclude_operators = false">Только выбранные</button>
+                            <button type="button" class="btn {{item.exclude_operators === true ? 'btn-danger active' : 'btn-default'}}" ng-click="item.exclude_operators = true">Все кроме выбранных</button>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-striped">
+                    <tbody>
+                    <tr ng-repeat="line in item.rossvyaz_operators">
+                        <td width="100%">
+                            {{line.name}}
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeOperator($index)"></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="2">
+                            <button type="button" class="btn btn-success btn-xs" ng-click="addOperator()"><i class="glyphicon glyphicon-plus"></i> Оператор</button>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <div ng-if="item.type_id == 4">
+
+        <div class="form-group" ng-if="item.id && version.editable">
+            <label class="col-sm-2 control-label"></label>
+            <div class="col-sm-10">
+                <div id="upload-csv-file" class="btn btn-success js-fileapi-wrapper">
+                    <div class="js-browse">
+                        <span class="btn-txt">Загрузить CSV</span>
+                        <input id="upload-csv-file-field" type="file" name="filedata" itemid="{{item.id}}">
+                    </div>
+                    <div class="js-upload" style="display: none">
+                        <div class="progress progress-success">
+                            <div class="js-progress bar"></div>
+                        </div>
+                        <span class="btn-txt">Uploading (<span class="js-size"></span>)</span>
+                    </div>
+                </div>
+                <style>
+                    .btn input {
+                        top: -10px;
+                        right: -40px;
+                        z-index: 2;
+                        position: absolute;
+                        cursor: pointer;
+                        opacity: 0;
+                        filter: alpha(opacity=0);
+                        font-size: 50px;
+                        cursor: pointer;
+                    }
+                </style>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<div class="modal-footer">
+    <div class="pull-left">
+        <button ng-if="version.editable" type="submit" class="btn btn-success" ng-disabled="form.$invalid || !item.type_id" ng-click="save()">Сохранить</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+    </div>
+</div>
+
+</form>

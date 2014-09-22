@@ -1,0 +1,79 @@
+<div class="wrap">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="/" style="padding-top: 10px; padding-bottom: 10px">
+                            <div style="font-size: 12px; line-height: 14px">Сервер:</div>
+                            <div style="font-size: 14px; line-height: 18px">{{server.name + ' (' + server.id + ')'}}</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/s{{server.id}}" style="padding-top: 10px; padding-bottom: 10px">
+                            <div style="font-size: 12px; line-height: 14px">Конфигурация:</div>
+                            <div style="font-size: 14px; line-height: 18px">{{version.name}}</div>
+                        </a>
+                    </li>
+                    <li>
+                        <div style="padding: 10px;">
+                            <div style="font-size: 12px; line-height: 14px">Статус:</div>
+                            <div>
+                                <span ng-if="version.status_id == 1" class="label label-default">Черновик</span>
+                                <span ng-if="version.status_id == 2" class="label label-primary">Опубликовано</span>
+                                <span ng-if="version.status_id == 3" class="label label-success">Активный</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>{{userName}}</a></li>
+                    <li><a href="/logout">Выход</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div style="position: fixed; left: 15px; bottom: 0; top: 65px; width: 230px; overflow-y: auto">
+        <div class="list-group">
+            <a href="#" class="list-group-item" ng-click="Redirect.settings()">Общие настройки</a>
+        </div>
+        <div class="list-group">
+            <a href="#" class="list-group-item" ng-click="Redirect.trunkList()" ng-class="{active:tabs.isController('TrunkListCtrl')}">Транки</a>
+            <a href="#" class="list-group-item" ng-click="Redirect.routeTableList()" ng-class="{active:tabs.isController('RouteTableListCtrl')}">Таблицы маршрутизации</a>
+            <a href="#" class="list-group-item" ng-click="Redirect.operatorList()" ng-class="{active:tabs.isController('OperatorListCtrl')}">Операторы</a>
+            <a href="#" class="list-group-item" ng-click="Redirect.trunkGroupList()" ng-class="{active:tabs.isController('TrunkGroupListCtrl')}">Группы транков</a>
+        </div>
+        <div class="list-group">
+            <a href="#" class="list-group-item" ng-click="Redirect.numberList()" ng-class="{active:tabs.isController('NumberListCtrl')}">A/B номера</a>
+            <a href="#" class="list-group-item" ng-click="Redirect.outcomeList()" ng-class="{active:tabs.isController('OutcomeListCtrl')}">Outcomes</a>
+        </div>
+        <div class="list-group">
+            <a href="#" class="list-group-item" ng-click="Redirect.routeCaseList()" ng-class="{active:tabs.isController('RouteCaseListCtrl')}">Route cases</a>
+            <a href="#" class="list-group-item" ng-click="Redirect.prefixlistList()" ng-class="{active:tabs.isController('PrefixlistListCtrl')}">Списки префиксов</a>
+        </div>
+        <div class="list-group">
+            <a href="#" class="list-group-item" ng-click="Redirect.airpList()" ng-class="{active:tabs.isController('AirpListCtrl')}">AIRP</a>
+            <a href="#" class="list-group-item" ng-click="Redirect.cpcList()" ng-class="{active:tabs.isController('CpcListCtrl')}">CPC</a>
+            <a href="#" class="list-group-item" ng-click="Redirect.releaseReasonList()" ng-class="{active:tabs.isController('ReleaseReasonListCtrl')}">Release reason</a>
+        </div>
+        <div class="list-group">
+            <a href="#" class="list-group-item" ng-click="Redirect.routingReport()" ng-class="{active:tabs.isController('RoutingReportCtrl')}">Отчет по маршрутизации</a>
+        </div>
+    </div>
+
+    <div style="position: fixed; overflow: auto; bottom: 0; right: 0; top: 60px; padding-left: 20px; padding-right: 20px; left: 250px;':'left: 0;">
+        <tabset class="main-tabs" ng-show="tabs.length > 0" vertical="true" type="'pills'">
+            <tab ng-repeat="tab in tabs" active="tab.active" ng-controller="tab.controller">
+                <ng-include src="tab.template" onload="init(tab)"></ng-include>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<div id="popup-alert" class="alert alert-danger" style="cursor: pointer; position: absolute; left: 20%; right: 20%; top: 45px; z-index: 5000;" ng-if="popupErrors"  ng-click="closeErrorsPopup()">
+    <button type="button" class="close" ng-click="closeErrorsPopup()"><span aria-hidden="true">×</span></button>
+    <h4 ng-if="popupErrors.header">{{popupErrors.header}}</h4>
+    <p ng-repeat="error in popupErrors.errors">{{error}}</p>
+</div>

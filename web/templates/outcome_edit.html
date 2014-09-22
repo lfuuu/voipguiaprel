@@ -1,0 +1,70 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Outcome {{item.name}}</h3>
+        <h3 ng-if="!item.id">Создание Outcome</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group" ng-if="version.editable">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.name" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <span class="col-sm-2 control-label"></span>
+            <div class="col-sm-10">
+                <div class="btn-group">
+                    <button type="button" class="btn {{item.type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(1)">Автоматически</button>
+                    <button type="button" class="btn {{item.type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(2)">Route case</button>
+                    <button type="button" class="btn {{item.type_id == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(3)">Release reason</button>
+                    <button type="button" class="btn {{item.type_id == 4 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(4)">AIRP</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="item.type_id == 2">
+            <label class="col-sm-2 control-label">Route case</label>
+            <div class="col-sm-10">
+                <select-box list="routeCase" model="item.route_case_id" placeholder="Выберите route case" required="true"></select-box>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="item.type_id == 3">
+            <label class="col-sm-2 control-label">Release reason</label>
+            <div class="col-sm-10">
+                <select-box list="releaseReason" model="item.release_reason_id" placeholder="Выберите release reason" required="true"></select-box>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="item.type_id == 4">
+            <label class="col-sm-2 control-label">AIRP</label>
+            <div class="col-sm-10">
+                <select-box list="airp" model="item.airp_id" placeholder="Выберите AIRP" required="true"></select-box>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="item.type_id == 2 || item.type_id == 4">
+            <label class="col-sm-2 control-label">Calling Station Id</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Release reason" ng-model="item.calling_station_id">
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="item.type_id == 2 || item.type_id == 4">
+            <label class="col-sm-2 control-label">Called Station Id</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Called Station Id" ng-model="item.called_station_id">
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button ng-if="version.editable" type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

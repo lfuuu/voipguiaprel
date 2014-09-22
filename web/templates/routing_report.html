@@ -1,0 +1,61 @@
+<h4>Отчет по маршрутизации</h4>
+
+<div style="padding-top: 5px">
+
+    <select ui-select2 ng-model="filter.destinationId" style="width: 180px;">
+        <option value="">-- Все направления --</option>
+        <option value="1">Россия</option>
+        <option value="2">Международка</option>
+        <option value="3">СНГ</option>
+    </select>
+
+    <select ui-select2 ng-model="filter.countryId" style="width: 200px;">
+        <option value="">-- Выберите страну --</option>
+        <option ng-repeat="country in countries" value="{{country.id}}">{{country.name}}</option>
+    </select>
+
+    <select ui-select2 ng-model="filter.regionId" style="width: 200px;">
+        <option value="">-- Выберите регион --</option>
+        <option ng-repeat="region in regions" value="{{region.id}}">{{region.name}}</option>
+    </select>
+
+
+    <select ui-select2 ng-model="filter.mobFix" style="width: 140px;">
+        <option value="">-- Моб/Стац --</option>
+        <option value="t">Мобильные</option>
+        <option value="f">Стационарные</option>
+    </select>
+
+</div>
+<div style="padding-top: 5px">
+    <input ng-model="filter.prefix" placeholder="-- Префикс --"/>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-primary btn-sm" ng-click="make()" ng-disabled="processing">Сформировать</button>
+    <button class="btn btn-default btn-sm" ng-click="recalc()" ng-disabled="processing">Пересчитать</button>
+<!--    <button class="btn btn-default btn-sm" ng-click="export()" ng-disabled="processing">Экспорт CSV</button> -->
+
+    &nbsp;&nbsp;&nbsp;&nbsp;Отображать по:
+    <select ng-model="filter.limit">
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="500">500</option>
+    </select>
+</div>
+<div style="text-align: center" ng-if="hasData">
+    <br/>
+    <button class="btn btn-default btn-sm" ng-click="firstPage()" ng-disabled="processing || filter.offset <= 0">Первая страница</button>
+    <button class="btn btn-default btn-sm" ng-click="previousPage()" ng-disabled="processing || filter.offset <= 0">Предыдущая страница</button>
+    <button class="btn btn-default btn-sm" ng-click="nextPage()" ng-disabled="processing">Следующая страница</button>
+
+    <br/>
+</div>
+
+<div id="routingReportPlace"></div>
+
+<div style="text-align: center" ng-if="hasData && filter.limit > 20">
+    <br/>
+    <button class="btn btn-default btn-sm" ng-click="firstPage()" ng-disabled="processing || filter.offset <= 0">Первая страница</button>
+    <button class="btn btn-default btn-sm" ng-click="previousPage()" ng-disabled="processing || filter.offset <= 0">Предыдущая страница</button>
+    <button class="btn btn-default btn-sm" ng-click="nextPage()" ng-disabled="processing">Следующая страница</button>
+</div>

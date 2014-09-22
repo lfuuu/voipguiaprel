@@ -1,0 +1,195 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Оператор {{item.name}}</h3>
+        <h3 ng-if="!item.id">Создание Оператора</h3>
+    </div>
+    <div class="modal-body">
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#operator" data-toggle="tab">Оператор</a></li>
+            <li><a href="#priority" data-toggle="tab">Приоритеты</a></li>
+            <li><a href="#source_rules" data-toggle="tab">Правила по А-номеру</a></li>
+            <li><a href="#destination_rules" data-toggle="tab">Правила по B-номеру</a></li>
+        </ul>
+
+        <br/>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="operator">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Номер</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Номер" ng-model="item.code" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">OpenCA</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="OpenCA" ng-model="item.openca" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Название</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Название" ng-model="item.name" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Автоматическая маршрутизация</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" ng-click="item.auto_routing = !item.auto_routing">
+                            <button type="button" class="btn {{item.auto_routing ? 'btn-success active' : 'btn-default'}}">Включено</button>
+                            <button type="button" class="btn {{!item.auto_routing ? 'btn-danger active' : 'btn-default'}}">Выключено</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="priority">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Поумолчанию</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" ng-model="item.default_priority" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Приоритеты</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+
+                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.priorities">
+                            <tr ng-repeat="line in item.priorities">
+                                <td width="1%" style="cursor: ns-resize">
+                                    <span class="badge">{{$index + 1}}</span>
+                                </td>
+                                <td width="10%">
+                                    <input class="form-control input-sm" ng-model="line.priority" required>
+                                </td>
+                                <td style="cursor: ns-resize">
+                                    <span ng-if="line.prefixlist_id !== null">Список&nbsp;префиксов:</span>
+                                </td>
+                                <td width="90%">
+                                    <select-box ng-if="line.prefixlist_id !== null" list="prefixlist" model="line.prefixlist_id" placeholder="Выберите" required="true"></select-box>
+                                </td>
+                                <td ng-if="version.editable">
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePriority($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot ng-if="version.editable">
+                            <tr>
+                                <td colspan="5">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addPriority()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="source_rules">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Поумолчанию</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" ng-click="item.source_rule_default_allowed = !item.source_rule_default_allowed">
+                            <button type="button" class="btn {{item.source_rule_default_allowed ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
+                            <button type="button" class="btn {{!item.source_rule_default_allowed ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Исходящие правила</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.rules">
+                            <tr ng-repeat="line in item.rules" ng-if="!line.outgoing">
+                                <td width="5%" style="cursor: ns-resize">
+                                    <span ng-if="item.source_rule_default_allowed" class="label label-danger">Запрещено</span>
+                                    <span ng-if="!item.source_rule_default_allowed" class="label label-success">Разрешено</span>
+                                </td>
+                                <td width="5%" style="cursor: ns-resize">
+                                    <span ng-if="line.prefixlist_id !== null">Группа&nbsp;транков:</span>
+                                </td>
+                                <td width="40%">
+                                    <select-box ng-if="line.trunk_group_id !== null" list="trunkGroup" model="line.trunk_group_id" placeholder="Выберите" required="true"></select-box>
+                                </td>
+                                <td width="5%" style="cursor: ns-resize">
+                                    <span ng-if="line.prefixlist_id !== null">Список&nbsp;префиксов:</span>
+                                </td>
+                                <td width="40%">
+                                    <select-box ng-if="line.prefixlist_id !== null" list="prefixlist" model="line.prefixlist_id" placeholder="Выберите" required="true"></select-box>
+                                </td>
+                                <td ng-if="version.editable">
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRule($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot ng-if="version.editable">
+                            <tr>
+                                <td colspan="6">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addRule(false)"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="destination_rules">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Поумолчанию</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" ng-click="item.destination_rule_default_allowed = !item.destination_rule_default_allowed">
+                            <button type="button" class="btn {{item.destination_rule_default_allowed ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
+                            <button type="button" class="btn {{!item.destination_rule_default_allowed ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Исходящие правила</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.rules">
+                            <tr ng-repeat="line in item.rules" ng-if="line.outgoing">
+                                <td width="5%" style="cursor: ns-resize">
+                                    <span ng-if="item.destination_rule_default_allowed" class="label label-danger">Запрещено</span>
+                                    <span ng-if="!item.destination_rule_default_allowed" class="label label-success">Разрешено</span>
+                                </td>
+                                <td width="5%" style="cursor: ns-resize">
+                                    <span ng-if="line.prefixlist_id !== null">Группа&nbsp;транков:</span>
+                                </td>
+                                <td width="40%">
+                                    <select-box ng-if="line.trunk_group_id !== null" list="trunkGroup" model="line.trunk_group_id" placeholder="Выберите" required="true"></select-box>
+                                </td>
+                                <td width="5%" style="cursor: ns-resize">
+                                    <span ng-if="line.prefixlist_id !== null">Список&nbsp;префиксов:</span>
+                                </td>
+                                <td width="40%">
+                                    <select-box ng-if="line.prefixlist_id !== null" list="prefixlist" model="line.prefixlist_id" placeholder="Выберите" required="true"></select-box>
+                                </td>
+                                <td ng-if="version.editable">
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRule($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot ng-if="version.editable">
+                            <tr>
+                                <td colspan="6">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addRule(true)"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button ng-if="version.editable" type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

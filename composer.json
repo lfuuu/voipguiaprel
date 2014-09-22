@@ -1,0 +1,34 @@
+{
+	"type": "project",
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.4.0",
+		"yiisoft/yii2": "*",
+		"graylog2/gelf-php": "*"
+	},
+	"require-dev": {
+		"yiisoft/yii2-codeception": "*"
+	},
+	"suggest": {
+		"codeception/codeception": "Codeception, 1.8.*@dev is currently works well with Yii.",
+		"codeception/specify": "BDD style code blocks for PHPUnit and Codeception",
+		"codeception/verify": "BDD Assertions for PHPUnit and Codeception"
+	},
+	"scripts": {
+		"post-create-project-cmd": [
+			"yii\\composer\\Installer::setPermission"
+		]
+	},
+	"config": {
+		"process-timeout": 1800
+	},
+	"extra": {
+		"writable": [
+			"runtime",
+			"web/assets"
+		],
+		"executable": [
+			"yii"
+		]
+	}
+}

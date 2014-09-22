@@ -1,0 +1,54 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Route case {{item.name}}</h3>
+        <h3 ng-if="!item.id">Создание Route case</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group" ng-if="version.editable">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.name" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Операторы</label>
+            <div class="col-sm-10">
+                <table class="table table-striped">
+                    <tbody>
+                    <tr ng-repeat="line in item.operators">
+                        <td width="10%">
+                            <input class="form-control input-sm" ng-model="line.priority" required>
+                        </td>
+                        <td width="10%">
+                            <input class="form-control input-sm" ng-model="line.weight" required>
+                        </td>
+                        <td width="80%">
+                            <select-box list="operator" model="line.operator_id" placeholder="Выберите оператора" required="true"></select-box>
+                        </td>
+                        <td ng-if="version.editable">
+                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeOperator($index)"></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot ng-if="version.editable">
+                    <tr>
+                        <td colspan="3">
+                            <button type="button" class="btn btn-success btn-xs" ng-click="addOperator()"><i class="glyphicon glyphicon-plus"></i> Оператор</button>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button ng-if="version.editable" type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

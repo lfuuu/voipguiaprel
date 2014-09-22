@@ -1,0 +1,65 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">A/B номер {{item.name}}</h3>
+        <h3 ng-if="!item.id">Создание номера</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group" ng-if="version.editable">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.name" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Тип</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.auto_routing = !item.auto_routing">
+                    <button type="button" class="btn {{item.type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="item.type_id = 1">A - номер</button>
+                    <button type="button" class="btn {{item.type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="item.type_id = 2">B - номер</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Списоки префиксов</label>
+            <div class="col-sm-10">
+                <table class="table table-striped">
+                    <tbody>
+                    <tr ng-repeat="line in item.prefixlist_ids">
+                        <td width="100%">
+                            <select-box list="prefixlist" model="line.id" placeholder="Выберите список префиксов" required="true"></select-box>
+                        </td>
+                        <td ng-if="version.editable">
+                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePrefixlist($index)"></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot ng-if="version.editable">
+                    <tr>
+                        <td colspan="3">
+                            <button type="button" class="btn btn-success btn-xs" ng-click="addPrefixlist()"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="item.type_id == 1">
+            <label class="col-sm-2 control-label">Cpc</label>
+            <div class="col-sm-10">
+                <select-box list="cpc" model="item.cpc_id" default="Выберите Cpc"></select-box>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button ng-if="version.editable" type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

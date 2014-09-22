@@ -1,0 +1,74 @@
+<?php
+
+namespace app\models;
+use app\queries\OutcomeQuery;
+
+/**
+ * @property int $id
+ * @property string $name
+ * @property int $type_id
+ * @property int $route_case_id
+ * @property RouteCase $route_case
+ * @property int $release_reason_id
+ * @property ReleaseReason $release_reason
+ * @property int $airp_id
+ * @property ReleaseReason $airp
+ * @property int $calling_station_id
+ * @property int $called_station_id
+ * @property
+ */
+class Outcome extends \yii\db\ActiveRecord
+{
+    const TYPE_AUTO = 1;
+    const TYPE_ROUTE_CASE = 2;
+    const TYPE_RELEASE_REASON = 3;
+    const TYPE_AIRP = 4;
+
+    public static function tableName()
+    {
+        return 'auth.outcome';
+    }
+
+    public static function find()
+    {
+        return new OutcomeQuery(get_called_class());
+    }
+
+    public static function create(ConfigVersion $version, array $data = null)
+    {
+        $item = new self();
+        $item->load($data, '');
+        $item->config_version_id = $version->id;
+        return $item;
+    }
+
+    public function rules()
+    {
+        return [
+            [['name'], 'string', 'max' => 50],
+            [['type_id'], 'integer'],
+            [['route_case_id', 'release_reason_id', 'airp_id'], 'integer'],
+            [['calling_station_id', 'called_station_id'], 'match', 'pattern' => '/^\d{1,20}$/'],
+        ];
+    }
+
+    public function extraFields()
+    {
+        return ['route_case', 'release_reason', 'airp'];
+    }
+
+    public function getRouteCase()
+    {
+        return $this->hasOne(RouteCase::className(), ['id' => 'route_case_id']);
+    }
+
+    public function getReleaseReason()
+    {
+        return $this->hasOne(ReleaseReason::className(), ['id' => 'release_reason_id']);
+    }
+
+    public function getAirp()
+    {
+        return $this->hasOne(Airp::className(), ['id' => 'airp_id']);
+    }
+}
