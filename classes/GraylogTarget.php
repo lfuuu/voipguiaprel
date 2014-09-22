@@ -21,9 +21,8 @@ class GraylogTarget extends Target
      */
     public $port = 12201;
 
-    /**
-     * @var string default facility name
-     */
+    public $source;
+
     public $falicity;
 
     public $exportInterval = 1;
@@ -47,48 +46,59 @@ class GraylogTarget extends Target
      */
     public function export()
     {
-        $transport = new Gelf\Transport\UdpTransport($this->host, $this->port, Gelf\Transport\UdpTransport::CHUNK_SIZE_LAN);
-        $publisher = new Gelf\Publisher($transport);
+        $publisher = $this->spawnPublisher();
+
         foreach ($this->messages as $message) {
-            $gelfMsg = new Gelf\Message();
-            $gelfMsg->setVersion('1.1');
-            $msg = is_string($message[0]) ? $message[0] : VarDumper::export($message[0]);
-            $gelfMsg
-                ->setTimestamp($message[3])
-                ->setLevel(ArrayHelper::getValue($this->_levels, $message[1], LogLevel::INFO))
-                ->setFacility($this->falicity)
-                ->setAdditional('category', $message[2])
-                ->setShortMessage(mb_substr($msg, 0, 150))
-                ->setFullMessage($msg)
-            ;
-
-            if (isset($message[4][0]['file'])) {
-                $gelfMsg->setFile($message[4][0]['file'] . ($message[4][0]['line'] ? ' [' . $message[4][0]['line'] . ']' : ''));
-            }
-
-            $gelfMsg->setAdditional('LoggerId', self::getLoggerId());
-
-            if (Yii::$app instanceof \yii\web\Application
-                    &&
-                Yii::$app->getSession()->getIsActive()
-            ) {
-                $gelfMsg->setAdditional('UserId', Yii::$app->getSession()->get(Yii::$app->getUser()->idParam));
-            }
-
-            $publisher->publish($gelfMsg);
+            $publisher->publish(
+                $this->spawnGelfMessage($message)
+            );
         }
     }
 
-    private static function getLoggerId()
+    private function spawnPublisher()
     {
-        static $loggerId;
-        if (!$loggerId) {
-            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            $loggerId = '';
-            for ($i = 0; $i < 8; $i++) {
-                $loggerId .= $characters[rand(0, strlen($characters) - 1)];
-            }
+        return new Gelf\Publisher(
+            new Gelf\Transport\UdpTransport(
+                $this->host,
+                $this->port,
+                Gelf\Transport\UdpTransport::CHUNK_SIZE_LAN
+            )
+        );
+    }
+
+    private function spawnGelfMessage(array $yiiMessage)
+    {
+        list($timeStamp, $level, $shortMessage, $fullMessage, $category, $file) = $this->parseYiiMessage($yiiMessage);
+
+        return
+            GelfMessage::create()
+                ->setSource($this->source)
+                ->setTimestamp($timeStamp)
+                ->setLevel($level)
+                ->setFacility($this->falicity)
+                ->setShortMessage($shortMessage)
+                ->setFullMessage($fullMessage)
+                ->setCategory($category)
+                ->setFile($file)
+                ->setLoggerId()
+                ->setUserId()
+            ;
+    }
+
+    private function parseYiiMessage(array $yiiMessage)
+    {
+        $timeStamp = $yiiMessage[3];
+        $level = ArrayHelper::getValue($this->_levels, $yiiMessage[1], LogLevel::INFO);
+        $fullMessage = is_string($yiiMessage[0]) ? $yiiMessage[0] : VarDumper::export($yiiMessage[0]);
+        $shortMessage = mb_substr($fullMessage, 0, 150);
+        $category = $yiiMessage[2];
+
+        if (isset($yiiMessage[4][0]['file'])) {
+            $file = $yiiMessage[4][0]['file'] . ($yiiMessage[4][0]['line'] ? ' [' . $yiiMessage[4][0]['line'] . ']' : '');
+        } else {
+            $file = null;
         }
-        return $loggerId;
+
+        return [$timeStamp, $level, $shortMessage, $fullMessage, $category, $file];
     }
 }

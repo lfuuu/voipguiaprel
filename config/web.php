@@ -30,21 +30,21 @@ $config = [
         ],
         'log' => [
             'traceLevel' => 3,
-            'flushInterval' => 1,
+            //'flushInterval' => 1,
             'targets' => [
                 [
                     'class' => 'app\classes\GraylogTarget',
-                    'levels' => ['error', 'warning'],
-                    'host' => '10.252.0.204',
-                    'falicity' => 'web_voipauth_error',
+                    'levels' => ['error', 'warning','info', 'trace'],
+                    'host' => 'graylog.mcn.ru',
+                    'source' => 'ivanov-voipgui',
                 ],
-                [
+                /*[
                     'class' => 'app\classes\GraylogTarget',
                     'levels' => ['info', 'trace'],
                     'categories' => ['application'],
-                    'host' => '10.252.0.204',
-                    'falicity' => 'web_voipauth_debug',
-                ],
+                    'host' => 'graylog.mcn.ru',
+                    'source' => 'ivanov-voipgui',
+                ],*/
             ],
         ],
         'view' => [
