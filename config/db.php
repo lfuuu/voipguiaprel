@@ -2,9 +2,9 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'pgsql:host=eridanus.mcn.ru;dbname=nispd',
-    'username' => 'eivanov',
-    'password' => 'autovas0!',
+    'dsn' => 'pgsql:host=localhost;dbname=nispd',
+    'username' => '',
+    'password' => '',
     'charset' => 'utf8',
     'tablePrefix' => '',
     'enableSchemaCache' => true,
