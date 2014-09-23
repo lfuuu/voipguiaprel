@@ -11,6 +11,7 @@ use Psr\Log\LogLevel;
 
 class GraylogTarget extends Target
 {
+    const SHORT_MESSAGE_LEN = 150;
     /**
      * @var string Graylog2 host
      */
@@ -89,14 +90,20 @@ class GraylogTarget extends Target
     {
         $timeStamp = $yiiMessage[3];
         $level = ArrayHelper::getValue($this->_levels, $yiiMessage[1], LogLevel::INFO);
-        $fullMessage = is_string($yiiMessage[0]) ? $yiiMessage[0] : VarDumper::export($yiiMessage[0]);
-        $shortMessage = mb_substr($fullMessage, 0, 150);
+        $fullMessage = is_string($yiiMessage[0]) ? $yiiMessage[0] : VarDumper::dumpAsString($yiiMessage[0]);
         $category = $yiiMessage[2];
 
         if (isset($yiiMessage[4][0]['file'])) {
             $file = $yiiMessage[4][0]['file'] . ($yiiMessage[4][0]['line'] ? ' [' . $yiiMessage[4][0]['line'] . ']' : '');
         } else {
             $file = null;
+        }
+
+        if (mb_strlen($fullMessage) > self::SHORT_MESSAGE_LEN) {
+            $shortMessage = mb_substr($fullMessage, 0, 150);
+        } else {
+            $shortMessage = $fullMessage;
+            $fullMessage = null;
         }
 
         return [$timeStamp, $level, $shortMessage, $fullMessage, $category, $file];

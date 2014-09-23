@@ -46,13 +46,34 @@ class GelfMessage extends Message
 
     public function setUserId($userId = null)
     {
-        if ($userId === null && Yii::$app instanceof \yii\web\Application && Yii::$app->session->isActive) {
-            $userId = Yii::$app->session->get(Yii::$app->user->idParam);
+        if ($userId === null && Yii::$app instanceof \yii\web\Application && Yii::$app->user->getIdentity(false)) {
+            $userId = Yii::$app->user->getIdentity(false)->getId();
         }
         if ($userId) {
             $this->setAdditional(self::USER_ID_FIELD, $userId);
         }
         return $this;
+    }
+
+    public function toArray()
+    {
+        $message = array(
+            'host'          => $this->getHost(),
+            'short_message' => $this->getShortMessage(),
+            'full_message'  => $this->getFullMessage(),
+            'level'         => $this->getSyslogLevel(),
+            'timestamp'     => $this->getTimestamp(),
+            '_facility'      => $this->getFacility(),
+            '_file'          => $this->getFile(),
+        );
+
+        // add additionals
+        foreach ($this->additionals as $key => $value) {
+            $message["_" . $key] = $value;
+        }
+
+        // return after filtering false, null and empty strings
+        return array_filter($message, 'strlen');
     }
 
     private function getLoggerId()

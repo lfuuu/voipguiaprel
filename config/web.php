@@ -1,7 +1,14 @@
 <?php
 
-$params = require(__DIR__ . '/params.php');
-$db = require(__DIR__ . '/db.php');
+$db = array_merge(
+    require(__DIR__ . '/db.php'),
+    require(__DIR__ . '/db-local.php')
+);
+
+$params = array_merge(
+    require(__DIR__ . '/params.php'),
+    require(__DIR__ . '/params-local.php')
+);
 
 $config = [
     'id' => 'basic',
@@ -21,7 +28,7 @@ $config = [
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
-            'class' => 'app\classes\ErrorHandler',
+//            'class' => 'app\classes\ErrorHandler',
             'errorAction' => 'site/error',
         ],
         'mail' => [
@@ -81,9 +88,5 @@ $config = [
     ],
     'params' => $params,
 ];
-
-if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
-}
 
 return $config;
