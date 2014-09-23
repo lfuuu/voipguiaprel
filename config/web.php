@@ -5,13 +5,18 @@ $db = array_merge(
     require(__DIR__ . '/db-local.php')
 );
 
+$log = array_merge(
+    require(__DIR__ . '/log.php'),
+    require(__DIR__ . '/log-local.php')
+);
+
 $params = array_merge(
     require(__DIR__ . '/params.php'),
     require(__DIR__ . '/params-local.php')
 );
 
 $config = [
-    'id' => 'basic',
+    'id' => 'voipgui',
     'basePath' => dirname(__DIR__),
     'language' => 'ru-RU',
     'bootstrap' => ['log'],
@@ -20,43 +25,21 @@ $config = [
             'cookieValidationKey' => 'Jkjh9834jkjhsHJK89834hjk338',
             'parsers' => [ 'application/json' => 'yii\web\JsonParser' ],
         ],
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
+        'cache' => 'yii\caching\FileCache',
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
-//            'class' => 'app\classes\ErrorHandler',
+            'class' => 'app\classes\ErrorHandler',
             'errorAction' => 'site/error',
         ],
         'mail' => [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => true,
         ],
-        'log' => [
-            'traceLevel' => 3,
-            //'flushInterval' => 1,
-            'targets' => [
-                [
-                    'class' => 'app\classes\GraylogTarget',
-                    'levels' => ['error', 'warning','info', 'trace'],
-                    'host' => 'graylog.mcn.ru',
-                    'source' => 'ivanov-voipgui',
-                ],
-                /*[
-                    'class' => 'app\classes\GraylogTarget',
-                    'levels' => ['info', 'trace'],
-                    'categories' => ['application'],
-                    'host' => 'graylog.mcn.ru',
-                    'source' => 'ivanov-voipgui',
-                ],*/
-            ],
-        ],
-        'view' => [
-            'class' => 'app\components\View',
-        ],
+        'log' => $log,
+        'view' => 'app\components\View',
 /*        'cache' => [
             'class' => 'yii\caching\MemCache',
             'servers' => [
@@ -88,5 +71,7 @@ $config = [
     ],
     'params' => $params,
 ];
+
+Yii::setAlias('@app', dirname(__DIR__));
 
 return $config;

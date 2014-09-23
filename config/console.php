@@ -2,28 +2,29 @@
 
 Yii::setAlias('@tests', dirname(__DIR__) . '/tests');
 
-$params = require(__DIR__ . '/params.php');
-$db = require(__DIR__ . '/db.php');
+$db = array_merge(
+    require(__DIR__ . '/db.php'),
+    require(__DIR__ . '/db-local.php')
+);
+
+$log = array_merge(
+    require(__DIR__ . '/log.php'),
+    require(__DIR__ . '/log-local.php')
+);
+
+$params = array_merge(
+    require(__DIR__ . '/params.php'),
+    require(__DIR__ . '/params-local.php')
+);
 
 return [
-    'id' => 'basic-console',
+    'id' => 'voipgui-console',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
     'components' => [
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
-        'log' => [
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
         'db' => $db,
+        'log' => $log,
     ],
     'params' => $params,
 ];
