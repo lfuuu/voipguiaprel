@@ -36,7 +36,7 @@ class Trunk extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'number', 'cpc_id', 'route_table_id'], 'required'],
-            [['name'], 'string', 'min'=>10,'max' => 50],
+            [['name'], 'string', 'max' => 50],
             [['number', 'cpc_id', 'route_table_id'], 'integer'],
             [['full_export'], 'boolean'],
         ];
