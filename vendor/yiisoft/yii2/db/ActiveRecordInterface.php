@@ -146,7 +146,7 @@ interface ActiveRecordInterface
      * // SELECT FROM customer WHERE age>30
      * $customers = Customer::find()->where('age>30')->all();
      *
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     * @return static|ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
      */
     public static function find();
 
@@ -183,14 +183,18 @@ interface ActiveRecordInterface
     public static function findOne($condition);
 
     /**
-     * Returns a list of active record models that match the specified primary key value or a set of column values.
+     * Returns a list of active record models that match the specified primary key value(s) or a set of column values.
      *
      * The method accepts:
      *
-     *  - a scalar value (integer or string): query by a single primary key value and return the
-     *    corresponding record (or null if not found).
-     *  - an array of name-value pairs: query by a set of attribute values and return a single record
-     *    matching all of them (or null if not found).
+     *  - a scalar value (integer or string): query by a single primary key value and return an array containing the
+     *    corresponding record (or an empty array if not found).
+     *  - an array of scalar values (integer or string): query by a list of primary key values and return the
+     *    corresponding records (or an empty array if none was found).
+     *    Note that an empty condition will result in an empty result as it will be interpreted as a search for
+     *    primary keys and not an empty `WHERE` condition.
+     *  - an array of name-value pairs: query by a set of attribute values and return an array of records
+     *    matching all of them (or an empty array if none was found).
      *
      * Note that this method will automatically call the `all()` method and return an array of
      * [[ActiveRecordInterface|ActiveRecord]] instances. For example,
@@ -387,4 +391,10 @@ interface ActiveRecordInterface
      * If true, the model containing the foreign key will be deleted.
      */
     public function unlink($name, $model, $delete = false);
+
+    /**
+     * Returns the connection used by this AR class.
+     * @return mixed the database connection used by this AR class.
+     */
+    public static function getDb();
 }

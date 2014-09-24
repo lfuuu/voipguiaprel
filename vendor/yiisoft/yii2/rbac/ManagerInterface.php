@@ -146,6 +146,14 @@ interface ManagerInterface
     public function removeChild($parent, $child);
 
     /**
+     * Returns a value indicating whether the child already exists for the parent.
+     * @param Item $parent
+     * @param Item $child
+     * @return boolean whether `$child` is already a child of `$parent`
+     */
+    public function hasChild($parent, $child);
+
+    /**
      * Returns the child permissions and/or roles.
      * @param string $name the parent name
      * @return Item[] the child permissions and/or roles
@@ -157,13 +165,10 @@ interface ManagerInterface
      *
      * @param Role $role
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
-     * @param Rule $rule the rule to be associated with this assignment. If not null, the rule
-     * will be executed when [[allow()]] is called to check the user permission.
-     * @param mixed $data additional data associated with this assignment.
      * @return Assignment the role assignment information.
      * @throws \Exception if the role has already been assigned to the user
      */
-    public function assign($role, $userId, $rule = null, $data = null);
+    public function assign($role, $userId);
 
     /**
      * Revokes a role from a user.
@@ -198,12 +203,30 @@ interface ManagerInterface
     public function getAssignments($userId);
 
     /**
-     * Removes all authorization data.
+     * Removes all authorization data, including roles, permissions, rules, and assignments.
      */
-    public function clearAll();
+    public function removeAll();
 
     /**
-     * Removes all authorization assignments.
+     * Removes all permissions.
+     * All parent child relations will be adjusted accordingly.
      */
-    public function clearAssignments();
+    public function removeAllPermissions();
+
+    /**
+     * Removes all roles.
+     * All parent child relations will be adjusted accordingly.
+     */
+    public function removeAllRoles();
+
+    /**
+     * Removes all rules.
+     * All roles and permissions which have rules will be adjusted accordingly.
+     */
+    public function removeAllRules();
+
+    /**
+     * Removes all role assignments.
+     */
+    public function removeAllAssignments();
 }
