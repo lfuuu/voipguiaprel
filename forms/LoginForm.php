@@ -40,6 +40,9 @@ class LoginForm extends Model
         }
     }
 
+    /**
+     * @return User
+     */
     public function getUser()
     {
         if ($this->_user === false) {

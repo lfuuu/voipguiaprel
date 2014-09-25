@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 ?>
-<?= Html::beginForm() ?>
+<?= Html::beginForm('' , 'post', ['id' => 'loginForm']) ?>
 <div style="text-align: center">
     <br/>
     <br/>
@@ -35,7 +35,7 @@ use yii\helpers\Html;
             <tr>
                 <td></td>
                 <td>
-                    <input type=submit value='Войти' style="margin-right: 35px;">
+                    <input id="login" type=submit value='Войти' style="margin-right: 35px;">
                 </td>
             </tr>
         </table>

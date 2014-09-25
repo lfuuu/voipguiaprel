@@ -5,8 +5,8 @@
 return [
     'components' => [
         'db' => [
-            'dsn' => 'mysql:host=localhost;dbname=yii2_basic_tests',
-            'username' => 'root',
+            'dsn' => 'pgsql:host=localhost;dbname=nispd_test',
+            'username' => 'postgres',
             'password' => '',
         ],
         'mailer' => [
