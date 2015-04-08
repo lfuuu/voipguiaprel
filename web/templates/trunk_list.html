@@ -1,26 +1,33 @@
-<div>
-    <a class="btn btn-primary btn-sm pull-right" ng-if="version.editable" ng-click="clickCreate()">Создать</a>
-    <h4>Транки</h4>
+<div class="pull-right">
+    <a class="btn btn-primary btn-sm" ng-click="clickCreate()">Создать</a>
 </div>
+<h4>Операторы</h4>
 
 <table class="table table-striped table-hover table-condensed" >
     <thead>
     <tr>
+        <th>Имя транка</th>
         <th>Номер</th>
         <th>Название</th>
+        <th>&nbsp;</th>
         <th>Таблица маршрутизации</th>
-        <th ng-if="version.editable" width="1%">&nbsp;</th>
+        <th width="1%"></th>
     </tr>
     </thead>
     <tbody>
 
     <tr ng-repeat="item in list">
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.number}} </td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.trunk_name}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.code}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">
+            <span class="label label-danger" ng-if="item.our_trunk">Наш транк</span>
+            <span class="label label-success" ng-if="item.auto_routing">LCR маршрутизация</span>
+        </td>
         <td>
             <a ng-if="item.routeTable.id" href="#" ng-click="openRouteTable(item.routeTable.id);">{{item.routeTable.name}}</a>
         </td>
-        <td ng-if="version.editable"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
+        <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
     </tr>
 
     </tbody>

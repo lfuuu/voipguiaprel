@@ -3,7 +3,7 @@ var RoutingEditCtrl = function($scope, Routing, Number, Outcome, Redirect) {
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'Таблица маршрутизации';
 
-		Routing.get({config_version_id: $scope.version.id}).then(function(data){
+		Routing.get({server_id: $scope.server.id}).then(function(data){
 			$scope.item = data;
 		});
 	};

@@ -5,7 +5,7 @@
 </div>
 <div class="modal-body">
 
-    <div class="form-group" ng-if="version.editable">
+    <div class="form-group">
         <label class="col-sm-2 control-label">Название</label>
         <div class="col-sm-10">
             <input class="form-control" placeholder="Название" ng-model="item.name" required>
@@ -40,7 +40,7 @@
             <label class="col-sm-2 control-label">Префиксы</label>
             <div class="col-sm-10">
                 <table class="table table-striped">
-                    <tr ng-if="version.editable">
+                    <tr>
                         <td colspan="2">
                             <button type="button" class="btn btn-success btn-sm" ng-click="addPrefix()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
                         </td>
@@ -61,9 +61,9 @@
     <div ng-if="item.type_id == 2">
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">Оператор</label>
+            <label class="col-sm-2 control-label">Транк</label>
             <div class="col-sm-10">
-                <select-box list="operator" model="item.operator_id" placeholder="Выберите Оператора" required="true"></select-box>
+                <select-box list="trunk" model="item.trunk_id" placeholder="Выберите Транк" required="true"></select-box>
             </div>
         </div>
 
@@ -71,7 +71,7 @@
             <label class="col-sm-2 control-label">Настройки смежности</label>
             <div class="col-sm-10">
                 <table class="table table-striped">
-                    <tr ng-if="version.editable">
+                    <tr>
                         <td colspan="2">
                             <button type="button" class="btn btn-success btn-sm" ng-click="addSmezhnost()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
                         </td>
@@ -177,7 +177,7 @@
 
     <div ng-if="item.type_id == 4">
 
-        <div class="form-group" ng-if="item.id && version.editable">
+        <div class="form-group" ng-if="item.id">
             <label class="col-sm-2 control-label"></label>
             <div class="col-sm-10">
                 <div id="upload-csv-file" class="btn btn-success js-fileapi-wrapper">
@@ -215,7 +215,7 @@
 
 <div class="modal-footer">
     <div class="pull-left">
-        <button ng-if="version.editable" type="submit" class="btn btn-success" ng-disabled="form.$invalid || !item.type_id" ng-click="save()">Сохранить</button>
+        <button type="submit" class="btn btn-success" ng-disabled="form.$invalid || !item.type_id" ng-click="save()">Сохранить</button>
         <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
     </div>
 </div>

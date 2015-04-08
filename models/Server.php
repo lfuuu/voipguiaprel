@@ -6,6 +6,12 @@ use app\queries\ServerQuery;
 /**
  * @property int $id
  * @property string $name
+ * @property int $low_balance_outcome_id
+ * @property int $blocked_outcome_id
+ * @property string $calling_station_id_for_line_without_number
+ * @property bool $need_recalc_routing_report
+ * @property int $min_price_for_autorouting
+ * @property int $our_numbers_id
  * @property
  */
 class Server extends \yii\db\ActiveRecord
@@ -20,12 +26,13 @@ class Server extends \yii\db\ActiveRecord
         return new ServerQuery(get_called_class());
     }
 
-    public function getActualConfig()
+    public function rules()
     {
-        return
-            ConfigVersion::find()
-                ->where(['server_id' => $this->id, 'status_id' => ConfigVersion::STATUS_ACTIVE])
-                ->one();
-
+        return [
+            [['low_balance_outcome_id', 'blocked_outcome_id'], 'integer'],
+            [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],
+            [['min_price_for_autorouting'], 'integer', 'min' => 1],
+            [['our_numbers_id'], 'integer'],
+        ];
     }
 }

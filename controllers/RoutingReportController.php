@@ -2,10 +2,11 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\classes\BaseController;
 use app\forms\RoutingReportFilterForm;
-use app\models\ConfigVersion;
-use app\models\Operator;
+use app\models\Trunk;
+use app\models\Server;
 
 class RoutingReportController extends BaseController
 {
@@ -30,10 +31,10 @@ class RoutingReportController extends BaseController
         $form = new RoutingReportFilterForm();
         $form->load($filter,  '');
         if ($form->validate()) {
-            $version = ConfigVersion::findOne($form->configVersionId);
+            $server = Server::findOne($form->serverId);
 
             $params = [
-                ':versionId' => $version->id
+                ':serverId' => $server->id
             ];
 
             $where = '';
@@ -62,7 +63,7 @@ class RoutingReportController extends BaseController
 
             $sql = "
                 select r.prefix, g.name destination, d.mob, r.prices, r.locks, r.orders, r.routes
-                from auth.select_routing_report(:versionId, '" . ($forceRecalc ? 'true' : 'false') . "') r
+                from auth.select_routing_report(:serverId, '" . ($forceRecalc ? 'true' : 'false') . "') r
                 left join public.voip_destinations d on r.prefix = d.defcode
                 left join geo.geo g on g.id=d.geo_id
                 where true {$where}
@@ -72,7 +73,7 @@ class RoutingReportController extends BaseController
             ";
 
             $report =
-                ConfigVersion::getDb()
+                Yii::$app->db
                     ->createCommand($sql, $params)
                     ->queryAll();
 
@@ -95,8 +96,8 @@ class RoutingReportController extends BaseController
 
             $operators = [];
             foreach(
-                Operator::find()
-                    ->andWhere(['config_version_id' => $version->id])
+                Trunk::find()
+                    ->andWhere(['server_id' => $server->id])
                     ->andWhere('auto_routing=true')
                     ->orderBy('code')
                     ->all()

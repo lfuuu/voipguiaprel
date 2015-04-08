@@ -1,79 +1,33 @@
 <?php
-use yii\helpers\Url;
 use yii\helpers\Html;
-use app\models\ConfigVersion;
+use app\assets\AppAsset;
+use app\assets\AppLibAsset;
+
 /**
- * @var app\components\View $this
+ * @var \app\components\View $this
+ * @var string $content
  */
+AppLibAsset::register($this);
+AppAsset::register($this);
 ?>
-
-<div>
-    <div class="pull-right" style="display: inline-block">
-        <?= Html::beginForm(['server/create-config', 'serverId' => $serverId]) ?>
-            <button type="submit" class="btn btn-primary btn-sm">Создать</button>
-        <?= Html::endForm() ?>
-    </div>
-    <h4>Версии конфигурации</h4>
+<?php $this->beginPage() ?>
+<!DOCTYPE html>
+<html lang="<?= Yii::$app->language ?>" ng-app="app">
+<head>
+    <meta charset="<?= Yii::$app->charset ?>"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= Html::encode($this->title) ?></title>
+    <?php $this->head() ?>
+</head>
+<body>
+<?php $this->beginBody() ?>
+<script>
+    var dataServer = <?= json_encode($this->server->toArray(), JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
+    var userName = <?= json_encode(Yii::$app->user->identity->name, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
+</script>
+<div ng-controller="MainCtrl" ng-include="'/templates/main.html'">
 </div>
-
-<table class="table table-striped table-hover table-condensed" >
-    <thead>
-    <tr>
-        <th>Название</th>
-        <th colspan="2">Статус</th>
-        <th>Дата изменения</th>
-        <th>Дата активации</th>
-        <th></th>
-        <th width="1%"></th>
-    </tr>
-    </thead>
-    <tbody>
-
-    <?php foreach ($versions as $item): ?>
-        <tr>
-            <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['config/index', 'versionId' => $item->id]); ?>'">
-                <?= $item->name ?>
-            </td>
-            <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['config/index', 'versionId' => $item->id]); ?>'">
-                <?php if ($item->status_id == ConfigVersion::STATUS_DRAFT): ?>
-                    <span class="label label-default">Черновик</span>
-                <?php elseif ($item->status_id == ConfigVersion::STATUS_PUBLISHED): ?>
-                    <span class="label label-primary">Опубликовано</span>
-                <?php elseif ($item->status_id == ConfigVersion::STATUS_ACTIVE): ?>
-                    <span class="label label-success">Активный</span>
-                <?php endif; ?>
-            </td>
-            <td>
-                <?php if ($item->status_id == ConfigVersion::STATUS_DRAFT) { ?>
-                    <?= Html::beginForm(['config/fix', 'id' => $item->id]) ?>
-                    <button type="submit" class="btn btn-default btn-xs">Зафиксировать</button>
-                    <?= Html::endForm() ?>
-                <?php } elseif ($item->status_id == ConfigVersion::STATUS_PUBLISHED) { ?>
-                    <?= Html::beginForm(['config/activate', 'id' => $item->id]) ?>
-                    <button type="submit" class="btn btn-default btn-xs">Активировать</button>
-                    <?= Html::endForm() ?>
-                <?php } ?>
-            </td>
-            <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['config/index', 'versionId' => $item->id]); ?>'">
-                <?= $item->updated_at ?>
-            </td>
-            <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['config/index', 'versionId' => $item->id]); ?>'">
-                <?= $item->activated_at ?>
-            </td>
-            <td>
-                <?= Html::beginForm(['config/clone', 'id' => $item->id]) ?>
-                    <button type="submit" class="btn btn-default btn-xs">Клонировать</button>
-                <?= Html::endForm() ?>
-            </td>
-            <td>
-                <? if ($item->status_id != ConfigVersion::STATUS_ACTIVE): ?>
-                    <?= Html::beginForm(['config/delete', 'id' => $item->id]) ?>
-                        <button type="submit" class="btn btn-danger btn-sm glyphicon glyphicon-minus"></button>
-                    <?= Html::endForm() ?>
-                <? endif; ?>
-            </td>
-        </tr>
-    <?php endforeach; ?>
-
-    </tbody>
-</table>
+<?php $this->endBody() ?>
+</body>
+</html>
+<?php $this->endPage() ?>

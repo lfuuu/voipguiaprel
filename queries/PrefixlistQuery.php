@@ -1,7 +1,6 @@
 <?php
 namespace app\queries;
 
-use app\models\ConfigVersion;
 use app\models\Prefixlist;
 use yii\db\ActiveQuery;
 
@@ -11,8 +10,4 @@ use yii\db\ActiveQuery;
  */
 class PrefixlistQuery extends ActiveQuery
 {
-    public function configVersion(ConfigVersion $version)
-    {
-        return $this->andWhere(['config_version_id' => $version->id]);
-    }
 }

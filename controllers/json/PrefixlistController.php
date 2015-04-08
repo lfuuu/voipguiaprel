@@ -7,7 +7,7 @@ use app\models\billing\GeoCity;
 use app\models\billing\GeoCountry;
 use app\models\billing\GeoPrefix;
 use app\models\billing\GeoRegion;
-use app\models\Operator;
+use app\models\Trunk;
 use Yii;
 use app\models\PrefixlistPrefix;
 use app\classes\JsonController;
@@ -20,24 +20,24 @@ class PrefixlistController extends JsonController
 {
 
     public function actionList() {
-        $version = $this->getVersionOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         return
             Prefixlist::find()
                 ->select(['id', 'name'])
-                ->where(['config_version_id' => $version->id])
+                ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
     }
 
     public function actionRead() {
-        $version = $this->getVersionOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         return
             Prefixlist::find()
                 ->select(['id', 'name', 'type_id'])
-                ->where(['config_version_id' => $version->id])
+                ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -55,12 +55,12 @@ class PrefixlistController extends JsonController
 
     public function actionSave()
     {
-        $version = $this->getVersionForUpdateOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
             $prefixlist = $this->getPrefixlistOr404($this->request['id']);
         } else {
-            $prefixlist = Prefixlist::create($version);
+            $prefixlist = Prefixlist::create($server);
         }
 
         $prefixlist->load($this->request, '');
@@ -73,7 +73,7 @@ class PrefixlistController extends JsonController
             $prefixlist->setSmezhnostList($this->request['smezhnost_list']);
         } else {
             $prefixlist->smezhnost_list = null;
-            $prefixlist->operator_id = null;
+            $prefixlist->trunk_id = null;
 
         }
         if ($prefixlist->type_id == 3) {
@@ -129,9 +129,9 @@ class PrefixlistController extends JsonController
                 }
             }
 
-            if ($prefixlist->type_id == 2 && $prefixlist->operator_id) {
+            if ($prefixlist->type_id == 2 && $prefixlist->trunk_id) {
                 PrefixlistPrefix::deleteByPrefixlist($prefixlist);
-                $operator = Operator::findOne($prefixlist->operator_id);
+                $trunk = Trunk::findOne($prefixlist->trunk_id);
 
                 $sql = <<<SQL
                             select r.prefix from billing.network_prefix r
@@ -149,7 +149,7 @@ SQL;
                     BillingDefs::getDb()
                         ->createCommand(
                             $sql,
-                            [':serverId' => $version->server_id, 'operatorId' => $operator->code, ':now' => date('Y-m-d')]
+                            [':serverId' => $server->id, 'operatorId' => $trunk->code, ':now' => date('Y-m-d')]
                         )
                         ->queryAll();
 
@@ -225,7 +225,6 @@ SQL;
     public function actionDelete()
     {
         $item = Prefixlist::findOne($this->request['id']);
-        $this->getVersionForUpdateOr404($item->config_version_id);
         $item->delete();
     }
 }

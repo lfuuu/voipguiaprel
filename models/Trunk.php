@@ -1,14 +1,19 @@
 <?php
+
 namespace app\models;
 use app\queries\TrunkQuery;
 
 /**
  * @property int $id
- * @property int $config_version_id
+ * @property int $server_id
+ * @property int $code
  * @property string $name
- * @property int $number
- * @property bool $full_export
- * @property int $cpc_id
+ * @property bool $source_rule_default_allowed
+ * @property bool $destination_rule_default_allowed
+ * @property int $default_priority
+ * @property string $trunk_name
+ * @property bool $auto_routing
+ * @property bool $our_trunk
  * @property int $route_table_id
  * @property
  */
@@ -24,32 +29,30 @@ class Trunk extends \yii\db\ActiveRecord
         return new TrunkQuery(get_called_class());
     }
 
-    public static function create(ConfigVersion $version, array $data = null)
+    public static function create(Server $server, array $data = null)
     {
         $item = new self();
         $item->load($data, '');
-        $item->config_version_id = $version->id;
+        $item->server_id = $server->id;
+        $item->default_priority = 0;
         return $item;
     }
 
     public function rules()
     {
         return [
-            [['name', 'number', 'cpc_id', 'route_table_id'], 'required'],
+            [['code'], 'integer', 'min'=> 1, 'max' => 99],
             [['name'], 'string', 'max' => 50],
-            [['number', 'cpc_id', 'route_table_id'], 'integer'],
-            [['full_export'], 'boolean'],
+            [['trunk_name'], 'string', 'max' => 20],
+            [['default_priority'], 'integer', 'min'=> -10, 'max' => 10],
+            [['auto_routing', 'source_rule_default_allowed', 'destination_rule_default_allowed','our_trunk'], 'boolean'],
+            [['route_table_id'], 'integer'],
         ];
     }
 
     public function extraFields()
     {
-        return ['routeTable', 'cpc'];
-    }
-
-    public function getCpc()
-    {
-        return $this->hasOne(Cpc::className(), ['id' => 'cpc_id']);
+        return ['routeTable', 'priorities', 'rules', 'numberPreprocessing'];
     }
 
     public function getRouteTable()
@@ -57,4 +60,18 @@ class Trunk extends \yii\db\ActiveRecord
         return $this->hasOne(RouteTable::className(), ['id' => 'route_table_id']);
     }
 
+    public function getPriorities()
+    {
+        return $this->hasMany(TrunkPriority::className(), ['trunk_id' => 'id'])->orderBy('order');
+    }
+
+    public function getRules()
+    {
+        return $this->hasMany(TrunkRule::className(), ['trunk_id' => 'id'])->orderBy('order');
+    }
+
+    public function getNumberPreprocessing()
+    {
+        return $this->hasMany(TrunkNumberPreprocessing::className(), ['trunk_id' => 'id'])->orderBy('order');
+    }
 }

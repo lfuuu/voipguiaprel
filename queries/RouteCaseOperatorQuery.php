@@ -2,11 +2,11 @@
 namespace app\queries;
 
 use app\models\RouteCase;
-use app\models\RouteCaseOperator;
+use app\models\RouteCaseTrunk;
 use yii\db\ActiveQuery;
 
 /**
- * @method RouteCaseOperator[] all($db = null)
+ * @method RouteCaseTrunk[] all($db = null)
  * @property
  */
 class RouteCaseOperatorQuery extends ActiveQuery

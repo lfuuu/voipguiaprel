@@ -5,7 +5,7 @@
     </div>
     <div class="modal-body">
 
-        <div class="form-group" ng-if="version.editable">
+        <div class="form-group">
             <label class="col-sm-2 control-label">Название</label>
             <div class="col-sm-10">
                 <input class="form-control" placeholder="Название" ng-model="item.name" required>
@@ -31,12 +31,12 @@
                         <td width="100%">
                             <select-box list="prefixlist" model="line.id" placeholder="Выберите список префиксов" required="true"></select-box>
                         </td>
-                        <td ng-if="version.editable">
+                        <td>
                             <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePrefixlist($index)"></button>
                         </td>
                     </tr>
                     </tbody>
-                    <tfoot ng-if="version.editable">
+                    <tfoot>
                     <tr>
                         <td colspan="3">
                             <button type="button" class="btn btn-success btn-xs" ng-click="addPrefixlist()"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
@@ -47,17 +47,10 @@
             </div>
         </div>
 
-        <div class="form-group" ng-if="item.type_id == 1">
-            <label class="col-sm-2 control-label">Cpc</label>
-            <div class="col-sm-10">
-                <select-box list="cpc" model="item.cpc_id" default="Выберите Cpc"></select-box>
-            </div>
-        </div>
-
     </div>
     <div class="modal-footer">
         <div class="pull-left">
-            <button ng-if="version.editable" type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
         </div>
     </div>

@@ -6,7 +6,7 @@ var RouteTableEditCtrl = function($scope, RouteTable, Outcome, params, $modalIns
 		});
 	} else {
 		$scope.item = {
-			config_version_id: $scope.version.id,
+            server_id: $scope.server.id,
 			routes: []
 		};
 

@@ -5,7 +5,7 @@ use app\queries\AirpQuery;
 
 /**
  * @property int $id
- * @property int $config_version_id
+ * @property int $server_id
  * @property string $name
  * @property
  */
@@ -21,11 +21,11 @@ class Airp extends \yii\db\ActiveRecord
         return new AirpQuery(get_called_class());
     }
 
-    public static function create(ConfigVersion $version, array $data = null)
+    public static function create(Server $server, array $data = null)
     {
         $item = new self();
         $item->load($data, '');
-        $item->config_version_id = $version->id;
+        $item->server_id = $server->id;
         return $item;
     }
 

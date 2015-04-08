@@ -2,12 +2,13 @@
 namespace app\queries;
 
 use app\models\Trunk;
+use app\models\TrunkRule;
 use yii\db\ActiveQuery;
 
 /**
- * @method Trunk[] all($db = null)
+ * @method TrunkRule[] all($db = null)
  * @property
  */
-class TrunkQuery extends ActiveQuery
+class TrunkRuleQuery extends ActiveQuery
 {
 }

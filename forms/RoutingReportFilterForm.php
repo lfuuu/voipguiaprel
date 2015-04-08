@@ -7,7 +7,7 @@ use yii\base\Model;
 
 class RoutingReportFilterForm extends Model
 {
-    public $configVersionId;
+    public $serverId;
     public $destinationId;
     public $countryId;
     public $regionId;
@@ -26,8 +26,8 @@ class RoutingReportFilterForm extends Model
     public function rules()
     {
         return [
-            [['configVersionId'], 'required'],
-            [['configVersionId', 'destinationId', 'countryId', 'regionId'], 'integer'],
+            [['serverId'], 'required'],
+            [['serverId', 'destinationId', 'countryId', 'regionId'], 'integer'],
             [['prefix'], 'string'],
             ['mobFix', 'in', 'range' => ['t', 'f']],
             [['limit', 'offset'], 'integer'],

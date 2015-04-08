@@ -7,7 +7,7 @@ var OutcomeEditCtrl = function($scope, Outcome, params, $modalInstance, $window)
 		});
 	} else {
 		$scope.item = {
-			config_version_id: $scope.version.id
+            server_id: $scope.server.id
 		};
 	}
 

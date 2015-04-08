@@ -2,7 +2,7 @@
 
 namespace app\controllers\json;
 
-use app\models\RouteCaseOperator;
+use app\models\RouteCaseTrunk;
 use Yii;
 use app\classes\JsonController;
 use app\models\RouteCase;
@@ -12,26 +12,26 @@ use yii\web\HttpException;
 class RouteCaseController extends JsonController
 {
     public function actionList() {
-        $version = $this->getVersionOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         return
             RouteCase::find()
                 ->select(['id', 'name'])
-                ->where(['config_version_id' => $version->id])
+                ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
     }
 
     public function actionRead() {
-        $version = $this->getVersionOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         return
             RouteCase::find()
-                ->with('operators')
-                ->with('operators.operator')
+                ->with('trunks')
+                ->with('trunks.trunk')
                 ->select(['id', 'name'])
-                ->where(['config_version_id' => $version->id])
+                ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -41,7 +41,7 @@ class RouteCaseController extends JsonController
     {
         $item =
             RouteCase::find()
-                ->with('operators')
+                ->with('trunks')
                 ->where(['id' => $this->request['id']])
                 ->asArray()
                 ->one();
@@ -54,12 +54,12 @@ class RouteCaseController extends JsonController
 
     public function actionSave()
     {
-        $version = $this->getVersionForUpdateOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
             $routeCase = $this->getRouteCaseOr404($this->request['id']);
         } else {
-            $routeCase = RouteCase::create($version);
+            $routeCase = RouteCase::create($server);
         }
 
         $routeCase->load($this->request, '');
@@ -70,9 +70,9 @@ class RouteCaseController extends JsonController
                 throw new FormValidationException($routeCase);
             }
 
-            RouteCaseOperator::deleteByRouteCase($routeCase);
-            foreach ($this->request['operators'] as $operatorData) {
-                $operator = RouteCaseOperator::create($routeCase, $operatorData);
+            RouteCaseTrunk::deleteByRouteCase($routeCase);
+            foreach ($this->request['trunks'] as $operatorData) {
+                $operator = RouteCaseTrunk::create($routeCase, $operatorData);
                 if (!$operator->save()) {
                     throw new FormValidationException($operator);
                 }
@@ -88,7 +88,6 @@ class RouteCaseController extends JsonController
     public function actionDelete()
     {
         $item = RouteCase::findOne($this->request['id']);
-        $this->getVersionForUpdateOr404($item->config_version_id);
         $item->delete();
     }
 }

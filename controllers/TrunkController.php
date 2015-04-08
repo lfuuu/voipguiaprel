@@ -3,28 +3,24 @@ namespace app\controllers;
 
 use app\classes\BaseController;
 use app\classes\ConfigExporter;
-use app\classes\ConfigVersionCloner;
-use app\dao\ConfigVersionDao;
-use app\models\ConfigVersion;
 use Yii;
-use yii\web\HttpException;
 
 class TrunkController extends BaseController
 {
     public $layout = false;
 
 
-    public function actionShow($id, $versionId) {
-        $version = $this->getVersionOr404($versionId);
+    public function actionShow($id, $serverId) {
+        $server = $this->getServerOr404($serverId);
         $trunk = $this->getTrunkOr404($id);
 
         header('Content-Type: text/plain');
-        $exp = ConfigExporter::create($trunk, $version);
+        $exp = ConfigExporter::create($trunk, $server);
         $exp->export();
     }
 
-    public function actionDownload($id, $versionId) {
-        $version = $this->getVersionOr404($versionId);
+    public function actionDownload($id, $serverId) {
+        $server = $this->getServerOr404($serverId);
         $trunk = $this->getTrunkOr404($id);
 
         header("Content-type: text/csv");
@@ -32,7 +28,7 @@ class TrunkController extends BaseController
         header("Pragma: no-cache");
         header("Expires: 0");
 
-        $exp = ConfigExporter::create($trunk, $version);
+        $exp = ConfigExporter::create($trunk, $server);
         $exp->export();
     }
 }

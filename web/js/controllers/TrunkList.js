@@ -1,41 +1,42 @@
 var TrunkListCtrl = function($scope, Trunk, Redirect, $window) {
-	$scope.prefixlist_id = '';
-	$scope.init = function(tab) {
-		if (tab) tab.title = 'Транки';
 
-		Trunk.read({config_version_id: $scope.version.id}).then(function(data){
-			$scope.list = data;
-		});
-	};
+    $scope.init = function(tab) {
+        if (tab) tab.title = 'Операторы';
 
-	$scope.clickCreate = function() {
-		Redirect.trunkCreate().then(function () {
-			$scope.init();
-		});
-	};
+        Trunk.read({server_id: $scope.server.id}).then(function(data){
+            $scope.list = data;
+        });
+    };
 
-	$scope.clickItem = function(item) {
-		if (window.getSelection().type == 'Range') return;
+    $scope.clickCreate = function() {
+        Redirect.trunkCreate().then(function () {
+            $scope.init();
+        });
+    };
 
-		Redirect.trunkEdit(item.id).then(function () {
-			$scope.init();
-		});
-	}
+    $scope.clickItem = function(item) {
+        if (window.getSelection().type == 'Range') return;
 
-	$scope.openRouteTable = function(routeTableId) {
-		if (window.getSelection().type == 'Range') return;
+        Redirect.trunkEdit(item.id).then(function () {
+            $scope.init();
+        });
+    };
 
-		Redirect.routeTableEdit(routeTableId).then(function () {
-			$scope.init();
-		});
-	}
+    $scope.openRouteTable = function(routeTableId) {
+        if (window.getSelection().type == 'Range') return;
 
-	$scope.deleteItem = function(item)
-	{
-		if (!$window.confirm('Удалить?')) return;
+        Redirect.routeTableEdit(routeTableId).then(function () {
+            $scope.init();
+        });
+    }
 
-		Trunk.delete(item.id).then(function(response) {
-			$scope.init()
-		});
-	};
+
+    $scope.deleteItem = function(item)
+    {
+        if (!$window.confirm('Удалить?')) return;
+
+        Trunk.delete(item.id).then(function(response) {
+            $scope.init()
+        });
+    };
 };

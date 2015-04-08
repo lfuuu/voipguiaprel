@@ -1,7 +1,7 @@
 var RoutingReportCtrl = function($scope, Billing, $http) {
 
 	$scope.filter = {
-		configVersionId: $scope.version.id,
+		serverId: $scope.server.id,
 		offset: 0,
 		limit: 20
 	};

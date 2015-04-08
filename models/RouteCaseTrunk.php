@@ -5,16 +5,16 @@ use app\queries\RouteCaseOperatorQuery;
 
 /**
  * @property int $route_case_id
- * @property int $operator_id
+ * @property int $trunk_id
  * @property int $priority
  * @property int $weight
  * @property
  */
-class RouteCaseOperator extends \yii\db\ActiveRecord
+class RouteCaseTrunk extends \yii\db\ActiveRecord
 {
     public static function tableName()
     {
-        return 'auth.route_case_operator';
+        return 'auth.route_case_trunk';
     }
 
     public static function find()
@@ -41,18 +41,18 @@ class RouteCaseOperator extends \yii\db\ActiveRecord
         return [
             [['priority'], 'integer', 'min'=> 1, 'max' => 10],
             [['weight'], 'integer', 'min'=> 1, 'max' => 100],
-            [['operator_id'], 'integer'],
+            [['trunk_id'], 'integer'],
         ];
     }
 
     public function extraFields()
     {
-        return ['operator'];
+        return ['trunk'];
     }
 
-    public function getOperator()
+    public function getTrunk()
     {
-        return $this->hasOne(Operator::className(), ['id' => 'operator_id']);
+        return $this->hasOne(Trunk::className(), ['id' => 'trunk_id']);
     }
 
 }

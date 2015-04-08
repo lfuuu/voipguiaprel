@@ -3,7 +3,7 @@ var RouteCaseListCtrl = function($scope, RouteCase, Redirect, $window) {
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'Route cases';
 
-		RouteCase.read({config_version_id: $scope.version.id}).then(function(data){
+		RouteCase.read({server_id: $scope.server.id}).then(function(data){
 			$scope.list = data;
 		});
 	};

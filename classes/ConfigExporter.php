@@ -2,23 +2,22 @@
 
 namespace app\classes;
 
+use Yii;
 use app\models\Airp;
-use app\models\Cpc;
-use app\models\Operator;
-use app\models\ConfigVersion;
+use app\models\Trunk;
 use app\models\Number;
 use app\models\Outcome;
 use app\models\PrefixlistPrefix;
 use app\models\ReleaseReason;
 use app\models\RouteCase;
-use app\models\RouteCaseOperator;
+use app\models\RouteCaseTrunk;
 use app\models\RouteTableRoute;
-use app\models\Trunk;
+use app\models\Server;
 
 class ConfigExporter
 {
-    /** @var ConfigVersion */
-    private $version;
+    /** @var Server */
+    private $server;
 
     /** @var Trunk */
     private $trunk;
@@ -32,17 +31,16 @@ class ConfigExporter
 
 
     /**
-     * @param ConfigVersion $version
      * @return ConfigExporter
      */
-    public static function create(Trunk $trunk, ConfigVersion $version) {
-        return new self($trunk, $version);
+    public static function create(Trunk $trunk, Server $server) {
+        return new self($trunk, $server);
     }
 
-    protected function __construct(Trunk $trunk, ConfigVersion $version)
+    protected function __construct(Trunk $trunk, Server $server)
     {
         $this->trunk = $trunk;
-        $this->version = $version;
+        $this->server = $server;
     }
 
     public function export()
@@ -122,7 +120,7 @@ class ConfigExporter
             $prefixGroups = $this->getNumberPrefixGroups($route->b_number_id);
             foreach ($prefixGroups as $key => $prefixGroup) {
                 $airpBaseScenName = $airpBaseName . (count($prefixGroups) > 1 ? '_' . $key : '');
-                $airpName = $pathRoute . $nRoute . '_' . $this->version->id . '_' . $airpBaseScenName;
+                $airpName = $pathRoute . $nRoute . '_' . $this->server->id . '_' . $airpBaseScenName;
 
                 if (!$firstAirp) {
                     $firstAirp = $airpName;
@@ -207,7 +205,7 @@ class ConfigExporter
         $prefixGroups = $this->getAutoRoutePrefixes();
         foreach ($prefixGroups as $key => $prefixGroup) {
             $airpBaseScenName = 'auto' . (count($prefixGroups) > 1 ? '_' . $key : '');
-            $airpName = $pathRoute . $this->version->id . '_' . $airpBaseScenName;
+            $airpName = $pathRoute . $this->server->id . '_' . $airpBaseScenName;
 
             if (!$this->autoAirpName) {
                 $this->autoAirpName = $airpName;
@@ -283,8 +281,8 @@ class ConfigExporter
         }
 
         $command =
-            ConfigVersion::getDb()
-                ->createCommand("select prefix, routes from auth.select_routing_report(:versionId)", [':versionId' => $this->version->id]);
+            \Yii::$app->db
+                ->createCommand("select prefix, routes from auth.select_routing_report(:serverId)", [':serverId' => $this->server->id]);
         $result = $command->queryAll();
         $groups = [];
         foreach ($result as $row) {
@@ -341,8 +339,8 @@ class ConfigExporter
     private function getAutoRoutingOperators()
     {
         return
-            Operator::find()
-                ->where(['config_version_id' => $this->version->id, 'auto_routing' => true])
+            Trunk::find()
+                ->where(['server_id' => $this->server->id, 'auto_routing' => true])
                 ->all()
             ;
     }
@@ -397,7 +395,7 @@ class ConfigExporter
             $strOperators = '';
             $n = 1;
             foreach ($tmpOperators as $operator) {
-                $strOperators .= 'RO-' . $n . '="' . $operator->openca . ',' . $n . ',100;", ';
+                $strOperators .= 'RO-' . $n . '="' . $operator->trunk_name . ',' . $n . ',100;", ';
                 $n++;
             }
 
@@ -411,12 +409,12 @@ class ConfigExporter
     {
         if (!isset($this->routeCaseScripts[$routeCaseId])) {
             $routeCase = RouteCase::findOne($routeCaseId);
-            $rcOperators = RouteCaseOperator::find()->where(['route_case_id' => $routeCase->id])->all();
+            $rcOperators = RouteCaseTrunk::find()->where(['route_case_id' => $routeCase->id])->all();
             $strOperators = '';
             $n = 1;
             foreach ($rcOperators as $rcOperator) {
-                $operator = Operator::findOne($rcOperator->operator_id);
-                $strOperators .= 'RO-' . $n . '="' . $operator->openca . ',' . $rcOperator->priority . ',' . $rcOperator->weight . ';", ';
+                $trunk = Trunk::findOne($rcOperator->trunk_id);
+                $strOperators .= 'RO-' . $n . '="' . $trunk->trunk_name . ',' . $rcOperator->priority . ',' . $rcOperator->weight . ';", ';
                 $n++;
             }
 
@@ -649,7 +647,7 @@ class ConfigExporter
             $needSplit = false;
 
             foreach ($chunks as $key => $chunk) {
-                if (count($chunk) > $this->version->export_chunk_size) {
+                if (count($chunk) > 3000) {
 
                     $len = strlen($key) + 1;
                     $len = $len < $minLen ? $minLen : $len;

@@ -1,38 +1,38 @@
 <?php
 namespace app\models;
-use app\queries\OperatorPriorityQuery;
+use app\queries\TrunkPriorityQuery;
 
 /**
  * @property int $id
- * @property int $operator_id
+ * @property int $trunk_id
  * @property int $order
  * @property int $priority
  * @property int $prefixlist_id
  * @property
  */
-class OperatorPriority extends \yii\db\ActiveRecord
+class TrunkPriority extends \yii\db\ActiveRecord
 {
     public static function tableName()
     {
-        return 'auth.operator_priority';
+        return 'auth.trunk_priority';
     }
 
     public static function find()
     {
-        return new OperatorPriorityQuery(get_called_class());
+        return new TrunkPriorityQuery(get_called_class());
     }
 
-    public static function create(Operator $operator, array $data = null)
+    public static function create(Trunk $trunk, array $data = null)
     {
         $item = new self();
         $item->load($data, '');
-        $item->operator_id = $operator->id;
+        $item->trunk_id = $trunk->id;
         return $item;
     }
 
-    public static function deleteByOperator(Operator $operator)
+    public static function deleteByOperator(Trunk $trunk)
     {
-        return self::deleteAll(['operator_id' => $operator->id]);
+        return self::deleteAll(['trunk_id' => $trunk->id]);
     }
 
     public function rules()

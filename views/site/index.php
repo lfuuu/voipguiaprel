@@ -6,7 +6,7 @@ use yii\helpers\Url;
 ?>
 
 <div>
-    <a class="btn btn-primary btn-sm pull-right" ng-if="version.editable" ng-click="clickCreate()">Создать</a>
+    <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
     <h4>Сервера</h4>
 </div>
 
@@ -15,7 +15,6 @@ use yii\helpers\Url;
     <tr>
         <th>Код</th>
         <th>Название</th>
-        <th>Активная конфигурация</th>
     </tr>
     </thead>
     <tbody>
@@ -27,11 +26,6 @@ use yii\helpers\Url;
             </td>
             <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item->id]); ?>'">
                 <?= $item->name ?>
-            </td>
-            <td>
-                <? if ($config = $item->getActualConfig()): ?>
-                    <a href="<?= Url::toRoute(['config/index', 'versionId' => $config->id]); ?>"><?= $config->name ?></a>
-                <? endif; ?>
             </td>
         </tr>
     <?php endforeach; ?>

@@ -1,5 +1,5 @@
 <div>
-    <a class="btn btn-primary btn-sm pull-right" ng-if="version.editable" ng-click="clickCreate()">Создать</a>
+    <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
     <h4>AIRP</h4>
 </div>
 
@@ -7,14 +7,14 @@
     <thead>
     <tr>
         <th width="100%">Название</th>
-        <th ng-if="version.editable">&nbsp;</th>
+        <th>&nbsp;</th>
     </tr>
     </thead>
     <tbody>
 
     <tr ng-repeat="item in list">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
-        <td ng-if="version.editable"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
+        <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
     </tr>
 
     </tbody>

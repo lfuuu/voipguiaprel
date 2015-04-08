@@ -34,11 +34,11 @@ class Outcome extends \yii\db\ActiveRecord
         return new OutcomeQuery(get_called_class());
     }
 
-    public static function create(ConfigVersion $version, array $data = null)
+    public static function create(Server $server, array $data = null)
     {
         $item = new self();
         $item->load($data, '');
-        $item->config_version_id = $version->id;
+        $item->server_id = $server->id;
         return $item;
     }
 

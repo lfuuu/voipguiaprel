@@ -3,7 +3,7 @@ var PrefixlistListCtrl = function($scope, Prefixlist, Redirect, $window) {
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'Списки префиксов';
 
-		Prefixlist.read({config_version_id: $scope.version.id}).then(function(data){
+		Prefixlist.read({server_id: $scope.server.id}).then(function(data){
 			$scope.list = data;
 		});
 	};

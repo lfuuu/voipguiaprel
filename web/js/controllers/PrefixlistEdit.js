@@ -74,7 +74,7 @@ var PrefixlistEditCtrl = function($scope, Prefixlist, Billing, params, $modalIns
 		});
 	} else {
 		$scope.item = {
-			config_version_id: $scope.version.id,
+            server_id: $scope.server.id,
 			manual_list: [],
 			smezhnost_list: [],
 			rossvyaz_operators: [],
@@ -121,8 +121,8 @@ var PrefixlistEditCtrl = function($scope, Prefixlist, Billing, params, $modalIns
 		$scope.item.smezhnost_list.splice(index, 1);
 	};
 
-	$scope.addOperator = function() {
-		Redirect.selectRossvyazOperator().then(function(item) {
+	$scope.addTrunk = function() {
+		Redirect.selectRossvyazTrunk().then(function(item) {
 			$scope.item.rossvyaz_operators.push({
 				id: item.id,
 				name: item.name
@@ -130,7 +130,7 @@ var PrefixlistEditCtrl = function($scope, Prefixlist, Billing, params, $modalIns
 		});
 	}
 
-	$scope.removeOperator = function(index) {
+	$scope.removeTrunk = function(index) {
 		$scope.item.rossvyaz_operators.splice(index, 1);
 	}
 

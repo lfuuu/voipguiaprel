@@ -1,4 +1,4 @@
-var NumberEditCtrl = function($scope, Number, Prefixlist, Cpc, params, $modalInstance, $window) {
+var NumberEditCtrl = function($scope, Number, Prefixlist, params, $modalInstance, $window) {
 
 	if (params.id) {
 		Number.get({id: params.id}).then(function(data){
@@ -11,17 +11,13 @@ var NumberEditCtrl = function($scope, Number, Prefixlist, Cpc, params, $modalIns
 		});
 	} else {
 		$scope.item = {
-			config_version_id: $scope.version.id,
+            server_id: $scope.server.id,
 			prefixlist_ids: []
 		};
 	}
 
 	Prefixlist.list().then(function(data){
 		$scope.prefixlistList = data;
-	});
-
-	Cpc.list().then(function(data){
-		$scope.cpcList = data;
 	});
 
 	$scope.addPrefixlist = function() {

@@ -1,29 +1,25 @@
 {
-	"type": "project",
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.4.0",
-		"yiisoft/yii2": "*",
-		"graylog2/gelf-php": "*"
-	},
-	"require-dev": {
-		"yiisoft/yii2-codeception": "*",
-		"yiisoft/yii2-faker": "*"
-	},
-	"config": {
-		"process-timeout": 1800
-	},
-	"extra": {
-		"writable": [
-			"runtime",
-			"web/assets"
-		],
-		"executable": [
-			"yii"
-		],
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "vendor/bower"
-        }
-	}
+  "type": "project",
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.5.0",
+    "yiisoft/yii2": "2.0.3",
+    "graylog2/gelf-php": "*"
+  },
+  "config": {
+    "process-timeout": 1800
+  },
+  "extra": {
+    "writable": [
+      "runtime",
+      "web/assets"
+    ],
+    "executable": [
+      "yii"
+    ],
+    "asset-installer-paths": {
+      "npm-asset-library": "vendor/npm",
+      "bower-asset-library": "vendor/bower"
+    }
+  }
 }

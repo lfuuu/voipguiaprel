@@ -3,7 +3,7 @@ var AirpListCtrl = function($scope, Airp, Redirect, $window) {
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'AIRP';
 
-		Airp.read({config_version_id: $scope.version.id}).then(function(data){
+		Airp.read({server_id: $scope.server.id}).then(function(data){
 			$scope.list = data;
 		});
 	};

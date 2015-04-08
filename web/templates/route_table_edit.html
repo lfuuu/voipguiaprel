@@ -5,7 +5,7 @@
     </div>
     <div class="modal-body">
 
-        <div ng-if="version.editable" class="form-group">
+        <div class="form-group">
             <label class="col-sm-2 control-label">Название</label>
             <div class="col-sm-10">
                 <input class="form-control" placeholder="Название" ng-model="item.name" required>
@@ -19,7 +19,7 @@
                 <th>A - Номер</th>
                 <th>B - Номер</th>
                 <th>Outcome</th>
-                <th ng-if="version.editable" width="1%">&nbsp;</th>
+                <th width="1%">&nbsp;</th>
             </tr>
             </thead>
             <tbody ui-sortable="{axis: 'y'}" ng-model="item.routes">
@@ -36,11 +36,11 @@
                 <td width="30%">
                     <outcome-select-box outcome-model="line.outcome_id" route-table-model="line.outcome_route_table_id"></outcome-select-box>
                 </td>
-                <td ng-if="version.editable">
+                <td>
                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRoute($index)"></button>
                 </td>
             </tr>
-            <tr ng-if="version.editable">
+            <tr>
                 <td colspan="5">
                     <button type="button" class="btn btn-success btn-xs" ng-click="addRoute()"><i class="glyphicon glyphicon-plus"></i> Добавить роут</button>
                 </td>
@@ -51,7 +51,7 @@
     </div>
     <div class="modal-footer">
         <div class="pull-left">
-            <button ng-if="version.editable" type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
         </div>
     </div>

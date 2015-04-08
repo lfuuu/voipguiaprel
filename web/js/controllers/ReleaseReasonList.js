@@ -3,7 +3,7 @@ var ReleaseReasonListCtrl = function($scope, ReleaseReason, Redirect, $window) {
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'Release reason';
 
-		ReleaseReason.read({config_version_id: $scope.version.id}).then(function(data){
+		ReleaseReason.read({server_id: $scope.server.id}).then(function(data){
 			$scope.list = data;
 		});
 	};

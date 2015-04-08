@@ -11,19 +11,19 @@ use yii\web\HttpException;
 class OutcomeController extends JsonController
 {
     public function actionList() {
-        $version = $this->getVersionOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         return
             Outcome::find()
                 ->select(['id', 'name'])
-                ->where(['config_version_id' => $version->id])
+                ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
     }
 
     public function actionRead() {
-        $version = $this->getVersionOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         return
             Outcome::find()
@@ -31,7 +31,7 @@ class OutcomeController extends JsonController
                 ->with('releaseReason')
                 ->with('airp')
                 ->select(['id', 'name', 'type_id', 'route_case_id', 'release_reason_id', 'airp_id', 'calling_station_id', 'called_station_id'])
-                ->where(['config_version_id' => $version->id])
+                ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -49,12 +49,12 @@ class OutcomeController extends JsonController
 
     public function actionSave()
     {
-        $version = $this->getVersionForUpdateOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
             $outcome = $this->getOutcomeOr404($this->request['id']);
         } else {
-            $outcome = Outcome::create($version);
+            $outcome = Outcome::create($server);
         }
 
         $outcome->load($this->request, '');
@@ -75,7 +75,6 @@ class OutcomeController extends JsonController
     public function actionDelete()
     {
         $item = Outcome::findOne($this->request['id']);
-        $this->getVersionForUpdateOr404($item->config_version_id);
         $item->delete();
     }
 }

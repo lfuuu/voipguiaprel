@@ -35,14 +35,14 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 			$rootScope.tabs.splice($rootScope.tabs.indexOf(tab), 1);
 			delete $rootScope.tabsMap[tab.key];
 		},
-		operatorList: function() {
-			return openTab(OperatorListCtrl, '/templates/operator_list.html');
+        trunkList: function() {
+			return openTab(TrunkListCtrl, '/templates/trunk_list.html');
 		},
-		operatorEdit: function(id) {
-			return openModal(OperatorEditCtrl, '/templates/operator_edit.html', {id: id});
+        trunkEdit: function(id) {
+			return openModal(TrunkEditCtrl, '/templates/trunk_edit.html', {id: id});
 		},
-		operatorCreate: function() {
-			return openModal(OperatorEditCtrl, '/templates/operator_edit.html', {id: null});
+        trunkCreate: function() {
+			return openModal(TrunkEditCtrl, '/templates/trunk_edit.html', {id: null});
 		},
 		prefixlistList: function() {
 			return openTab(PrefixlistListCtrl, '/templates/prefixlist_list.html');
@@ -92,15 +92,6 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 		airpCreate: function() {
 			return openModal(AirpEditCtrl, '/templates/airp_edit.html', {id: null});
 		},
-		cpcList: function() {
-			return openTab(CpcListCtrl, '/templates/cpc_list.html');
-		},
-		cpcEdit: function(id) {
-			return openModal(CpcEditCtrl, '/templates/cpc_edit.html', {id: id});
-		},
-		cpcCreate: function() {
-			return openModal(CpcEditCtrl, '/templates/cpc_edit.html', {id: null});
-		},
 		releaseReasonList: function() {
 			return openTab(ReleaseReasonListCtrl, '/templates/release_reason_list.html');
 		},
@@ -119,29 +110,11 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 		routeTableCreate: function() {
 			return openModal(RouteTableEditCtrl, '/templates/route_table_edit.html', {id: null});
 		},
-		trunkList: function() {
-			return openTab(TrunkListCtrl, '/templates/trunk_list.html');
-		},
-		trunkEdit: function(id) {
-			return openModal(TrunkEditCtrl, '/templates/trunk_edit.html', {id: id});
-		},
-		trunkCreate: function() {
-			return openModal(TrunkEditCtrl, '/templates/trunk_edit.html', {id: null});
-		},
-		trunkGroupList: function() {
-			return openTab(TrunkGroupListCtrl, '/templates/trunk_group_list.html');
-		},
-		trunkGroupEdit: function(id) {
-			return openModal(TrunkGroupEditCtrl, '/templates/trunk_group_edit.html', {id: id});
-		},
-		trunkGroupCreate: function() {
-			return openModal(TrunkGroupEditCtrl, '/templates/trunk_group_edit.html', {id: null});
-		},
 		routingReport: function() {
 			return openTab(RoutingReportCtrl, '/templates/routing_report.html');
 		},
-		selectRossvyazOperator: function() {
-			return openModal(SelectRossvyazOperatorCtrl, '/templates/select_rossvyaz_operator.html');
+		selectRossvyazTrunk: function() {
+			return openModal(SelectRossvyazTrunkCtrl, '/templates/select_rossvyaz_operator.html');
 		}
 	};
 });

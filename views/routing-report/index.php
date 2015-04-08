@@ -1,5 +1,5 @@
 <?php
-/** @var $operators \app\models\Operator[] */
+/** @var $operators \app\models\Trunk[] */
 ?>
 <style type="text/css">
     tr td.best {

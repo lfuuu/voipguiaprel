@@ -11,24 +11,24 @@ use yii\web\HttpException;
 class AirpController extends JsonController
 {
     public function actionList() {
-        $version = $this->getVersionOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         return
             Airp::find()
                 ->select(['id', 'name'])
-                ->where(['config_version_id' => $version->id])
+                ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
     }
 
     public function actionRead() {
-        $version = $this->getVersionOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         return
             Airp::find()
                 ->select(['id', 'name'])
-                ->where(['config_version_id' => $version->id])
+                ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -46,12 +46,12 @@ class AirpController extends JsonController
 
     public function actionSave()
     {
-        $version = $this->getVersionForUpdateOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
             $item = $this->getAirpOr404($this->request['id']);
         } else {
-            $item = Airp::create($version);
+            $item = Airp::create($server);
         }
 
         $item->load($this->request, '');
@@ -72,7 +72,6 @@ class AirpController extends JsonController
     public function actionDelete()
     {
         $item = Airp::findOne($this->request['id']);
-        $this->getVersionForUpdateOr404($item->config_version_id);
         $item->delete();
     }
 }

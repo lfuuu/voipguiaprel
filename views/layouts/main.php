@@ -40,14 +40,6 @@ AppAsset::register($this);
                                 <?php endif; ?>
                             </a>
                         </li>
-                        <?php if ($this->server) :?>
-                            <li>
-                                <a href="<?= Url::toRoute('server/index'); ?>" style="padding-top: 10px; padding-bottom: 10px">
-                                    <div style="font-size: 12px; line-height: 14px">Конфигурация:</div>
-                                    <div style="font-size: 14px; line-height: 18px">Выберите...</div>
-                                </a>
-                            </li>
-                        <?php endif; ?>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="<?=Url::to(['user/list'])?>">Пользователи</a></li>
@@ -59,7 +51,7 @@ AppAsset::register($this);
             </div><!-- /.container-fluid -->
         </nav>
 
-        <div style="position: fixed; overflow: auto; bottom: 0; right: 0; top: 60px; padding-left: 20px; padding-right: 20px; <?= $this->version ? 'left: 250px;':'left: 0;'?>">
+        <div style="position: fixed; overflow: auto; bottom: 0; right: 0; top: 60px; padding-left: 20px; padding-right: 20px; left: 0;">
             <div class="alert alert-danger" ng-cloak ng-repeat="error in errors">
                 <p ng-repeat="err in error">{{err}}</p>
             </div>

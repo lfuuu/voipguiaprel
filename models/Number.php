@@ -7,7 +7,7 @@ use app\queries\NumberQuery;
 
 /**
  * @property int $id
- * @property int $config_version_id
+ * @property int $server_id
  * @property string $name
  * @property int $type_id
  * @property array $prefixlist_ids
@@ -29,11 +29,11 @@ class Number extends \yii\db\ActiveRecord
         return new NumberQuery(get_called_class());
     }
 
-    public static function create(ConfigVersion $version, array $data = null)
+    public static function create(Server $server, array $data = null)
     {
         $item = new self();
         $item->load($data, '');
-        $item->config_version_id = $version->id;
+        $item->server_id = $server->id;
         return $item;
     }
 
@@ -42,13 +42,7 @@ class Number extends \yii\db\ActiveRecord
         return [
             [['name'], 'string', 'max' => 50],
             [['type_id'], 'integer'],
-            [['cpc_id'], 'integer'],
         ];
-    }
-
-    public function getCpc()
-    {
-        return $this->hasOne(Cpc::className(), ['id' => 'cpc_id']);
     }
 
     public function getPrefixLists()

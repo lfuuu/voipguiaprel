@@ -6,7 +6,7 @@ use app\queries\RouteTableQuery;
 /**
  * @property int $id
  * @property string $name
- * @property string $config_version_id
+ * @property int $server_id
  * @property
  */
 class RouteTable extends \yii\db\ActiveRecord
@@ -21,11 +21,11 @@ class RouteTable extends \yii\db\ActiveRecord
         return new RouteTableQuery(get_called_class());
     }
 
-    public static function create(ConfigVersion $version, array $data = null)
+    public static function create(Server $server, array $data = null)
     {
         $item = new self();
         $item->load($data, '');
-        $item->config_version_id = $version->id;
+        $item->server_id = $server->id;
         return $item;
     }
 

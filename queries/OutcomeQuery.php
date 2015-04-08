@@ -1,7 +1,6 @@
 <?php
 namespace app\queries;
 
-use app\models\ConfigVersion;
 use app\models\Outcome;
 use yii\db\ActiveQuery;
 
@@ -11,8 +10,4 @@ use yii\db\ActiveQuery;
  */
 class OutcomeQuery extends ActiveQuery
 {
-    public function configVersion(ConfigVersion $version)
-    {
-        return $this->andWhere(['config_version_id' => $version->id]);
-    }
 }

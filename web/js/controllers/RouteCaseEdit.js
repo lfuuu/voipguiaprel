@@ -3,22 +3,22 @@ var RouteCaseEditCtrl = function($scope, RouteCase, params, $modalInstance, $win
 	if (params.id) {
 		RouteCase.get({id: params.id}).then(function(data){
 			$scope.item = data;
-			if ($scope.item.operators === undefined)
-				$scope.item.operators = [];
+			if ($scope.item.trunks === undefined)
+				$scope.item.trunks = [];
 		});
 	} else {
 		$scope.item = {
-			config_version_id: $scope.version.id,
-			operators: []
+            server_id: $scope.server.id,
+            trunks: []
 		};
 	}
 
-	$scope.addOperator = function() {
-		$scope.item.operators.push({operator_id: null, priority: 1, weight: 100});
+	$scope.addTrunk = function() {
+		$scope.item.trunks.push({trunk_id: null, priority: 1, weight: 100});
 	}
 
-	$scope.removeOperator = function(index) {
-		$scope.item.operators.splice(index, 1);
+	$scope.removeTrunk = function(index) {
+		$scope.item.trunks.splice(index, 1);
 	}
 
 

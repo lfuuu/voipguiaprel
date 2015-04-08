@@ -8,7 +8,7 @@ use app\queries\PrefixlistQuery;
 /**
  * @property int $id
  * @property string $name
- * @property string $config_version_id
+ * @property int $server_id
  * @property int $type_id
  * @property string $manual_list
  * @property bool $rossvyaz_mob
@@ -21,7 +21,7 @@ use app\queries\PrefixlistQuery;
  * @property string $rossvyaz_operators
  * @property string $rossvyaz_operator_ids
  * @property string $smezhnost_list
- * @property int $operator_id
+ * @property int $trunk_id
  * @property int $count
  * @property
  */
@@ -37,11 +37,11 @@ class Prefixlist extends \yii\db\ActiveRecord
         return new PrefixlistQuery(get_called_class());
     }
 
-    public static function create(ConfigVersion $version, array $data = null)
+    public static function create(Server $server, array $data = null)
     {
         $item = new self();
         $item->load($data, '');
-        $item->config_version_id = $version->id;
+        $item->server_id = $server->id;
         return $item;
     }
 
@@ -51,7 +51,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 50],
             [['type_id'], 'integer'],
             [['rossvyaz_country', 'rossvyaz_region', 'rossvyaz_city'], 'string', 'max' => 100],
-            [['rossvyaz_country_id', 'rossvyaz_region_id', 'rossvyaz_city_id', 'operator_id'], 'integer'],
+            [['rossvyaz_country_id', 'rossvyaz_region_id', 'rossvyaz_city_id', 'trunk_id'], 'integer'],
             [['rossvyaz_mob'], 'boolean'],
             [['exclude_operators'], 'boolean'],
         ];

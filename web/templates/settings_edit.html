@@ -5,13 +5,6 @@
     <div class="modal-body">
 
         <div class="form-group">
-            <label class="col-sm-4 control-label">Версия конфигурации</label>
-            <div class="col-sm-8">
-                <input class="form-control" placeholder="Название" ng-model="item.name" required>
-            </div>
-        </div>
-
-        <div class="form-group">
             <label class="col-sm-4 control-label">Действие:<br/>Не достаточно денег для совершения вызова</label>
             <div class="col-sm-8">
                 <select-box list="outcome" model="item.low_balance_outcome_id" default="Выберите Outcome"></select-box>
@@ -33,30 +26,23 @@
         </div>
 
         <div class="form-group">
-            <label class="col-sm-4 control-label">Cpc роутинг AIRP:</label>
-            <div class="col-sm-8">
-                <select-box list="airp" model="item.cpc_routing_airp_id" default="Выберите AIRP"></select-box>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-4 control-label">Размер блока при выгрузке сценариев</label>
-            <div class="col-sm-8">
-                <input class="form-control" ng-model="item.export_chunk_size">
-            </div>
-        </div>
-
-        <div class="form-group">
             <label class="col-sm-4 control-label">Мин. цена для авто маршрутизации</label>
             <div class="col-sm-8">
                 <input class="form-control" ng-model="item.min_price_for_autorouting">
             </div>
         </div>
 
+        <div class="form-group">
+            <label class="col-sm-4 control-label">Наша номерная емкость</label>
+            <div class="col-sm-8">
+                <select-box list="number" model="item.our_numbers_id" param="1" default="Выберите Номерную емкость"></select-box>
+            </div>
+        </div>
+
     </div>
     <div class="modal-footer">
         <div class="pull-left">
-            <button ng-if="version.editable" type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
         </div>
     </div>

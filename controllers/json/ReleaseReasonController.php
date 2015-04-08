@@ -11,24 +11,24 @@ use yii\web\HttpException;
 class ReleaseReasonController extends JsonController
 {
     public function actionList() {
-        $version = $this->getVersionOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         return
             ReleaseReason::find()
                 ->select(['id', 'name'])
-                ->where(['config_version_id' => $version->id])
+                ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
     }
 
     public function actionRead() {
-        $version = $this->getVersionOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         return
             ReleaseReason::find()
                 ->select(['id', 'name'])
-                ->where(['config_version_id' => $version->id])
+                ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -46,12 +46,12 @@ class ReleaseReasonController extends JsonController
 
     public function actionSave()
     {
-        $version = $this->getVersionForUpdateOr404($this->request['config_version_id']);
+        $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
             $releaseReason = $this->getReleaseReasonOr404($this->request['id']);
         } else {
-            $releaseReason = ReleaseReason::create($version);
+            $releaseReason = ReleaseReason::create($server);
         }
 
         $releaseReason->load($this->request, '');
@@ -72,7 +72,6 @@ class ReleaseReasonController extends JsonController
     public function actionDelete()
     {
         $item = ReleaseReason::findOne($this->request['id']);
-        $this->getVersionForUpdateOr404($item->config_version_id);
         $item->delete();
     }
 }

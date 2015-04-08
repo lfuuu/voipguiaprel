@@ -6,7 +6,7 @@ use app\classes\AssetBundle;
 class AppAsset extends AssetBundle
 {
     public $css = [
-        'css/site.css',
+        '/css/site.css',
     ];
 
     public $js = [
@@ -25,8 +25,8 @@ class AppAsset extends AssetBundle
         'js/controllers/RouteTableList.js',
         'js/controllers/SelectRossvyazOperator.js',
         'js/controllers/RoutingEdit.js',
-        'js/controllers/OperatorEdit.js',
-        'js/controllers/OperatorList.js',
+        'js/controllers/TrunkEdit.js',
+        'js/controllers/TrunkList.js',
         'js/controllers/SettingsEdit.js',
         'js/controllers/NumberEdit.js',
         'js/controllers/NumberList.js',
@@ -36,28 +36,20 @@ class AppAsset extends AssetBundle
         'js/controllers/RouteCaseList.js',
         'js/controllers/ReleaseReasonEdit.js',
         'js/controllers/ReleaseReasonList.js',
-        'js/controllers/CpcEdit.js',
-        'js/controllers/CpcList.js',
         'js/controllers/AirpEdit.js',
         'js/controllers/AirpList.js',
         'js/controllers/PrefixlistEdit.js',
         'js/controllers/PrefixlistList.js',
-        'js/controllers/TrunkEdit.js',
-        'js/controllers/TrunkList.js',
-        'js/controllers/TrunkGroupEdit.js',
-        'js/controllers/TrunkGroupList.js',
     ];
 
     public $templates = [
         'templates/airp_edit.html',
         'templates/airp_list.html',
-        'templates/cpc_edit.html',
-        'templates/cpc_list.html',
         'templates/main.html',
         'templates/number_edit.html',
         'templates/number_list.html',
-        'templates/operator_edit.html',
-        'templates/operator_list.html',
+        'templates/trunk_edit.html',
+        'templates/trunk_list.html',
         'templates/outcome_edit.html',
         'templates/outcome_list.html',
         'templates/prefixlist_edit.html',
@@ -68,10 +60,6 @@ class AppAsset extends AssetBundle
         'templates/route_case_list.html',
         'templates/route_table_edit.html',
         'templates/route_table_list.html',
-        'templates/trunk_edit.html',
-        'templates/trunk_list.html',
-        'templates/trunk_group_edit.html',
-        'templates/trunk_group_list.html',
         'templates/routing_report.html',
         'templates/select_rossvyaz_operator.html',
         'templates/settings_edit.html',

@@ -6,7 +6,7 @@ var AirpEditCtrl = function($scope, Airp, params, $modalInstance, $window) {
 		});
 	} else {
 		$scope.item = {
-			config_version_id: $scope.version.id
+			server_id: $scope.server.id
 		};
 	}
 

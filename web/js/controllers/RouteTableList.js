@@ -3,7 +3,7 @@ var RouteTableListCtrl = function($scope, RouteTable, Redirect, $window) {
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'Таблицы маршрутизации';
 
-		RouteTable.read({config_version_id: $scope.version.id}).then(function(data){
+		RouteTable.read({server_id: $scope.server.id}).then(function(data){
 			$scope.list = data;
 		});
 	};
