@@ -4,6 +4,7 @@ namespace app\classes;
 use app\components\View;
 use app\models\Airp;
 use app\models\Number;
+use app\models\TestCall;
 use app\models\Trunk;
 use app\models\Outcome;
 use app\models\Prefixlist;
@@ -143,6 +144,19 @@ class BaseController extends \yii\web\Controller
         $item = ReleaseReason::findOne($releaseReasonId);
         if ($item === null) {
             throw new HttpException(404, 'Release reason не найден');
+        }
+        return $item;
+    }
+
+
+    /**
+     * @return TestCall
+     */
+    protected function getTestCallOr404($testCallId)
+    {
+        $item = TestCall::findOne($testCallId);
+        if ($item === null) {
+            throw new HttpException(404, 'TestCall не найден');
         }
         return $item;
     }

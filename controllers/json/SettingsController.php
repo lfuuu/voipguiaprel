@@ -19,6 +19,7 @@ class SettingsController extends JsonController
             'calling_station_id_for_line_without_number' => $server->calling_station_id_for_line_without_number,
             'min_price_for_autorouting' => $server->min_price_for_autorouting,
             'our_numbers_id' => $server->our_numbers_id,
+            'hostname' => $server->hostname,
         ];
     }
 

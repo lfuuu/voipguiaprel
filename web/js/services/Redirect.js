@@ -115,6 +115,18 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 		},
 		selectRossvyazTrunk: function() {
 			return openModal(SelectRossvyazTrunkCtrl, '/templates/select_rossvyaz_operator.html');
-		}
+		},
+        testCallList: function() {
+            return openTab(TestCallListCtrl, '/templates/test_call_list.html');
+        },
+        testCallEdit: function(id) {
+            return openModal(TestCallEditCtrl, '/templates/test_call_edit.html', {id: id});
+        },
+        testCallCreate: function() {
+            return openModal(TestCallEditCtrl, '/templates/test_call_edit.html', {id: null});
+        },
+        testCallShowTest: function(id) {
+            return openModal(TestCallShowTestCtrl, '/templates/test_call_show_test.html', {id: id});
+        }
 	};
 });

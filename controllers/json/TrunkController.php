@@ -31,13 +31,13 @@ class TrunkController extends JsonController
         return
             Trunk::find()
                 ->select([
-                    'id', 'name', 'code', 'trunk_name',
+                    'id', 'name', 'code', 'trunk_name', 'trunk_name_alias',
                     'default_priority', 'source_rule_default_allowed', 'destination_rule_default_allowed',
-                    'auto_routing', 'our_trunk', 'route_table_id'
+                    'auto_routing', 'our_trunk', 'auth_by_number', 'route_table_id'
                 ])
                 ->with('routeTable')
                 ->where(['server_id' => $server->id])
-                ->orderBy('code')
+                ->orderBy('trunk_name')
                 ->asArray()
                 ->all();
     }

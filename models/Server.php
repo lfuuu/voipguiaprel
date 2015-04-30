@@ -12,6 +12,9 @@ use app\queries\ServerQuery;
  * @property bool $need_recalc_routing_report
  * @property int $min_price_for_autorouting
  * @property int $our_numbers_id
+ * @property int $hostname
+ *
+ * @property string $apiUrl
  * @property
  */
 class Server extends \yii\db\ActiveRecord
@@ -33,6 +36,12 @@ class Server extends \yii\db\ActiveRecord
             [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
             [['our_numbers_id'], 'integer'],
+            [['hostname'], 'string', 'max' => 30],
         ];
+    }
+
+    public function getApiUrl()
+    {
+        return'http://' . $this->hostname . ':8032/';
     }
 }

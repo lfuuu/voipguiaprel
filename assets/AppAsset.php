@@ -40,6 +40,9 @@ class AppAsset extends AssetBundle
         'js/controllers/AirpList.js',
         'js/controllers/PrefixlistEdit.js',
         'js/controllers/PrefixlistList.js',
+        'js/controllers/TestCallEdit.js',
+        'js/controllers/TestCallList.js',
+        'js/controllers/TestCallShowTest.js',
     ];
 
     public $templates = [
@@ -63,6 +66,9 @@ class AppAsset extends AssetBundle
         'templates/routing_report.html',
         'templates/select_rossvyaz_operator.html',
         'templates/settings_edit.html',
+        'templates/test_call_edit.html',
+        'templates/test_call_list.html',
+        'templates/test_call_show_test.html',
 
         'templates/directives/select-box.html',
         'templates/directives/outcome-select-box.html',

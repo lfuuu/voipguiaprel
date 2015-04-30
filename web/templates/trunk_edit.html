@@ -31,6 +31,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-sm-2 control-label">Имя транка (Alias)</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Route name (Alias)" ng-model="item.trunk_name_alias">
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-sm-2 control-label">Номер</label>
                     <div class="col-sm-10">
                         <input class="form-control" placeholder="Номер" ng-model="item.code" required>
@@ -40,8 +46,17 @@
                     <label class="col-sm-2 control-label">Автоматическая маршрутизация</label>
                     <div class="col-sm-10">
                         <div class="btn-group" ng-click="item.auto_routing = !item.auto_routing">
-                            <button type="button" class="btn {{item.auto_routing ? 'btn-success active' : 'btn-default'}}">Включено</button>
-                            <button type="button" class="btn {{!item.auto_routing ? 'btn-danger active' : 'btn-default'}}">Выключено</button>
+                            <button type="button" class="btn {{item.auto_routing ? 'btn-primary active' : 'btn-default'}}">Включено</button>
+                            <button type="button" class="btn {{!item.auto_routing ? 'btn-primary active' : 'btn-default'}}">Выключено</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Авторизация по</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" ng-click="item.auth_by_number = !item.auth_by_number">
+                            <button type="button" class="btn {{item.auth_by_number ? 'btn-primary active' : 'btn-default'}}">Номеру</button>
+                            <button type="button" class="btn {{!item.auth_by_number ? 'btn-primary active' : 'btn-default'}}">Транку</button>
                         </div>
                     </div>
                 </div>
@@ -49,8 +64,8 @@
                     <label class="col-sm-2 control-label"></label>
                     <div class="col-sm-10">
                         <div class="btn-group" ng-click="item.our_trunk = !item.our_trunk">
-                            <button type="button" class="btn {{item.our_trunk ? 'btn-success active' : 'btn-default'}}">Наш транк</button>
-                            <button type="button" class="btn {{!item.our_trunk ? 'btn-danger active' : 'btn-default'}}">Чужой транк</button>
+                            <button type="button" class="btn {{item.our_trunk ? 'btn-primary active' : 'btn-default'}}">Наш транк</button>
+                            <button type="button" class="btn {{!item.our_trunk ? 'btn-primary active' : 'btn-default'}}">Чужой транк</button>
                         </div>
                     </div>
                 </div>

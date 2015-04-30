@@ -1,0 +1,26 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Результаты теста {{item.name}}</h3>
+    </div>
+    <div class="modal-body">
+
+        <div>
+            <label><input type="checkbox" ng-model="showDetails"> Показать подробно</label>
+        </div>
+
+        <table class="table">
+            <tr ng-repeat="row in result" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-show="showDetails || (row.type == 'ERROR' || row.type == 'RESULT')">
+                <td nowrap>{{row.type}}</td>
+                <td nowrap>{{row.action}}</td>
+                <td width="100%">{{row.params}}</td>
+            </tr>
+        </table>
+
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

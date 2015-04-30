@@ -1,0 +1,60 @@
+<?php
+
+namespace app\models;
+
+use app\classes\ArrayToCsv;
+use app\queries\NumberQuery;
+
+/**
+ * @property int    $id
+ * @property int    $server_id
+ * @property string $name
+ * @property bool   $orig
+ * @property string $trunk_name
+ * @property string $connect_time
+ * @property int    $session_time
+ * @property string $src_number
+ * @property string $dst_number
+ * @property int    $src_noa
+ * @property int    $dst_noa
+
+ * @property Server $server
+ * @property
+ */
+class TestCall extends \yii\db\ActiveRecord
+{
+    const STATUS_A_NUMBER = 1;
+    const STATUS_B_NUMBER = 2;
+
+    public static function tableName()
+    {
+        return 'auth.test_call';
+    }
+
+    public static function create(Server $server, array $data = null)
+    {
+        $item = new self();
+        $item->load($data, '');
+        $item->server_id = $server->id;
+        return $item;
+    }
+
+    public function rules()
+    {
+        return [
+            [['name'], 'string', 'max' => 100],
+            [['orig'], 'boolean'],
+            [['connect_time'], 'string'],
+            [['session_time'], 'integer'],
+            [['src_number', 'dst_number'], 'string', 'max' => 32],
+            [['src_noa','dst_noa'], 'integer'],
+            [['trunk_name'], 'string', 'max' => 32],
+        ];
+    }
+
+
+    public function getServer()
+    {
+        return $this->hasOne(Server::className(), ['id' => 'server_id']);
+    }
+}
