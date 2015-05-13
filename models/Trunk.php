@@ -45,7 +45,7 @@ class Trunk extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 50],
             [['trunk_name','trunk_name_alias'], 'string', 'max' => 32],
             [['default_priority'], 'integer', 'min'=> -10, 'max' => 10],
-            [['auto_routing', 'source_rule_default_allowed', 'destination_rule_default_allowed','our_trunk','auth_by_number'], 'boolean'],
+            [['auto_routing', 'source_rule_default_allowed', 'destination_rule_default_allowed','our_trunk','auth_by_number','show_in_stat'], 'boolean'],
             [['route_table_id'], 'integer'],
         ];
     }
@@ -74,4 +74,5 @@ class Trunk extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TrunkNumberPreprocessing::className(), ['trunk_id' => 'id'])->orderBy('order');
     }
+
 }

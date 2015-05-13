@@ -27,7 +27,7 @@ class NumberController extends JsonController
 
         return
             Number::find()
-                ->select(['id', 'name', 'type_id', 'prefixlist_ids'])
+                ->select(['id', 'name', 'type_id', 'prefixlist_ids', 'show_in_stat'])
                 ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
@@ -55,9 +55,6 @@ class NumberController extends JsonController
         }
 
         $number->load($this->request, '');
-        if ($number->type_id != 1) {
-            $number->cpc_id = null;
-        }
         $number->setPrefixlists($this->request['prefixlist_ids']);
 
         $transaction = Number::getDb()->beginTransaction();

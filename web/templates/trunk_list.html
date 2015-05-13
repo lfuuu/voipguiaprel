@@ -21,6 +21,7 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.code}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
+            <span class="label label-success" ng-if="item.show_in_stat">СТАТ</span>
             <span class="label label-warning" ng-if="item.our_trunk">Наш транк</span>
             <span class="label label-info" ng-if="item.auth_by_number">Авторизация по номеру</span>
             <span class="label label-success" ng-if="item.auto_routing">LCR маршрутизация</span>
