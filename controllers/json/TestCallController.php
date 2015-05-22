@@ -89,6 +89,7 @@ class TestCallController extends JsonController
             'dst_route' => $item->trunk_name,
             'src_number' => $item->src_number,
             'dst_number' => $item->dst_number,
+            'redirect_number' => $item->redirect_number,
             'src_noa' => $item->src_noa,
             'dst_noa' => $item->dst_noa,
         ]);

@@ -12,6 +12,7 @@
         <th width="20%">Транк</th>
         <th width="20%">Номер A</th>
         <th width="20%">Номер B</th>
+        <th width="20%">Номер Redirect</th>
         <th width="20%">Время (UTC)</th>
         <th width="10%">Длительность</th>
         <th>&nbsp;</th>
@@ -27,8 +28,9 @@
             <span class="label label-warning" ng-if="!item.orig">терминация</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.trunk_name}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.src_number}} {{item.src_noa ? item.src_noa : ''}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.dst_number}} {{item.dst_noa ? item.dst_noa : ''}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.src_number}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.dst_number}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.redirect_number}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.connect_time}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.session_time}}</td>
         <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
