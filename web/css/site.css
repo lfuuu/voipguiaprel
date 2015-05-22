@@ -150,3 +150,12 @@ td > div > .select2-container > .select2-choice {
     height: 30px;
     line-height: 30px;
 }
+
+
+.form-group {
+    margin-bottom: 5px;
+}
+
+.form-control {
+    padding: 6px 6px;
+}
