@@ -3,6 +3,7 @@ namespace app\classes;
 
 use app\components\View;
 use app\models\Airp;
+use app\models\Destination;
 use app\models\Number;
 use app\models\TestCall;
 use app\models\Trunk;
@@ -108,6 +109,18 @@ class BaseController extends \yii\web\Controller
         $item = Number::findOne($numberId);
         if ($item === null) {
             throw new HttpException(404, 'Номер не найден');
+        }
+        return $item;
+    }
+
+    /**
+     * @return Destination
+     */
+    protected function getDestinationOr404($numberId)
+    {
+        $item = Destination::findOne($numberId);
+        if ($item === null) {
+            throw new HttpException(404, 'Направление не найдено');
         }
         return $item;
     }

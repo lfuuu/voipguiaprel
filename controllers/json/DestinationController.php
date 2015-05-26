@@ -49,7 +49,7 @@ class DestinationController extends JsonController
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
-            $destination = $this->getNumberOr404($this->request['id']);
+            $destination = $this->getDestinationOr404($this->request['id']);
         } else {
             $destination = Destination::create($server);
         }
