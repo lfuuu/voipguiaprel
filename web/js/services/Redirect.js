@@ -80,6 +80,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 		numberCreate: function() {
 			return openModal(NumberEditCtrl, '/templates/number_edit.html', {id: null});
 		},
+        destinationList: function() {
+            return openTab(DestinationListCtrl, '/templates/destination_list.html');
+        },
+        destinationEdit: function(id) {
+            return openModal(DestinationEditCtrl, '/templates/destination_edit.html', {id: id});
+        },
+        destinationCreate: function() {
+            return openModal(DestinationEditCtrl, '/templates/destination_edit.html', {id: null});
+        },
 		settings: function() {
 			return openModal(SettingsEditCtrl, '/templates/settings_edit.html');
 		},

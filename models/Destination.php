@@ -9,18 +9,14 @@ use app\queries\NumberQuery;
  * @property int $id
  * @property int $server_id
  * @property string $name
- * @property int $type_id
  * @property array $prefixlist_ids
  * @property
  */
-class Number extends \yii\db\ActiveRecord
+class Destination extends \yii\db\ActiveRecord
 {
-    const STATUS_A_NUMBER = 1;
-    const STATUS_B_NUMBER = 2;
-
     public static function tableName()
     {
-        return 'auth.number';
+        return 'auth.destination';
     }
 
     public static function find()
@@ -40,8 +36,6 @@ class Number extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string', 'max' => 50],
-            [['type_id'], 'integer'],
-            [['show_in_stat'], 'boolean'],
         ];
     }
 
