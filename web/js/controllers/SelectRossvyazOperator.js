@@ -1,4 +1,4 @@
-var SelectRossvyazTrunkCtrl = function($scope, Billing, params, $modalInstance, $window) {
+var SelectRossvyazOperatorCtrl = function($scope, Billing, params, $modalInstance, $window) {
 
 	Billing.operators().then(function(data){
 		$scope.list = data;

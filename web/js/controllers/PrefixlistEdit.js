@@ -103,7 +103,7 @@ var PrefixlistEditCtrl = function($scope, Prefixlist, Billing, params, $modalIns
 
 	$scope.setType = function(type_id) {
 		$scope.item.type_id = type_id;
-	}
+	};
 
 	$scope.addPrefix = function() {
 		$scope.item.manual_list.unshift({prefix:''});
@@ -121,18 +121,18 @@ var PrefixlistEditCtrl = function($scope, Prefixlist, Billing, params, $modalIns
 		$scope.item.smezhnost_list.splice(index, 1);
 	};
 
-	$scope.addTrunk = function() {
-		Redirect.selectRossvyazTrunk().then(function(item) {
+	$scope.addOperator = function() {
+		Redirect.selectRossvyazOperator().then(function(item) {
 			$scope.item.rossvyaz_operators.push({
 				id: item.id,
 				name: item.name
 			});
 		});
-	}
+	};
 
-	$scope.removeTrunk = function(index) {
+	$scope.removeOperator = function(index) {
 		$scope.item.rossvyaz_operators.splice(index, 1);
-	}
+	};
 
 	Billing.countries().then(function(data){
 		$scope.countries = data;

@@ -9,7 +9,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 			}
 		});
 		return modal.result;
-	}
+	};
 
 	var openTab = function(controller, template, params) {
 		var key = controller + template + params;
@@ -28,20 +28,20 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 		}
 		tab.active = true;
 		$rootScope.tabs.controller = controller;
-	}
+	};
 
 	return {
 		closeTab: function(tab) {
 			$rootScope.tabs.splice($rootScope.tabs.indexOf(tab), 1);
 			delete $rootScope.tabsMap[tab.key];
 		},
-        trunkList: function() {
+		trunkList: function() {
 			return openTab(TrunkListCtrl, '/templates/trunk_list.html');
 		},
-        trunkEdit: function(id) {
+		trunkEdit: function(id) {
 			return openModal(TrunkEditCtrl, '/templates/trunk_edit.html', {id: id});
 		},
-        trunkCreate: function() {
+		trunkCreate: function() {
 			return openModal(TrunkEditCtrl, '/templates/trunk_edit.html', {id: null});
 		},
 		prefixlistList: function() {
@@ -80,15 +80,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 		numberCreate: function() {
 			return openModal(NumberEditCtrl, '/templates/number_edit.html', {id: null});
 		},
-        destinationList: function() {
-            return openTab(DestinationListCtrl, '/templates/destination_list.html');
-        },
-        destinationEdit: function(id) {
-            return openModal(DestinationEditCtrl, '/templates/destination_edit.html', {id: id});
-        },
-        destinationCreate: function() {
-            return openModal(DestinationEditCtrl, '/templates/destination_edit.html', {id: null});
-        },
+		destinationList: function() {
+			return openTab(DestinationListCtrl, '/templates/destination_list.html');
+		},
+		destinationEdit: function(id) {
+			return openModal(DestinationEditCtrl, '/templates/destination_edit.html', {id: id});
+		},
+		destinationCreate: function() {
+			return openModal(DestinationEditCtrl, '/templates/destination_edit.html', {id: null});
+		},
 		settings: function() {
 			return openModal(SettingsEditCtrl, '/templates/settings_edit.html');
 		},
@@ -122,20 +122,20 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 		routingReport: function() {
 			return openTab(RoutingReportCtrl, '/templates/routing_report.html');
 		},
-		selectRossvyazTrunk: function() {
-			return openModal(SelectRossvyazTrunkCtrl, '/templates/select_rossvyaz_operator.html');
+		selectRossvyazOperator: function() {
+			return openModal(SelectRossvyazOperatorCtrl, '/templates/select_rossvyaz_operator.html');
 		},
-        testCallList: function() {
-            return openTab(TestCallListCtrl, '/templates/test_call_list.html');
-        },
-        testCallEdit: function(id) {
-            return openModal(TestCallEditCtrl, '/templates/test_call_edit.html', {id: id});
-        },
-        testCallCreate: function() {
-            return openModal(TestCallEditCtrl, '/templates/test_call_edit.html', {id: null});
-        },
-        testCallShowTest: function(id) {
-            return openModal(TestCallShowTestCtrl, '/templates/test_call_show_test.html', {id: id});
-        }
+		testCallList: function() {
+			return openTab(TestCallListCtrl, '/templates/test_call_list.html');
+		},
+		testCallEdit: function(id) {
+			return openModal(TestCallEditCtrl, '/templates/test_call_edit.html', {id: id});
+		},
+		testCallCreate: function() {
+			return openModal(TestCallEditCtrl, '/templates/test_call_edit.html', {id: null});
+		},
+		testCallShowTest: function(id) {
+			return openModal(TestCallShowTestCtrl, '/templates/test_call_show_test.html', {id: id});
+		}
 	};
 });
