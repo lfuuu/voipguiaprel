@@ -2,6 +2,7 @@
 
 namespace app\controllers\json;
 
+use app\classes\ConfigExporter;
 use app\models\RouteCaseTrunk;
 use Yii;
 use app\classes\JsonController;
@@ -90,4 +91,5 @@ class RouteCaseController extends JsonController
         $item = RouteCase::findOne($this->request['id']);
         $item->delete();
     }
+
 }

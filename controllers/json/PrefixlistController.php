@@ -134,8 +134,21 @@ class PrefixlistController extends JsonController
                 $trunk = Trunk::findOne($prefixlist->trunk_id);
 
                 $sql = <<<SQL
-                            select r.prefix from billing.network_prefix r
+                            select r.id from voip.network_config r
                             where r.instance_id = :serverId and r.operator_id = :operatorId
+SQL;
+
+                $networkConfigId =
+                    BillingDefs::getDb()
+                        ->createCommand(
+                            $sql,
+                            [':serverId' => $server->id, ':operatorId' => $trunk->code]
+                        )
+                        ->queryScalar();
+
+                $sql = <<<SQL
+                            select r.prefix from billing.network_prefix r
+                            where r.network_config_id = :networkConfigId
                                 and r.deleted = false
                                 and r.date_from <= :now
                                 and r.date_to >= :now
@@ -149,7 +162,7 @@ SQL;
                     BillingDefs::getDb()
                         ->createCommand(
                             $sql,
-                            [':serverId' => $server->id, 'operatorId' => $trunk->code, ':now' => date('Y-m-d')]
+                            [':networkConfigId' => $networkConfigId, ':now' => date('Y-m-d')]
                         )
                         ->queryAll();
 

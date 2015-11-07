@@ -57,6 +57,34 @@
             </div>
         </div>
 
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Выгрузка</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">AIRP</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="AIRP" ng-model="export.airp">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">OUTCOME</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="AIRP=outcome_airp" ng-model="export.outcome">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">OUTCOME NEXT</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="AIRP=outcome_next_airp" ng-model="export.outcome_next">
+                    </div>
+                </div>
+                <div>
+                    <a class="btn btn-default btn-sm"  target="_blank" href="/number/export?serverId={{server.id}}&numberId={{item.id}}&airp={{export.airp}}&outcome={{export.outcome}}&outcomeNext={{export.outcome_next}}">Выгрузить</a>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <div class="pull-left">

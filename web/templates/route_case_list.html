@@ -1,5 +1,10 @@
 <div>
-    <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
+    <div class="pull-right">
+        <a class="btn btn-primary btn-sm" ng-click="clickCreate()">Создать</a>
+        &nbsp;
+        <a class="btn btn-primary btn-sm" target="_blank" href="/route-case/export?serverId={{server.id}}">Выгрузить</a>
+    </div>
+
     <h4>Route cases</h4>
 </div>
 

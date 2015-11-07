@@ -33,11 +33,11 @@ class ConfigExporter
     /**
      * @return ConfigExporter
      */
-    public static function create(Trunk $trunk, Server $server) {
+    public static function create(Trunk $trunk = null, Server $server) {
         return new self($trunk, $server);
     }
 
-    protected function __construct(Trunk $trunk, Server $server)
+    protected function __construct(Trunk $trunk = null, Server $server)
     {
         $this->trunk = $trunk;
         $this->server = $server;
@@ -54,7 +54,7 @@ class ConfigExporter
         header('Content-Type: text/plain');
 
         if (!empty($this->routeCaseScripts)) {
-            echo "#### RouteCases ####\n";
+            echo "#### Auto Route Cases ####\n";
             foreach ($this->routeCaseScripts as $script) {
                 echo $script['script'];
             }
@@ -73,6 +73,48 @@ class ConfigExporter
         }
         exit;
     }
+
+    public function exportRC()
+    {
+
+        $this->exportAutoRouteCases();
+
+        header('Content-Type: text/plain');
+
+        if (!empty($this->routeCaseScripts)) {
+            echo "#### Auto Route Cases ####\n";
+            foreach ($this->routeCaseScripts as $script) {
+                echo $script['script'];
+            }
+        }
+
+        exit;
+    }
+
+    public function exportNumber($numberId, $airpBaseName, $outcomeScript, $outcomeNext)
+    {
+        $airpScenScripts = $this->getRoutesNumber($numberId, $airpBaseName, $outcomeScript);
+        $airpScenScripts['script'][] =
+            'ADD-AIRP-SCEN: AIRP=' . $airpScenScripts['lastAirp'] . ', SCEN=Default, CRITERIA="CDPN=.", OUTCOME="' . $outcomeNext . '";' . "\n";
+        $airpScenScripts['script'][] =
+            'UPD-AIRP: AIRP=' . $airpScenScripts['lastAirp'] . ';'. "\n";
+
+        header('Content-Type: text/plain');
+
+        if (!empty($this->airpScripts)) {
+            foreach ($this->airpScripts as $script) {
+                echo $script['script'];
+            }
+        }
+
+        if (!empty($airpScenScripts['script'])) {
+            foreach ($airpScenScripts['script'] as $script) {
+                echo $script;
+            }
+        }
+        exit;
+    }
+
 
     private function getRoutes($routeTableId, $pathRoute = '')
     {
@@ -113,7 +155,7 @@ class ConfigExporter
                 throw new \Exception("Bad Route");
             }
 
-            $cpcName = $aNumber->cpc_id ? Cpc::findOne($aNumber->cpc_id)->name : '';
+            $cpcName = '';
             $airpBaseName = $this->spawnAirpKey($bNumber->name, $cpcName);
             $this->exportAirpLabel($airpBaseName);
 
@@ -173,6 +215,76 @@ class ConfigExporter
             if ($route->outcome_route_table_id) {
                 $previousSubRouteTable = $subRouteTable;
             }
+        }
+
+        return [
+            'firstAirp' => $firstAirp,
+            'lastAirp' => $previousAirpName,
+            'lastCDPN' => $previousAirpCDNP,
+            'script' => $airpScenScripts,
+        ];
+    }
+
+    private function getRoutesNumber($numberId, $airpBaseName, $outcomeScript)
+    {
+        $firstAirp = '';
+        $previousAirpName = '';
+        $previousAirpCDNP = '.';
+        $previousAirpArray = [];
+        $airpScenScripts = [];
+
+        $number = Number::findOne($numberId);
+
+        $cpcName = '';
+        $airpBaseName = $this->spawnAirpKey($airpBaseName, $cpcName);
+        $this->exportAirpLabel($airpBaseName);
+
+        $prefixGroups = $this->getNumberPrefixGroups($number->id);
+        $nGroup = 0;
+        foreach ($prefixGroups as $key => $prefixGroup) {
+            $nGroup++;
+            $airpBaseScenName = $airpBaseName . (count($prefixGroups) > 1 && $nGroup > 1 ? '_' . $key : '');
+            $airpName = $airpBaseScenName;
+
+            if (!$firstAirp) {
+                $firstAirp = $airpName;
+            }
+
+            $this->exportAirpByName($airpName);
+
+            if ($previousAirpName) {
+                $airpScenScripts[] =
+                    'ADD-AIRP-SCEN: AIRP=' . $previousAirpName . ', SCEN=Default, CRITERIA="CDPN=' . $previousAirpCDNP . '", OUTCOME="AIRP=' . $airpName . '";' . "\n";
+                $airpScenScripts[] =
+                    'UPD-AIRP: AIRP=' . $previousAirpName . ';'. "\n";
+            }
+
+            $airpScenScripts[] = "\n#### ADD SCENARIOS {$airpBaseScenName} ####\n";
+
+            foreach ($prefixGroup as $prefix) {
+                if (strlen($prefix) === 1) {
+                    $previousAirpArray[(int)$prefix] = true;
+                }
+                if ($number->type_id == Number::STATUS_A_NUMBER) {
+                    $criteria = 'CGPN=' . $prefix;
+                } else {
+                    $criteria = 'CDPN=' . $prefix;
+                }
+                $criteria .= $cpcName ? ',CPC=' . $cpcName : '';
+                $scen = str_replace(']', '', str_replace('[', '_', $prefix));
+                $airpScenScripts[] =
+                    'ADD-AIRP-SCEN: AIRP=' . $airpName . ', SCEN=' . $scen . ', CRITERIA="' . $criteria . '", OUTCOME="' . $outcomeScript . '";'. "\n";
+            }
+
+            $previousAirpName = $airpName;
+            $previousAirpCDNP = '';
+            for($i = 1; $i<=9; $i++) {
+                if (!isset($previousAirpArray[$i])) {
+                    $previousAirpCDNP .= $i;
+                }
+            }
+            $previousAirpCDNP = $previousAirpCDNP == '123456789' ? '.' : '[' . $previousAirpCDNP . ']';
+            $previousAirpArray = [];
         }
 
         return [
@@ -276,7 +388,7 @@ class ConfigExporter
     {
         $operatorIdToCode = [];
 
-        foreach($this->getAutoRoutingOperators() as $operator) {
+        foreach($this->getAutoRoutingTrunks() as $operator) {
             $operatorIdToCode[$operator->id] = $operator->code;
         }
 
@@ -336,7 +448,10 @@ class ConfigExporter
         return $allPrefixes;
     }
 
-    private function getAutoRoutingOperators()
+    /**
+     * @return \app\models\Trunk[]
+     */
+    private function getAutoRoutingTrunks()
     {
         return
             Trunk::find()
@@ -347,55 +462,55 @@ class ConfigExporter
 
     private function exportAutoRouteCases()
     {
-        $operators = $this->getAutoRoutingOperators();
+        $trunks = $this->getAutoRoutingTrunks();
 
         $routes = [];
-        foreach ($operators as $operator) {
-            $routes[] = [$operator];
+        foreach ($trunks as $trunk) {
+            $routes[] = [$trunk];
         }
 
         $tmpRoutes = $routes;
         $routes = [];
-        foreach ($tmpRoutes as $tmpOperators) {
-            foreach ($operators as $operator) {
-                $routes[] = array_merge($tmpOperators, [$operator]);
+        foreach ($tmpRoutes as $tmpTrunks) {
+            foreach ($trunks as $trunk) {
+                $routes[] = array_merge($tmpTrunks, [$trunk]);
             }
-            foreach ($operators as $operator) {
-                $routes[] = [$operator];
+            foreach ($trunks as $trunk) {
+                $routes[] = [$trunk];
             }
         }
 
         $tmpRoutes = $routes;
         $routes = [];
-        foreach ($tmpRoutes as $tmpOperators) {
-            foreach ($operators as $operator) {
-                $routes[] = array_merge($tmpOperators, [$operator]);
+        foreach ($tmpRoutes as $tmpTrunks) {
+            foreach ($trunks as $trunk) {
+                $routes[] = array_merge($tmpTrunks, [$trunk]);
             }
-            foreach ($operators as $operator) {
-                $routes[] = [$operator];
+            foreach ($trunks as $trunk) {
+                $routes[] = [$trunk];
             }
         }
 
         $routesMap = [];
-        foreach ($routes as $tmpOperators) {
+        foreach ($routes as $tmpTrunks) {
             $rtcase = 'rc_auto';
-            $tmpOperators = array_unique($tmpOperators, SORT_REGULAR);
-            foreach ($tmpOperators as $operator) {
-                $rtcase .= '_' . str_pad($operator->code, 2, '0', STR_PAD_LEFT);
+            $tmpTrunks = array_unique($tmpTrunks, SORT_REGULAR);
+            foreach ($tmpTrunks as $trunk) {
+                $rtcase .= '_' . str_pad($trunk->id, 2, '0', STR_PAD_LEFT);
             }
 
             if (!isset($routesMap[$rtcase])) {
-                $routesMap[$rtcase] = $tmpOperators;
+                $routesMap[$rtcase] = $tmpTrunks;
             }
         }
 
         ksort($routesMap);
 
-        foreach ($routesMap as $rtcase => $tmpOperators) {
+        foreach ($routesMap as $rtcase => $tmpTrunks) {
             $strOperators = '';
             $n = 1;
-            foreach ($tmpOperators as $operator) {
-                $strOperators .= 'RO-' . $n . '="' . $operator->trunk_name . ',' . $n . ',100;", ';
+            foreach ($tmpTrunks as $trunk) {
+                $strOperators .= 'RO-' . $n . '="' . $trunk->trunk_name . ',' . $n . ',100;", ';
                 $n++;
             }
 
