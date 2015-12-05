@@ -134,6 +134,18 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 		selectRossvyazOperator: function() {
 			return openModal(SelectRossvyazOperatorCtrl, '/templates/select_rossvyaz_operator.html');
 		},
+		testAuthList: function() {
+			return openTab(TestAuthListCtrl, '/templates/test_auth_list.html');
+		},
+		testAuthEdit: function(id) {
+			return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {id: id});
+		},
+		testAuthCreate: function() {
+			return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {id: null});
+		},
+		testAuthShowTest: function(id) {
+			return openModal(TestAuthShowTestCtrl, '/templates/test_auth_show_test.html', {id: id});
+		},
 		testCallList: function() {
 			return openTab(TestCallListCtrl, '/templates/test_call_list.html');
 		},

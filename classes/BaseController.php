@@ -5,6 +5,7 @@ use app\components\View;
 use app\models\Airp;
 use app\models\Destination;
 use app\models\Number;
+use app\models\TestAuth;
 use app\models\TestCall;
 use app\models\Trunk;
 use app\models\Outcome;
@@ -174,6 +175,17 @@ class BaseController extends \yii\web\Controller
         return $item;
     }
 
+    /**
+     * @return TestAuth
+     */
+    protected function getTestAuthOr404($testCallId)
+    {
+        $item = TestAuth::findOne($testCallId);
+        if ($item === null) {
+            throw new HttpException(404, 'TestAuth не найден');
+        }
+        return $item;
+    }
 
     /**
      * @return TestCall

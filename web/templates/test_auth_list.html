@@ -1,6 +1,6 @@
 <div>
     <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
-    <h4>Тестировании звонков</h4>
+    <h4>Тестирование маршрутизации</h4>
 </div>
 
 <table class="table table-striped table-hover table-condensed" >
@@ -13,8 +13,6 @@
         <th width="20%">Номер A</th>
         <th width="20%">Номер B</th>
         <th width="20%">Номер Redirect</th>
-        <th width="20%">Время (UTC)</th>
-        <th width="10%">Длительность</th>
         <th>&nbsp;</th>
     </tr>
     </thead>
@@ -23,16 +21,10 @@
     <tr ng-repeat="item in list">
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
         <td><button type="button" class="btn btn-default btn-sm" ng-click="showTestItem(item)">Показать Тест</button></td>
-        <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
-            <span class="label label-info" ng-if="item.orig">оригинация</span>
-            <span class="label label-warning" ng-if="!item.orig">терминация</span>
-        </td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.trunk_name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.src_number}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.dst_number}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.redirect_number}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.connect_time}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.session_time}}</td>
         <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
     </tr>
 

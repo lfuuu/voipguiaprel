@@ -1,9 +1,9 @@
-var TestCallShowTestCtrl = function($scope, TestCall, params, $modalInstance, $window) {
+var TestAuthShowTestCtrl = function($scope, TestAuth, params, $modalInstance, $window) {
 
     $scope.details = 0;
 
     if (params.id) {
-        TestCall.result({id: params.id}).then(function(data){
+        TestAuth.result({id: params.id}).then(function(data){
             $scope.item = data.item;
             $scope.result = data.result;
         });
@@ -15,7 +15,7 @@ var TestCallShowTestCtrl = function($scope, TestCall, params, $modalInstance, $w
 
     $scope.save = function()
     {
-        TestCall.save($scope.item).then(function(response) {
+        TestAuth.save($scope.item).then(function(response) {
             $modalInstance.close();
         });
     };
