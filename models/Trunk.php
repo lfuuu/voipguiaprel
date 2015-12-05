@@ -47,14 +47,14 @@ class Trunk extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 50],
             [['trunk_name','trunk_name_alias'], 'string', 'max' => 32],
             [['default_priority'], 'integer', 'min'=> -10, 'max' => 10],
-            [['auto_routing', 'source_rule_default_allowed', 'destination_rule_default_allowed','our_trunk','auth_by_number','orig_redirect_number','term_redirect_number','show_in_stat'], 'boolean'],
+            [['auto_routing', 'source_rule_default_allowed', 'destination_rule_default_allowed', 'source_trunk_rule_default_allowed', 'our_trunk','auth_by_number','orig_redirect_number','term_redirect_number','show_in_stat'], 'boolean'],
             [['route_table_id'], 'integer'],
         ];
     }
 
     public function extraFields()
     {
-        return ['routeTable', 'priorities', 'rules', 'numberPreprocessing'];
+        return ['routeTable', 'priorities', 'rules', 'trunkRules', 'numberPreprocessing'];
     }
 
     public function getRouteTable()
@@ -70,6 +70,11 @@ class Trunk extends \yii\db\ActiveRecord
     public function getRules()
     {
         return $this->hasMany(TrunkRule::className(), ['trunk_id' => 'id'])->orderBy('order');
+    }
+
+    public function getTrunkRules()
+    {
+        return $this->hasMany(TrunkTrunkRule::className(), ['trunk_id' => 'id'])->orderBy('order');
     }
 
     public function getNumberPreprocessing()

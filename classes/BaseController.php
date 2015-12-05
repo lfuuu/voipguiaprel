@@ -13,6 +13,7 @@ use app\models\ReleaseReason;
 use app\models\RouteCase;
 use app\models\RouteTable;
 use app\models\Server;
+use app\models\TrunkGroup;
 use yii\filters\AccessControl;
 use yii\web\HttpException;
 
@@ -56,11 +57,23 @@ class BaseController extends \yii\web\Controller
     /**
      * @return Trunk
      */
-    protected function getTrunkOr404($operatorId)
+    protected function getTrunkOr404($trunkId)
     {
-        $item = Trunk::findOne($operatorId);
+        $item = Trunk::findOne($trunkId);
         if ($item === null) {
             throw new HttpException(404, 'Транк не найден');
+        }
+        return $item;
+    }
+
+    /**
+     * @return TrunkGroup
+     */
+    protected function getTrunkGroupOr404($trunkId)
+    {
+        $item = TrunkGroup::findOne($trunkId);
+        if ($item === null) {
+            throw new HttpException(404, 'Группа транков не найдена');
         }
         return $item;
     }

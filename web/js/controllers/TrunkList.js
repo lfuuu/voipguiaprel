@@ -1,7 +1,7 @@
 var TrunkListCtrl = function($scope, Trunk, Redirect, $window) {
 
     $scope.init = function(tab) {
-        if (tab) tab.title = 'Операторы';
+        if (tab) tab.title = 'Транки';
 
         Trunk.read({server_id: $scope.server.id}).then(function(data){
             $scope.list = data;

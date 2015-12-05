@@ -35,7 +35,7 @@ class Server extends \yii\db\ActiveRecord
             [['low_balance_outcome_id', 'blocked_outcome_id'], 'integer'],
             [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
-            [['our_numbers_id'], 'integer'],
+            [['service_numbers'], 'string'],
             [['hostname'], 'string', 'max' => 30],
         ];
     }

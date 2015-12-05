@@ -30,7 +30,7 @@ class TrunkRule extends \yii\db\ActiveRecord
         return $item;
     }
 
-    public static function deleteByOperator(Trunk $trunk)
+    public static function deleteByTrunk(Trunk $trunk)
     {
         return self::deleteAll(['trunk_id' => $trunk->id]);
     }

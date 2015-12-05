@@ -18,7 +18,7 @@ class SettingsController extends JsonController
             'blocked_outcome_id' => $server->blocked_outcome_id,
             'calling_station_id_for_line_without_number' => $server->calling_station_id_for_line_without_number,
             'min_price_for_autorouting' => $server->min_price_for_autorouting,
-            'our_numbers_id' => $server->our_numbers_id,
+            'service_numbers' => $server->service_numbers,
             'hostname' => $server->hostname,
         ];
     }

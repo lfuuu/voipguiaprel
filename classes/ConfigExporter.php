@@ -77,12 +77,29 @@ class ConfigExporter
     public function exportRC()
     {
 
-        $this->exportAutoRouteCases();
-
         header('Content-Type: text/plain');
+
+
+        $this->exportAutoRouteCases();
 
         if (!empty($this->routeCaseScripts)) {
             echo "#### Auto Route Cases ####\n";
+            foreach ($this->routeCaseScripts as $script) {
+                echo $script['script'];
+            }
+        }
+
+
+
+        $this->routeCaseScripts = [];
+
+        $routeCases = RouteCase::findAll(['server_id' => $this->server->id]);
+        foreach ($routeCases as $routeCase) {
+            $this->exportRouteCase($routeCase->id);
+        }
+
+        if (!empty($this->routeCaseScripts)) {
+            echo "\n#### Manual Route Cases ####\n";
             foreach ($this->routeCaseScripts as $script) {
                 echo $script['script'];
             }

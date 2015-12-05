@@ -6,6 +6,8 @@ use app\classes\ArrayToCsv;
 use app\queries\NumberQuery;
 
 /**
+ * @method static Outcome findOne($condition)
+ *
  * @property int $id
  * @property int $server_id
  * @property string $name

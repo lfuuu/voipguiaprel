@@ -4,6 +4,8 @@ namespace app\models;
 use app\queries\OutcomeQuery;
 
 /**
+ * @method static Outcome findOne($condition)
+ *
  * @property int $id
  * @property string $name
  * @property int $type_id

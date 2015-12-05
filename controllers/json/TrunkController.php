@@ -3,6 +3,7 @@
 namespace app\controllers\json;
 
 use app\models\TrunkNumberPreprocessing;
+use app\models\TrunkTrunkRule;
 use Yii;
 use app\classes\JsonController;
 use app\models\TrunkPriority;
@@ -48,12 +49,13 @@ class TrunkController extends JsonController
             Trunk::find()
                 ->with('priorities')
                 ->with('rules')
+                ->with('trunkRules')
                 ->with('numberPreprocessing')
                 ->where(['id' => $this->request['id']])
                 ->asArray()
                 ->one();
         if ($item === null) {
-            throw new HttpException(404, 'Оператор не найден');
+            throw new HttpException(404, 'Транк не найден');
         }
 
         return $item;
@@ -64,31 +66,31 @@ class TrunkController extends JsonController
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
-            $operator = $this->getTrunkOr404($this->request['id']);
+            $trunk = $this->getTrunkOr404($this->request['id']);
         } else {
-            $operator = Trunk::create($server);
+            $trunk = Trunk::create($server);
         }
 
-        $operator->load($this->request, '');
+        $trunk->load($this->request, '');
 
         $transaction = Trunk::getDb()->beginTransaction();
         try {
-            if ($operator->isAttributeChanged('need_recalc_routing_report')) {
+            if ($trunk->isAttributeChanged('need_recalc_routing_report')) {
                 $server->need_recalc_routing_report = true;
                 if (!$server->save()) {
                     throw new FormValidationException($server);
                 }
             }
 
-            if (!$operator->save()) {
-                throw new FormValidationException($operator);
+            if (!$trunk->save()) {
+                throw new FormValidationException($trunk);
             }
 
-            TrunkPriority::deleteByOperator($operator);
+            TrunkPriority::deleteByTrunk($trunk);
             if (isset($this->request['priorities'])) {
                 $order = 1;
                 foreach ($this->request['priorities'] as $priorityData) {
-                    $priority = TrunkPriority::create($operator, $priorityData);
+                    $priority = TrunkPriority::create($trunk, $priorityData);
                     $priority->order = $order;
                     if (!$priority->save()) {
                         throw new FormValidationException($priority);
@@ -97,11 +99,11 @@ class TrunkController extends JsonController
                 }
             }
 
-            TrunkRule::deleteByOperator($operator);
+            TrunkRule::deleteByTrunk($trunk);
             if (isset($this->request['rules'])) {
                 $order = 1;
                 foreach ($this->request['rules'] as $ruleData) {
-                    $rule = TrunkRule::create($operator, $ruleData);
+                    $rule = TrunkRule::create($trunk, $ruleData);
                     $rule->order = $order;
                     if (!$rule->save()) {
                         throw new FormValidationException($rule);
@@ -110,11 +112,24 @@ class TrunkController extends JsonController
                 }
             }
 
-            TrunkNumberPreprocessing::deleteByOperator($operator);
+            TrunkTrunkRule::deleteByTrunk($trunk);
+            if (isset($this->request['trunkRules'])) {
+                $order = 1;
+                foreach ($this->request['trunkRules'] as $ruleData) {
+                    $rule = TrunkTrunkRule::create($trunk, $ruleData);
+                    $rule->order = $order;
+                    if (!$rule->save()) {
+                        throw new FormValidationException($rule);
+                    }
+                    $order++;
+                }
+            }
+
+            TrunkNumberPreprocessing::deleteByTrunk($trunk);
             if (isset($this->request['numberPreprocessing'])) {
                 $order = 1;
                 foreach ($this->request['numberPreprocessing'] as $ruleData) {
-                    $rule = TrunkNumberPreprocessing::create($operator, $ruleData);
+                    $rule = TrunkNumberPreprocessing::create($trunk, $ruleData);
                     $rule->order = $order;
                     if (!$rule->save()) {
                         throw new FormValidationException($rule);

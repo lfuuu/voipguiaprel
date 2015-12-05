@@ -11,7 +11,9 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, $window) {
             source_rule_default_allowed: false,
             destination_rule_default_allowed: false,
             priorities: [],
-            rules: []
+            rules: [],
+            trunkRules: [],
+            numberPreprocessing: []
         };
     }
 
@@ -29,6 +31,14 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, $window) {
 
     $scope.removeRule = function(index) {
         $scope.item.rules.splice(index, 1);
+    };
+
+    $scope.addTrunkRule = function() {
+        $scope.item.trunkRules.push({trunk_group_id: ''});
+    };
+
+    $scope.removeTrunkRule = function(index) {
+        $scope.item.trunkRules.splice(index, 1);
     };
 
     $scope.addNumberPreprocessing = function(src) {

@@ -28,12 +28,4 @@ class PrefixlistPrefix extends \yii\db\ActiveRecord
     {
         return self::deleteAll(['prefixlist_id' => $prefixlist->id]);
     }
-
-    public function rules()
-    {
-        return [
-            [['prefix'], 'string', 'max' => 20],
-            [['prefix'], 'match', 'pattern' => '/^\d*(\[\d+\]|)+$/'],
-        ];
-    }
 }

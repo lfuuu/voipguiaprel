@@ -1,25 +1,18 @@
 <?php
 namespace app\models;
-use app\queries\TrunkPriorityQuery;
 
 /**
  * @property int $id
  * @property int $trunk_id
  * @property int $order
- * @property int $priority
- * @property int $prefixlist_id
+ * @property int $trunk_group_id
  * @property
  */
-class TrunkPriority extends \yii\db\ActiveRecord
+class TrunkTrunkRule extends \yii\db\ActiveRecord
 {
     public static function tableName()
     {
-        return 'auth.trunk_priority';
-    }
-
-    public static function find()
-    {
-        return new TrunkPriorityQuery(get_called_class());
+        return 'auth.trunk_trunk_rule';
     }
 
     public static function create(Trunk $trunk, array $data = null)
@@ -38,8 +31,7 @@ class TrunkPriority extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['priority'], 'integer', 'min'=> -10, 'max' => 10],
-            [['prefixlist_id'], 'integer'],
+            [['trunk_group_id'], 'integer'],
         ];
     }
 }

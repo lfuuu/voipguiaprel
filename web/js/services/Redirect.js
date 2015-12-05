@@ -44,6 +44,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 		trunkCreate: function() {
 			return openModal(TrunkEditCtrl, '/templates/trunk_edit.html', {id: null});
 		},
+		trunkGroupList: function() {
+			return openTab(TrunkGroupListCtrl, '/templates/trunk_group_list.html');
+		},
+		trunkGroupEdit: function(id) {
+			return openModal(TrunkGroupEditCtrl, '/templates/trunk_group_edit.html', {id: id});
+		},
+		trunkGroupCreate: function() {
+			return openModal(TrunkGroupEditCtrl, '/templates/trunk_group_edit.html', {id: null});
+		},
 		prefixlistList: function() {
 			return openTab(PrefixlistListCtrl, '/templates/prefixlist_list.html');
 		},
