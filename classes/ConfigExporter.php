@@ -550,7 +550,7 @@ class ConfigExporter
                 $n++;
             }
 
-            $name = strtolower($routeCase->name);
+            $name = $routeCase->name;
             $outcome = "RTCASE={$name}";
             $script = "ADD-RTCASE: {$strOperators}RTCASE={$name};\n";
 
