@@ -15,6 +15,14 @@ class PrefixlistPrefix extends \yii\db\ActiveRecord
     {
         return new PrefixlistPrefixQuery(get_called_class());
     }
+    
+    public function rules()		
+    {		
+        return [		
+            [['prefix'], 'string', 'max' => 20],		
+            [['prefix'], 'match', 'pattern' => '/^\d*(\[\d+\]|)+$/'],		
+        ];		
+    }
 
     public static function create(Prefixlist $prefixlist, array $data = null)
     {
