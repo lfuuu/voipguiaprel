@@ -232,13 +232,13 @@ SQL;
                             select defcode
                             from billing.defs
                             where
-                                date_from <= date_trunc('day', now()) 
+                                date_from <= date_trunc('day', now())
                                 and date_to >= date_trunc('day', now())
                                 and not deleted
                                 and price > :maxPrice
-                                and pricelist_id in (select id from voip.pricelist where orig=false and type='operator')
+                                and pricelist_id in (select id from voip.pricelist where orig=false and type='operator' and region=:serverId)
                             group by defcode
-                        ", [':maxPrice' => $server->min_price_for_autorouting]);
+                        ", [':maxPrice' => $server->min_price_for_autorouting, ':serverId' => $server->id]);
                     foreach ($command->queryAll() as $item) {
                         $data[] = [$prefixlist->id, $item['defcode']];
                     }
