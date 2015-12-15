@@ -223,6 +223,34 @@ SQL;
                 }
             }
 
+            if ($prefixlist->type_id == 5) {
+                PrefixlistPrefix::deleteByPrefixlist($prefixlist);
+                $data = [];
+                if ($server->min_price_for_autorouting > 0) {
+                    $command =
+                        Yii::$app->db->createCommand("
+                            select defcode
+                            from billing.defs
+                            where
+                                date_from <= date_trunc('day', now()) 
+                                and date_to >= date_trunc('day', now())
+                                and not deleted
+                                and price > :maxPrice
+                                and pricelist_id in (select id from voip.pricelist where orig=false and type='operator')
+                            group by defcode
+                        ", [':maxPrice' => $server->min_price_for_autorouting]);
+                    foreach ($command->queryAll() as $item) {
+                        $data[] = [$prefixlist->id, $item['defcode']];
+                    }
+                }
+                if (count($data) > 0) {
+                    PrefixlistPrefix::getDb()->createCommand()->batchInsert(PrefixlistPrefix::tableName(),
+                        ['prefixlist_id', 'prefix'],
+                        $data
+                    )->execute();
+                }
+            }
+
             $prefixlist->count = PrefixlistPrefix::find()->where(['prefixlist_id' => $prefixlist->id])->count();
             if (!$prefixlist->save()) {
                 throw new FormValidationException($prefixlist);
