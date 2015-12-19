@@ -236,7 +236,13 @@ SQL;
                                 and date_to >= date_trunc('day', now())
                                 and not deleted
                                 and price > :maxPrice
-                                and pricelist_id in (select id from voip.pricelist where orig=false and type='operator' and region=:serverId)
+                                and pricelist_id in (
+                                	select ts.pricelist_id from billing.service_trunk t
+                                    inner join billing.service_trunk_settings ts on t.id = ts.trunk_id
+                                    where	t.term_enabled and t.server_id=:serverId and
+                                            t.activation_dt<now() and t.expire_dt>now() and
+                                            ts.type=2
+                                )
                             group by defcode
                         ", [':maxPrice' => $server->min_price_for_autorouting, ':serverId' => $server->id]);
                     foreach ($command->queryAll() as $item) {
