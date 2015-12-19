@@ -25,6 +25,7 @@ class Outcome extends \yii\db\ActiveRecord
     const TYPE_ROUTE_CASE = 2;
     const TYPE_RELEASE_REASON = 3;
     const TYPE_AIRP = 4;
+    const TYPE_ACCEPT = 4;
 
     public static function tableName()
     {
