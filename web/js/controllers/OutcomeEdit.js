@@ -20,31 +20,31 @@ var OutcomeEditCtrl = function($scope, Outcome, params, $modalInstance, $window)
 	{
 		if ($scope.item.type_id == 1) {
 			$scope.item.route_case_id = null;
-			$scope.release_reason_id = null;
-			$scope.airp_id = null;
-			$scope.calling_station_id = null;
-			$scope.called_station_id= null;
+			$scope.item.release_reason_id = null;
+			$scope.item.airp_id = null;
+			$scope.item.calling_station_id = null;
+			$scope.item.called_station_id= null;
 		}
 		if ($scope.item.type_id == 2) {
-			$scope.release_reason_id = null;
-			$scope.airp_id = null;
+			$scope.item.release_reason_id = null;
+			$scope.item.airp_id = null;
 		}
 		if ($scope.item.type_id == 3) {
 			$scope.item.route_case_id = null;
-			$scope.airp_id = null;
-			$scope.calling_station_id = null;
-			$scope.called_station_id= null;
+			$scope.item.airp_id = null;
+			$scope.item.calling_station_id = null;
+			$scope.item.called_station_id= null;
 		}
 		if ($scope.item.type_id == 4) {
 			$scope.item.route_case_id = null;
-			$scope.release_reason_id = null;
+			$scope.item.release_reason_id = null;
 		}
 		if ($scope.item.type_id == 5) {
 			$scope.item.route_case_id = null;
-			$scope.release_reason_id = null;
-			$scope.airp_id = null;
-			$scope.calling_station_id = null;
-			$scope.called_station_id= null;
+			$scope.item.release_reason_id = null;
+			$scope.item.airp_id = null;
+			$scope.item.calling_station_id = null;
+			$scope.item.called_station_id= null;
 		}
 
 		Outcome.save($scope.item).then(function(response) {
