@@ -603,7 +603,38 @@ app.factory('TestCall', function ($q, ApiLoader, $rootScope) {
     };
 });
 
-app.factory('List', function (Trunk, TrunkGroup, Prefixlist, RouteCase, Outcome, Number, Destination, Airp, ReleaseReason, RouteTable) {
+app.factory('Network', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/network/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+		list: function() {
+			if (promise !== undefined) return promise;
+
+			var deferred = $q.defer();
+			if (list !== undefined) {
+				deferred.resolve(list);
+				return deferred.promise;
+			} else {
+				var data = {server_id: $rootScope.server.id};
+				ApiLoader.post(url + 'list', data)
+					.then(function(data){
+						list = data;
+						promise = undefined;
+						deferred.resolve(data);
+					}, function(data){
+						promise = undefined;
+						deferred.reject(data);
+					});
+				promise = deferred.promise;
+			}
+			return deferred.promise;
+		}
+	};
+});
+
+
+app.factory('List', function (Trunk, TrunkGroup, Prefixlist, RouteCase, Outcome, Number, Destination, Airp, ReleaseReason, RouteTable, Network) {
 	return {
 		trunk: function() {
 			return Trunk.list();
@@ -634,6 +665,9 @@ app.factory('List', function (Trunk, TrunkGroup, Prefixlist, RouteCase, Outcome,
 		},
 		routeTable: function() {
 			return RouteTable.list();
-		}
-	};
+		},
+        network: function() {
+            return Network.list();
+        }
+    };
 });

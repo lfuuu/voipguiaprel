@@ -7,7 +7,7 @@ use app\models\billing\GeoCity;
 use app\models\billing\GeoCountry;
 use app\models\billing\GeoPrefix;
 use app\models\billing\GeoRegion;
-use app\models\Trunk;
+use app\models\NetworkConfig;
 use Yii;
 use app\models\PrefixlistPrefix;
 use app\classes\JsonController;
@@ -73,7 +73,7 @@ class PrefixlistController extends JsonController
             $prefixlist->setSmezhnostList($this->request['smezhnost_list']);
         } else {
             $prefixlist->smezhnost_list = null;
-            $prefixlist->trunk_id = null;
+            $prefixlist->network_config_id = null;
 
         }
         if ($prefixlist->type_id == 3) {
@@ -129,22 +129,9 @@ class PrefixlistController extends JsonController
                 }
             }
 
-            if ($prefixlist->type_id == 2 && $prefixlist->trunk_id) {
+            if ($prefixlist->type_id == 2 && $prefixlist->network_config_id) {
                 PrefixlistPrefix::deleteByPrefixlist($prefixlist);
-                $trunk = Trunk::findOne($prefixlist->trunk_id);
-
-                $sql = <<<SQL
-                            select r.id from voip.network_config r
-                            where r.instance_id = :serverId and r.operator_id = :operatorId
-SQL;
-
-                $networkConfigId =
-                    BillingDefs::getDb()
-                        ->createCommand(
-                            $sql,
-                            [':serverId' => $server->id, ':operatorId' => $trunk->code]
-                        )
-                        ->queryScalar();
+                $networkConfigId = NetworkConfig::findOne($prefixlist->network_config_id)->id;
 
                 $sql = <<<SQL
                             select r.prefix from billing.network_prefix r

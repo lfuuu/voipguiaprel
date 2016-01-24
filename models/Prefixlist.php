@@ -21,7 +21,7 @@ use app\queries\PrefixlistQuery;
  * @property string $rossvyaz_operators
  * @property string $rossvyaz_operator_ids
  * @property string $smezhnost_list
- * @property int $trunk_id
+ * @property int $network_config_id
  * @property int $count
  * @property
  */
@@ -51,7 +51,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 50],
             [['type_id'], 'integer'],
             [['rossvyaz_country', 'rossvyaz_region', 'rossvyaz_city'], 'string', 'max' => 100],
-            [['rossvyaz_country_id', 'rossvyaz_region_id', 'rossvyaz_city_id', 'trunk_id'], 'integer'],
+            [['rossvyaz_country_id', 'rossvyaz_region_id', 'rossvyaz_city_id', 'network_config_id'], 'integer'],
             [['rossvyaz_mob'], 'boolean'],
             [['exclude_operators'], 'boolean'],
         ];
