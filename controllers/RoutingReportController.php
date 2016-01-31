@@ -99,7 +99,7 @@ class RoutingReportController extends BaseController
                 Trunk::find()
                     ->andWhere(['server_id' => $server->id])
                     ->andWhere('auto_routing=true')
-                    ->orderBy('code')
+                    ->orderBy('id')
                     ->all()
                 as $operator
             ) {

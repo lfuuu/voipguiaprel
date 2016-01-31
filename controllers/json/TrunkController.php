@@ -32,7 +32,7 @@ class TrunkController extends JsonController
         return
             Trunk::find()
                 ->select([
-                    'id', 'name', 'code', 'trunk_name', 'trunk_name_alias',
+                    'id', 'name', 'trunk_name', 'trunk_name_alias',
                     'default_priority', 'source_rule_default_allowed', 'destination_rule_default_allowed',
                     'auto_routing', 'our_trunk', 'auth_by_number', 'orig_redirect_number', 'term_redirect_number', 'show_in_stat', 'route_table_id'
                 ])

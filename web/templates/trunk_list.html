@@ -8,7 +8,6 @@
     <tr>
         <th>Ид</th>
         <th>Имя транка</th>
-        <th>Номер</th>
         <th>Название</th>
         <th>&nbsp;</th>
         <th>Таблица маршрутизации</th>
@@ -20,7 +19,6 @@
     <tr ng-repeat="item in list">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.trunk_name}}{{item.trunk_name_alias ? ' (' + item.trunk_name_alias + ')' : ''}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.code}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
             <span class="label label-success" ng-if="item.show_in_stat">СТАТ</span>
