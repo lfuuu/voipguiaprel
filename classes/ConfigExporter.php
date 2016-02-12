@@ -481,6 +481,15 @@ class ConfigExporter
     {
         $trunks = $this->getAutoRoutingTrunks();
 
+        foreach ($trunks as $trunk) {
+            $this->routeCaseScripts[] = [
+                'script' => 'ADD-RTCASE: RO-1="' . $trunk->trunk_name . ',1,100;", RTCASE=' . $trunk->trunk_name . ";\n"
+            ];
+        }
+
+        /* Старый механизм назначения Route Case'ов, с перестановками всех комбинаций транков
+        $trunks = $this->getAutoRoutingTrunks();
+
         $routes = [];
         foreach ($trunks as $trunk) {
             $routes[] = [$trunk];
@@ -535,6 +544,7 @@ class ConfigExporter
                 'script' => "ADD-RTCASE: {$strOperators}RTCASE={$rtcase};\n",
             ];
         }
+        */
     }
 
     private function exportRouteCase($routeCaseId)
