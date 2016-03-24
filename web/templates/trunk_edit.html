@@ -73,7 +73,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Redirecting Ориг. 7800</label>
                     <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.orig_redirect_number_7800 = !item.orig_redirect_number_7800; if (item.orig_redirect_number_7800) item.orig_redirect_number = false">
+                        <div class="btn-group" ng-click="item.orig_redirect_number_7800 = !item.orig_redirect_number_7800; item.orig_redirect_number = item.orig_redirect_number_7800 ? false : item.orig_redirect_number">
                             <button type="button" class="btn btn-sm {{item.orig_redirect_number_7800 ? 'btn-success active' : 'btn-default'}}">Да</button>
                             <button type="button" class="btn btn-sm {{!item.orig_redirect_number_7800 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                         </div>
@@ -82,7 +82,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Redirecting Оригинация</label>
                     <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.orig_redirect_number = !item.orig_redirect_number; if (item.orig_redirect_number) item.orig_redirect_number_7800 = false">
+                        <div class="btn-group" ng-click="item.orig_redirect_number = !item.orig_redirect_number; item.orig_redirect_number_7800 = item.orig_redirect_number ? false : orig_redirect_number_7800">
                             <button type="button" class="btn btn-sm {{item.orig_redirect_number ? 'btn-success active' : 'btn-default'}}">Да</button>
                             <button type="button" class="btn btn-sm {{!item.orig_redirect_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                         </div>
