@@ -267,18 +267,17 @@
                                 </td>
 
                                 <td width="3%" style="cursor: ns-resize">
-                                    <span ng-if="line.prefixlist_id_filter_a !== null">A:</span>
+                                    <span ng-if="line.number_id_filter_a !== null">A:</span>
                                 </td>
                                 <td>
-                                    <select-box ng-if="line.prefixlist_id_filter_a !== null" list="prefixlist" model="line.prefixlist_id_filter_a" placeholder="Выберите" required="false"></select-box>
+                                    <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
                                 </td>
-
 
                                 <td width="3%" style="cursor: ns-resize">
-                                    <span ng-if="line.prefixlist_id_filter_b !== null">B:</span>
+                                    <span ng-if="line.number_id_filter_b !== null">B:</span>
                                 </td>
                                 <td>
-                                    <select-box ng-if="line.prefixlist_id_filter_b !== null" list="prefixlist" model="line.prefixlist_id_filter_b" placeholder="Выберите" required="false"></select-box>
+                                    <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
                                 </td>
 
                                 <td>
