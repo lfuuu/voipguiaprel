@@ -6,6 +6,8 @@ namespace app\models;
  * @property int $trunk_id
  * @property int $order
  * @property int $trunk_group_id
+ * @property number_id_filter_a
+ * @property number_id_filter_b
  * @property
  */
 class TrunkTrunkRule extends \yii\db\ActiveRecord
@@ -32,6 +34,8 @@ class TrunkTrunkRule extends \yii\db\ActiveRecord
     {
         return [
             [['trunk_group_id'], 'integer'],
+            [['number_id_filter_a'], 'integer'],
+            [['number_id_filter_b'], 'integer'],
         ];
     }
 }
