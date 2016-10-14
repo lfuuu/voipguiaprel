@@ -50,7 +50,7 @@ class Outcome extends \yii\db\ActiveRecord
         return [
             [['name'], 'string', 'max' => 50],
             [['type_id'], 'integer'],
-            [['route_case_id', 'release_reason_id', 'airp_id'], 'integer'],
+            [['route_case_id', 'release_reason_id', 'airp_id','route_case_1_id','route_case_2_id'], 'integer'],
             [['calling_station_id', 'called_station_id'], 'match', 'pattern' => '/^\d{1,20}$/'],
         ];
     }
