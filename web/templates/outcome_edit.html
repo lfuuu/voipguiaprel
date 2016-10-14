@@ -35,14 +35,14 @@
         <div class="form-group" ng-if="item.type_id == 2">
             <label class="col-sm-2 control-label">Route case 2</label>
             <div class="col-sm-10">
-                <select-box list="routeCase" model="item.route_case_1_id" placeholder="Выберите route case" required="true"></select-box>
+                <select-box list="routeCase" model="item.route_case_1_id" placeholder="Выберите route case" required="no" default="Любой номер"></select-box>
             </div>
         </div>
 
         <div class="form-group" ng-if="item.type_id == 2">
             <label class="col-sm-2 control-label">Route case 3</label>
             <div class="col-sm-10">
-                <select-box list="routeCase" model="item.route_case_2_id" placeholder="Выберите route case" required="true"></select-box>
+                <select-box list="routeCase" model="item.route_case_2_id" placeholder="Выберите route case" required="no" default="Любой номер"></select-box>
             </div>
         </div>
 
