@@ -11,6 +11,7 @@ use yii\filters\AccessControl;
 use app\classes\BaseController;
 use app\forms\LoginForm;
 use app\models\Server;
+use app\models\Hub;
 
 class SiteController extends BaseController
 {
@@ -53,7 +54,8 @@ class SiteController extends BaseController
         Yii::info('index');
         Yii::info('index');
         return $this->render('index', [
-            'servers' => Server::find()->all(),
+            'hubs' => Hub::find()->with('servers')->all(),
+            'servers' => Server::find()->where('hub_id is null')->all(),
         ]);
     }
 
