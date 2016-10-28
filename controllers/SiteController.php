@@ -54,8 +54,8 @@ class SiteController extends BaseController
         Yii::info('index');
         Yii::info('index');
         return $this->render('index', [
-            'hubs' => Hub::find()->with('servers')->all(),
-            'servers' => Server::find()->where('hub_id is null')->all(),
+            'hubs' => Hub::find()->orderBy('id')->with('servers')->all(),
+            'servers' => Server::find()->where('hub_id is null')->orderBy('id')->all(),
         ]);
     }
 
