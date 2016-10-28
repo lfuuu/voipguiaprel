@@ -32,6 +32,7 @@ class RouteCase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['sw_shared'], 'boolean'],
             [['name'], 'string', 'min' => 4, 'max' => 50],
             [['name'], 'match', 'pattern' => '/^\w+$/'],
         ];
