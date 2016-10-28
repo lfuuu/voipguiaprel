@@ -32,6 +32,7 @@ class ReleaseReason extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['sw_shared'], 'boolean'],
             [['name'], 'string', 'max' => 50],
         ];
     }

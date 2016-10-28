@@ -43,7 +43,7 @@ class Number extends \yii\db\ActiveRecord
         return [
             [['name'], 'string', 'max' => 50],
             [['type_id'], 'integer'],
-            [['show_in_stat'], 'boolean'],
+            [['show_in_stat','sw_shared'], 'boolean'],
         ];
     }
 
