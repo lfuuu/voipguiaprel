@@ -34,7 +34,7 @@ class Hub extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 50]
         ];
     }
-
+    
     /**
      * @inheritdoc
      */

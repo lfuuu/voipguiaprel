@@ -67,6 +67,15 @@ class BaseController extends \yii\web\Controller
         return $item;
     }
 
+    protected function getHubOr404($hubId)
+    {
+        $item = Hub::findOne($hubId);
+        if ($item === null) {
+            throw new HttpException(404, 'Хаб не найден');
+        }
+        return $item;
+    }
+
     /**
      * @return TrunkGroup
      */

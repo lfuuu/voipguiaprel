@@ -15,6 +15,8 @@
         <th>Оператор</th>
         <th>Приоритет</th>
         <th>Вес</th>
+        <th>&nbsp;</th>
+        <th width="1%">Сервер</th>
         <th width="1%">&nbsp;</th>
     </tr>
     </thead>
@@ -31,6 +33,10 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">
             <div ng-repeat="op in item.trunks">{{op.weight}}</div>
         </td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">
+            <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
+        </td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
         <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
     </tr>
 
