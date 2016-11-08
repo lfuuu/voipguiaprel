@@ -32,7 +32,7 @@ class Server extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['low_balance_outcome_id', 'blocked_outcome_id', 'host_id'], 'integer'],
+            [['low_balance_outcome_id', 'blocked_outcome_id', 'hub_id'], 'integer'],
             [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
             [['service_numbers'], 'string'],
