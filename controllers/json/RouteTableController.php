@@ -31,7 +31,7 @@ class RouteTableController extends JsonController
 
         return
             RouteTable::find()
-                ->select(['id', 'name','sw_shared'])
+                ->select(['id', 'name','server_id','sw_shared'])
                 ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
                 ->orderBy('name')
                 ->asArray()
