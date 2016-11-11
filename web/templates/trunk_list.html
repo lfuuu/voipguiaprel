@@ -36,7 +36,7 @@
             <a ng-if="item.routeTable.id" href="#" ng-click="openRouteTable(item.routeTable.id);">{{item.routeTable.name}}</a>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
-        <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
+        <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-disabled="item.server_id != server.id" ng-click="deleteItem(item)"></button></td>
     </tr>
 
     </tbody>
