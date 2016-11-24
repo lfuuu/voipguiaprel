@@ -19,7 +19,7 @@ use yii\helpers\Url;
     <tr>
         <th style="width:20%">Код</th>
         <th>Название</th>
-        <th style="width:20%">Флаги</th>
+        <th style="width:35%">Флаги</th>
     </tr>
     </thead>
     <tbody>
@@ -58,7 +58,7 @@ use yii\helpers\Url;
     <tr>
         <th style="width:20%"style="width:20%">Код</th>
         <th>Название</th>
-        <th style="width:20%">Флаги</th>
+        <th style="width:35%">Флаги</th>
     </tr>
     </thead>
     <tbody>
