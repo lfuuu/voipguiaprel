@@ -4,17 +4,22 @@ use yii\helpers\Url;
  * @var app\components\View $this
  */
 ?>
+<?php 
 
+/**
 <div>
     <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
     <h4>Сервера</h4>
 </div>
+*/
 
+?>
 <table class="table table-striped table-hover table-condensed" >
     <thead>
     <tr>
         <th style="width:20%">Код</th>
         <th>Название</th>
+        <th style="width:20%">Статусы</th>
     </tr>
     </thead>
     <tbody>
@@ -27,6 +32,17 @@ use yii\helpers\Url;
             <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item->id]); ?>'">
                 <?= $item->name ?>
             </td>
+            <td>
+               <?php if(!$item->instanceSettings->active) { ?>
+                  <span class="label label-warning">Выключен</span>
+               <?php } ?>
+               <?php if(!$item->instanceSettings->is_can_recalculate) { ?>
+                  <span class="label label-warning">Не пересчитывать</span>
+               <?php } ?>
+               <?php if(!$item->is_need_db_do_migrate) { ?>
+                  <span class="label label-info">Не мигрировать БД</span>
+               <?php } ?>
+            </td>
         </tr>
     <?php endforeach; ?>
 
@@ -36,17 +52,13 @@ use yii\helpers\Url;
 
 <?php foreach ($hubs as $item): ?>
 
-<div>
-    <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Присоеденить</a>
-    <h4><?= $item->name ?></h4>
-</div>
-
 
 <table class="table table-striped table-hover table-condensed" >
     <thead>
     <tr>
         <th style="width:20%"style="width:20%">Код</th>
         <th>Название</th>
+        <th style="width:20%">Статусы</th>
     </tr>
     </thead>
     <tbody>
@@ -58,6 +70,17 @@ use yii\helpers\Url;
             </td>
             <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item2->id]); ?>'">
                 <?= $item2->name ?>
+            </td>
+            <td>
+               <?php if(!$item2->instanceSettings->active) { ?>
+                  <span class="label label-warning">Выключен</span>
+               <?php } ?>
+               <?php if(!$item2->instanceSettings->is_can_recalculate) { ?>
+                  <span class="label label-warning">Не пересчитывать</span>
+               <?php } ?>
+               <?php if(!$item2->is_need_db_do_migrate) { ?>
+                  <span class="label label-info">Не мигрировать БД</span>
+               <?php } ?>
             </td>
         </tr>
     <?php endforeach; ?>

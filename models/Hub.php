@@ -53,4 +53,11 @@ class Hub extends \yii\db\ActiveRecord
         return $this->hasMany(Server::className(), ['hub_id' => 'id']);
     }
 
+    public function getInstanceSettings()
+    {
+        return $this->hasOne(InstanceSettings::className(), ['id' => 'id']);
+    }
+
+
+
 }

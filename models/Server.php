@@ -45,4 +45,10 @@ class Server extends \yii\db\ActiveRecord
         return'http://' . $this->hostname . ':8032/';
     }
 
+    public function getInstanceSettings()
+    {
+        return $this->hasOne(InstanceSettings::className(), ['id' => 'id']);
+    }
+
+
 }

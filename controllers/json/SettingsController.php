@@ -11,6 +11,7 @@ class SettingsController extends JsonController
     public function actionGet()
     {
         $server = $this->getServerOr404($this->request['server_id']);
+        
 
         return [
             'server_id' => $server->id,
