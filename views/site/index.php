@@ -19,7 +19,7 @@ use yii\helpers\Url;
     <tr>
         <th style="width:20%">Код</th>
         <th>Название</th>
-        <th style="width:20%">Статусы</th>
+        <th style="width:20%">Флаги</th>
     </tr>
     </thead>
     <tbody>
@@ -34,13 +34,13 @@ use yii\helpers\Url;
             </td>
             <td>
                <?php if(!$item->instanceSettings->active) { ?>
-                  <span class="label label-warning">Выключен</span>
+                  <span class="label label-warning">Не активен</span>
                <?php } ?>
                <?php if(!$item->instanceSettings->is_can_recalculate) { ?>
-                  <span class="label label-warning">Не пересчитывать</span>
+                  <span class="label label-info">Не пересчитывать</span>
                <?php } ?>
                <?php if(!$item->is_need_db_do_migrate) { ?>
-                  <span class="label label-info">Не мигрировать БД</span>
+                  <span class="label label-success">Не мигрировать БД</span>
                <?php } ?>
             </td>
         </tr>
@@ -58,7 +58,7 @@ use yii\helpers\Url;
     <tr>
         <th style="width:20%"style="width:20%">Код</th>
         <th>Название</th>
-        <th style="width:20%">Статусы</th>
+        <th style="width:20%">Флаги</th>
     </tr>
     </thead>
     <tbody>
@@ -73,13 +73,13 @@ use yii\helpers\Url;
             </td>
             <td>
                <?php if(!$item2->instanceSettings->active) { ?>
-                  <span class="label label-warning">Выключен</span>
+                  <span class="label label-warning">Не активен</span>
                <?php } ?>
                <?php if(!$item2->instanceSettings->is_can_recalculate) { ?>
-                  <span class="label label-warning">Не пересчитывать</span>
+                  <span class="label label-info">Не пересчитывать</span>
                <?php } ?>
                <?php if(!$item2->is_need_db_do_migrate) { ?>
-                  <span class="label label-info">Не мигрировать БД</span>
+                  <span class="label label-success">Не мигрировать БД</span>
                <?php } ?>
             </td>
         </tr>
