@@ -21,6 +21,7 @@ class SettingsController extends JsonController
             'min_price_for_autorouting' => $server->min_price_for_autorouting,
             'service_numbers' => $server->service_numbers,
             'hostname' => $server->hostname,
+            'emergency_prefixlist_id' => $server->emergency_prefixlist_id,
         ];
     }
 
