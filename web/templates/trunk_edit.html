@@ -162,6 +162,19 @@
                                 <td width="10%">
                                     <input class="form-control input-sm" ng-model="line.priority" required>
                                 </td>
+                                <td width="3%" style="cursor: ns-resize">
+                                    <span ng-if="line.number_id_filter_a !== null">A:</span>
+                                </td>
+                                <td>
+                                    <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
+                                </td>
+
+                                <td width="3%" style="cursor: ns-resize">
+                                    <span ng-if="line.number_id_filter_b !== null">B:</span>
+                                </td>
+                                <td>
+                                    <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
+                                </td>
                                 <td style="cursor: ns-resize">
                                     <span ng-if="line.prefixlist_id !== null">Список&nbsp;префиксов:</span>
                                 </td>
@@ -175,7 +188,7 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="5">
+                                <td colspan="9">
                                     <button type="button" class="btn btn-success btn-xs" ng-click="addPriority()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
                                 </td>
                             </tr>

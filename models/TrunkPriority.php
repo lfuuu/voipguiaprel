@@ -27,6 +27,8 @@ class TrunkPriority extends \yii\db\ActiveRecord
         $item = new self();
         $item->load($data, '');
         $item->trunk_id = $trunk->id;
+        $item->priority = 0;
+
         return $item;
     }
 
@@ -39,7 +41,7 @@ class TrunkPriority extends \yii\db\ActiveRecord
     {
         return [
             [['priority'], 'integer', 'min'=> -10, 'max' => 10],
-            [['prefixlist_id'], 'integer'],
+            [['prefixlist_id','number_id_filter_a','number_id_filter_b'], 'integer'],
         ];
     }
 }
