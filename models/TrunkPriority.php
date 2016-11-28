@@ -41,7 +41,7 @@ class TrunkPriority extends \yii\db\ActiveRecord
     {
         return [
             [['priority'], 'integer', 'min'=> -10, 'max' => 10],
-            [['prefixlist_id','number_id_filter_a','number_id_filter_b'], 'integer'],
+            [['number_id_filter_a','number_id_filter_b'], 'integer'],
         ];
     }
 }
