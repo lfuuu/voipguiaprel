@@ -27,8 +27,6 @@ class TrunkPriority extends \yii\db\ActiveRecord
         $item = new self();
         $item->load($data, '');
         $item->trunk_id = $trunk->id;
-        $item->priority = 0;
-
         return $item;
     }
 
