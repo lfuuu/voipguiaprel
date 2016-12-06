@@ -34,6 +34,7 @@ class Server extends \yii\db\ActiveRecord
         return [
             [['low_balance_outcome_id', 'blocked_outcome_id', 'hub_id', 'emergency_prefixlist_id'], 'integer'],
             [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],
+            [['h_call_sync_delay','h_cdr_sync_delay','h_call_save_delay','h_cdr_proc_wait_count','h_call_save_wait_count','h_thread_error_count'], 'string', 'max' => 100],
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
             [['service_numbers'], 'string'],
             [['hostname'], 'string', 'max' => 30],

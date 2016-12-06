@@ -11,7 +11,6 @@ class SettingsController extends JsonController
     public function actionGet()
     {
         $server = $this->getServerOr404($this->request['server_id']);
-        
 
         return [
             'server_id' => $server->id,
@@ -22,6 +21,12 @@ class SettingsController extends JsonController
             'service_numbers' => $server->service_numbers,
             'hostname' => $server->hostname,
             'emergency_prefixlist_id' => $server->emergency_prefixlist_id,
+            'h_call_sync_delay' => $server->h_call_sync_delay,
+            'h_cdr_sync_delay' => $server->h_cdr_sync_delay,
+            'h_call_save_delay' => $server->h_call_save_delay,
+            'h_cdr_proc_wait_count' => $server->h_cdr_proc_wait_count,
+            'h_call_save_wait_count' => $server->h_call_save_wait_count,
+            'h_thread_error_count' => $server->h_thread_error_count,
         ];
     }
 
