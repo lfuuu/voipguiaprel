@@ -9,9 +9,10 @@
         <th>Ид</th>
         <th>Имя транка</th>
         <th>Название</th>
-        <th>Емкость</th>
+        <th>Емкость/Порог</th>
         <th>&nbsp;</th>
         <th>Таблица маршрутизации</th>
+        <th width="1%">В регион</th>
         <th width="1%">Сервер</th>
         <th width="1%"></th>
     </tr>
@@ -22,7 +23,7 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.trunk_name}}{{item.trunk_name_alias ? ' (' + item.trunk_name_alias + ')' : ''}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.capacity}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.capacity}}/{{item.load_warning}}%</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
             <span class="label label-success" ng-if="item.show_in_stat">СТАТ</span>
             <span class="label label-warning" ng-if="item.our_trunk">Наш транк</span>
@@ -35,6 +36,7 @@
         <td>
             <a ng-if="item.routeTable.id" href="#" ng-click="openRouteTable(item.routeTable.id);">{{item.routeTable.name}}</a>
         </td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.road_to_region}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
         <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-disabled="item.server_id != server.id" ng-click="deleteItem(item)"></button></td>
     </tr>
