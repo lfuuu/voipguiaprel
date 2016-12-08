@@ -27,6 +27,7 @@ class SettingsController extends JsonController
             'h_cdr_proc_wait_count' => $server->h_cdr_proc_wait_count,
             'h_call_save_wait_count' => $server->h_call_save_wait_count,
             'h_thread_error_count' => $server->h_thread_error_count,
+            'h_radius_request_delay' => $server->h_radius_request_delay
         ];
     }
 
