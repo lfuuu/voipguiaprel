@@ -26,11 +26,11 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.capacity}}/{{item.load_warning}}%</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
             <span class="label label-success" ng-if="item.show_in_stat">СТАТ</span>
-            <span class="label label-warning" ng-if="item.our_trunk">Наш транк</span>
-            <span class="label label-info" ng-if="item.auth_by_number">Авторизация по номеру</span>
-            <span class="label label-warning" ng-if="item.orig_redirect_number">Redirect Ориг</span>
-            <span class="label label-warning" ng-if="item.term_redirect_number">Redirect Терм</span>
-            <span class="label label-success" ng-if="item.auto_routing">LCR маршрутизация</span>
+            <span class="label label-warning" ng-if="item.our_trunk">Наш</span>
+            <span class="label label-info" ng-if="item.auth_by_number">По номеру</span>
+            <span class="label label-warning" ng-if="item.orig_redirect_number">Redir-Ориг</span>
+            <span class="label label-warning" ng-if="item.term_redirect_number">Redir-Терм</span>
+            <span class="label label-success" ng-if="item.auto_routing">LCR</span>
             <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
         </td>
         <td>
