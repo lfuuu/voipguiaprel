@@ -1,0 +1,33 @@
+<?php
+
+namespace app\models;
+
+use app\queries\AttributeGroupQuery;
+
+class AttributeGroup extends \yii\db\ActiveRecord
+{
+
+    public static function tableName()
+    {
+        return 'auth.atribute_group';
+    }
+
+    public function rules()
+    {
+        return [
+            [['name'], 'required'],
+            [['note'], 'string'],
+            [['name'], 'string', 'max' => 50]
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'Ключ',
+            'name' => 'Название',
+            'note' => 'Примечание',
+        ];
+    }
+
+}

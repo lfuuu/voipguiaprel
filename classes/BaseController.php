@@ -3,6 +3,8 @@ namespace app\classes;
 
 use app\components\View;
 use app\models\Airp;
+use app\models\Attribute;
+use app\models\AttributeGroup;
 use app\models\Destination;
 use app\models\Number;
 use app\models\TestAuth;
@@ -15,6 +17,7 @@ use app\models\RouteCase;
 use app\models\RouteTable;
 use app\models\Server;
 use app\models\TrunkGroup;
+use app\models\Hub;
 use yii\filters\AccessControl;
 use yii\web\HttpException;
 
@@ -207,4 +210,24 @@ class BaseController extends \yii\web\Controller
         }
         return $item;
     }
+
+    protected function getAttibuteOr404($AttributeId)
+    {
+        $item = Attribute::findOne($AttributeId);
+        if ($item === null) {
+            throw new HttpException(404, 'Аttribute не найден');
+        }
+        return $item;
+    }
+
+    protected function getAttibuteGroupOr404($AttributeGroupId)
+    {
+        $item = AttributeGroup::findOne($AttributeGroupId);
+        if ($item === null) {
+            throw new HttpException(404, 'АttributeGroup не найден');
+        }
+        return $item;
+    }
+
+
 }
