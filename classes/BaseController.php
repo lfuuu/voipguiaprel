@@ -211,7 +211,7 @@ class BaseController extends \yii\web\Controller
         return $item;
     }
 
-    protected function getAttibuteOr404($AttributeId)
+    protected function getAttributeOr404($AttributeId)
     {
         $item = Attribute::findOne($AttributeId);
         if ($item === null) {
@@ -220,7 +220,7 @@ class BaseController extends \yii\web\Controller
         return $item;
     }
 
-    protected function getAttibuteGroupOr404($AttributeGroupId)
+    protected function getAttributeGroupOr404($AttributeGroupId)
     {
         $item = AttributeGroup::findOne($AttributeGroupId);
         if ($item === null) {
