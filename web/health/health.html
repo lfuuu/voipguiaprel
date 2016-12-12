@@ -80,6 +80,7 @@
                             $result.appendChild($block);
                         } else {
                             $block.innerHTML = '';
+                            $block.className = 'block status-' + maxPriority;
                             $block.appendChild($header);
                             $block.appendChild(document.createElement('hr'));
                             $block.appendChild($content);
