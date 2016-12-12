@@ -58,7 +58,7 @@ function getHostData($hostname)
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_NOBODY => false,
         CURLOPT_HEADER => false,
-        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_TIMEOUT => 10,
     ];
 
     $request = curl_init();
