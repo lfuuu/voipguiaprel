@@ -51,6 +51,7 @@
                     setBlock = function (title, params) {
                         var
                             $header = document.createElement('div'),
+                            $headerLink = document.createElement('a'),
                             $footer = document.createElement('div'),
                             $content = document.createElement('div'),
                             maxPriority = 0;
@@ -72,8 +73,12 @@
                             $content.className = 'info error';
                         }
 
+                        $headerLink.setAttribute('target', '_blank');
+                        $headerLink.setAttribute('href', 'http://' + title + ':8032');
+                        $headerLink.innerText = title + (instanceId ? ' (' + params.instanceId + ')' : '');
+
                         $header.className = 'header';
-                        $header.innerText = title + (instanceId ? ' (' + params.instanceId + ')' : '');
+                        $header.appendChild($headerLink);
 
                         $footer.className = 'footer';
                         $footer.innerText = (instanceId ? 'Runtime: ' + params.runTime : '');
