@@ -35,6 +35,12 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 			$rootScope.tabs.splice($rootScope.tabs.indexOf(tab), 1);
 			delete $rootScope.tabsMap[tab.key];
 		},
+        attributeList: function () {
+            return openTab(AttributeListCtrl, '/templates/attribute_list.html');
+        },
+        attributeGroupList: function () {
+            return openTab(AttributeGroupListCtrl, '/templates/attribute_group_list.html');
+        },
 		trunkList: function() {
 			return openTab(TrunkListCtrl, '/templates/trunk_list.html');
 		},

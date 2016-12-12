@@ -41,6 +41,12 @@
             <a href="#" class="list-group-item" ng-click="Redirect.releaseReasonList()" ng-class="{active:tabs.isController('ReleaseReasonListCtrl')}">Release reason</a>
         </div>
         <div class="list-group">
+            <a href="#" class="list-group-item" ng-click="Redirect.attributeList()"
+               ng-class="{active:tabs.isController('AttributeListCtrl')}">Атрибуты</a>
+            <a href="#" class="list-group-item" ng-click="Redirect.attributeGroupList()"
+               ng-class="{active:tabs.isController('AttributeGroupListCtrl')}">Группы атрибутов</a>
+        </div>
+        <div class="list-group">
             <!-- <a href="#" class="list-group-item" ng-click="Redirect.routingReport()" ng-class="{active:tabs.isController('RoutingReportCtrl')}">Отчет по маршрутизации</a> -->
             <!-- <a href="#" class="list-group-item" ng-click="Redirect.destinationList()" ng-class="{active:tabs.isController('DestinationListCtrl')}">Направления</a> -->
             <a href="#" class="list-group-item" ng-click="Redirect.testAuthList()" ng-class="{active:tabs.isController('TestAuthListCtrl')}">Тестирование маршрутизации</a>

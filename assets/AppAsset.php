@@ -15,10 +15,8 @@ class AppAsset extends AssetBundle
         'js/services/ApiLoader.js',
         'js/services/Api.js',
         'js/services/Redirect.js',
-
         'js/directives/select-box.js',
         'js/directives/outcome-select-box.js',
-
         'js/controllers/Main.js',
         'js/controllers/RoutingReport.js',
         'js/controllers/RouteTableEdit.js',
@@ -50,11 +48,16 @@ class AppAsset extends AssetBundle
         'js/controllers/TestCallEdit.js',
         'js/controllers/TestCallList.js',
         'js/controllers/TestCallShowTest.js',
+        'js/controllers/AttributeList.js',
+        'js/controllers/AttributeGroupList.js',
+
     ];
 
     public $templates = [
         'templates/airp_edit.html',
         'templates/airp_list.html',
+        'templates/attribute_list.html',
+        'templates/attribute_group_list.html',
         'templates/main.html',
         'templates/number_edit.html',
         'templates/number_list.html',
