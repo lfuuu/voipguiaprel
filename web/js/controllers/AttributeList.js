@@ -9,7 +9,7 @@ var AttributeListCtrl = function ($scope, Attribute, Redirect, $window) {
     };
 
     $scope.clickCreate = function () {
-        Redirect.AttributeCreate().then(function () {
+        Redirect.attributeCreate().then(function () {
             $scope.init();
         });
     };
@@ -17,7 +17,7 @@ var AttributeListCtrl = function ($scope, Attribute, Redirect, $window) {
     $scope.clickItem = function (item) {
         if (window.getSelection().type == 'Range') return;
 
-        Redirect.AttributeEdit(item.id).then(function () {
+        Redirect.attributeEdit(item.id).then(function () {
             $scope.init();
         });
     };

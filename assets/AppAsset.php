@@ -11,7 +11,6 @@ class AppAsset extends AssetBundle
 
     public $js = [
         'js/app.js',
-
         'js/services/ApiLoader.js',
         'js/services/Api.js',
         'js/services/Redirect.js',
@@ -49,7 +48,9 @@ class AppAsset extends AssetBundle
         'js/controllers/TestCallList.js',
         'js/controllers/TestCallShowTest.js',
         'js/controllers/AttributeList.js',
+        'js/controllers/AttributeEdit.js',
         'js/controllers/AttributeGroupList.js',
+        'js/controllers/AttributeGroupEdit.js',
 
     ];
 
@@ -58,6 +59,8 @@ class AppAsset extends AssetBundle
         'templates/airp_list.html',
         'templates/attribute_list.html',
         'templates/attribute_group_list.html',
+        'templates/attribute_edit.html',
+        'templates/attribute_group_edit.html',
         'templates/main.html',
         'templates/number_edit.html',
         'templates/number_list.html',
@@ -86,7 +89,6 @@ class AppAsset extends AssetBundle
         'templates/test_call_edit.html',
         'templates/test_call_list.html',
         'templates/test_call_show_test.html',
-
         'templates/directives/select-box.html',
         'templates/directives/outcome-select-box.html',
     ];

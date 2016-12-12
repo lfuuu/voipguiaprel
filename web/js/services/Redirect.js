@@ -38,9 +38,24 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
         attributeList: function () {
             return openTab(AttributeListCtrl, '/templates/attribute_list.html');
         },
+        attributeEdit: function (id) {
+            return openModal(AttributeEditCtrl, '/templates/attribute_edit.html', {id: id});
+        },
+        attributeCreate: function () {
+            return openModal(AttributeEditCtrl, '/templates/attribute_edit.html', {id: null});
+        },
+
         attributeGroupList: function () {
             return openTab(AttributeGroupListCtrl, '/templates/attribute_group_list.html');
         },
+        attributeGroupEdit: function (id) {
+            return openModal(AttributeGroupEditCtrl, '/templates/attribute_group_edit.html', {id: id});
+        },
+
+        attributeGroupCreate: function (id) {
+            return openModal(AttributeGroupEditCtrl, '/templates/attribute_group_edit.html', {id: null});
+        },
+
 		trunkList: function() {
 			return openTab(TrunkListCtrl, '/templates/trunk_list.html');
 		},

@@ -29,4 +29,11 @@ class Attribute extends \yii\db\ActiveRecord
         ];
     }
 
+    public static function create(array $data = null)
+    {
+        $item = new self();
+        $item->load($data, '');
+        return $item;
+    }
+
 }
