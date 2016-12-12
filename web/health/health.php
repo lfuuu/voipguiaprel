@@ -27,7 +27,9 @@ function getServerList()
     }
 
     $query = $pdo->query('SELECT  hostname FROM public.server WHERE is_need_db_do_migrate ORDER BY id ASC');
-    $serversData = [];
+    $serversData = [
+        'lastUpdate' => date('Y-m-d H:i:s'),
+    ];
     while ($hostname = $query->fetch(PDO::FETCH_COLUMN)) {
 
         $hostData = getHostData($hostname);

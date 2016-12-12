@@ -25,8 +25,10 @@
                         try {
                             data = JSON.parse(data);
 
+                            $lastUpdate.innerText = 'Последнее обновление: ' + data['lastUpdate'];
+
                             for (var index in data) {
-                                if (data.hasOwnProperty(index)) {
+                                if (data.hasOwnProperty(index) && index !== 'lastUpdate') {
                                     setBlock(index, data[index]);
                                 }
                             }
@@ -35,15 +37,16 @@
                         }
                     },
                     setError = function (message) {
-                        var $error = document.getElementsByClassName('error');
+                        var $error = document.getElementById('error');
                         if (!$error) {
                             $error = document.createElement('div');
+                            $error.id = 'error';
+                            $error.className = 'info error';
+                            $result.insertBefore($error, $result.firstChild);
                         }
-                        $error.className = 'info error';
                         $error.innerText = message;
-                        if (!$error) {
-                            $result.appendChild($error);
-                        }
+
+                        $lastUpdate.innerText = 'Когда произошла ошибка: ' + new Date().toLocaleString();
                     },
                     setBlock = function (title, params) {
                         var
@@ -61,31 +64,36 @@
                             }
                         }
 
+                        var instanceId = parseInt(params.instanceId, 10);
+
+                        if (!instanceId) {
+                            maxPriority = 1;
+                            $content.innerText = params;
+                            $content.className = 'info error';
+                        }
+
                         $header.className = 'header';
-                        $header.innerText = title + (params.instanceId !== 'undefined' ? ' (' + params.instanceId + ')' : '');
+                        $header.innerText = title + (instanceId ? ' (' + params.instanceId + ')' : '');
 
                         $footer.className = 'footer';
-                        $footer.innerText = 'Runtime: ' + params.runTime;
+                        $footer.innerText = (instanceId ? 'Runtime: ' + params.runTime : '');
 
-                        var $block = document.getElementById(params.instanceId);
+                        var $block = document.getElementById(title);
                         if (!$block) {
                             $block = document.createElement('div');
                             $block.className = 'block status-' + maxPriority;
-                            $block.id = params.instanceId;
+                            $block.id = title;
 
-                            $block.appendChild($header);
-                            $block.appendChild(document.createElement('hr'));
-                            $block.appendChild($content);
-                            $block.appendChild($footer);
-                            $result.appendChild($block);
+                            $result.insertBefore($block, $result.firstChild);
                         } else {
                             $block.innerHTML = '';
                             $block.className = 'block status-' + maxPriority;
-                            $block.appendChild($header);
-                            $block.appendChild(document.createElement('hr'));
-                            $block.appendChild($content);
-                            $block.appendChild($footer);
                         }
+
+                        $block.appendChild($header);
+                        $block.appendChild(document.createElement('hr'));
+                        $block.appendChild($content);
+                        $block.appendChild($footer);
                     };
 
                 request.onreadystatechange = function () {
@@ -99,8 +107,6 @@
                 };
 
                 setInterval(function () {
-                    $lastUpdate.innerText = 'Последнее обновление: ' + new Date().toLocaleString();
-
                     request.open('Get', dataUri + '?rnd=' + Math.random());
                     request.send();
                 }, requestTimeout);
@@ -113,6 +119,7 @@
             border-radius: 4px;
             text-align: center;
             font-weight: bold;
+            clear: both;
         }
 
         .info.error {
@@ -122,7 +129,6 @@
 
         .info.text {
             border: 1px solid #9d9d9d;
-            background-color: #CCC;
         }
 
         #monitor {
@@ -220,7 +226,8 @@
     </style>
 </head>
 <body>
-    <div id="last-update" class="info text"></div>
-    <div id="monitor"></div>
+    <div id="monitor">
+        <div id="last-update" class="info text"></div>
+    </div>
 </body>
 </html>
