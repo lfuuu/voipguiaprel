@@ -8,7 +8,7 @@ class Attribute extends \yii\db\ActiveRecord
 {
     public static function tableName()
     {
-        return 'auth.atribute';
+        return 'auth.attribute';
     }
 
     public function rules()

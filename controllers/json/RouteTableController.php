@@ -49,8 +49,7 @@ class RouteTableController extends JsonController
         $routes =
             RouteTableRoute::find()
                 ->where(['route_table_id' => $item->id])
-                ->orderBy('order')
-        ;
+                ->orderBy('order');
 
         $data['routes'] = $routes->asArray()->all();
 

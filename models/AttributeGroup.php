@@ -9,7 +9,7 @@ class AttributeGroup extends \yii\db\ActiveRecord
 
     public static function tableName()
     {
-        return 'auth.atribute_group';
+        return 'auth.attribute_group';
     }
 
     public function rules()
