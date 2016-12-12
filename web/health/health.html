@@ -13,6 +13,7 @@
                     requestTimeout = 2000,
                     request = new XMLHttpRequest(),
                     $result = document.getElementById('monitor'),
+                    $lastUpdate = document.getElementById('last-update'),
                     priority = {
                         'STATUS_OK': 0,
                         'STATUS_UNKNOWN': 1,
@@ -38,7 +39,7 @@
                         if (!$error) {
                             $error = document.createElement('div');
                         }
-                        $error.className = 'error';
+                        $error.className = 'info error';
                         $error.innerText = message;
                         if (!$error) {
                             $result.appendChild($error);
@@ -97,6 +98,8 @@
                 };
 
                 setInterval(function () {
+                    $lastUpdate.innerText = 'Последнее обновление: ' + new Date().toLocaleString();
+
                     request.open('Get', dataUri + '?rnd=' + Math.random());
                     request.send();
                 }, requestTimeout);
@@ -104,13 +107,21 @@
         })();
     </script>
     <style type="text/css">
-        .error {
+        .info {
             padding: 15px;
-            border: 1px solid #9f2b1e;
             border-radius: 4px;
-            background-color: #d59392;
             text-align: center;
             font-weight: bold;
+        }
+
+        .info.error {
+            border: 1px solid #9f2b1e;
+            background-color: #d59392;
+        }
+
+        .info.text {
+            border: 1px solid #9d9d9d;
+            background-color: #CCC;
         }
 
         #monitor {
@@ -208,6 +219,7 @@
     </style>
 </head>
 <body>
-<div id="monitor"></div>
+    <div id="last-update" class="info text"></div>
+    <div id="monitor"></div>
 </body>
 </html>
