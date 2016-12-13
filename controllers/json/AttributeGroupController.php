@@ -26,7 +26,7 @@ class AttributeGroupController extends JsonController
 
         return
             AttributeGroup::find()
-                ->select(['id', 'name'])
+                ->select(['id', 'name', 'attributeslist_ids'])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -52,6 +52,8 @@ class AttributeGroupController extends JsonController
         }
 
         $item->load($this->request, '');
+
+        $item->setAttributesLists($this->request['attributeslist_ids']);
 
         $transaction = AttributeGroup::getDb()->beginTransaction();
         try {

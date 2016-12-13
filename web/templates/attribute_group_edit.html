@@ -1,6 +1,6 @@
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
-        <h3 ng-if="item.id">Редктирование группы атрибутов {{item.name}}</h3>
+        <h3 ng-if="item.id">Редактирование группы атрибутов {{item.name}}</h3>
         <h3 ng-if="!item.id">Создание группы атрибутов</h3>
     </div>
     <div class="modal-body">
@@ -18,6 +18,37 @@
             </div>
         </div>
     </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Список атрибутов</label>
+        <div class="col-sm-10">
+
+            <table class="table table-striped">
+                <tbody>
+                <tr ng-repeat="line in item.attributeslist_ids">
+                    <td width="100%">
+                        <select-box list="attributelist" model="line.id" placeholder="Выберите атрибут"
+                                    required="true"></select-box>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus"
+                                ng-click="removeAttribute($index)"></button>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <button type="button" class="btn btn-success btn-xs" ng-click="addAttribute()"><i
+                                class="glyphicon glyphicon-plus"></i>Добавить атрибут
+                        </button>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
     <div class="modal-footer">
         <div class="pull-left">
             <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить

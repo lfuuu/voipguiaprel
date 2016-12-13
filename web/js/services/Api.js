@@ -722,7 +722,7 @@ app.factory('Network', function ($q, ApiLoader, $rootScope) {
 });
 
 
-app.factory('List', function (Trunk, TrunkGroup, Prefixlist, RouteCase, Outcome, Number, Destination, Airp, ReleaseReason, RouteTable, Network) {
+app.factory('List', function (Trunk, TrunkGroup, Prefixlist, RouteCase, Outcome, Number, Destination, Airp, ReleaseReason, RouteTable, Network, Attribute) {
 	return {
 		trunk: function() {
 			return Trunk.list();
@@ -733,6 +733,9 @@ app.factory('List', function (Trunk, TrunkGroup, Prefixlist, RouteCase, Outcome,
 		prefixlist: function() {
 			return Prefixlist.list();
 		},
+        attributelist: function () {
+            return Attribute.list();
+        },
 		routeCase: function() {
 			return RouteCase.list();
 		},
