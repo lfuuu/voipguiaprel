@@ -733,7 +733,7 @@ app.factory('List', function (Trunk, TrunkGroup, Prefixlist, RouteCase, Outcome,
 		prefixlist: function() {
 			return Prefixlist.list();
 		},
-        attributelist: function () {
+        attribute: function () {
             return Attribute.list();
         },
 		routeCase: function() {
