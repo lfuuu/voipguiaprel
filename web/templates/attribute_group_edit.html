@@ -20,13 +20,14 @@
     </div>
 
     <div class="form-group">
-        <label class="col-sm-2 control-label">Списки атрибутов</label>
+        <label class="col-sm-2 control-label">Список атрибутов</label>
         <div class="col-sm-10">
+
             <table class="table table-striped">
                 <tbody>
-                <tr ng-repeat="line in item.attributes_ids">
+                <tr ng-repeat="line in item.attributeslist_ids">
                     <td width="100%">
-                        <select-box list="attributeslist" model="line.id" placeholder="Выберите атрибут"
+                        <select-box list="attributelist" model="line.id" placeholder="Выберите атрибут"
                                     required="true"></select-box>
                     </td>
                     <td>

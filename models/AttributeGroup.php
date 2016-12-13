@@ -63,7 +63,7 @@ class AttributeGroup extends \yii\db\ActiveRecord
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         $data = parent::toArray($fields, $expand, $recursive);
-        $data['prefixlist_ids'] = $this->getAttributeslists();
+        $data['attributeslist_ids'] = $this->getAttributeslists();
         return $data;
     }
 
