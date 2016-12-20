@@ -11,6 +11,11 @@ use yii\web\HttpException;
 
 class TrunkGroupController extends JsonController
 {
+
+    /**
+     * @return TrunkGroup
+     * @throws HttpException
+     */
     public function actionList() {
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -23,6 +28,10 @@ class TrunkGroupController extends JsonController
                 ->all();
     }
 
+    /**
+     * @return TrunkGroup
+     * @throws HttpException
+     */
     public function actionRead() {
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -35,6 +44,10 @@ class TrunkGroupController extends JsonController
                 ->all();
     }
 
+    /**
+     * @return array
+     * @throws HttpException
+     */
     public function actionGet()
     {
         $item =
@@ -50,6 +63,22 @@ class TrunkGroupController extends JsonController
         return $item;
     }
 
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionGetTrunksWithGroupIntoRules()
+    {
+        $group = $this->getTrunkGroupOr404($this->request['id']);
+
+        return $group->getTrunksWithGroupIntoRules();
+    }
+
+    /**
+     * @throws FormValidationException
+     * @throws HttpException
+     * @throws \yii\db\Exception
+     */
     public function actionSave()
     {
         $server = $this->getServerOr404($this->request['server_id']);
@@ -78,11 +107,15 @@ class TrunkGroupController extends JsonController
 
             $transaction->commit();
         } finally {
-            if ($transaction->getIsActive())
+            if ($transaction->getIsActive()) {
                 $transaction->rollBack();
+            }
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function actionDelete()
     {
         $item = TrunkGroup::findOne($this->request['id']);

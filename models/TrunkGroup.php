@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use yii\db\Query;
+
 /**
  * @property int $id
  * @property int $server_id
@@ -10,11 +12,20 @@ namespace app\models;
  */
 class TrunkGroup extends \yii\db\ActiveRecord
 {
+
+    /**
+     * @return string
+     */
     public static function tableName()
     {
         return 'auth.trunk_group';
     }
 
+    /**
+     * @param Server $server
+     * @param array|null $data
+     * @return TrunkGroup
+     */
     public static function create(Server $server, array $data = null)
     {
         $item = new self();
@@ -23,6 +34,9 @@ class TrunkGroup extends \yii\db\ActiveRecord
         return $item;
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [
@@ -30,13 +44,45 @@ class TrunkGroup extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @return array
+     */
     public function extraFields()
     {
         return ['trunks'];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTrunks()
     {
         return $this->hasMany(TrunkGroupItem::className(), ['trunk_group_id' => 'id']);
     }
+
+    /**
+     * @return array
+     */
+    public function getTrunksWithGroupIntoRules()
+    {
+        return
+            (new Query)
+                ->select([
+                    'trunk_id' => 'trunk.id',
+                    'trunk_name' => 'trunk.name',
+                    'trunk_source_trunk_rule_default_allowed' => 'trunk.source_trunk_rule_default_allowed',
+                    'number_a_id' => 'number_a.id',
+                    'number_b_id' => 'number_b.id',
+                    'number_a_name' => 'number_a.name',
+                    'number_b_name' => 'number_b.name',
+                ])
+                ->from(['trunk_rules' => TrunkTrunkRule::tableName()])
+                ->innerJoin(['trunk' => Trunk::tableName()], 'trunk.id = trunk_rules.trunk_id')
+                ->leftJoin(['number_a' => Number::tableName()], 'number_a.id = trunk_rules.number_id_filter_a')
+                ->leftJoin(['number_b' => Number::tableName()], 'number_b.id = trunk_rules.number_id_filter_b')
+                ->where(['trunk_rules.trunk_group_id' => $this->id])
+                ->all();
+    }
+
 }
+
