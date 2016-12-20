@@ -1,38 +1,96 @@
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
-        <h3 ng-if="item.id">Группа транков {{item.name}}</h3>
+        <h3 ng-if="item.id">Группа транков {{item.name}} -- {{item.id}}</h3>
         <h3 ng-if="!item.id">Создание Группы транков</h3>
     </div>
     <div class="modal-body">
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Название</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="Название" ng-model="item.name" required>
-            </div>
-        </div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#trunk-group-tab" data-toggle="tab">Группа транков</a></li>
+            <li><a href="#trunk-group-info" data-toggle="tab">Транки с правилами</a></li>
+        </ul>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Транки</label>
-            <div class="col-sm-10">
+        <br/>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="trunk-group-tab">
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Название</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Название" ng-model="item.name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Транки</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr ng-repeat="line in item.trunks">
+                                <td width="100%">
+                                    <select-box list="trunk" model="line.trunk_id" placeholder="Выберите транк" required="true"></select-box>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkGroup($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkGroup()"><i class="glyphicon glyphicon-plus"></i> Транк</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="trunk-group-info">
                 <table class="table table-striped">
-                    <tbody>
-                    <tr ng-repeat="line in item.trunks">
-                        <td width="100%">
-                            <select-box list="trunk" model="line.trunk_id" placeholder="Выберите транк" required="true"></select-box>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkGroup($index)"></button>
-                        </td>
-                    </tr>
+                    <colgroup>
+                        <col width="10%" />
+                        <col width="*" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>ID Транка</th>
+                            <th>Название транка</th>
+                            <th>По-умолчанию</th>
+                            <th>Номер-А</th>
+                            <th>Номер-B</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-model="item.extendsInfo">
+                        <tr ng-repeat="line in item.extendsInfo">
+                            <td>
+                                {{line.trunk_id}}
+                            </td>
+                            <td style="cursor: pointer" ng-click="clickTrunkItem(line.trunk_id)">
+                                {{line.trunk_name}}
+                            </td>
+                            <td>
+                                <span ng-if="line.source_trunk_rule_default_allowed" class="label label-danger">Запрещено</span>
+                                <span ng-if="!line.source_trunk_rule_default_allowed" class="label label-success">Разрешено</span>
+                            </td>
+                            <td>
+                                <span ng-if="line.number_a_id">
+                                    {{line.number_a_name}}
+                                </span>
+                            </td>
+                            <td>
+                                <span ng-if="line.number_b_id">
+                                    {{line.number_b_name}}
+                                </span>
+                            </td>
+                        </tr>
                     </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colspan="3">
-                            <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkGroup()"><i class="glyphicon glyphicon-plus"></i> Транк</button>
-                        </td>
-                    </tr>
-                    </tfoot>
                 </table>
             </div>
         </div>

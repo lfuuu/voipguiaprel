@@ -26,6 +26,10 @@ use yii\web\HttpException;
  */
 class BaseController extends \yii\web\Controller
 {
+
+    /**
+     * @return array
+     */
     public function behaviors()
     {
         return [
@@ -45,7 +49,9 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $serverId
      * @return Server
+     * @throws HttpException
      */
     protected function getServerOr404($serverId)
     {
@@ -59,7 +65,9 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $trunkId
      * @return Trunk
+     * @throws HttpException
      */
     protected function getTrunkOr404($trunkId)
     {
@@ -70,6 +78,11 @@ class BaseController extends \yii\web\Controller
         return $item;
     }
 
+    /**
+     * @param int $hubId
+     * @return Hub
+     * @throws HttpException
+     */
     protected function getHubOr404($hubId)
     {
         $item = Hub::findOne($hubId);
@@ -80,11 +93,13 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $groupId
      * @return TrunkGroup
+     * @throws HttpException
      */
-    protected function getTrunkGroupOr404($trunkId)
+    protected function getTrunkGroupOr404($groupId)
     {
-        $item = TrunkGroup::findOne($trunkId);
+        $item = TrunkGroup::findOne($groupId);
         if ($item === null) {
             throw new HttpException(404, 'Группа транков не найдена');
         }
@@ -92,7 +107,9 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $prefixlistId
      * @return Prefixlist
+     * @throws HttpException
      */
     protected function getPrefixlistOr404($prefixlistId)
     {
@@ -104,7 +121,9 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $routeCaseId
      * @return RouteCase
+     * @throws HttpException
      */
     protected function getRouteCaseOr404($routeCaseId)
     {
@@ -116,7 +135,9 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $outcomeId
      * @return Outcome
+     * @throws HttpException
      */
     protected function getOutcomeOr404($outcomeId)
     {
@@ -128,7 +149,9 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $numberId
      * @return Number
+     * @throws HttpException
      */
     protected function getNumberOr404($numberId)
     {
@@ -140,11 +163,13 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $destinationId
      * @return Destination
+     * @throws HttpException
      */
-    protected function getDestinationOr404($numberId)
+    protected function getDestinationOr404($destinationId)
     {
-        $item = Destination::findOne($numberId);
+        $item = Destination::findOne($destinationId);
         if ($item === null) {
             throw new HttpException(404, 'Направление не найдено');
         }
@@ -152,7 +177,9 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $airpId
      * @return Airp
+     * @throws HttpException
      */
     protected function getAirpOr404($airpId)
     {
@@ -164,11 +191,13 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $tableId
      * @return RouteTable
+     * @throws HttpException
      */
-    protected function getRouteTableOr404($airpId)
+    protected function getRouteTableOr404($tableId)
     {
-        $item = RouteTable::findOne($airpId);
+        $item = RouteTable::findOne($tableId);
         if ($item === null) {
             throw new HttpException(404, 'Таблица маршрутизации не найдена');
         }
@@ -176,7 +205,9 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $releaseReasonId
      * @return ReleaseReason
+     * @throws HttpException
      */
     protected function getReleaseReasonOr404($releaseReasonId)
     {
@@ -188,7 +219,9 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $testCallId
      * @return TestAuth
+     * @throws HttpException
      */
     protected function getTestAuthOr404($testCallId)
     {
@@ -200,7 +233,9 @@ class BaseController extends \yii\web\Controller
     }
 
     /**
+     * @param int $testCallId
      * @return TestCall
+     * @throws HttpException
      */
     protected function getTestCallOr404($testCallId)
     {
@@ -211,20 +246,30 @@ class BaseController extends \yii\web\Controller
         return $item;
     }
 
-    protected function getAttributeOr404($AttributeId)
+    /**
+     * @param int $attributeId
+     * @return Attribute
+     * @throws HttpException
+     */
+    protected function getAttributeOr404($attributeId)
     {
-        $item = Attribute::findOne($AttributeId);
+        $item = Attribute::findOne($attributeId);
         if ($item === null) {
-            throw new HttpException(404, 'Аttribute не найден');
+            throw new HttpException(404, 'Свойство не найдено');
         }
         return $item;
     }
 
-    protected function getAttributeGroupOr404($AttributeGroupId)
+    /**
+     * @param int $groupId
+     * @return AttributeGroup
+     * @throws HttpException
+     */
+    protected function getAttributeGroupOr404($groupId)
     {
-        $item = AttributeGroup::findOne($AttributeGroupId);
+        $item = AttributeGroup::findOne($groupId);
         if ($item === null) {
-            throw new HttpException(404, 'АttributeGroup не найден');
+            throw new HttpException(404, 'Группа свойств не найдена');
         }
         return $item;
     }
