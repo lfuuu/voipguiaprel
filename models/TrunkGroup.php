@@ -84,5 +84,29 @@ class TrunkGroup extends \yii\db\ActiveRecord
                 ->all();
     }
 
+    /**
+     * @return array
+     */
+    public function getTrunksWithGroupIntoPriorities()
+    {
+        return
+            (new Query)
+                ->select([
+                    'trunk_id' => 'trunk.id',
+                    'trunk_name' => 'trunk.name',
+                    'priority' => 'trunk_priority.priority',
+                    'number_a_id' => 'number_a.id',
+                    'number_b_id' => 'number_b.id',
+                    'number_a_name' => 'number_a.name',
+                    'number_b_name' => 'number_b.name',
+                ])
+                ->from(['trunk_priority' => TrunkPriority::tableName()])
+                ->innerJoin(['trunk' => Trunk::tableName()], 'trunk.id = trunk_priority.trunk_id')
+                ->leftJoin(['number_a' => Number::tableName()], 'number_a.id = trunk_priority.number_id_filter_a')
+                ->leftJoin(['number_b' => Number::tableName()], 'number_b.id = trunk_priority.number_id_filter_b')
+                ->where(['trunk_priority.trunk_group_id' => $this->id])
+                ->all();
+    }
+
 }
 
