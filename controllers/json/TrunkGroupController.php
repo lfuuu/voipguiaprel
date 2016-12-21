@@ -75,6 +75,17 @@ class TrunkGroupController extends JsonController
     }
 
     /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionGetTrunksWithGroupIntoPriorities()
+    {
+        $group = $this->getTrunkGroupOr404($this->request['id']);
+
+        return $group->getTrunksWithGroupIntoPriorities();
+    }
+
+    /**
      * @throws FormValidationException
      * @throws HttpException
      * @throws \yii\db\Exception

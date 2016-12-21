@@ -7,8 +7,12 @@ var TrunkGroupEditCtrl = function($scope, TrunkGroup, params, $modalInstance, Re
                 $scope.item.trunks = [];
             }
 
-            TrunkGroup.extendsInfo({id: params.id}).then(function(data) {
-                $scope.item.extendsInfo = data;
+            TrunkGroup.findIntoRules({id: params.id}).then(function(data) {
+                $scope.item.findIntoRules = data;
+            });
+
+            TrunkGroup.findIntoPriorities({id: params.id}).then(function(data) {
+                $scope.item.findIntoPriorities = data;
             });
         });
     } else {

@@ -165,8 +165,11 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        extendsInfo: function(data) {
+        findIntoRules: function(data) {
             return ApiLoader.post(url + 'get-trunks-with-group-into-rules', data);
+        },
+        findIntoPriorities: function(data) {
+            return ApiLoader.post(url + 'get-trunks-with-group-into-priorities', data);
         },
         save: function(data) {
             list = undefined;
