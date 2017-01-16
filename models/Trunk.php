@@ -47,14 +47,14 @@ class Trunk extends \yii\db\ActiveRecord
             [['trunk_name','trunk_name_alias'], 'string', 'max' => 32],
             [['default_priority'], 'integer', 'min'=> -10, 'max' => 10],
             [['auto_routing', 'source_rule_default_allowed', 'destination_rule_default_allowed', 'source_trunk_rule_default_allowed',
-                'our_trunk', 'auth_by_number', 'orig_redirect_number_7800', 'orig_redirect_number', 'term_redirect_number', 'show_in_stat', 'sw_minimalki', 'sw_shared', 'orig_enabled', 'term_enabled'], 'boolean'],
+                'our_trunk', 'auth_by_number', 'orig_redirect_number_7800', 'orig_redirect_number', 'term_redirect_number', 'show_in_stat', 'sw_minimalki', 'sw_shared'], 'boolean'],
             [['route_table_id','capacity','load_warning','road_to_region'], 'integer'],
         ];
     }
 
     public function extraFields()
     {
-        return ['routeTable', 'priorities', 'rules', 'trunkRules', 'numberPreprocessing', 'orig_enabled', 'term_enabled'];
+        return ['routeTable', 'priorities', 'rules', 'trunkRules', 'numberPreprocessing'];
     }
 
     public function getTrunkOrigTerm()
