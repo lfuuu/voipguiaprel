@@ -32,6 +32,8 @@
             <span class="label label-warning" ng-if="item.term_redirect_number">Redir-Терм</span>
             <span class="label label-success" ng-if="item.auto_routing">LCR</span>
             <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
+            <span class="label label-warning" ng-if="item.orig_enabled">Orig</span>
+            <span class="label label-warning" ng-if="item.term_enabled">Term</span>
         </td>
         <td>
             <a ng-if="item.routeTable.id" href="#" ng-click="openRouteTable(item.routeTable.id);">{{item.routeTable.name}}</a>
