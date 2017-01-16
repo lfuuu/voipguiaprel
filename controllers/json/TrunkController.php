@@ -36,11 +36,12 @@ class TrunkController extends JsonController
         return
             Trunk::find()
                 ->select([
-                    'id', 'name',  'trunk_name', 'trunk_name_alias',
+                    'auth.trunk.id', 'auth.trunk.name', 'trunk_name', 'trunk_name_alias',
                     'default_priority', 'source_rule_default_allowed', 'destination_rule_default_allowed',
                     'auto_routing', 'our_trunk', 'auth_by_number', 'orig_redirect_number_7800', 'orig_redirect_number', 'term_redirect_number', 'show_in_stat', 'route_table_id', 'server_id', 'capacity','sw_shared',
-                    'road_to_region','load_warning'
+                    'road_to_region', 'load_warning', 'orig_enabled', 'term_enabled'
                 ])
+                ->join('LEFT JOIN', 'billing.trunk_orig_term', 'auth.trunk.id=billing.trunk_orig_term.id')
                 ->with('routeTable')
                 ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
                 ->orderBy('trunk_name')
