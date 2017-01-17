@@ -51,8 +51,10 @@
                                     setBlock(index, data[index]);
                                 }
                             }
-                            var $error = document.getElementById('error');                  
-                            $error.style.visibility = "hidden";  
+                            var $error = document.getElementById('error');
+                            if ($error) {
+                                $error.style.visibility = 'hidden';
+                            }
                         } catch (error) {
                             setError('Ошибка разбора данных' + error);
                         }
@@ -72,6 +74,7 @@
                     setBlock = function (title, params) {
                         var
                             $header = document.createElement('div'),
+                            $headerRegions = document.createElement('div'),
                             $headerLink = document.createElement('a'),
                             $footer = document.createElement('div'),
                             $content = document.createElement('div'),
@@ -109,11 +112,30 @@
                         $headerLink.setAttribute('href', 'http://' + title + ':' + hostnamePort);
                         $headerLink.innerText = title + (instanceId ? ' (' + params.instanceId + ')' : '');
 
+                        $headerRegions.className = 'header small';
+                        var regions = [];
+                        for (var index in params.regionList) {
+                            if (params.regionList.hasOwnProperty(index) && typeof params.regionList[index] == 'object') {
+                                regions.push(params.regionList[index].regionName);
+                            }
+                        }
+                        $headerRegions.innerText = regions.join(', ');
+
                         $header.className = 'header';
                         $header.appendChild($headerLink);
 
                         $footer.className = 'footer';
-                        $footer.innerText = (instanceId ? 'Runtime: ' + getTimeFormat(params.runTime) : '');
+
+                        var $footerLeft = document.createElement('div'),
+                            $footerRight = document.createElement('div');
+
+                        $footerLeft.className = 'left';
+                        $footerLeft.innerText = (instanceId ? 'Calls: ' + params.currentCalls : '');
+                        $footerRight.className = 'right';
+                        $footerRight.innerText = (instanceId ? 'Runtime: ' + getTimeFormat(params.runTime) : '');
+
+                        $footer.appendChild($footerLeft);
+                        $footer.appendChild($footerRight);
 
                         var $block = document.getElementById(title);
                         if (!$block) {
@@ -128,6 +150,7 @@
                         }
 
                         $block.appendChild($header);
+                        $block.appendChild($headerRegions);
                         $block.appendChild(document.createElement('hr'));
                         $block.appendChild($content);
                         $block.appendChild($footer);
@@ -152,7 +175,7 @@
     </script>
     <style type="text/css">
         body {
-    	    background-color: #e0e0e0;
+            background-color: #e0e0e0;
         }
         a, a:visited {
             color: #000;
@@ -208,6 +231,12 @@
             padding: 2px;
         }
 
+        .block .header.small {
+            font-weight: normal;
+            padding: 2px;
+            font-size: 12px;
+        }
+
         .block .footer {
             text-align: right;
             padding: 2px;
@@ -216,6 +245,14 @@
             right: 0;
             bottom: 3px;
             border-top: 1px solid #CCC;
+        }
+
+        .block .footer .left {
+            float: left;
+        }
+
+        .block .footer .right {
+            float: right;
         }
 
         .block .message {
