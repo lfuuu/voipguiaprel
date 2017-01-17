@@ -13,6 +13,10 @@
             </thead>
             <tbody>
                 <tr>
+                    <td>Регион</td>
+                    <td><?= ($trunk->server_id ? $trunk->server->name : '---') ?></td>
+                </tr>
+                <tr>
                     <td>Ид</td>
                     <td><?= $trunk->id ?></td>
                 </tr>
@@ -65,6 +69,14 @@
                     <td><?= ($trunk->term_redirect_number ? 'Да' : 'Нет') ?></td>
                 </tr>
                 <tr>
+                    <td>Оригинация</td>
+                    <td><?= ($trunk->trunkOrigTerm && $trunk->trunkOrigTerm->orig_enabled ? 'Да' : 'Нет') ?></td>
+                </tr>
+                <tr>
+                    <td>Терминация</td>
+                    <td><?= ($trunk->trunkOrigTerm && $trunk->trunkOrigTerm->term_enabled ? 'Да' : 'Нет') ?></td>
+                </tr>
+                <tr>
                     <td>Минималки на Терм-плече</td>
                     <td><?= ($trunk->sw_minimalki ? 'Да' : 'Нет') ?></td>
                 </tr>
@@ -96,7 +108,7 @@
             </colgroup>
             <thead>
                 <tr>
-                    <th colspan="4">Приоритеты</th>
+                    <th colspan="4">Приоритеты (По умолчанию: <?= $trunk->default_priority ?>)</th>
                 </tr>
                 <tr>
                     <td>Приоритет</td>
