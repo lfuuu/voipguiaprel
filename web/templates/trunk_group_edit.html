@@ -1,6 +1,6 @@
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
-        <h3 ng-if="item.id">Группа транков {{item.name}} -- {{item.id}}</h3>
+        <h3 ng-if="item.id">Группа транков {{item.name}}</h3>
         <h3 ng-if="!item.id">Создание Группы транков</h3>
     </div>
     <div class="modal-body">
@@ -8,7 +8,8 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
             <li class="active"><a href="#trunk-group-tab" data-toggle="tab">Группа транков</a></li>
-            <li><a href="#trunk-group-info" data-toggle="tab">Транки с правилами</a></li>
+            <li><a href="#rules-with-group" data-toggle="tab">Правила с группой</a></li>
+            <li><a href="#priority-with-group" data-toggle="tab">Приоритеты с группой</a></li>
         </ul>
 
         <br/>
@@ -49,7 +50,7 @@
                 </div>
             </div>
 
-            <div class="tab-pane" id="trunk-group-info">
+            <div class="tab-pane" id="rules-with-group">
                 <table class="table table-striped">
                     <colgroup>
                         <col width="10%" />
@@ -60,15 +61,15 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <th>ID Транка</th>
+                            <th>ID транка</th>
                             <th>Название транка</th>
                             <th>По-умолчанию</th>
                             <th>Номер-А</th>
                             <th>Номер-B</th>
                         </tr>
                     </thead>
-                    <tbody ng-model="item.extendsInfo">
-                        <tr ng-repeat="line in item.extendsInfo">
+                    <tbody ng-model="item.findIntoRules">
+                        <tr ng-repeat="line in item.findIntoRules">
                             <td>
                                 {{line.trunk_id}}
                             </td>
@@ -78,6 +79,50 @@
                             <td>
                                 <span ng-if="line.source_trunk_rule_default_allowed" class="label label-danger">Запрещено</span>
                                 <span ng-if="!line.source_trunk_rule_default_allowed" class="label label-success">Разрешено</span>
+                            </td>
+                            <td>
+                                <span ng-if="line.number_a_id">
+                                    {{line.number_a_name}}
+                                </span>
+                            </td>
+                            <td>
+                                <span ng-if="line.number_b_id">
+                                    {{line.number_b_name}}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane" id="priority-with-group">
+                <table class="table table-striped">
+                    <colgroup>
+                        <col width="10%" />
+                        <col width="*" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>ID транка</th>
+                            <th>Название транка</th>
+                            <th>Приоритет</th>
+                            <th>Номер-А</th>
+                            <th>Номер-B</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-model="item.findIntoPriorities">
+                        <tr ng-repeat="line in item.findIntoPriorities">
+                            <td>
+                                {{line.trunk_id}}
+                            </td>
+                            <td style="cursor: pointer" ng-click="clickTrunkItem(line.trunk_id)">
+                                {{line.trunk_name}}
+                            </td>
+                            <td>
+                                {{line.priority}}
                             </td>
                             <td>
                                 <span ng-if="line.number_a_id">

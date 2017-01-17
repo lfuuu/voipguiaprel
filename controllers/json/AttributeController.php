@@ -26,7 +26,7 @@ class AttributeController extends JsonController
 
         return
             Attribute::find()
-                ->select(['id', 'name'])
+                ->select(['id', 'name','note'])
                 ->orderBy('name')
                 ->asArray()
                 ->all();

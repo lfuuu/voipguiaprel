@@ -79,6 +79,14 @@ class Trunk extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getTrunkOrigTerm()
+    {
+        return $this->hasOne(TrunkOrigTerm::className(), ['id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getRouteTable()
     {
         return $this->hasOne(RouteTable::className(), ['id' => 'route_table_id']);
