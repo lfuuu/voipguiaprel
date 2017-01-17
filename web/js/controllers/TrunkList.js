@@ -28,15 +28,18 @@ var TrunkListCtrl = function($scope, Trunk, Redirect, $window) {
         Redirect.routeTableEdit(routeTableId).then(function () {
             $scope.init();
         });
-    }
+    };
 
-
-    $scope.deleteItem = function(item)
-    {
+    $scope.deleteItem = function(item) {
         if (!$window.confirm('Удалить?')) return;
 
         Trunk.delete(item.id).then(function(response) {
             $scope.init()
         });
     };
+
+    $scope.fullInfoItem = function(item) {
+        $window.open('/trunk/full-info?trunkId=' + item.id);
+    };
+
 };
