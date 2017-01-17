@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models;
+
 use app\queries\TrunkQuery;
 
 /**
@@ -21,16 +22,43 @@ use app\queries\TrunkQuery;
  */
 class Trunk extends \yii\db\ActiveRecord
 {
+
+    /**
+     * @return string
+     */
     public static function tableName()
     {
         return 'auth.trunk';
     }
 
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['name'], 'string', 'max' => 50],
+            [['trunk_name','trunk_name_alias'], 'string', 'max' => 32],
+            [['default_priority'], 'integer', 'min'=> -10, 'max' => 10],
+            [['auto_routing', 'source_rule_default_allowed', 'destination_rule_default_allowed', 'source_trunk_rule_default_allowed',
+                'our_trunk','auth_by_number','orig_redirect_number_7800','orig_redirect_number','term_redirect_number','show_in_stat','sw_minimalki','sw_shared'], 'boolean'],
+            [['route_table_id','capacity','load_warning','road_to_region'], 'integer'],
+        ];
+    }
+
+    /**
+     * @return TrunkQuery
+     */
     public static function find()
     {
         return new TrunkQuery(get_called_class());
     }
 
+    /**
+     * @param Server $server
+     * @param array|null $data
+     * @return Trunk
+     */
     public static function create(Server $server, array $data = null)
     {
         $item = new self();
@@ -40,43 +68,67 @@ class Trunk extends \yii\db\ActiveRecord
         return $item;
     }
 
-    public function rules()
-    {
-        return [
-            [['name'], 'string', 'max' => 50],
-            [['trunk_name','trunk_name_alias'], 'string', 'max' => 32],
-            [['default_priority'], 'integer', 'min'=> -10, 'max' => 10],
-            [['auto_routing', 'source_rule_default_allowed', 'destination_rule_default_allowed', 'source_trunk_rule_default_allowed', 
-              'our_trunk','auth_by_number','orig_redirect_number_7800','orig_redirect_number','term_redirect_number','show_in_stat','sw_minimalki','sw_shared'], 'boolean'],
-            [['route_table_id','capacity','load_warning','road_to_region'], 'integer'],
-        ];
-    }
-
+    /**
+     * @return array
+     */
     public function extraFields()
     {
         return ['routeTable', 'priorities', 'rules', 'trunkRules', 'numberPreprocessing'];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getRouteTable()
     {
         return $this->hasOne(RouteTable::className(), ['id' => 'route_table_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery[]
+     */
     public function getPriorities()
     {
         return $this->hasMany(TrunkPriority::className(), ['trunk_id' => 'id'])->orderBy('order');
     }
 
-    public function getRules()
+    /**
+     * @param array $where
+     * @return \yii\db\ActiveQuery[]
+     */
+    public function getRules(array $where = null)
     {
-        return $this->hasMany(TrunkRule::className(), ['trunk_id' => 'id'])->orderBy('order');
+        $link = $this->hasMany(TrunkRule::className(), ['trunk_id' => 'id'])->orderBy('order');
+        return ($where !== null ? $link->andWhere($where) : $link);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery[]
+     */
+    public function getRulesSource()
+    {
+        return $this->getRules(['outgoing' => false]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery[]
+     */
+    public function getRulesDestination()
+    {
+        return $this->getRules(['outgoing' => true]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery[]
+     */
     public function getTrunkRules()
     {
         return $this->hasMany(TrunkTrunkRule::className(), ['trunk_id' => 'id'])->orderBy('order');
     }
 
+    /**
+     * @return \yii\db\ActiveQuery[]
+     */
     public function getNumberPreprocessing()
     {
         return $this->hasMany(TrunkNumberPreprocessing::className(), ['trunk_id' => 'id'])->orderBy('order');

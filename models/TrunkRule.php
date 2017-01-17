@@ -12,16 +12,39 @@ use app\queries\TrunkRuleQuery;
  */
 class TrunkRule extends \yii\db\ActiveRecord
 {
+
+    /**
+     * @return string
+     */
     public static function tableName()
     {
         return 'auth.trunk_rule';
     }
 
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['outgoing'], 'boolean'],
+            [['prefixlist_id'], 'integer'],
+        ];
+    }
+
+    /**
+     * @return TrunkRuleQuery
+     */
     public static function find()
     {
         return new TrunkRuleQuery(get_called_class());
     }
 
+    /**
+     * @param Trunk $trunk
+     * @param array|null $data
+     * @return TrunkRule
+     */
     public static function create(Trunk $trunk, array $data = null)
     {
         $item = new self();
@@ -30,16 +53,21 @@ class TrunkRule extends \yii\db\ActiveRecord
         return $item;
     }
 
+    /**
+     * @param Trunk $trunk
+     * @return int
+     */
     public static function deleteByTrunk(Trunk $trunk)
     {
         return self::deleteAll(['trunk_id' => $trunk->id]);
     }
 
-    public function rules()
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPrefixlist()
     {
-        return [
-            [['outgoing'], 'boolean'],
-            [['prefixlist_id'], 'integer'],
-        ];
+        return $this->hasOne(Prefixlist::className(), ['id' => 'prefixlist_id']);
     }
+
 }

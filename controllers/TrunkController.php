@@ -1,15 +1,21 @@
 <?php
 namespace app\controllers;
 
+use app\models\Trunk;
+use Yii;
+use yii\web\HttpException;
 use app\classes\BaseController;
 use app\classes\ConfigExporter;
-use Yii;
 
 class TrunkController extends BaseController
 {
     public $layout = false;
 
-
+    /**
+     * @param int $id
+     * @param int $serverId
+     * @throws \yii\web\HttpException
+     */
     public function actionShow($id, $serverId) {
         $server = $this->getServerOr404($serverId);
         $trunk = $this->getTrunkOr404($id);
@@ -19,16 +25,37 @@ class TrunkController extends BaseController
         $exp->export();
     }
 
+    /**
+     * @param int $id
+     * @param $serverId
+     * @throws \yii\web\HttpException
+     */
     public function actionDownload($id, $serverId) {
         $server = $this->getServerOr404($serverId);
         $trunk = $this->getTrunkOr404($id);
 
-        header("Content-type: text/csv");
-        header("Content-Disposition: attachment; filename=config.txt");
-        header("Pragma: no-cache");
-        header("Expires: 0");
+        header('Content-type: text/csv');
+        header('Content-Disposition: attachment; filename=config.txt');
+        header('Pragma: no-cache');
+        header('Expires: 0');
 
         $exp = ConfigExporter::create($trunk, $server);
         $exp->export();
     }
+
+    /**
+     * @param int $trunkId
+     * @return string
+     * @throws \yii\web\HttpException
+     */
+    public function actionFullInfo($trunkId)
+    {
+        $trunk = $this->getTrunkOr404($trunkId);
+
+        $this->layout = 'minimal';
+        return $this->render('full-info', [
+            'trunk' => $trunk,
+        ]);
+    }
+
 }
