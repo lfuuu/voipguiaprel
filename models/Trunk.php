@@ -79,6 +79,14 @@ class Trunk extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getServer()
+    {
+        return $this->hasOne(Server::className(), ['id' => 'server_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTrunkOrigTerm()
     {
         return $this->hasOne(TrunkOrigTerm::className(), ['id' => 'id']);
@@ -93,7 +101,7 @@ class Trunk extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery[]
+     * @return \yii\db\ActiveQuery
      */
     public function getPriorities()
     {
@@ -102,7 +110,7 @@ class Trunk extends \yii\db\ActiveRecord
 
     /**
      * @param array $where
-     * @return \yii\db\ActiveQuery[]
+     * @return \yii\db\ActiveQuery
      */
     public function getRules(array $where = null)
     {
@@ -111,7 +119,7 @@ class Trunk extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery[]
+     * @return \yii\db\ActiveQuery
      */
     public function getRulesSource()
     {
@@ -119,7 +127,7 @@ class Trunk extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery[]
+     * @return \yii\db\ActiveQuery
      */
     public function getRulesDestination()
     {
@@ -127,7 +135,7 @@ class Trunk extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery[]
+     * @return \yii\db\ActiveQuery
      */
     public function getTrunkRules()
     {
@@ -135,7 +143,7 @@ class Trunk extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery[]
+     * @return \yii\db\ActiveQuery
      */
     public function getNumberPreprocessing()
     {
