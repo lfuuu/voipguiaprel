@@ -22,150 +22,162 @@
                 <div class="form-group" ng-if="item.id">
                     <label class="col-sm-2 control-label">Ид</label>
                     <div class="col-sm-10">
-                        <input class="form-control" ng-model="item.id" readonly>
+                        <input class="form-control" ng-model="item.id" readonly />
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Название</label>
                     <div class="col-sm-10">
-                        <input class="form-control" placeholder="Название" ng-model="item.name" required>
+                        <input class="form-control" placeholder="Название" ng-model="item.name" required />
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Имя транка</label>
                     <div class="col-sm-10">
-                        <input class="form-control" placeholder="Route name" ng-model="item.trunk_name" required>
+                        <input class="form-control" placeholder="Route name" ng-model="item.trunk_name" required />
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Имя транка (Alias)</label>
                     <div class="col-sm-10">
-                        <input class="form-control" placeholder="Route name (Alias)" ng-model="item.trunk_name_alias">
+                        <input class="form-control" placeholder="Route name (Alias)" ng-model="item.trunk_name_alias" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Емкость транка</label>
                     <div class="col-sm-10">
-                        <input class="form-control" placeholder="Емкость транка" ng-model="item.capacity">
+                        <input class="form-control" placeholder="Емкость транка" ng-model="item.capacity" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Порог загрузки %:</label>
                     <div class="col-sm-10">
-                        <input class="form-control" placeholder="Порог загрузки" ng-model="item.load_warning">
+                        <input class="form-control" placeholder="Порог загрузки" ng-model="item.load_warning" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Путь в регион:</label>
                     <div class="col-sm-10">
-                        <input class="form-control" placeholder="Путь в регион" ng-model="item.road_to_region">
+                        <input class="form-control" placeholder="Путь в регион" ng-model="item.road_to_region" />
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Автоматическая маршрутизация включена</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.auto_routing = !item.auto_routing">
-                            <button type="button" class="btn btn-sm {{item.auto_routing ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.auto_routing ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Автоматическая маршрутизация включена</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.auto_routing = !item.auto_routing">
+                                <button type="button" class="btn btn-sm {{item.auto_routing ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.auto_routing ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Наш транк</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.our_trunk = !item.our_trunk">
-                            <button type="button" class="btn btn-sm {{item.our_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.our_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Наш транк</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.our_trunk = !item.our_trunk">
+                                <button type="button" class="btn btn-sm {{item.our_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.our_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Авторизация по номеру</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.auth_by_number = !item.auth_by_number">
-                            <button type="button" class="btn btn-sm {{item.auth_by_number ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.auth_by_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Тех. номер 7800</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.orig_redirect_number_7800 = !item.orig_redirect_number_7800; item.orig_redirect_number = item.orig_redirect_number_7800 ? false : item.orig_redirect_number">
-                            <button type="button" class="btn btn-sm {{item.orig_redirect_number_7800 ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.orig_redirect_number_7800 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Redirecting Оригинация</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.orig_redirect_number = !item.orig_redirect_number; item.orig_redirect_number_7800 = item.orig_redirect_number ? false : orig_redirect_number_7800">
-                            <button type="button" class="btn btn-sm {{item.orig_redirect_number ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.orig_redirect_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Redirecting Терминация</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.term_redirect_number = !item.term_redirect_number">
-                            <button type="button" class="btn btn-sm {{item.term_redirect_number ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.term_redirect_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Минималки на Терм-плече</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.sw_minimalki = !item.sw_minimalki">
-                            <button type="button" class="btn btn-sm {{item.sw_minimalki ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.sw_minimalki ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Авторизация по номеру</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.auth_by_number = !item.auth_by_number">
+                                <button type="button" class="btn btn-sm {{item.auth_by_number ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.auth_by_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Доступен на хабе</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
-                            <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Тех. номер 7800</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.orig_redirect_number_7800 = !item.orig_redirect_number_7800; item.orig_redirect_number = item.orig_redirect_number_7800 ? false : item.orig_redirect_number">
+                                <button type="button" class="btn btn-sm {{item.orig_redirect_number_7800 ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.orig_redirect_number_7800 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Redirecting Оригинация</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.orig_redirect_number = !item.orig_redirect_number; item.orig_redirect_number_7800 = item.orig_redirect_number ? false : orig_redirect_number_7800">
+                                <button type="button" class="btn btn-sm {{item.orig_redirect_number ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.orig_redirect_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Redirecting Терминация</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.term_redirect_number = !item.term_redirect_number">
+                                <button type="button" class="btn btn-sm {{item.term_redirect_number ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.term_redirect_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Показыть в СТАТ</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.show_in_stat = !item.show_in_stat">
-                            <button type="button" class="btn btn-sm {{item.show_in_stat ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.show_in_stat ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Минималки на Терм-плече</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.sw_minimalki = !item.sw_minimalki">
+                                <button type="button" class="btn btn-sm {{item.sw_minimalki ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.sw_minimalki ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Доступен на хабе</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
+                                <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Показывать в СТАТ</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.show_in_stat = !item.show_in_stat">
+                                <button type="button" class="btn btn-sm {{item.show_in_stat ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.show_in_stat ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Мегатранк:В Регион</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.megatrunk_transfer_to_region = !item.megatrunk_transfer_to_region">
-                            <button type="button" class="btn btn-sm {{item.megatrunk_transfer_to_region ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.megatrunk_transfer_to_region ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Мегатранк:В Регион</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.megatrunk_transfer_to_region = !item.megatrunk_transfer_to_region">
+                                <button type="button" class="btn btn-sm {{item.megatrunk_transfer_to_region ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.megatrunk_transfer_to_region ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Мегатранк:В Мегатранк</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.megatrunk_transfer_to_megatrunk = !item.megatrunk_transfer_to_megatrunk">
-                            <button type="button" class="btn btn-sm {{item.megatrunk_transfer_to_megatrunk ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.megatrunk_transfer_to_megatrunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">Мегатранк:В Мегатранк</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.megatrunk_transfer_to_megatrunk = !item.megatrunk_transfer_to_megatrunk">
+                                <button type="button" class="btn btn-sm {{item.megatrunk_transfer_to_megatrunk ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.megatrunk_transfer_to_megatrunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -181,7 +193,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">По умолчанию</label>
                     <div class="col-sm-10">
-                        <input class="form-control" ng-model="item.default_priority" required>
+                        <input class="form-control" ng-model="item.default_priority" required />
                     </div>
                 </div>
                 <div class="form-group">
@@ -195,7 +207,7 @@
                                     <span class="badge">{{$index + 1}}</span>
                                 </td>
                                 <td width="10%">
-                                    <input class="form-control input-sm" ng-model="line.priority" required>
+                                    <input class="form-control input-sm" ng-model="line.priority" required />
                                 </td>
 
                                 <td width="5%" style="cursor: ns-resize">
@@ -393,19 +405,19 @@
                                     NOA:
                                 </td>
                                 <td width="20%">
-                                    <input class="form-control input-sm" ng-model="line.noa" required>
+                                    <input class="form-control input-sm" ng-model="line.noa" required />
                                 </td>
                                 <td width="5%" style="cursor: ns-resize">
                                     Длина&nbsp;номера:
                                 </td>
                                 <td width="20%">
-                                    <input class="form-control input-sm" ng-model="line.length" required>
+                                    <input class="form-control input-sm" ng-model="line.length" required />
                                 </td>
                                 <td width="5%" style="cursor: ns-resize">
                                     Префикс:
                                 </td>
                                 <td width="20%">
-                                    <input class="form-control input-sm" ng-model="line.prefix" required>
+                                    <input class="form-control input-sm" ng-model="line.prefix" required />
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeNumberPreprocessing($index)"></button>
