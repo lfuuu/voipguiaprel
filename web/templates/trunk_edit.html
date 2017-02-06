@@ -162,24 +162,15 @@
 
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Мегатранк:В Регион</label>
+                        <label class="col-sm-8 control-label">Технический транк</label>
                         <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.megatrunk_transfer_to_region = !item.megatrunk_transfer_to_region">
-                                <button type="button" class="btn btn-sm {{item.megatrunk_transfer_to_region ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.megatrunk_transfer_to_region ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            <div class="btn-group" ng-click="item.tech_trunk = !item.tech_trunk">
+                                <button type="button" class="btn btn-sm {{item.tech_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.tech_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Мегатранк:В Мегатранк</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.megatrunk_transfer_to_megatrunk = !item.megatrunk_transfer_to_megatrunk">
-                                <button type="button" class="btn btn-sm {{item.megatrunk_transfer_to_megatrunk ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.megatrunk_transfer_to_megatrunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="form-group">
