@@ -51,12 +51,13 @@
                                     setBlock(index, data[index]);
                                 }
                             }
+
                             var $error = document.getElementById('error');
                             if ($error) {
                                 $error.style.visibility = 'hidden';
                             }
                         } catch (error) {
-                            setError('Ошибка разбора данных' + error);
+                            setError('Ошибка разбора данных: ' + error);
                         }
                     },
                     setError = function (message) {
@@ -109,10 +110,24 @@
                             }
                         }
 
-                        if (!instanceId) {
+                        if (!instanceId || params instanceof String) {
                             maxPriority = 1;
                             $content.innerText = params;
                             $content.className = 'info error';
+                        } else {
+                            if (Object.keys(params.regionList).length > 1) {
+                                for (var index in params.regionList) {
+                                    if (
+                                        params.regionList.hasOwnProperty(index)
+                                        && typeof params.regionList[index] == 'object'
+                                        && params.regionList[index].regionId != params.instanceId
+                                    ) {
+                                        regions.push(params.regionList[index].regionName);
+                                    }
+                                }
+                            } else {
+                                regions.push(params.regionList[0].regionName);
+                            }
                         }
 
                         $headerLink.setAttribute('target', '_blank');
@@ -120,20 +135,6 @@
                         $headerLink.innerText = title + (instanceId ? ' (' + params.instanceId + ')' : '');
 
                         $headerRegions.className = 'header small';
-
-                        if (Object.keys(params.regionList).length > 1) {
-                            for (var index in params.regionList) {
-                                if (
-                                        params.regionList.hasOwnProperty(index)
-                                        && typeof params.regionList[index] == 'object'
-                                        && params.regionList[index].regionId != params.instanceId
-                                ) {
-                                    regions.push(params.regionList[index].regionName);
-                                }
-                            }
-                        } else {
-                            regions.push(params.regionList[0].regionName);
-                        }
                         $headerRegions.innerText = regions.join(', ');
 
                         $header.className = 'header';
