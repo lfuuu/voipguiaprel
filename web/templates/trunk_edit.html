@@ -149,6 +149,7 @@
                         </div>
                     </div>
 
+
                     <div class="col-sm-4">
                         <label class="col-sm-8 control-label">Показывать в СТАТ</label>
                         <div class="col-sm-4">
@@ -171,7 +172,19 @@
                         </div>
                     </div>
 
+                    <div class="col-sm-4">
+                        <label class="col-sm-8 control-label">PSTN транк</label>
+                        <div class="col-sm-4">
+                            <div class="btn-group" ng-click="item.pstn_trunk = !item.pstn_trunk">
+                                <button type="button" class="btn btn-sm {{item.pstn_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.pstn_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+
+
 
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Таблица маршрутизации</label>

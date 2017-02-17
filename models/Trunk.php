@@ -41,7 +41,7 @@ class Trunk extends \yii\db\ActiveRecord
             [['trunk_name','trunk_name_alias'], 'string', 'max' => 32],
             [['default_priority'], 'integer', 'min'=> -10, 'max' => 10],
             [['auto_routing', 'source_rule_default_allowed', 'destination_rule_default_allowed', 'source_trunk_rule_default_allowed',
-                'our_trunk','auth_by_number','orig_redirect_number_7800','orig_redirect_number','term_redirect_number','show_in_stat','sw_minimalki','sw_shared','tech_trunk'], 'boolean'],
+                'our_trunk','auth_by_number','orig_redirect_number_7800','orig_redirect_number','term_redirect_number','show_in_stat','sw_minimalki','sw_shared','tech_trunk','pstn_trunk'], 'boolean'],
             [['route_table_id','capacity','load_warning'], 'integer'],
             [['road_to_regions'],  'string', 'max' => 50 ],
         ];
