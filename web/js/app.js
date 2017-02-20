@@ -1,9 +1,13 @@
-var app = angular.module('app', ['ui.bootstrap', 'ui.select2', 'ui.sortable']);
-app.run(function($rootScope, $templateCache){
-	$rootScope.tabs = [];
+var app = angular
+    .module('app', ['ui.bootstrap', 'ui.select2', 'ui.sortable'])
+    .constant('STAT_HOST', 'https://stat.mcn.ru');
 
-	for (var t in window.templates) {
-		$templateCache.put(t, window.templates[t]);
-	}
-	delete window.templates;
+app.run(function($rootScope, $templateCache){
+    $rootScope.tabs = [];
+
+    $.each(window.templates, function () {
+        $templateCache.put(this, window.templates[this]);
+    });
+
+    delete window.templates;
 });

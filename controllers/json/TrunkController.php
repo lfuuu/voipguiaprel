@@ -2,6 +2,7 @@
 
 namespace app\controllers\json;
 
+use app\models\billing\ServiceTrunk;
 use app\models\TrunkNumberPreprocessing;
 use app\models\TrunkTrunkRule;
 use Yii;
@@ -65,6 +66,13 @@ class TrunkController extends JsonController
         }
 
         return $item;
+    }
+
+    public function actionGetServiceTrunks()
+    {
+        return isset($this->request['trunk_id']) && (int)$this->request['trunk_id'] ?
+            ServiceTrunk::findActualByTrunkId($this->request['trunk_id']) :
+            [];
     }
 
     public function actionSave()
