@@ -3,7 +3,6 @@
 namespace app\models\billing;
 
 use \Yii;
-use yii\db\Expression;
 
 class ServiceTrunk extends \yii\db\ActiveRecord
 {
@@ -18,7 +17,7 @@ class ServiceTrunk extends \yii\db\ActiveRecord
 
     /**
      * @param int $trunkId
-     * @return \yii\db\ActiveRecord[]
+     * @return self[]
      */
     public static function findActualByTrunkId($trunkId)
     {

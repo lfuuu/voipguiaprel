@@ -3,6 +3,10 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
     if (params.id) {
         Trunk.get({id: params.id}).then(function(data){
             $scope.item = data;
+
+            Trunk.serviceTrunks(params.id).then(function(serviceTrunks){
+                $scope.serviceTrunks = serviceTrunks;
+            });
         });
     } else {
         $scope.item = {
@@ -61,15 +65,14 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
         $modalInstance.dismiss();
     };
 
-    $scope.openServiceTrunks = function (trunkId) {
-        Trunk.serviceTrunks(trunkId).then(function(data){
-            $.each(data, function () {
-                $window.open(
-                    STAT_HOST
-                    + '/usage/trunk/edit-by'
-                    + '?clientAccountId=' + this.client_account_id
-                    + '&trunkId=' + this.trunk_id);
-            });
+    $scope.openServiceTrunks = function () {
+        $.each($scope.serviceTrunks, function () {
+            $window.open(
+                STAT_HOST + '/usage/trunk/edit-by?' + $.param({
+                    'clientAccountId': this.client_account_id,
+                    'trunkId': this.trunk_id
+                })
+            );
         });
     };
 

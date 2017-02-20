@@ -70,7 +70,7 @@ class TrunkController extends JsonController
 
     public function actionGetServiceTrunks()
     {
-        return $this->request['trunk_id'] ?
+        return isset($this->request['trunk_id']) && (int)$this->request['trunk_id'] ?
             ServiceTrunk::findActualByTrunkId($this->request['trunk_id']) :
             [];
     }
