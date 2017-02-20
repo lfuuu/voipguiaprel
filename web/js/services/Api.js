@@ -126,6 +126,9 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
 		delete: function(id) {
 			list = undefined;
 			return ApiLoader.post(url + 'delete', {id: id});
+		},
+		serviceTrunks: function (trunkId) {
+			return ApiLoader.post(url + 'get-service-trunks', {'trunk_id': trunkId});
 		}
 	};
 });
