@@ -40,7 +40,7 @@ a:hover {
 .info {
     font-weight: normal;
     font-size: 12px;
-    height: 20px;
+    height: 30px;
 }
 
 #monitor {
@@ -53,6 +53,9 @@ a:hover {
 .icon-dollar:before {
     content: '\0024';
     font-size: 45px;
+    position: absolute;
+    top: 30px;
+    right: 5px;
 }
 
 .enabled {
