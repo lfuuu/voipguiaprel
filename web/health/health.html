@@ -41,20 +41,27 @@
                 },
 
                 init: function () {
+                    var self = this;
+
                     this.$monitor = this.get(this.monitorId);
                     this.$lastUpdate = this.get(this.lastUpdateId);
 
                     this.request = new XMLHttpRequest();
-
                     this.request.onreadystatechange = function () {
-                        if (this.request.readyState === 4) {
-                            if (this.request.status === 200) {
-                                this.setResult(this.request.responseText);
-                            } else {
-                                this.setError('Источик данных недоступен: ' + this.request.status + ' ' + this.request.statusText);
-                            }
+                        var request = self.request;
+
+                        if (request.readyState !== 4) {
+                            return false;
                         }
-                    }.bind(this);
+
+                        if (request.status === 200) {
+                            self.setResult(request.responseText);
+                        } else {
+                            self.setError('Источник данных недоступен: ' + request.status + ' ' + request.statusText);
+                        }
+
+                        return true;
+                    };
                 },
 
                 get: function (selector) {
