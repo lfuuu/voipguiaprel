@@ -8,7 +8,8 @@
             'use strict';
 
             var health = {
-                dataUri: '/assets/healthData.json',
+                //dataUri: '/assets/healthData.json',
+                dataUri: 'bad.json',
                 requestTimeout: 2000,
                 hostnamePort: 8032,
                 monitorId: '#monitor',
@@ -138,7 +139,7 @@
                         $header = this.create('div', {class: 'header'}),
                         $headerInfo = this.create('div', {class: 'header info'}),
                         $footerInfo = this.create('div', {class: 'footer info'}),
-                        $content = this.create('div'),
+                        $content = this.create('div', {class: 'content'}),
                         maxPriority = 0,
                         instanceId = parseInt(params.instanceId, 10),
                         regions = [];
@@ -162,8 +163,8 @@
                                 })
                             );
 
-                            if (priority[params[index].statusId] > maxPriority) {
-                                maxPriority = priority[params[index].statusId];
+                            if (this.priority[params[index].statusId] > maxPriority) {
+                                maxPriority = this.priority[params[index].statusId];
                             }
                         }
                     }
@@ -241,9 +242,9 @@
 
             document.addEventListener('DOMContentLoaded', function () {
                 health.init();
-                setInterval(function () {
+                //setInterval(function () {
                     health.load();
-                }, health.requestTimeout);
+                //}, health.requestTimeout);
             });
         })();
     </script>
