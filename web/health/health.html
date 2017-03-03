@@ -8,8 +8,7 @@
             'use strict';
 
             var health = {
-                //dataUri: '/assets/healthData.json',
-                dataUri: 'bad.json',
+                dataUri: '/assets/healthData.json',
                 requestTimeout: 2000,
                 hostnamePort: 8032,
                 monitorId: '#monitor',
@@ -242,9 +241,9 @@
 
             document.addEventListener('DOMContentLoaded', function () {
                 health.init();
-                //setInterval(function () {
+                setInterval(function () {
                     health.load();
-                //}, health.requestTimeout);
+                }, health.requestTimeout);
             });
         })();
     </script>
