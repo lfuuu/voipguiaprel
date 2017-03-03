@@ -99,6 +99,11 @@ a:hover {
     right: 0;
     bottom: 3px;
     border-top: 1px solid #AAA;
+    height: 20px;
+}
+
+.block div.content {
+    font-size: 12px;
 }
 
 .block .message {
