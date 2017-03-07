@@ -110,7 +110,7 @@
                 unsetError: function () {
                     var $error = this.get('#error');
                     if ($error) {
-                        $error.style.visibility = 'hidden';
+                        $error.style.display = 'none';
                     }
                 },
 
@@ -213,11 +213,14 @@
                             text: regions.join(', ')
                         })
                     );
-                    $headerInfo.appendChild(
-                        this.create('div', {
-                            class: 'pull-right' + (!params.autoLockFinance ? ' icon-dollar enabled' : '')
-                        })
-                    );
+
+                    if (params.autoLockFinance !== undefined) {
+                        $headerInfo.appendChild(
+                            this.create('div', {
+                                class: 'pull-right' + (!params.autoLockFinance ? ' icon-dollar enabled' : '')
+                            })
+                        );
+                    }
 
                     $footerInfo.appendChild(
                         this.create('div', {
