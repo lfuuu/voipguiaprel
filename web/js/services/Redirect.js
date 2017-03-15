@@ -2,7 +2,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $log) {
 
 	var openModal = function(controller, template, params) {
 		var modal = $modal.open({
-			templateUrl: template,
+			templateUrl: template + '?rnd=' + Math.random(),
 			controller: controller,
 			resolve: {
 				params: function() { return params; }

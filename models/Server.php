@@ -25,22 +25,33 @@ use app\queries\ServerQuery;
  * @property string $h_radius_request_delay
  * @property string $h_event_management
  * @property string $h_local_events
- *
+ * @property bool $is_need_db_do_migrate
+
+ * @property InstanceSettings $instanceSettings
  * @property string $apiUrl
- * @property
  */
 class Server extends \yii\db\ActiveRecord
 {
+
+    /**
+     * @return string
+     */
     public static function tableName()
     {
         return 'public.server';
     }
 
+    /**
+     * @return ServerQuery
+     */
     public static function find()
     {
         return new ServerQuery(get_called_class());
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [
@@ -60,11 +71,17 @@ class Server extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @return string
+     */
     public function getApiUrl()
     {
         return'http://' . $this->hostname . ':8032/';
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getInstanceSettings()
     {
         return $this->hasOne(InstanceSettings::className(), ['id' => 'id']);
