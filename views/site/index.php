@@ -39,7 +39,7 @@ use yii\helpers\Url;
                   <span class="label label-success">Не мигрировать БД</span>
                <?php } ?>
                 <?php if(!$item->instanceSettings->auto_lock_finance) { ?>
-                    <span class="label label-error">Финансовая автоблокировка выкл</span>
+                    <span class="label label-warning">Финансовая автоблокировка выкл</span>
                 <?php } ?>
             </td>
         </tr>
