@@ -5,17 +5,19 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "auth.hub".
- *
  * @property integer $id
  * @property string $dt
  * @property string $name
  * @property string $note
+ *
+ * @property Server $servers
+ * @property InstanceSettings $instanceSettings
  */
 class Hub extends \yii\db\ActiveRecord
 {
+
     /**
-     * @inheritdoc
+     * @return string
      */
     public static function tableName()
     {
@@ -23,7 +25,7 @@ class Hub extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
     public function rules()
     {
@@ -34,9 +36,9 @@ class Hub extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 50]
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * @return array
      */
     public function attributeLabels()
     {
@@ -48,11 +50,17 @@ class Hub extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getServers()
     {
         return $this->hasMany(Server::className(), ['hub_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getInstanceSettings()
     {
         return $this->hasOne(InstanceSettings::className(), ['id' => 'id']);
