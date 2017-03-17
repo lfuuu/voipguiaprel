@@ -108,20 +108,21 @@ class TestAuthController extends JsonController
         }
 
         $apiUrl = $item->server->apiUrl;
-
-        if (isset($this->request['isReserve']) && $item->server->hostname_reserve) {
-            $apiUrl = $item->server->apiUrlReserve;
-        }
-
-        $request = $apiUrl . 'test/auth?' . http_build_query([
+        $apiParams = [
             'trunk_name' => $item->trunk_name,
             'src_number' => $item->src_number,
             'dst_number' => $item->dst_number,
             'redirect_number' => $item->redirect_number,
             'src_noa' => $item->src_noa,
             'dst_noa' => $item->dst_noa,
-        ]);
+        ];
 
+        if (isset($this->request['isReserve']) && $item->server->hostname_reserve) {
+            $apiUrl = $item->server->apiUrlReserve;
+            $apiParams['server_id'] = $item->server_id;
+        }
+
+        $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
 
         $response = file_get_contents($request);
         $response = str_replace("\r", "", $response);
