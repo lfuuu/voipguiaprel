@@ -113,9 +113,6 @@ class TestAuthController extends JsonController
             $apiUrl = $item->server->apiUrlReserve;
         }
 
-        print $apiUrl;
-        exit;
-
         $request = $apiUrl . 'test/auth?' . http_build_query([
             'trunk_name' => $item->trunk_name,
             'src_number' => $item->src_number,
