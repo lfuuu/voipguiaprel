@@ -21,6 +21,7 @@
                 <button type="button" class="btn {{item.type_id == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(3)">РосСвязь</button>
                 <button type="button" class="btn {{item.type_id == 4 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(4)">CSV</button>
                 <button type="button" class="btn {{item.type_id == 5 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(5)">Дорогие коды</button>
+                <button type="button" class="btn {{item.type_id == 6 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(6)">ННП</button>
             </div>
         </div>
     </div>
@@ -70,7 +71,6 @@
     </div>
 
     <div ng-if="item.type_id == 2">
-
         <div class="form-group">
             <label class="col-sm-2 control-label">Местные сети</label>
             <div class="col-sm-10">
@@ -104,7 +104,6 @@
     </div>
 
     <div ng-if="item.type_id == 3">
-
         <div class="form-group">
             <span class="col-sm-2 control-label"></span>
             <div class="col-sm-10">
@@ -146,7 +145,6 @@
             </div>
         </div>
 
-
         <div class="form-group">
             <label class="col-sm-2 control-label">Оператор</label>
             <div class="col-sm-10">
@@ -182,12 +180,9 @@
 
             </div>
         </div>
-
     </div>
 
-
     <div ng-if="item.type_id == 4">
-
         <div class="form-group" ng-if="item.id">
             <label class="col-sm-2 control-label"></label>
             <div class="col-sm-10">
@@ -218,9 +213,85 @@
                 </style>
             </div>
         </div>
-
     </div>
 
+    <div ng-if="item.type_id == 6">
+        <label class="col-sm-2 control-label"></label>
+        <div class="col-sm-10">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#npp-destination" data-toggle="tab">ННП-Направление</a></li>
+                <li><a href="#nnp-filters" data-toggle="tab">ННП-Фильтры</a></li>
+            </ul>
+            <br />
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="npp-destination">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Направление</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_destination" style="width: 100%" >
+                                <option value="">-- Выберите --</option>
+                                <option ng-repeat="destination in destinationList" value="{{destination.id}}">{{destination.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="nnp-filters">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Страна</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_country" ng-change="setNppCountry(item)" style="width: 100%" >
+                                <option value="">-- Выберите --</option>
+                                <option ng-repeat="country in countryList" value="{{country.code}}">{{country.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-if="item.nnp_country">
+                        <label class="col-sm-2 control-label">Регион</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_region" style="width: 100%" >
+                                <option value="">-- Выберите --</option>
+                                <option ng-repeat="region in regionList" value="{{region.id}}">{{region.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-if="item.nnp_country && item.nnp_region">
+                        <label class="col-sm-2 control-label">Город</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_city" style="width: 100%" >
+                                <option value="">-- Выберите --</option>
+                                <option ng-repeat="city in cityList" value="{{city.id}}">{{city.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-if="item.nnp_country">
+                        <label class="col-sm-2 control-label">Оператор</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_operator" style="width: 100%" >
+                                <option value="">-- Выберите --</option>
+                                <option ng-repeat="operator in operatorList" value="{{operator.id}}">{{operator.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Тип NDC</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_ndc_type" style="width: 100%" >
+                                <option value="">-- Выберите --</option>
+                                <option ng-repeat="ndcType in ndcTypeList" value="{{ndcType.id}}">{{ndcType.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
 
 </div>
 

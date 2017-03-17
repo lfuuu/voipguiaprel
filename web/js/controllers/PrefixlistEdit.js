@@ -1,173 +1,195 @@
-var PrefixlistEditCtrl = function($scope, Prefixlist, Billing, params, $modalInstance, $window, Redirect, $timeout) {
+var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, params, $modalInstance, $window, Redirect) {
 
-	if (params.id) {
-		Prefixlist.get({id: params.id}).then(function(data){
-			$scope.item = data;
+    $scope.$watch('item.rossvyaz_country_id', function (newValue, oldValue) {
+        if (newValue != oldValue) {
+            $scope.item.rossvyaz_operator_id = null;
+            $scope.item.rossvyaz_region_id = null;
+            $scope.item.rossvyaz_city_id = null;
+            $scope.cities = null;
+        }
+    });
 
-			$scope.setType($scope.item.type_id);
+    $scope.$watch('item.rossvyaz_region_id', function (newValue, oldValue) {
+        if (newValue != oldValue) {
+            $scope.item.rossvyaz_city_id = null;
+            $scope.cities = null;
+            Billing.cities($scope.item).then(function (data){
+                $scope.cities = data;
+            });
+        }
+    });
 
-			if ($scope.item.type_id == 1) {
-				var manual_list = [];
-				for(var i in $scope.item.manual_list) {
-					manual_list.push({prefix: $scope.item.manual_list[i]})
-				}
-				$scope.item.manual_list = manual_list;
-			}
+    if (params.id) {
+        Prefixlist.get({id: params.id}).then(function (data) {
+            $scope.item = data;
 
-			if ($scope.item.type_id == 2) {
-				var smezhnost_list = [];
-				for(var i in $scope.item.smezhnost_list) {
-					smezhnost_list.push({network_type_id: $scope.item.smezhnost_list[i]})
-				}
-				$scope.item.smezhnost_list = smezhnost_list;
-			}
+            $scope.setType($scope.item.type_id);
 
-			if ($scope.item.type_id == 3) {
-				if ($scope.item.rossvyaz_region_id) {
-					Billing.cities($scope.item).then(function(data){
-						$scope.cities = data;
-					});
-				}
-			}
+            if ($scope.item.type_id == 1) {
+                var manual_list = [];
+                for (var i in $scope.item.manual_list) {
+                    manual_list.push({prefix: $scope.item.manual_list[i]})
+                }
+                $scope.item.manual_list = manual_list;
+            }
 
-			if ($scope.item.type_id == 4) {
-				setTimeout(function(){
-					$('#upload-csv-file').fileapi({
-						url: '/prefixlist/upload-csv?id=' + $scope.item.id,
-						multiple: true,
-						maxSize: 20 * FileAPI.MB,
-						autoUpload: true,
-						elements: {
-							size: '.js-size',
-							active: { show: '.js-upload', hide: '.js-browse' },
-							progress: '.js-progress'
-						},
-						onComplete: function(e, result) {
-							$scope.item.count = result.result.data.count;
-							$('#upload-csv-file').hide();
-							$scope.$apply('item.id');
-						}
-					});
-				}, 200);
-			}
+            if ($scope.item.type_id == 2) {
+                var smezhnost_list = [];
+                for (var i in $scope.item.smezhnost_list) {
+                    smezhnost_list.push({network_type_id: $scope.item.smezhnost_list[i]})
+                }
+                $scope.item.smezhnost_list = smezhnost_list;
+            }
 
+            if ($scope.item.type_id == 3) {
+                if ($scope.item.rossvyaz_region_id) {
+                    Billing.cities($scope.item).then(function (data) {
+                        $scope.cities = data;
+                    });
+                }
+            }
 
-			$scope.$watch('item.rossvyaz_country_id', function(newValue, oldValue) {
-				if (newValue != oldValue) {
-					$scope.item.rossvyaz_operator_id = null;
-					$scope.item.rossvyaz_region_id = null;
-					$scope.item.rossvyaz_city_id = null;
-					$scope.cities = null;
-				}
-			});
+            if ($scope.item.type_id == 6) {
+                try {
+                    var filterData = $.parseJSON($scope.item.nnp_filter_json);
 
-			$scope.$watch('item.rossvyaz_region_id', function(newValue, oldValue) {
-				if (newValue != oldValue) {
-					$scope.item.rossvyaz_city_id = null;
-					$scope.cities = null;
-					Billing.cities($scope.item).then(function(data){
-						$scope.cities = data;
-					});
-				}
-			});
+                    $scope.item.nnp_destination = filterData.destination;
+                    $scope.item.nnp_country = filterData.country;
+                    $scope.item.nnp_city = filterData.city;
+                    $scope.item.nnp_region = filterData.region;
+                    $scope.item.nnp_operator = filterData.operator;
+                    $scope.item.nnp_ndc_type = filterData.ndc_type;
+                } catch (error) {
+                    console.log(error)
+                }
+            }
 
-		});
-	} else {
-		$scope.item = {
+            if ($scope.item.type_id == 4) {
+                setTimeout(function () {
+                    $('#upload-csv-file').fileapi({
+                        url: '/prefixlist/upload-csv?id=' + $scope.item.id,
+                        multiple: true,
+                        maxSize: 20 * FileAPI.MB,
+                        autoUpload: true,
+                        elements: {
+                            size: '.js-size',
+                            active: { show: '.js-upload', hide: '.js-browse' },
+                            progress: '.js-progress'
+                        },
+                        onComplete: function (e, result) {
+                            $scope.item.count = result.result.data.count;
+                            $('#upload-csv-file').hide();
+                            $scope.$apply('item.id');
+                        }
+                    });
+                }, 200);
+            }
+        });
+    } else {
+        $scope.item = {
             server_id: $scope.server.id,
-			manual_list: [],
-			smezhnost_list: [],
-			rossvyaz_operators: [],
-			exclude_operators: false
-		};
+            manual_list: [],
+            smezhnost_list: [],
+            rossvyaz_operators: [],
+            exclude_operators: false,
+            nnp_destination: null,
+            nnp_country: null,
+            nnp_city: null,
+            nnp_region: null,
+            nnp_operator: null,
+            nnp_ndc_type: null
+        };
+    }
 
-		$scope.$watch('item.rossvyaz_country_id', function(newValue, oldValue) {
-			if (newValue != oldValue) {
-				$scope.item.rossvyaz_operator_id = null;
-				$scope.item.rossvyaz_region_id = null;
-				$scope.item.rossvyaz_city_id = null;
-				$scope.cities = null;
-			}
-		});
+    $scope.setType = function(type_id) {
+        $scope.item.type_id = type_id;
+    };
 
-		$scope.$watch('item.rossvyaz_region_id', function(newValue, oldValue) {
-			if (newValue != oldValue) {
-				$scope.item.rossvyaz_city_id = null;
-				$scope.cities = null;
-				Billing.cities($scope.item).then(function(data){
-					$scope.cities = data;
-				});
-			}
-		});
-	}
+    $scope.addPrefix = function () {
+        $scope.item.manual_list.unshift({prefix:''});
+    };
 
-	$scope.setType = function(type_id) {
-		$scope.item.type_id = type_id;
-	};
+    $scope.removePrefix = function (index) {
+        $scope.item.manual_list.splice(index, 1);
+    };
 
-	$scope.addPrefix = function() {
-		$scope.item.manual_list.unshift({prefix:''});
-	};
+    $scope.addSmezhnost= function () {
+        $scope.item.smezhnost_list.unshift({network_type_id:''});
+    };
 
-	$scope.removePrefix = function(index) {
-		$scope.item.manual_list.splice(index, 1);
-	};
+    $scope.removeSmezhnost = function (index) {
+        $scope.item.smezhnost_list.splice(index, 1);
+    };
 
-	$scope.addSmezhnost= function() {
-		$scope.item.smezhnost_list.unshift({network_type_id:''});
-	};
+    $scope.addOperator = function () {
+        Redirect.selectRossvyazOperator().then(function (item) {
+            $scope.item.rossvyaz_operators.push({
+                id: item.id,
+                name: item.name
+            });
+        });
+    };
 
-	$scope.removeSmezhnost = function(index) {
-		$scope.item.smezhnost_list.splice(index, 1);
-	};
+    $scope.removeOperator = function (index) {
+        $scope.item.rossvyaz_operators.splice(index, 1);
+    };
 
-	$scope.addOperator = function() {
-		Redirect.selectRossvyazOperator().then(function(item) {
-			$scope.item.rossvyaz_operators.push({
-				id: item.id,
-				name: item.name
-			});
-		});
-	};
+    $scope.setNppCountry = function (item) {
+        Nnp.cityList(item.nnp_country).then(function (data) {
+            $scope.cityList = data;
+        });
 
-	$scope.removeOperator = function(index) {
-		$scope.item.rossvyaz_operators.splice(index, 1);
-	};
+        Nnp.regionList(item.nnp_country).then(function (data) {
+            $scope.regionList = data;
+        });
 
-	Billing.countries().then(function(data){
-		$scope.countries = data;
-	});
+        Nnp.operatorList(item.nnp_country).then(function (data) {
+            $scope.operatorList = data;
+        });
+    };
 
-	Billing.regions().then(function(data){
-		$scope.regions = data;
-	});
+    Billing.countries().then(function(data){
+        $scope.countries = data;
+    });
 
-	Billing.networkTypes().then(function(data){
-		$scope.networkTypes = data;
-	});
+    Billing.regions().then(function(data){
+        $scope.regions = data;
+    });
 
+    Billing.networkTypes().then(function(data){
+        $scope.networkTypes = data;
+    });
 
-	$scope.save = function()
-	{
-		var data = angular.copy($scope.item);
-		data.manual_list = [];
-		for(var i in $scope.item.manual_list) {
-			data.manual_list.push($scope.item.manual_list[i].prefix)
-		}
+    Nnp.destinationList().then(function (data) {
+        $scope.destinationList = data;
+    });
 
-		data.smezhnost_list = [];
-		for(var i in $scope.item.smezhnost_list) {
-			data.smezhnost_list.push($scope.item.smezhnost_list[i].network_type_id)
-		}
+    Nnp.countryList().then(function (data) {
+        $scope.countryList = data;
+    });
 
+    Nnp.ndcTypeList().then(function (data) {
+        $scope.ndcTypeList = data;
+    });
 
-		Prefixlist.save(data).then(function(response) {
-			$modalInstance.close();
-		});
-	};
+    $scope.save = function () {
+        var data = angular.copy($scope.item);
+        data.manual_list = [];
+        for (var i in $scope.item.manual_list) {
+            data.manual_list.push($scope.item.manual_list[i].prefix)
+        }
 
-	$scope.back = function()
-	{
-		$modalInstance.dismiss();
-	};
+        data.smezhnost_list = [];
+        for (var i in $scope.item.smezhnost_list) {
+            data.smezhnost_list.push($scope.item.smezhnost_list[i].network_type_id)
+        }
+
+        Prefixlist.save(data).then(function () {
+            $modalInstance.close();
+        });
+    };
+
+    $scope.back = function () {
+        $modalInstance.dismiss();
+    };
 };

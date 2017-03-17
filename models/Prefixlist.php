@@ -4,13 +4,14 @@ namespace app\models;
 
 use app\classes\ArrayToCsv;
 use app\queries\PrefixlistQuery;
+use yii\helpers\Json;
 
 /**
  * @property int $id
- * @property string $name
  * @property int $server_id
- * @property int $type_id
+ * @property string $name
  * @property string $manual_list
+ * @property int $type_id
  * @property bool $rossvyaz_mob
  * @property string $rossvyaz_country
  * @property string $rossvyaz_region
@@ -18,25 +19,39 @@ use app\queries\PrefixlistQuery;
  * @property int $rossvyaz_country_id
  * @property int $rossvyaz_region_id
  * @property int $rossvyaz_city_id
- * @property string $rossvyaz_operators
- * @property string $rossvyaz_operator_ids
- * @property string $smezhnost_list
- * @property int $network_config_id
+ * @property string[] $rossvyaz_operators
+ * @property int[] $rossvyaz_operator_ids
  * @property int $count
- * @property
+ * @property bool $exclude_operators
+ * @property int[] $smezhnost_list
+ * @property int $network_config_id
+ * @property bool $sw_shared
+ * @property string $nnp_filter_json
  */
 class Prefixlist extends \yii\db\ActiveRecord
 {
+
+    /**
+     * @return string
+     */
     public static function tableName()
     {
         return 'auth.prefixlist';
     }
 
+    /**
+     * @return PrefixlistQuery
+     */
     public static function find()
     {
         return new PrefixlistQuery(get_called_class());
     }
 
+    /**
+     * @param Server $server
+     * @param array $data
+     * @return Prefixlist
+     */
     public static function create(Server $server, array $data = null)
     {
         $item = new self();
@@ -45,6 +60,9 @@ class Prefixlist extends \yii\db\ActiveRecord
         return $item;
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [
@@ -55,12 +73,18 @@ class Prefixlist extends \yii\db\ActiveRecord
             [['rossvyaz_country_id', 'rossvyaz_region_id', 'rossvyaz_city_id', 'network_config_id'], 'integer'],
             [['rossvyaz_mob'], 'boolean'],
             [['exclude_operators'], 'boolean'],
+            ['nnp_filter_json', 'string'],
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getManualList()
     {
-        if ($this->manual_list == '{}') return [];
+        if ($this->manual_list == '{}') {
+            return [];
+        }
 
         $list = [];
         if ($this->manual_list && $this->manual_list != '{}') {
@@ -72,6 +96,10 @@ class Prefixlist extends \yii\db\ActiveRecord
         return $list;
     }
 
+    /**
+     * @param array $list
+     * @return $this
+     */
     public function setManualList(array $list)
     {
         sort($list);
@@ -80,10 +108,14 @@ class Prefixlist extends \yii\db\ActiveRecord
         return $this;
     }
 
-
+    /**
+     * @return array
+     */
     public function getSmezhnostList()
     {
-        if ($this->smezhnost_list == '{}') return [];
+        if ($this->smezhnost_list == '{}') {
+            return [];
+        }
 
         $list = [];
         if ($this->smezhnost_list && $this->smezhnost_list != '{}') {
@@ -95,6 +127,10 @@ class Prefixlist extends \yii\db\ActiveRecord
         return $list;
     }
 
+    /**
+     * @param array $list
+     * @return $this
+     */
     public function setSmezhnostList(array $list)
     {
         sort($list);
@@ -103,6 +139,9 @@ class Prefixlist extends \yii\db\ActiveRecord
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getRossvyazOperators()
     {
         $list = [];
@@ -129,6 +168,9 @@ class Prefixlist extends \yii\db\ActiveRecord
         return $list;
     }
 
+    /**
+     * @return array
+     */
     public function getRossvyazOperatorIds()
     {
         $list = [];
@@ -142,6 +184,10 @@ class Prefixlist extends \yii\db\ActiveRecord
         return $list;
     }
 
+    /**
+     * @param array $list
+     * @return $this
+     */
     public function setRossvyazOperators(array $list)
     {
         $list_ids = [];
@@ -156,7 +202,30 @@ class Prefixlist extends \yii\db\ActiveRecord
         return $this;
     }
 
+    /**
+     * @param array $input
+     * @return $this
+     */
+    public function setNnpFilters(array $input)
+    {
+        $filters = [
+            'destination' => isset($input['nnp_destination']) ? $input['nnp_destination'] : '',
+            'country' => isset($input['nnp_country']) ? $input['nnp_country'] : '',
+            'city' => isset($input['nnp_city']) ? $input['nnp_city'] : '',
+            'region' => isset($input['nnp_region']) ? $input['nnp_region'] : '',
+            'operator' => isset($input['nnp_operator']) ? $input['nnp_operator'] : '',
+            'ndc_type' => isset($input['nnp_ndc_type']) ? $input['nnp_ndc_type'] : '',
+        ];
+        $this->nnp_filter_json = Json::encode($filters);
+        return $this;
+    }
 
+    /**
+     * @param array $fields
+     * @param array $expand
+     * @param bool $recursive
+     * @return array
+     */
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         $data = parent::toArray($fields, $expand, $recursive);

@@ -774,3 +774,27 @@ app.factory('List', function (Trunk, TrunkGroup, Prefixlist, RouteCase, Outcome,
     };
 });
 
+app.factory('Nnp', function (ApiLoader) {
+    var url = '/json/nnp/';
+    return {
+        destinationList: function() {
+            return ApiLoader.post(url + 'destination');
+        },
+        countryList: function () {
+            return ApiLoader.post(url + 'country');
+        },
+        regionList: function (countryCode) {
+            return ApiLoader.post(url + 'region' + (countryCode ? '?countryCode=' + countryCode : ''));
+        },
+        cityList: function (countryCode) {
+            return ApiLoader.post(url + 'city' + (countryCode ? '?countryCode=' + countryCode : ''));
+        },
+        operatorList: function (countryCode) {
+            return ApiLoader.post(url + 'operator' + (countryCode ? '?countryCode=' + countryCode : ''));
+        },
+        ndcTypeList: function () {
+            return ApiLoader.post(url + 'ndc-type');
+        },
+    };
+});
+

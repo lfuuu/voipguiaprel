@@ -2,23 +2,27 @@
 
 namespace app\controllers\json;
 
+use app\classes\JsonController;
+use app\classes\PrefixExpander;
+use app\exceptions\FormValidationException;
 use app\models\billing\BillingDefs;
 use app\models\billing\GeoCity;
 use app\models\billing\GeoCountry;
 use app\models\billing\GeoPrefix;
 use app\models\billing\GeoRegion;
 use app\models\NetworkConfig;
-use Yii;
-use app\models\PrefixlistPrefix;
-use app\classes\JsonController;
 use app\models\Prefixlist;
-use app\classes\PrefixExpander;
-use app\exceptions\FormValidationException;
+use app\models\PrefixlistPrefix;
+use Yii;
 use yii\web\HttpException;
 
 class PrefixlistController extends JsonController
 {
 
+    /**
+     * @return \app\models\Prefixlist[]
+     * @throws HttpException
+     */
     public function actionList() {
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
@@ -32,6 +36,10 @@ class PrefixlistController extends JsonController
                 ->all();
     }
 
+    /**
+     * @return \app\models\Prefixlist[]
+     * @throws HttpException
+     */
     public function actionRead() {
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
@@ -45,6 +53,10 @@ class PrefixlistController extends JsonController
                 ->all();
     }
 
+    /**
+     * @return array
+     * @throws HttpException
+     */
     public function actionGet()
     {
         $item = Prefixlist::findOne($this->request['id']);
@@ -55,6 +67,11 @@ class PrefixlistController extends JsonController
         return $item->toArray();
     }
 
+    /**
+     * @throws FormValidationException
+     * @throws HttpException
+     * @throws \yii\db\Exception
+     */
     public function actionSave()
     {
         $server = $this->getServerOr404($this->request['server_id']);
@@ -83,6 +100,10 @@ class PrefixlistController extends JsonController
         } else {
             $prefixlist->rossvyaz_operator_ids = null;
             $prefixlist->rossvyaz_operators = null;
+        }
+
+        if ($prefixlist->type_id == 6) {
+            $prefixlist->setNnpFilters($this->request);
         }
 
         $transaction = Prefixlist::getDb()->beginTransaction();
@@ -258,6 +279,9 @@ SQL;
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function actionDelete()
     {
         $item = Prefixlist::findOne($this->request['id']);
