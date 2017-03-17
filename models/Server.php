@@ -26,12 +26,15 @@ use app\queries\ServerQuery;
  * @property string $h_event_management
  * @property string $h_local_events
  * @property bool $is_need_db_do_migrate
+ * @property string $hostname_reserve
 
  * @property InstanceSettings $instanceSettings
  * @property string $apiUrl
  */
 class Server extends \yii\db\ActiveRecord
 {
+
+    const API_DEFAULT_PORT = 8032;
 
     /**
      * @return string
@@ -66,7 +69,7 @@ class Server extends \yii\db\ActiveRecord
                 'max' => 100
             ],
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
-            [['service_numbers'], 'string'],
+            [['service_numbers', 'hostname_reserve',], 'string'],
             [['hostname'], 'string', 'max' => 30],
         ];
     }

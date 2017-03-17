@@ -31,6 +31,7 @@ class SettingsController extends JsonController
             'h_event_management' => $server->h_event_management,
             'h_local_events' => $server->h_local_events,
             'auto_lock_finance' => $server->instanceSettings->auto_lock_finance,
+            'hostname_reserve' => $server->hostname_reserve,
         ];
     }
 
