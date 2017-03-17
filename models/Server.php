@@ -30,6 +30,7 @@ use app\queries\ServerQuery;
 
  * @property InstanceSettings $instanceSettings
  * @property string $apiUrl
+ * @property string $apiUrlReserve
  */
 class Server extends \yii\db\ActiveRecord
 {
@@ -79,7 +80,17 @@ class Server extends \yii\db\ActiveRecord
      */
     public function getApiUrl()
     {
-        return'http://' . $this->hostname . ':8032/';
+        return 'http://' . $this->hostname . ':8032/';
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUrlReserve()
+    {
+        return 'http://' . $this->hostname_reserve
+            . (!parse_url($this->hostname_reserve, PHP_URL_PORT) ? ':' . self::API_DEFAULT_PORT : '')
+            . '/';
     }
 
     /**

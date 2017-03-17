@@ -110,11 +110,10 @@ class TestAuthController extends JsonController
         $apiUrl = $item->server->apiUrl;
 
         if (isset($this->request['isReserve']) && $item->server->hostname_reserve) {
-            $apiUrl = $item->server->hostname_reserve .
-                (!parse_url($item->server->hostname_reserve, PHP_URL_PORT) ? ':' . Server::API_DEFAULT_PORT : '');
+            $apiUrl = $item->server->apiUrlReserve;
         }
 
-        $request = $apiUrl . '/test/auth?' . http_build_query([
+        $request = $apiUrl . 'test/auth?' . http_build_query([
             'trunk_name' => $item->trunk_name,
             'src_number' => $item->src_number,
             'dst_number' => $item->dst_number,
