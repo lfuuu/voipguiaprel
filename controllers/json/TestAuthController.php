@@ -114,7 +114,7 @@ class TestAuthController extends JsonController
                 (!parse_url($item->server->hostname_reserve, PHP_URL_PORT) ? ':' . Server::API_DEFAULT_PORT : '');
         }
 
-        $request = $apiUrl . 'test/auth?' . http_build_query([
+        $request = $apiUrl . '/test/auth?' . http_build_query([
             'trunk_name' => $item->trunk_name,
             'src_number' => $item->src_number,
             'dst_number' => $item->dst_number,
