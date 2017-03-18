@@ -784,17 +784,17 @@ app.factory('Nnp', function (ApiLoader) {
             return ApiLoader.post(url + 'country');
         },
         regionList: function (countryCode) {
-            return ApiLoader.post(url + 'region' + (countryCode ? '?countryCode=' + countryCode : ''));
+            return ApiLoader.post(url + 'region?countryCode=' + countryCode);
         },
-        cityList: function (countryCode) {
-            return ApiLoader.post(url + 'city' + (countryCode ? '?countryCode=' + countryCode : ''));
+        cityList: function (countryCode, regionId) {
+            return ApiLoader.post(url + 'city?countryCode=' + countryCode + '&regionId=' + regionId);
         },
         operatorList: function (countryCode) {
-            return ApiLoader.post(url + 'operator' + (countryCode ? '?countryCode=' + countryCode : ''));
+            return ApiLoader.post(url + 'operator?countryCode=' + countryCode);
         },
         ndcTypeList: function () {
             return ApiLoader.post(url + 'ndc-type');
-        },
+        }
     };
 });
 

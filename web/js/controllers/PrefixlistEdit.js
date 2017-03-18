@@ -5,6 +5,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             $scope.item.rossvyaz_operator_id = null;
             $scope.item.rossvyaz_region_id = null;
             $scope.item.rossvyaz_city_id = null;
+
             $scope.cities = null;
         }
     });
@@ -18,6 +19,33 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             });
         }
     });
+
+    $scope.$watch('item.nnp_country', function (newValue, oldValue) {
+        if (newValue != oldValue) {
+            $scope.regionList = null;
+            $scope.operatorList = null;
+
+            Nnp.regionList(newValue).then(function (data) {
+                $scope.regionList = data;
+            });
+
+            Nnp.operatorList(newValue).then(function (data) {
+                $scope.operatorList = data;
+            });
+        }
+    });
+
+    $scope.$watch('item.nnp_region', function (newValue, oldValue) {
+        if (newValue != oldValue) {
+            $scope.cityList = null;
+
+            Nnp.cityList($scope.item.nnp_country, newValue).then(function (data) {
+                $scope.cityList = data;
+            });
+        }
+    });
+
+    $scope.nnp_parse_error = false;
 
     if (params.id) {
         Prefixlist.get({id: params.id}).then(function (data) {
@@ -60,7 +88,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                     $scope.item.nnp_operator = filterData.operator;
                     $scope.item.nnp_ndc_type = filterData.ndc_type;
                 } catch (error) {
-                    console.log(error)
+                    $scope.nnp_parse_error = true;
+                    console.log(error);
                 }
             }
 
@@ -134,20 +163,6 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         $scope.item.rossvyaz_operators.splice(index, 1);
     };
 
-    $scope.setNppCountry = function (item) {
-        Nnp.cityList(item.nnp_country).then(function (data) {
-            $scope.cityList = data;
-        });
-
-        Nnp.regionList(item.nnp_country).then(function (data) {
-            $scope.regionList = data;
-        });
-
-        Nnp.operatorList(item.nnp_country).then(function (data) {
-            $scope.operatorList = data;
-        });
-    };
-
     Billing.countries().then(function(data){
         $scope.countries = data;
     });
@@ -192,4 +207,11 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     $scope.back = function () {
         $modalInstance.dismiss();
     };
+
+    $scope.calculatePrefixlist = function () {
+        if ($scope.item.id && $scope.item.type_id == 6) {
+            Redirect.prefixlistCalculate($scope.item);
+        }
+    };
+
 };

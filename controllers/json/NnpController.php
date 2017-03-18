@@ -40,9 +40,9 @@ class NnpController extends JsonController
      * @param int $countryCode
      * @return array
      */
-    public function actionCity($countryCode = 0)
+    public function actionRegion($countryCode = 0)
     {
-        $query = City::find()
+        $query = Region::find()
             ->asArray(['id', 'name'])
             ->orderBy('name');
 
@@ -53,15 +53,17 @@ class NnpController extends JsonController
 
     /**
      * @param int $countryCode
+     * @param int $regionId
      * @return array
      */
-    public function actionRegion($countryCode = 0)
+    public function actionCity($countryCode = 0, $regionId = 0)
     {
-        $query = Region::find()
+        $query = City::find()
             ->asArray(['id', 'name'])
             ->orderBy('name');
 
         (int)$countryCode && $query->andWhere(['country_code' => $countryCode]);
+        (int)$regionId && $query->andWhere(['region_id' => $regionId]);
 
         return $query->all();
     }

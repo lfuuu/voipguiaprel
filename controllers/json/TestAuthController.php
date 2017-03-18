@@ -2,14 +2,20 @@
 
 namespace app\controllers\json;
 
-use app\models\TestAuth;
-use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use app\models\Server;
+use app\models\TestAuth;
+use Yii;
 use yii\web\HttpException;
 
 class TestAuthController extends JsonController
 {
+
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     * @throws HttpException
+     */
     public function actionList() {
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -22,6 +28,10 @@ class TestAuthController extends JsonController
                 ->all();
     }
 
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     * @throws HttpException
+     */
     public function actionRead() {
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -33,6 +43,10 @@ class TestAuthController extends JsonController
                 ->all();
     }
 
+    /**
+     * @return array
+     * @throws HttpException
+     */
     public function actionGet()
     {
         $item = TestAuth::findOne($this->request['id']);
@@ -43,6 +57,11 @@ class TestAuthController extends JsonController
         return $item->toArray();
     }
 
+    /**
+     * @throws FormValidationException
+     * @throws HttpException
+     * @throws \yii\db\Exception
+     */
     public function actionSave()
     {
         $server = $this->getServerOr404($this->request['server_id']);
@@ -68,12 +87,19 @@ class TestAuthController extends JsonController
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function actionDelete()
     {
         $item = TestAuth::findOne($this->request['id']);
         $item->delete();
     }
 
+    /**
+     * @return array
+     * @throws HttpException
+     */
     public function actionResult()
     {
         $item = TestAuth::findOne($this->request['id']); /** @var TestAuth $item */
@@ -81,7 +107,13 @@ class TestAuthController extends JsonController
             throw new HttpException(404, 'TestAuth не найден');
         }
 
-        $request = $item->server->apiUrl . 'test/auth?' . http_build_query([
+        $apiUrl = $item->server->apiUrl;
+
+        if (isset($this->request['isReserve']) && $item->server->hostname_reserve) {
+            $apiUrl = $item->server->apiUrlReserve;
+        }
+
+        $request = $apiUrl . 'test/auth?' . http_build_query([
             'trunk_name' => $item->trunk_name,
             'src_number' => $item->src_number,
             'dst_number' => $item->dst_number,
