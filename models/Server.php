@@ -27,6 +27,7 @@ use app\queries\ServerQuery;
  * @property string $h_local_events
  * @property bool $is_need_db_do_migrate
  * @property string $hostname_reserve
+ * @property string $nas_ip_address
 
  * @property InstanceSettings $instanceSettings
  * @property string $apiUrl
@@ -70,7 +71,7 @@ class Server extends \yii\db\ActiveRecord
                 'max' => 100
             ],
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
-            [['service_numbers', 'hostname_reserve',], 'string'],
+            [['service_numbers', 'hostname_reserve', 'nas_ip_address',], 'string'],
             [['hostname'], 'string', 'max' => 30],
         ];
     }
