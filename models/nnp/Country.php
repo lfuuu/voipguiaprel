@@ -7,7 +7,7 @@ namespace app\models\nnp;
  * @property string $name
  * @property string $name_rus
  * @property int $prefix
- * @property int[] $prefixes -- Начальные цифры телефонных номеров (префикс страны и начало NDC)
+ * @property int[] $prefixes -- РќР°С‡Р°Р»СЊРЅС‹Рµ С†РёС„СЂС‹ С‚РµР»РµС„РѕРЅРЅС‹С… РЅРѕРјРµСЂРѕРІ (РїСЂРµС„РёРєСЃ СЃС‚СЂР°РЅС‹ Рё РЅР°С‡Р°Р»Рѕ NDC)
  */
 class Country extends \yii\db\ActiveRecord
 {

@@ -296,7 +296,7 @@
                 </div>
             </div>
 
-            <div class="form-group" ng-if="item.id">
+            <div class="form-group" ng-if="item.id && (item.nnp_destination || item.nnp_country)">
                 <div class="text-center">
                     <button type="button" class="btn btn-success btn-sm" ng-click="calculatePrefixlist()">Рассчитать префиксы</button>
                 </div>

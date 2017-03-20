@@ -25,6 +25,13 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             $scope.regionList = null;
             $scope.operatorList = null;
 
+            if (!newValue) {
+                $scope.item.nnp_region = null;
+                $scope.item.nnp_city = null;
+                $scope.item.nnp_operator = null;
+                $scope.item.nnp_ndc_type = null;
+            }
+
             Nnp.regionList(newValue).then(function (data) {
                 $scope.regionList = data;
             });
@@ -39,9 +46,19 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         if (newValue != oldValue) {
             $scope.cityList = null;
 
+            if (!newValue) {
+                $scope.item.nnp_city = null;
+            }
+
             Nnp.cityList($scope.item.nnp_country, newValue).then(function (data) {
                 $scope.cityList = data;
             });
+        }
+    });
+
+    $scope.$on('prefixlistUpdateCount', function(event, data) {
+        if ($scope.item.id) {
+            $scope.item.count = data;
         }
     });
 
@@ -81,12 +98,12 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 try {
                     var filterData = $.parseJSON($scope.item.nnp_filter_json);
 
-                    $scope.item.nnp_destination = filterData.destination;
-                    $scope.item.nnp_country = filterData.country;
-                    $scope.item.nnp_city = filterData.city;
-                    $scope.item.nnp_region = filterData.region;
-                    $scope.item.nnp_operator = filterData.operator;
-                    $scope.item.nnp_ndc_type = filterData.ndc_type;
+                    $scope.item.nnp_destination = filterData.nnp_destination_id;
+                    $scope.item.nnp_country = filterData.country_code;
+                    $scope.item.nnp_region = filterData.region_id;
+                    $scope.item.nnp_city = filterData.city_id;
+                    $scope.item.nnp_operator = filterData.operator_id;
+                    $scope.item.nnp_ndc_type = filterData.ndc_type_id;
                 } catch (error) {
                     $scope.nnp_parse_error = true;
                     console.log(error);
@@ -116,6 +133,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
     } else {
         $scope.item = {
+            id: 0,
             server_id: $scope.server.id,
             manual_list: [],
             smezhnost_list: [],

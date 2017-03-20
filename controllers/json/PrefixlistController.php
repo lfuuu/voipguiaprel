@@ -14,6 +14,7 @@ use app\models\NetworkConfig;
 use app\models\Prefixlist;
 use app\models\PrefixlistPrefix;
 use Yii;
+use yii\helpers\Json;
 use yii\web\HttpException;
 
 class PrefixlistController extends JsonController
@@ -59,12 +60,9 @@ class PrefixlistController extends JsonController
      */
     public function actionGet()
     {
-        $item = Prefixlist::findOne($this->request['id']);
-        if ($item === null) {
-            throw new HttpException(404, 'Список префиксов не найден');
-        }
+        $prefixlist = $this->getPrefixlistOr404($this->request['id']);
 
-        return $item->toArray();
+        return $prefixlist->toArray();
     }
 
     /**
@@ -284,7 +282,69 @@ SQL;
      */
     public function actionDelete()
     {
-        $item = Prefixlist::findOne($this->request['id']);
-        $item->delete();
+        $prefixlist = $this->getPrefixlistOr404($this->request['id']);
+        $prefixlist->delete();
     }
+
+    /**
+     * @throws HttpException
+     */
+    public function actionNnpCalculation()
+    {
+        try {
+            $prefixlist = $this->getPrefixlistOr404($this->request['id']);
+        } catch (\Exception $e) {
+            return [
+                'result' => 'error',
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        if (!$prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_NNP || !$prefixlist->nnp_filter_json) {
+            return [
+                'result' => 'error',
+                'message' => 'Некорректный тип префикслиста или фильтры не установлены',
+            ];
+        }
+
+        try {
+            $filter = Json::decode($prefixlist->nnp_filter_json, $asArray = false);
+        } catch (\Exception $e) {
+            return [
+                'result' => 'error',
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        if (!$filter->nnp_destination_id && !$filter->country_code) {
+            return [
+                'result' => 'error',
+                'message' => 'Некорректные настройки фильтрации',
+            ];
+        }
+
+        $query = [
+            'cmd' => 'fillNNPPrefixList',
+            'id' => $prefixlist->id,
+        ];
+
+        $request = Yii::$app->params['NnpCalculationApi'] . '?' . http_build_query($query);
+        $response = file_get_contents($request);
+
+        try {
+            $response = Json::decode($response);
+        } catch (\Exception $e) {
+            return [
+                'result' => 'error',
+                'message' => $e->getMessage(),
+                'body' => $response,
+            ];
+        }
+
+        return [
+            'response' => 'success',
+            'message' => $response,
+        ];
+    }
+
 }

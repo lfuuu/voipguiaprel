@@ -5,9 +5,13 @@
     <div class="modal-body">
 
         <div class="text-center">
-            <div class="alert alert-danger" ng-if="!canProcess">Нет данных о префикслисте</div>
-            <div class="alert alert-danger" ng-if="processFailer">{{processFailer}}</div>
-            <div class="alert alert-info" ng-if="canProcess">Идет обработка...</div>
+            <div class="alert alert-danger" ng-if="processFailed">
+                <b>Ошибка:</b> {{processFailed}}
+            </div>
+            <div class="alert alert-info" ng-if="processed">Идет обработка...</div>
+            <div class="alert alert-success" ng-if="processComplete">
+                Обработано {{processComplete}} префикслистов
+            </div>
         </div>
 
     </div>

@@ -1,32 +1,30 @@
-var PrefixlistCalculateCtrl = function($scope, $rootScope, params, $modalInstance) {
+var PrefixlistCalculateCtrl = function($scope, $rootScope, params, $modalInstance, Prefixlist) {
 
     $scope.processFailed = false;
-    $scope.canProcess = false;
-    $scope.processErrors = [];
+    $scope.processComplete = false;
+    $scope.processed = false;
 
     if (params.prefixlist) {
-        $scope.canProcess = true;
+        $scope.processed = true;
         $scope.prefixlist = params.prefixlist;
 
-        var requestData = [];
 
-        $.ajax({
-            url: 'http://10.252.0.122:8032/test/nnpcalc?cmd=fillNNPPrefixList&id=' + $scope.prefixlist.id,
-            dataType: 'json',
-            data: requestData,
-            success: function (response) {
-                console.log(response);
-                if (response.status == 'FAILED') {
-                    response.each(function (key) {
-                        console.log(key);
-                        console.log(this);
-                    });
-                    //$scope.processErrors.push()
-                }
-            },
-            error: function () {
-                //$scope.processFailed =
+
+        Prefixlist.nnpCalculation($scope.prefixlist.id).then(function (data) {
+            $scope.processed = false;
+
+            if (data.response == 'error') {
+                $scope.processFailed = data.message;
+                return false;
             }
+
+            if (data.message.status != 'SUCCESS') {
+                $scope.processFailed = data.message.message;
+                return false;
+            }
+
+            $scope.processComplete = data.message.prefix_list_size;
+            $rootScope.$broadcast('prefixlistUpdateCount', $scope.processComplete);
         });
     }
 

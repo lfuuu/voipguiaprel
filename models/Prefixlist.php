@@ -31,6 +31,13 @@ use yii\helpers\Json;
 class Prefixlist extends \yii\db\ActiveRecord
 {
 
+    const PREFIXLIST_TYPE_MANUAL = 1; // Вручную
+    const PREFIXLIST_TYPE_LOCAL_PREFIXES = 2; // Местные префиксы
+    const PREFIXLIST_TYPE_ROSSVYAZ = 3; // РосСвязь
+    const PREFIXLIST_TYPE_CSV = 4; // CSV
+    const PREFIXLIST_TYPE_DEARLY_CODES = 5; // Дорогие коды
+    const PREFIXLIST_TYPE_NNP = 6; // ННП
+
     /**
      * @return string
      */
@@ -209,12 +216,12 @@ class Prefixlist extends \yii\db\ActiveRecord
     public function setNnpFilters(array $input)
     {
         $filters = [
-            'destination' => isset($input['nnp_destination']) ? $input['nnp_destination'] : '',
-            'country' => isset($input['nnp_country']) ? $input['nnp_country'] : '',
-            'city' => isset($input['nnp_city']) ? $input['nnp_city'] : '',
-            'region' => isset($input['nnp_region']) ? $input['nnp_region'] : '',
-            'operator' => isset($input['nnp_operator']) ? $input['nnp_operator'] : '',
-            'ndc_type' => isset($input['nnp_ndc_type']) ? $input['nnp_ndc_type'] : '',
+            'nnp_destination_id' => isset($input['nnp_destination']) ? $input['nnp_destination'] : '',
+            'country_code' => isset($input['nnp_country']) ? $input['nnp_country'] : '',
+            'region_id' => isset($input['nnp_region']) ? $input['nnp_region'] : '',
+            'city_id' => isset($input['nnp_city']) ? $input['nnp_city'] : '',
+            'operator_id' => isset($input['nnp_operator']) ? $input['nnp_operator'] : '',
+            'ndc_type_id' => isset($input['nnp_ndc_type']) ? $input['nnp_ndc_type'] : '',
         ];
         $this->nnp_filter_json = Json::encode($filters);
         return $this;
