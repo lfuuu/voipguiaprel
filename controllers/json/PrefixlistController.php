@@ -274,6 +274,10 @@ SQL;
             }
 
             $transaction->commit();
+
+            return [
+                'id' => $prefixlist->id,
+            ];
         } finally {
             if ($transaction->getIsActive())
                 $transaction->rollBack();

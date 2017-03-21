@@ -83,8 +83,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         prefixlistCreate: function() {
             return openModal(PrefixlistEditCtrl, '/templates/prefixlist_edit.html', {id: null});
         },
-        prefixlistCalculate: function (prefixlist) {
-            return openModal(PrefixlistCalculateCtrl, '/templates/prefixlist_calculate.html', {prefixlist: prefixlist});
+        prefixlistCalculate: function (id, name) {
+            return openModal(PrefixlistCalculateCtrl, '/templates/prefixlist_calculate.html', {id: id, name: name});
         },
 
         routeCaseList: function() {
