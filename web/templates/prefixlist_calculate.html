@@ -1,0 +1,24 @@
+<form class="form-horizontal" name="form" ng-if="prefixlist">
+    <div class="modal-header">
+        <h3 ng-if="prefixlist.id">Результаты пересчета префикcлиста "{{prefixlist.name}}"</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="text-center">
+            <div class="alert alert-danger" ng-if="processFailed">
+                <b>Ошибка:</b> {{processFailed}}
+            </div>
+            <div class="alert alert-info" ng-if="processed">Идет обработка...</div>
+            <div class="alert alert-success" ng-if="processComplete">
+                Обработано <b>{{processCompleteCount}}</b> префикслист(ов)
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

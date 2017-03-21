@@ -2,23 +2,31 @@
 
 namespace app\controllers\json;
 
+use app\classes\JsonController;
+use app\classes\PrefixExpander;
+use app\exceptions\FormValidationException;
 use app\models\billing\BillingDefs;
 use app\models\billing\GeoCity;
 use app\models\billing\GeoCountry;
 use app\models\billing\GeoPrefix;
 use app\models\billing\GeoRegion;
 use app\models\NetworkConfig;
-use Yii;
-use app\models\PrefixlistPrefix;
-use app\classes\JsonController;
 use app\models\Prefixlist;
-use app\classes\PrefixExpander;
-use app\exceptions\FormValidationException;
+use app\models\PrefixlistPrefix;
+use Yii;
+use yii\helpers\Json;
 use yii\web\HttpException;
 
 class PrefixlistController extends JsonController
 {
 
+    const RESPONSE_STATUS_SUCCESS = 'SUCCESS';
+    const RESPONSE_STATUS_ERROR = 'ERROR';
+
+    /**
+     * @return \app\models\Prefixlist[]
+     * @throws HttpException
+     */
     public function actionList() {
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
@@ -32,6 +40,10 @@ class PrefixlistController extends JsonController
                 ->all();
     }
 
+    /**
+     * @return \app\models\Prefixlist[]
+     * @throws HttpException
+     */
     public function actionRead() {
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
@@ -45,16 +57,22 @@ class PrefixlistController extends JsonController
                 ->all();
     }
 
+    /**
+     * @return array
+     * @throws HttpException
+     */
     public function actionGet()
     {
-        $item = Prefixlist::findOne($this->request['id']);
-        if ($item === null) {
-            throw new HttpException(404, 'Список префиксов не найден');
-        }
+        $prefixlist = $this->getPrefixlistOr404($this->request['id']);
 
-        return $item->toArray();
+        return $prefixlist->toArray();
     }
 
+    /**
+     * @throws FormValidationException
+     * @throws HttpException
+     * @throws \yii\db\Exception
+     */
     public function actionSave()
     {
         $server = $this->getServerOr404($this->request['server_id']);
@@ -83,6 +101,10 @@ class PrefixlistController extends JsonController
         } else {
             $prefixlist->rossvyaz_operator_ids = null;
             $prefixlist->rossvyaz_operators = null;
+        }
+
+        if ($prefixlist->type_id == 6) {
+            $prefixlist->setNnpFilters($this->request);
         }
 
         $transaction = Prefixlist::getDb()->beginTransaction();
@@ -258,9 +280,74 @@ SQL;
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function actionDelete()
     {
-        $item = Prefixlist::findOne($this->request['id']);
-        $item->delete();
+        $prefixlist = $this->getPrefixlistOr404($this->request['id']);
+        $prefixlist->delete();
     }
+
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionNnpCalculation()
+    {
+        try {
+            $prefixlist = $this->getPrefixlistOr404($this->request['id']);
+        } catch (\Exception $e) {
+            return [
+                'result' => self::RESPONSE_STATUS_ERROR,
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        if (!$prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_NNP || !$prefixlist->nnp_filter_json) {
+            return [
+                'result' => self::RESPONSE_STATUS_ERROR,
+                'message' => 'Некорректный тип префикслиста или фильтры не установлены',
+            ];
+        }
+
+        try {
+            $filter = Json::decode($prefixlist->nnp_filter_json, $asArray = false);
+        } catch (\Exception $e) {
+            return [
+                'result' => self::RESPONSE_STATUS_ERROR,
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        if (!$filter->nnp_destination_id && !$filter->country_code) {
+            return [
+                'result' => self::RESPONSE_STATUS_ERROR,
+                'message' => 'Некорректные настройки фильтрации',
+            ];
+        }
+
+        $query = [
+            'cmd' => 'fillNNPPrefixList',
+            'id' => $prefixlist->id,
+        ];
+
+        $request = Yii::$app->params['NnpCalculationApi'] . '?' . http_build_query($query);
+        $response = file_get_contents($request);
+
+        try {
+            $response = Json::decode($response);
+        } catch (\Exception $e) {
+            return [
+                'result' => self::RESPONSE_STATUS_ERROR,
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        return [
+            'response' => self::RESPONSE_STATUS_SUCCESS,
+            'message' => $response,
+        ];
+    }
+
 }

@@ -41,6 +41,7 @@ class AppAsset extends AssetBundle
         'js/controllers/AirpList.js',
         'js/controllers/PrefixlistEdit.js',
         'js/controllers/PrefixlistList.js',
+        'js/controllers/PrefixlistCalculate.js',
         'js/controllers/TestAuthEdit.js',
         'js/controllers/TestAuthList.js',
         'js/controllers/TestAuthShowTestPrimary.js',

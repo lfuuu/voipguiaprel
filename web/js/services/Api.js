@@ -186,47 +186,50 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
 });
 
 app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
-	var url = '/json/prefixlist/';
-	var list = undefined;
-	var promise = undefined;
-	return {
-		read: function(data) {
-			return ApiLoader.post(url + 'read', data);
-		},
-		get: function(data) {
-			return ApiLoader.post(url + 'get', data);
-		},
-		list: function() {
-			if (promise !== undefined) return promise;
+    var url = '/json/prefixlist/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function() {
+            if (promise !== undefined) return promise;
 
-			var deferred = $q.defer();
-			if (list !== undefined) {
-				deferred.resolve(list);
-				return deferred.promise;
-			} else {
-				var data = {server_id: $rootScope.server.id};
-				ApiLoader.post(url + 'list', data)
-					.then(function(data){
-						list = data;
-						promise = undefined;
-						deferred.resolve(data);
-					}, function(data){
-						promise = undefined;
-						deferred.reject(data);
-					});
-				promise = deferred.promise;
-			}
-			return deferred.promise;
-		},
-		save: function(data) {
-			list = undefined;
-			return ApiLoader.post(url + 'save', data);
-		},
-		delete: function(id) {
-			list = undefined;
-			return ApiLoader.post(url + 'delete', {id: id});
-		}
-	};
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {server_id: $rootScope.server.id};
+                ApiLoader.post(url + 'list', data)
+                    .then(function(data){
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function(data){
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function(data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', {id: id});
+        },
+        nnpCalculation: function (id) {
+            return ApiLoader.post(url + 'nnp-calculation', {id: id})
+        }
+    };
 });
 
 app.factory('Billing', function (ApiLoader) {
@@ -770,6 +773,30 @@ app.factory('List', function (Trunk, TrunkGroup, Prefixlist, RouteCase, Outcome,
 		},
         network: function () {
             return Network.list();
+        }
+    };
+});
+
+app.factory('Nnp', function (ApiLoader) {
+    var url = '/json/nnp/';
+    return {
+        destinationList: function() {
+            return ApiLoader.post(url + 'destination');
+        },
+        countryList: function () {
+            return ApiLoader.post(url + 'country');
+        },
+        regionList: function (countryCode) {
+            return ApiLoader.post(url + 'region?countryCode=' + countryCode);
+        },
+        cityList: function (countryCode, regionId) {
+            return ApiLoader.post(url + 'city?countryCode=' + countryCode + '&regionId=' + regionId);
+        },
+        operatorList: function (countryCode) {
+            return ApiLoader.post(url + 'operator?countryCode=' + countryCode);
+        },
+        ndcTypeList: function () {
+            return ApiLoader.post(url + 'ndc-type');
         }
     };
 });

@@ -35,6 +35,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
             $rootScope.tabs.splice($rootScope.tabs.indexOf(tab), 1);
             delete $rootScope.tabsMap[tab.key];
         },
+
         attributeList: function () {
             return openTab(AttributeListCtrl, '/templates/attribute_list.html');
         },
@@ -44,7 +45,6 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         attributeCreate: function () {
             return openModal(AttributeEditCtrl, '/templates/attribute_edit.html', {id: null});
         },
-
         attributeGroupList: function () {
             return openTab(AttributeGroupListCtrl, '/templates/attribute_group_list.html');
         },
@@ -82,6 +82,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         },
         prefixlistCreate: function() {
             return openModal(PrefixlistEditCtrl, '/templates/prefixlist_edit.html', {id: null});
+        },
+        prefixlistCalculate: function (prefixlist) {
+            return openModal(PrefixlistCalculateCtrl, '/templates/prefixlist_calculate.html', {prefixlist: prefixlist});
         },
 
         routeCaseList: function() {
