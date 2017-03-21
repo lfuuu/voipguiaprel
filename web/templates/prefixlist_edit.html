@@ -219,7 +219,7 @@
         <label class="col-sm-2 control-label"></label>
         <div class="col-sm-10">
 
-            <div class="alert alert-danger text-center" ng-if="nnp_parse_error == true">
+            <div class="alert alert-danger text-center" ng-if="nnpDataParseError">
                 Ошибка разрабора данных по NNP
             </div>
 
@@ -297,6 +297,17 @@
             </div>
         </div>
         <div class="clearfix"></div>
+
+        <div class="text-center">
+            <div class="alert alert-danger" ng-if="nnpProcessFailed">
+                <b>Ошибка обработки префиксов</b><br /> {{nnpProcessFailed}}
+            </div>
+            <div class="alert alert-info" ng-if="nnpProcessed">Идет обработка префиксов...</div>
+            <div class="alert alert-success" ng-if="nnpProcessComplete">
+                Обработано префиксов: <b>{{item.count}}</b>
+            </div>
+        </div>
+
     </div>
 
 </div>

@@ -1,5 +1,8 @@
 var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, params, $modalInstance, $window, Redirect) {
 
+    var STATUS_SUCCESS = 'SUCCESS';
+    var STATUS_ERROR = 'ERROR';
+
     $scope.$watch('item.rossvyaz_country_id', function (newValue, oldValue) {
         if (newValue != oldValue) {
             $scope.item.rossvyaz_operator_id = null;
@@ -56,17 +59,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         }
     });
 
-    $scope.$on('prefixlistUpdateCount', function(event, data) {
-        if ($scope.item.id) {
-            $scope.item.count = data;
-        }
-    });
-
-    $scope.$on('prefixlistUpdateSuccess', function(event, data) {
-        $modalInstance.dismiss();
-    });
-
-    $scope.nnp_parse_error = false;
+    $scope.nnpDataParseError = false;
+    $scope.nnpProcessed = false;
+    $scope.nnpProcessFailed = false;
+    $scope.nnpProcessComplete = false;
 
     if (params.id) {
         Prefixlist.get({id: params.id}).then(function (data) {
@@ -208,6 +204,25 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         $scope.item.rossvyaz_operators.splice(index, 1);
     };
 
+    $scope.prefixlistNnpCalculate = function (id) {
+        Prefixlist.nnpCalculation(id).then(function (data) {
+            $scope.nnpProcessed = false;
+
+            if (data.response == STATUS_ERROR) {
+                $scope.nnpProcessFailed = data.message;
+                return false;
+            }
+
+            if (data.message.status != STATUS_SUCCESS) {
+                $scope.nnpProcessFailed = data.message.message;
+                return false;
+            }
+
+            $scope.nnpProcessComplete = true;
+            $scope.count = data.message.prefix_list_size;
+        });
+    };
+
     $scope.save = function () {
         var data = angular.copy($scope.item);
         data.manual_list = [];
@@ -227,7 +242,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
         Prefixlist.save(data).then(function (result) {
             if (result && result.id && $scope.item.type_id == 6) {
-                Redirect.prefixlistCalculate(result.id, $scope.item.name);
+                $scope.nnpProcessed = true;
+                $scope.prefixlistNnpCalculate(result.id);
             } else {
                 $modalInstance.close();
             }

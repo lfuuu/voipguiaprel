@@ -227,7 +227,7 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
             return ApiLoader.post(url + 'delete', {id: id});
         },
         nnpCalculation: function (id) {
-            return ApiLoader.post(url + 'nnp-calculation', {id: id})
+            return ApiLoader.post(url + 'nnp-calculation', {id: id});
         }
     };
 });
