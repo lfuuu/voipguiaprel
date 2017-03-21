@@ -89,15 +89,14 @@ class Prefixlist extends \yii\db\ActiveRecord
      */
     public function getManualList()
     {
+        // ActiveRecord don't know about PGSQL array type fields
         if ($this->manual_list == '{}') {
             return [];
         }
 
         $list = [];
-        if ($this->manual_list && $this->manual_list != '{}') {
-            foreach(str_getcsv( trim($this->manual_list, '{}') ) as $prefix) {
-                $list[] = $prefix;
-            }
+        foreach (str_getcsv( trim($this->manual_list, '{}')) as $prefix) {
+            $list[] = $prefix;
         }
 
         return $list;
@@ -120,15 +119,14 @@ class Prefixlist extends \yii\db\ActiveRecord
      */
     public function getSmezhnostList()
     {
+        // ActiveRecord don't know about PGSQL array type fields
         if ($this->smezhnost_list == '{}') {
             return [];
         }
 
         $list = [];
-        if ($this->smezhnost_list && $this->smezhnost_list != '{}') {
-            foreach(str_getcsv( trim($this->smezhnost_list, '{}') ) as $value) {
-                $list[] = $value;
-            }
+        foreach (str_getcsv(trim($this->smezhnost_list, '{}')) as $value) {
+            $list[] = $value;
         }
 
         return $list;

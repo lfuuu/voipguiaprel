@@ -20,6 +20,9 @@ use yii\web\HttpException;
 class PrefixlistController extends JsonController
 {
 
+    const RESPONSE_STATUS_SUCCESS = 'SUCCESS';
+    const RESPONSE_STATUS_ERROR = 'ERROR';
+
     /**
      * @return \app\models\Prefixlist[]
      * @throws HttpException
@@ -287,6 +290,7 @@ SQL;
     }
 
     /**
+     * @return array
      * @throws HttpException
      */
     public function actionNnpCalculation()
@@ -295,14 +299,14 @@ SQL;
             $prefixlist = $this->getPrefixlistOr404($this->request['id']);
         } catch (\Exception $e) {
             return [
-                'result' => 'error',
+                'result' => self::RESPONSE_STATUS_ERROR,
                 'message' => $e->getMessage(),
             ];
         }
 
         if (!$prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_NNP || !$prefixlist->nnp_filter_json) {
             return [
-                'result' => 'error',
+                'result' => self::RESPONSE_STATUS_ERROR,
                 'message' => 'Некорректный тип префикслиста или фильтры не установлены',
             ];
         }
@@ -311,14 +315,14 @@ SQL;
             $filter = Json::decode($prefixlist->nnp_filter_json, $asArray = false);
         } catch (\Exception $e) {
             return [
-                'result' => 'error',
+                'result' => self::RESPONSE_STATUS_ERROR,
                 'message' => $e->getMessage(),
             ];
         }
 
         if (!$filter->nnp_destination_id && !$filter->country_code) {
             return [
-                'result' => 'error',
+                'result' => self::RESPONSE_STATUS_ERROR,
                 'message' => 'Некорректные настройки фильтрации',
             ];
         }
@@ -335,14 +339,13 @@ SQL;
             $response = Json::decode($response);
         } catch (\Exception $e) {
             return [
-                'result' => 'error',
+                'result' => self::RESPONSE_STATUS_ERROR,
                 'message' => $e->getMessage(),
-                'body' => $response,
             ];
         }
 
         return [
-            'response' => 'success',
+            'response' => self::RESPONSE_STATUS_SUCCESS,
             'message' => $response,
         ];
     }

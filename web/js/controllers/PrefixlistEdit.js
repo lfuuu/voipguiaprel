@@ -62,6 +62,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         }
     });
 
+    $scope.$on('prefixlistUpdateSuccess', function(event, data) {
+        $modalInstance.dismiss();
+    });
+
     $scope.nnp_parse_error = false;
 
     if (params.id) {
@@ -148,6 +152,30 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         };
     }
 
+    Billing.countries().then(function(data){
+        $scope.countries = data;
+    });
+
+    Billing.regions().then(function(data){
+        $scope.regions = data;
+    });
+
+    Billing.networkTypes().then(function(data){
+        $scope.networkTypes = data;
+    });
+
+    Nnp.destinationList().then(function (data) {
+        $scope.destinationList = data;
+    });
+
+    Nnp.countryList().then(function (data) {
+        $scope.countryList = data;
+    });
+
+    Nnp.ndcTypeList().then(function (data) {
+        $scope.ndcTypeList = data;
+    });
+
     $scope.setType = function(type_id) {
         $scope.item.type_id = type_id;
     };
@@ -181,55 +209,35 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         $scope.item.rossvyaz_operators.splice(index, 1);
     };
 
-    Billing.countries().then(function(data){
-        $scope.countries = data;
-    });
-
-    Billing.regions().then(function(data){
-        $scope.regions = data;
-    });
-
-    Billing.networkTypes().then(function(data){
-        $scope.networkTypes = data;
-    });
-
-    Nnp.destinationList().then(function (data) {
-        $scope.destinationList = data;
-    });
-
-    Nnp.countryList().then(function (data) {
-        $scope.countryList = data;
-    });
-
-    Nnp.ndcTypeList().then(function (data) {
-        $scope.ndcTypeList = data;
-    });
-
     $scope.save = function () {
         var data = angular.copy($scope.item);
         data.manual_list = [];
-        for (var i in $scope.item.manual_list) {
-            data.manual_list.push($scope.item.manual_list[i].prefix)
+        data.smezhnost_list = [];
+
+        if ($scope.item.type_id == 1) {
+            for (var i in $scope.item.manual_list) {
+                data.manual_list.push($scope.item.manual_list[i].prefix)
+            }
         }
 
-        data.smezhnost_list = [];
-        for (var i in $scope.item.smezhnost_list) {
-            data.smezhnost_list.push($scope.item.smezhnost_list[i].network_type_id)
+
+        if ($scope.item.type_id == 1) {
+            for (var i in $scope.item.smezhnost_list) {
+                data.smezhnost_list.push($scope.item.smezhnost_list[i].network_type_id)
+            }
         }
 
         Prefixlist.save(data).then(function () {
-            $modalInstance.close();
+            if ($scope.item.id && $scope.item.type_id == 6) {
+                Redirect.prefixlistCalculate($scope.item);
+            } else {
+                $modalInstance.close();
+            }
         });
     };
 
     $scope.back = function () {
         $modalInstance.dismiss();
-    };
-
-    $scope.calculatePrefixlist = function () {
-        if ($scope.item.id && $scope.item.type_id == 6) {
-            Redirect.prefixlistCalculate($scope.item);
-        }
     };
 
 };
