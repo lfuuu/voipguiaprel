@@ -334,6 +334,7 @@ SQL;
         $query = [
             'cmd' => 'fillNNPPrefixList',
             'id' => $prefixlist->id,
+            'token' => $filter->token,
         ];
 
         $request = Yii::$app->params['NnpCalculationApi'] . '?' . http_build_query($query);

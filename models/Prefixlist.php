@@ -230,6 +230,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             'city_id' => isset($input['nnp_city']) ? $input['nnp_city'] : '',
             'operator_id' => isset($input['nnp_operator']) ? $input['nnp_operator'] : '',
             'ndc_type_id' => isset($input['nnp_ndc_type']) ? $input['nnp_ndc_type'] : '',
+            'token' => bin2hex(openssl_random_pseudo_bytes(16)),
         ];
         $this->nnp_filter_json = Json::encode($filters);
         return $this;
