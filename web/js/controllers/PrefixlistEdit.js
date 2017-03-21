@@ -137,7 +137,6 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
     } else {
         $scope.item = {
-            id: 0,
             server_id: $scope.server.id,
             manual_list: [],
             smezhnost_list: [],
@@ -220,16 +219,15 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             }
         }
 
-
         if ($scope.item.type_id == 1) {
             for (var i in $scope.item.smezhnost_list) {
                 data.smezhnost_list.push($scope.item.smezhnost_list[i].network_type_id)
             }
         }
 
-        Prefixlist.save(data).then(function () {
-            if ($scope.item.id && $scope.item.type_id == 6) {
-                Redirect.prefixlistCalculate($scope.item);
+        Prefixlist.save(data).then(function (result) {
+            if (result && result.id && $scope.item.type_id == 6) {
+                Redirect.prefixlistCalculate(result.id, $scope.item.name);
             } else {
                 $modalInstance.close();
             }

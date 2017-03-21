@@ -7,11 +7,11 @@ var PrefixlistCalculateCtrl = function($scope, $rootScope, params, $modalInstanc
     $scope.processComplete = false;
     $scope.processed = false;
 
-    if (params.prefixlist) {
+    if (params.id && params.name) {
         $scope.processed = true;
-        $scope.prefixlist = params.prefixlist;
+        $scope.name = params.name;
 
-        Prefixlist.nnpCalculation($scope.prefixlist.id).then(function (data) {
+        Prefixlist.nnpCalculation(params.id).then(function (data) {
             $scope.processed = false;
 
             if (data.response == STATUS_ERROR) {
