@@ -27,6 +27,8 @@ use yii\helpers\Json;
  * @property int $network_config_id
  * @property bool $sw_shared
  * @property string $nnp_filter_json
+ *
+ * @property PrefixlistPrefix $prefixlistPrefix
  */
 class Prefixlist extends \yii\db\ActiveRecord
 {
@@ -44,6 +46,23 @@ class Prefixlist extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'auth.prefixlist';
+    }
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['name'], 'string', 'max' => 50],
+            [['sw_shared'], 'boolean'],
+            [['type_id'], 'integer'],
+            [['rossvyaz_country', 'rossvyaz_region', 'rossvyaz_city'], 'string', 'max' => 100],
+            [['rossvyaz_country_id', 'rossvyaz_region_id', 'rossvyaz_city_id', 'network_config_id'], 'integer'],
+            [['rossvyaz_mob'], 'boolean'],
+            [['exclude_operators'], 'boolean'],
+            ['nnp_filter_json', 'string'],
+        ];
     }
 
     /**
@@ -68,20 +87,11 @@ class Prefixlist extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return array
+     * @return \yii\db\ActiveQuery
      */
-    public function rules()
+    public function getPrefixlistPrefix()
     {
-        return [
-            [['name'], 'string', 'max' => 50],
-            [['sw_shared'], 'boolean'],
-            [['type_id'], 'integer'],
-            [['rossvyaz_country', 'rossvyaz_region', 'rossvyaz_city'], 'string', 'max' => 100],
-            [['rossvyaz_country_id', 'rossvyaz_region_id', 'rossvyaz_city_id', 'network_config_id'], 'integer'],
-            [['rossvyaz_mob'], 'boolean'],
-            [['exclude_operators'], 'boolean'],
-            ['nnp_filter_json', 'string'],
-        ];
+        return $this->hasMany(PrefixlistPrefix::className(), ['prefixlist_id' => 'id']);
     }
 
     /**
@@ -237,6 +247,7 @@ class Prefixlist extends \yii\db\ActiveRecord
         $data['manual_list'] = $this->getManualList();
         $data['smezhnost_list'] = $this->getSmezhnostList();
         $data['rossvyaz_operators'] = $this->getRossvyazOperators();
+        $data['prefixes'] = $this->getPrefixlistPrefix()->count();
         return $data;
     }
 

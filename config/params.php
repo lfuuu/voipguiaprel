@@ -3,5 +3,5 @@
 return [
     'adminEmail' => 'admin@example.com',
 
-    'nnpCalculationHost' => '',
+    'NnpCalculationApi' => '',
 ];

@@ -69,6 +69,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             $scope.item = data;
 
             $scope.setType($scope.item.type_id);
+            $scope.item.count = $scope.item.prefixes;
 
             if ($scope.item.type_id == 1) {
                 var manual_list = [];
@@ -143,7 +144,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             nnp_city: null,
             nnp_region: null,
             nnp_operator: null,
-            nnp_ndc_type: null
+            nnp_ndc_type: null,
+            count: 0
         };
     }
 
@@ -205,9 +207,11 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     };
 
     $scope.prefixlistNnpCalculate = function (id) {
-        Prefixlist.nnpCalculation(id).then(function (data) {
-            $scope.nnpProcessed = false;
+        $scope.nnpProcessed = true;
+        $scope.nnpProcessComplete = false;
+        $scope.nnpProcessFailed = false;
 
+        Prefixlist.nnpCalculation(id).then(function (data) {
             if (data.response == STATUS_ERROR) {
                 $scope.nnpProcessFailed = data.message;
                 return false;
@@ -218,8 +222,9 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 return false;
             }
 
+            $scope.nnpProcessed = false;
             $scope.nnpProcessComplete = true;
-            $scope.count = data.message.prefix_list_size;
+            $scope.item.count = data.message.prefix_list_size;
         });
     };
 
@@ -242,7 +247,6 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
         Prefixlist.save(data).then(function (result) {
             if (result && result.id && $scope.item.type_id == 6) {
-                $scope.nnpProcessed = true;
                 $scope.prefixlistNnpCalculate(result.id);
             } else {
                 $modalInstance.close();
@@ -251,7 +255,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     };
 
     $scope.back = function () {
-        $modalInstance.dismiss();
+        $modalInstance.close();
     };
 
 };
