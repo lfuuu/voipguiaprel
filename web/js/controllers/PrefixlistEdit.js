@@ -104,9 +104,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                     $scope.item.nnp_region = filterData.region_id;
                     $scope.item.nnp_city = filterData.city_id;
                     $scope.item.nnp_operator = filterData.operator_id;
+                    $scope.item.nnp_is_exclude_operators = filterData.is_exclude_operators;
                     $scope.item.nnp_ndc_type = filterData.ndc_type_id;
                 } catch (error) {
-                    $scope.nnp_parse_error = true;
+                    $scope.nnpDataParseError = true;
                     console.log(error);
                 }
             }
@@ -144,6 +145,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             nnp_city: null,
             nnp_region: null,
             nnp_operator: null,
+            nnp_exclude_operators: false,
             nnp_ndc_type: null,
             count: 0
         };

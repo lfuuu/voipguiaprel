@@ -229,6 +229,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             'region_id' => isset($input['nnp_region']) ? $input['nnp_region'] : '',
             'city_id' => isset($input['nnp_city']) ? $input['nnp_city'] : '',
             'operator_id' => isset($input['nnp_operator']) ? $input['nnp_operator'] : '',
+            'is_exclude_operators' => array_key_exists('nnp_is_exclude_operators', $input) ? $input['nnp_is_exclude_operators'] : '',
             'ndc_type_id' => isset($input['nnp_ndc_type']) ? $input['nnp_ndc_type'] : '',
             'token' => bin2hex(openssl_random_pseudo_bytes(16)),
         ];

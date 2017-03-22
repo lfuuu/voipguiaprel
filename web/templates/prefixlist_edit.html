@@ -275,10 +275,16 @@
 
                     <div class="form-group" ng-if="item.nnp_country">
                         <label class="col-sm-2 control-label">Оператор</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-6">
                             <select ui-select2 ng-model="item.nnp_operator" multiple="multiple" style="width: 100%" >
                                 <option ng-repeat="operator in operatorList" value="{{operator.id}}">{{operator.name}}</option>
                             </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="btn-group">
+                                <button type="button" class="btn {{!item.nnp_is_exclude_operators ? 'btn-primary active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_operators = false">Выбранные</button>
+                                <button type="button" class="btn {{item.nnp_is_exclude_operators ? 'btn-danger active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_operators = true">Кроме выбранных</button>
+                            </div>
                         </div>
                     </div>
 
