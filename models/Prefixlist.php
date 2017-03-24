@@ -228,11 +228,17 @@ class Prefixlist extends \yii\db\ActiveRecord
             'country_code' => isset($input['nnp_country']) ? $input['nnp_country'] : '',
             'region_id' => isset($input['nnp_region']) ? $input['nnp_region'] : '',
             'city_id' => isset($input['nnp_city']) ? $input['nnp_city'] : '',
-            'operator_id' => isset($input['nnp_operator']) ? $input['nnp_operator'] : '',
-            'is_exclude_operators' => array_key_exists('nnp_is_exclude_operators', $input) ? $input['nnp_is_exclude_operators'] : '',
             'ndc_type_id' => isset($input['nnp_ndc_type']) ? $input['nnp_ndc_type'] : '',
             'token' => bin2hex(openssl_random_pseudo_bytes(16)),
         ];
+
+        if (isset($input['nnp_operator']) && count($input['nnp_operator'])) {
+            $filters['operator_id'] = $input['nnp_operator'];
+            $filters['is_exclude_operators'] = array_key_exists('nnp_is_exclude_operators', $input) ?
+                $input['nnp_is_exclude_operators'] :
+                '';
+        }
+
         $this->nnp_filter_json = Json::encode($filters);
         return $this;
     }
