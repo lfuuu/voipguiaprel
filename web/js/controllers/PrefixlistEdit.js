@@ -241,7 +241,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             }
         }
 
-        if ($scope.item.type_id == 1) {
+        if ($scope.item.type_id == 2) {
             for (var i in $scope.item.smezhnost_list) {
                 data.smezhnost_list.push($scope.item.smezhnost_list[i].network_type_id)
             }
