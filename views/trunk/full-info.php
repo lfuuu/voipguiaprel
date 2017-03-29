@@ -42,7 +42,7 @@
                 </tr>
                 <tr>
                     <td>Путь в регион</td>
-                    <td><?= ($trunk->road_to_region ?: '---') ?></td>
+                    <td><?= ($trunk->road_to_regions ?: '---') ?></td>
                 </tr>
                 <tr>
                     <td>Автоматическая маршрутизация включена</td>
