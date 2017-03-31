@@ -63,7 +63,7 @@ class TrunkController extends JsonController
     }
 
     /**
-     * @return array|null|\yii\db\ActiveRecord
+     * @return array
      * @throws HttpException
      */
     public function actionGet()
@@ -86,7 +86,7 @@ class TrunkController extends JsonController
     }
 
     /**
-     * @return \app\models\billing\ServiceTrunk[]|array
+     * @return \app\models\billing\ServiceTrunk[]
      */
     public function actionGetServiceTrunks()
     {
