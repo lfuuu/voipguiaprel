@@ -135,6 +135,14 @@ class Trunk extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getNumbersRules()
+    {
+        return $this->hasMany(TrunkABfiltersRule::className(), ['trunk_id' => 'id'])->orderBy('order');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getRulesSource()
     {
         return $this->getRules(['outgoing' => false]);

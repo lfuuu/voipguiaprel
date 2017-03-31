@@ -2,19 +2,26 @@
 
 namespace app\controllers\json;
 
-use app\models\billing\ServiceTrunk;
-use app\models\TrunkNumberPreprocessing;
-use app\models\TrunkTrunkRule;
-use Yii;
 use app\classes\JsonController;
+use app\exceptions\FormValidationException;
+use app\models\billing\ServiceTrunk;
+use app\models\Trunk;
+use app\models\TrunkABfiltersRule;
+use app\models\TrunkNumberPreprocessing;
 use app\models\TrunkPriority;
 use app\models\TrunkRule;
-use app\models\Trunk;
-use app\exceptions\FormValidationException;
+use app\models\TrunkTrunkRule;
+use Yii;
+use yii\db\StaleObjectException;
 use yii\web\HttpException;
 
 class TrunkController extends JsonController
 {
+
+    /**
+     * @return \app\models\Trunk[]
+     * @throws HttpException
+     */
     public function actionList() {
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -29,6 +36,10 @@ class TrunkController extends JsonController
                 ->all();
     }
 
+    /**
+     * @return \app\models\Trunk[]
+     * @throws HttpException
+     */
     public function actionRead() {
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -39,7 +50,8 @@ class TrunkController extends JsonController
                 ->select([
                     'auth.trunk.id', 'auth.trunk.name', 'trunk_name', 'trunk_name_alias',
                     'default_priority', 'source_rule_default_allowed', 'destination_rule_default_allowed',
-                    'auto_routing', 'our_trunk', 'auth_by_number', 'orig_redirect_number_7800', 'orig_redirect_number', 'term_redirect_number', 'show_in_stat', 'route_table_id', 'server_id', 'capacity','sw_shared',
+                    'auto_routing', 'our_trunk', 'auth_by_number', 'orig_redirect_number_7800', 'orig_redirect_number',
+                    'term_redirect_number', 'show_in_stat', 'route_table_id', 'server_id', 'capacity','sw_shared',
                     'road_to_regions', 'load_warning', 'orig_enabled', 'term_enabled', 'tech_trunk', 'pstn_trunk', 'mgmn_trunk'
                 ])
                 ->with('routeTable')
@@ -50,6 +62,10 @@ class TrunkController extends JsonController
                 ->all();
     }
 
+    /**
+     * @return array|null|\yii\db\ActiveRecord
+     * @throws HttpException
+     */
     public function actionGet()
     {
         $item =
@@ -58,6 +74,7 @@ class TrunkController extends JsonController
                 ->with('rules')
                 ->with('trunkRules')
                 ->with('numberPreprocessing')
+                ->with('numbersRules')
                 ->where(['id' => $this->request['id']])
                 ->asArray()
                 ->one();
@@ -68,6 +85,9 @@ class TrunkController extends JsonController
         return $item;
     }
 
+    /**
+     * @return \app\models\billing\ServiceTrunk[]|array
+     */
     public function actionGetServiceTrunks()
     {
         return isset($this->request['trunk_id']) && (int)$this->request['trunk_id'] ?
@@ -75,6 +95,11 @@ class TrunkController extends JsonController
             [];
     }
 
+    /**
+     * @throws FormValidationException
+     * @throws HttpException
+     * @throws \yii\db\Exception
+     */
     public function actionSave()
     {
         $server = $this->getServerOr404($this->request['server_id']);
@@ -152,16 +177,37 @@ class TrunkController extends JsonController
                 }
             }
 
+            TrunkABfiltersRule::deleteByTrunk($trunk);
+            if (isset($this->request['numbersRules'])) {
+                foreach ($this->request['numbersRules'] as $ruleKey => $data) {
+                    $order = 1;
+                    foreach ($data as $row) {
+                        $rule = TrunkABfiltersRule::create($trunk, $row);
+                        $rule->order = $order;
+                        if (!$rule->save()) {
+                            throw new FormValidationException($rule);
+                        }
+                        $order++;
+                    }
+                }
+            }
+
             $transaction->commit();
         } finally {
-            if ($transaction->getIsActive())
+            if ($transaction->getIsActive()) {
                 $transaction->rollBack();
+            }
         }
     }
 
+    /**
+     * @throws StaleObjectException
+     * @throws HttpException
+     * @throws \Exception
+     */
     public function actionDelete()
     {
-        $item = Trunk::findOne($this->request['id']);
-        $item->delete();
+        $trunk = $this->getTrunkOr404($this->request['id']);
+        $trunk->delete();
     }
 }

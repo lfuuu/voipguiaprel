@@ -3,6 +3,7 @@
         <h3 ng-if="item.id">Оператор {{item.name}}</h3>
         <h3 ng-if="!item.id">Создание Оператора</h3>
     </div>
+
     <div class="modal-body">
 
         <!-- Nav tabs -->
@@ -11,448 +12,40 @@
             <li><a href="#priority" data-toggle="tab">Приоритеты</a></li>
             <li><a href="#source_rules" data-toggle="tab">Правила по А-номеру</a></li>
             <li><a href="#destination_rules" data-toggle="tab">Правила по B-номеру</a></li>
+
+            <li><a href="#numbers_rules_orig_a" data-toggle="tab">Правила Orig A</a></li>
+            <li><a href="#numbers_rules_orig_b" data-toggle="tab">Правила Orig B</a></li>
+            <li><a href="#numbers_rules_term_a" data-toggle="tab">Правила Term A</a></li>
+            <li><a href="#numbers_rules_term_b" data-toggle="tab">Правила Term B</a></li>
+
             <li><a href="#trunk_rules" data-toggle="tab">Правила транков</a></li>
             <li><a href="#number_preprocessing" data-toggle="tab">Препроцессинг номеров</a></li>
         </ul>
 
-        <br/>
+        <br />
+
         <!-- Tab panes -->
         <div class="tab-content">
-            <div class="tab-pane active" id="trunk">
-                <div class="form-group" ng-if="item.id">
-                    <label class="col-sm-2 control-label">Ид</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" ng-model="item.id" readonly />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Название</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" placeholder="Название" ng-model="item.name" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Имя транка</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" placeholder="Route name" ng-model="item.trunk_name" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Имя транка (Alias)</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" placeholder="Route name (Alias)" ng-model="item.trunk_name_alias" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Емкость транка</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" placeholder="Емкость транка" ng-model="item.capacity" />
-                    </div>
-                </div>
+            <div class="tab-pane active" id="trunk" ng-include="'/templates/tabs/trunk_edit/trunk.html'"></div>
 
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Порог загрузки %:</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" placeholder="Порог загрузки" ng-model="item.load_warning" />
-                    </div>
-                </div>
+            <div class="tab-pane" id="priority" ng-include="'/templates/tabs/trunk_edit/priority.html'"></div>
 
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Путь в регион:</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" placeholder="Путь в регион" ng-model="item.road_to_regions" />
-                    </div>
-                </div>
+            <div class="tab-pane" id="source_rules" ng-include="'/templates/tabs/trunk_edit/source_rules.html'"></div>
 
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Автоматическая маршрутизация включена</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.auto_routing = !item.auto_routing">
-                                <button type="button" class="btn btn-sm {{item.auto_routing ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.auto_routing ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
+            <div class="tab-pane" id="destination_rules" ng-include="'/templates/tabs/trunk_edit/destination_rules.html'"></div>
 
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Наш транк</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.our_trunk = !item.our_trunk">
-                                <button type="button" class="btn btn-sm {{item.our_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.our_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
+            <div class="tab-pane" id="numbers_rules_orig_a" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('orig-a')"></div>
+            <div class="tab-pane" id="numbers_rules_orig_b" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('orig-b')"></div>
+            <div class="tab-pane" id="numbers_rules_term_a" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('term-a')"></div>
+            <div class="tab-pane" id="numbers_rules_term_b" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('term-b')"></div>
 
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Авторизация по номеру</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.auth_by_number = !item.auth_by_number">
-                                <button type="button" class="btn btn-sm {{item.auth_by_number ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.auth_by_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="tab-pane" id="trunk_rules" ng-include="'/templates/tabs/trunk_edit/trunk_rules.html'"></div>
 
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Тех. номер 7800</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.orig_redirect_number_7800 = !item.orig_redirect_number_7800; item.orig_redirect_number = item.orig_redirect_number_7800 ? false : item.orig_redirect_number">
-                                <button type="button" class="btn btn-sm {{item.orig_redirect_number_7800 ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.orig_redirect_number_7800 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
+            <div class="tab-pane" id="number_preprocessing" ng-include="'/templates/tabs/trunk_edit/number_preprocessing.html'"></div>
 
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Redirecting Оригинация</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.orig_redirect_number = !item.orig_redirect_number; item.orig_redirect_number_7800 = item.orig_redirect_number ? false : orig_redirect_number_7800">
-                                <button type="button" class="btn btn-sm {{item.orig_redirect_number ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.orig_redirect_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Redirecting Терминация</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.term_redirect_number = !item.term_redirect_number">
-                                <button type="button" class="btn btn-sm {{item.term_redirect_number ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.term_redirect_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Минималки на Терм-плече</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.sw_minimalki = !item.sw_minimalki">
-                                <button type="button" class="btn btn-sm {{item.sw_minimalki ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.sw_minimalki ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Доступен на хабе</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
-                                <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Показывать в СТАТ</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.show_in_stat = !item.show_in_stat">
-                                <button type="button" class="btn btn-sm {{item.show_in_stat ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.show_in_stat ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">Технический транк</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.tech_trunk = !item.tech_trunk">
-                                <button type="button" class="btn btn-sm {{item.tech_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.tech_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">PSTN транк</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.pstn_trunk = !item.pstn_trunk">
-                                <button type="button" class="btn btn-sm {{item.pstn_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.pstn_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <label class="col-sm-8 control-label">МГ/МН</label>
-                        <div class="col-sm-4">
-                            <div class="btn-group" ng-click="item.mgmn_trunk = !item.mgmn_trunk">
-                                <button type="button" class="btn btn-sm {{item.mgmn_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.mgmn_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Таблица маршрутизации</label>
-                    <div class="col-sm-10">
-                        <select-box list="routeTable" model="item.route_table_id" default="Выберите таблицу маршрутизации"></select-box>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane" id="priority">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">По умолчанию</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" ng-model="item.default_priority" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Приоритеты</label>
-                    <div class="col-sm-10">
-                        <table class="table table-striped">
-
-                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.priorities">
-                            <tr ng-repeat="line in item.priorities">
-                                <td width="1%" style="cursor: ns-resize">
-                                    <span class="badge">{{$index + 1}}</span>
-                                </td>
-                                <td width="10%">
-                                    <input class="form-control input-sm" ng-model="line.priority" required />
-                                </td>
-
-                                <td width="5%" style="cursor: ns-resize">
-                                    <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
-                                </td>
-                                <td>
-                                    <select-box ng-if="line.trunk_group_id !== null" list="trunkGroup"
-                                                model="line.trunk_group_id" placeholder="Выберите"
-                                                required="true"></select-box>
-                                </td>
-
-                                <td width="3%" style="cursor: ns-resize">
-                                    <span ng-if="line.number_id_filter_a !== null">A:</span>
-                                </td>
-                                <td>
-                                    <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
-                                </td>
-
-
-                                <td width="3%" style="cursor: ns-resize">
-                                    <span ng-if="line.number_id_filter_b !== null">B:</span>
-                                </td>
-                                <td>
-                                    <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePriority($index)"></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="7">
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="addPriority()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane" id="source_rules">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">По умолчанию</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.source_rule_default_allowed = !item.source_rule_default_allowed">
-                            <button type="button" class="btn {{item.source_rule_default_allowed ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
-                            <button type="button" class="btn {{!item.source_rule_default_allowed ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Правила</label>
-                    <div class="col-sm-10">
-                        <table class="table table-striped">
-                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.rules">
-                            <tr ng-repeat="line in item.rules" ng-if="!line.outgoing">
-                                <td width="5%" style="cursor: ns-resize">
-                                    <span ng-if="item.source_rule_default_allowed" class="label label-danger">Запрещено</span>
-                                    <span ng-if="!item.source_rule_default_allowed" class="label label-success">Разрешено</span>
-                                </td>
-                                <td width="5%" style="cursor: ns-resize">
-                                    <span ng-if="line.prefixlist_id !== null">Список&nbsp;префиксов:</span>
-                                </td>
-                                <td width="80%">
-                                    <select-box ng-if="line.prefixlist_id !== null" list="prefixlist" model="line.prefixlist_id" placeholder="Выберите" required="true"></select-box>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRule($index)"></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="6">
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="addRule(false)"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane" id="destination_rules">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">По умолчанию</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.destination_rule_default_allowed = !item.destination_rule_default_allowed">
-                            <button type="button" class="btn {{item.destination_rule_default_allowed ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
-                            <button type="button" class="btn {{!item.destination_rule_default_allowed ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Правила</label>
-                    <div class="col-sm-10">
-                        <table class="table table-striped">
-                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.rules">
-                            <tr ng-repeat="line in item.rules" ng-if="line.outgoing">
-                                <td width="5%" style="cursor: ns-resize">
-                                    <span ng-if="item.destination_rule_default_allowed" class="label label-danger">Запрещено</span>
-                                    <span ng-if="!item.destination_rule_default_allowed" class="label label-success">Разрешено</span>
-                                </td>
-                                <td width="5%" style="cursor: ns-resize">
-                                    <span ng-if="line.prefixlist_id !== null">Список&nbsp;префиксов:</span>
-                                </td>
-                                <td width="80%">
-                                    <select-box ng-if="line.prefixlist_id !== null" list="prefixlist" model="line.prefixlist_id" placeholder="Выберите" required="true"></select-box>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRule($index)"></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="6">
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="addRule(true)"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane" id="trunk_rules">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">По умолчанию</label>
-                    <div class="col-sm-10">
-                        <div class="btn-group" ng-click="item.source_trunk_rule_default_allowed = !item.source_trunk_rule_default_allowed">
-                            <button type="button" class="btn {{item.source_trunk_rule_default_allowed ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
-                            <button type="button" class="btn {{!item.source_trunk_rule_default_allowed ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Правила</label>
-                    <div class="col-sm-10">
-                        <table class="table table-striped">
-                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.trunkRules">
-                            <tr ng-repeat="line in item.trunkRules">
-                                <td width="5%" style="cursor: ns-resize">
-                                    <span ng-if="item.source_trunk_rule_default_allowed" class="label label-danger">Запрещено</span>
-                                    <span ng-if="!item.source_trunk_rule_default_allowed" class="label label-success">Разрешено</span>
-                                </td>
-                                <td width="5%" style="cursor: ns-resize">
-                                    <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
-                                </td>
-                                <td>
-                                    <select-box ng-if="line.trunk_group_id !== null" list="trunkGroup" model="line.trunk_group_id" placeholder="Выберите" required="true"></select-box>
-                                </td>
-
-                                <td width="3%" style="cursor: ns-resize">
-                                    <span ng-if="line.number_id_filter_a !== null">A:</span>
-                                </td>
-                                <td>
-                                    <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
-                                </td>
-
-                                <td width="3%" style="cursor: ns-resize">
-                                    <span ng-if="line.number_id_filter_b !== null">B:</span>
-                                </td>
-                                <td>
-                                    <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkRule($index)"></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="6">
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkRule()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane" id="number_preprocessing">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Препроцессинг номеров</label>
-                    <div class="col-sm-10">
-                        <table class="table table-striped">
-                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.numberPreprocessing">
-                            <tr ng-repeat="line in item.numberPreprocessing">
-                                <td width="20%" style="cursor: ns-resize">
-                                    <span ng-if="line.src" class="label label-default">A-номер</span>
-                                    <span ng-if="!line.src" class="label label-default">B-номер</span>
-                                </td>
-                                <td width="5%" style="cursor: ns-resize">
-                                    NOA:
-                                </td>
-                                <td width="20%">
-                                    <input class="form-control input-sm" ng-model="line.noa" required />
-                                </td>
-                                <td width="5%" style="cursor: ns-resize">
-                                    Длина&nbsp;номера:
-                                </td>
-                                <td width="20%">
-                                    <input class="form-control input-sm" ng-model="line.length" required />
-                                </td>
-                                <td width="5%" style="cursor: ns-resize">
-                                    Префикс:
-                                </td>
-                                <td width="20%">
-                                    <input class="form-control input-sm" ng-model="line.prefix" required />
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeNumberPreprocessing($index)"></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="6">
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(true)"><i class="glyphicon glyphicon-plus"></i> А-номер</button>
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(false)"><i class="glyphicon glyphicon-plus"></i> B-номер</button>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
+
     <div class="modal-footer">
         <div class="pull-left">
             <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>

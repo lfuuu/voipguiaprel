@@ -1,0 +1,181 @@
+<div class="form-group" ng-if="item.id">
+    <label class="col-sm-2 control-label">Ид</label>
+    <div class="col-sm-10">
+        <input class="form-control" ng-model="item.id" readonly />
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label">Название</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="Название" ng-model="item.name" required />
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label">Имя транка</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="Route name" ng-model="item.trunk_name" required />
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label">Имя транка (Alias)</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="Route name (Alias)" ng-model="item.trunk_name_alias" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label">Емкость транка</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="Емкость транка" ng-model="item.capacity" />
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">Порог загрузки %:</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="Порог загрузки" ng-model="item.load_warning" />
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">Путь в регион:</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="Путь в регион" ng-model="item.road_to_regions" />
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Автоматическая маршрутизация включена</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.auto_routing = !item.auto_routing">
+                <button type="button" class="btn btn-sm {{item.auto_routing ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.auto_routing ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Наш транк</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.our_trunk = !item.our_trunk">
+                <button type="button" class="btn btn-sm {{item.our_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.our_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Авторизация по номеру</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.auth_by_number = !item.auth_by_number">
+                <button type="button" class="btn btn-sm {{item.auth_by_number ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.auth_by_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Тех. номер 7800</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.orig_redirect_number_7800 = !item.orig_redirect_number_7800; item.orig_redirect_number = item.orig_redirect_number_7800 ? false : item.orig_redirect_number">
+                <button type="button" class="btn btn-sm {{item.orig_redirect_number_7800 ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.orig_redirect_number_7800 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Redirecting Оригинация</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.orig_redirect_number = !item.orig_redirect_number; item.orig_redirect_number_7800 = item.orig_redirect_number ? false : orig_redirect_number_7800">
+                <button type="button" class="btn btn-sm {{item.orig_redirect_number ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.orig_redirect_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Redirecting Терминация</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.term_redirect_number = !item.term_redirect_number">
+                <button type="button" class="btn btn-sm {{item.term_redirect_number ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.term_redirect_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Минималки на Терм-плече</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.sw_minimalki = !item.sw_minimalki">
+                <button type="button" class="btn btn-sm {{item.sw_minimalki ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.sw_minimalki ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Доступен на хабе</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
+                <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Показывать в СТАТ</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.show_in_stat = !item.show_in_stat">
+                <button type="button" class="btn btn-sm {{item.show_in_stat ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.show_in_stat ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="form-group">
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Технический транк</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.tech_trunk = !item.tech_trunk">
+                <button type="button" class="btn btn-sm {{item.tech_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.tech_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">PSTN транк</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.pstn_trunk = !item.pstn_trunk">
+                <button type="button" class="btn btn-sm {{item.pstn_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.pstn_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">МГ/МН</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.mgmn_trunk = !item.mgmn_trunk">
+                <button type="button" class="btn btn-sm {{item.mgmn_trunk ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.mgmn_trunk ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">Таблица маршрутизации</label>
+    <div class="col-sm-10">
+        <select-box list="routeTable" model="item.route_table_id" default="Выберите таблицу маршрутизации"></select-box>
+    </div>
+</div>
