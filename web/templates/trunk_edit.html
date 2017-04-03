@@ -10,8 +10,6 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#trunk" data-toggle="tab">Транк</a></li>
             <li><a href="#priority" data-toggle="tab">Приоритеты</a></li>
-            <li><a href="#source_rules" data-toggle="tab">Правила по А-номеру</a></li>
-            <li><a href="#destination_rules" data-toggle="tab">Правила по B-номеру</a></li>
 
             <li><a href="#numbers_rules_orig_a" data-toggle="tab">Правила Orig A</a></li>
             <li><a href="#numbers_rules_orig_b" data-toggle="tab">Правила Orig B</a></li>
@@ -29,10 +27,6 @@
             <div class="tab-pane active" id="trunk" ng-include="'/templates/tabs/trunk_edit/trunk.html'"></div>
 
             <div class="tab-pane" id="priority" ng-include="'/templates/tabs/trunk_edit/priority.html'"></div>
-
-            <div class="tab-pane" id="source_rules" ng-include="'/templates/tabs/trunk_edit/source_rules.html'"></div>
-
-            <div class="tab-pane" id="destination_rules" ng-include="'/templates/tabs/trunk_edit/destination_rules.html'"></div>
 
             <div class="tab-pane" id="numbers_rules_orig_a" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('orig-a')"></div>
             <div class="tab-pane" id="numbers_rules_orig_b" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('orig-b')"></div>

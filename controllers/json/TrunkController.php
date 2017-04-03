@@ -9,7 +9,6 @@ use app\models\Trunk;
 use app\models\TrunkABfiltersRule;
 use app\models\TrunkNumberPreprocessing;
 use app\models\TrunkPriority;
-use app\models\TrunkRule;
 use app\models\TrunkTrunkRule;
 use Yii;
 use yii\db\StaleObjectException;
@@ -71,7 +70,6 @@ class TrunkController extends JsonController
         $item =
             Trunk::find()
                 ->with('priorities')
-                ->with('rules')
                 ->with('trunkRules')
                 ->with('numberPreprocessing')
                 ->with('numbersRules')
@@ -133,19 +131,6 @@ class TrunkController extends JsonController
                     $priority->order = $order;
                     if (!$priority->save()) {
                         throw new FormValidationException($priority);
-                    }
-                    $order++;
-                }
-            }
-
-            TrunkRule::deleteByTrunk($trunk);
-            if (isset($this->request['rules'])) {
-                $order = 1;
-                foreach ($this->request['rules'] as $ruleData) {
-                    $rule = TrunkRule::create($trunk, $ruleData);
-                    $rule->order = $order;
-                    if (!$rule->save()) {
-                        throw new FormValidationException($rule);
                     }
                     $order++;
                 }

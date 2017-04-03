@@ -37,7 +37,7 @@ class TrunkABfiltersRule extends \yii\db\ActiveRecord
     /**
      * @param Trunk $trunk
      * @param array|null $data
-     * @return TrunkRule
+     * @return TrunkABfiltersRule
      */
     public static function create(Trunk $trunk, array $data = null)
     {
@@ -54,6 +54,14 @@ class TrunkABfiltersRule extends \yii\db\ActiveRecord
     public static function deleteByTrunk(Trunk $trunk)
     {
         return self::deleteAll(['trunk_id' => $trunk->id]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPrefixlist()
+    {
+        return $this->hasOne(Prefixlist::className(), ['id' => 'prefixlist_id']);
     }
 
 }

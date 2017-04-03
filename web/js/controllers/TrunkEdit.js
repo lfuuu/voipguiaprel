@@ -33,7 +33,6 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
             source_rule_default_allowed: false,
             destination_rule_default_allowed: false,
             priorities: [],
-            rules: [],
             trunkRules: [],
             numberPreprocessing: [],
             numbersRules: {}
@@ -46,14 +45,6 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
 
     $scope.removePriority = function (index) {
         $scope.item.priorities.splice(index, 1);
-    };
-
-    $scope.addRule = function (outgoing) {
-        $scope.item.rules.push({prefixlist_id: '', outgoing: outgoing});
-    };
-
-    $scope.removeRule = function (index) {
-        $scope.item.rules.splice(index, 1);
     };
 
     $scope.transcriptMode = function (mode) {

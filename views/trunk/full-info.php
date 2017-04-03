@@ -158,11 +158,14 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (count($trunk->rulesSource)) :?>
-                    <?php foreach ($trunk->rulesSource as $rule) : ?>
+                <?php if (count($trunk->rulesSourceOrig)) :?>
+                    <tr>
+                        <td colspan="2" class="text-center">Оригинация (По умолчанию: <?= ($trunk->orig_afilter_default_allowed ? 'Разрешено' : 'Запрещено') ?>)</td>
+                    </tr>
+                    <?php foreach ($trunk->rulesSourceOrig as $rule) : ?>
                         <tr>
                             <td>
-                                <?= ($trunk->source_rule_default_allowed ? 'Запрещено' : 'Разрешено') ?>
+                                <?= ($rule->allow ? 'Разрешено' : 'Запрещено') ?>
                             </td>
                             <td>
                                 <?= ($rule->prefixlist_id ? $rule->prefixlist->name : '') ?>
@@ -171,7 +174,27 @@
                     <?php endforeach; ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="2">Не задано</td>
+                        <td colspan="2" class="text-center">Не задано</td>
+                    </tr>
+                <?php endif; ?>
+
+                <?php if (count($trunk->rulesSourceTerm)) :?>
+                    <tr>
+                        <td colspan="2" class="text-center">Терминация (По умолчанию: <?= ($trunk->term_afilter_default_allowed ? 'Разрешено' : 'Запрещено') ?>)</td>
+                    </tr>
+                    <?php foreach ($trunk->rulesSourceTerm as $rule) : ?>
+                        <tr>
+                            <td>
+                                <?= ($rule->allow ? 'Разрешено' : 'Запрещено') ?>
+                            </td>
+                            <td>
+                                <?= ($rule->prefixlist_id ? $rule->prefixlist->name : '') ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <tr>
+                        <td colspan="2" class="text-center">Не задано</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -192,11 +215,34 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (count($trunk->rulesDestination)) : ?>
-                    <?php foreach ($trunk->rulesDestination as $rule) : ?>
+                <?php if (count($trunk->rulesDestinationOrig)) : ?>
+                    <tr>
+                        <td colspan="2" class="text-center">Оригинация (По умолчанию: <?= ($trunk->orig_bfilter_default_allowed ? 'Разрешено' : 'Запрещено') ?>)</td>
+                    </tr>
+                    <?php foreach ($trunk->rulesDestinationOrig as $rule) : ?>
                         <tr>
                             <td>
-                                <?= ($trunk->source_rule_default_allowed ? 'Запрещено' : 'Разрешено') ?>
+                                <?= ($rule->allow ? 'Разрешено' : 'Запрещено') ?>
+                            </td>
+                            <td>
+                                <?= ($rule->prefixlist_id ? $rule->prefixlist->name : '') ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <tr>
+                        <td colspan="2">Не задано</td>
+                    </tr>
+                <?php endif; ?>
+
+                <?php if (count($trunk->rulesDestinationTerm)) : ?>
+                    <tr>
+                        <td colspan="2" class="text-center">Терминация (По умолчанию: <?= ($trunk->term_bfilter_default_allowed ? 'Разрешено' : 'Запрещено') ?>)</td>
+                    </tr>
+                    <?php foreach ($trunk->rulesDestinationTerm as $rule) : ?>
+                        <tr>
+                            <td>
+                                <?= ($rule->allow ? 'Разрешено' : 'Запрещено') ?>
                             </td>
                             <td>
                                 <?= ($rule->prefixlist_id ? $rule->prefixlist->name : '') ?>

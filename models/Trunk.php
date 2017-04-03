@@ -27,7 +27,15 @@ use app\queries\TrunkQuery;
  * @property string $road_to_regions
  * @property bool $pstn_trunk
  * @property bool $mgmn_trunk
-
+ * @property bool $orig_afilter_default_allowed
+ * @property bool $orig_bfilter_default_allowed
+ * @property bool $term_afilter_default_allowed
+ * @property bool $term_bfilter_default_allowed
+ *
+ * @property \yii\db\ActiveQuery rulesSourceOrig
+ * @property \yii\db\ActiveQuery rulesDestinationOrig
+ * @property \yii\db\ActiveQuery rulesSourceTerm
+ * @property \yii\db\ActiveQuery rulesDestinationTerm
  */
 class Trunk extends \yii\db\ActiveRecord
 {
@@ -128,34 +136,56 @@ class Trunk extends \yii\db\ActiveRecord
      * @param array $where
      * @return \yii\db\ActiveQuery
      */
-    public function getRules(array $where = null)
+    public function getNumbersRules(array $where = null)
     {
-        $link = $this->hasMany(TrunkRule::className(), ['trunk_id' => 'id'])->orderBy('order');
-        return ($where !== null ? $link->andWhere($where) : $link);
+        $link = $this
+            ->hasMany(TrunkABfiltersRule::className(), ['trunk_id' => 'id'])
+            ->orderBy('order');
+        return (!is_null($where) ? $link->andWhere($where) : $link);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getNumbersRules()
+    public function getRulesSourceOrig()
     {
-        return $this->hasMany(TrunkABfiltersRule::className(), ['trunk_id' => 'id'])->orderBy('order');
+        return $this->getNumbersRules([
+            'orig' => true,
+            'outgoing' => false,
+        ]);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRulesSource()
+    public function getRulesSourceTerm()
     {
-        return $this->getRules(['outgoing' => false]);
+        return $this->getNumbersRules([
+            'orig' => false,
+            'outgoing' => false,
+        ]);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRulesDestination()
+    public function getRulesDestinationOrig()
     {
-        return $this->getRules(['outgoing' => true]);
+        return $this->getNumbersRules([
+            'orig' => true,
+            'outgoing' => true,
+        ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRulesDestinationTerm()
+    {
+        return $this->getNumbersRules([
+            'orig' => false,
+            'outgoing' => true,
+        ]);
     }
 
     /**
