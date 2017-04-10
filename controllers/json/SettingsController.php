@@ -33,6 +33,7 @@ class SettingsController extends JsonController
             'auto_lock_finance' => $server->instanceSettings->auto_lock_finance,
             'hostname_reserve' => $server->hostname_reserve,
             'nas_ip_address' => $server->nas_ip_address,
+            'rc_mgmn_outcome_id' => $server->rc_mgmn_outcome_id,
         ];
     }
 

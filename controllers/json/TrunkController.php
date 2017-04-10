@@ -51,7 +51,7 @@ class TrunkController extends JsonController
                     'default_priority', 'source_rule_default_allowed', 'destination_rule_default_allowed',
                     'auto_routing', 'our_trunk', 'auth_by_number', 'orig_redirect_number_7800', 'orig_redirect_number',
                     'term_redirect_number', 'show_in_stat', 'route_table_id', 'server_id', 'capacity','sw_shared',
-                    'road_to_regions', 'load_warning', 'orig_enabled', 'term_enabled', 'tech_trunk', 'pstn_trunk', 'mgmn_trunk'
+                    'road_to_regions', 'load_warning', 'orig_enabled', 'term_enabled', 'tech_trunk', 'pstn_trunk', 'mgmn_trunk', 'mgmn_orig_trunk', 
                 ])
                 ->with('routeTable')
                 ->joinWith('trunkOrigTerm')
