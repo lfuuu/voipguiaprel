@@ -35,7 +35,11 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
             priorities: [],
             trunkRules: [],
             numberPreprocessing: [],
-            numbersRules: {}
+            numbersRules: {},
+            orig_afilter_default_allowed: true,
+            orig_bfilter_default_allowed: true,
+            term_afilter_default_allowed: true,
+            term_bfilter_default_allowed: true
         };
     }
 
