@@ -15,28 +15,28 @@
         <div class="col-sm-12">
             <table class="table table-striped">
                 <tbody ui-sortable="{axis: 'y'}" ng-model="item.numbersRules[mode.key]">
-                <tr ng-repeat="line in item.numbersRules[mode.key]">
-                    <td width="5%">
-                        <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
-                        <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
-                    </td>
-                    <td width="5%" style="cursor: ns-resize">
-                        <span ng-if="line.prefixlist_id !== null">Список&nbsp;префиксов:</span>
-                    </td>
-                    <td width="80%">
-                        <select-box ng-if="line.prefixlist_id !== null" list="prefixlist" model="line.prefixlist_id" placeholder="Выберите" required="true"></select-box>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeNumbersRule(mode.key, $index)"></button>
-                    </td>
-                </tr>
+                    <tr ng-repeat="line in item.numbersRules[mode.key]" ng-if="line.prefixlist_id !== null">
+                        <td width="5%">
+                            <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
+                            <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
+                        </td>
+                        <td width="5%" style="cursor: ns-resize">
+                            <span>Список&nbsp;префиксов:</span>
+                        </td>
+                        <td width="80%">
+                            <select-box list="prefixlist" model="line.prefixlist_id" placeholder="Выберите"></select-box>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeNumbersRule(mode.key, $index)"></button>
+                        </td>
+                    </tr>
                 </tbody>
                 <tfoot>
-                <tr>
-                    <td colspan="6">
-                        <button type="button" class="btn btn-success btn-xs" ng-click="addNumbersRule(mode.key)"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="6">
+                            <button type="button" class="btn btn-success btn-xs" ng-click="addNumbersRule(mode.key)"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
+                        </td>
+                    </tr>
                 </tfoot>
             </table>
         </div>
