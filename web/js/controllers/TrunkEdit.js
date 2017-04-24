@@ -91,7 +91,12 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
             $scope.item.numbersRules[key] = [];
         }
 
-        $scope.item.numbersRules[key].push({prefixlist_id: '', allow: $scope.item[mode.init], orig: mode.orig, outgoing: mode.outgoing});
+        $scope.item.numbersRules[key].push({
+            prefixlist_id: '',
+            allow: $scope.item[mode.init],
+            orig: mode.orig,
+            outgoing: mode.outgoing
+        });
     };
 
     $scope.removeNumbersRule = function (key, index) {
@@ -99,7 +104,10 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
     };
 
     $scope.addTrunkRule = function () {
-        $scope.item.trunkRules.push({trunk_group_id: ''});
+        $scope.item.trunkRules.push({
+            trunk_group_id: '',
+            allow: $scope.item.source_trunk_rule_default_allowed
+        });
     };
 
     $scope.removeTrunkRule = function (index) {

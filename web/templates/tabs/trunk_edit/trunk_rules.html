@@ -13,9 +13,9 @@
         <table class="table table-striped">
             <tbody ui-sortable="{axis: 'y'}" ng-model="item.trunkRules">
             <tr ng-repeat="line in item.trunkRules">
-                <td width="5%" style="cursor: ns-resize">
-                    <span ng-if="item.source_trunk_rule_default_allowed" class="label label-danger">Запрещено</span>
-                    <span ng-if="!item.source_trunk_rule_default_allowed" class="label label-success">Разрешено</span>
+                <td width="5%">
+                    <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
+                    <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
                 </td>
                 <td width="5%" style="cursor: ns-resize">
                     <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
