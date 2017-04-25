@@ -17,10 +17,10 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                 }
 
                 numbersRules[mode].push({
-                    prefixlist_id: this.prefixlist_id,
                     allow: this.allow,
                     orig: this.orig,
-                    outgoing: this.outgoing
+                    outgoing: this.outgoing,
+                    prefixlist_id: this.prefixlist_id
                 });
             });
 
