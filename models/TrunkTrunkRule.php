@@ -8,7 +8,7 @@ namespace app\models;
  * @property int $trunk_group_id
  * @property int $number_id_filter_a
  * @property int $number_id_filter_b
- * @property
+ * @property bool $allow
  */
 class TrunkTrunkRule extends \yii\db\ActiveRecord
 {
@@ -27,9 +27,8 @@ class TrunkTrunkRule extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['trunk_group_id'], 'integer'],
-            [['number_id_filter_a'], 'integer'],
-            [['number_id_filter_b'], 'integer'],
+            [['trunk_group_id', 'number_id_filter_a', 'number_id_filter_b'], 'integer'],
+            [['allow',], 'boolean'],
         ];
     }
 
