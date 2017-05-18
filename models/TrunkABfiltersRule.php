@@ -10,6 +10,7 @@ namespace app\models;
  * @property bool $allow
  * @property int $order
  * @property int $prefixlist_id
+ * @property bool $test_redirect_num
  */
 class TrunkABfiltersRule extends \yii\db\ActiveRecord
 {
@@ -28,7 +29,7 @@ class TrunkABfiltersRule extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['outgoing', 'allow', 'orig',], 'boolean'],
+            [['outgoing', 'allow', 'orig', 'test_redirect_num',], 'boolean'],
             [['prefixlist_id', 'order', 'trunk_id',], 'integer'],
             ['trunk_id', 'required'],
         ];
