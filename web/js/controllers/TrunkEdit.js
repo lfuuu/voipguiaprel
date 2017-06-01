@@ -20,7 +20,8 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                     allow: this.allow,
                     orig: this.orig,
                     outgoing: this.outgoing,
-                    prefixlist_id: this.prefixlist_id
+                    prefixlist_id: this.prefixlist_id,
+                    test_redirect_num: this.test_redirect_num,
                 });
             });
 
@@ -58,7 +59,9 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                     key: mode,
                     init: 'orig_afilter_default_allowed',
                     orig: true,
-                    outgoing: false
+                    outgoing: false,
+                    test_redirect_num: false,
+                    is_test_redirect_num: true
                 };
             case 'orig-b':
                 return {
@@ -72,7 +75,9 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                     key: mode,
                     init: 'term_afilter_default_allowed',
                     orig: false,
-                    outgoing: false
+                    outgoing: false,
+                    test_redirect_num: false,
+                    is_test_redirect_num: true
                 };
             case 'term-b':
                 return {
@@ -95,7 +100,8 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
             prefixlist_id: '',
             allow: $scope.item[mode.init],
             orig: mode.orig,
-            outgoing: mode.outgoing
+            outgoing: mode.outgoing,
+            test_redirect_num: mode.test_redirect_num
         });
     };
 
