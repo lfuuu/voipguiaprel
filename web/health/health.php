@@ -4,26 +4,28 @@ define('MONITOR_SCHEME', 'http');
 define('MONITOR_PORT', 8032);
 define('MONITOR_URI', '/test/healthcheck');
 
-define('PGSQL_DNS', 'pgsql:host=85.94.32.235;port=5432;dbname=nispd');
-define('PGSQL_USER', 'readonly');
-define('PGSQL_PASSWORD', 'readonly');
-define('PGSQL_CHARSET', 'utf8');
-
+define('CONFIG_FILEPATH', __DIR__ . '/config.php');
 define('RESULT_FILEPATH', __DIR__ . '/../assets/healthData.json');
 
 getServerList();
 
 /**
- * @inheritdoc
+ * @throws \Exception
  */
 function getServerList()
 {
     try {
-        $pdo = new PDO(PGSQL_DNS, PGSQL_USER, PGSQL_PASSWORD);
-        $pdo->exec("SET SESSION TIME ZONE 'UTC';");
+        if (!file_exists(CONFIG_FILEPATH)) {
+            throw new \Exception('Can\'t load configuration');
+        }
+
+        $config = require_once __DIR__ . '/config.php';
+        if (!array_key_exists('resources', $config)) {
+            throw new \Exception('List of monitoring resource is empty');
+        }
     } catch (PDOException $e) {
         $serversData = [
-            'alert' => 'Can\'t establish connection (' . $e->getMessage() . ')',
+            'alert' => $e->getMessage(),
             'lastUpdate' => date('Y-m-d H:i:s'),
         ];
 
@@ -31,11 +33,11 @@ function getServerList()
         die;
     }
 
-    $query = $pdo->query('SELECT hostname FROM public.server WHERE is_need_db_do_migrate ORDER BY id ASC');
     $serversData = [
         'lastUpdate' => date('Y-m-d H:i:s'),
     ];
-    while ($hostname = $query->fetch(PDO::FETCH_COLUMN)) {
+
+    foreach ($config['resources'] as $hostname) {
         $hostData = getHostData($hostname);
         $hostDataJSON = json_decode($hostData);
 
@@ -47,8 +49,6 @@ function getServerList()
     }
 
     file_put_contents(RESULT_FILEPATH, json_encode($serversData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT));
-
-    $pdo = null;
 }
 
 /**
