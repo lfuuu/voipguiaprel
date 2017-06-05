@@ -111,6 +111,13 @@ a:hover {
     margin-top: 8px;
 }
 
+.block .message + div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
 .block.status-0:before {
     content: '';
     position: absolute;
