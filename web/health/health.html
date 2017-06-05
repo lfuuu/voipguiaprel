@@ -104,6 +104,8 @@
                     }
 
                     $error.innerText = message;
+                    $error.style.display = 'block';
+
                     this.$lastUpdate.innerText = 'Когда произошла ошибка: ' + new Date().toLocaleString();
                 },
 
@@ -121,6 +123,11 @@
                         json = JSON.parse(json);
 
                         this.$lastUpdate.innerText = 'Последнее обновление: ' + json.lastUpdate;
+
+                        if (json.alert) {
+                            this.setError(json.alert);
+                            return false;
+                        }
 
                         for (var index in json) {
                             if (json.hasOwnProperty(index) && index !== 'lastUpdate') {
