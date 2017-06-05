@@ -22,7 +22,12 @@ function getServerList()
         $pdo = new PDO(PGSQL_DNS, PGSQL_USER, PGSQL_PASSWORD);
         $pdo->exec("SET SESSION TIME ZONE 'UTC';");
     } catch (PDOException $e) {
-        echo 'Can\'t establish connection (' . $e->getMessage() . ')' . PHP_EOL;
+        $serversData = [
+            'alert' => 'Can\'t establish connection (' . $e->getMessage() . ')',
+            'lastUpdate' => date('Y-m-d H:i:s'),
+        ];
+
+        file_put_contents(RESULT_FILEPATH, json_encode($serversData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT));
         die;
     }
 
