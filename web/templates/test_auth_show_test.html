@@ -42,9 +42,10 @@
 
         <table class="table" ng-if="details == 3">
             <tr ng-repeat="row in result" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}">
-                <td nowrap>{{row.type}}</td>
+                <td nowrap ng-if-start="!isStageRowType(row)">{{row.type}}</td>
                 <td nowrap>{{row.action}}</td>
-                <td width="100%">{{row.params}}</td>
+                <td width="100%" ng-if-end>{{row.params}}</td>
+                <td colspan="3" ng-if="isStageRowType(row)" ng-style="{'font-size': 'larger', 'background-color': 'azure'}"><b>{{row.action}}</b></td>
             </tr>
         </table>
 

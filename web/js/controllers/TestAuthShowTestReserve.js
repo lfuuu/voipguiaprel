@@ -6,6 +6,9 @@ var TestAuthShowTestReserveCtrl = function($scope, TestAuth, params, $modalInsta
         TestAuth.result({id: params.id, isReserve: true}).then(function (data) {
             $scope.item = data.item;
             $scope.result = data.result;
+            $scope.isStageRowType = function (row) {
+                return row.type == 'STAGE';
+            };
         });
     } else {
         $scope.item = {

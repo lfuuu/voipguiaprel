@@ -6,6 +6,9 @@ var TestCallShowTestCtrl = function($scope, TestCall, params, $modalInstance, $w
         TestCall.result({id: params.id}).then(function(data){
             $scope.item = data.item;
             $scope.result = data.result;
+            $scope.isStageRowType = function (row) {
+                return row.type == 'STAGE';
+            };
         });
     } else {
         $scope.item = {
