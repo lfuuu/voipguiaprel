@@ -1,9 +1,5 @@
 <?php
 
-define('MONITOR_SCHEME', 'http');
-define('MONITOR_PORT', 8032);
-define('MONITOR_URI', '/test/healthcheck');
-
 define('CONFIG_FILEPATH', __DIR__ . '/config.php');
 define('RESULT_FILEPATH', __DIR__ . '/../assets/healthData.json');
 
@@ -37,14 +33,14 @@ function getServerList()
         'lastUpdate' => date('Y-m-d H:i:s'),
     ];
 
-    foreach ($config['resources'] as $hostname) {
-        $hostData = getHostData($hostname);
-        $hostDataJSON = json_decode($hostData);
+    foreach ($config['resources'] as $resource) {
+        $data = getData($resource);
+        $dataJSON = json_decode($data);
 
         if (json_last_error() === JSON_ERROR_NONE) {
-            $serversData[$hostname] = $hostDataJSON;
+            $serversData[$resource] = $dataJSON;
         } else {
-            $serversData[$hostname] = $hostData;
+            $serversData[$resource] = $data;
         }
     }
 
@@ -52,13 +48,13 @@ function getServerList()
 }
 
 /**
- * @param string $hostname
+ * @param string $resource
  * @return string
  */
-function getHostData($hostname)
+function getData($resource)
 {
     $options = [
-        CURLOPT_URL => MONITOR_SCHEME . '://' . $hostname . ':' . MONITOR_PORT . MONITOR_URI,
+        CURLOPT_URL => $resource,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_NOBODY => false,
         CURLOPT_HEADER => false,
