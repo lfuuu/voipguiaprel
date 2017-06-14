@@ -3,49 +3,43 @@
 define('CONFIG_FILEPATH', __DIR__ . '/config.php');
 define('RESULT_FILEPATH', __DIR__ . '/../assets/healthData.json');
 
-getServerList();
-
-/**
- * @throws \Exception
- */
-function getServerList()
-{
-    try {
-        if (!file_exists(CONFIG_FILEPATH)) {
-            throw new \Exception('Can\'t load configuration');
-        }
-
-        $config = require_once __DIR__ . '/config.php';
-        if (!array_key_exists('resources', $config)) {
-            throw new \Exception('List of monitoring resource is empty');
-        }
-    } catch (PDOException $e) {
-        $serversData = [
-            'alert' => $e->getMessage(),
-            'lastUpdate' => date('Y-m-d H:i:s'),
-        ];
-
-        file_put_contents(RESULT_FILEPATH, json_encode($serversData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT));
-        die;
+try {
+    if (!file_exists(CONFIG_FILEPATH)) {
+        throw new \Exception('Can\'t load configuration');
     }
 
-    $serversData = [
+    $config = require_once __DIR__ . '/config.php';
+    if (!array_key_exists('resources', $config)) {
+        throw new \Exception('List of monitoring resource is empty');
+    }
+} catch (\Exception $e) {
+    $result = [
+        'alert' => $e->getMessage(),
         'lastUpdate' => date('Y-m-d H:i:s'),
     ];
 
-    foreach ($config['resources'] as $resource) {
-        $data = getData($resource);
-        $dataJSON = json_decode($data);
-
-        if (json_last_error() === JSON_ERROR_NONE) {
-            $serversData[$resource] = $dataJSON;
-        } else {
-            $serversData[$resource] = $data;
-        }
-    }
-
-    file_put_contents(RESULT_FILEPATH, json_encode($serversData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT));
+    file_put_contents(RESULT_FILEPATH, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT));
+    die;
 }
+
+$result = [
+    'lastUpdate' => date('Y-m-d H:i:s'),
+];
+
+foreach ($config['resources'] as $resource) {
+    $resourceHost = parse_url($resource, PHP_URL_HOST);
+
+    $data = getData($resource);
+    $dataJSON = json_decode($data);
+
+    if (json_last_error() === JSON_ERROR_NONE) {
+        $result[$resourceHost] = $dataJSON;
+    } else {
+        $result[$resourceHost] = $data;
+    }
+}
+
+file_put_contents(RESULT_FILEPATH, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT));
 
 /**
  * @param string $resource
@@ -59,6 +53,8 @@ function getData($resource)
         CURLOPT_NOBODY => false,
         CURLOPT_HEADER => false,
         CURLOPT_TIMEOUT => 10,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
     ];
 
     $request = curl_init();

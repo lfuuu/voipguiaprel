@@ -11,8 +11,12 @@
                 dataUri: '/assets/healthData.json',
                 requestTimeout: 2000,
                 hostnamePort: 8032,
+
+                extendsInstanceId: 100,
+
                 monitorId: '#monitor',
                 lastUpdateId: '#last-update',
+
                 priority: {
                     'STATUS_OK': 0,
                     'STATUS_UNKNOWN': 1,
@@ -20,6 +24,7 @@
                     'STATUS_CRITICAL': 3,
                     'STATUS_ERROR': 3
                 },
+
                 request: null,
                 $monitor: null,
                 $lastUpdate: null,
@@ -121,21 +126,22 @@
 
                     try {
                         json = JSON.parse(json);
-
-                        this.$lastUpdate.innerText = 'Последнее обновление: ' + json.lastUpdate;
-
-                        if (json.alert) {
-                            this.setError(json.alert);
-                            return false;
-                        }
-
-                        for (var index in json) {
-                            if (json.hasOwnProperty(index) && index !== 'lastUpdate') {
-                                this.setBlock(index, json[index]);
-                            }
-                        }
                     } catch (error) {
                         this.setError('Ошибка разбора данных: ' + error);
+                        return false;
+                    }
+
+                    this.$lastUpdate.innerText = 'Последнее обновление: ' + json.lastUpdate;
+
+                    if (json.alert) {
+                        this.setError(json.alert);
+                        return false;
+                    }
+
+                    for (var index in json) {
+                        if (json.hasOwnProperty(index) && index !== 'lastUpdate') {
+                            this.setBlock(index, json[index]);
+                        }
                     }
                 },
 
@@ -147,8 +153,7 @@
                         $footerInfo = this.create('div', {class: 'footer info'}),
                         $content = this.create('div', {class: 'content'}),
                         maxPriority = 0,
-                        instanceId = parseInt(params.instanceId, 10),
-                        regions = [];
+                        instanceId = parseInt(params.instanceId, 10);
 
                     for (var index in params) {
                         if (
@@ -180,20 +185,6 @@
                         maxPriority = 1;
                         $content.textContent = params;
                         $content.className = 'info error';
-                    } else {
-                        if (Object.keys(params.regionList).length > 1) {
-                            for (var index in params.regionList) {
-                                if (
-                                    params.regionList.hasOwnProperty(index)
-                                    && typeof params.regionList[index] == 'object'
-                                    && params.regionList[index].regionId != params.instanceId
-                                ) {
-                                    regions.push(params.regionList[index].regionName);
-                                }
-                            }
-                        } else {
-                            regions.push(params.regionList[0].regionName);
-                        }
                     }
 
                     if (!$block) {
@@ -207,6 +198,11 @@
                         $block.className = 'block status-' + maxPriority;
                     }
 
+                    $block.appendChild($header);
+                    $block.appendChild($headerInfo);
+                    $block.appendChild($content);
+                    $block.appendChild($footerInfo);
+
                     $header.appendChild(
                         this.create('a', {
                             target: '_blank',
@@ -215,38 +211,73 @@
                         })
                     );
 
-                    $headerInfo.appendChild(
-                        this.create('div', {
-                            class: 'pull-left',
-                            text: regions.join(', ')
-                        })
-                    );
+                    // Choose render
+                    if (instanceId >= this.extendsInstanceId) {
+                        // Extends resources
+                        views.extends(this, params);
+                    } else {
+                        // Billing resources
+                        views.billing(this, params);
+                    }
+                }
+            },
+            views = {
+                billing: function ($health, params) {
+                    var
+                        $headerInfo = $health.get('div.header.info'),
+                        $footerInfo = $health.get('div.footer.info'),
+                        regions = [];
+
+                    if (params.regionList instanceof Object) {
+                        if (Object.keys(params.regionList).length > 1) {
+                            for (var index in params.regionList) {
+                                 if (
+                                     params.regionList.hasOwnProperty(index)
+                                    && typeof params.regionList[index] == 'object'
+                                    && params.regionList[index].regionId != params.instanceId
+                                 ) {
+                                    regions.push(params.regionList[index].regionName);
+                                 }
+                            }
+                        } else {
+                            regions.push(params.regionList[0].regionName);
+                        }
+
+                        $headerInfo.appendChild(
+                            $health.create('div', {
+                                class: 'pull-left',
+                                text: regions.join(', ')
+                            })
+                        );
+                    }
 
                     if (params.autoLockFinance !== undefined) {
                         $headerInfo.appendChild(
-                            this.create('div', {
+                            $health.create('div', {
                                 class: 'pull-right' + (!params.autoLockFinance ? ' icon-dollar enabled' : '')
                             })
                         );
                     }
 
                     $footerInfo.appendChild(
-                        this.create('div', {
+                        $health.create('div', {
                             class: 'pull-left',
-                            text: (instanceId ? 'Calls: ' + params.currentCalls : '')
+                            text: ("currentCalls" in params ? 'Calls: ' + params.currentCalls : '')
                         })
                     );
                     $footerInfo.appendChild(
-                        this.create('div', {
+                        $health.create('div', {
                             class: 'pull-right',
-                            text: (instanceId ? 'Runtime: ' + this.getTimeFormat(params.runTime) : '')
+                            text: ("runTime" in params ? 'Runtime: ' + $health.getTimeFormat(params.runTime) : '' )
                         })
                     );
+                },
+                extends: function ($health, params) {
+                    var $footerInfo = $health.get('div.footer.info');
 
-                    $block.appendChild($header);
-                    $block.appendChild($headerInfo);
-                    $block.appendChild($content);
-                    $block.appendChild($footerInfo);
+                    if ("extendedInfo" in params) {
+                        $footerInfo.innerHTML = params.extendedInfo;
+                    }
                 }
             };
 
