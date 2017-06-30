@@ -10,7 +10,6 @@
             var health = {
                 dataUri: '/assets/healthData.json',
                 requestTimeout: 2000,
-                hostnamePort: 8032,
 
                 extendsInstanceId: 100,
 
@@ -206,7 +205,7 @@
                     $header.appendChild(
                         this.create('a', {
                             target: '_blank',
-                            href: 'http://' + title + ':' + this.hostnamePort,
+                            href: 'http://' + title,
                             text: title + (instanceId ? ' (' + params.instanceId + ')' : '')
                         })
                     );
