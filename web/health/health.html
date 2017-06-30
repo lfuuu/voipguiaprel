@@ -214,18 +214,18 @@
                     // Choose render
                     if (instanceId >= this.extendsInstanceId) {
                         // Extends resources
-                        views.extends(this, params);
+                        views.extends(this, $block, params);
                     } else {
                         // Billing resources
-                        views.billing(this, params);
+                        views.billing(this, $block, params);
                     }
                 }
             },
             views = {
-                billing: function ($health, params) {
+                billing: function ($health, $block, params) {
                     var
-                        $headerInfo = $health.get('div.header.info'),
-                        $footerInfo = $health.get('div.footer.info'),
+                        $headerInfo = $block.querySelector('div.header.info'),
+                        $footerInfo = $block.querySelector('div.footer.info'),
                         regions = [];
 
                     if (params.regionList instanceof Object) {
@@ -272,8 +272,8 @@
                         })
                     );
                 },
-                extends: function ($health, params) {
-                    var $footerInfo = $health.get('div.footer.info');
+                extends: function ($health, $block, params) {
+                    var $footerInfo = $block.querySelector('div.footer.info');
 
                     if ("extendedInfo" in params) {
                         $footerInfo.innerHTML = params.extendedInfo;
