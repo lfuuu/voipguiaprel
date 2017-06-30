@@ -61,7 +61,7 @@ class Trunk extends \yii\db\ActiveRecord
                 'auto_routing', 'source_rule_default_allowed', 'destination_rule_default_allowed',
                 'source_trunk_rule_default_allowed', 'our_trunk', 'auth_by_number', 'orig_redirect_number_7800',
                 'orig_redirect_number', 'term_redirect_number', 'show_in_stat', 'sw_minimalki', 'sw_shared',
-                'tech_trunk', 'pstn_trunk', 'mgmn_trunk','mgmn_orig_trunk',
+                'tech_trunk', 'pstn_trunk', 'mgmn_trunk','mgmn_orig_trunk','le8accept',
                 'orig_afilter_default_allowed', 'orig_bfilter_default_allowed',
                 'term_afilter_default_allowed', 'term_bfilter_default_allowed',
             ], 'boolean'],
