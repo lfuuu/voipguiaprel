@@ -27,15 +27,19 @@ $result = [
 ];
 
 foreach ($config['resources'] as $resource) {
-    $resourceHost = parse_url($resource, PHP_URL_HOST);
+    $resourceData = parse_url($resource);
 
     $data = getData($resource);
-    $dataJSON = json_decode($data);
+    $dataJSON = json_decode($data, $assoc = true);
 
     if (json_last_error() === JSON_ERROR_NONE) {
-        $result[$resourceHost] = $dataJSON;
+        $result[$resourceData['host']] =
+            array_merge($dataJSON, [
+                'resourceUrl' => $resourceData['host']
+                    . (array_key_exists('port', $resourceData) ? $resourceData['port'] : '')
+            ]);
     } else {
-        $result[$resourceHost] = $data;
+        $result[$resourceData['host']] = $data;
     }
 }
 
