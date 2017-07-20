@@ -210,6 +210,10 @@
                         })
                     );
 
+                    if ($content.className == 'info error') {
+                        return false;
+                    }
+
                     // Choose render
                     if (instanceId >= this.extendsInstanceId) {
                         // Extends resources

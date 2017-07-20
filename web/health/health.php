@@ -1,6 +1,6 @@
 <?php
 
-define('CONFIG_FILEPATH', __DIR__ . '/config.local.php');
+define('CONFIG_FILEPATH', __DIR__ . '/config.php');
 define('RESULT_FILEPATH', __DIR__ . '/../assets/healthData.json');
 
 try {
@@ -8,7 +8,7 @@ try {
         throw new \Exception('Can\'t load configuration');
     }
 
-    $config = require_once __DIR__ . '/config.php';
+    $config = require_once CONFIG_FILEPATH;
     if (!array_key_exists('resources', $config)) {
         throw new \Exception('List of monitoring resource is empty');
     }
