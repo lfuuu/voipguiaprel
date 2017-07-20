@@ -8,7 +8,7 @@ try {
         throw new \Exception('Can\'t load configuration');
     }
 
-    $config = require_once __DIR__ . '/config.php';
+    $config = require_once CONFIG_FILEPATH;
     if (!array_key_exists('resources', $config)) {
         throw new \Exception('List of monitoring resource is empty');
     }

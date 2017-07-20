@@ -104,6 +104,7 @@ a:hover {
 
 .block div.content {
     font-size: 12px;
+    overflow: hidden;
 }
 
 .block .message {

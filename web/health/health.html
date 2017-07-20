@@ -8,7 +8,8 @@
             'use strict';
 
             var health = {
-                dataUri: '/assets/healthData.json',
+                //dataUri: '/assets/healthData.json',
+                dataUri: '/health/healthData.json',
                 requestTimeout: 30000,
 
                 extendsInstanceId: 100,
@@ -210,6 +211,10 @@
                         })
                     );
 
+                    if ($content.className == 'info error') {
+                        return false;
+                    }
+
                     // Choose render
                     if (instanceId >= this.extendsInstanceId) {
                         // Extends resources
@@ -258,6 +263,7 @@
                         );
                     }
 
+                    console.log(params);
                     $footerInfo.appendChild(
                         $health.create('div', {
                             class: 'pull-left',
