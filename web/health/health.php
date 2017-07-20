@@ -1,6 +1,6 @@
 <?php
 
-define('CONFIG_FILEPATH', __DIR__ . '/config.local.php');
+define('CONFIG_FILEPATH', __DIR__ . '/config.php');
 define('RESULT_FILEPATH', __DIR__ . '/../assets/healthData.json');
 
 try {
