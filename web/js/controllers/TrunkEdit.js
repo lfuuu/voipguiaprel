@@ -60,7 +60,6 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                     init: 'orig_afilter_default_allowed',
                     orig: true,
                     outgoing: false,
-                    test_redirect_num: false,
                     is_test_redirect_num: true
                 };
             case 'orig-b':
@@ -76,7 +75,6 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                     init: 'term_afilter_default_allowed',
                     orig: false,
                     outgoing: false,
-                    test_redirect_num: false,
                     is_test_redirect_num: true
                 };
             case 'term-b':

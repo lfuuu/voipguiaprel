@@ -29,7 +29,7 @@ class TrunkABfiltersRule extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['outgoing', 'allow', 'orig', 'test_redirect_num',], 'boolean'],
+            [['outgoing', 'allow', 'orig',], 'boolean'],
             [['prefixlist_id', 'order', 'trunk_id',], 'integer'],
             ['trunk_id', 'required'],
         ];
