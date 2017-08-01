@@ -27,14 +27,7 @@
                             <select-box list="prefixlist" model="line.prefixlist_id" placeholder="Выберите"></select-box>
                         </td>
                         <td width="10%">
-                            <button
-                                ng-if="mode.is_test_redirect_num"
-                                ng-click="line.test_redirect_num = !line.test_redirect_num"
-                                class="btn label {{!line.test_redirect_num ? 'btn-danger active' : 'btn-success active'}}"
-                                title="Редирект Num C"
-                            >
-                                NumC
-                            </button>
+                            &nbsp;
                         </td>
                         <td>
                             <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeNumbersRule(mode.key, $index)"></button>
