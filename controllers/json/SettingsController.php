@@ -21,6 +21,7 @@ class SettingsController extends JsonController
             'service_numbers' => $server->service_numbers,
             'hostname' => $server->hostname,
             'emergency_prefixlist_id' => $server->emergency_prefixlist_id,
+            'mcn_prefixlist_id' => $server->mcn_prefixlist_id,
             'h_call_sync_delay' => $server->h_call_sync_delay,
             'h_cdr_sync_delay' => $server->h_cdr_sync_delay,
             'h_call_save_delay' => $server->h_call_save_delay,
