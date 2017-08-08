@@ -35,6 +35,7 @@ class SettingsController extends JsonController
             'hostname_reserve' => $server->hostname_reserve,
             'nas_ip_address' => $server->nas_ip_address,
             'rc_mgmn_outcome_id' => $server->rc_mgmn_outcome_id,
+            'is_sormed' => $server->is_sormed,
         ];
     }
 

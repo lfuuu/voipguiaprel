@@ -38,6 +38,9 @@ use yii\helpers\Url;
                <?php if(!$item->is_need_db_do_migrate) { ?>
                   <span class="label label-success">Не мигрировать БД</span>
                <?php } ?>
+               <?php if($item->is_sormed) { ?>
+                  <span class="label label-success">СОРМ</span>
+               <?php } ?>
                 <?php if(!$item->instanceSettings->auto_lock_finance) { ?>
                     <span class="label label-warning">Финансовая автоблокировка выкл</span>
                 <?php } ?>
@@ -77,6 +80,12 @@ use yii\helpers\Url;
                        <?php } ?>
                        <?php if(!$item2->is_need_db_do_migrate) { ?>
                           <span class="label label-success">Не мигрировать БД</span>
+                       <?php } ?>
+                       <?php if($item2->is_sormed) { ?>
+                        <span class="label label-success">СОРМ</span>
+                       <?php } ?>
+                       <?php if(!$item2->instanceSettings->auto_lock_finance) { ?>
+                         <span class="label label-warning">Финансовая автоблокировка выкл</span>
                        <?php } ?>
                     </td>
                 </tr>
