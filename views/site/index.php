@@ -14,7 +14,8 @@ use yii\helpers\Url;
     <thead>
     <tr>
         <th style="width:20%">Код</th>
-        <th>Название</th>
+        <th style="width:20%">Название</th>
+        <th style="width:20%">Название короткое</th>
         <th style="width:35%">Флаги</th>
     </tr>
     </thead>
@@ -27,6 +28,9 @@ use yii\helpers\Url;
             </td>
             <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item->id]); ?>'">
                 <?= $item->name ?>
+            </td>
+            <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item->id]); ?>'">
+                <?= $item->name_short ?>
             </td>
             <td>
                <?php if(!$item->instanceSettings->active) { ?>
@@ -57,7 +61,8 @@ use yii\helpers\Url;
         <thead>
         <tr>
             <th style="width:20%">Код</th>
-            <th>Название</th>
+            <th style="width:20%">Название</th>
+            <th style="width:20%">Название короткое</th>
             <th style="width:35%">Флаги</th>
         </tr>
         </thead>
@@ -67,9 +72,12 @@ use yii\helpers\Url;
                 <tr>
                     <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item2->id]); ?>'">
                         <?= $item2->id ?>
-                    </td>
+                    </td>    
                     <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item2->id]); ?>'">
                         <?= $item2->name ?>
+                    </td>    
+                    <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item2->id]); ?>'">
+                        <?= $item2->name_short ?>
                     </td>
                     <td>
                        <?php if(!$item2->instanceSettings->active) { ?>

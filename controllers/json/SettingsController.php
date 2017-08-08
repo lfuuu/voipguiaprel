@@ -20,6 +20,8 @@ class SettingsController extends JsonController
             'min_price_for_autorouting' => $server->min_price_for_autorouting,
             'service_numbers' => $server->service_numbers,
             'hostname' => $server->hostname,
+            'name' => $server->name,
+            'name_short' => $server->name_short,
             'emergency_prefixlist_id' => $server->emergency_prefixlist_id,
             'mcn_prefixlist_id' => $server->mcn_prefixlist_id,
             'h_call_sync_delay' => $server->h_call_sync_delay,

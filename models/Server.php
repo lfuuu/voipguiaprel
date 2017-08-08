@@ -74,8 +74,8 @@ class Server extends \yii\db\ActiveRecord
                 'max' => 100
             ],
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
-            [['service_numbers', 'hostname_reserve', 'nas_ip_address',], 'string'],
-            [['hostname'], 'string', 'max' => 30],
+            [['service_numbers', 'hostname_reserve', 'nas_ip_address', 'name_short'], 'string'],
+            [['hostname', 'name_short'], 'string', 'max' => 30],
         ];
     }
 
