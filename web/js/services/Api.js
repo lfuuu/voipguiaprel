@@ -471,6 +471,19 @@ app.factory('Destination', function ($q, ApiLoader, $rootScope) {
 
 app.factory('Settings', function ($q, ApiLoader) {
 	var url = '/json/settings/';
+
+	return {
+		get: function(data) {
+			return ApiLoader.post(url + 'get', data);
+		},
+		save: function(data) {
+			return ApiLoader.post(url + 'save', data);
+		}
+	};
+});
+
+app.factory('InstanceSettings', function ($q, ApiLoader) {
+	var url = '/json/instance-settings/';
 	return {
 		get: function(data) {
 			return ApiLoader.post(url + 'get', data);
