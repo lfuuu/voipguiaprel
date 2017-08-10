@@ -38,6 +38,8 @@ class SettingsController extends JsonController
             'nas_ip_address' => $server->nas_ip_address,
             'rc_mgmn_outcome_id' => $server->rc_mgmn_outcome_id,
             'is_sormed' => $server->is_sormed,
+            'instance_settings_id' => $server->instance_settings_id,
+
         ];
     }
 

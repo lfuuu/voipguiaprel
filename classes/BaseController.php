@@ -18,6 +18,7 @@ use app\models\RouteTable;
 use app\models\Server;
 use app\models\TrunkGroup;
 use app\models\Hub;
+use app\models\InstanceSettings;
 use yii\filters\AccessControl;
 use yii\web\HttpException;
 
@@ -62,6 +63,22 @@ class BaseController extends \yii\web\Controller
         $this->getView()->server = $server;
 
         return $server;
+    }
+
+    /**
+     * @param int $instanceSettingsId
+     * @return InstanceSettings
+     * @throws HttpException
+     */
+    protected function getInstanceSettingsOr404($instanceSettingsId)
+    {
+        if (($instanceSettings = InstanceSettings::findOne($instanceSettingsId)) === null) {
+            throw new HttpException(404);
+        }
+
+        $this->getView()->server = $instanceSettings;
+
+        return $instanceSettings;
     }
 
     /**

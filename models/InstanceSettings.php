@@ -5,7 +5,7 @@ use app\queries\InstanceSettingsQuery;
 
 /**
  * @property int $id
- * @property string[] $region_id
+ * @property string $region_id
  * @property int $city_geo_id
  * @property bool $active
  * @property string $name,
@@ -40,7 +40,8 @@ class InstanceSettings extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id','region_id', 'city_geo_id', 'city_prefix','city_id'], 'integer'],
+            [['id', 'city_geo_id', 'city_prefix','city_id', 'country_id'], 'integer'],
+            [['region_id', 'name'], 'string'],
             [['active','is_can_recalculate'], 'boolean'],
         ];
     }

@@ -28,12 +28,14 @@ use app\queries\ServerQuery;
  * @property bool $is_need_db_do_migrate
  * @property string $hostname_reserve
  * @property string $nas_ip_address
-
+ *
  * @property InstanceSettings $instanceSettings
  * @property string $apiUrl
  * @property string $apiUrlReserve
  *
  * @property int $mcn_prefixlist_id
+ *
+ * @property int $instance_settings_id
  */
 class Server extends \yii\db\ActiveRecord
 {
@@ -62,7 +64,7 @@ class Server extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['low_balance_outcome_id', 'blocked_outcome_id', 'hub_id', 'emergency_prefixlist_id', 'mcn_prefixlist_id','rc_mgmn_outcome_id'], 'integer'],
+            [['low_balance_outcome_id', 'blocked_outcome_id', 'hub_id', 'emergency_prefixlist_id', 'mcn_prefixlist_id','rc_mgmn_outcome_id', 'instance_settings_id'], 'integer'],
             [['is_sormed', ], 'boolean'],
             [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],
             [   [
@@ -76,6 +78,9 @@ class Server extends \yii\db\ActiveRecord
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
             [['service_numbers', 'hostname_reserve', 'nas_ip_address', 'name_short'], 'string'],
             [['hostname', 'name_short'], 'string', 'max' => 30],
+
+            [['region_id', 'city_geo_id', 'city_prefix','city_id'], 'integer'],
+            [['active','is_can_recalculate'], 'boolean'],
         ];
     }
 

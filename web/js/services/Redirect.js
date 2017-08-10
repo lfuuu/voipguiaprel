@@ -128,6 +128,10 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
             return openModal(SettingsEditCtrl, '/templates/settings_edit.html');
         },
 
+        instanceSettings: function() {
+            return openModal(InstanceSettingsEditCtrl, '/templates/instance_settings_edit.html');
+        },
+
         airpList: function() {
             return openTab(AirpListCtrl, '/templates/airp_list.html');
         },
