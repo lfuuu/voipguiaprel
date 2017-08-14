@@ -184,6 +184,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
     Billing.regions().then(function(data){
         $scope.regions = data;
+        $scope.regionList = data;
     });
 
     Billing.networkTypes().then(function(data){
