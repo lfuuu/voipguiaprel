@@ -19,6 +19,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 $scope.cities = null;
                 Billing.cities($scope.item).then(function (data) {
                     $scope.cities = data;
+                    $scope.cityList = data;
                 });
             }
         },
@@ -53,6 +54,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
                 Nnp.cityList($scope.item.nnp_country, newValue).then(function (data) {
                     $scope.cityList = data;
+                    $scope.cities = data;
                 });
             }
         }
@@ -90,6 +92,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 if ($scope.item.rossvyaz_region_id) {
                     Billing.cities($scope.item).then(function (data) {
                         $scope.cities = data;
+                        $scope.cityList = data;
                     });
                 }
 
@@ -121,6 +124,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                         if ($scope.item.nnp_region) {
                             Nnp.cityList($scope.item.nnp_country, $scope.item.nnp_region).then(function (data) {
                                 $scope.cityList = data;
+                                $scope.cities = data;
                             });
                         }
                     }
