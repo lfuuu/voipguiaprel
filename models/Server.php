@@ -78,9 +78,6 @@ class Server extends \yii\db\ActiveRecord
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
             [['service_numbers', 'hostname_reserve', 'nas_ip_address', 'name_short'], 'string'],
             [['hostname', 'name_short'], 'string', 'max' => 30],
-
-            [['region_id', 'city_geo_id', 'city_prefix','city_id'], 'integer'],
-            [['active','is_can_recalculate'], 'boolean'],
         ];
     }
 
