@@ -34,6 +34,7 @@ use app\queries\ServerQuery;
  * @property string $apiUrlReserve
  *
  * @property int $mcn_prefixlist_id
+ * @property int $vats_trunk_id
  *
  * @property int $instance_settings_id
  */
@@ -64,7 +65,7 @@ class Server extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['low_balance_outcome_id', 'blocked_outcome_id', 'hub_id', 'emergency_prefixlist_id', 'mcn_prefixlist_id','rc_mgmn_outcome_id'], 'integer'],
+            [['low_balance_outcome_id', 'blocked_outcome_id', 'hub_id', 'emergency_prefixlist_id', 'mcn_prefixlist_id','rc_mgmn_outcome_id','vats_trunk_id'], 'integer'],
             [['is_sormed', ], 'boolean'],
             [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],
             [   [
