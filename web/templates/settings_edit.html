@@ -128,6 +128,17 @@
                 </div>
 
                 <div class="form-group">
+
+                    <label class="col-sm-4 control-label">В коммерции</label>
+                    <div class="col-sm-8">
+                      <div class="btn-group" ng-click="item.is_production = !item.is_production">
+                        <button type="button" class="btn btn-sm {{item.is_production ? 'btn-success active' : 'btn-default'}}">Да</button>
+                        <button type="button" class="btn btn-sm {{!item.is_production ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                      </div>
+                    </div>
+                </div>
+          
+                <div class="form-group">
                     <label class="col-sm-4 control-label">Транк ВАТС</label>
                     <div class="col-sm-8">
                         <select-box list="trunk" model="item.vats_trunk_id" placeholder="Выберите"

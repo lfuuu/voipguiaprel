@@ -43,11 +43,14 @@ use yii\helpers\Url;
                   <span class="label label-success">Не мигрировать БД</span>
                <?php } ?>
                <?php if($item->is_sormed) { ?>
-                  <span class="label label-success">СОРМ</span>
+                  <span class="label label-warning">СОРМ</span>
                <?php } ?>
                 <?php if(!$item->instanceSettings->auto_lock_finance) { ?>
                     <span class="label label-warning">Финансовая автоблокировка выкл</span>
                 <?php } ?>
+               <?php if($item->is_production) { ?>
+                  <span class="label label-danger">В коммерции</span>
+               <?php } ?>
             </td>
         </tr>
     <?php endforeach; ?>
@@ -90,10 +93,13 @@ use yii\helpers\Url;
                           <span class="label label-success">Не мигрировать БД</span>
                        <?php } ?>
                        <?php if($item2->is_sormed) { ?>
-                        <span class="label label-success">СОРМ</span>
+                        <span class="label label-warning">СОРМ</span>
                        <?php } ?>
                        <?php if(!$item2->instanceSettings->auto_lock_finance) { ?>
                          <span class="label label-warning">Финансовая автоблокировка выкл</span>
+                       <?php } ?>
+                       <?php if(!empty($item2->is_production)) { ?>
+                         <span class="label label-danger">В коммерции</span>
                        <?php } ?>
                     </td>
                 </tr>

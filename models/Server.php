@@ -26,6 +26,7 @@ use app\queries\ServerQuery;
  * @property string $h_event_management
  * @property string $h_local_events
  * @property bool $is_need_db_do_migrate
+ * @property bool $is_production
  * @property string $hostname_reserve
  * @property string $nas_ip_address
  *
@@ -66,7 +67,8 @@ class Server extends \yii\db\ActiveRecord
     {
         return [
             [['low_balance_outcome_id', 'blocked_outcome_id', 'hub_id', 'emergency_prefixlist_id', 'mcn_prefixlist_id','rc_mgmn_outcome_id','vats_trunk_id'], 'integer'],
-            [['is_sormed', ], 'boolean'],
+            [['is_sormed', 'is_production'], 'boolean'],
+
             [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],
             [   [
                     'h_call_sync_delay', 'h_cdr_sync_delay', 'h_call_save_delay', 'h_cdr_proc_wait_count',
