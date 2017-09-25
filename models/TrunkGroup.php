@@ -41,6 +41,8 @@ class TrunkGroup extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string', 'max' => 50],
+            [['sw_shared'], 'boolean'],
+            [['server_id',], 'integer'],
         ];
     }
 

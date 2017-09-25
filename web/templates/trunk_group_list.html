@@ -7,6 +7,8 @@
     <thead>
     <tr>
         <th>Название</th>
+        <th>&nbsp;</th>
+        <th width="1%">Сервер</th>
         <th width="1%"></th>
     </tr>
     </thead>
@@ -14,6 +16,10 @@
 
     <tr ng-repeat="item in list">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">
+            <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
+        </td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
         <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
     </tr>
 
