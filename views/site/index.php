@@ -36,11 +36,11 @@ use yii\helpers\Url;
                <?php if(!$item->instanceSettings->active) { ?>
                   <span class="label label-warning">Не активен</span>
                <?php } ?>
-               <?php if(!$item->instanceSettings->is_can_recalculate) { ?>
-                  <span class="label label-info">Не пересчитывать</span>
+               <?php if($item->instanceSettings->is_can_recalculate) { ?>
+                  <span class="label label-info">Пересчитывать</span>
                <?php } ?>
-               <?php if(!$item->is_need_db_do_migrate) { ?>
-                  <span class="label label-success">Не мигрировать БД</span>
+               <?php if($item->is_need_db_do_migrate) { ?>
+                  <span class="label label-success">Мигрировать БД</span>
                <?php } ?>
                <?php if($item->is_sormed) { ?>
                   <span class="label label-warning">СОРМ</span>
