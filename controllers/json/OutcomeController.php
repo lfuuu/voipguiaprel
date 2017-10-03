@@ -32,7 +32,7 @@ class OutcomeController extends JsonController
                 ->with('routeCase')
                 ->with('releaseReason')
                 ->with('airp')
-                ->select(['id', 'name', 'type_id', 'route_case_id', 'release_reason_id', 'airp_id', 'calling_station_id', 'called_station_id','server_id','sw_shared'])
+                ->select(['id', 'name', 'type_id', 'route_case_id', 'release_reason_id', 'airp_id', 'calling_station_id', 'called_station_id','server_id','sw_shared','ocpn','rn'])
                 ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
                 ->orderBy('name')
                 ->asArray()
