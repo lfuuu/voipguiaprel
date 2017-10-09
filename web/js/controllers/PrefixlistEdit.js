@@ -95,9 +95,6 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                         $scope.cityList = data;
                     });
                 }
-
-                $scope.$watch('item.rossvyaz_country_id', watchers.rossvyaz_country_id);
-                $scope.$watch('item.rossvyaz_region_id', watchers.rossvyaz_region_id);
             }
 
             if ($scope.item.type_id == 6) {
@@ -133,8 +130,6 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                     console.log(error);
                 }
 
-                $scope.$watch('item.nnp_country', watchers.nnp_country);
-                $scope.$watch('item.nnp_region', watchers.nnp_region);
             }
 
             if ($scope.item.type_id == 4) {
@@ -157,6 +152,12 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                     });
                 }, 200);
             }
+
+            $scope.$watch('item.rossvyaz_country_id', watchers.rossvyaz_country_id);
+            $scope.$watch('item.rossvyaz_region_id', watchers.rossvyaz_region_id);
+
+            $scope.$watch('item.nnp_country', watchers.nnp_country);
+            $scope.$watch('item.nnp_region', watchers.nnp_region);
         });
     } else {
         $scope.item = {
@@ -259,6 +260,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             $scope.nnpProcessed = false;
             $scope.nnpProcessComplete = true;
             $scope.item.count = data.message.prefix_list_size;
+            $modalInstance.close();
         });
     };
 
