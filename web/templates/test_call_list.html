@@ -15,6 +15,7 @@
         <th width="20%">Номер Redirect</th>
         <th width="20%">Время (UTC)</th>
         <th width="10%">Длительность</th>
+        <th width="1%">&nbsp;</th>
         <th>&nbsp;</th>
     </tr>
     </thead>
@@ -33,6 +34,9 @@
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.redirect_number}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.connect_time}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.session_time}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">
+                <span class="label label-success" ng-if="item.is_autotest">AUTO</span>
+        </td>
         <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
     </tr>
 

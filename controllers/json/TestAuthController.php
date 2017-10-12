@@ -21,7 +21,7 @@ class TestAuthController extends JsonController
 
         return
             TestAuth::find()
-                ->select(['id', 'name'])
+                ->select(['id', 'name', 'is_autotest'])
                 ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
