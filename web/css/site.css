@@ -159,3 +159,13 @@ td > div > .select2-container > .select2-choice {
 .form-control {
     padding: 6px 6px;
 }
+
+.caret-down:before {
+	content: "\25bc";
+	color: gray;
+}
+
+.caret-up:before {
+	content: "\25b2";
+	color: gray;
+}

@@ -1,5 +1,9 @@
 var RouteTableListCtrl = function($scope, RouteTable, Redirect, $window) {
 
+  $scope.sortType = 'name';
+  $scope.sortReverse = false;
+  $scope.searchQuery = '';
+
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'Таблицы маршрутизации';
 

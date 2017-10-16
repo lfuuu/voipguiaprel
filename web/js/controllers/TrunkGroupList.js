@@ -1,5 +1,9 @@
 var TrunkGroupListCtrl = function($scope, TrunkGroup, Redirect, $window) {
 
+    $scope.sortType = 'name';
+    $scope.sortReverse = false;
+    $scope.searchQuery = '';
+
     $scope.init = function(tab) {
         if (tab) tab.title = 'Группы транков';
 

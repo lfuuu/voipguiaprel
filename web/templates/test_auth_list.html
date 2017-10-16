@@ -3,23 +3,62 @@
     <h4>Тестирование маршрутизации</h4>
 </div>
 
+<form>
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa-search"></i></div>
+            <input type="text" class="form-control" placeholder="Поиск" ng-model="searchQuery">
+        </div>
+    </div>
+</form>
+
 <table class="table table-striped table-hover table-condensed" >
     <thead>
         <tr>
             <th width="1%"> </th>
-            <th width="10%">Название</th>
+            <th width="10%">
+                <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                    Название
+                    <span ng-show="sortType == 'name' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'name' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
             <th width="20%"></th>
-            <th width="20%">Транк</th>
-            <th width="15%">Номер A</th>
-            <th width="15%">Номер B</th>
-            <th width="15%">Номер Redirect</th>
+            <th width="20%">
+                <a href="#" ng-click="sortType = 'trunk_name'; sortReverse = !sortReverse">
+                    Транк
+                    <span ng-show="sortType == 'trunk_name' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'trunk_name' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
+            <th width="15%">
+                <a href="#" ng-click="sortType = 'src_number'; sortReverse = !sortReverse">
+                    Номер A
+                    <span ng-show="sortType == 'src_number' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'src_number' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
+            <th width="15%">
+                <a href="#" ng-click="sortType = 'dst_number'; sortReverse = !sortReverse">
+                    Номер B
+                    <span ng-show="sortType == 'dst_number' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'dst_number' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
+            <th width="15%">
+                <a href="#" ng-click="sortType = 'redirect_number'; sortReverse = !sortReverse">
+                    Номер Redirect
+                    <span ng-show="sortType == 'redirect_number' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'redirect_number' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
             <th width="1%">&nbsp;</th>
             <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
 
-        <tr ng-repeat="item in list">
+        <tr ng-repeat="item in list | orderBy:sortType:sortReverse | filter:searchQuery">
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
                 <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">
             </td>

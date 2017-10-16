@@ -1,5 +1,9 @@
 var TestAuthListCtrl = function($scope, TestAuth, Redirect, $window) {
 
+    $scope.sortType = 'name';
+    $scope.sortReverse = false;
+    $scope.searchQuery = '';
+
     $scope.init = function (tab) {
         if (tab) tab.title = 'Test auth';
 

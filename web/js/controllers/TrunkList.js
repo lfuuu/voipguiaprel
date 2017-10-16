@@ -1,6 +1,10 @@
 var TrunkListCtrl = function($scope, Trunk, Redirect, $window) {
 
-    $scope.init = function(tab) {
+    $scope.sortType = 'trunk_name';
+    $scope.sortReverse = false;
+    $scope.searchQuery = '';
+
+  $scope.init = function(tab) {
         if (tab) tab.title = 'Транки';
 
         Trunk.read({server_id: $scope.server.id}).then(function(data){
