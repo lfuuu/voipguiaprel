@@ -1,4 +1,4 @@
-var TestCallEditCtrl = function($scope, TestCall, params, $modalInstance, $window) {
+var TestCallEditCtrl = function($scope, TestCall, List, params, $modalInstance, $window) {
 
     if (params.id) {
         TestCall.get({id: params.id}).then(function(data){
@@ -13,6 +13,10 @@ var TestCallEditCtrl = function($scope, TestCall, params, $modalInstance, $windo
             redirect_number: ''
         };
     }
+
+    List.trunk().then(function (data) {
+        $scope.trunkList = data;
+    });
 
     $scope.save = function()
     {

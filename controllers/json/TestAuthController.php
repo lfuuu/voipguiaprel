@@ -6,7 +6,7 @@ use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use app\models\Server;
 use app\models\TestAuth;
-use Yii;
+use yii\db\Expression;
 use yii\web\HttpException;
 
 class TestAuthController extends JsonController
@@ -37,7 +37,9 @@ class TestAuthController extends JsonController
 
         return
             TestAuth::find()
-                ->where(['server_id' => $server->id])
+                ->select(['test_auth.*', 'result' => new Expression('CASE WHEN tr.passed IS null THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END')])
+                ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
+                ->where(['test_auth.server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -49,12 +51,18 @@ class TestAuthController extends JsonController
      */
     public function actionGet()
     {
-        $item = TestAuth::findOne($this->request['id']);
+        $item = TestAuth::find()
+            ->select(['test_auth.*', 'tr.tm', 'tr.received'])
+            ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
+            ->where(['test_auth.id' => $this->request['id']])
+            ->asArray()
+            ->one();
+
         if ($item === null) {
             throw new HttpException(404, 'TestAuth не найден');
         }
 
-        return $item->toArray();
+        return $item;
     }
 
     /**

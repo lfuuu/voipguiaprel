@@ -1,4 +1,4 @@
-var TestAuthEditCtrl = function($scope, TestAuth, params, $modalInstance, $window) {
+var TestAuthEditCtrl = function($scope, TestAuth, List, params, $modalInstance, $window) {
 
     if (params.id) {
         TestAuth.get({id: params.id}).then(function(data){
@@ -12,6 +12,10 @@ var TestAuthEditCtrl = function($scope, TestAuth, params, $modalInstance, $windo
             redirect_number: ''
         }
     }
+
+    List.trunk().then(function (data) {
+        $scope.trunkList = data;
+    });
 
     $scope.save = function()
     {

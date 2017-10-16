@@ -6,6 +6,7 @@ use app\models\TestCall;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use yii\db\Expression;
 use yii\web\HttpException;
 
 class TestCallController extends JsonController
@@ -27,7 +28,9 @@ class TestCallController extends JsonController
 
         return
             TestCall::find()
-                ->where(['server_id' => $server->id])
+                ->select(['test_call.*', 'result' => new Expression('CASE WHEN tr.passed IS null THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END')])
+                ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
+                ->where(['test_call.server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -35,12 +38,18 @@ class TestCallController extends JsonController
 
     public function actionGet()
     {
-        $item = TestCall::findOne($this->request['id']);
+        $item = TestCall::find()
+            ->select(['test_call.*', 'tr.tm', 'tr.received'])
+            ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
+            ->where(['test_call.id' => $this->request['id']])
+            ->asArray()
+            ->one();
+
         if ($item === null) {
             throw new HttpException(404, 'TestCall не найден');
         }
 
-        return $item->toArray();
+        return $item;
     }
 
     public function actionSave()

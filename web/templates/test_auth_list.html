@@ -6,8 +6,9 @@
 <table class="table table-striped table-hover table-condensed" >
     <thead>
         <tr>
+            <th width="1%"> </th>
             <th width="10%">Название</th>
-            <th width="15%"></th>
+            <th width="20%"></th>
             <th width="20%">Транк</th>
             <th width="15%">Номер A</th>
             <th width="15%">Номер B</th>
@@ -19,6 +20,9 @@
     <tbody>
 
         <tr ng-repeat="item in list">
+            <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
+                <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">
+            </td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
             <td>
                 <button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">Тест основной</button>
