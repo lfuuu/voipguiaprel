@@ -37,7 +37,7 @@ class TestAuthController extends JsonController
 
         return
             TestAuth::find()
-                ->select(['test_auth.*', new Expression('CASE WHEN tr.passed IS null OR now()::timestamp - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result')])
+                ->select(['test_auth.*', new Expression('CASE WHEN tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result')])
                 ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
                 ->where(['test_auth.server_id' => $server->id])
                 ->orderBy('name')
