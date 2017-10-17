@@ -28,7 +28,7 @@ class TrunkController extends JsonController
 
         return
             Trunk::find()
-                ->select(['id', 'name'])
+                ->select(['id', 'name', 'trunk_name'])
                 ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
                 ->orderBy('name')
                 ->asArray()
