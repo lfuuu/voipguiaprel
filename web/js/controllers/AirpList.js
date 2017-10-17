@@ -1,5 +1,9 @@
 var AirpListCtrl = function($scope, Airp, Redirect, $window) {
 
+  $scope.sortType = 'name';
+  $scope.sortReverse = false;
+  $scope.searchQuery = '';
+
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'AIRP';
 

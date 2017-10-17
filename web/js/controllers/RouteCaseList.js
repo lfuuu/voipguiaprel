@@ -1,5 +1,9 @@
 var RouteCaseListCtrl = function($scope, RouteCase, Redirect, $window) {
 
+  $scope.sortType = 'name';
+  $scope.sortReverse = false;
+  $scope.searchQuery = '';
+
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'Route cases';
 

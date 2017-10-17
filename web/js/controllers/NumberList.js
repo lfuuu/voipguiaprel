@@ -1,5 +1,9 @@
 var NumberListCtrl = function($scope, Number, Redirect, $window) {
 
+  $scope.sortType = 'name';
+  $scope.sortReverse = false;
+  $scope.searchQuery = '';
+
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'A/B номера';
 
