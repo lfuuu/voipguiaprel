@@ -13,6 +13,7 @@ use app\models\TrunkTrunkRule;
 use Yii;
 use yii\db\StaleObjectException;
 use yii\web\HttpException;
+use yii\db\Expression;
 
 class TrunkController extends JsonController
 {
@@ -50,12 +51,14 @@ class TrunkController extends JsonController
                     'auth.trunk.id', 'auth.trunk.name', 'trunk_name', 'trunk_name_alias',
                     'default_priority', 'source_rule_default_allowed', 'destination_rule_default_allowed',
                     'auto_routing', 'our_trunk', 'auth_by_number', 'orig_redirect_number_7800', 'orig_redirect_number',
-                    'term_redirect_number', 'show_in_stat', 'route_table_id', 'server_id', 'capacity','sw_shared',
+                    'term_redirect_number', 'show_in_stat', 'route_table_id', 'auth.trunk.server_id', 'capacity','sw_shared',
                     'road_to_regions', 'load_warning', 'orig_enabled', 'term_enabled', 'tech_trunk', 'pstn_trunk', 'mgmn_trunk', 'mgmn_orig_trunk', 'le8accept',
+                    new Expression('CASE WHEN bb.id is null THEN false ELSE true END as is_blacklisted')
                 ])
                 ->with('routeTable')
                 ->joinWith('trunkOrigTerm')
-                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
+                ->leftJoin('billing.blacklist bb', 'bb.type = \'trunk\' and bb.item = trunk.trunk_name and bb.server_id = trunk.server_id')
+                ->where("( auth.trunk.server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or auth.trunk.server_id = ".$server->id)
                 ->orderBy('trunk_name')
                 ->asArray()
                 ->all();
