@@ -28,8 +28,14 @@ class TestCallController extends JsonController
 
         return
             TestCall::find()
-                ->select(['test_call.*', new Expression('CASE WHEN tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result')])
+                ->select(
+                    [
+                        'test_call.*',
+                        new Expression('CASE WHEN tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result'),
+                        'tg.id as testgroup_id'
+                    ])
                 ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
+                ->leftJoin('auth.test_group tg', 'tg.id = auth.test_call.testgroup_id')
                 ->where(['test_call.server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()

@@ -175,8 +175,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         testAuthEdit: function(id) {
             return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {id: id});
         },
-        testAuthCreate: function() {
-            return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {id: null});
+        testAuthCreate: function(testGroupId) {
+            return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {testGroupId: testGroupId});
         },
         testAuthShowTestPrimary: function(id) {
             return openModal(TestAuthShowTestPrimaryCtrl, '/templates/test_auth_show_test.html', {id: id});
@@ -191,8 +191,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         testCallEdit: function(id) {
             return openModal(TestCallEditCtrl, '/templates/test_call_edit.html', {id: id});
         },
-        testCallCreate: function() {
-            return openModal(TestCallEditCtrl, '/templates/test_call_edit.html', {id: null});
+        testCallCreate: function(testGroupId) {
+            return openModal(TestCallEditCtrl, '/templates/test_call_edit.html', {testGroupId: testGroupId});
         },
         testCallShowTest: function(id) {
             return openModal(TestCallShowTestCtrl, '/templates/test_call_show_test.html', {id: id});

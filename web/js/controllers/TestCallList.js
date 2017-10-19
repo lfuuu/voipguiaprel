@@ -1,8 +1,9 @@
-var TestCallListCtrl = function($scope, TestCall, Redirect, $window) {
+var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
 
     $scope.sortType = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';
+    $scope.testGroupId = undefined;
 
     $scope.init = function(tab) {
         if (tab) tab.title = 'Test Call';
@@ -12,11 +13,19 @@ var TestCallListCtrl = function($scope, TestCall, Redirect, $window) {
         });
     };
 
+    List.testGroup().then(function (data) {
+        $scope.testGroupList = data;
+    });
+
     $scope.clickCreate = function() {
-        Redirect.testCallCreate().then(function () {
+        Redirect.testCallCreate($scope.testGroupId).then(function () {
             $scope.init();
         });
     };
+
+    $scope.testGroupChanged = function(testGroupId) {
+        $scope.testGroupId = testGroupId;
+    }
 
     $scope.clickItem = function(item) {
         if (window.getSelection().type == 'Range') return;

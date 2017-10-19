@@ -1,8 +1,9 @@
-var TestAuthListCtrl = function($scope, TestAuth, Redirect, $window) {
+var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
 
     $scope.sortType = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';
+    $scope.testGroupId = undefined;
 
     $scope.init = function (tab) {
         if (tab) tab.title = 'Test auth';
@@ -12,11 +13,19 @@ var TestAuthListCtrl = function($scope, TestAuth, Redirect, $window) {
         });
     };
 
+    List.testGroup().then(function (data) {
+        $scope.testGroupList = data;
+    });
+
     $scope.clickCreate = function () {
-        Redirect.testAuthCreate().then(function () {
+        Redirect.testAuthCreate($scope.testGroupId).then(function () {
             $scope.init();
         });
     };
+
+    $scope.testGroupChanged = function(testGroupId) {
+        $scope.testGroupId = testGroupId;
+    }
 
     $scope.clickItem = function (item) {
         if (window.getSelection().type == 'Range') {

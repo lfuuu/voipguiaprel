@@ -5,16 +5,30 @@ var TestAuthEditCtrl = function($scope, TestAuth, List, params, $modalInstance, 
             $scope.item = data;
         });
     } else {
-        $scope.item = {
-            server_id: $scope.server.id,
-            src_noa: 3,
-            dst_noa: 3,
-            redirect_number: ''
+        if (params.testGroupId) {
+            $scope.item = {
+                server_id: $scope.server.id,
+                src_noa: 3,
+                dst_noa: 3,
+                redirect_number: '',
+                testgroup_id: params.testGroupId
+            }
+        } else {
+            $scope.item = {
+                server_id: $scope.server.id,
+                src_noa: 3,
+                dst_noa: 3,
+                redirect_number: ''
+            }
         }
     }
 
     List.trunk().then(function (data) {
         $scope.trunkList = data;
+    });
+
+    List.testGroup().then(function (data) {
+        $scope.testGroupList = data;
     });
 
     $scope.save = function()
