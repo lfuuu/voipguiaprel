@@ -52,6 +52,7 @@ class TestCall extends \yii\db\ActiveRecord
             [['trunk_name'], 'string', 'max' => 32],
             [['is_autotest',], 'boolean'],
             [['correct_answer'], 'string', 'max' => 128],
+            [['testgroup_id'], 'integer'],
         ];
     }
 
