@@ -40,7 +40,7 @@ class SettingsController extends JsonController
             'is_sormed' => $server->is_sormed,
             'is_production' => $server->is_production,
             'vats_trunk_id' => $server->vats_trunk_id,
-
+            'rc_mgmn_action_disable' => $server->rc_mgmn_action_disable,
         ];
     }
 
