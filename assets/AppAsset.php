@@ -49,6 +49,8 @@ class AppAsset extends AssetBundle
         'js/controllers/TestCallEdit.js',
         'js/controllers/TestCallList.js',
         'js/controllers/TestCallShowTest.js',
+        'js/controllers/TestGroupEdit.js',
+        'js/controllers/TestGroupList.js',
         'js/controllers/AttributeList.js',
         'js/controllers/AttributeEdit.js',
         'js/controllers/AttributeGroupList.js',
@@ -92,6 +94,8 @@ class AppAsset extends AssetBundle
         'templates/test_call_edit.html',
         'templates/test_call_list.html',
         'templates/test_call_show_test.html',
+        'templates/test_group_edit.html',
+        'templates/test_group_list.html',
         'templates/directives/select-box.html',
         'templates/directives/outcome-select-box.html',
     ];

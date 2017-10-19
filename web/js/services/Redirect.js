@@ -196,6 +196,16 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         },
         testCallShowTest: function(id) {
             return openModal(TestCallShowTestCtrl, '/templates/test_call_show_test.html', {id: id});
-        }
+        },
+
+        testGroupList: function() {
+            return openTab(TestGroupListCtrl, '/templates/test_group_list.html');
+        },
+        testGroupEdit: function(id) {
+            return openModal(TestGroupEditCtrl, '/templates/test_group_edit.html', {id: id});
+        },
+        testGroupCreate: function() {
+            return openModal(TestGroupEditCtrl, '/templates/test_group_edit.html', {id: null});
+        },
     };
 });

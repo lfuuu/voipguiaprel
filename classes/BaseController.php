@@ -9,6 +9,7 @@ use app\models\Destination;
 use app\models\Number;
 use app\models\TestAuth;
 use app\models\TestCall;
+use app\models\TestGroup;
 use app\models\Trunk;
 use app\models\Outcome;
 use app\models\Prefixlist;
@@ -259,6 +260,20 @@ class BaseController extends \yii\web\Controller
         $item = TestCall::findOne($testCallId);
         if ($item === null) {
             throw new HttpException(404, 'TestCall не найден');
+        }
+        return $item;
+    }
+
+    /**
+     * @param int $testGroupId
+     * @return TestAuth
+     * @throws HttpException
+     */
+    protected function getTestGroupOr404($testGroupId)
+    {
+        $item = TestGroup::findOne($testGroupId);
+        if ($item === null) {
+            throw new HttpException(404, 'TestGroup не найден');
         }
         return $item;
     }
