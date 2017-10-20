@@ -79,4 +79,15 @@ class OutcomeController extends JsonController
         $item = Outcome::findOne($this->request['id']);
         $item->delete();
     }
+
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionFindUsagesInRouteTables()
+    {
+        $group = $this->getOutcomeOr404($this->request['id']);
+
+        return $group->findUsagesInRouteTables();
+    }
 }

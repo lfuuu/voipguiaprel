@@ -2,6 +2,7 @@
 
 namespace app\models;
 use app\queries\OutcomeQuery;
+use yii\db\Query;
 
 /**
  * @method static Outcome findOne($condition)
@@ -74,5 +75,20 @@ class Outcome extends \yii\db\ActiveRecord
     public function getAirp()
     {
         return $this->hasOne(Airp::className(), ['id' => 'airp_id']);
+    }
+
+    /**
+     * @return array
+     */
+    public function findUsagesInRouteTables()
+    {
+        return
+            (new Query)
+                ->select(['rt.*'])
+                ->from(RouteTableRoute::tableName() . ' as rtr')
+                ->innerJoin(RouteTable::tableName() . ' as rt', 'rt.id = rtr.route_table_id')
+                ->innerJoin(Outcome::tableName() . ' as o', 'o.id = rtr.outcome_id')
+                ->where('o.id = ' . $this->id)
+                ->all();
     }
 }

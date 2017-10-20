@@ -232,7 +232,7 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
             return ApiLoader.post(url + 'nnp-calculation', {id: id});
         },
         findUsagesInNumbers: function (id) {
-            return ApiLoader.post(url + 'find-prefixlist-usage-in-numbers', {id: id});
+            return ApiLoader.post(url + 'find-usages-in-numbers', {id: id});
         }
     };
 });
@@ -298,7 +298,10 @@ app.factory('RouteCase', function ($q, ApiLoader, $rootScope) {
 		delete: function(id) {
 			list = undefined;
 			return ApiLoader.post(url + 'delete', {id: id});
-		}
+		},
+    findUsagesInOutcomes: function(id) {
+      return ApiLoader.post(url + 'find-usages-in-outcomes', {id: id});
+    }
 	};
 });
 
@@ -343,7 +346,10 @@ app.factory('Outcome', function ($q, ApiLoader, $rootScope) {
 		delete: function(id) {
 			list = undefined;
 			return ApiLoader.post(url + 'delete', {id: id});
-		}
+		},
+    findUsagesInRouteTables: function(id) {
+      return ApiLoader.post(url + 'find-usages-in-route-tables', {id: id});
+    }
 	};
 });
 

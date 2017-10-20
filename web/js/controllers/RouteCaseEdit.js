@@ -1,11 +1,16 @@
-var RouteCaseEditCtrl = function($scope, RouteCase, params, $modalInstance, $window) {
+var RouteCaseEditCtrl = function($scope, Redirect, RouteCase, params, $modalInstance, $window) {
 
 	if (params.id) {
 		RouteCase.get({id: params.id}).then(function(data){
 			$scope.item = data;
-			if ($scope.item.trunks === undefined)
-				$scope.item.trunks = [];
+			if ($scope.item.trunks === undefined) {
+        $scope.item.trunks = [];
+      }
 		});
+
+    RouteCase.findUsagesInOutcomes({id: params.id}).then(function(data){
+      $scope.usagesInOutcomes = data;
+    });
 	} else {
 		$scope.item = {
             server_id: $scope.server.id,
@@ -33,4 +38,12 @@ var RouteCaseEditCtrl = function($scope, RouteCase, params, $modalInstance, $win
 	{
 		$modalInstance.dismiss();
 	}
+
+  $scope.clickOutcomeItem = function(item) {
+    if (window.getSelection().type == 'Range') return;
+
+    Redirect.outcomeEdit(item.id).then(function () {
+      $scope.init();
+    });
+  }
 };

@@ -1,10 +1,14 @@
-var OutcomeEditCtrl = function($scope, Outcome, params, $modalInstance, $window) {
+var OutcomeEditCtrl = function($scope, Redirect, Outcome, params, $modalInstance, $window) {
 
 	if (params.id) {
 		Outcome.get({id: params.id}).then(function(data){
 			$scope.item = data;
 			$scope.setType($scope.item.type_id);
 		});
+
+    Outcome.findUsagesInRouteTables({id: params.id}).then(function(data){
+      $scope.usagesInRouteTables = data;
+    });
 	} else {
 		$scope.item = {
             server_id: $scope.server.id
@@ -56,4 +60,12 @@ var OutcomeEditCtrl = function($scope, Outcome, params, $modalInstance, $window)
 	{
 		$modalInstance.dismiss();
 	}
+
+  $scope.clickRouteTableItem = function(item) {
+    if (window.getSelection().type == 'Range') return;
+
+    Redirect.routeTableEdit(item.id).then(function () {
+      $scope.init();
+    });
+  };
 };

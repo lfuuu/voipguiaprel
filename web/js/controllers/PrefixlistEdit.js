@@ -161,7 +161,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
 
         Prefixlist.findUsagesInNumbers({id: params.id}).then(function (data) {
-            $scope.numberUsages = data;
+            $scope.usagesInNumbers = data;
         });
     } else {
         $scope.item = {

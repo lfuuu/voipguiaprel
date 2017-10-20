@@ -2,6 +2,7 @@
 
 namespace app\models;
 use app\queries\RouteCaseQuery;
+use yii\db\Query;
 
 /**
  * @property int $id
@@ -48,4 +49,17 @@ class RouteCase extends \yii\db\ActiveRecord
         return $this->hasMany(RouteCaseTrunk::className(), ['route_case_id' => 'id'])->orderBy('priority');
     }
 
+    /**
+     * @return array
+     */
+    public function findUsagesInOutcomes()
+    {
+        return
+            (new Query)
+                ->select(['o.*'])
+                ->from(Outcome::tableName() . ' as o')
+                ->innerJoin(RouteCase::tableName() . ' as r', 'r.id = o.route_case_id')
+                ->where('r.id = ' . $this->id)
+                ->all();
+    }
 }

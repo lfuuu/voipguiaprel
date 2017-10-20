@@ -94,4 +94,14 @@ class RouteCaseController extends JsonController
         $item->delete();
     }
 
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionFindUsagesInOutcomes()
+    {
+        $group = $this->getRouteCaseOr404($this->request['id']);
+
+        return $group->findUsagesInOutcomes();
+    }
 }

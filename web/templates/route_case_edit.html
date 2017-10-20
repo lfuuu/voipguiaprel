@@ -5,50 +5,113 @@
     </div>
     <div class="modal-body">
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Название</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="Название" ng-model="item.name" required>
-            </div>
-        </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#routecase-tab" data-toggle="tab">Route case</a></li>
+            <li ng-if="item.id"><a href="#routecase-outcome-usages-tab" data-toggle="tab">Outcomes</a></li>
+        </ul>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Доступен на хабе</label>
-            <div class="col-sm-10">
-                <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
-                    <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
-                    <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+        <br/>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="routecase-tab">
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Название</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Название" ng-model="item.name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Доступен на хабе</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
+                            <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Транки</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr ng-repeat="line in item.trunks">
+                                <td width="10%">
+                                    <input class="form-control input-sm" ng-model="line.priority" required>
+                                </td>
+                                <td width="10%">
+                                    <input class="form-control input-sm" ng-model="line.weight" required>
+                                </td>
+                                <td width="80%">
+                                    <select-box list="trunk" model="line.trunk_id" placeholder="Выберите транк" required="true"></select-box>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunk($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunk()"><i class="glyphicon glyphicon-plus"></i> Транк</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Транки</label>
-            <div class="col-sm-10">
-                <table class="table table-striped">
-                    <tbody>
-                    <tr ng-repeat="line in item.trunks">
-                        <td width="10%">
-                            <input class="form-control input-sm" ng-model="line.priority" required>
-                        </td>
-                        <td width="10%">
-                            <input class="form-control input-sm" ng-model="line.weight" required>
-                        </td>
-                        <td width="80%">
-                            <select-box list="trunk" model="line.trunk_id" placeholder="Выберите транк" required="true"></select-box>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunk($index)"></button>
-                        </td>
-                    </tr>
-                    </tbody>
-                    <tfoot>
+            <div class="tab-pane active" id="routecase-outcome-usages-tab">
+                <table class="table table-striped table-hover table-condensed" >
+                    <thead>
                     <tr>
-                        <td colspan="3">
-                            <button type="button" class="btn btn-success btn-xs" ng-click="addTrunk()"><i class="glyphicon glyphicon-plus"></i> Транк</button>
-                        </td>
+                        <th>Название</th>
+                        <th>Тип</th>
+                        <th>Параметры</th>
+                        <th>&nbsp;</th>
+                        <th width="10%">Сервер</th>
                     </tr>
-                    </tfoot>
+                    </thead>
+                    <tbody>
+
+                    <tr ng-repeat="item in usagesInOutcomes">
+                        <td style="cursor: pointer" ng-click="clickOutcomeItem(item)">{{item.name}}</td>
+                        <td style="cursor: pointer" ng-click="clickOutcomeItem(item)">
+                            <span ng-if="item.type_id == 1">Автоматически</span>
+                            <span ng-if="item.type_id == 2">Route case</span>
+                            <span ng-if="item.type_id == 3">Release reason</span>
+                            <span ng-if="item.type_id == 4">AIRP</span>
+                            <span ng-if="item.type_id == 5">Accept</span>
+                            <span ng-if="item.type_id == 6">Meg-to-Reg</span>
+                            <span ng-if="item.type_id == 7">Meg-to-Meg</span>
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickOutcomeItem(item)">
+                            <div ng-if="item.routeCase">
+                                Route case: {{item.routeCase.name}}
+                            </div>
+                            <div ng-if="item.releaseReason">
+                                Release Reason: {{item.releaseReason.name}}
+                            </div>
+                            <div ng-if="item.airp">
+                                AIRP: {{item.airp.name}}
+                            </div>
+                            <div ng-if="item.calling_station_id">
+                                Calling Station Id: {{item.calling_station_id}}
+                            </div>
+                            <div ng-if="item.called_station_id">
+                                Called Station Id: {{item.called_station_id}}
+                            </div>
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickOutcomeItem(item)">
+                            <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickOutcomeItem(item)">{{item.server_id}}</td>
+                    </tr>
+
+                    </tbody>
                 </table>
             </div>
         </div>

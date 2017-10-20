@@ -5,103 +5,138 @@
     </div>
     <div class="modal-body">
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Название</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="Название" ng-model="item.name" required>
-            </div>
-        </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#outcome-tab" data-toggle="tab">Outcome</a></li>
+            <li ng-if="item.id"><a href="#outcome-route-table-usages-tab" data-toggle="tab">Таблицы маршрутизации</a></li>
+        </ul>
 
-        <div class="form-group">
-            <span class="col-sm-2 control-label"></span>
-            <div class="col-sm-10">
-                <div class="btn-group">
-                    <button type="button" class="btn {{item.type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(1)">Автоматически</button>
-                    <button type="button" class="btn {{item.type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(2)">Route case</button>
-                    <button type="button" class="btn {{item.type_id == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(3)">Release reason</button>
-                    <button type="button" class="btn {{item.type_id == 4 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(4)">AIRP</button>
-                    <button type="button" class="btn {{item.type_id == 5 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(5)">Accept</button>
-                    <button type="button" class="btn {{item.type_id == 6 ? 'btn-primary active' : 'btn-default'}}"
-                        ng-click="setType(6)">Meg-to-Reg
-                    </button>
-                    <button type="button" class="btn {{item.type_id == 7 ? 'btn-primary active' : 'btn-default'}}"
-                        ng-click="setType(7)">Meg-to-Meg
-                    </button>
+        <br/>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="outcome-tab">
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Название</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Название" ng-model="item.name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <span class="col-sm-2 control-label"></span>
+                    <div class="col-sm-10">
+                        <div class="btn-group">
+                            <button type="button" class="btn {{item.type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(1)">Автоматически</button>
+                            <button type="button" class="btn {{item.type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(2)">Route case</button>
+                            <button type="button" class="btn {{item.type_id == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(3)">Release reason</button>
+                            <button type="button" class="btn {{item.type_id == 4 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(4)">AIRP</button>
+                            <button type="button" class="btn {{item.type_id == 5 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(5)">Accept</button>
+                            <button type="button" class="btn {{item.type_id == 6 ? 'btn-primary active' : 'btn-default'}}"
+                                ng-click="setType(6)">Meg-to-Reg
+                            </button>
+                            <button type="button" class="btn {{item.type_id == 7 ? 'btn-primary active' : 'btn-default'}}"
+                                ng-click="setType(7)">Meg-to-Meg
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.type_id == 2">
+                    <label class="col-sm-2 control-label">Route case 1</label>
+                    <div class="col-sm-10">
+                        <select-box list="routeCase" model="item.route_case_id" placeholder="Выберите route case" required="true"></select-box>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.type_id == 2">
+                    <label class="col-sm-2 control-label">Route case 2</label>
+                    <div class="col-sm-10">
+                        <select-box list="routeCase" model="item.route_case_1_id" placeholder="Выберите route case" required="no" default="Любой номер"></select-box>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.type_id == 2">
+                    <label class="col-sm-2 control-label">Route case 3</label>
+                    <div class="col-sm-10">
+                        <select-box list="routeCase" model="item.route_case_2_id" placeholder="Выберите route case" required="no" default="Любой номер"></select-box>
+                    </div>
+                </div>
+
+
+                <div class="form-group" ng-if="item.type_id == 3">
+                    <label class="col-sm-2 control-label">Release reason</label>
+                    <div class="col-sm-10">
+                        <select-box list="releaseReason" model="item.release_reason_id" placeholder="Выберите release reason" required="true"></select-box>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.type_id == 4">
+                    <label class="col-sm-2 control-label">AIRP</label>
+                    <div class="col-sm-10">
+                        <select-box list="airp" model="item.airp_id" placeholder="Выберите AIRP" required="true"></select-box>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.type_id == 2 || item.type_id == 4">
+                    <label class="col-sm-2 control-label">Calling Station Id</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Release reason" ng-model="item.calling_station_id">
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.type_id == 2 || item.type_id == 4">
+                    <label class="col-sm-2 control-label">Called Station Id</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Called Station Id" ng-model="item.called_station_id">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Доступен на хабе</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
+                            <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.type_id == 2">
+                    <label class="col-sm-2 control-label">RN</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="RN" ng-model="item.rn">
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.type_id == 2">
+                    <label class="col-sm-2 control-label">OCPN</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="OCPN" ng-model="item.ocpn">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="form-group" ng-if="item.type_id == 2">
-            <label class="col-sm-2 control-label">Route case 1</label>
-            <div class="col-sm-10">
-                <select-box list="routeCase" model="item.route_case_id" placeholder="Выберите route case" required="true"></select-box>
-            </div>
-        </div>
+            <div class="tab-pane active" id="outcome-route-table-usages-tab">
+                <table class="table table-striped table-hover table-condensed" >
+                    <thead>
+                    <tr>
+                        <th width="100%">Название</th>
+                        <th>&nbsp;</th>
+                        <th width="10%">Сервер</th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-        <div class="form-group" ng-if="item.type_id == 2">
-            <label class="col-sm-2 control-label">Route case 2</label>
-            <div class="col-sm-10">
-                <select-box list="routeCase" model="item.route_case_1_id" placeholder="Выберите route case" required="no" default="Любой номер"></select-box>
-            </div>
-        </div>
+                    <tr ng-repeat="item in usagesInRouteTables">
+                        <td style="cursor: pointer" ng-click="clickRouteTableItem(item)">{{item.name}}</td>
+                        <td style="cursor: pointer" ng-click="clickRouteTableItem(item)">
+                            <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickRouteTableItem(item)">{{item.server_id}}</td>
+                    </tr>
 
-        <div class="form-group" ng-if="item.type_id == 2">
-            <label class="col-sm-2 control-label">Route case 3</label>
-            <div class="col-sm-10">
-                <select-box list="routeCase" model="item.route_case_2_id" placeholder="Выберите route case" required="no" default="Любой номер"></select-box>
-            </div>
-        </div>
-
-
-        <div class="form-group" ng-if="item.type_id == 3">
-            <label class="col-sm-2 control-label">Release reason</label>
-            <div class="col-sm-10">
-                <select-box list="releaseReason" model="item.release_reason_id" placeholder="Выберите release reason" required="true"></select-box>
-            </div>
-        </div>
-
-        <div class="form-group" ng-if="item.type_id == 4">
-            <label class="col-sm-2 control-label">AIRP</label>
-            <div class="col-sm-10">
-                <select-box list="airp" model="item.airp_id" placeholder="Выберите AIRP" required="true"></select-box>
-            </div>
-        </div>
-
-        <div class="form-group" ng-if="item.type_id == 2 || item.type_id == 4">
-            <label class="col-sm-2 control-label">Calling Station Id</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="Release reason" ng-model="item.calling_station_id">
-            </div>
-        </div>
-
-        <div class="form-group" ng-if="item.type_id == 2 || item.type_id == 4">
-            <label class="col-sm-2 control-label">Called Station Id</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="Called Station Id" ng-model="item.called_station_id">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Доступен на хабе</label>
-            <div class="col-sm-10">
-                <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
-                    <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
-                    <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group" ng-if="item.type_id == 2">
-            <label class="col-sm-2 control-label">RN</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="RN" ng-model="item.rn">
-            </div>
-        </div>
-
-        <div class="form-group" ng-if="item.type_id == 2">
-            <label class="col-sm-2 control-label">OCPN</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="OCPN" ng-model="item.ocpn">
+                    </tbody>
+                </table>
             </div>
         </div>
 

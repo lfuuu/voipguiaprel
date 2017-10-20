@@ -263,7 +263,7 @@ class Prefixlist extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public function findPrefixlistUsageInNumbers()
+    public function findUsagesInNumbers()
     {
         return
             (new Query)
@@ -276,5 +276,4 @@ class Prefixlist extends \yii\db\ActiveRecord
                 ->where('p.id = ' . $this->id)
                 ->all();
     }
-
 }

@@ -359,11 +359,11 @@ SQL;
      * @return array
      * @throws HttpException
      */
-    public function actionFindPrefixlistUsageInNumbers()
+    public function actionFindUsagesInNumbers()
     {
         $group = $this->getPrefixlistOr404($this->request['id']);
 
-        return $group->findPrefixlistUsageInNumbers();
+        return $group->findUsagesInNumbers();
     }
 
 }
