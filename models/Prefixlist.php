@@ -5,6 +5,7 @@ namespace app\models;
 use app\classes\ArrayToCsv;
 use app\queries\PrefixlistQuery;
 use yii\helpers\Json;
+use yii\db\Query;
 
 /**
  * @property int $id
@@ -257,6 +258,23 @@ class Prefixlist extends \yii\db\ActiveRecord
         $data['rossvyaz_operators'] = $this->getRossvyazOperators();
         $data['prefixes'] = $this->getPrefixlistPrefix()->count();
         return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function findPrefixlistUsageInNumbers()
+    {
+        return
+            (new Query)
+                ->select([
+                    'n.id', 'n.server_id', 'n.name',
+                    'n.type_id', 'n.show_in_stat', 'n.sw_shared'
+                ])
+                ->from(Number::tableName() . ' as n')
+                ->innerJoin(Prefixlist::tableName() . ' as p', 'p.id = ANY (n.prefixlist_ids)')
+                ->where('p.id = ' . $this->id)
+                ->all();
     }
 
 }

@@ -355,4 +355,15 @@ SQL;
         ];
     }
 
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionFindPrefixlistUsageInNumbers()
+    {
+        $group = $this->getPrefixlistOr404($this->request['id']);
+
+        return $group->findPrefixlistUsageInNumbers();
+    }
+
 }

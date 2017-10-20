@@ -159,6 +159,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             $scope.$watch('item.nnp_country', watchers.nnp_country);
             $scope.$watch('item.nnp_region', watchers.nnp_region);
         });
+
+        Prefixlist.findUsagesInNumbers({id: params.id}).then(function (data) {
+            $scope.numberUsages = data;
+        });
     } else {
         $scope.item = {
             server_id: $scope.server.id,
@@ -293,5 +297,13 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     $scope.back = function () {
         $modalInstance.close();
     };
+
+    $scope.clickNumberItem = function(item) {
+        if (window.getSelection().type == 'Range') return;
+
+        Redirect.numberEdit(item.id).then(function () {
+            $scope.init();
+        });
+    }
 
 };
