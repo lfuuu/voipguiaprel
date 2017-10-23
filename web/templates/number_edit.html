@@ -5,96 +5,197 @@
     </div>
     <div class="modal-body">
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Название</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="Название" ng-model="item.name" required>
-            </div>
-        </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#number-tab" data-toggle="tab">A/B номер</a></li>
+            <li ng-if="item.id"><a href="#number-route-table-usages-tab" data-toggle="tab">Таблицы маршрутизации</a></li>
+            <li ng-if="item.id"><a href="#number-trunk-priority-usages-tab" data-toggle="tab">Приоритеты транков</a></li>
+            <li ng-if="item.id"><a href="#number-trunk-rules-usages-tab" data-toggle="tab">Правила транков</a></li>
+        </ul>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Тип</label>
-            <div class="col-sm-10">
-                <div class="btn-group" ng-click="item.auto_routing = !item.auto_routing">
-                    <button type="button" class="btn {{item.type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="item.type_id = 1">A - номер</button>
-                    <button type="button" class="btn {{item.type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="item.type_id = 2">B - номер</button>
+        <br/>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="number-tab">
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Название</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Название" ng-model="item.name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Тип</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" ng-click="item.auto_routing = !item.auto_routing">
+                            <button type="button" class="btn {{item.type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="item.type_id = 1">A - номер</button>
+                            <button type="button" class="btn {{item.type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="item.type_id = 2">B - номер</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Показывать в СТАТ</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" ng-click="item.show_in_stat = !item.show_in_stat">
+                            <button type="button" class="btn {{item.show_in_stat ? 'btn-success active' : 'btn-default'}}">Показывать</button>
+                            <button type="button" class="btn {{!item.show_in_stat ? 'btn-primary active' : 'btn-default'}}">Не показывать</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Доступен на хабе</label>
+                        <div class="col-sm-10">
+                            <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
+                            <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Список префиксов</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr ng-repeat="line in item.prefixlist_ids">
+                                <td width="100%">
+                                    <select-box list="prefixlist" model="line.id" placeholder="Выберите список префиксов" required="true"></select-box>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePrefixlist($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addPrefixlist()"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Выгрузка</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">AIRP</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" placeholder="AIRP" ng-model="export.airp">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">OUTCOME</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" placeholder="AIRP=outcome_airp" ng-model="export.outcome">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">OUTCOME NEXT</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" placeholder="AIRP=outcome_next_airp" ng-model="export.outcome_next">
+                            </div>
+                        </div>
+                        <div>
+                            <a class="btn btn-default btn-sm"  target="_blank" href="/number/export?serverId={{server.id}}&numberId={{item.id}}&airp={{export.airp}}&outcome={{export.outcome}}&outcomeNext={{export.outcome_next}}">Выгрузить</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Показыть в СТАТ</label>
-            <div class="col-sm-10">
-                <div class="btn-group" ng-click="item.show_in_stat = !item.show_in_stat">
-                    <button type="button" class="btn {{item.show_in_stat ? 'btn-success active' : 'btn-default'}}">Показывать</button>
-                    <button type="button" class="btn {{!item.show_in_stat ? 'btn-primary active' : 'btn-default'}}">Не показывать</button>
-                </div>
-            </div>
-        </div>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Доступен на хабе</label>
-                <div class="col-sm-10">
-                    <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
-                    <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
-                    <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Список префиксов</label>
-            <div class="col-sm-10">
-                <table class="table table-striped">
-                    <tbody>
-                    <tr ng-repeat="line in item.prefixlist_ids">
-                        <td width="100%">
-                            <select-box list="prefixlist" model="line.id" placeholder="Выберите список префиксов" required="true"></select-box>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePrefixlist($index)"></button>
-                        </td>
-                    </tr>
-                    </tbody>
-                    <tfoot>
+            <div class="tab-pane active" id="number-route-table-usages-tab">
+                <table class="table table-striped table-hover table-condensed" >
+                    <thead>
                     <tr>
-                        <td colspan="3">
-                            <button type="button" class="btn btn-success btn-xs" ng-click="addPrefixlist()"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
-                        </td>
+                        <th width="100%">Название</th>
+                        <th>&nbsp;</th>
+                        <th width="10%">Сервер</th>
                     </tr>
-                    </tfoot>
+                    </thead>
+                    <tbody>
+
+                    <tr ng-repeat="item in usagesInRouteTables">
+                        <td style="cursor: pointer" ng-click="clickRouteTableItem(item)">{{item.name}}</td>
+                        <td style="cursor: pointer" ng-click="clickRouteTableItem(item)">
+                            <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickRouteTableItem(item)">{{item.server_id}}</td>
+                    </tr>
+
+                    </tbody>
                 </table>
             </div>
-        </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Выгрузка</h3>
+            <div class="tab-pane active" id="number-trunk-priority-usages-tab">
+                <table class="table table-striped table-hover table-condensed" >
+                    <thead>
+                    <tr>
+                        <th width="10%">ID</th>
+                        <th width="10%">Транк</th>
+                        <th width="10%">Группа транка</th>
+                        <th width="10%">Номер А</th>
+                        <th width="10%">Номер B</th>
+                        <th width="10%">Порядок</th>
+                        <th width="10%">Приоритет</th>
+                        <th width="10%">Идентификаторы префикслистов</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr ng-repeat="item in usagesInTrunkPriority">
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.id}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.trunk_name}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.trunk_group_name}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.number_a_name}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.number_b_name}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.order}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.priority}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.prefixlist_id}}</td>
+                    </tr>
+
+                    </tbody>
+                </table>
             </div>
-            <div class="panel-body">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">AIRP</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" placeholder="AIRP" ng-model="export.airp">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">OUTCOME</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" placeholder="AIRP=outcome_airp" ng-model="export.outcome">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">OUTCOME NEXT</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" placeholder="AIRP=outcome_next_airp" ng-model="export.outcome_next">
-                    </div>
-                </div>
-                <div>
-                    <a class="btn btn-default btn-sm"  target="_blank" href="/number/export?serverId={{server.id}}&numberId={{item.id}}&airp={{export.airp}}&outcome={{export.outcome}}&outcomeNext={{export.outcome_next}}">Выгрузить</a>
-                </div>
+
+            <div class="tab-pane active" id="number-trunk-rules-usages-tab">
+                <table class="table table-striped table-hover table-condensed" >
+                    <thead>
+                    <tr>
+                        <th width="1%">&nbsp;</th>
+                        <th width="10%">ID</th>
+                        <th width="10%">Транк</th>
+                        <th width="10%">Группа транка</th>
+                        <th width="10%">Идентификатор номера А</th>
+                        <th width="10%">Идентификатор номера B</th>
+                        <th width="10%">Порядок</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr ng-repeat="item in usagesInTrunkRules">
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">
+                            <span class="label label-success" ng-if="item.allow">Разрешено</span>
+                            <span class="label label-danger" ng-if="!item.allow">Запрещено</span>
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.id}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.trunk_name}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.trunk_group_name}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.number_a_name}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.number_b_name}}</td>
+                        <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.order}}</td>
+                    </tr>
+
+                    </tbody>
+                </table>
             </div>
+
         </div>
     </div>
     <div class="modal-footer">

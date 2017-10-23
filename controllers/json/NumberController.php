@@ -77,4 +77,37 @@ class NumberController extends JsonController
         $item = Number::findOne($this->request['id']);
         $item->delete();
     }
+
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionFindUsagesInRouteTables()
+    {
+        $number = $this->getNumberOr404($this->request['id']);
+
+        return $number->findUsagesInRouteTables();
+    }
+
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionFindUsagesInTrunkPriority()
+    {
+        $number = $this->getNumberOr404($this->request['id']);
+
+        return $number->findUsagesInTrunkPriority();
+    }
+
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionFindUsagesInTrunkRules()
+    {
+        $number = $this->getNumberOr404($this->request['id']);
+
+        return $number->findUsagesInTrunkRules();
+    }
 }

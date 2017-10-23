@@ -1,4 +1,4 @@
-var NumberEditCtrl = function($scope, Number, Prefixlist, params, $modalInstance, $window) {
+var NumberEditCtrl = function($scope, Number, Redirect, Prefixlist, params, $modalInstance, $window) {
 
 	if (params.id) {
 		Number.get({id: params.id}).then(function(data){
@@ -9,6 +9,18 @@ var NumberEditCtrl = function($scope, Number, Prefixlist, params, $modalInstance
 			}
 			$scope.item.prefixlist_ids = prefixlist_ids;
 		});
+
+    Number.findUsagesInRouteTables({id: params.id}).then(function(data){
+      $scope.usagesInRouteTables = data;
+    });
+
+    Number.findUsagesInTrunkPriority({id: params.id}).then(function(data){
+      $scope.usagesInTrunkPriority = data;
+    });
+
+    Number.findUsagesInTrunkRules({id: params.id}).then(function(data){
+      $scope.usagesInTrunkRules = data;
+    });
 	} else {
 		$scope.item = {
             server_id: $scope.server.id,
@@ -46,4 +58,20 @@ var NumberEditCtrl = function($scope, Number, Prefixlist, params, $modalInstance
 	{
 		$modalInstance.dismiss();
 	}
+
+  $scope.clickRouteTableItem = function(item) {
+    if (window.getSelection().type == 'Range') return;
+
+    Redirect.routeTableEdit(item.id).then(function () {
+      $scope.init();
+    });
+  };
+
+  $scope.clickTrunkItem = function(item) {
+    if (window.getSelection().type == 'Range') return;
+
+    Redirect.trunkEdit(item.trunk_id).then(function () {
+      $scope.init();
+    });
+  };
 };

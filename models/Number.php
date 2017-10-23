@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\classes\ArrayToCsv;
 use app\queries\NumberQuery;
+use yii\db\Query;
 
 /**
  * @method static Outcome findOne($condition)
@@ -76,4 +77,57 @@ class Number extends \yii\db\ActiveRecord
         return $data;
     }
 
+    /**
+     * @return array
+     */
+    public function findUsagesInRouteTables()
+    {
+        return
+            (new Query)
+                ->select(['rt.*'])
+                ->distinct()
+                ->from(RouteTableRoute::tableName() . ' as rtr')
+                ->innerJoin(RouteTable::tableName() . ' as rt', 'rt.id = rtr.route_table_id')
+                ->innerJoin(Number::tableName() . ' as n', 'n.id = rtr.a_number_id or n.id = rtr.a_number_id')
+                ->where('n.id = ' . $this->id)
+                ->all();
+    }
+
+    /**
+     * @return array
+     */
+    public function findUsagesInTrunkPriority()
+    {
+        return
+            (new Query)
+                ->select(['tp.*', 't.name as trunk_name', 'tg.name as trunk_group_name', 'na.name as number_a_name', 'nb.name as number_b_name'])
+                ->distinct()
+                ->from(TrunkPriority::tableName() . ' as tp')
+                ->innerJoin(Number::tableName() . ' as n', 'n.id = tp.number_id_filter_a or n.id = tp.number_id_filter_b')
+                ->leftJoin(Number::tableName() . ' as na', 'na.id = tp.number_id_filter_a')
+                ->leftJoin(Number::tableName() . ' as nb', 'nb.id = tp.number_id_filter_b')
+                ->innerJoin(Trunk::tableName() . ' as t', 't.id = tp.trunk_id')
+                ->innerJoin(TrunkGroup::tableName() . ' as tg', 'tg.id = tp.trunk_group_id')
+                ->where('n.id = ' . $this->id)
+                ->all();
+    }
+
+    /**
+     * @return array
+     */
+    public function findUsagesInTrunkRules()
+    {
+        return
+            (new Query)
+                ->select(['tr.*', 't.name as trunk_name', 'tg.name as trunk_group_name', 'na.name as number_a_name', 'nb.name as number_b_name'])
+                ->distinct()
+                ->from(TrunkTrunkRule::tableName() . ' as tr')
+                ->innerJoin(Number::tableName() . ' as n', 'n.id = tr.number_id_filter_a or n.id = tr.number_id_filter_b')
+                ->leftJoin(Number::tableName() . ' as na', 'na.id = tr.number_id_filter_a')
+                ->leftJoin(Number::tableName() . ' as nb', 'nb.id = tr.number_id_filter_b')
+                ->innerJoin(Trunk::tableName() . ' as t', 't.id = tr.trunk_id')
+                ->innerJoin(TrunkGroup::tableName() . ' as tg', 'tg.id = tr.trunk_group_id')
+                ->where('n.id = ' . $this->id)
+                ->all();
+    }
 }
