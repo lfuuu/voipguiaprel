@@ -8,14 +8,13 @@
     <label class="col-sm-2 control-label">Приоритеты</label>
     <div class="col-sm-10">
         <table class="table table-striped">
-
             <tbody ui-sortable="{axis: 'y'}" ng-model="item.priorities">
             <tr ng-repeat="line in item.priorities">
                 <td width="1%" style="cursor: ns-resize">
                     <span class="badge">{{$index + 1}}</span>
                 </td>
                 <td width="10%">
-                    <input class="form-control input-sm" ng-model="line.priority" required />
+                    <input style="width:50px;" class="form-control input-sm" ng-model="line.priority" required />
                 </td>
 
                 <td width="5%" style="cursor: ns-resize">
