@@ -56,7 +56,7 @@ class TrunkGroupController extends JsonController
     {
         $item =
             TrunkGroup::find()
-                ->with('trunks')
+                ->with(['trunks', 'trunk_groups'])
                 ->where(['id' => $this->request['id']])
                 ->asArray()
                 ->one();
@@ -114,6 +114,13 @@ class TrunkGroupController extends JsonController
 
             TrunkGroupItem::deleteByTrunkGroup($trunkGroup);
             foreach ($this->request['trunks'] as $itemData) {
+                $item = TrunkGroupItem::create($trunkGroup, $itemData);
+                if (!$item->save()) {
+                    throw new FormValidationException($trunkGroup);
+                }
+            }
+
+            foreach ($this->request['trunk_groups'] as $itemData) {
                 $item = TrunkGroupItem::create($trunkGroup, $itemData);
                 if (!$item->save()) {
                     throw new FormValidationException($trunkGroup);

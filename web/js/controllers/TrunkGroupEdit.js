@@ -7,6 +7,10 @@ var TrunkGroupEditCtrl = function($scope, TrunkGroup, params, $modalInstance, Re
                 $scope.item.trunks = [];
             }
 
+            if ($scope.item.trunk_groups === undefined) {
+                $scope.item.trunk_groups = [];
+            }
+
             TrunkGroup.findIntoRules({id: params.id}).then(function(data) {
                 $scope.item.findIntoRules = data;
             });
@@ -18,7 +22,8 @@ var TrunkGroupEditCtrl = function($scope, TrunkGroup, params, $modalInstance, Re
     } else {
         $scope.item = {
             server_id: $scope.server.id,
-            trunks: []
+            trunks: [],
+            trunk_groups: []
         };
     }
 
@@ -38,6 +43,14 @@ var TrunkGroupEditCtrl = function($scope, TrunkGroup, params, $modalInstance, Re
 
     $scope.removeTrunkGroup = function(index) {
         $scope.item.trunks.splice(index, 1);
+    };
+
+    $scope.addTrunkGroupGroup = function() {
+        $scope.item.trunk_groups.push({child_trunk_group_id: null});
+    };
+
+    $scope.removeTrunkGroupGroup = function(index) {
+        $scope.item.trunk_groups.splice(index, 1);
     };
 
     $scope.save = function() {

@@ -48,6 +48,31 @@
                         </table>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Группы транков</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr ng-repeat="line in item.trunk_groups">
+                                <td width="100%">
+                                    <select-box list="trunkGroup" model="line.child_trunk_group_id" placeholder="Выберите группу транков" required="true"></select-box>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkGroupGroup($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkGroupGroup()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-pane" id="rules-with-group">

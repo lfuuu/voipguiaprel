@@ -25,6 +25,7 @@ class TrunkGroupItem extends \yii\db\ActiveRecord
     {
         return [
             [['trunk_id'], 'integer'],
+            [['child_trunk_group_id'], 'integer']
         ];
     }
 

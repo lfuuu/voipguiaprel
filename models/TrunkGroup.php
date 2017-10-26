@@ -51,7 +51,7 @@ class TrunkGroup extends \yii\db\ActiveRecord
      */
     public function extraFields()
     {
-        return ['trunks'];
+        return ['trunks', 'trunk_groups'];
     }
 
     /**
@@ -59,7 +59,12 @@ class TrunkGroup extends \yii\db\ActiveRecord
      */
     public function getTrunks()
     {
-        return $this->hasMany(TrunkGroupItem::className(), ['trunk_group_id' => 'id']);
+        return $this->hasMany(TrunkGroupItem::className(), ['trunk_group_id' => 'id'])->where('trunk_id is not null');
+    }
+
+    public function gettrunk_groups()
+    {
+        return $this->hasMany(TrunkGroupItem::className(), ['trunk_group_id' => 'id'])->where('child_trunk_group_id is not null');
     }
 
     /**
