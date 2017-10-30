@@ -169,3 +169,12 @@ td > div > .select2-container > .select2-choice {
 	content: "\25b2";
 	color: gray;
 }
+
+.tree-container-bordered {
+	border-left: 3px solid lightgrey;
+	padding-left: 2px;
+}
+
+.tree-container-bordered * {
+	padding-left: 2px;
+}

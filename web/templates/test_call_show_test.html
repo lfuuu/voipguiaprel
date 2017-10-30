@@ -51,8 +51,8 @@
         </table>
 
         <script type="text/ng-template" id="nodes_renderer.html">
-            <div style="border-left: 3px solid gray">
             <br />
+            <div class="tree-container-bordered">
             <div ng-if="step.name" ui-tree-handle class="tree-node tree-node-content">
                 <a class="btn btn-success btn-xs" ng-disabled="!step.steps || step.steps.length <= 0" data-nodrag ng-click="toggle(this)">
                     <span class="glyphicon" ng-class="{
