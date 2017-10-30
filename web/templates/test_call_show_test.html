@@ -2,7 +2,7 @@
     <div class="modal-header">
         <h3 ng-if="item.id">Результаты теста {{item.name}}</h3>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" style="display:block; overflow:auto;">
 
         <div class="form-group">
             <label class="col-sm-2 control-label">Детальность</label>
@@ -12,6 +12,7 @@
                     <button type="button" class="btn {{details == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 1">Инфо</button>
                     <button type="button" class="btn {{details == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 2">Подробно</button>
                     <button type="button" class="btn {{details == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 3">Отладка</button>
+                    <button type="button" class="btn {{details == 4 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 4">Дерево</button>
                 </div>
             </div>
         </div>
@@ -48,6 +49,50 @@
                 <td colspan="3" ng-if="isStageRowType(row)" ng-style="{'font-size': 'larger', 'background-color': 'azure'}"><b>{{row.action}}</b></td>
             </tr>
         </table>
+
+        <script type="text/ng-template" id="nodes_renderer.html">
+            <br />
+            <div ng-if="step.name" ui-tree-handle class="tree-node tree-node-content">
+                <a class="btn btn-success btn-xs" ng-disabled="!step.steps || step.steps.length <= 0" data-nodrag ng-click="toggle(this)">
+                    <span class="glyphicon" ng-class="{
+                      'glyphicon-chevron-right': collapsed,
+                      'glyphicon-chevron-down': !collapsed
+                    }"></span>
+                </a>
+                {{step.name}}
+            </div>
+            <div ng-if="!step.name" style="display: inline-block;" ui-tree-handle class="tree-node tree-node-content">
+                <table>
+                    <tr>
+                        <td style="vertical-align:top;">
+                            <span class="label label-primary" ng-if="step.type == 'INFO'">[{{step.type}}]</span>
+                            <span class="label label-info" ng-if="step.type == 'INPUT_DATA'">[{{step.type}}]</span>
+                            <span class="label label-success" ng-if="step.type == 'RESULT_DATA'">[{{step.type}}]</span>
+                            <span class="label label-danger" ng-if="step.type == 'ERROR'">[{{step.type}}]</span>
+                            <span class="label label-warning" ng-if="step.type == 'DEBUG'">[{{step.type}}]</span>
+                        </td>
+                        <td>
+                            &nbsp;<span>{{step.trace}}</span>
+                        </td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+
+            <ol ui-tree-nodes="" ng-model="step.steps" ng-class="{hidden: collapsed}">
+                <li ng-repeat="step in step.steps" ui-tree-node collapsed="true" class="stripe" ng-include="'nodes_renderer.html'">
+                </li>
+            </ol>
+
+        </script>
+
+        <div ng-if="details == 4">
+            <div ui-tree data-drag-enabled="false" id="tree-root">
+                <ol ui-tree-nodes ng-model="result_new">
+                    <li ng-repeat="step in result_new" collapsed="true" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                </ol>
+            </div>
+        </div>
 
     </div>
     <div class="modal-footer">

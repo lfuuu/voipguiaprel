@@ -10,6 +10,7 @@ class AppLibAsset extends AssetBundle
         '/lib/bootstrap/css/bootstrap.min.css',
         //'lib/bootstrap/css/bootstrap-theme.min.css',
         '/lib/select2/select2.css',
+        '/lib/ui-tree/angular-ui-tree.css',
     ];
 
     public $js = [
@@ -23,5 +24,6 @@ class AppLibAsset extends AssetBundle
         'lib/ui-sortable/sortable.js',
         'lib/file-api/FileAPI.min.js',
         'lib/file-api/jquery.fileapi.min.js',
+        'lib/ui-tree/angular-ui-tree.js',
     ];
 }

@@ -11,6 +11,7 @@ use yii\web\HttpException;
 
 class TestAuthController extends JsonController
 {
+    const TEST_RESULT_DIVIDER_STRING = '2B2EKSTARTJSON';
 
     /**
      * @return array|\yii\db\ActiveRecord[]
@@ -129,6 +130,7 @@ class TestAuthController extends JsonController
             'redirect_number' => $item->redirect_number,
             'src_noa' => $item->src_noa,
             'dst_noa' => $item->dst_noa,
+            'trace_tree' => 1
         ];
 
         if (isset($this->request['isReserve']) && $item->server->hostname_reserve) {
@@ -139,11 +141,24 @@ class TestAuthController extends JsonController
         $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
 
         $response = file_get_contents($request);
-        $response = str_replace("\r", "", $response);
-        $response = explode("\n", $response);
+
+        return [
+            'item' => $item->toArray(),
+            'result' => $this->generateOldResult($response),
+            'result_new' => $this->generateNewResult($response)
+        ];
+    }
+
+    private function generateOldResult($resultString)
+    {
+        $resultString = str_replace("\r", "", $resultString);
+
+        $resultArray = explode(self::TEST_RESULT_DIVIDER_STRING, $resultString);
+
+        $resultArray = explode("\n", $resultArray[0]);
 
         $result = [];
-        foreach ($response as $text) {
+        foreach ($resultArray as $text) {
             $m = explode('|', $text);
             $type = isset($m[0]) ? $m[0] : '';
             $action = isset($m[1]) ? $m[1] : '';
@@ -156,9 +171,24 @@ class TestAuthController extends JsonController
             ];
         }
 
-        return [
-            'item' => $item->toArray(),
-            'result' => $result,
-        ];
+        return $result;
+    }
+
+    private function generateNewResult($resultString)
+    {
+        $resultString = str_replace("\r", "", $resultString);
+        $resultString = str_replace("\n", "", $resultString);
+
+        $resultArray = explode(self::TEST_RESULT_DIVIDER_STRING, $resultString);
+
+        if (count($resultArray) > 1) {
+            $resultArray = explode("]	}]RESULT", $resultArray[1]);
+        } else {
+            $resultArray = explode("]	}]RESULT", $resultArray[0]);
+        }
+
+        $result = $resultArray[0] . "] } ]";
+
+        return json_decode($result, true);
     }
 }

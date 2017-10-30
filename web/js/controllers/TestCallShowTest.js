@@ -9,6 +9,7 @@ var TestCallShowTestCtrl = function($scope, TestCall, params, $modalInstance, $w
             $scope.isStageRowType = function (row) {
                 return row.type == 'STAGE';
             };
+            $scope.result_new = data.result_new;
         });
     } else {
         $scope.item = {
