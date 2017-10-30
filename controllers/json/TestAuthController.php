@@ -11,7 +11,8 @@ use yii\web\HttpException;
 
 class TestAuthController extends JsonController
 {
-    const TEST_RESULT_DIVIDER_STRING = '2B2EKSTARTJSON';
+    const TEST_RESULT_DIVIDER_START = '2B2EKSTARTJSON';
+    const TEST_RESULT_DIVIDER_STOP = '2B2EKSTOPJSON';
 
     /**
      * @return array|\yii\db\ActiveRecord[]
@@ -153,9 +154,11 @@ class TestAuthController extends JsonController
     {
         $resultString = str_replace("\r", "", $resultString);
 
-        $resultArray = explode(self::TEST_RESULT_DIVIDER_STRING, $resultString);
+        $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
+        $resultArrayEnd = explode(self::TEST_RESULT_DIVIDER_STOP, $resultString);
 
         $resultArray = explode("\n", $resultArray[0]);
+        $resultArray[] = trim($resultArrayEnd[1]);
 
         $result = [];
         foreach ($resultArray as $text) {
@@ -179,16 +182,14 @@ class TestAuthController extends JsonController
         $resultString = str_replace("\r", "", $resultString);
         $resultString = str_replace("\n", "", $resultString);
 
-        $resultArray = explode(self::TEST_RESULT_DIVIDER_STRING, $resultString);
+        $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
 
         if (count($resultArray) > 1) {
-            $resultArray = explode("]	}]RESULT", $resultArray[1]);
+            $resultArray = explode(self::TEST_RESULT_DIVIDER_STOP, $resultArray[1]);
         } else {
-            $resultArray = explode("]	}]RESULT", $resultArray[0]);
+            $resultArray = explode(self::TEST_RESULT_DIVIDER_STOP, $resultArray[0]);
         }
 
-        $result = $resultArray[0] . "] } ]";
-
-        return json_decode($result, true);
+        return json_decode($resultArray[0], true);
     }
 }
