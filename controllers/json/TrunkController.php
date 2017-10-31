@@ -57,8 +57,14 @@ class TrunkController extends JsonController
                 ])
                 ->with('routeTable')
                 ->joinWith('trunkOrigTerm')
-                ->leftJoin('billing.blacklist bb', 'bb.type = \'trunk\' and bb.item = trunk.trunk_name and bb.server_id = trunk.server_id')
-                ->where("( auth.trunk.server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or auth.trunk.server_id = ".$server->id)
+                ->leftJoin(
+                    'billing.blacklist bb',
+                    'bb.type = \'trunk\' and bb.item = trunk.trunk_name and (bb.server_id = trunk.server_id or (
+                    select true from public.server pst
+                    left join public.server psb on psb.hub_id = pst.hub_id and psb.id = bb.server_id and pst.id = trunk.server_id
+                    limit 1))'
+                )
+                ->where("(auth.trunk.server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or auth.trunk.server_id = ".$server->id)
                 ->orderBy('trunk_name')
                 ->asArray()
                 ->all();

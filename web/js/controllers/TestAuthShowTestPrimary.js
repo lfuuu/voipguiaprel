@@ -10,6 +10,9 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, params, $modalInsta
                 return row.type == 'STAGE';
             };
             $scope.result_new = data.result_new;
+            if ($scope.result_new == null) {
+                $scope.details = 4;
+            }
         });
     } else {
         $scope.item = {

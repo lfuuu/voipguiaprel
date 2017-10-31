@@ -126,11 +126,15 @@ class TestCallController extends JsonController
     {
         $resultString = str_replace("\r", "", $resultString);
 
-        $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
-        $resultArrayEnd = explode(self::TEST_RESULT_DIVIDER_STOP, $resultString);
+        if (strpos($resultString, self::TEST_RESULT_DIVIDER_START) !== false) {
+            $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
+            $resultArrayEnd = explode(self::TEST_RESULT_DIVIDER_STOP, $resultString);
 
-        $resultArray = explode("\n", $resultArray[0]);
-        $resultArray[] = trim($resultArrayEnd[1]);
+            $resultArray = explode("\n", $resultArray[0]);
+            $resultArray[] = trim($resultArrayEnd[1]);
+        } else {
+            $resultArray = explode("\n", $resultString);
+        }
 
         $result = [];
         foreach ($resultArray as $text) {
@@ -151,6 +155,10 @@ class TestCallController extends JsonController
 
     private function generateNewResult($resultString)
     {
+        if (strpos($resultString, self::TEST_RESULT_DIVIDER_START) === false) {
+            return null;
+        }
+
         $resultString = str_replace("\r", "", $resultString);
         $resultString = str_replace("\n", "", $resultString);
 
