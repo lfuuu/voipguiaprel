@@ -35,10 +35,18 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
         });
     };
 
+    $scope.toggleDisplayTreeView = function(item) {
+        item.displayTreeView = !item.displayTreeView;
+    }
+
     $scope.showTestItem = function(item) {
         if (window.getSelection().type == 'Range') return;
 
-        Redirect.testCallShowTest(item.id).then(function () {
+        if (typeof item.displayTreeView == 'undefined') {
+            item.displayTreeView = false;
+        }
+
+        Redirect.testCallShowTest(item.id, item.displayTreeView).then(function () {
             $scope.init();
         });
     };

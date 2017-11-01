@@ -3,7 +3,7 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, params, $modalInsta
     $scope.details = 0;
 
     if (params.id) {
-        TestAuth.result({id: params.id}).then(function (data) {
+        TestAuth.result({id: params.id, displayTreeView: params.displayTreeView}).then(function (data) {
             $scope.item = data.item;
             $scope.result = data.result;
             $scope.isStageRowType = function (row) {
@@ -29,4 +29,20 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, params, $modalInsta
     $scope.back = function () {
         $modalInstance.dismiss();
     }
+
+    $scope.collapseAll = function () {
+        $scope.$broadcast('angular-ui-tree:collapse-all');
+    };
+
+    $scope.expandAll = function () {
+        $scope.$broadcast('angular-ui-tree:expand-all');
+    };
+
+    $scope.$on('angular-ui-tree:collapse-all', function () {
+        $scope.collapsed = true;
+    });
+
+    $scope.$on('angular-ui-tree:expand-all', function () {
+        $scope.collapsed = false;
+    });
 };

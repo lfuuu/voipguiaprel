@@ -178,11 +178,11 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         testAuthCreate: function(testGroupId) {
             return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {testGroupId: testGroupId});
         },
-        testAuthShowTestPrimary: function(id) {
-            return openModal(TestAuthShowTestPrimaryCtrl, '/templates/test_auth_show_test.html', {id: id});
+        testAuthShowTestPrimary: function(id, displayTreeView) {
+            return openModal(TestAuthShowTestPrimaryCtrl, '/templates/test_auth_show_test.html', {id: id, displayTreeView: displayTreeView});
         },
-        testAuthShowTestReserve: function(id) {
-            return openModal(TestAuthShowTestReserveCtrl, '/templates/test_auth_show_test.html', {id: id});
+        testAuthShowTestReserve: function(id, displayTreeView) {
+            return openModal(TestAuthShowTestReserveCtrl, '/templates/test_auth_show_test.html', {id: id, displayTreeView: displayTreeView});
         },
 
         testCallList: function() {
@@ -194,8 +194,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         testCallCreate: function(testGroupId) {
             return openModal(TestCallEditCtrl, '/templates/test_call_edit.html', {testGroupId: testGroupId});
         },
-        testCallShowTest: function(id) {
-            return openModal(TestCallShowTestCtrl, '/templates/test_call_show_test.html', {id: id});
+        testCallShowTest: function(id, displayTreeView) {
+            return openModal(TestCallShowTestCtrl, '/templates/test_call_show_test.html', {id: id, displayTreeView: displayTreeView});
         },
 
         testGroupList: function() {

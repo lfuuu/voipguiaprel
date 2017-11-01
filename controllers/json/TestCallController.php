@@ -95,11 +95,12 @@ class TestCallController extends JsonController
     public function actionResult()
     {
         $item = TestCall::findOne($this->request['id']); /** @var TestCall $item */
+
         if ($item === null) {
             throw new HttpException(404, 'TestCall не найден');
         }
 
-        $request = $item->server->apiUrl . 'test/calc?' . http_build_query([
+        $apiParams = [
             'orig' => $item->orig ? 'true' : 'false',
             'connect_time' => $item->connect_time,
             'session_time' => $item->session_time,
@@ -109,9 +110,14 @@ class TestCallController extends JsonController
             'dst_number' => $item->dst_number,
             'redirect_number' => $item->redirect_number,
             'src_noa' => $item->src_noa,
-            'dst_noa' => $item->dst_noa,
-            'trace_tree' => 1
-        ]);
+            'dst_noa' => $item->dst_noa
+        ];
+
+        if ($this->request['displayTreeView']) {
+            $apiParams['trace_tree'] = 1;
+        }
+
+        $request = $item->server->apiUrl . 'test/calc?' . http_build_query($apiParams);
 
         $response = file_get_contents($request);
 

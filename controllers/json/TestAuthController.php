@@ -130,9 +130,12 @@ class TestAuthController extends JsonController
             'dst_number' => $item->dst_number,
             'redirect_number' => $item->redirect_number,
             'src_noa' => $item->src_noa,
-            'dst_noa' => $item->dst_noa,
-            'trace_tree' => 1
+            'dst_noa' => $item->dst_noa
         ];
+
+        if ($this->request['displayTreeView']) {
+            $apiParams['trace_tree'] = 1;
+        }
 
         if (isset($this->request['isReserve']) && $item->server->hostname_reserve) {
             $apiUrl = $item->server->apiUrlReserve;

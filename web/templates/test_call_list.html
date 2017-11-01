@@ -20,6 +20,7 @@
     <thead>
     <tr>
         <th width="1%"> </th>
+        <th width="9%">С деревом</th>
         <th width="10%">
             <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                 Название
@@ -80,6 +81,9 @@
     <tr ng-repeat="item in list | belongsToTestGroup:testGroupId | orderBy:sortType:sortReverse | filter:searchQuery">
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
             <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">
+        </td>
+        <td style="cursor: pointer" ng-click="toggleDisplayTreeView(item)" nowrap>
+            <input type="checkbox">
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
         <td><button type="button" class="btn btn-default btn-sm" ng-click="showTestItem(item)">Показать Тест</button></td>

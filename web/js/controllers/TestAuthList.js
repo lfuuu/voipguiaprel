@@ -37,12 +37,20 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
         });
     };
 
+    $scope.toggleDisplayTreeView = function(item) {
+        item.displayTreeView = !item.displayTreeView;
+    }
+
     $scope.showTestPrimary = function (item) {
         if (window.getSelection().type == 'Range') {
             return;
         }
 
-        Redirect.testAuthShowTestPrimary(item.id).then(function () {
+        if (typeof item.displayTreeView == 'undefined') {
+            item.displayTreeView = false;
+        }
+
+        Redirect.testAuthShowTestPrimary(item.id, item.displayTreeView).then(function () {
             $scope.init();
         });
     };
@@ -52,7 +60,11 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
             return;
         }
 
-        Redirect.testAuthShowTestReserve(item.id).then(function () {
+        if (typeof item.displayTreeView == 'undefined') {
+            item.displayTreeView = false;
+        }
+
+        Redirect.testAuthShowTestReserve(item.id, item.displayTreeView).then(function () {
             $scope.init();
         });
     };

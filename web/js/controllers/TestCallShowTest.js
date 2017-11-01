@@ -3,7 +3,7 @@ var TestCallShowTestCtrl = function($scope, TestCall, params, $modalInstance, $w
     $scope.details = 0;
 
     if (params.id) {
-        TestCall.result({id: params.id}).then(function(data){
+        TestCall.result({id: params.id, displayTreeView: params.displayTreeView}).then(function(data){
             $scope.item = data.item;
             $scope.result = data.result;
             $scope.isStageRowType = function (row) {
@@ -31,4 +31,20 @@ var TestCallShowTestCtrl = function($scope, TestCall, params, $modalInstance, $w
     {
         $modalInstance.dismiss();
     }
+
+    $scope.collapseAll = function () {
+        $scope.$broadcast('angular-ui-tree:collapse-all');
+    };
+
+    $scope.expandAll = function () {
+        $scope.$broadcast('angular-ui-tree:expand-all');
+    };
+
+    $scope.$on('angular-ui-tree:collapse-all', function () {
+        $scope.collapsed = true;
+    });
+
+    $scope.$on('angular-ui-tree:expand-all', function () {
+        $scope.collapsed = false;
+    });
 };
