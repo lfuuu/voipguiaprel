@@ -67,8 +67,8 @@
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
                 <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">
             </td>
-            <td style="cursor: pointer" ng-click="toggleDisplayTreeView(item)" nowrap>
-                <input type="checkbox">
+            <td style="cursor: pointer" nowrap>
+                <input ng-click="toggleDisplayTreeView(item)" type="checkbox">
             </td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
             <td>
