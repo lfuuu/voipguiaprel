@@ -28,15 +28,25 @@ class PrefixlistController extends BaseController
         }
     }
 
-    public function actionOpen() {
+    public function actionOpen()
+    {
         $this->redirect(Yii::$app->params['prefixListTypeSevenOpenLink']);
     }
 
-    public function actionGenerate($id) {
+    public function actionGenerate($id)
+    {
+        $nnpFilterJson = Prefixlist::find()
+            ->select(['nnp_filter_json'])
+            ->where(['id' => $id])
+            ->asArray()
+            ->one();
+
+        $nnpFilterArray = json_decode($nnpFilterJson['nnp_filter_json'], true);
+
         $uri = Yii::$app->params['prefixListTypeSevenGenerateLink'];
 
         $uri = str_replace('{id}', $id, $uri);
-        $uri = str_replace('{token}', Yii::$app->params['prefixListTypeSevenGenerateToken'], $uri);
+        $uri = str_replace('{token}', $nnpFilterArray['token'], $uri);
 
         $this->redirect($uri);
     }

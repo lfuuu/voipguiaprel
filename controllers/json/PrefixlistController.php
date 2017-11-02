@@ -107,6 +107,10 @@ class PrefixlistController extends JsonController
             $prefixlist->setNnpFilters($this->request);
         }
 
+        if ($prefixlist->type_id == 7) {
+            $prefixlist->setToken($this->request);
+        }
+
         $transaction = Prefixlist::getDb()->beginTransaction();
         try {
 

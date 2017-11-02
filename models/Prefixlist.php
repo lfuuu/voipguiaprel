@@ -244,6 +244,16 @@ class Prefixlist extends \yii\db\ActiveRecord
         return $this;
     }
 
+    public function setToken()
+    {
+        $filters = [
+            'token' => bin2hex(openssl_random_pseudo_bytes(16)),
+        ];
+
+        $this->nnp_filter_json = Json::encode($filters);
+        return $this;
+    }
+
     /**
      * @param array $fields
      * @param array $expand
