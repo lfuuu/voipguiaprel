@@ -28,6 +28,19 @@ class PrefixlistController extends BaseController
         }
     }
 
+    public function actionOpen() {
+        $this->redirect(Yii::$app->params['prefixListTypeSevenOpenLink']);
+    }
+
+    public function actionGenerate($id) {
+        $uri = Yii::$app->params['prefixListTypeSevenGenerateLink'];
+
+        $uri = str_replace('{id}', $id, $uri);
+        $uri = str_replace('{token}', Yii::$app->params['prefixListTypeSevenGenerateToken'], $uri);
+
+        $this->redirect($uri);
+    }
+
     public function actionDownload($id) {
         $list =
             PrefixlistPrefix::find()
