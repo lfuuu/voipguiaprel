@@ -294,6 +294,18 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
     };
 
+    $scope.generatePrefixlist = function (id) {
+        Prefixlist.generatePrefixlist(id).then(function (data) {
+            if (data.response == STATUS_ERROR) {
+                $scope.generate_success = false;
+                $scope.generate_error = true;
+            } else {
+                $scope.generate_success = true;
+                $scope.generate_error = false;
+            }
+        });
+    }
+
     $scope.back = function () {
         $modalInstance.close();
     };

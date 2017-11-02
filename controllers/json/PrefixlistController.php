@@ -359,6 +359,39 @@ SQL;
         ];
     }
 
+    public function actionPrefixlistGeneration()
+    {
+        try {
+            $prefixlist = $this->getPrefixlistOr404($this->request['id']);
+        } catch (\Exception $e) {
+            return [
+                'result' => self::RESPONSE_STATUS_ERROR,
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        $nnpFilterArray = json_decode($prefixlist['nnp_filter_json'], true);
+
+        $uri = Yii::$app->params['prefixListTypeSevenGenerateLink'];
+
+        $uri = str_replace('{id}', $this->request['id'], $uri);
+        $uri = str_replace('{token}', $nnpFilterArray['token'], $uri);
+
+        $response = file_get_contents($uri);
+
+        if (strpos($response, 'ERROR') !== false) {
+            return [
+                'response' => self::RESPONSE_STATUS_ERROR,
+                'message' => $response
+            ];
+        }
+
+        return [
+            'response' => self::RESPONSE_STATUS_SUCCESS,
+            'message' => $response,
+        ];
+    }
+
     /**
      * @return array
      * @throws HttpException
