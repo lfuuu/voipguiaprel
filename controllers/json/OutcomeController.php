@@ -60,7 +60,7 @@ class OutcomeController extends JsonController
         }
 
         $outcome->load($this->request, '');
-
+        
         $transaction = Outcome::getDb()->beginTransaction();
         try {
             if (!$outcome->save()) {

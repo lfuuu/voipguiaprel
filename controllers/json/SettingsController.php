@@ -52,7 +52,6 @@ class SettingsController extends JsonController
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $server->load($this->request, '');
-            $server->ast_trunk_group_id = $this->request['ast_trunk_group_id'];
             
             if ($server->isAttributeChanged('min_price_for_autorouting')) {
                 $server->need_recalc_routing_report = true;
