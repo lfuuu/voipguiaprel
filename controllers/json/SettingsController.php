@@ -41,6 +41,7 @@ class SettingsController extends JsonController
             'is_production' => $server->is_production,
             'vats_trunk_id' => $server->vats_trunk_id,
             'rc_mgmn_action_disable' => $server->rc_mgmn_action_disable,
+            'ast_trunk_group_id' => $server->ast_trunk_group_id,
         ];
     }
 
@@ -51,11 +52,12 @@ class SettingsController extends JsonController
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $server->load($this->request, '');
-
+            $server->ast_trunk_group_id = $this->request['ast_trunk_group_id'];
+            
             if ($server->isAttributeChanged('min_price_for_autorouting')) {
                 $server->need_recalc_routing_report = true;
             }
-
+    
             if (!$server->save()) {
                 throw new FormValidationException($server);
             }

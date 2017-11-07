@@ -29,6 +29,7 @@ use app\queries\ServerQuery;
  * @property bool $is_production
  * @property string $hostname_reserve
  * @property string $nas_ip_address
+ * @property int $ast_trunk_group_id
  *
  * @property InstanceSettings $instanceSettings
  * @property string $apiUrl
