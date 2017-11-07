@@ -4,10 +4,10 @@ var SettingsEditCtrl = function($scope, Settings, $modalInstance) {
 	Settings.get({server_id: $scope.server.id}).then(function(data){
 		$scope.item = data;
 
-		if ($scope.item.vats_trunk_id) {
-			$scope.vpbx_type_id = 1;
-		} else if ($scope.item.ast_trunk_group_id) {
+        if ($scope.item.ast_trunk_group_id || $scope.item.ast_outcome_id) {
 			$scope.vpbx_type_id = 2;
+		} else {
+			$scope.vpbx_type_id = 1;
 		}
 	});
 
@@ -17,13 +17,10 @@ var SettingsEditCtrl = function($scope, Settings, $modalInstance) {
         switch ($scope.vpbx_type_id) {
             case 1:
                 $scope.item.ast_trunk_group_id = null;
+                $scope.item.ast_outcome_id = null;
                 break;
             case 2:
                 $scope.item.vats_trunk_id = null;
-                break;
-            case 3:
-                $scope.item.vats_trunk_id = null;
-                $scope.item.ast_trunk_group_id = null;
                 break;
             default:
                 break;

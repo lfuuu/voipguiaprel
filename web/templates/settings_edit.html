@@ -149,7 +149,6 @@
                         <div class="btn-group">
                             <button type="button" class="btn {{vpbx_type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="setVpbxType(1)">Транк ВАТС</button>
                             <button type="button" class="btn {{vpbx_type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="setVpbxType(2)">Транк группа AST</button>
-                            <button type="button" class="btn {{vpbx_type_id == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="setVpbxType(3)">Outcomes</button>
                         </div>
                     </div>
                 </div>
@@ -170,13 +169,14 @@
                     </div>
                 </div>
 
-                <div class="form-group" ng-if="vpbx_type_id == 3">
-                    <label class="col-sm-4 control-label">Outcomes</label>
-
+                <div class="form-group" ng-if="vpbx_type_id == 2">
+                    <label class="col-sm-4 control-label">Outcome AST</label>
                     <div class="col-sm-8">
-                        <select-box required="false" default="Пока не реализовано!"></select-box>
+                        <select-box list="outcome" model="item.ast_outcome_id" placeholder="Выберите"
+                                    required="false" default="Не установлено"></select-box>
                     </div>
                 </div>
+
             </div>
 
             <div class="tab-pane" id="healthsettings">
