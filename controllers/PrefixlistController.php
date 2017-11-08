@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\classes\PrefixExpander;
 use app\models\Prefixlist;
+use app\models\PrefixlistPrefixPrepare;
 use Yii;
 use app\classes\BaseController;
 use app\models\PrefixlistPrefix;
@@ -27,28 +28,26 @@ class PrefixlistController extends BaseController
             echo $item['prefix'] . "\n";
         }
     }
+    
+    public function actionShowBuffer($id) {
+        $list =
+            PrefixlistPrefixPrepare::find()
+                ->select(['prefix'])
+                ->where(['prefixlist_id' => $id])
+                ->orderBy('prefix')
+                ->asArray()
+                ->all()
+        ;
+        
+        header('Content-Type: text/plain');
+        foreach ($list as $item) {
+            echo $item['prefix'] . "\n";
+        }
+    }
 
     public function actionOpen()
     {
         $this->redirect(Yii::$app->params['prefixListTypeSevenOpenLink']);
-    }
-
-    public function actionGenerate($id)
-    {
-        $nnpFilterJson = Prefixlist::find()
-            ->select(['nnp_filter_json'])
-            ->where(['id' => $id])
-            ->asArray()
-            ->one();
-
-        $nnpFilterArray = json_decode($nnpFilterJson['nnp_filter_json'], true);
-
-        $uri = Yii::$app->params['prefixListTypeSevenGenerateLink'];
-
-        $uri = str_replace('{id}', $id, $uri);
-        $uri = str_replace('{token}', $nnpFilterArray['token'], $uri);
-
-        $this->redirect($uri);
     }
 
     public function actionDownload($id) {

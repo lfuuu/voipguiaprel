@@ -62,8 +62,14 @@
                     {{item.count}}
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <a class="btn btn-default" href="/prefixlist/show?id={{item.id}}" target="_blank">Открыть</a>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
                     <a class="btn btn-default" href="/prefixlist/download?id={{item.id}}">Скачать</a>
+
+                    <a class="btn btn-default" ng-if="item.type_id == 6 || item.type_id == 7" href="/prefixlist/show-buffer?id={{item.id}}" target="_blank">Открыть буфер</a>
+
+                    <a class="btn btn-default" ng-if="item.type_id == 6 || item.type_id == 7" ng-click="applyPrefixlistBuffer(item.id)">Применить буфер</a>
+                    <span class="label label-success" ng-if="apply_buffer_success">Успешно!</span>
+                    <span class="label label-danger" ng-if="apply_buffer_error">Ошибка!</span>
                 </div>
             </div>
 
@@ -235,6 +241,32 @@
                 </div>
             </div>
 
+            <div ng-if="item.type_id == 7 || item.type_id == 6">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Автообновление</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" ng-click="item.is_auto_update = !item.is_auto_update">
+                            <button type="button" class="btn btn-sm {{item.is_auto_update ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.is_auto_update ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.id && item.dt_update">
+                    <label class="col-sm-2 control-label">Дата обновления</label>
+                    <div style="margin-top: 5px;" class="col-sm-10">
+                        <span class="label label-success">{{item.dt_update}}</span>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.id && item.dt_prepare">
+                    <label class="col-sm-2 control-label">Дата предложения</label>
+                    <div style="margin-top: 5px;" class="col-sm-10">
+                        <span class="label label-warning">{{item.dt_prepare}}</span>
+                    </div>
+                </div>
+            </div>
+
             <div ng-if="item.type_id == 6">
                 <label class="col-sm-2 control-label"></label>
                 <div class="col-sm-10">
@@ -338,10 +370,7 @@
                 <div class="form-group" ng-if="item.id">
                     <label class="col-sm-2 control-label"></label>
                     <div class="col-sm-10">
-                        <a class="btn btn-default" href="/prefixlist/open" target="_blank">Открыть</a>
-                        <a class="btn btn-default" href="#" ng-click="generatePrefixlist(item.id)">Перегенерировать</a>
-                        <span class="label label-success" ng-if="generate_success">Успешно!</span>
-                        <span class="label label-danger" ng-if="generate_error">Ошибка!</span>
+                        <a class="btn btn-default" href="/prefixlist/open" target="_blank">Открыть предрасчет</a>
                     </div>
                 </div>
             </div>

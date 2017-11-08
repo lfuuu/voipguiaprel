@@ -64,6 +64,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             [['exclude_operators'], 'boolean'],
             ['nnp_filter_json', 'string'],
             [['is_global'], 'boolean'],
+            [['is_auto_update'], 'boolean'],
         ];
     }
 
@@ -268,6 +269,8 @@ class Prefixlist extends \yii\db\ActiveRecord
         $data['smezhnost_list'] = $this->getSmezhnostList();
         $data['rossvyaz_operators'] = $this->getRossvyazOperators();
         $data['prefixes'] = $this->getPrefixlistPrefix()->count();
+        $data['dt_update'] = $data['dt_update'] ? date('Y-m-d H:i:s', strtotime($data['dt_update'])) : '';
+        $data['dt_prepare'] = $data['dt_prepare'] ? date('Y-m-d H:i:s', strtotime($data['dt_prepare'])) : '';
         return $data;
     }
 

@@ -294,14 +294,14 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
     };
 
-    $scope.generatePrefixlist = function (id) {
-        Prefixlist.generatePrefixlist(id).then(function (data) {
+    $scope.applyPrefixlistBuffer = function (id) {
+        Prefixlist.applyBuffer(id).then(function (data) {
             if (data.response == STATUS_ERROR) {
-                $scope.generate_success = false;
-                $scope.generate_error = true;
+                $scope.apply_buffer_success = false;
+                $scope.apply_buffer_error = true;
             } else {
-                $scope.generate_success = true;
-                $scope.generate_error = false;
+                $scope.apply_buffer_success = true;
+                $scope.apply_buffer_error = false;
             }
         });
     }

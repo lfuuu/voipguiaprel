@@ -50,7 +50,7 @@ class PrefixlistController extends JsonController
 
         return
             Prefixlist::find()
-                ->select(['id', 'name', 'type_id','server_id','sw_shared', 'is_global'])
+                ->select(['id', 'name', 'type_id','server_id','sw_shared', 'is_global', 'dt_prepare'])
                 ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id . "or is_global = true")
                 ->orderBy('name')
                 ->asArray()
@@ -391,7 +391,27 @@ SQL;
             'message' => $response,
         ];
     }
-
+    
+    public function actionApplyBuffer() {
+        $command =
+            \Yii::$app->db
+                ->createCommand("select auth.apply_precompiled_prefixlist(:prefixlistId)", [':prefixlistId' => $this->request['id']]);
+        
+        $result = $command->queryAll();
+        
+        if ($result[0]['apply_precompiled_prefixlist'] == -1) {
+            return [
+                'response' => self::RESPONSE_STATUS_ERROR,
+                'message' => 'Ошибка применения буфера',
+            ];
+        }
+    
+        return [
+            'response' => self::RESPONSE_STATUS_SUCCESS,
+            'message' => 'Применено успешно'
+        ];
+    }
+    
     /**
      * @return array
      * @throws HttpException
