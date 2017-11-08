@@ -295,6 +295,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     };
 
     $scope.applyPrefixlistBuffer = function (id) {
+        if (!$window.confirm('Применить буфер?')) return;
+
         Prefixlist.applyBuffer(id).then(function (data) {
             if (data.response == STATUS_ERROR) {
                 $scope.apply_buffer_success = false;

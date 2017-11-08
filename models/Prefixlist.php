@@ -96,6 +96,14 @@ class Prefixlist extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PrefixlistPrefix::className(), ['prefixlist_id' => 'id']);
     }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPrefixlistPrefixPrepare()
+    {
+        return $this->hasMany(PrefixlistPrefixPrepare::className(), ['prefixlist_id' => 'id']);
+    }
 
     /**
      * @return array
@@ -269,6 +277,7 @@ class Prefixlist extends \yii\db\ActiveRecord
         $data['smezhnost_list'] = $this->getSmezhnostList();
         $data['rossvyaz_operators'] = $this->getRossvyazOperators();
         $data['prefixes'] = $this->getPrefixlistPrefix()->count();
+        $data['prefixes_buffer'] = $this->getPrefixlistPrefixPrepare()->count();
         $data['dt_update'] = $data['dt_update'] ? date('Y-m-d H:i:s', strtotime($data['dt_update'])) : '';
         $data['dt_prepare'] = $data['dt_prepare'] ? date('Y-m-d H:i:s', strtotime($data['dt_prepare'])) : '';
         return $data;
