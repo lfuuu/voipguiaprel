@@ -34,7 +34,7 @@ class PrefixlistController extends JsonController
         return
             Prefixlist::find()
                 ->select(['id', 'name'])
-                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
+                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id . "or is_global = true")
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -50,8 +50,8 @@ class PrefixlistController extends JsonController
 
         return
             Prefixlist::find()
-                ->select(['id', 'name', 'type_id','server_id','sw_shared'])
-                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
+                ->select(['id', 'name', 'type_id','server_id','sw_shared', 'is_global'])
+                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id . "or is_global = true")
                 ->orderBy('name')
                 ->asArray()
                 ->all();

@@ -30,6 +30,7 @@ use app\queries\ServerQuery;
  * @property string $hostname_reserve
  * @property string $nas_ip_address
  * @property int $ast_trunk_group_id
+ * @property int $fsb_blacklist_id
  *
  * @property InstanceSettings $instanceSettings
  * @property string $apiUrl
@@ -68,7 +69,7 @@ class Server extends \yii\db\ActiveRecord
     {
         return [
             [['low_balance_outcome_id', 'blocked_outcome_id', 'hub_id', 'emergency_prefixlist_id',
-                'mcn_prefixlist_id','rc_mgmn_outcome_id','vats_trunk_id', 'ast_trunk_group_id'], 'integer'],
+                'mcn_prefixlist_id','rc_mgmn_outcome_id','vats_trunk_id', 'ast_trunk_group_id', 'fsb_blacklist_id'], 'integer'],
             [['is_sormed', 'is_production','rc_mgmn_action_disable'], 'boolean'],
 
             [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],

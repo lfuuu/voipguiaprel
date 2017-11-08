@@ -63,6 +63,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             [['rossvyaz_mob'], 'boolean'],
             [['exclude_operators'], 'boolean'],
             ['nnp_filter_json', 'string'],
+            [['is_global'], 'boolean'],
         ];
     }
 

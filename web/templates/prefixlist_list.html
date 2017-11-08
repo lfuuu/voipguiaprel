@@ -29,7 +29,7 @@
                 <span ng-show="sortType == 'type_id' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
-        <th>&nbsp;</th>
+        <th>Флаги</th>
         <th width="10%">
             <a href="#" ng-click="sortType = 'server_id'; sortReverse = !sortReverse">
                 Сервер
@@ -55,6 +55,7 @@
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
             <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
+            <span class="label label-success" ng-if="item.is_global">Глобальный</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
         <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-disabled="item.server_id != server.id" ng-click="deleteItem(item)"></button></td>

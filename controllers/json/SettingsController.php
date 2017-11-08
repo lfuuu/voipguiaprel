@@ -41,7 +41,8 @@ class SettingsController extends JsonController
             'is_production' => $server->is_production,
             'vats_trunk_id' => $server->vats_trunk_id,
             'rc_mgmn_action_disable' => $server->rc_mgmn_action_disable,
-            'ast_trunk_group_id' => $server->ast_trunk_group_id
+            'ast_trunk_group_id' => $server->ast_trunk_group_id,
+            'fsb_blacklist_id' => $server->fsb_blacklist_id
         ];
     }
 
