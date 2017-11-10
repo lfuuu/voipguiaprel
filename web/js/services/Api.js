@@ -234,6 +234,9 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
         applyBuffer: function (id) {
             return ApiLoader.post(url + 'apply-buffer', {id: id});
         },
+        generatePrefixlist: function (id) {
+            return ApiLoader.post(url + 'prefixlist-generation', {id: id});
+        },
         findUsagesInNumbers: function (id) {
             return ApiLoader.post(url + 'find-usages-in-numbers', {id: id});
         }
