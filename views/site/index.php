@@ -33,24 +33,27 @@ use yii\helpers\Url;
                 <?= $item->name_short ?>
             </td>
             <td>
-               <?php if(!$item->instanceSettings->active) { ?>
-                  <span class="label label-warning">Не активен</span>
-               <?php } ?>
-               <?php if($item->instanceSettings->is_can_recalculate) { ?>
-                  <span class="label label-info">Пересчитывать</span>
-               <?php } ?>
-               <?php if($item->is_need_db_do_migrate) { ?>
-                  <span class="label label-success">Мигрировать БД</span>
-               <?php } ?>
-               <?php if($item->is_sormed) { ?>
-                  <span class="label label-warning">СОРМ</span>
-               <?php } ?>
-                <?php if(!$item->instanceSettings->auto_lock_finance) { ?>
+                <?php if (!empty($item->preparedPrefixlists)) { ?>
+                    <span class="label label-danger">Префикслист</span>
+                <?php } ?>
+                <?php if (!$item->instanceSettings->active) { ?>
+                    <span class="label label-warning">Не активен</span>
+                <?php } ?>
+                <?php if ($item->instanceSettings->is_can_recalculate) { ?>
+                    <span class="label label-info">Пересчитывать</span>
+                <?php } ?>
+                <?php if ($item->is_need_db_do_migrate) { ?>
+                    <span class="label label-success">Мигрировать БД</span>
+                <?php } ?>
+                <?php if ($item->is_sormed) { ?>
+                    <span class="label label-warning">СОРМ</span>
+                <?php } ?>
+                <?php if (!$item->instanceSettings->auto_lock_finance) { ?>
                     <span class="label label-warning">Финансовая автоблокировка выкл</span>
                 <?php } ?>
-               <?php if($item->is_production) { ?>
-                  <span class="label label-danger">В коммерции</span>
-               <?php } ?>
+                <?php if ($item->is_production) { ?>
+                    <span class="label label-danger">В коммерции</span>
+                <?php } ?>
             </td>
         </tr>
     <?php endforeach; ?>
@@ -83,24 +86,27 @@ use yii\helpers\Url;
                         <?= $item2->name_short ?>
                     </td>
                     <td>
-                       <?php if(!$item2->instanceSettings->active) { ?>
-                          <span class="label label-warning">Не активен</span>
-                       <?php } ?>
-                       <?php if($item2->instanceSettings->is_can_recalculate) { ?>
-                          <span class="label label-info">Пересчитывать</span>
-                       <?php } ?>
-                       <?php if($item2->is_need_db_do_migrate) { ?>
-                          <span class="label label-success">Мигрировать БД</span>
-                       <?php } ?>
-                       <?php if($item2->is_sormed) { ?>
-                        <span class="label label-warning">СОРМ</span>
-                       <?php } ?>
-                       <?php if(!$item2->instanceSettings->auto_lock_finance) { ?>
-                         <span class="label label-warning">Финансовая автоблокировка выкл</span>
-                       <?php } ?>
-                       <?php if(!empty($item2->is_production)) { ?>
-                         <span class="label label-danger">В коммерции</span>
-                       <?php } ?>
+                        <?php if (!empty($item2->preparedPrefixlists)) { ?>
+                            <span class="label label-danger">Префикслист</span>
+                        <?php } ?>
+                        <?php if (!$item2->instanceSettings->active) { ?>
+                            <span class="label label-warning">Не активен</span>
+                        <?php } ?>
+                        <?php if ($item2->instanceSettings->is_can_recalculate) { ?>
+                            <span class="label label-info">Пересчитывать</span>
+                        <?php } ?>
+                        <?php if ($item2->is_need_db_do_migrate) { ?>
+                            <span class="label label-success">Мигрировать БД</span>
+                        <?php } ?>
+                        <?php if ($item2->is_sormed) { ?>
+                            <span class="label label-warning">СОРМ</span>
+                        <?php } ?>
+                        <?php if (!$item2->instanceSettings->auto_lock_finance) { ?>
+                            <span class="label label-warning">Финансовая автоблокировка выкл</span>
+                        <?php } ?>
+                        <?php if (!empty($item2->is_production)) { ?>
+                            <span class="label label-danger">В коммерции</span>
+                        <?php } ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -30,6 +30,13 @@
                 <span ng-show="sortType == 'type_id' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
+        <th>
+            <a href="#" ng-click="sortType = 'dt_update'; sortReverse = !sortReverse">
+                Дата обновления
+                <span ng-show="sortType == 'dt_update' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'dt_update' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
         <th>Флаги</th>
         <th width="10%">
             <a href="#" ng-click="sortType = 'server_id'; sortReverse = !sortReverse">
@@ -57,9 +64,11 @@
             <span ng-if="item.type_id == 6">NNP</span>
             <span ng-if="item.type_id == 7">7800</span>
         </td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.dt_update}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
             <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
             <span class="label label-success" ng-if="item.is_global">Глобальный</span>
+            <span class="label label-danger" ng-if="item.is_auto_update">Автообновление</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
         <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-disabled="item.server_id != server.id" ng-click="deleteItem(item)"></button></td>

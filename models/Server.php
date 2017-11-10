@@ -2,6 +2,7 @@
 
 namespace app\models;
 use app\queries\ServerQuery;
+use yii\db\Expression;
 
 /**
  * @property int $id
@@ -113,5 +114,9 @@ class Server extends \yii\db\ActiveRecord
         return $this->hasOne(InstanceSettings::className(), ['id' => 'id']);
     }
 
-
+    public function getPreparedPrefixlists()
+    {
+        return $this->hasMany(Prefixlist::className(), ['server_id' => 'id'])
+            ->onCondition('dt_prepare is not null');
+    }
 }

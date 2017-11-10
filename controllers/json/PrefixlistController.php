@@ -50,7 +50,11 @@ class PrefixlistController extends JsonController
 
         return
             Prefixlist::find()
-                ->select(['id', 'name', 'type_id','server_id','sw_shared', 'is_global', 'dt_prepare'])
+                ->select([
+                    'id', 'name', 'type_id','server_id','sw_shared', 'is_global',
+                    'to_char(dt_update, \'YYYY-MM-DD HH24:MI:SS\') as dt_update',
+                    'to_char(dt_prepare, \'YYYY-MM-DD HH24:MI:SS\') as dt_prepare', 'is_auto_update'
+                ])
                 ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id . "or is_global = true")
                 ->orderBy('name')
                 ->asArray()
