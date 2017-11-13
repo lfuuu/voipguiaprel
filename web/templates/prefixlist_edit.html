@@ -69,7 +69,7 @@
 
                     <a class="btn btn-default" ng-if="item.type_id == 6 || item.type_id == 7" href="/prefixlist/show-buffer?id={{item.id}}" target="_blank">Открыть буфер</a>
 
-                    <a class="btn btn-default" ng-if="(item.type_id == 6 || item.type_id == 7) && item.prefixes_buffer > 0" ng-click="applyPrefixlistBuffer(item.id)">Применить буфер</a>
+                    <a class="btn btn-default" ng-if="(item.type_id == 6 || item.type_id == 7) && item.dt_prepare" ng-click="applyPrefixlistBuffer(item.id)">Применить буфер</a>
                     <span class="label label-success" ng-if="apply_buffer_success">Успешно!</span>
                     <span class="label label-danger" ng-if="apply_buffer_error">Ошибка!</span>
                 </div>
