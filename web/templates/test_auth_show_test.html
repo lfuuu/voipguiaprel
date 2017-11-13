@@ -60,7 +60,8 @@
                       'glyphicon-chevron-down': !collapsed
                     }"></span>
                 </a>
-                {{step.name}}
+                <span ng-if="step.color && step.color == 'red'" class="bg-danger">{{step.name}}</span>
+                <span ng-if="!step.color || step.color != 'red'">{{step.name}}</span>
             </div>
             <div ng-if="!step.name" style="display: inline-block;" ui-tree-handle class="tree-node tree-node-content">
                 <table>

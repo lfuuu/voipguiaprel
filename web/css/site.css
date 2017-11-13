@@ -178,3 +178,7 @@ td > div > .select2-container > .select2-choice {
 .tree-container-bordered * {
 	padding-left: 2px;
 }
+
+.bg-danger {
+	background-color: #FA7777;
+}
