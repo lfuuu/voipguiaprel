@@ -74,7 +74,9 @@
                             <span class="label label-warning" ng-if="step.type == 'DEBUG'">[{{step.type}}]</span>
                         </td>
                         <td>
-                            &nbsp;<span>{{step.trace}}</span>
+                            &nbsp;
+                            <span ng-if="step.color && step.color == 'red'" class="bg-danger">{{step.trace}}</span>
+                            <span ng-if="!step.color || step.color != 'red'">{{step.trace}}</span>
                         </td>
                     </tr>
                 </table>
