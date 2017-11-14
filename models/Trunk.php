@@ -31,6 +31,7 @@ use app\queries\TrunkQuery;
  * @property bool $orig_bfilter_default_allowed
  * @property bool $term_afilter_default_allowed
  * @property bool $term_bfilter_default_allowed
+ * @property int $id_pbx
  *
  * @property \yii\db\ActiveQuery rulesSourceOrig
  * @property \yii\db\ActiveQuery rulesDestinationOrig
@@ -65,7 +66,7 @@ class Trunk extends \yii\db\ActiveRecord
                 'orig_afilter_default_allowed', 'orig_bfilter_default_allowed',
                 'term_afilter_default_allowed', 'term_bfilter_default_allowed',
             ], 'boolean'],
-            [['route_table_id', 'capacity', 'load_warning',], 'integer'],
+            [['route_table_id', 'capacity', 'load_warning', 'id_pbx'], 'integer'],
             [['road_to_regions'], 'string', 'max' => 50],
         ];
     }
