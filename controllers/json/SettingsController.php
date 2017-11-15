@@ -42,7 +42,8 @@ class SettingsController extends JsonController
             'vats_trunk_id' => $server->vats_trunk_id,
             'rc_mgmn_action_disable' => $server->rc_mgmn_action_disable,
             'ast_trunk_group_id' => $server->ast_trunk_group_id,
-            'fsb_blacklist_id' => $server->fsb_blacklist_id
+            'fsb_blacklist_id' => $server->fsb_blacklist_id,
+            'is_route_to_class5' => $server->is_route_to_class5
         ];
     }
 
