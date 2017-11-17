@@ -506,6 +506,26 @@ app.factory('Settings', function ($q, ApiLoader) {
 	};
 });
 
+app.factory('Server', function ($q, ApiLoader) {
+    var url = '/json/server/';
+
+    return {
+        list: function(data) {
+            return ApiLoader.post(url + 'list', data);
+        }
+    };
+});
+
+app.factory('Pbx', function ($q, ApiLoader) {
+    var url = '/json/pbx/';
+
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', {'servers': data});
+        }
+    };
+});
+
 app.factory('InstanceSettings', function ($q, ApiLoader) {
 	var url = '/json/instance-settings/';
 	return {
@@ -822,7 +842,7 @@ app.factory('Network', function ($q, ApiLoader, $rootScope) {
 });
 
 
-app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist, RouteCase, Outcome, Number, Destination, Airp, ReleaseReason, RouteTable, Network, Attribute) {
+app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist, RouteCase, Outcome, Number, Destination, Airp, ReleaseReason, RouteTable, Network, Attribute, Server) {
 	return {
 		trunk: function() {
 			return Trunk.list();
@@ -830,9 +850,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist, RouteCas
 		trunkGroup: function() {
 			return TrunkGroup.list();
 		},
-    testGroup: function() {
-      return TestGroup.list();
-    },
+        testGroup: function() {
+          return TestGroup.list();
+        },
 		prefixlist: function() {
 			return Prefixlist.list();
 		},
@@ -862,6 +882,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist, RouteCas
 		},
         network: function () {
             return Network.list();
+        },
+        server: function() {
+            return Server.list();
         }
     };
 });

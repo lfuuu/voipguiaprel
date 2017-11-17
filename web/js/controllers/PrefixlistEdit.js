@@ -1,4 +1,4 @@
-var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, params, $modalInstance, $window, Redirect) {
+var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, Pbx, Server, params, $modalInstance, $window, Redirect) {
 
     var STATUS_SUCCESS = 'SUCCESS';
     var STATUS_ERROR = 'ERROR';
@@ -68,6 +68,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     if (params.id) {
         Prefixlist.get({id: params.id}).then(function (data) {
             $scope.item = data;
+
+            Pbx.read($scope.item.servers).then(function (data) {
+                $scope.pbxList = data;
+            });
 
             $scope.setType($scope.item.type_id);
             $scope.item.count = $scope.item.prefixes;
@@ -212,6 +216,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         $scope.ndcTypeList = data;
     });
 
+    Server.list().then(function (data) {
+        $scope.serverList = data;
+    });
+
     $scope.setType = function(type_id) {
         $scope.item.type_id = type_id;
     };
@@ -266,6 +274,47 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             $scope.item.count = data.message.prefix_list_size;
             $modalInstance.close();
         });
+    };
+
+    $scope.addServer = function() {
+        if (!$scope.item.servers) {
+            $scope.item.servers = [];
+        }
+
+        $scope.item.servers.push({id: null});
+    };
+
+    $scope.removeServer = function(index) {
+        if (!$scope.item.servers) {
+            $scope.item.servers = [];
+        } else {
+            $scope.item.servers.splice(index, 1);
+        }
+
+        Pbx.read($scope.item.servers).then(function (data) {
+            $scope.pbxList = data;
+        });
+    };
+
+    $scope.serverSelected = function() {
+        Pbx.read($scope.item.servers).then(function (data) {
+            $scope.pbxList = data;
+        });
+    }
+
+    $scope.addPbx = function() {
+        if (!$scope.item.pbx_list) {
+            $scope.item.pbx_list = [];
+        }
+        $scope.item.pbx_list.push({id: null});
+    };
+
+    $scope.removePbx = function(index) {
+        if (!$scope.item.pbx_list) {
+            $scope.item.pbx_list = [];
+        } else {
+            $scope.item.pbx_list.splice(index, 1);
+        }
     };
 
     $scope.save = function () {

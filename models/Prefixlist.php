@@ -253,6 +253,21 @@ class Prefixlist extends \yii\db\ActiveRecord
         $this->nnp_filter_json = Json::encode($filters);
         return $this;
     }
+    
+    /**
+     * @param array $input
+     * @return $this
+     */
+    public function setPbxFilters(array $input)
+    {
+        $filters = [
+            'pbx_list' => isset($input['pbx_list']) ? $input['pbx_list'] : '',
+            'servers' => isset($input['servers']) ? $input['servers'] : ''
+        ];
+        
+        $this->nnp_filter_json = Json::encode($filters);
+        return $this;
+    }
 
     public function setToken()
     {
@@ -273,6 +288,12 @@ class Prefixlist extends \yii\db\ActiveRecord
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         $data = parent::toArray($fields, $expand, $recursive);
+        $nnpFilter = [];
+        
+        if (!empty($data['nnp_filter_json'])) {
+            $nnpFilter = json_decode($data['nnp_filter_json'], true);
+        }
+        
         $data['manual_list'] = $this->getManualList();
         $data['smezhnost_list'] = $this->getSmezhnostList();
         $data['rossvyaz_operators'] = $this->getRossvyazOperators();
@@ -280,6 +301,8 @@ class Prefixlist extends \yii\db\ActiveRecord
         $data['prefixes_buffer'] = $this->getPrefixlistPrefixPrepare()->count();
         $data['dt_update'] = $data['dt_update'] ? date('Y-m-d H:i:s', strtotime($data['dt_update'])) : '';
         $data['dt_prepare'] = $data['dt_prepare'] ? date('Y-m-d H:i:s', strtotime($data['dt_prepare'])) : '';
+        $data['servers'] = $nnpFilter['servers'] ? $nnpFilter['servers'] : [];
+        $data['pbx_list'] = $nnpFilter['pbx_list'] ? $nnpFilter['pbx_list'] : [];
         return $data;
     }
 

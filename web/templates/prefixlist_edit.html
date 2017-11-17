@@ -32,6 +32,7 @@
                         <button type="button" class="btn {{item.type_id == 5 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(5)">Дорогие коды</button>
                         <button type="button" class="btn {{item.type_id == 6 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(6)">ННП</button>
                         <button type="button" class="btn {{item.type_id == 7 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(7)">7800</button>
+                        <button type="button" class="btn {{item.type_id == 8 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(8)">Did на ВАТС</button>
                     </div>
                 </div>
             </div>
@@ -57,19 +58,19 @@
             </div>
 
             <div class="form-group" ng-if="item.id">
-                <label class="col-sm-2 control-label" ng-if="item.type_id == 6 || item.type_id == 7">Количество в списке/буфер</label>
-                <label class="col-sm-2 control-label" ng-if="item.type_id != 6 && item.type_id != 7">Количество</label>
+                <label class="col-sm-2 control-label" ng-if="item.type_id == 6 || item.type_id == 7 || item.type_id == 8">Количество в списке/буфер</label>
+                <label class="col-sm-2 control-label" ng-if="item.type_id != 6 && item.type_id != 7 && item.type_id != 8">Количество</label>
                 <div class="col-sm-10">
-                    <span ng-if="item.type_id != 6 && item.type_id != 7">{{item.count}}</span>
-                    <span ng-if="item.type_id == 6 || item.type_id == 7">{{item.count}}/{{item.prefixes_buffer}}</span>
+                    <span ng-if="item.type_id != 6 && item.type_id != 7 && item.type_id != 8">{{item.count}}</span>
+                    <span ng-if="item.type_id == 6 || item.type_id == 7 || item.type_id == 8">{{item.count}}/{{item.prefixes_buffer}}</span>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <a class="btn btn-default" href="/prefixlist/show?id={{item.id}}" target="_blank">Открыть</a>
 
                     <a class="btn btn-default" href="/prefixlist/download?id={{item.id}}">Скачать</a>
 
-                    <a class="btn btn-default" ng-if="item.type_id == 6 || item.type_id == 7" href="/prefixlist/show-buffer?id={{item.id}}" target="_blank">Открыть буфер</a>
+                    <a class="btn btn-default" ng-if="item.type_id == 6 || item.type_id == 7 || item.type_id == 8" href="/prefixlist/show-buffer?id={{item.id}}" target="_blank">Открыть буфер</a>
 
-                    <a class="btn btn-default" ng-if="(item.type_id == 6 || item.type_id == 7) && item.dt_prepare" ng-click="applyPrefixlistBuffer(item.id)">Применить буфер</a>
+                    <a class="btn btn-default" ng-if="(item.type_id == 6 || item.type_id == 7 || item.type_id == 8) && item.dt_prepare" ng-click="applyPrefixlistBuffer(item.id)">Применить буфер</a>
                     <span class="label label-success" ng-if="apply_buffer_success">Успешно!</span>
                     <span class="label label-danger" ng-if="apply_buffer_error">Ошибка!</span>
                 </div>
@@ -376,6 +377,64 @@
                         <a class="btn btn-default" href="#" ng-click="generatePrefixlist(item.id)">Перегенерировать</a>
                         <span class="label label-success" ng-if="generate_success">Успешно!</span>
                         <span class="label label-danger" ng-if="generate_error">Ошибка!</span>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="item.type_id == 8">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Сервера</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr ng-repeat="server in item.servers">
+                                <td width="100%">
+                                    <select ui-select2 ng-model="server.id" style="width: 100%" ng-change="serverSelected()">
+                                        <option value="">-- Выберите --</option>
+                                        <option ng-repeat="serverObject in serverList" value="{{serverObject.id}}">{{serverObject.name}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeServer($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addServer()"><i class="glyphicon glyphicon-plus"></i> Сервер</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Список PBX</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr ng-repeat="pbx in item.pbx_list">
+                                <td width="100%">
+                                    <select ui-select2 ng-model="pbx.id" style="width: 100%" >
+                                        <option value="">-- Выберите --</option>
+                                        <option ng-repeat="pbxObject in pbxList" value="{{pbxObject.id}}">{{pbxObject.name}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePbx($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addPbx()"><i class="glyphicon glyphicon-plus"></i> PBX</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>
