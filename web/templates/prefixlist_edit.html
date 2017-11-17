@@ -369,12 +369,12 @@
                 </div>
             </div>
 
-            <div ng-if="item.type_id == 7">
+            <div ng-if="item.type_id == 7 || item.type_id == 8">
                 <div class="form-group" ng-if="item.id">
                     <label class="col-sm-2 control-label"></label>
                     <div class="col-sm-10">
                         <a class="btn btn-default" href="/prefixlist/open" target="_blank">Открыть предрасчет</a>
-                        <a class="btn btn-default" href="#" ng-click="generatePrefixlist(item.id)">Перегенерировать</a>
+                        <a class="btn btn-default" href="#" ng-click="generatePrefixlist(item.id, item.type_id)">Перегенерировать</a>
                         <span class="label label-success" ng-if="generate_success">Успешно!</span>
                         <span class="label label-danger" ng-if="generate_error">Ошибка!</span>
                     </div>
@@ -411,7 +411,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Список PBX</label>
+                    <label class="col-sm-2 control-label">Список транков с PBX</label>
                     <div class="col-sm-10">
                         <table class="table table-striped">
                             <tbody>

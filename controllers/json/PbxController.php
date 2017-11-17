@@ -30,7 +30,7 @@ class PbxController extends JsonController
         
         return
             Trunk::find()
-                ->select(['id_pbx as id', 'id_pbx as name'])
+                ->select(['id_pbx as id', 'trunk_name as name'])
                 ->distinct()
                 ->where('server_id in (' . implode(',', $serversFormatted) . ')')
                 ->andWhere('id_pbx is not null')

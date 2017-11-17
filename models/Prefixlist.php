@@ -261,6 +261,7 @@ class Prefixlist extends \yii\db\ActiveRecord
     public function setPbxFilters(array $input)
     {
         $filters = [
+            'token' => bin2hex(openssl_random_pseudo_bytes(16)),
             'pbx_list' => isset($input['pbx_list']) ? $input['pbx_list'] : '',
             'servers' => isset($input['servers']) ? $input['servers'] : ''
         ];
@@ -301,8 +302,8 @@ class Prefixlist extends \yii\db\ActiveRecord
         $data['prefixes_buffer'] = $this->getPrefixlistPrefixPrepare()->count();
         $data['dt_update'] = $data['dt_update'] ? date('Y-m-d H:i:s', strtotime($data['dt_update'])) : '';
         $data['dt_prepare'] = $data['dt_prepare'] ? date('Y-m-d H:i:s', strtotime($data['dt_prepare'])) : '';
-        $data['servers'] = $nnpFilter['servers'] ? $nnpFilter['servers'] : [];
-        $data['pbx_list'] = $nnpFilter['pbx_list'] ? $nnpFilter['pbx_list'] : [];
+        $data['servers'] = isset($nnpFilter['servers']) ? $nnpFilter['servers'] : [];
+        $data['pbx_list'] = isset($nnpFilter['pbx_list']) ? $nnpFilter['pbx_list'] : [];
         return $data;
     }
 

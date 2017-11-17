@@ -111,7 +111,7 @@ class PrefixlistController extends JsonController
             $prefixlist->setNnpFilters($this->request);
         }
 
-        if ($prefixlist->type_id == 7 || $prefixlist->type_id == 8) {
+        if ($prefixlist->type_id == 7) {
             $prefixlist->setToken($this->request);
         }
     
@@ -383,6 +383,7 @@ SQL;
         $uri = Yii::$app->params['prefixListTypeSevenGenerateLink'];
 
         $uri = str_replace('{id}', $this->request['id'], $uri);
+        $uri = str_replace('{type}', $this->request['type'], $uri);
         $uri = str_replace('{token}', $nnpFilterArray['token'], $uri);
 
         $response = file_get_contents($uri);

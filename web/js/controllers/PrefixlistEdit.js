@@ -357,8 +357,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
     }
 
-    $scope.generatePrefixlist = function (id) {
-        Prefixlist.generatePrefixlist(id).then(function (data) {
+    $scope.generatePrefixlist = function (id, type) {
+        Prefixlist.generatePrefixlist(id, type).then(function (data) {
             if (data.response == STATUS_ERROR) {
                 $scope.generate_success = false;
                 $scope.generate_error = true;
