@@ -244,7 +244,7 @@
                 </div>
             </div>
 
-            <div ng-if="item.type_id == 7 || item.type_id == 6">
+            <div ng-if="item.type_id == 6 || item.type_id == 7 || item.type_id == 8">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Автообновление</label>
                     <div class="col-sm-10">
@@ -266,6 +266,17 @@
                     <label class="col-sm-2 control-label">Дата предложения</label>
                     <div style="margin-top: 5px;" class="col-sm-10">
                         <span class="label label-warning">{{item.dt_prepare}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="item.type_id == 6 || item.type_id == 7 || item.type_id == 8">
+                <div class="form-group" ng-if="item.id">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="col-sm-10">
+                        <a class="btn btn-default" href="#" ng-click="generatePrefixlist(item.id, item.type_id)">Рассчитать в буфер</a>
+                        <span class="label label-success" ng-if="generate_success">Успешно!</span>
+                        <span class="label label-danger" ng-if="generate_error">Ошибка!</span>
                     </div>
                 </div>
             </div>
@@ -365,18 +376,6 @@
                     <div class="alert alert-info" ng-if="nnpProcessed">Идет обработка префиксов...</div>
                     <div class="alert alert-success" ng-if="nnpProcessComplete">
                         Обработано префиксов: <b>{{item.count}}</b>
-                    </div>
-                </div>
-            </div>
-
-            <div ng-if="item.type_id == 7 || item.type_id == 8">
-                <div class="form-group" ng-if="item.id">
-                    <label class="col-sm-2 control-label"></label>
-                    <div class="col-sm-10">
-                        <a class="btn btn-default" href="/prefixlist/open" target="_blank">Открыть предрасчет</a>
-                        <a class="btn btn-default" href="#" ng-click="generatePrefixlist(item.id, item.type_id)">Перегенерировать</a>
-                        <span class="label label-success" ng-if="generate_success">Успешно!</span>
-                        <span class="label label-danger" ng-if="generate_error">Ошибка!</span>
                     </div>
                 </div>
             </div>

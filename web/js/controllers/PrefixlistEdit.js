@@ -335,11 +335,12 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         }
 
         Prefixlist.save(data).then(function (result) {
-            if (result && result.id && $scope.item.type_id == 6) {
-                $scope.prefixlistNnpCalculate(result.id);
-            } else {
+            // Заменено рассчетом и применением буфера.
+            // if (result && result.id && $scope.item.type_id == 6) {
+            //     $scope.prefixlistNnpCalculate(result.id);
+            // } else {
                 $modalInstance.close();
-            }
+            // }
         });
     };
 
