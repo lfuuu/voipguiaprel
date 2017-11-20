@@ -11,8 +11,8 @@ class ServerController extends JsonController
     {
         return
             Server::find()
-                ->select(['id', 'name'])
-                ->orderBy('name')
+                ->select(['id', 'concat(name, \' (\', id, \')\') as name'])
+                ->orderBy('id')
                 ->asArray()
                 ->all();
     }
