@@ -19,6 +19,10 @@ var ReleaseReasonListCtrl = function($scope, ReleaseReason, Redirect, $window) {
 	};
 
 	$scope.clickItem = function(item) {
+        if (!userPermissions['release_reason_edit']) {
+            return;
+        }
+
 		if (window.getSelection().type == 'Range') return;
 
 		Redirect.releaseReasonEdit(item.id).then(function () {

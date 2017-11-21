@@ -19,6 +19,10 @@ var AttributeGroupListCtrl = function ($scope, AttributeGroup, Redirect, $window
     };
 
     $scope.clickItem = function (item) {
+        if (!userPermissions['attribute_group_edit']) {
+            return;
+        }
+
         if (window.getSelection().type == 'Range') return;
 
         Redirect.attributeGroupEdit(item.id).then(function () {

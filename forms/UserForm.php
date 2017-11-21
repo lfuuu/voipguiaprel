@@ -12,6 +12,7 @@ class UserForm extends Model
     public $login;
     public $name;
     public $password;
+    public $role;
 
     public function rules()
     {
@@ -20,14 +21,15 @@ class UserForm extends Model
             ['password', 'required', 'on' => 'create'],
             ['id', 'integer'],
             ['password', 'string'],
+            ['role', 'string']
         ];
     }
 
     public function scenarios()
     {
         return [
-            'create' => ['login','name','password'],
-            'update' => ['id', 'login','name','password'],
+            'create' => ['login','name','password', 'role'],
+            'update' => ['id', 'login','name','password', 'role'],
             'delete' => ['id'],
         ];
     }
@@ -47,6 +49,7 @@ class UserForm extends Model
             'login' => 'Логин',
             'name' => 'Имя',
             'password' => 'Пароль',
+            'role' => 'Роль',
         ];
     }
 

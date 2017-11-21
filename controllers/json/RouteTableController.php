@@ -7,12 +7,17 @@ use Yii;
 use app\models\RouteTable;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class RouteTableController extends JsonController
 {
-    public function actionList() {
-
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can('route_table_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -25,7 +30,12 @@ class RouteTableController extends JsonController
                 ->all();
     }
 
-    public function actionRead() {
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('route_table_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -40,6 +50,10 @@ class RouteTableController extends JsonController
 
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('route_table_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = RouteTable::findOne($this->request['id']);
         if ($item === null) {
             throw new HttpException(404, 'Таблица маршрутизации не найдена');
@@ -58,11 +72,23 @@ class RouteTableController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('route_table_edit') && !\Yii::$app->user->can('route_table_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('route_table_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $routeTable = $this->getRouteTableOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('route_table_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $routeTable = RouteTable::create($server);
         }
 
@@ -94,6 +120,10 @@ class RouteTableController extends JsonController
 
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('route_table_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = RouteTable::findOne($this->request['id']);
         $item->delete();
     }

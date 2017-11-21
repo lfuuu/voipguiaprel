@@ -28,6 +28,10 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
     }
 
     $scope.clickItem = function (item) {
+        if (!userPermissions['test_auth_edit']) {
+            return;
+        }
+
         if (window.getSelection().type == 'Range') {
             return;
         }

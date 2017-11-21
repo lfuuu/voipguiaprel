@@ -7,6 +7,7 @@ use app\models\TrunkGroupItem;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class TrunkGroupController extends JsonController
@@ -17,6 +18,10 @@ class TrunkGroupController extends JsonController
      * @throws HttpException
      */
     public function actionList() {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
@@ -35,6 +40,10 @@ class TrunkGroupController extends JsonController
      * @throws HttpException
      */
     public function actionRead() {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
@@ -54,6 +63,10 @@ class TrunkGroupController extends JsonController
      */
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('trunk_group_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item =
             TrunkGroup::find()
                 ->with(['trunks', 'trunk_groups'])
@@ -73,6 +86,10 @@ class TrunkGroupController extends JsonController
      */
     public function actionGetTrunksWithGroupIntoRules()
     {
+        if (!\Yii::$app->user->can('trunk_group_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $group = $this->getTrunkGroupOr404($this->request['id']);
 
         return $group->getTrunksWithGroupIntoRules();
@@ -84,6 +101,10 @@ class TrunkGroupController extends JsonController
      */
     public function actionGetTrunksWithGroupIntoPriorities()
     {
+        if (!\Yii::$app->user->can('trunk_group_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $group = $this->getTrunkGroupOr404($this->request['id']);
 
         return $group->getTrunksWithGroupIntoPriorities();
@@ -96,11 +117,23 @@ class TrunkGroupController extends JsonController
      */
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('trunk_group_edit') && !\Yii::$app->user->can('trunk_group_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('trunk_group_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $trunkGroup = $this->getTrunkGroupOr404($this->request['id']);
         } else {
+    
+            if (!\Yii::$app->user->can('trunk_group_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
             $trunkGroup = TrunkGroup::create($server);
         }
 
@@ -140,6 +173,10 @@ class TrunkGroupController extends JsonController
      */
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('trunk_group_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = TrunkGroup::findOne($this->request['id']);
         $item->delete();
     }

@@ -7,12 +7,17 @@ use app\classes\JsonController;
 use app\models\billing\GeoCountry;
 use app\models\billing\Geo;
 use app\exceptions\FormValidationException;
+use yii\web\ForbiddenHttpException;
 
 class InstanceSettingsController extends JsonController
 {
 
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('instance_settings_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $instanceSettings = $this->getInstanceSettingsOr404($this->request['server_id']);
 
@@ -32,6 +37,10 @@ class InstanceSettingsController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('instance_settings_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $instanceSettings = $this->getInstanceSettingsOr404($this->request['server_id']);
 
         $transaction = Yii::$app->db->beginTransaction();

@@ -6,11 +6,17 @@ use Yii;
 use app\classes\JsonController;
 use app\models\Number;
 use app\exceptions\FormValidationException;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class NumberController extends JsonController
 {
-    public function actionList() {
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can('number_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -23,7 +29,12 @@ class NumberController extends JsonController
                 ->all();
     }
 
-    public function actionRead() {
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('number_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -38,6 +49,10 @@ class NumberController extends JsonController
 
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('number_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = Number::findOne($this->request['id']);
         if ($item === null) {
             throw new HttpException(404, 'Номер не найден');
@@ -48,11 +63,23 @@ class NumberController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('number_edit') && !\Yii::$app->user->can('number_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('number_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $number = $this->getNumberOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('number_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $number = Number::create($server);
         }
 
@@ -74,6 +101,10 @@ class NumberController extends JsonController
 
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('number_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = Number::findOne($this->request['id']);
         $item->delete();
     }
@@ -84,6 +115,10 @@ class NumberController extends JsonController
      */
     public function actionFindUsagesInRouteTables()
     {
+        if (!\Yii::$app->user->can('number_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $number = $this->getNumberOr404($this->request['id']);
 
         return $number->findUsagesInRouteTables();
@@ -95,6 +130,10 @@ class NumberController extends JsonController
      */
     public function actionFindUsagesInTrunkPriority()
     {
+        if (!\Yii::$app->user->can('number_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $number = $this->getNumberOr404($this->request['id']);
 
         return $number->findUsagesInTrunkPriority();
@@ -106,6 +145,10 @@ class NumberController extends JsonController
      */
     public function actionFindUsagesInTrunkRules()
     {
+        if (!\Yii::$app->user->can('number_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $number = $this->getNumberOr404($this->request['id']);
 
         return $number->findUsagesInTrunkRules();

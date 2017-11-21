@@ -25,6 +25,9 @@ return [
     'components' => [
         'db' => $db,
         'log' => $log,
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
     ],
     'params' => $params,
 ];

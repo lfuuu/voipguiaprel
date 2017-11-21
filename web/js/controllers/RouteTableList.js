@@ -19,6 +19,10 @@ var RouteTableListCtrl = function($scope, RouteTable, Redirect, $window) {
 	};
 
 	$scope.clickItem = function(item) {
+        if (!userPermissions['route_table_edit']) {
+            return;
+        }
+
 		if (window.getSelection().type == 'Range') return;
 
 		Redirect.routeTableEdit(item.id).then(function () {

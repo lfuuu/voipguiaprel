@@ -19,6 +19,10 @@ var RouteCaseListCtrl = function($scope, RouteCase, Redirect, $window) {
 	};
 
 	$scope.clickItem = function(item) {
+        if (!userPermissions['route_case_edit']) {
+            return;
+        }
+
 		if (window.getSelection().type == 'Range') return;
 
 		Redirect.routeCaseEdit(item.id).then(function () {

@@ -15,6 +15,7 @@ use app\models\Prefixlist;
 use app\models\PrefixlistPrefix;
 use Yii;
 use yii\helpers\Json;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class PrefixlistController extends JsonController
@@ -27,7 +28,12 @@ class PrefixlistController extends JsonController
      * @return \app\models\Prefixlist[]
      * @throws HttpException
      */
-    public function actionList() {
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can('prefixlist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -44,7 +50,12 @@ class PrefixlistController extends JsonController
      * @return \app\models\Prefixlist[]
      * @throws HttpException
      */
-    public function actionRead() {
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('prefixlist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -67,6 +78,10 @@ class PrefixlistController extends JsonController
      */
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('prefixlist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $prefixlist = $this->getPrefixlistOr404($this->request['id']);
 
         return $prefixlist->toArray();
@@ -79,11 +94,23 @@ class PrefixlistController extends JsonController
      */
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('prefixlist_edit') && !\Yii::$app->user->can('prefixlist_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('prefixlist_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $prefixlist = $this->getPrefixlistOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('prefixlist_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $prefixlist = Prefixlist::create($server);
         }
 
@@ -301,6 +328,10 @@ SQL;
      */
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('prefixlist_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $prefixlist = $this->getPrefixlistOr404($this->request['id']);
         $prefixlist->delete();
     }
@@ -311,6 +342,10 @@ SQL;
      */
     public function actionNnpCalculation()
     {
+        if (!\Yii::$app->user->can('prefixlist_edit') && !\Yii::$app->user->can('prefixlist_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         try {
             $prefixlist = $this->getPrefixlistOr404($this->request['id']);
         } catch (\Exception $e) {
@@ -369,6 +404,10 @@ SQL;
 
     public function actionPrefixlistGeneration()
     {
+        if (!\Yii::$app->user->can('prefixlist_edit') && !\Yii::$app->user->can('prefixlist_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         try {
             $prefixlist = $this->getPrefixlistOr404($this->request['id']);
         } catch (\Exception $e) {
@@ -401,7 +440,12 @@ SQL;
         ];
     }
     
-    public function actionApplyBuffer() {
+    public function actionApplyBuffer()
+    {
+        if (!\Yii::$app->user->can('prefixlist_edit') && !\Yii::$app->user->can('prefixlist_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $command =
             \Yii::$app->db
                 ->createCommand("select auth.apply_precompiled_prefixlist(:prefixlistId)", [':prefixlistId' => $this->request['id']]);
@@ -427,6 +471,10 @@ SQL;
      */
     public function actionFindUsagesInNumbers()
     {
+        if (!\Yii::$app->user->can('prefixlist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $group = $this->getPrefixlistOr404($this->request['id']);
 
         return $group->findUsagesInNumbers();

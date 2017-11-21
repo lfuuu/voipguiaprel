@@ -42,7 +42,15 @@ AppAsset::register($this);
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                        <?php if (\Yii::$app->user->can('acl_list')) { ?>
+                        <li><a href="<?=Url::to(['acl/list'])?>">Права доступа</a></li>
+                        <?php } ?>
+                        <?php if (\Yii::$app->user->can('role_list')) { ?>
+                        <li><a href="<?=Url::to(['role/list'])?>">Роли</a></li>
+                        <?php } ?>
+                        <?php if (\Yii::$app->user->can('user_list')) { ?>
                         <li><a href="<?=Url::to(['user/list'])?>">Пользователи</a></li>
+                        <?php } ?>
                         <li><a><?= Yii::$app->user->identity->name ?></a></li>
                         <li><a href="<?=Url::to(['site/logout'])?>">Выход</a></li>
                     </ul>

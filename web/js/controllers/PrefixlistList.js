@@ -18,6 +18,10 @@ var PrefixlistListCtrl = function($scope, Prefixlist, Redirect, $window) {
 		});
 	}
 	$scope.clickItem = function(item) {
+        if (!userPermissions['prefixlist_edit']) {
+            return;
+        }
+
 		if (window.getSelection().type == 'Range') return;
 
 		Redirect.prefixlistEdit(item.id).then(function () {

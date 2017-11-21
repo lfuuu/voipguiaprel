@@ -19,6 +19,10 @@ var NumberListCtrl = function($scope, Number, Redirect, $window) {
 	};
 
 	$scope.clickItem = function(item) {
+        if (!userPermissions['number_edit']) {
+            return;
+        }
+
 		if (window.getSelection().type == 'Range') return;
 
 		Redirect.numberEdit(item.id).then(function () {

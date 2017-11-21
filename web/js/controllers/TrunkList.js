@@ -19,6 +19,10 @@ var TrunkListCtrl = function($scope, Trunk, Redirect, $window) {
     };
 
     $scope.clickItem = function(item) {
+        if (!userPermissions['trunk_edit']) {
+            return;
+        }
+
         if (window.getSelection().type == 'Range') return;
 
         Redirect.trunkEdit(item.id).then(function () {

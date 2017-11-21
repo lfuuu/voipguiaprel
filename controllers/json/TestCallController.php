@@ -7,6 +7,7 @@ use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use yii\db\Expression;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class TestCallController extends JsonController
@@ -14,7 +15,12 @@ class TestCallController extends JsonController
     const TEST_RESULT_DIVIDER_START = '2B2EKSTARTJSON';
     const TEST_RESULT_DIVIDER_STOP = '2B2EKSTOPJSON';
 
-    public function actionList() {
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can('test_call_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         return
@@ -26,7 +32,12 @@ class TestCallController extends JsonController
                 ->all();
     }
 
-    public function actionRead() {
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('test_call_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         return
@@ -47,6 +58,10 @@ class TestCallController extends JsonController
 
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('test_call_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = TestCall::find()
             ->select(['test_call.*', 'tr.tm', 'tr.received'])
             ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
@@ -63,11 +78,23 @@ class TestCallController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('test_call_edit') && !\Yii::$app->user->can('test_call_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('test_call_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $item = $this->getTestCallOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('test_call_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $item = TestCall::create($server);
         }
 
@@ -88,12 +115,20 @@ class TestCallController extends JsonController
 
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('test_call_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = TestCall::findOne($this->request['id']);
         $item->delete();
     }
 
     public function actionResult()
     {
+        if (!\Yii::$app->user->can('test_call_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = TestCall::findOne($this->request['id']); /** @var TestCall $item */
 
         if ($item === null) {

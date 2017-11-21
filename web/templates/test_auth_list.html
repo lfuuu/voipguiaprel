@@ -1,7 +1,7 @@
 <div>
-    <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
-    <h4>Тестирование маршрутизации</h4>
+    <a ng-if="userPermissions['test_auth_create']" class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
 </div>
+<h4>Тестирование маршрутизации</h4>
 
 <form>
     <div class="form-group">
@@ -58,7 +58,7 @@
                 </a>
             </th>
             <th width="1%">&nbsp;</th>
-            <th>&nbsp;</th>
+            <th ng-if="userPermissions['test_auth_delete']">&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -82,7 +82,7 @@
             <td style="cursor: pointer" ng-click="clickItem(item)">
                 <span class="label label-success" ng-if="item.is_autotest">AUTO</span>
             </td>
-            <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
+            <td ng-if="userPermissions['test_auth_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
         </tr>
 
     </tbody>

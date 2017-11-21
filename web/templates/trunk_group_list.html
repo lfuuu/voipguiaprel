@@ -1,4 +1,4 @@
-<div class="pull-right">
+<div ng-if="userPermissions['trunk_group_create']" class="pull-right">
     <a class="btn btn-primary btn-sm" ng-click="clickCreate()">Создать</a>
 </div>
 <h4>Группы транков</h4>
@@ -30,7 +30,7 @@
                 <span ng-show="sortType == 'server_id' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
-        <th width="1%"></th>
+        <th ng-if="userPermissions['trunk_group_delete']" width="1%"></th>
     </tr>
     </thead>
     <tbody>
@@ -41,7 +41,7 @@
             <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
-        <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
+        <td ng-if="userPermissions['trunk_group_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
     </tr>
 
     </tbody>

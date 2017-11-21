@@ -8,11 +8,17 @@ use Yii;
 use app\classes\JsonController;
 use app\models\RouteCase;
 use app\exceptions\FormValidationException;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class RouteCaseController extends JsonController
 {
-    public function actionList() {
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can('route_case_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -25,7 +31,12 @@ class RouteCaseController extends JsonController
                 ->all();
     }
 
-    public function actionRead() {
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('route_case_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -42,6 +53,10 @@ class RouteCaseController extends JsonController
 
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('route_case_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item =
             RouteCase::find()
                 ->with('trunks')
@@ -57,11 +72,23 @@ class RouteCaseController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('route_case_edit') && !\Yii::$app->user->can('route_case_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('route_case_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $routeCase = $this->getRouteCaseOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('route_case_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $routeCase = RouteCase::create($server);
         }
 
@@ -90,6 +117,10 @@ class RouteCaseController extends JsonController
 
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('route_case_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = RouteCase::findOne($this->request['id']);
         $item->delete();
     }
@@ -100,6 +131,10 @@ class RouteCaseController extends JsonController
      */
     public function actionFindUsagesInOutcomes()
     {
+        if (!\Yii::$app->user->can('route_case_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $group = $this->getRouteCaseOr404($this->request['id']);
 
         return $group->findUsagesInOutcomes();

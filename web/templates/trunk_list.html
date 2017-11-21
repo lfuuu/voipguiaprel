@@ -1,4 +1,4 @@
-<div class="pull-right">
+<div ng-if="userPermissions['trunk_create']" class="pull-right">
     <a class="btn btn-primary btn-sm" ng-click="clickCreate()">Создать</a>
 </div>
 <h4>Транки</h4>
@@ -23,7 +23,7 @@
                 </a>
             </th>
             <th></th>
-            <th>
+            <th width="3%">
                 <a href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
                     Ид
                     <span ng-show="sortType == 'id' && sortReverse" class="caret-down"></span>
@@ -44,7 +44,7 @@
                     <span ng-show="sortType == 'name' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th>
+            <th width="10%">
                 <a href="#" ng-click="sortType = 'capacity'; sortReverse = !sortReverse">
                     Емкость/Порог
                     <span ng-show="sortType == 'capacity' && sortReverse" class="caret-down"></span>
@@ -52,7 +52,7 @@
                 </a>
             </th>
             <th>&nbsp;</th>
-            <th>
+            <th width="15%">
                 <a href="#" ng-click="sortType = 'routeTable.name'; sortReverse = !sortReverse">
                     Таблица маршрутизации
                     <span ng-show="sortType == 'routeTable.name' && sortReverse" class="caret-down"></span>
@@ -73,7 +73,7 @@
                     <span ng-show="sortType == 'server_id' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="1%"></th>
+            <th ng-if="userPermissions['trunk_delete']" width="1%"></th>
         </tr>
     </thead>
     <tbody>
@@ -105,11 +105,12 @@
 
             </td>
             <td>
-                <a ng-if="item.routeTable.id" href="#" ng-click="openRouteTable(item.routeTable.id);">{{item.routeTable.name}}</a>
+                <a ng-if="item.routeTable.id && userPermissions['route_table_edit']" href="#" ng-click="openRouteTable(item.routeTable.id);">{{item.routeTable.name}}</a>
+                <span ng-if="item.routeTable.id && !userPermissions['route_table_edit']">{{item.routeTable.name}}</span>
             </td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.road_to_regions}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
-            <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-disabled="item.server_id != server.id" ng-click="deleteItem(item)"></button></td>
+            <td ng-if="userPermissions['trunk_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-disabled="item.server_id != server.id" ng-click="deleteItem(item)"></button></td>
         </tr>
     </tbody>
 </table>

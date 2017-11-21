@@ -19,6 +19,10 @@ var TestGroupListCtrl = function($scope, TestGroup, Redirect, $window) {
     };
 
     $scope.clickItem = function (item) {
+        if (!userPermissions['test_group_edit']) {
+            return;
+        }
+
         if (window.getSelection().type == 'Range') {
             return;
         }

@@ -1,7 +1,7 @@
-<div>
+<div ng-if="userPermissions['attribute_group_create']">
     <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
-    <h4>Группы атрибутов</h4>
 </div>
+<h4>Группы атрибутов</h4>
 
 <form>
     <div class="form-group">
@@ -29,7 +29,7 @@
                 <span ng-show="sortType == 'note' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
-        <th>&nbsp;</th>
+        <th ng-if="userPermissions['attribute_group_delete']">&nbsp;</th>
     </tr>
     </thead>
     <tbody>
@@ -37,7 +37,7 @@
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse | filter:searchQuery">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.note}}</td>
-        <td>
+        <td ng-if="userPermissions['attribute_group_delete']">
             <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus"
                     ng-click="deleteItem(item)"></button>
         </td>

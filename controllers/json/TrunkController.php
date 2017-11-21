@@ -12,6 +12,7 @@ use app\models\TrunkPriority;
 use app\models\TrunkTrunkRule;
 use Yii;
 use yii\db\StaleObjectException;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\db\Expression;
 
@@ -22,7 +23,12 @@ class TrunkController extends JsonController
      * @return \app\models\Trunk[]
      * @throws HttpException
      */
-    public function actionList() {
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can('trunk_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
@@ -40,7 +46,12 @@ class TrunkController extends JsonController
      * @return \app\models\Trunk[]
      * @throws HttpException
      */
-    public function actionRead() {
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('trunk_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
@@ -83,6 +94,10 @@ class TrunkController extends JsonController
      */
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('trunk_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item =
             Trunk::find()
                 ->with('priorities')
@@ -104,6 +119,10 @@ class TrunkController extends JsonController
      */
     public function actionGetServiceTrunks()
     {
+        if (!\Yii::$app->user->can('trunk_edit') && !\Yii::$app->user->can('trunk_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         return isset($this->request['trunk_id']) && (int)$this->request['trunk_id'] ?
             ServiceTrunk::findActualByTrunkId($this->request['trunk_id']) :
             [];
@@ -116,11 +135,22 @@ class TrunkController extends JsonController
      */
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('trunk_edit') && !\Yii::$app->user->can('trunk_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('trunk_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $trunk = $this->getTrunkOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('trunk_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
             $trunk = Trunk::create($server);
         }
 
@@ -208,6 +238,10 @@ class TrunkController extends JsonController
      */
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('trunk_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $trunk = $this->getTrunkOr404($this->request['id']);
         $trunk->delete();
     }

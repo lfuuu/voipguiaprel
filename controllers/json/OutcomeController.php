@@ -10,7 +10,12 @@ use yii\web\HttpException;
 
 class OutcomeController extends JsonController
 {
-    public function actionList() {
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can('outcome_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -23,7 +28,12 @@ class OutcomeController extends JsonController
                 ->all();
     }
 
-    public function actionRead() {
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('outcome_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -41,6 +51,10 @@ class OutcomeController extends JsonController
 
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('outcome_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = Outcome::findOne($this->request['id']);
         if ($item === null) {
             throw new HttpException(404, 'Outcome не найден');
@@ -51,11 +65,23 @@ class OutcomeController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('outcome_edit') && !\Yii::$app->user->can('outcome_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('outcome_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $outcome = $this->getOutcomeOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('outcome_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $outcome = Outcome::create($server);
         }
 
@@ -76,6 +102,10 @@ class OutcomeController extends JsonController
 
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('outcome_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = Outcome::findOne($this->request['id']);
         $item->delete();
     }
@@ -86,6 +116,10 @@ class OutcomeController extends JsonController
      */
     public function actionFindUsagesInRouteTables()
     {
+        if (!\Yii::$app->user->can('outcome_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $group = $this->getOutcomeOr404($this->request['id']);
 
         return $group->findUsagesInRouteTables();

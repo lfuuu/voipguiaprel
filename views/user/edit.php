@@ -4,7 +4,7 @@ use yii\widgets\ActiveForm;
 ?>
 <div class="container">
     <?php if ($model->id): ?>
-        <h4>Редактирование пользователя <?=$userForm->name?></h4>
+        <h4>Редактирование пользователя <?=$model->name?></h4>
     <?php else: ?>
         <h4>Создание пользователя</h4>
     <?php endif; ?>
@@ -14,6 +14,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'login')->textInput(['autocomplete'=>'off']); ?>
     <?= $form->field($model, 'name')->textInput(['autocomplete'=>'off']); ?>
     <?= $form->field($model, 'password')->passwordInput(['autocomplete'=>'off']); ?>
+    <?= $form->field($model, 'role')->dropDownList($rolePairs); ?>
 
     <div class="form-group">
         <label class="col-sm-2 control-label"></label>

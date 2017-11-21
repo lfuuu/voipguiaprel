@@ -68,6 +68,10 @@ $config = [
                 '<controller>/<action>' => '<controller>/<action>',
             ],
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+            'defaultRoles' => [],
+        ],
     ],
     'params' => $params,
 ];

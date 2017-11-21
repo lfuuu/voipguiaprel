@@ -4,17 +4,21 @@ namespace app\controllers\json;
 
 use app\classes\JsonController;
 use app\models\TestGroup;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class TestGroupController extends JsonController
 {
-
     /**
      * @return array|\yii\db\ActiveRecord[]
      * @throws HttpException
      */
     public function actionList()
     {
+        if (!\Yii::$app->user->can('test_group_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         return
             TestGroup::find()
                 ->select(['id', 'name'])
@@ -29,6 +33,10 @@ class TestGroupController extends JsonController
      */
     public function actionRead()
     {
+        if (!\Yii::$app->user->can('test_group_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         return
             TestGroup::find()
                 ->select(['id', 'name'])
@@ -43,6 +51,10 @@ class TestGroupController extends JsonController
      */
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('test_group_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = TestGroup::findOne($this->request['id']);
 
         if ($item === null) {
@@ -59,9 +71,21 @@ class TestGroupController extends JsonController
      */
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('test_group_edit') && !\Yii::$app->user->can('test_group_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('test_group_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $item = $this->getTestGroupOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('test_group_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $item = TestGroup::create();
         }
 
@@ -86,6 +110,10 @@ class TestGroupController extends JsonController
      */
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('test_group_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = TestGroup::findOne($this->request['id']);
         $item->delete();
     }

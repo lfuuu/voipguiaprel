@@ -19,6 +19,10 @@ var AirpListCtrl = function($scope, Airp, Redirect, $window) {
 	};
 
 	$scope.clickItem = function(item) {
+        if (!userPermissions['airp_edit']) {
+            return;
+        }
+
 		if (window.getSelection().type == 'Range') return;
 
 		Redirect.airpEdit(item.id).then(function () {

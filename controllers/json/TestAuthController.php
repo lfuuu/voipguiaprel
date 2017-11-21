@@ -7,6 +7,7 @@ use app\exceptions\FormValidationException;
 use app\models\Server;
 use app\models\TestAuth;
 use yii\db\Expression;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class TestAuthController extends JsonController
@@ -18,7 +19,12 @@ class TestAuthController extends JsonController
      * @return array|\yii\db\ActiveRecord[]
      * @throws HttpException
      */
-    public function actionList() {
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can('test_auth_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+                
         $server = $this->getServerOr404($this->request['server_id']);
 
         return
@@ -34,7 +40,12 @@ class TestAuthController extends JsonController
      * @return array|\yii\db\ActiveRecord[]
      * @throws HttpException
      */
-    public function actionRead() {
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('test_auth_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         return
@@ -59,6 +70,10 @@ class TestAuthController extends JsonController
      */
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('test_auth_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = TestAuth::find()
             ->select(['test_auth.*', 'tr.tm', 'tr.received'])
             ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
@@ -80,11 +95,23 @@ class TestAuthController extends JsonController
      */
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('test_auth_edit') && !\Yii::$app->user->can('test_auth_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('test_auth_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $item = $this->getTestAuthOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('test_auth_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $item = TestAuth::create($server);
         }
 
@@ -108,6 +135,10 @@ class TestAuthController extends JsonController
      */
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('test_auth_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = TestAuth::findOne($this->request['id']);
         $item->delete();
     }
@@ -118,6 +149,10 @@ class TestAuthController extends JsonController
      */
     public function actionResult()
     {
+        if (!\Yii::$app->user->can('test_auth_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = TestAuth::findOne($this->request['id']); /** @var TestAuth $item */
         if ($item === null) {
             throw new HttpException(404, 'TestAuth не найден');

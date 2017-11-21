@@ -19,6 +19,10 @@ var TrunkGroupListCtrl = function($scope, TrunkGroup, Redirect, $window) {
     };
 
     $scope.clickItem = function(item) {
+        if (!userPermissions['trunk_group_edit']) {
+            return;
+        }
+
         if (window.getSelection().type == 'Range') return;
 
         Redirect.trunkGroupEdit(item.id).then(function () {

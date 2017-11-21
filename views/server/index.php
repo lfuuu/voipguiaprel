@@ -24,6 +24,14 @@ AppAsset::register($this);
 <script>
     var dataServer = <?= json_encode($this->server->toArray(), JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
     var userName = <?= json_encode(Yii::$app->user->identity->name, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
+    <?php
+        $userPermissions = Yii::$app->authManager->getPermissionsByUser(Yii::$app->user->identity->getId());
+        $shortUserPermissions = [];
+        foreach ($userPermissions as $permissionKey => $permission) {
+            $shortUserPermissions[$permissionKey] = true;
+        }
+    ?>
+    var userPermissions = <?= json_encode($shortUserPermissions, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
 </script>
 <div ng-controller="MainCtrl" ng-include="'/templates/main.html'">
 </div>

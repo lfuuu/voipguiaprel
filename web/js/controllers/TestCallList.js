@@ -28,6 +28,10 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
     }
 
     $scope.clickItem = function(item) {
+        if (!userPermissions['test_call_edit']) {
+            return;
+        }
+
         if (window.getSelection().type == 'Range') return;
 
         Redirect.testCallEdit(item.id).then(function () {

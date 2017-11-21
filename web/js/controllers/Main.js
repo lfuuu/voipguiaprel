@@ -1,6 +1,7 @@
 app.controller('MainCtrl', function($rootScope, $scope, $timeout, $modal, Redirect) {
 	$rootScope.server = dataServer;
 	$rootScope.userName = userName;
+    $rootScope.userPermissions = userPermissions;
 	$rootScope.Redirect = Redirect;
 
 	$rootScope.tabs = [];
@@ -14,7 +15,21 @@ app.controller('MainCtrl', function($rootScope, $scope, $timeout, $modal, Redire
 		$rootScope.popupErrors = false;
 	};
 
-	Redirect.trunkList();
+	var funcName = false;
 
+	for (var permissionName in $rootScope.userPermissions) {
+		if (permissionName.includes('list')) {
+			funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
+                return w.toUpperCase();
+            });
+			break;
+		}
+	}
+
+	if (funcName) {
+		Redirect[funcName]();
+	} else {
+        Redirect.trunkList();
+	}
 
 });

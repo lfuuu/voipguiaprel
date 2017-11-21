@@ -5,11 +5,16 @@ namespace app\controllers\json;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use yii\web\ForbiddenHttpException;
 
 class SettingsController extends JsonController
 {
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('general_settings_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         return [
@@ -49,6 +54,10 @@ class SettingsController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('general_settings_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         $transaction = Yii::$app->db->beginTransaction();

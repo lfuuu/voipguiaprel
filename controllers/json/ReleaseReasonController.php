@@ -6,11 +6,17 @@ use Yii;
 use app\classes\JsonController;
 use app\models\ReleaseReason;
 use app\exceptions\FormValidationException;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class ReleaseReasonController extends JsonController
 {
-    public function actionList() {
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can('release_reason_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 	
@@ -23,7 +29,12 @@ class ReleaseReasonController extends JsonController
                 ->all();
     }
 
-    public function actionRead() {
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('release_reason_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
 
@@ -38,6 +49,10 @@ class ReleaseReasonController extends JsonController
 
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('release_reason_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = ReleaseReason::findOne($this->request['id']);
         if ($item === null) {
             throw new HttpException(404, 'Release reason не найден');
@@ -48,11 +63,23 @@ class ReleaseReasonController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('release_reason_edit') && !\Yii::$app->user->can('release_reason_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('release_reason_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $releaseReason = $this->getReleaseReasonOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('release_reason_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $releaseReason = ReleaseReason::create($server);
         }
 
@@ -73,6 +100,10 @@ class ReleaseReasonController extends JsonController
 
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('release_reason_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = ReleaseReason::findOne($this->request['id']);
         $item->delete();
     }

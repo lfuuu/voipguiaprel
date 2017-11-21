@@ -6,11 +6,17 @@ use Yii;
 use app\classes\JsonController;
 use app\models\Airp;
 use app\exceptions\FormValidationException;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class AirpController extends JsonController
 {
-    public function actionList() {
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can('airp_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
         $server = $this->getServerOr404($this->request['server_id']);
 
         return
@@ -22,7 +28,12 @@ class AirpController extends JsonController
                 ->all();
     }
 
-    public function actionRead() {
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('airp_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         return
@@ -36,6 +47,10 @@ class AirpController extends JsonController
 
     public function actionGet()
     {
+        if (!\Yii::$app->user->can('airp_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = Airp::findOne($this->request['id']);
         if ($item === null) {
             throw new HttpException(404, 'AIRP не найден');
@@ -46,11 +61,23 @@ class AirpController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('airp_edit') && !\Yii::$app->user->can('airp_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('airp_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $item = $this->getAirpOr404($this->request['id']);
         } else {
+            if (!\Yii::$app->user->can('airp_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
             $item = Airp::create($server);
         }
 
@@ -71,6 +98,10 @@ class AirpController extends JsonController
 
     public function actionDelete()
     {
+        if (!\Yii::$app->user->can('airp_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
         $item = Airp::findOne($this->request['id']);
         $item->delete();
     }
