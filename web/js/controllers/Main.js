@@ -18,7 +18,7 @@ app.controller('MainCtrl', function($rootScope, $scope, $timeout, $modal, Redire
 	var funcName = false;
 
 	for (var permissionName in $rootScope.userPermissions) {
-		if (permissionName.includes('list')) {
+		if (permissionName.includes('list') && permissionName !== 'user_list' && permissionName !== 'role_list' && permissionName !== 'acl_list') {
 			funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
                 return w.toUpperCase();
             });

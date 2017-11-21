@@ -11,6 +11,10 @@ sudo mv composer.phar /usr/local/bin/composer
 composer global require "fxp/composer-asset-plugin"
 composer update
 ```
+```
+php yii migrate --migrationPath=@yii/rbac/migrations
+php yii rbac/init
+```
 
 ОБНОВЛЕНИЕ
 ----------
