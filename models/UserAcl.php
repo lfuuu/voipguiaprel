@@ -33,4 +33,12 @@ class UserAcl extends \yii\db\ActiveRecord
         $item->load($data, '');
         return $item;
     }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDescription()
+    {
+        return $this->hasOne(Role::className(), ['name' => 'item_name']);
+    }
 }

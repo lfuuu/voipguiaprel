@@ -21,7 +21,8 @@ use yii\helpers\Html;
     <thead>
     <tr>
         <th width="20%">Логин</th>
-        <th width="80%">Имя</th>
+        <th width="40%">Имя</th>
+        <th width="40%">Роль</th>
         <?php if (\Yii::$app->user->can('user_delete')) { ?><th></th><?php } ?>
     </tr>
     </thead>
@@ -34,6 +35,9 @@ use yii\helpers\Html;
             </td>
             <td style="cursor: pointer" <?php if (\Yii::$app->user->can('user_create')) { ?> onclick="location.href='<?= Url::toRoute(['user/edit', 'id' => $item->id]); ?>'" <?php } ?>>
                 <?= $item->name ?>
+            </td>
+            <td style="cursor: pointer" <?php if (\Yii::$app->user->can('user_create')) { ?> onclick="location.href='<?= Url::toRoute(['user/edit', 'id' => $item->id]); ?>'" <?php } ?>>
+                <?= isset($item->assignment) ? $item->assignment->description->description : '' ?>
             </td>
             <?php if (\Yii::$app->user->can('user_delete')) { ?>
             <td>

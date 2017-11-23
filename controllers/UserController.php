@@ -18,7 +18,10 @@ class UserController extends BaseController
         }
         
         return $this->render('list', [
-            'users' => User::find()->orderBy('name')->all(),
+            'users' => User::find()
+                ->with('assignment.description')
+                ->orderBy('name')
+                ->all(),
         ]);
     }
 

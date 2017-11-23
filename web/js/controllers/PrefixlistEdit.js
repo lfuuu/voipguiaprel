@@ -335,12 +335,13 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         }
 
         Prefixlist.save(data).then(function (result) {
-            // Заменено рассчетом и применением буфера.
-            // if (result && result.id && $scope.item.type_id == 6) {
-            //     $scope.prefixlistNnpCalculate(result.id);
-            // } else {
+            if (result && result.id && $scope.item.id && ($scope.item.type_id == 6 || $scope.item.type_id == 7 || $scope.item.type_id == 8)) {
+                Prefixlist.generatePrefixlist($scope.item.id, $scope.item.type_id).then(function (data) {
+                    $modalInstance.close();
+                });
+            } else {
                 $modalInstance.close();
-            // }
+            }
         });
     };
 
@@ -366,6 +367,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             } else {
                 $scope.generate_success = true;
                 $scope.generate_error = false;
+
+                Prefixlist.get({id: id}).then(function (data) {
+                    $scope.item = data;
+                });
             }
         });
     }

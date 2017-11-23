@@ -8,6 +8,7 @@ use yii\base\NotSupportedException;
  * @property int $id
  * @property string $login
  * @property string $password_hash
+ * @property string $role_name
  * @property
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
@@ -82,5 +83,13 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignment()
+    {
+        return $this->hasOne(UserAcl::className(), ['user_id' => 'id']);
     }
 }
