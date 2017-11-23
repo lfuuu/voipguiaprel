@@ -355,6 +355,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             } else {
                 $scope.apply_buffer_success = true;
                 $scope.apply_buffer_error = false;
+
+                Prefixlist.get({id: id}).then(function (data) {
+                    $scope.item = data;
+                });
             }
         });
     }
