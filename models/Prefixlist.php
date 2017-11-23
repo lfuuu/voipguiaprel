@@ -234,13 +234,21 @@ class Prefixlist extends \yii\db\ActiveRecord
      */
     public function setNnpFilters(array $input)
     {
+        if (!empty($this->nnp_filter_json)) {
+            $nnpFilter = json_decode($this->nnp_filter_json, true);
+        
+            if (!empty($nnpFilter['token'])) {
+                $token = $nnpFilter['token'];
+            }
+        }
+        
         $filters = [
             'nnp_destination_id' => isset($input['nnp_destination']) ? $input['nnp_destination'] : '',
             'country_code' => isset($input['nnp_country']) ? $input['nnp_country'] : '',
             'region_id' => isset($input['nnp_region']) ? $input['nnp_region'] : '',
             'city_id' => isset($input['nnp_city']) ? $input['nnp_city'] : '',
             'ndc_type_id' => isset($input['nnp_ndc_type']) ? $input['nnp_ndc_type'] : '',
-            'token' => bin2hex(openssl_random_pseudo_bytes(16)),
+            'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
         ];
 
         if (isset($input['nnp_operator']) && count($input['nnp_operator'])) {
@@ -260,8 +268,16 @@ class Prefixlist extends \yii\db\ActiveRecord
      */
     public function setPbxFilters(array $input)
     {
+        if (!empty($this->nnp_filter_json)) {
+            $nnpFilter = json_decode($this->nnp_filter_json, true);
+            
+            if (!empty($nnpFilter['token'])) {
+                $token = $nnpFilter['token'];
+            }
+        }
+        
         $filters = [
-            'token' => bin2hex(openssl_random_pseudo_bytes(16)),
+            'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
             'pbx_list' => isset($input['pbx_list']) ? $input['pbx_list'] : '',
             'servers' => isset($input['servers']) ? $input['servers'] : ''
         ];
@@ -272,8 +288,16 @@ class Prefixlist extends \yii\db\ActiveRecord
 
     public function setToken()
     {
+        if (!empty($this->nnp_filter_json)) {
+            $nnpFilter = json_decode($this->nnp_filter_json, true);
+        
+            if (!empty($nnpFilter['token'])) {
+                $token = $nnpFilter['token'];
+            }
+        }
+        
         $filters = [
-            'token' => bin2hex(openssl_random_pseudo_bytes(16)),
+            'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
         ];
 
         $this->nnp_filter_json = Json::encode($filters);
