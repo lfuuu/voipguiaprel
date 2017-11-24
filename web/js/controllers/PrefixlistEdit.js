@@ -335,13 +335,13 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         }
 
         Prefixlist.save(data).then(function (result) {
-            if (result && result.id && $scope.item.id && ($scope.item.type_id == 6 || $scope.item.type_id == 7 || $scope.item.type_id == 8)) {
-                Prefixlist.generatePrefixlist($scope.item.id, $scope.item.type_id).then(function (data) {
-                    $modalInstance.close();
-                });
-            } else {
+            // if (result && result.id && $scope.item.id && ($scope.item.type_id == 6 || $scope.item.type_id == 7 || $scope.item.type_id == 8)) {
+            //     Prefixlist.generatePrefixlist($scope.item.id, $scope.item.type_id).then(function (data) {
+            //         $modalInstance.close();
+            //     });
+            // } else {
                 $modalInstance.close();
-            }
+            // }
         });
     };
 
