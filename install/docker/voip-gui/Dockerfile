@@ -1,0 +1,71 @@
+FROM centos:7
+
+USER root
+
+RUN yum -y update
+RUN yum -y install centos-release-scl-rh epel-release
+RUN rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+
+RUN yum -y install mc wget tar git vim unzip initscripts less cat split
+RUN yum install -y php56w php56w-cli php56w-curl php56w-gd php56w-json php56w-mcrypt php56w-mysqlnd php56w-pgsql php56w-readline php56w-xdebug php56w-xmlrpc php56w-mbstring
+ADD tmp/id_rsa /root/.ssh/id_rsa
+
+ADD setup_precompile.sh /root/setup_precompile.sh
+RUN /root/setup_precompile.sh
+
+WORKDIR /opt/voip_gui/
+
+RUN curl -sS https://getcomposer.org/installer | php
+RUN mv composer.phar /usr/local/bin/composer
+RUN composer global require "fxp/composer-asset-plugin"
+RUN composer install
+
+ADD conf/db-local.php /opt/voip_gui/config/db-local.php
+ADD conf/log-local.php /opt/voip_gui/config/log-local.php
+ADD conf/params-local.php /opt/voip_gui/config/params-local.php
+
+RUN   chown -R apache:apache /opt/voip_gui/web \
+  &&  chmod 777 /opt/voip_gui/runtime \
+  &&  chmod 777 /opt/voip_gui/web/assets \
+  &&  cp -pf \
+		/etc/httpd/conf/httpd.conf \
+		/etc/httpd/conf/httpd.conf.default \
+	&& sed -i \
+		-e '/^KeepAlive .*$/d' \
+		-e '/^MaxKeepAliveRequests .*$/d' \
+		-e '/^KeepAliveTimeout .*$/d' \
+		-e '/^ServerSignature On$/d' \
+		-e '/^ServerTokens OS$/d' \
+		/etc/httpd/conf/httpd.conf \
+	&& truncate -s 0 \
+		/etc/httpd/conf.d/autoindex.conf \
+	&& chmod 444 \
+		/etc/httpd/conf.d/autoindex.conf \
+	&& truncate -s 0 \
+		/etc/httpd/conf.d/welcome.conf \
+	&& chmod 444 \
+		/etc/httpd/conf.d/welcome.conf \
+	&& { \
+		echo ''; \
+		echo '#'; \
+		echo '# Custom configuration'; \
+		echo '#'; \
+		echo 'ServerName voip_gui:80'; \
+		echo 'KeepAlive On'; \
+		echo 'MaxKeepAliveRequests 200'; \
+		echo 'KeepAliveTimeout 2'; \
+		echo 'DocumentRoot "/opt/voip_gui/web"'; \
+    		echo '<Directory "/opt/voip_gui/web">'; \
+		echo '  AllowOverride All'; \
+		echo '  Require all granted'; \
+		echo ''; \
+		echo '</Directory>'; \
+	} >> /etc/httpd/conf/httpd.conf
+
+EXPOSE 80 
+CMD ["/usr/sbin/httpd" , "-DFOREGROUND"]
+
+
+
+
+
