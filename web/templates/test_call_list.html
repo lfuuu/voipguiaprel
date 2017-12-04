@@ -9,7 +9,7 @@
             <div class="input-group-addon"><i class="fa-search"></i></div>
             <input type="text" class="form-control" placeholder="Поиск" ng-model="searchQuery">
             <select ui-select2 style="width: 100%" tags="true" ng-change="testGroupChanged(testGroupId)" placeholder="Группа" ng-model="testGroupId" required>
-                <option value="">-- Выберите группу теста --</option>
+                <option value="undefined">-- Выберите группу теста --</option>
                 <option ng-repeat="group in testGroupList" value="{{group.id}}">{{group.name}}</option>
             </select>
         </div>

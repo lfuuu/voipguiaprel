@@ -3,7 +3,7 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
     $scope.sortType = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';
-    $scope.testGroupId = undefined;
+    $scope.testGroupId = 'undefined';
 
     $scope.init = function (tab) {
         if (tab) tab.title = 'Test auth';
