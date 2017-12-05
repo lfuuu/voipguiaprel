@@ -241,10 +241,8 @@
                     </div>
                     <label class="col-sm-2 control-label">B-номер</label>
                     <div class="col-sm-4">
-                        <select ui-select2 style="width: 100%" tags="true" placeholder="B-номер" ng-model="item.number_id_filter_b_route_to_class5">
-                            <option value="">-- Выберите --</option>
-                            <option ng-repeat="number in numbers" value="{{number.id}}">{{number.name}}</option>
-                        </select>
+                        <select-box list="number" model="item.is_route_to_class5_phase1_enable" placeholder="Выберите"
+                                    required="false" param="2" default="Не установлено"></select-box>
                     </div>
                 </div>
 
