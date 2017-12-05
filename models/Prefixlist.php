@@ -234,6 +234,8 @@ class Prefixlist extends \yii\db\ActiveRecord
      */
     public function setNnpFilters(array $input)
     {
+        $token = null;
+        
         if (!empty($this->nnp_filter_json)) {
             $nnpFilter = json_decode($this->nnp_filter_json, true);
         
@@ -268,6 +270,8 @@ class Prefixlist extends \yii\db\ActiveRecord
      */
     public function setPbxFilters(array $input)
     {
+        $token = null;
+        
         if (!empty($this->nnp_filter_json)) {
             $nnpFilter = json_decode($this->nnp_filter_json, true);
             
@@ -285,9 +289,32 @@ class Prefixlist extends \yii\db\ActiveRecord
         $this->nnp_filter_json = Json::encode($filters);
         return $this;
     }
+    
+    public function setFmcFilters(array $input)
+    {
+        $token = null;
+        
+        if (!empty($this->nnp_filter_json)) {
+            $nnpFilter = json_decode($this->nnp_filter_json, true);
+            
+            if (!empty($nnpFilter['token'])) {
+                $token = $nnpFilter['token'];
+            }
+        }
+        
+        $filters = [
+            'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
+            'fmc_trunk' => isset($input['fmc_trunk']) ? $input['fmc_trunk'] : ''
+        ];
+        
+        $this->nnp_filter_json = Json::encode($filters);
+        return $this;
+    }
 
     public function setToken()
     {
+        $token = null;
+        
         if (!empty($this->nnp_filter_json)) {
             $nnpFilter = json_decode($this->nnp_filter_json, true);
         
@@ -328,6 +355,7 @@ class Prefixlist extends \yii\db\ActiveRecord
         $data['dt_prepare'] = $data['dt_prepare'] ? date('Y-m-d H:i:s', strtotime($data['dt_prepare'])) : '';
         $data['servers'] = isset($nnpFilter['servers']) ? $nnpFilter['servers'] : [];
         $data['pbx_list'] = isset($nnpFilter['pbx_list']) ? $nnpFilter['pbx_list'] : [];
+        $data['fmc_trunk'] = isset($nnpFilter['fmc_trunk']) ? $nnpFilter['fmc_trunk'] : [];
         return $data;
     }
 

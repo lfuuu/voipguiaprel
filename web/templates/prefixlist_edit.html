@@ -25,14 +25,15 @@
                 <span class="col-sm-2 control-label"></span>
                 <div class="col-sm-10">
                     <div class="btn-group">
-                        <button type="button" class="btn {{item.type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(1)">Вручную</button>
-                        <button type="button" class="btn {{item.type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(2)">Местные префиксы</button>
-                        <button type="button" class="btn {{item.type_id == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(3)">РосСвязь</button>
-                        <button type="button" class="btn {{item.type_id == 4 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(4)">CSV</button>
-                        <button type="button" class="btn {{item.type_id == 5 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(5)">Дорогие коды</button>
-                        <button type="button" class="btn {{item.type_id == 6 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(6)">ННП</button>
-                        <button type="button" class="btn {{item.type_id == 7 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(7)">7800</button>
-                        <button type="button" class="btn {{item.type_id == 8 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(8)">Did на ВАТС</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_MANUAL ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_MANUAL)">Вручную</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_LOCAL ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_LOCAL)">Местные префиксы</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_ROSSVYAZ ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_ROSSVYAZ)">РосСвязь</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_CSV ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_CSV)">CSV</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_EXPENSIVE ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_EXPENSIVE)">Дорогие коды</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_NNP ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_NNP)">ННП</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_7800 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_7800)">7800</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_DID_ON_VPBX ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_DID_ON_VPBX)">Did на ВАТС</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_FMC ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_FMC)">FMC</button>
                     </div>
                 </div>
             </div>
@@ -58,25 +59,25 @@
             </div>
 
             <div class="form-group" ng-if="item.id">
-                <label class="col-sm-2 control-label" ng-if="item.type_id == 6 || item.type_id == 7 || item.type_id == 8">Количество в списке/буфер</label>
-                <label class="col-sm-2 control-label" ng-if="item.type_id != 6 && item.type_id != 7 && item.type_id != 8">Количество</label>
+                <label class="col-sm-2 control-label" ng-if="hasBuffer">Количество в списке/буфер</label>
+                <label class="col-sm-2 control-label" ng-if="!hasBuffer">Количество</label>
                 <div class="col-sm-10">
-                    <span ng-if="item.type_id != 6 && item.type_id != 7 && item.type_id != 8">{{item.count}}</span>
-                    <span ng-if="item.type_id == 6 || item.type_id == 7 || item.type_id == 8">{{item.count}}/{{item.prefixes_buffer}}</span>
+                    <span ng-if="!hasBuffer">{{item.count}}</span>
+                    <span ng-if="hasBuffer">{{item.count}}/{{item.prefixes_buffer}}</span>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <a class="btn btn-default" href="/prefixlist/show?id={{item.id}}" target="_blank">Открыть</a>
 
                     <a class="btn btn-default" href="/prefixlist/download?id={{item.id}}">Скачать</a>
 
-                    <a class="btn btn-default" ng-if="item.type_id == 6 || item.type_id == 7 || item.type_id == 8" href="/prefixlist/show-buffer?id={{item.id}}" target="_blank">Открыть буфер</a>
+                    <a class="btn btn-default" ng-if="hasBuffer" href="/prefixlist/show-buffer?id={{item.id}}" target="_blank">Открыть буфер</a>
 
-                    <a class="btn btn-default" ng-if="(item.type_id == 6 || item.type_id == 7 || item.type_id == 8) && item.dt_prepare" ng-click="applyPrefixlistBuffer(item.id)">Применить буфер</a>
+                    <a class="btn btn-default" ng-if="hasBuffer && item.dt_prepare" ng-click="applyPrefixlistBuffer(item.id)">Применить буфер</a>
                     <span class="label label-success" ng-if="apply_buffer_success">Успешно!</span>
                     <span class="label label-danger" ng-if="apply_buffer_error">Ошибка!</span>
                 </div>
             </div>
 
-            <div ng-if="item.type_id == 1">
+            <div ng-if="item.type_id == TYPE_ID_MANUAL">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Префиксы</label>
                     <div class="col-sm-10">
@@ -99,7 +100,7 @@
                 </div>
             </div>
 
-            <div ng-if="item.type_id == 2">
+            <div ng-if="item.type_id == TYPE_ID_LOCAL">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Местные сети</label>
                     <div class="col-sm-10">
@@ -132,7 +133,7 @@
                 </div>
             </div>
 
-            <div ng-if="item.type_id == 3">
+            <div ng-if="item.type_id == TYPE_ID_ROSSVYAZ">
                 <div class="form-group">
                     <span class="col-sm-2 control-label"></span>
                     <div class="col-sm-10">
@@ -211,7 +212,7 @@
                 </div>
             </div>
 
-            <div ng-if="item.type_id == 4">
+            <div ng-if="item.type_id == TYPE_ID_CSV">
                 <div class="form-group" ng-if="item.id">
                     <label class="col-sm-2 control-label"></label>
                     <div class="col-sm-10">
@@ -244,7 +245,7 @@
                 </div>
             </div>
 
-            <div ng-if="item.type_id == 6 || item.type_id == 7 || item.type_id == 8">
+            <div ng-if="hasBuffer">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Автообновление</label>
                     <div class="col-sm-10">
@@ -270,7 +271,7 @@
                 </div>
             </div>
 
-            <div ng-if="false && (item.type_id == 6 || item.type_id == 7 || item.type_id == 8)">
+            <div ng-if="false && hasBuffer">
                 <div class="form-group" ng-if="item.id">
                     <label class="col-sm-2 control-label"></label>
                     <div class="col-sm-10">
@@ -281,7 +282,7 @@
                 </div>
             </div>
 
-            <div ng-if="item.type_id == 6">
+            <div ng-if="item.type_id == TYPE_ID_NNP">
                 <label class="col-sm-2 control-label"></label>
                 <div class="col-sm-10">
 
@@ -380,7 +381,7 @@
                 </div>
             </div>
 
-            <div ng-if="item.type_id == 8">
+            <div ng-if="item.type_id == TYPE_ID_DID_ON_VPBX">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Сервера</label>
                     <div class="col-sm-10">
@@ -434,6 +435,16 @@
                             </tr>
                             </tfoot>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="item.type_id == TYPE_ID_FMC">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">FMC-транк</label>
+                    <div class="col-sm-10">
+                        <select-box list="fmcTrunk" model="item.fmc_trunk" placeholder="Выберите"
+                                    required="false" default="Не установлено"></select-box>
                     </div>
                 </div>
             </div>

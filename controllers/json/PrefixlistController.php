@@ -145,6 +145,10 @@ class PrefixlistController extends JsonController
         if ($prefixlist->type_id == 8) {
             $prefixlist->setPbxFilters($this->request);
         }
+    
+        if ($prefixlist->type_id == 9) {
+            $prefixlist->setFmcFilters($this->request);
+        }
 
         $transaction = Prefixlist::getDb()->beginTransaction();
         try {

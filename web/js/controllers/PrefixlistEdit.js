@@ -3,6 +3,18 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     var STATUS_SUCCESS = 'SUCCESS';
     var STATUS_ERROR = 'ERROR';
 
+    $scope.TYPE_ID_MANUAL = 1;
+    $scope.TYPE_ID_LOCAL = 2;
+    $scope.TYPE_ID_ROSSVYAZ = 3;
+    $scope.TYPE_ID_CSV = 4;
+    $scope.TYPE_ID_EXPENSIVE = 5;
+    $scope.TYPE_ID_NNP = 6;
+    $scope.TYPE_ID_7800 = 7;
+    $scope.TYPE_ID_DID_ON_VPBX = 8;
+    $scope.TYPE_ID_FMC = 9;
+
+    var typeWithBuffer = [$scope.TYPE_ID_NNP, $scope.TYPE_ID_7800, $scope.TYPE_ID_DID_ON_VPBX, $scope.TYPE_ID_FMC];
+
     var watchers = {
         rossvyaz_country_id: function (newValue, oldValue) {
             if (newValue != oldValue) {
@@ -68,6 +80,12 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     if (params.id) {
         Prefixlist.get({id: params.id}).then(function (data) {
             $scope.item = data;
+
+            if (typeWithBuffer.indexOf($scope.item.type_id) != -1) {
+                $scope.hasBuffer = true;
+            } else {
+                $scope.hasBuffer = false;
+            }
 
             Pbx.read($scope.item.servers).then(function (data) {
                 $scope.pbxList = data;
@@ -222,6 +240,12 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
     $scope.setType = function(type_id) {
         $scope.item.type_id = type_id;
+
+        if (typeWithBuffer.indexOf($scope.item.type_id) != -1) {
+            $scope.hasBuffer = true;
+        } else {
+            $scope.hasBuffer = false;
+        }
     };
 
     $scope.addPrefix = function () {

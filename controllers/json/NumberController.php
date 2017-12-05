@@ -28,7 +28,7 @@ class NumberController extends JsonController
                 ->asArray()
                 ->all();
     }
-
+    
     public function actionRead()
     {
         if (!\Yii::$app->user->can('number_list')) {

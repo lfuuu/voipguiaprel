@@ -8,6 +8,7 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#mainsettings" data-toggle="tab">Основные</a></li>
             <li><a href="#healthsettings" data-toggle="tab">Здоровье</a></li>
+            <li><a href="#routingclass5" data-toggle="tab">Маршрутизация класс 5</a></li>
         </ul>
 
         <br/>
@@ -151,62 +152,6 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">Маршрутизировать на класс 5</label>
-                    <div class="col-sm-8">
-                        <div class="btn-group" ng-click="item.is_route_to_class5 = !item.is_route_to_class5">
-                            <button type="button" class="btn btn-sm {{item.is_route_to_class5 ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.is_route_to_class5 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">Использовать Фазу 1 при маршрутизирации на класс 5</label>
-                    <div class="col-sm-8">
-                        <div class="btn-group" ng-click="item.is_route_to_class5_phase1_enable = !item.is_route_to_class5_phase1_enable">
-                            <button type="button" class="btn btn-sm {{item.is_route_to_class5_phase1_enable ? 'btn-success active' : 'btn-default'}}">Да</button>
-                            <button type="button" class="btn btn-sm {{!item.is_route_to_class5_phase1_enable ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <span class="col-sm-2 control-label"></span>
-                    <div class="col-sm-10">
-                        <div class="btn-group">
-                            <button type="button" class="btn {{vpbx_type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="setVpbxType(1)">Транк ВАТС</button>
-                            <button type="button" class="btn {{vpbx_type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="setVpbxType(2)">Транк группа AST</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group" ng-if="vpbx_type_id == 1">
-                    <label class="col-sm-4 control-label">Транк ВАТС</label>
-                    <div class="col-sm-8">
-                        <select-box list="trunk" model="item.vats_trunk_id" placeholder="Выберите"
-                                    required="false" default="Не установлено"></select-box>
-                    </div>
-                </div>
-
-                <div class="form-group" ng-if="vpbx_type_id == 2">
-                    <label class="col-sm-4 control-label">Транк группа AST</label>
-                    <div class="col-sm-8">
-                        <select-box list="trunkGroup" model="item.ast_trunk_group_id" placeholder="Выберите"
-                                    required="false" default="Не установлено"></select-box>
-                    </div>
-                </div>
-
-                <!-- Спрятано до лучших времен -->
-
-                <div class="form-group" ng-hide="true" ng-if="vpbx_type_id == 2">
-                    <label class="col-sm-4 control-label">Outcome AST</label>
-                    <div class="col-sm-8">
-                        <select-box list="outcome" model="item.ast_outcome_id" placeholder="Выберите"
-                                    required="false" default="Не установлено"></select-box>
-                    </div>
-                </div>
-
             </div>
 
             <div class="tab-pane" id="healthsettings">
@@ -271,6 +216,71 @@
                     <label class="col-sm-4 control-label">h_local_events</label>
                     <div class="col-sm-8">
                         <input class="form-control" ng-model="item.h_local_events" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="routingclass5">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Маршрутизировать на класс 5</label>
+                    <div class="col-sm-8">
+                        <div class="btn-group" ng-click="item.is_route_to_class5 = !item.is_route_to_class5">
+                            <button type="button" class="btn btn-sm {{item.is_route_to_class5 ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.is_route_to_class5 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Использовать Фазу 1 при маршрутизации на класс 5</label>
+                    <div class="col-sm-2">
+                        <div class="btn-group" ng-click="item.is_route_to_class5_phase1_enable = !item.is_route_to_class5_phase1_enable">
+                            <button type="button" class="btn btn-sm {{item.is_route_to_class5_phase1_enable ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.is_route_to_class5_phase1_enable ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label">B-номер</label>
+                    <div class="col-sm-4">
+                        <select ui-select2 style="width: 100%" tags="true" placeholder="B-номер" ng-model="item.number_id_filter_b_route_to_class5" required>
+                            <option value="">-- Выберите --</option>
+                            <option ng-repeat="number in numbers" value="{{number.id}}">{{number.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <span class="col-sm-2 control-label"></span>
+                    <div class="col-sm-10">
+                        <div class="btn-group">
+                            <button type="button" class="btn {{vpbx_type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="setVpbxType(1)">Транк ВАТС</button>
+                            <button type="button" class="btn {{vpbx_type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="setVpbxType(2)">Транк группа AST</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="vpbx_type_id == 1">
+                    <label class="col-sm-4 control-label">Транк ВАТС</label>
+                    <div class="col-sm-8">
+                        <select-box list="trunk" model="item.vats_trunk_id" placeholder="Выберите"
+                                    required="false" default="Не установлено"></select-box>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="vpbx_type_id == 2">
+                    <label class="col-sm-4 control-label">Транк группа AST</label>
+                    <div class="col-sm-8">
+                        <select-box list="trunkGroup" model="item.ast_trunk_group_id" placeholder="Выберите"
+                                    required="false" default="Не установлено"></select-box>
+                    </div>
+                </div>
+
+                <!-- Спрятано до лучших времен -->
+
+                <div class="form-group" ng-hide="true" ng-if="vpbx_type_id == 2">
+                    <label class="col-sm-4 control-label">Outcome AST</label>
+                    <div class="col-sm-8">
+                        <select-box list="outcome" model="item.ast_outcome_id" placeholder="Выберите"
+                                    required="false" default="Не установлено"></select-box>
                     </div>
                 </div>
             </div>

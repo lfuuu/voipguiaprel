@@ -516,6 +516,16 @@ app.factory('Server', function ($q, ApiLoader) {
     };
 });
 
+app.factory('FmcTrunk', function ($q, ApiLoader) {
+    var url = '/json/fmc-trunk/';
+
+    return {
+        list: function(data) {
+            return ApiLoader.post(url + 'list', data);
+        }
+    };
+});
+
 app.factory('Pbx', function ($q, ApiLoader) {
     var url = '/json/pbx/';
 
@@ -842,7 +852,7 @@ app.factory('Network', function ($q, ApiLoader, $rootScope) {
 });
 
 
-app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist, RouteCase, Outcome, Number, Destination, Airp, ReleaseReason, RouteTable, Network, Attribute, Server) {
+app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist, RouteCase, Outcome, Number, Destination, Airp, ReleaseReason, RouteTable, Network, Attribute, Server, FmcTrunk) {
 	return {
 		trunk: function() {
 			return Trunk.list();
@@ -885,6 +895,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist, RouteCas
         },
         server: function() {
             return Server.list();
+        },
+        fmcTrunk: function() {
+            return FmcTrunk.list();
         }
     };
 });
