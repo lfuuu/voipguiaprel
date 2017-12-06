@@ -79,6 +79,7 @@ class RbacController extends Controller {
         ['name' => 'test_group_create', 'description' => 'Создание групп тестов'],
         ['name' => 'test_group_edit', 'description' => 'Редактирование групп тестов'],
         ['name' => 'test_group_delete', 'description' => 'Удаление групп тестов'],
+        ['name' => 'trunkhealth_view_list', 'description' => 'Здоровье биллеров']
     ];
     
     private $_roles = [
@@ -105,7 +106,8 @@ class RbacController extends Controller {
                 'attribute_group_create', 'attribute_group_edit', 'attribute_group_delete',
                 'test_auth_list', 'test_auth_create', 'test_auth_edit', 'test_auth_delete',
                 'test_call_list', 'test_call_create', 'test_call_edit', 'test_call_delete',
-                'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete'
+                'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete',
+                'trunkhealth_view_list'
             ]
         ],
         ['role' => 'engineer', 'permissions' => [
@@ -124,13 +126,15 @@ class RbacController extends Controller {
             'attribute_group_create', 'attribute_group_edit', 'attribute_group_delete',
             'test_auth_list', 'test_auth_create', 'test_auth_edit', 'test_auth_delete',
             'test_call_list', 'test_call_create', 'test_call_edit', 'test_call_delete',
-            'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete'
+            'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete',
+            'trunkhealth_view_list'
         ]],
         ['role' => 'manager', 'permissions' => [
             'trunk_list', 'trunk_group_list',
             'test_auth_list', 'test_auth_create', 'test_auth_edit', 'test_auth_delete',
             'test_call_list', 'test_call_create', 'test_call_edit', 'test_call_delete',
-            'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete'
+            'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete',
+            'trunkhealth_view_list'
         ]]
     ];
     
