@@ -12,6 +12,31 @@ var RouteTableEditCtrl = function($scope, RouteTable, Outcome, params, $modalIns
 
 	}
 
+    $scope.sortableOptions = {
+        update: function(e, ui) {
+            var sortBlocked = false;
+
+			if (ui.item.sortable.index < ui.item.sortable.dropindex) {
+				var dropMin = ui.item.sortable.index;
+				var dropMax = ui.item.sortable.dropindex;
+			} else {
+				var dropMin = ui.item.sortable.dropindex;
+				var dropMax = ui.item.sortable.index;
+			}
+
+			for (var routeKey in $scope.item.routes) {
+				if (routeKey >= dropMin && routeKey <= dropMax && $scope.item.routes[routeKey]['is_locked']) {
+					sortBlocked = true;
+				}
+			}
+
+            if (sortBlocked) {
+                ui.item.sortable.cancel();
+            }
+        },
+		axis: 'y'
+    };
+
 	$scope.addRoute = function() {
 		$scope.item.routes.push({ a_number_id: null, b_number_id: null, outcome_id: null });
 	};

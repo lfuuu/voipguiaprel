@@ -30,25 +30,32 @@
                 <th>A - Номер</th>
                 <th>B - Номер</th>
                 <th>Outcome</th>
+                <th ng-if="userPermissions['route_table_route_lock']">Заблокировано</th>
                 <th width="1%">&nbsp;</th>
             </tr>
             </thead>
-            <tbody ui-sortable="{axis: 'y'}" ng-model="item.routes">
+            <tbody ui-sortable="sortableOptions" ng-model="item.routes">
             <tr ng-repeat="line in item.routes">
                 <td style="cursor: ns-resize">
                     <span class="badge">{{$index + 1}}</span>
                 </td>
                 <td width="30%">
-                    <select-box list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
+                    <select-box disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
                 </td>
                 <td>
-                    <select-box list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box>
+                    <select-box disabled="{{line.is_locked}}" list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box>
                 </td>
                 <td width="30%">
-                    <outcome-select-box outcome-model="line.outcome_id" route-table-model="line.outcome_route_table_id"></outcome-select-box>
+                    <outcome-select-box disabled="{{line.is_locked}}" outcome-model="line.outcome_id" route-table-model="line.outcome_route_table_id"></outcome-select-box>
+                </td>
+                <td ng-if="userPermissions['route_table_route_lock']">
+                    <div class="btn-group" ng-click="line.is_locked = !line.is_locked">
+                        <button type="button" class="btn btn-sm {{line.is_locked ? 'btn-success active' : 'btn-default'}}">Да</button>
+                        <button type="button" class="btn btn-sm {{!line.is_locked ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    </div>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRoute($index)"></button>
+                    <button ng-if="!line.is_locked" type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRoute($index)"></button>
                 </td>
             </tr>
             <tr>

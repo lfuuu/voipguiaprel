@@ -13,7 +13,8 @@
                 placeholder: '@',
                 default: '@',
                 required: '@',
-                param: '@'
+                param: '@',
+                disabled: '@'
             }
         };
         return directive;

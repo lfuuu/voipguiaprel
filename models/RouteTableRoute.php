@@ -10,6 +10,7 @@ use app\queries\RouteTableRouteQuery;
  * @property int $b_number_id
  * @property int $outcome_id
  * @property int $outcome_route_table_id
+ * @property bool $is_locked
  * @property
  */
 class RouteTableRoute extends \yii\db\ActiveRecord
@@ -41,6 +42,7 @@ class RouteTableRoute extends \yii\db\ActiveRecord
     {
         return [
             [['a_number_id', 'b_number_id', 'outcome_id', 'outcome_route_table_id'], 'integer'],
+            [['is_locked'], 'boolean']
         ];
     }
 
