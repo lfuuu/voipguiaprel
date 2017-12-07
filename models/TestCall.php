@@ -18,6 +18,7 @@ use app\queries\NumberQuery;
  * @property string $redirect_number
  * @property int    $src_noa
  * @property int    $dst_noa
+ * @property string $note
 
  * @property Server $server
  * @property
@@ -45,7 +46,7 @@ class TestCall extends \yii\db\ActiveRecord
         return [
             [['name'], 'string', 'max' => 100],
             [['orig'], 'boolean'],
-            [['connect_time'], 'string'],
+            [['connect_time', 'note'], 'string'],
             [['session_time'], 'integer'],
             [['src_number', 'dst_number', 'redirect_number'], 'string', 'max' => 32],
             [['src_noa','dst_noa'], 'integer'],

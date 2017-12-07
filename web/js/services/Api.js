@@ -928,6 +928,10 @@ app.factory('Nnp', function (ApiLoader) {
 
 app.filter('belongsToTestGroup', function () {
   return function (items, groupId) {
+    if (!items) {
+      return [];
+    }
+
     if (!groupId) {
       return items;
     }
