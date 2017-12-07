@@ -3,6 +3,10 @@ var TestCallEditCtrl = function($scope, TestCall, List, params, $modalInstance, 
     if (params.id) {
         TestCall.get({id: params.id}).then(function(data){
             $scope.item = data;
+
+            if (params.clone) {
+                delete $scope.item.id;
+            }
         });
     } else {
         if (params.testGroupId) {

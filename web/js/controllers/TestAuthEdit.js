@@ -3,6 +3,10 @@ var TestAuthEditCtrl = function($scope, TestAuth, List, params, $modalInstance, 
     if (params.id) {
         TestAuth.get({id: params.id}).then(function(data){
             $scope.item = data;
+
+            if (params.clone) {
+                delete $scope.item.id;
+            }
         });
     } else {
         if (params.testGroupId) {

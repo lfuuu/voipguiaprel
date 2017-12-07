@@ -58,6 +58,7 @@
                 </a>
             </th>
             <th width="1%">&nbsp;</th>
+            <th ng-if="userPermissions['test_auth_create']" width="1%">&nbsp;</th>
             <th ng-if="userPermissions['test_auth_delete']">&nbsp;</th>
         </tr>
     </thead>
@@ -82,6 +83,7 @@
             <td style="cursor: pointer" ng-click="clickItem(item)">
                 <span class="label label-success" ng-if="item.is_autotest">AUTO</span>
             </td>
+            <td ng-if="userPermissions['test_auth_create']"><button type="button" class="btn btn-default btn-sm" ng-click="cloneTest(item)">Клонировать</button></td>
             <td ng-if="userPermissions['test_auth_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
         </tr>
 

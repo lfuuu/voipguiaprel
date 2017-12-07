@@ -41,6 +41,18 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
         });
     };
 
+    $scope.cloneTest = function(item) {
+        if (!userPermissions['test_auth_create']) {
+            return;
+        }
+
+        if (window.getSelection().type == 'Range') return;
+
+        Redirect.testAuthClone(item.id).then(function () {
+            $scope.init();
+        });
+    };
+
     $scope.toggleDisplayTreeView = function(item) {
         item.displayTreeView = !item.displayTreeView;
     }
