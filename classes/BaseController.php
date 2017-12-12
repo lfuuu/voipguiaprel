@@ -5,6 +5,7 @@ use app\components\View;
 use app\models\Airp;
 use app\models\Attribute;
 use app\models\AttributeGroup;
+use app\models\Cpc;
 use app\models\Destination;
 use app\models\Number;
 use app\models\TestAuth;
@@ -204,6 +205,20 @@ class BaseController extends \yii\web\Controller
         $item = Airp::findOne($airpId);
         if ($item === null) {
             throw new HttpException(404, 'AIRP не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $cpcId
+     * @return Cpc
+     * @throws HttpException
+     */
+    protected function getCpcOr404($cpcId)
+    {
+        $item = Cpc::findOne($cpcId);
+        if ($item === null) {
+            throw new HttpException(404, 'CPC не найден');
         }
         return $item;
     }

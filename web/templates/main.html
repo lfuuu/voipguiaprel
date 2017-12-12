@@ -39,8 +39,9 @@
             <a href="#" class="list-group-item" ng-if="userPermissions['route_case_list']" ng-click="Redirect.routeCaseList()" ng-class="{active:tabs.isController('RouteCaseListCtrl')}">Route cases</a>
             <a href="#" class="list-group-item" ng-if="userPermissions['prefixlist_list']" ng-click="Redirect.prefixlistList()" ng-class="{active:tabs.isController('PrefixlistListCtrl')}">Списки префиксов</a>
         </div>
-        <div ng-if="userPermissions['airp_list'] || userPermissions['release_reason_list']" class="list-group">
+        <div ng-if="userPermissions['airp_list'] || userPermissions['cpc_list'] || userPermissions['release_reason_list']" class="list-group">
             <a href="#" class="list-group-item" ng-if="userPermissions['airp_list']" ng-click="Redirect.airpList()" ng-class="{active:tabs.isController('AirpListCtrl')}">AIRP</a>
+            <a href="#" class="list-group-item" ng-if="userPermissions['cpc_list']" ng-click="Redirect.cpcList()" ng-class="{active:tabs.isController('CpcListCtrl')}">CPC</a>
             <a href="#" class="list-group-item" ng-if="userPermissions['release_reason_list']" ng-click="Redirect.releaseReasonList()" ng-class="{active:tabs.isController('ReleaseReasonListCtrl')}">Release reason</a>
         </div>
         <div ng-if="userPermissions['attribute_list'] || userPermissions['attribute_group_list']" class="list-group">

@@ -40,6 +40,8 @@ class AppAsset extends AssetBundle
         'js/controllers/ReleaseReasonList.js',
         'js/controllers/AirpEdit.js',
         'js/controllers/AirpList.js',
+        'js/controllers/CpcEdit.js',
+        'js/controllers/CpcList.js',
         'js/controllers/PrefixlistEdit.js',
         'js/controllers/PrefixlistList.js',
         'js/controllers/TestAuthEdit.js',
@@ -61,6 +63,8 @@ class AppAsset extends AssetBundle
     public $templates = [
         'templates/airp_edit.html',
         'templates/airp_list.html',
+        'templates/cpc_edit.html',
+        'templates/cpc_list.html',
         'templates/attribute_list.html',
         'templates/attribute_group_list.html',
         'templates/attribute_edit.html',

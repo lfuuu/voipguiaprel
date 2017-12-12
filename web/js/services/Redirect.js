@@ -142,6 +142,16 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
             return openModal(AirpEditCtrl, '/templates/airp_edit.html', {id: null});
         },
 
+        cpcList: function() {
+            return openTab(CpcListCtrl, '/templates/cpc_list.html');
+        },
+        cpcEdit: function(id) {
+            return openModal(CpcEditCtrl, '/templates/cpc_edit.html', {id: id});
+        },
+        cpcCreate: function() {
+            return openModal(CpcEditCtrl, '/templates/cpc_edit.html', {id: null});
+        },
+
         releaseReasonList: function() {
             return openTab(ReleaseReasonListCtrl, '/templates/release_reason_list.html');
         },
