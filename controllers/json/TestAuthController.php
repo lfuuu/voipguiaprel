@@ -186,6 +186,10 @@ class TestAuthController extends JsonController
             'src_noa' => $item->src_noa,
             'dst_noa' => $item->dst_noa
         ];
+        
+        if ($item->cpc) {
+            $apiParams['cpc'] = $item->cpc;
+        }
 
         if ($this->request['displayTreeView']) {
             $apiParams['trace_tree'] = 1;
