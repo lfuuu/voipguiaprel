@@ -61,7 +61,7 @@ class TestAuthController extends JsonController
                 ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
                 ->leftJoin('auth.test_group tg', 'tg.id = auth.test_auth.testgroup_id')
                 ->where(['test_auth.server_id' => $server->id])
-                ->where(['auth.test_auth.testgroup_id' => $testGroupId])
+                ->andWhere(['auth.test_auth.testgroup_id' => $testGroupId])
                 ->orderBy('name')
                 ->limit($limit)
                 ->offset($offset)
@@ -71,7 +71,7 @@ class TestAuthController extends JsonController
         $count = TestAuth::find()
             ->select(['id'])
             ->where(['server_id' => $server->id])
-            ->where(['testgroup_id' => $testGroupId])
+            ->andWhere(['testgroup_id' => $testGroupId])
             ->count();
         
         return [

@@ -53,7 +53,7 @@ class TestCallController extends JsonController
                 ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
                 ->leftJoin('auth.test_group tg', 'tg.id = auth.test_call.testgroup_id')
                 ->where(['test_call.server_id' => $server->id])
-                ->where(['auth.test_call.testgroup_id' => $testGroupId])
+                ->andWhere(['auth.test_call.testgroup_id' => $testGroupId])
                 ->orderBy('name')
                 ->limit($limit)
                 ->offset($offset)
@@ -63,7 +63,7 @@ class TestCallController extends JsonController
         $count = TestCall::find()
             ->select(['id'])
             ->where(['server_id' => $server->id])
-            ->where(['testgroup_id' => $testGroupId])
+            ->andWhere(['testgroup_id' => $testGroupId])
             ->count();
     
         return [
