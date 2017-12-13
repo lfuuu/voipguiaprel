@@ -47,9 +47,11 @@ class TestAuthController extends JsonController
         }
         
         $server = $this->getServerOr404($this->request['server_id']);
+        $testGroupId = $this->request['test_group_id'];
+        $limit = $this->request['limit'];
+        $offset = $this->request['offset'];
 
-        return
-            TestAuth::find()
+        $data = TestAuth::find()
                 ->select(
                     [
                         'test_auth.*',
@@ -59,9 +61,26 @@ class TestAuthController extends JsonController
                 ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
                 ->leftJoin('auth.test_group tg', 'tg.id = auth.test_auth.testgroup_id')
                 ->where(['test_auth.server_id' => $server->id])
+                ->where(['auth.test_auth.testgroup_id' => $testGroupId])
                 ->orderBy('name')
+                ->limit($limit)
+                ->offset($offset)
                 ->asArray()
                 ->all();
+    
+        $count = TestAuth::find()
+            ->select(
+                [
+                    'test_auth.id'
+                ])
+            ->where(['test_auth.server_id' => $server->id])
+            ->where(['auth.test_auth.testgroup_id' => $testGroupId])
+            ->count();
+        
+        return [
+            'totalCount' => $count,
+            'data' => $data
+        ];
     }
 
     /**
