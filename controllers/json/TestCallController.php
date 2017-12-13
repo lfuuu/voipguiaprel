@@ -39,9 +39,11 @@ class TestCallController extends JsonController
         }
         
         $server = $this->getServerOr404($this->request['server_id']);
-
-        return
-            TestCall::find()
+        $testGroupId = $this->request['test_group_id'];
+        $limit = $this->request['limit'];
+        $offset = $this->request['offset'];
+    
+        $data = TestCall::find()
                 ->select(
                     [
                         'test_call.*',
@@ -51,9 +53,23 @@ class TestCallController extends JsonController
                 ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
                 ->leftJoin('auth.test_group tg', 'tg.id = auth.test_call.testgroup_id')
                 ->where(['test_call.server_id' => $server->id])
+                ->where(['auth.test_call.testgroup_id' => $testGroupId])
                 ->orderBy('name')
+                ->limit($limit)
+                ->offset($offset)
                 ->asArray()
                 ->all();
+    
+        $count = TestCall::find()
+            ->select(['id'])
+            ->where(['server_id' => $server->id])
+            ->where(['testgroup_id' => $testGroupId])
+            ->count();
+    
+        return [
+            'totalCount' => $count,
+            'data' => $data
+        ];
     }
 
     public function actionGet()

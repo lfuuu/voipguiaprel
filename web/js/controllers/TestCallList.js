@@ -5,13 +5,27 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
     $scope.searchQuery = '';
     $scope.testGroupId = 'undefined';
 
+    $scope.currentPage = 1;
+    $scope.limit = 15;
+    $scope.offset = (($scope.currentPage - 1) * $scope.limit);
+    $scope.totalItems = 0;
+
     $scope.init = function(tab) {
         if (tab) tab.title = 'Test Call';
 
-        TestCall.read({server_id: $scope.server.id}).then(function(data){
-            $scope.list = data;
-        });
+        $scope.refreshList();
     };
+
+    $scope.refreshList = function() {
+        if ($scope.testGroupId == 'undefined') {
+            return;
+        }
+
+        TestCall.read({server_id: $scope.server.id, test_group_id: $scope.testGroupId, offset: $scope.offset, limit: $scope.limit}).then(function (data) {
+            $scope.list = data.data;
+            $scope.totalItems = data.totalCount;
+        });
+    }
 
     List.testGroup().then(function (data) {
         $scope.testGroupList = data;
@@ -25,6 +39,8 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
 
     $scope.testGroupChanged = function(testGroupId) {
         $scope.testGroupId = testGroupId;
+
+        $scope.refreshList();
     }
 
     $scope.clickItem = function(item) {
@@ -75,4 +91,9 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
             $scope.init()
         });
     };
+
+    $scope.setPagingData = function (page) {
+        $scope.offset = ((page - 1) * $scope.limit);
+        $scope.refreshList();
+    }
 };

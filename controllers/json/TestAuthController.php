@@ -69,12 +69,9 @@ class TestAuthController extends JsonController
                 ->all();
     
         $count = TestAuth::find()
-            ->select(
-                [
-                    'test_auth.id'
-                ])
-            ->where(['test_auth.server_id' => $server->id])
-            ->where(['auth.test_auth.testgroup_id' => $testGroupId])
+            ->select(['id'])
+            ->where(['server_id' => $server->id])
+            ->where(['testgroup_id' => $testGroupId])
             ->count();
         
         return [
