@@ -23,8 +23,8 @@ run_v()
 
 install_composer () 
 {
-  docker exec -it voip_gui_git /opt/voip_gui/install/install_composer.sh
-
+  
+  docker exec -it voip_gui_volume /opt/voip_gui/install/install_composer.sh
 }
 
 connect_git () 
