@@ -13,6 +13,11 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     $scope.TYPE_ID_DID_ON_VPBX = 8;
     $scope.TYPE_ID_FMC = 9;
 
+    $scope.NNP_MODE_DIRECTION = 1;
+    $scope.NNP_MODE_FILTER = 2;
+
+    $scope.nnpMode = $scope.NNP_MODE_DIRECTION;
+
     var typeWithBuffer = [$scope.TYPE_ID_NNP, $scope.TYPE_ID_7800, $scope.TYPE_ID_DID_ON_VPBX, $scope.TYPE_ID_FMC];
 
     var watchers = {
@@ -94,7 +99,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             $scope.setType($scope.item.type_id);
             $scope.item.count = $scope.item.prefixes;
 
-            if ($scope.item.type_id == 1) {
+            if ($scope.item.type_id == $scope.TYPE_ID_MANUAL) {
                 var manual_list = [];
                 for (var i in $scope.item.manual_list) {
                     manual_list.push({prefix: $scope.item.manual_list[i]})
@@ -102,7 +107,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 $scope.item.manual_list = manual_list;
             }
 
-            if ($scope.item.type_id == 2) {
+            if ($scope.item.type_id == $scope.TYPE_ID_LOCAL) {
                 var smezhnost_list = [];
                 for (var i in $scope.item.smezhnost_list) {
                     smezhnost_list.push({network_type_id: $scope.item.smezhnost_list[i]})
@@ -110,7 +115,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 $scope.item.smezhnost_list = smezhnost_list;
             }
 
-            if ($scope.item.type_id == 3) {
+            if ($scope.item.type_id == $scope.TYPE_ID_ROSSVYAZ) {
                 if ($scope.item.rossvyaz_region_id) {
                     Billing.cities($scope.item).then(function (data) {
                         $scope.cities = data;
@@ -119,7 +124,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 }
             }
 
-            if ($scope.item.type_id == 6) {
+            if ($scope.item.type_id == $scope.TYPE_ID_NNP) {
                 try {
                     var filterData = $.parseJSON($scope.item.nnp_filter_json);
 
@@ -130,6 +135,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                     $scope.item.nnp_operator = filterData.operator_id;
                     $scope.item.nnp_is_exclude_operators = filterData.is_exclude_operators;
                     $scope.item.nnp_ndc_type = filterData.ndc_type_id;
+
+                    if ($scope.item.nnp_country) {
+                        $scope.nnpMode = $scope.NNP_MODE_FILTER;
+                    }
 
                     if ($scope.item.nnp_country) {
                         Nnp.regionList($scope.item.nnp_country).then(function (data) {
@@ -154,7 +163,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
             }
 
-            if ($scope.item.type_id == 4) {
+            if ($scope.item.type_id == $scope.TYPE_ID_CSV) {
                 setTimeout(function () {
                     $('#upload-csv-file').fileapi({
                         url: '/prefixlist/upload-csv?id=' + $scope.item.id,
@@ -246,6 +255,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         } else {
             $scope.hasBuffer = false;
         }
+    };
+
+    $scope.setNnpMode = function(nnpMode) {
+        $scope.nnpMode = nnpMode;
     };
 
     $scope.addPrefix = function () {
@@ -346,15 +359,28 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         data.manual_list = [];
         data.smezhnost_list = [];
 
-        if ($scope.item.type_id == 1) {
+        if ($scope.item.type_id == $scope.TYPE_ID_MANUAL) {
             for (var i in $scope.item.manual_list) {
                 data.manual_list.push($scope.item.manual_list[i].prefix)
             }
         }
 
-        if ($scope.item.type_id == 2) {
+        if ($scope.item.type_id == $scope.TYPE_ID_LOCAL) {
             for (var i in $scope.item.smezhnost_list) {
                 data.smezhnost_list.push($scope.item.smezhnost_list[i].network_type_id)
+            }
+        }
+
+        if ($scope.item.type_id == $scope.TYPE_ID_NNP) {
+            if ($scope.nnpMode == $scope.NNP_MODE_DIRECTION) {
+                delete data.nnp_country;
+                delete data.nnp_region;
+                delete data.nnp_city;
+                delete data.nnp_operator;
+                delete data.nnp_is_exclude_operators;
+                delete data.nnp_ndc_type;
+            } else {
+                delete data.nnp_destination;
             }
         }
 

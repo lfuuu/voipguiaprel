@@ -291,13 +291,13 @@
                     </div>
 
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#npp-destination" data-toggle="tab">ННП-Направление</a></li>
-                        <li><a href="#nnp-filters" data-toggle="tab">ННП-Фильтры</a></li>
+                        <li class="{{(nnpMode == NNP_MODE_DIRECTION) ? 'active' : '' }}"><a href="#npp-destination" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_DIRECTION)">ННП-Направление</a></li>
+                        <li class="{{(nnpMode == NNP_MODE_FILTER) ? 'active' : '' }}"><a href="#nnp-filters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_FILTER)">ННП-Фильтры</a></li>
                     </ul>
                     <br />
 
                     <div class="tab-content">
-                        <div class="tab-pane active" id="npp-destination">
+                        <div class="tab-pane{{(nnpMode == NNP_MODE_DIRECTION) ? ' active' : '' }}" id="npp-destination">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Направление</label>
                                 <div class="col-sm-10">
@@ -309,7 +309,7 @@
                             </div>
                         </div>
 
-                        <div class="tab-pane" id="nnp-filters">
+                        <div class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filters">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Страна</label>
                                 <div class="col-sm-10">
