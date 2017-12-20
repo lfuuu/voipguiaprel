@@ -150,7 +150,8 @@ class TestCallController extends JsonController
         if ($item === null) {
             throw new HttpException(404, 'TestCall не найден');
         }
-
+    
+        $apiUrl = $item->server->apiUrl;
         $apiParams = [
             'orig' => $item->orig ? 'true' : 'false',
             'connect_time' => $item->connect_time,
@@ -167,8 +168,22 @@ class TestCallController extends JsonController
         if ($this->request['displayTreeView']) {
             $apiParams['trace_tree'] = 1;
         }
+    
+        if (isset($this->request['isReserve']) && $item->server->hostname_reserve) {
+            $apiUrl = $item->server->apiUrlReserve;
+            $apiParams['server_id'] = $item->server_id;
+        }
+    
+        if (isset($this->request['isReserve2']) && $item->server->hostname_reserve_2) {
+            $apiUrl = $item->server->apiUrlReserve2;
+            $apiParams['server_id'] = $item->server_id;
+        }
+    
+        if (isset($this->request['isDev']) && $item->server->hostname_dev) {
+            $apiUrl = $item->server->apiUrlDev;
+        }
 
-        $request = $item->server->apiUrl . 'test/calc?' . http_build_query($apiParams);
+        $request = $apiUrl . 'test/calc?' . http_build_query($apiParams);
 
         $response = file_get_contents($request);
 

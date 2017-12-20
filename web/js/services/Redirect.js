@@ -197,6 +197,12 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         testAuthShowTestReserve: function(id, displayTreeView) {
             return openModal(TestAuthShowTestReserveCtrl, '/templates/test_auth_show_test.html', {id: id, displayTreeView: displayTreeView});
         },
+        testAuthShowTestReserve2: function(id, displayTreeView) {
+            return openModal(TestAuthShowTestReserve2Ctrl, '/templates/test_auth_show_test.html', {id: id, displayTreeView: displayTreeView});
+        },
+        testAuthShowTestDev: function(id, displayTreeView) {
+            return openModal(TestAuthShowTestDevCtrl, '/templates/test_auth_show_test.html', {id: id, displayTreeView: displayTreeView});
+        },
 
         testCallList: function() {
             return openTab(TestCallListCtrl, '/templates/test_call_list.html');
@@ -212,6 +218,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         },
         testCallShowTest: function(id, displayTreeView) {
             return openModal(TestCallShowTestCtrl, '/templates/test_call_show_test.html', {id: id, displayTreeView: displayTreeView});
+        },
+        testCallShowTestReserve: function(id, displayTreeView) {
+            return openModal(TestCallShowTestReserveCtrl, '/templates/test_call_show_test.html', {id: id, displayTreeView: displayTreeView});
+        },
+        testCallShowTestReserve2: function(id, displayTreeView) {
+            return openModal(TestCallShowTestReserve2Ctrl, '/templates/test_call_show_test.html', {id: id, displayTreeView: displayTreeView});
+        },
+        testCallShowTestDev: function(id, displayTreeView) {
+            return openModal(TestCallShowTestDevCtrl, '/templates/test_call_show_test.html', {id: id, displayTreeView: displayTreeView});
         },
 
         testGroupList: function() {

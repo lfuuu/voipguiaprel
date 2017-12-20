@@ -71,14 +71,32 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
         item.displayTreeView = !item.displayTreeView;
     }
 
-    $scope.showTestItem = function(item) {
-        if (window.getSelection().type == 'Range') return;
+    $scope.showTestPrimary = function (item) {
+        $scope.showTestBasic(item, 'testCallShowTest');
+    };
+
+    $scope.showTestReserve = function (item) {
+        $scope.showTestBasic(item, 'testCallShowTestReserve');
+    };
+
+    $scope.showTestReserve2 = function (item) {
+        $scope.showTestBasic(item, 'testCallShowTestReserve2');
+    };
+
+    $scope.showTestDev = function (item) {
+        $scope.showTestBasic(item, 'testCallShowTestDev');
+    };
+
+    $scope.showTestBasic = function (item, method) {
+        if (window.getSelection().type == 'Range') {
+            return;
+        }
 
         if (typeof item.displayTreeView == 'undefined') {
             item.displayTreeView = false;
         }
 
-        Redirect.testCallShowTest(item.id, item.displayTreeView).then(function () {
+        Redirect[method](item.id, item.displayTreeView).then(function () {
             $scope.init();
         });
     };

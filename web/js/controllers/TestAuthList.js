@@ -74,20 +74,22 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
     }
 
     $scope.showTestPrimary = function (item) {
-        if (window.getSelection().type == 'Range') {
-            return;
-        }
-
-        if (typeof item.displayTreeView == 'undefined') {
-            item.displayTreeView = false;
-        }
-
-        Redirect.testAuthShowTestPrimary(item.id, item.displayTreeView).then(function () {
-            $scope.init();
-        });
+        $scope.showTestBasic(item, 'testAuthShowTestPrimary');
     };
 
     $scope.showTestReserve = function (item) {
+        $scope.showTestBasic(item, 'testAuthShowTestReserve');
+    };
+
+    $scope.showTestReserve2 = function (item) {
+        $scope.showTestBasic(item, 'testAuthShowTestReserve2');
+    };
+
+    $scope.showTestDev = function (item) {
+        $scope.showTestBasic(item, 'testAuthShowTestDev');
+    };
+
+    $scope.showTestBasic = function (item, method) {
         if (window.getSelection().type == 'Range') {
             return;
         }
@@ -96,7 +98,7 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
             item.displayTreeView = false;
         }
 
-        Redirect.testAuthShowTestReserve(item.id, item.displayTreeView).then(function () {
+        Redirect[method](item.id, item.displayTreeView).then(function () {
             $scope.init();
         });
     };

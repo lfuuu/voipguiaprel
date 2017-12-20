@@ -74,8 +74,10 @@
             </td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
             <td>
-                <button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">Тест основной</button>
-                <button type="button" class="btn btn-default btn-sm" ng-click="showTestReserve(item)">Тест резерв</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">MAIN</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="showTestReserve(item)">RES</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="showTestReserve2(item)">RES2</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="showTestDev(item)">DEV</button>
             </td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.trunk_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.src_number}}</td>

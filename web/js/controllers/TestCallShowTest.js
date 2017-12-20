@@ -20,15 +20,13 @@ var TestCallShowTestCtrl = function($scope, TestCall, params, $modalInstance, $w
         };
     }
 
-    $scope.save = function()
-    {
+    $scope.save = function() {
         TestCall.save($scope.item).then(function(response) {
             $modalInstance.close();
         });
     };
 
-    $scope.back = function()
-    {
+    $scope.back = function() {
         $modalInstance.dismiss();
     }
 

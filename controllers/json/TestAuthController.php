@@ -196,7 +196,16 @@ class TestAuthController extends JsonController
             $apiUrl = $item->server->apiUrlReserve;
             $apiParams['server_id'] = $item->server_id;
         }
-
+    
+        if (isset($this->request['isReserve2']) && $item->server->hostname_reserve_2) {
+            $apiUrl = $item->server->apiUrlReserve2;
+            $apiParams['server_id'] = $item->server_id;
+        }
+    
+        if (isset($this->request['isDev']) && $item->server->hostname_dev) {
+            $apiUrl = $item->server->apiUrlDev;
+        }
+        
         $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
 
         $response = file_get_contents($request);
