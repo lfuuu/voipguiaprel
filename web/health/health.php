@@ -3,6 +3,9 @@
 define('CONFIG_FILEPATH', __DIR__ . '/config.php');
 define('RESULT_FILEPATH', __DIR__ . '/../assets/healthData.json');
 
+
+$nowStr = (new \DateTime('now', new \DateTimeZone('Europe/Moscow')))->format('Y-m-d H:i:s');
+
 try {
     if (!file_exists(CONFIG_FILEPATH)) {
         throw new \Exception('Can\'t load configuration');
@@ -15,7 +18,7 @@ try {
 } catch (\Exception $e) {
     $result = [
         'alert' => $e->getMessage(),
-        'lastUpdate' => date('Y-m-d H:i:s'),
+        'lastUpdate' => $nowStr,
     ];
 
     file_put_contents(RESULT_FILEPATH, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT));
@@ -23,21 +26,35 @@ try {
 }
 
 $result = [
-    'lastUpdate' => date('Y-m-d H:i:s'),
+    'lastUpdate' => $nowStr,
 ];
 
 foreach ($config['resources'] as $resource) {
-    $resourceData = parse_url($resource);
+    $title = '';
 
-    $data = getData($resource);
+    if (is_array($resource)) {
+        isset($resource['title']) && $title = $resource['title'];
+        if (isset($resource['url'])) {
+            $url = $resource['url'];
+        } else {
+            continue; // url not set
+        }
+    } else {
+        $url = $resource;
+    }
+
+    $resourceData = parse_url($url);
+    !$title && $title = $resourceData['host'];
+
+    $data = getData($url);
     $dataJSON = json_decode($data, $assoc = true);
 
     if (json_last_error() === JSON_ERROR_NONE) {
-        $result[$resourceData['host']] = array_merge($dataJSON, [
-            'resourceUrl' => $resource,
+        $result[$title] = array_merge($dataJSON, [
+            'resourceUrl' => $url,
         ]);
     } else {
-        $result[$resourceData['host']] = $data;
+        $result[$title] = $data;
     }
 }
 
