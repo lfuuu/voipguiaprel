@@ -177,7 +177,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                         },
                         onComplete: function (e, result) {
                             $scope.item.count = result.result.data.count;
-                            $('#upload-csv-file').hide();
+                            // $('#upload-csv-file').hide();
                             $scope.$apply('item.id');
                         }
                     });

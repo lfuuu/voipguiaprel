@@ -23,9 +23,9 @@ class PrefixlistController extends BaseController
                 ->all()
             ;
 
-        header('Content-Type: text/plain');
+        header('Content-Type: text/html');
         foreach ($list as $item) {
-            echo $item['prefix'] . "\n";
+            echo $item['prefix'] . "<br/>";
         }
     }
     
@@ -39,9 +39,9 @@ class PrefixlistController extends BaseController
                 ->all()
         ;
         
-        header('Content-Type: text/plain');
+        header('Content-Type: text/html');
         foreach ($list as $item) {
-            echo $item['prefix'] . "\n";
+            echo $item['prefix'] . "<br/>";
         }
     }
 
@@ -66,11 +66,12 @@ class PrefixlistController extends BaseController
         header("Expires: 0");
 
         foreach ($list as $item) {
-            echo $item['prefix'] . "\n";
+            echo $item['prefix'] . ";\n";
         }
     }
 
-    public function actionUploadCsv($id) {
+    public function actionUploadCsv($id)
+    {
         $prefixlist = Prefixlist::findOne($id);
         if ($prefixlist->type_id != 4) {
             throw new \Exception("Prefixlist type must be CSV");
