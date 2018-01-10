@@ -38,7 +38,7 @@ var RouteTableEditCtrl = function($scope, RouteTable, Outcome, params, $modalIns
     };
 
 	$scope.addRoute = function() {
-		$scope.item.routes.push({ a_number_id: null, b_number_id: null, outcome_id: null });
+		$scope.item.routes.push({ a_number_id: null, b_number_id: null, outcome_id: null, cpc_id: null });
 	};
 
 	$scope.removeRoute = function(index) {

@@ -26,9 +26,6 @@
         <div ng-if="userPermissions['instance_settings_edit']" class="list-group">
             <a href="#" class="list-group-item" ng-if="userPermissions['instance_settings_edit']" ng-click="Redirect.instanceSettings()">Дополнительные настройки</a>
         </div>
-        <div ng-if="userPermissions['blacklist_edit']" class="list-group">
-            <a href="#" class="list-group-item" ng-if="userPermissions['blacklist_edit']" ng-click="Redirect.blacklistSettings()">Настройки фильтра по номеру А</a>
-        </div>
         <div ng-if="userPermissions['trunk_list'] || userPermissions['trunk_group_list'] || userPermissions['route_table_list']" class="list-group">
             <a href="#" class="list-group-item" ng-if="userPermissions['trunk_list']" ng-click="Redirect.trunkList()" ng-class="{active:tabs.isController('TrunkListCtrl')}">Транки</a>
             <a href="#" class="list-group-item" ng-if="userPermissions['trunk_group_list']" ng-click="Redirect.trunkGroupList()" ng-class="{active:tabs.isController('TrunkGroupListCtrl')}">Группы транков</a>
@@ -53,12 +50,13 @@
             <a href="#" class="list-group-item" ng-if="userPermissions['attribute_group_list']" ng-click="Redirect.attributeGroupList()"
                ng-class="{active:tabs.isController('AttributeGroupListCtrl')}">Группы атрибутов</a>
         </div>
-        <div ng-if="userPermissions['test_auth_list'] || userPermissions['test_call_list'] || userPermissions['test_group_list'] || userPermissions['trunkhealth_view_list']" class="list-group">
+        <div ng-if="userPermissions['test_auth_list'] || userPermissions['test_call_list'] || userPermissions['test_group_list'] || userPermissions['blacklist_edit'] || userPermissions['trunkhealth_view_list']" class="list-group">
             <!-- <a href="#" class="list-group-item" ng-click="Redirect.routingReport()" ng-class="{active:tabs.isController('RoutingReportCtrl')}">Отчет по маршрутизации</a> -->
             <!-- <a href="#" class="list-group-item" ng-click="Redirect.destinationList()" ng-class="{active:tabs.isController('DestinationListCtrl')}">Направления</a> -->
             <a href="#" class="list-group-item" ng-if="userPermissions['test_auth_list']" ng-click="Redirect.testAuthList()" ng-class="{active:tabs.isController('TestAuthListCtrl')}">Тестирование маршрутизации</a>
             <a href="#" class="list-group-item" ng-if="userPermissions['test_call_list']" ng-click="Redirect.testCallList()" ng-class="{active:tabs.isController('TestCallListCtrl')}">Тестирование звонков</a>
             <a href="#" class="list-group-item" ng-if="userPermissions['test_group_list']" ng-click="Redirect.testGroupList()" ng-class="{active:tabs.isController('TestGroupListCtrl')}">Группы тестов</a>
+            <a href="#" class="list-group-item" ng-if="userPermissions['blacklist_edit']" ng-click="Redirect.blacklistSettings()">Блокировка по А-номеру</a>
             <a href="/health/health.html" ng-if="userPermissions['trunkhealth_view_list']" class="list-group-item">Здоровье биллеров</a>
         </div>
     </div>

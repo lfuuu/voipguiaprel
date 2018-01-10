@@ -48,7 +48,7 @@ class RbacController extends Controller {
         ['name' => 'route_case_create', 'description' => 'Создание Route case'],
         ['name' => 'route_case_edit', 'description' => 'Редактирование Route case'],
         ['name' => 'route_case_delete', 'description' => 'Удаление Route case'],
-        ['name' => 'blacklist_edit', 'description' => 'Редактирование фильтра по номеру А'],
+        ['name' => 'blacklist_edit', 'description' => 'Блокировка по А-номеру'],
         ['name' => 'prefixlist_list', 'description' => 'Просмотр списка префикслистов'],
         ['name' => 'prefixlist_create', 'description' => 'Создание префикслиста'],
         ['name' => 'prefixlist_edit', 'description' => 'Редактирование префикслиста'],
