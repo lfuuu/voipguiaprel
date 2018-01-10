@@ -548,6 +548,25 @@ app.factory('InstanceSettings', function ($q, ApiLoader) {
 	};
 });
 
+app.factory('BlacklistSettings', function ($q, ApiLoader) {
+    var url = '/json/blacklist-settings/';
+    return {
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        add: function(data) {
+            console.log(data);
+            return ApiLoader.post(url + 'add', data);
+        },
+        delete: function(data) {
+            return ApiLoader.post(url + 'delete', data);
+        },
+        check: function(data) {
+            return ApiLoader.post(url + 'check', data);
+        }
+    };
+});
+
 app.factory('Airp', function ($q, ApiLoader, $rootScope) {
 	var url = '/json/airp/';
 	var list = undefined;

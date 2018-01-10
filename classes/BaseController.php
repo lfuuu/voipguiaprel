@@ -8,6 +8,7 @@ use app\models\AttributeGroup;
 use app\models\Cpc;
 use app\models\Destination;
 use app\models\Number;
+use app\models\PrefixlistPrefix;
 use app\models\TestAuth;
 use app\models\TestCall;
 use app\models\TestGroup;
@@ -82,6 +83,20 @@ class BaseController extends \yii\web\Controller
 
         return $instanceSettings;
     }
+    
+    /**
+     * @param int $blacklistSettingsId
+     * @return BlacklistSettings
+     * @throws HttpException
+     */
+    protected function getBlacklistSettingsOr404($prefixlistId)
+    {
+        if (($blacklistSettings = Prefixlist::findOne($prefixlistId)) === null) {
+            throw new HttpException(404);
+        }
+        
+        return $blacklistSettings;
+    }
 
     /**
      * @param int $trunkId
@@ -137,6 +152,22 @@ class BaseController extends \yii\web\Controller
             throw new HttpException(404, 'Список префиксов не найден');
         }
         return $item;
+    }
+    
+    /**
+     * @param int $prefixlistId
+     * @return PrefixlistPrefix[]
+     * @throws HttpException
+     */
+    protected function getPrefixlistPrefix($prefixlistId)
+    {
+        $items = PrefixlistPrefix::find()
+            ->select(['prefix'])
+            ->where(['prefixlist_id' => $prefixlistId])
+            ->asArray()
+            ->all();
+        
+        return $items;
     }
 
     /**

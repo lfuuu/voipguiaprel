@@ -1,0 +1,40 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3>Настройки фильтра по номеру А</h3>
+    </div>
+    <div class="modal-body">
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#blacklistsettings-list" data-toggle="tab">Настройки фильтра по номеру А</a></li>
+        </ul>
+
+        <br/>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="blacklistsettings-list">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Список префиксов</label>
+                    <div class="col-sm-6">
+                        <textarea class="form-control" placeholder="Префиксы" ng-model="item.prefixes"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="col-sm-6">
+                        <button class="btn btn-success" ng-click="add()">Добавить</button>
+                        <button class="btn btn-danger" ng-click="delete()">Удалить</button>
+                        <button class="btn btn-warning" ng-click="check()">Проверить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>
