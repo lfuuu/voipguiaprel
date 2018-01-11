@@ -58,6 +58,13 @@
                     <span ng-show="sortType == 'redirect_number' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
+            <th width="15%">
+                <a href="#" ng-click="sortType = 'redirect_number'; sortReverse = !sortReverse">
+                    CPC
+                    <span ng-show="sortType == 'redirect_number' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'redirect_number' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
             <th width="1%">&nbsp;</th>
             <th ng-if="userPermissions['test_auth_create']" width="1%">&nbsp;</th>
             <th ng-if="userPermissions['test_auth_delete']">&nbsp;</th>
@@ -83,6 +90,7 @@
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.src_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.dst_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.redirect_number}}</td>
+            <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.cpc}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">
                 <span class="label label-success" ng-if="item.is_autotest">AUTO</span>
             </td>
