@@ -41,7 +41,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             }
         },
         nnp_country: function (newValue, oldValue) {
-            if (newValue != oldValue) {
+            if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
                 $scope.regionList = null;
                 $scope.operatorList = null;
 
@@ -52,24 +52,24 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                     $scope.item.nnp_ndc_type = null;
                 }
 
-                Nnp.regionList(newValue).then(function (data) {
+                Nnp.regionList({country_code: newValue}).then(function (data) {
                     $scope.regionList = data;
                 });
 
-                Nnp.operatorList(newValue).then(function (data) {
+                Nnp.operatorList({country_code: newValue}).then(function (data) {
                     $scope.operatorList = data;
                 });
             }
         },
         nnp_region: function (newValue, oldValue) {
-            if (newValue != oldValue) {
+            if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
                 $scope.cityList = null;
 
                 if (!newValue) {
                     $scope.item.nnp_city = null;
                 }
 
-                Nnp.cityList($scope.item.nnp_country, newValue).then(function (data) {
+                Nnp.cityList({country_code: $scope.item.nnp_country, region: newValue}).then(function (data) {
                     $scope.cityList = data;
                     $scope.cities = data;
                 });
@@ -129,36 +129,39 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                     var filterData = $.parseJSON($scope.item.nnp_filter_json);
 
                     $scope.item.nnp_destination = filterData.nnp_destination_id;
-                    $scope.item.nnp_country = filterData.country_code;
-                    $scope.item.nnp_region = filterData.region_id;
-                    $scope.item.nnp_city = filterData.city_id;
-                    $scope.item.nnp_operator = filterData.operator_id;
                     $scope.item.nnp_is_exclude_operators = filterData.is_exclude_operators;
                     $scope.item.nnp_ndc_type = filterData.ndc_type_id;
 
-                    if ($scope.item.nnp_country) {
+                    if (filterData.country_code) {
                         $scope.nnpMode = $scope.NNP_MODE_FILTER;
                     }
 
-                    if ($scope.item.nnp_country) {
-                        Nnp.regionList($scope.item.nnp_country).then(function (data) {
-                            $scope.regionList = data;
-                        });
+                    Nnp.countryList().then(function (data) {
+                        $scope.countryList = data;
+                        $scope.item.nnp_country = filterData.country_code;
 
-                        Nnp.operatorList($scope.item.nnp_country).then(function (data) {
-                            $scope.operatorList = data;
-                        });
+                        if ($scope.item.nnp_country) {
+                            Nnp.regionList({country_code: $scope.item.nnp_country}).then(function (data) {
+                                $scope.regionList = data;
+                                $scope.item.nnp_region = filterData.region_id;
 
-                        if ($scope.item.nnp_region) {
-                            Nnp.cityList($scope.item.nnp_country, $scope.item.nnp_region).then(function (data) {
-                                $scope.cityList = data;
-                                $scope.cities = data;
+                                if ($scope.item.nnp_region) {
+                                    Nnp.cityList({country_code: $scope.item.nnp_country, region: $scope.item.nnp_region}).then(function (data) {
+                                        $scope.cityList = data;
+                                        $scope.cities = data;
+                                        $scope.item.nnp_city = filterData.city_id;
+                                    });
+                                }
+                            });
+
+                            Nnp.operatorList({country_code: $scope.item.nnp_country}).then(function (data) {
+                                $scope.operatorList = data;
+                                $scope.item.nnp_operator = filterData.operator_id;
                             });
                         }
-                    }
+                    });
                 } catch (error) {
                     $scope.nnpDataParseError = true;
-                    console.log(error);
                 }
 
             }

@@ -37,48 +37,60 @@ class NnpController extends JsonController
     }
 
     /**
-     * @param int $countryCode
      * @return array
      */
-    public function actionRegion($countryCode = 0)
+    public function actionRegion()
     {
+        $countryCode = $this->request['country_code'];
+        
+        if (empty($countryCode)) {
+            return [];
+        }
+        
         $query = Region::find()
             ->asArray(['id', 'name'])
+            ->where(['country_code' => $countryCode])
             ->orderBy('name');
-
-        (int)$countryCode && $query->andWhere(['country_code' => $countryCode]);
 
         return $query->all();
     }
 
     /**
-     * @param int $countryCode
-     * @param int $regionId
      * @return array
      */
-    public function actionCity($countryCode = 0, $regionId = 0)
+    public function actionCity()
     {
+        $countryCode = $this->request['country_code'];
+        $region = $this->request['region'];
+    
+        if (empty($countryCode) || empty($region)) {
+            return [];
+        }
+        
         $query = City::find()
             ->asArray(['id', 'name'])
+            ->where(['country_code' => $countryCode])
+            ->andWhere(['region_id' => $region])
             ->orderBy('name');
-
-        (int)$countryCode && $query->andWhere(['country_code' => $countryCode]);
-        (int)$regionId && $query->andWhere(['region_id' => $regionId]);
 
         return $query->all();
     }
 
     /**
-     * @param int $countryCode
      * @return array
      */
-    public function actionOperator($countryCode = 0)
+    public function actionOperator()
     {
+        $countryCode = $this->request['country_code'];
+    
+        if (empty($countryCode)) {
+            return [];
+        }
+        
         $query = Operator::find()
             ->asArray(['id', 'name'])
+            ->where(['country_code' => $countryCode])
             ->orderBy('name');
-
-        (int)$countryCode && $query->andWhere(['country_code' => $countryCode]);
 
         return $query->all();
     }

@@ -980,14 +980,14 @@ app.factory('Nnp', function (ApiLoader) {
         countryList: function () {
             return ApiLoader.post(url + 'country');
         },
-        regionList: function (countryCode) {
-            return ApiLoader.post(url + 'region?countryCode=' + countryCode);
+        regionList: function (data) {
+            return ApiLoader.post(url + 'region', data);
         },
-        cityList: function (countryCode, regionId) {
-            return ApiLoader.post(url + 'city?countryCode=' + countryCode + '&regionId=' + regionId);
+        cityList: function (data) {
+            return ApiLoader.post(url + 'city', data);
         },
-        operatorList: function (countryCode) {
-            return ApiLoader.post(url + 'operator?countryCode=' + countryCode);
+        operatorList: function (data) {
+            return ApiLoader.post(url + 'operator', data);
         },
         ndcTypeList: function () {
             return ApiLoader.post(url + 'ndc-type');

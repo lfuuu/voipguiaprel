@@ -252,7 +252,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             'ndc_type_id' => isset($input['nnp_ndc_type']) ? $input['nnp_ndc_type'] : '',
             'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
         ];
-
+        
         if (isset($input['nnp_operator']) && count($input['nnp_operator'])) {
             $filters['operator_id'] = $input['nnp_operator'];
             $filters['is_exclude_operators'] = array_key_exists('nnp_is_exclude_operators', $input) ?
