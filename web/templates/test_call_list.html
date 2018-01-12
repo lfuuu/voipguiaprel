@@ -8,10 +8,20 @@
         <div class="input-group">
             <div class="input-group-addon"><i class="fa-search"></i></div>
             <input type="text" class="form-control" placeholder="Поиск" ng-model="searchQuery">
-            <select ui-select2 style="width: 100%" tags="true" ng-change="testGroupChanged(testGroupId)" placeholder="Группа" ng-model="testGroupId" required>
-                <option value="undefined">-- Выберите группу теста --</option>
-                <option ng-repeat="group in testGroupList" value="{{group.id}}">{{group.name}}</option>
-            </select>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <select ui-select2 style="width: 100%" tags="true" ng-change="testGroupChanged(testGroupId)" placeholder="Группа" ng-model="testGroupId" required>
+                        <option value="undefined">-- Выберите группу теста --</option>
+                        <option ng-repeat="group in testGroupList" value="{{group.id}}">{{group.name}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-6">
+                    <select ui-select2 style="width: 100%" tags="true" ng-change="testResultChanged(result)" placeholder="Результат" ng-model="testResult" required>
+                        <option value="">Все тесты</option>
+                        <option ng-repeat="result in testResultList" value="{{result.id}}">{{result.name}}</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 </form>
@@ -22,7 +32,7 @@
     <tr>
         <th width="1%"> </th>
         <th width="9%">С деревом</th>
-        <th width="5%">
+        <th width="10%">
             <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                 Название
                 <span ng-show="sortType == 'name' && sortReverse" class="caret-down"></span>
@@ -80,7 +90,7 @@
     </thead>
     <tbody>
 
-    <tr ng-repeat="item in list | belongsToTestGroup:testGroupId | orderBy:sortType:sortReverse | filter:searchQuery">
+    <tr ng-repeat="item in list | testHasResult:testResult | orderBy:sortType:sortReverse | filter:searchQuery">
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
             <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">
         </td>

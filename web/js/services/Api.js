@@ -967,6 +967,13 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         },
         cpc: function() {
 		    return Cpc.list();
+        },
+        testResult: function() {
+		    return [
+                {'id': 'not_executed', 'name': 'Не выполнен'},
+                {'id': 'passed', 'name': 'Успех'},
+                {'id': 'failed', 'name': 'Неудача'}
+            ];
         }
     };
 });
@@ -1017,4 +1024,28 @@ app.filter('belongsToTestGroup', function () {
 
     return filtered;
   };
+});
+
+app.filter('testHasResult', function () {
+    return function (items, result) {
+        if (!items) {
+            return [];
+        }
+
+        if (!result) {
+            return items;
+        }
+
+        var filtered = [];
+
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+
+            if (item.is_autotest == true && item.result == result) {
+                filtered.push(item);
+            }
+        }
+
+        return filtered;
+    };
 });

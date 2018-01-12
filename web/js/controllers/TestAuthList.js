@@ -4,6 +4,7 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
     $scope.sortReverse = false;
     $scope.searchQuery = '';
     $scope.testGroupId = 'undefined';
+    $scope.testResult = null;
 
     $scope.currentPage = 1;
     $scope.limit = 15;
@@ -31,6 +32,8 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
         $scope.testGroupList = data;
     });
 
+    $scope.testResultList = List.testResult();
+
     $scope.clickCreate = function () {
         Redirect.testAuthCreate($scope.testGroupId).then(function () {
             $scope.init();
@@ -41,6 +44,10 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
         $scope.testGroupId = testGroupId;
 
         $scope.refreshList();
+    }
+
+    $scope.testResultChanged = function(testResult) {
+        $scope.testResult = testResult;
     }
 
     $scope.clickItem = function (item) {
