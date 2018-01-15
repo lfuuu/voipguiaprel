@@ -242,5 +242,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         testGroupCreate: function() {
             return openModal(TestGroupEditCtrl, '/templates/test_group_edit.html', {id: null});
         },
+        statisticsTree: function() {
+            return openTab(StatisticsTreeCtrl, '/templates/statistics_tree.html');
+        },
     };
 });

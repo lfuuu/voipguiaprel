@@ -1,0 +1,43 @@
+<div>
+    <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
+    <h4>Дерево статистики</h4>
+</div>
+
+<div>
+    <script type="text/ng-template" id="nodes_renderer.html">
+        <br />
+        <div class="tree-container-bordered">
+            <div ng-if="subitem.name" ui-tree-handle class="tree-node tree-node-content">
+                <a class="btn btn-success btn-xs" ng-disabled="!subitem.subitems || subitem.subitems.length <= 0" data-nodrag ng-click="toggle(this)">
+                    <span class="glyphicon" ng-class="{
+                      'glyphicon-chevron-right': collapsed,
+                      'glyphicon-chevron-down': !collapsed
+                    }"></span>
+                </a>
+                <span>[{{subitem.key}}: {{subitem.name}}]: [Звонки: {{subitem.calls}}], [ACD: {{subitem.acd.join(', ')}}], [ASR: {{subitem.asr.join(', ')}}]</span>
+                <a class="btn btn-danger btn-xs" ng-if="subitem.is_top_item && subitem.path != ''" ng-click="ascend()">
+                    <span class="glyphicon" ng-class="{'glyphicon-chevron-up': true}"></span>
+                </a>
+                <a class="btn btn-warning btn-xs" ng-if="!subitem.is_top_item" ng-click="descend(subitem)">
+                    <span class="glyphicon" ng-class="{'glyphicon-chevron-right': true}"></span>
+                </a>
+            </div>
+
+            <ol ui-tree-nodes="" ng-model="subitem.subitems" ng-class="{hidden: collapsed}">
+                <li ng-repeat="subitem in subitem.subitems" ui-tree-node collapsed="true" class="stripe" ng-include="'nodes_renderer.html'">
+                </li>
+            </ol>
+
+        </div>
+    </script>
+
+    <div>
+        <button ng-click="expandAll()">Развернуть все<div></div></button>
+        <button ng-click="collapseAll()">Свернуть все<div></div></button>
+        <div ui-tree="treeOptions" data-drag-enabled="false" id="tree-root">
+            <ol ui-tree-nodes ng-model="result">
+                <li ng-repeat="subitem in result.subitems" collapsed="false" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+            </ol>
+        </div>
+    </div>
+</div>

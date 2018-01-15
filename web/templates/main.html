@@ -59,6 +59,10 @@
             <a href="#" class="list-group-item" ng-if="userPermissions['blacklist_edit']" ng-click="Redirect.blacklistSettings()">Блокировка по А-номеру</a>
             <a href="/health/health.html" ng-if="userPermissions['trunkhealth_view_list']" class="list-group-item">Здоровье биллеров</a>
         </div>
+        <div ng-if="userPermissions['statistics_tree']" class="list-group">
+            <a href="#" class="list-group-item" ng-if="userPermissions['statistics_tree']" ng-click="Redirect.statisticsTree()"
+               ng-class="{active:tabs.isController('StatisticsTreeCtrl')}">Дерево статистики</a>
+        </div>
     </div>
 
     <div style="position: fixed; overflow: auto; bottom: 0; right: 0; top: 60px; padding-left: 20px; padding-right: 20px; left: 250px;':'left: 0;">

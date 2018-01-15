@@ -1002,6 +1002,15 @@ app.factory('Nnp', function (ApiLoader) {
     };
 });
 
+app.factory('StatisticsTree', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/statistics-tree/';
+    return {
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        }
+    };
+});
+
 app.filter('belongsToTestGroup', function () {
   return function (items, groupId) {
     if (!items) {

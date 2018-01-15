@@ -63,6 +63,7 @@ class AppAsset extends AssetBundle
         'js/controllers/AttributeEdit.js',
         'js/controllers/AttributeGroupList.js',
         'js/controllers/AttributeGroupEdit.js',
+        'js/controllers/StatisticsTree.js',
 
     ];
 
@@ -107,6 +108,7 @@ class AppAsset extends AssetBundle
         'templates/test_call_show_test.html',
         'templates/test_group_edit.html',
         'templates/test_group_list.html',
+        'templates/statistics_tree.html',
         'templates/directives/select-box.html',
         'templates/directives/outcome-select-box.html',
     ];
