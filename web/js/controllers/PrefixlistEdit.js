@@ -12,13 +12,14 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     $scope.TYPE_ID_7800 = 7;
     $scope.TYPE_ID_DID_ON_VPBX = 8;
     $scope.TYPE_ID_FMC = 9;
+    $scope.TYPE_ID_PARTED_NUM = 10;
 
     $scope.NNP_MODE_DIRECTION = 1;
     $scope.NNP_MODE_FILTER = 2;
 
     $scope.nnpMode = $scope.NNP_MODE_DIRECTION;
 
-    var typeWithBuffer = [$scope.TYPE_ID_NNP, $scope.TYPE_ID_7800, $scope.TYPE_ID_DID_ON_VPBX, $scope.TYPE_ID_FMC];
+    var typeWithBuffer = [$scope.TYPE_ID_NNP, $scope.TYPE_ID_7800, $scope.TYPE_ID_DID_ON_VPBX, $scope.TYPE_ID_FMC, $scope.TYPE_ID_PARTED_NUM];
 
     var countryLoadComplete = false;
     var regionLoadComplete = false;
