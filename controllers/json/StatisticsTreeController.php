@@ -69,7 +69,7 @@ class StatisticsTreeController extends JsonController
         $tableInfo = $this->_levelTables[$newItem['name']];
     
         $name = (new Query())
-            ->select(new Expression('case when ' . $tableInfo['name'] . ' ~ \'^[а-яА-Я"\s]+$\' then ' . $tableInfo['name'] . ' else ' . $tableInfo['name_fallback'] . ' end as name'))
+            ->select(new Expression('case when ' . $tableInfo['name'] . ' ~ \'^[0-9а-яА-ЯёЁ\+\-()№*\/,."\s]+$\' then ' . $tableInfo['name'] . ' else ' . $tableInfo['name_fallback'] . ' end as name'))
             ->from($tableInfo['table'])
             ->where($tableInfo['key'] . ' = :id')
             ->limit(1)
