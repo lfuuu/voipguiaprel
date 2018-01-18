@@ -4,18 +4,19 @@ namespace app\controllers\json;
 
 use app\classes\JsonController;
 use yii\base\Exception;
+use yii\db\Expression;
 use yii\db\Query;
 
 class StatisticsTreeController extends JsonController
 {
     private $_levelTables = [
-        'hub' => ['table' => 'public.server', 'key' => 'id', 'name' => 'name'],
-        'region' => ['table' => 'public.server', 'key' => 'id', 'name' => 'name'],
-        'trunk' => ['table' => 'auth.trunk', 'key' => 'id', 'name' => 'name'],
-        'nnp_country' => ['table' => 'nnp.country', 'key' => 'code', 'name' => 'name_rus'],
-        'nnp_operator' => ['table' => 'nnp.operator', 'key' => 'id', 'name' => 'name_translit'],
-        'nnp_region' => ['table' => 'nnp.region', 'key' => 'id', 'name' => 'name_translit'],
-        'nnp_city' => ['table' => 'nnp.city', 'key' => 'id', 'name' => 'name_translit']
+        'hub' => ['table' => 'public.server', 'key' => 'id', 'name' => 'name', 'name_fallback' => 'name'],
+        'region' => ['table' => 'public.server', 'key' => 'id', 'name' => 'name', 'name_fallback' => 'name'],
+        'trunk' => ['table' => 'auth.trunk', 'key' => 'id', 'name' => 'name', 'name_fallback' => 'name'],
+        'nnp_country' => ['table' => 'nnp.country', 'key' => 'code', 'name' => 'name_rus', 'name_fallback' => 'name'],
+        'nnp_operator' => ['table' => 'nnp.operator', 'key' => 'id', 'name' => 'name', 'name_fallback' => 'name_translit'],
+        'nnp_region' => ['table' => 'nnp.region', 'key' => 'id', 'name' => 'name', 'name_fallback' => 'name_translit'],
+        'nnp_city' => ['table' => 'nnp.city', 'key' => 'id', 'name' => 'name', 'name_fallback' => 'name_translit']
     ];
     
     public function actionGet()
@@ -66,9 +67,9 @@ class StatisticsTreeController extends JsonController
         $newItem['is_top_item'] = $isTopItem;
         
         $tableInfo = $this->_levelTables[$newItem['name']];
-
+    
         $name = (new Query())
-            ->select($tableInfo['name'] . ' as name')
+            ->select(new Expression('case when ' . $tableInfo['name'] . ' ~ \'^[а-яА-Я"\s]+$\' then ' . $tableInfo['name'] . ' else ' . $tableInfo['name_fallback'] . ' end as name'))
             ->from($tableInfo['table'])
             ->where($tableInfo['key'] . ' = :id')
             ->limit(1)

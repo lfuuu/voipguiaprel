@@ -9,6 +9,7 @@ use app\models\nnp\Destination;
 use app\models\nnp\NdcType;
 use app\models\nnp\Operator;
 use app\models\nnp\Region;
+use yii\db\Expression;
 use Yii;
 
 class NnpController extends JsonController
@@ -48,8 +49,9 @@ class NnpController extends JsonController
         }
         
         $query = Region::find()
-            ->asArray(['id', 'name'])
+            ->select(['id', new Expression('case when name ~ \'^[а-яА-Я"\s]+$\' then name else name_translit end as name')])
             ->where(['country_code' => $countryCode])
+            ->asArray()
             ->orderBy('name');
 
         return $query->all();
@@ -68,9 +70,10 @@ class NnpController extends JsonController
         }
         
         $query = City::find()
-            ->asArray(['id', 'name'])
+            ->select(['id', new Expression('case when name ~ \'^[а-яА-Я"\s]+$\' then name else name_translit end as name')])
             ->where(['country_code' => $countryCode])
             ->andWhere(['region_id' => $region])
+            ->asArray()
             ->orderBy('name');
 
         return $query->all();
@@ -88,8 +91,9 @@ class NnpController extends JsonController
         }
         
         $query = Operator::find()
-            ->asArray(['id', 'name'])
+            ->select(['id', new Expression('case when name ~ \'^[а-яА-Я"\s]+$\' then name else name_translit end as name')])
             ->where(['country_code' => $countryCode])
+            ->asArray()
             ->orderBy('name');
 
         return $query->all();
