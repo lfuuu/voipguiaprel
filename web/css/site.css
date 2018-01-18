@@ -182,3 +182,23 @@ td > div > .select2-container > .select2-choice {
 .bg-danger {
 	background-color: #FA7777;
 }
+
+.div-warning {
+	display: inline-block;
+	padding: 6px 12px;
+	margin-bottom: 0;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	color: #fff;
+	background-color: #f0ad4e;
+	border-color: #eea236;
+	margin-top: 5px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}

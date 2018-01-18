@@ -41,6 +41,11 @@ AppAsset::register($this);
                             </a>
                         </li>
                     </ul>
+                    <?php if ($this->server && $this->server->syncInProgress): ?>
+                    <div class="div-warning">
+                        <div style="font-size: 16px; line-height: 20px;">Идет синхронизация</div>
+                    </div>
+                    <?php endif; ?>
                     <ul class="nav navbar-nav navbar-right">
                         <?php if (\Yii::$app->user->can('acl_list')) { ?>
                         <li><a href="<?=Url::to(['acl/list'])?>">Права доступа</a></li>

@@ -3,6 +3,7 @@
 namespace app\models;
 use app\queries\ServerQuery;
 use yii\db\Expression;
+use app\models\event\Queue;
 
 /**
  * @property int $id
@@ -44,6 +45,7 @@ use yii\db\Expression;
  * @property string $apiUrlReserve
  * @property string $apiUrlReserve2
  * @property string $apiUrlDev
+ * @property bool $syncInProgress
  *
  * @property int $mcn_prefixlist_id
  * @property int $vats_trunk_id
@@ -133,6 +135,24 @@ class Server extends \yii\db\ActiveRecord
         return 'http://' . $this->hostname_dev
             . (!parse_url($this->hostname_dev, PHP_URL_PORT) ? ':' . self::API_DEFAULT_PORT : '')
             . '/';
+    }
+    
+    /**
+     * @return bool
+     */
+    public function getSyncInProgress()
+    {
+        if (!$this->hub_id) {
+            $where = "server_id = " . $this->id;
+        } else {
+            $where = "(server_id in (select id from public.server where hub_id = " . $this->hub_id . ")) or server_id = " . $this->id;
+        }
+        
+        $result = Queue::find()
+            ->where($where)
+            ->exists();
+        
+        return $result;
     }
 
     /**
