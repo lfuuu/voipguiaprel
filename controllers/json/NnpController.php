@@ -15,6 +15,8 @@ use Yii;
 class NnpController extends JsonController
 {
 
+    const COUNTRY_CODE_RUSSIA = 643;
+    
     /**
      * @return array
      */
@@ -33,7 +35,7 @@ class NnpController extends JsonController
     {
         return Country::find()
             ->asArray(['code', 'name_rus'])
-            ->orderBy('name')
+            ->orderBy('name_rus')
             ->all();
     }
 
@@ -49,7 +51,7 @@ class NnpController extends JsonController
         }
         
         $query = Region::find()
-            ->select(['id', new Expression('case when name ~ \'^[0-9а-яА-ЯёЁ\+\-()№*\/,."\s]+$\' then name else name_translit end as name')])
+            ->select(['id', new Expression('case when country_code = ' . self::COUNTRY_CODE_RUSSIA . ' then name else name_translit end as name')])
             ->where(['country_code' => $countryCode])
             ->asArray()
             ->orderBy('name');
@@ -70,7 +72,7 @@ class NnpController extends JsonController
         }
         
         $query = City::find()
-            ->select(['id', new Expression('case when name ~ \'^[0-9а-яА-ЯёЁ\+\-()№*\/,."\s]+$\' then name else name_translit end as name')])
+            ->select(['id', new Expression('case when country_code = ' . self::COUNTRY_CODE_RUSSIA . ' then name else name_translit end as name')])
             ->where(['country_code' => $countryCode])
             ->andWhere(['region_id' => $region])
             ->asArray()
@@ -91,7 +93,7 @@ class NnpController extends JsonController
         }
         
         $query = Operator::find()
-            ->select(['id', new Expression('case when name ~ \'^[0-9а-яА-ЯёЁ\+\-()№*\/,."\s]+$\' then name else name_translit end as name')])
+            ->select(['id', new Expression('case when country_code = ' . self::COUNTRY_CODE_RUSSIA . ' then name else name_translit end as name')])
             ->where(['country_code' => $countryCode])
             ->asArray()
             ->orderBy('name');
