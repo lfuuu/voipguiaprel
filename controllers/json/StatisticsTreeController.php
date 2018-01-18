@@ -9,19 +9,20 @@ use yii\db\Query;
 class StatisticsTreeController extends JsonController
 {
     private $_levelTables = [
-        'hub' => ['table' => 'public.server', 'key' => 'id'],
-        'region' => ['table' => 'public.server', 'key' => 'id'],
-        'trunk' => ['table' => 'auth.trunk', 'key' => 'id'],
-        'nnp_country' => ['table' => 'nnp.country', 'key' => 'code'],
-        'nnp_operator' => ['table' => 'nnp.operator', 'key' => 'id'],
-        'nnp_region' => ['table' => 'nnp.region', 'key' => 'id'],
-        'nnp_city' => ['table' => 'nnp.city', 'key' => 'id']
+        'hub' => ['table' => 'public.server', 'key' => 'id', 'name' => 'name'],
+        'region' => ['table' => 'public.server', 'key' => 'id', 'name' => 'name'],
+        'trunk' => ['table' => 'auth.trunk', 'key' => 'id', 'name' => 'name'],
+        'nnp_country' => ['table' => 'nnp.country', 'key' => 'code', 'name' => 'name_rus'],
+        'nnp_operator' => ['table' => 'nnp.operator', 'key' => 'id', 'name' => 'name_translit'],
+        'nnp_region' => ['table' => 'nnp.region', 'key' => 'id', 'name' => 'name_translit'],
+        'nnp_city' => ['table' => 'nnp.city', 'key' => 'id', 'name' => 'name_translit']
     ];
     
     public function actionGet()
     {
         $serverId = $this->request['server_id'];
         $path = $this->request['path'];
+        $pathName = $this->request['path_name'];
         
         $server = $this->getServerOr404($serverId);
     
@@ -37,12 +38,12 @@ class StatisticsTreeController extends JsonController
         
         $response = file_get_contents($request);
         
-        $result = $this->processResult(json_decode($response, true), $path);
+        $result = $this->processResult(json_decode($response, true), $path, $pathName);
         
         return $result;
     }
     
-    private function processItemRecursive($item, $isTopItem, $path = '')
+    private function processItemRecursive($item, $isTopItem, $path = '', $pathName = '')
     {
         if ($item == "...") {
             return $item;
@@ -64,20 +65,10 @@ class StatisticsTreeController extends JsonController
         
         $newItem['is_top_item'] = $isTopItem;
         
-        if (!$isTopItem) {
-            if (!empty($path)) {
-                $newItem['path'] = $path . ',' . $newItem['key'];
-            } else {
-                $newItem['path'] = $newItem['key'];
-            }
-        } else {
-            $newItem['path'] = $path;
-        }
-        
         $tableInfo = $this->_levelTables[$newItem['name']];
 
         $name = (new Query())
-            ->select('name')
+            ->select($tableInfo['name'] . ' as name')
             ->from($tableInfo['table'])
             ->where($tableInfo['key'] . ' = :id')
             ->limit(1)
@@ -86,11 +77,24 @@ class StatisticsTreeController extends JsonController
 
         $newItem['item_name'] = $name['name'];
         
+        if (!$isTopItem) {
+            if (!empty($path)) {
+                $newItem['path'] = $path . ',' . $newItem['key'];
+                $newItem['path_name'] = $pathName . '/[' . $newItem['name'] . ': ' . $newItem['key'] . ': ' . $newItem['item_name'] . ']';
+            } else {
+                $newItem['path'] = $newItem['key'];
+                $newItem['path_name'] = '[' . $newItem['name'] . ': ' . $newItem['key'] . ': ' . $newItem['item_name'] . ']';
+            }
+        } else {
+            $newItem['path'] = $path;
+            $newItem['path_name'] = $pathName;
+        }
+
         if (array_key_exists('subitems', $item) && count($item['subitems']) > 0) {
             $hasVisibleSubItems = true;
             
             foreach ($item['subitems'] as $subItemKey => $subItem) {
-                $newItem['subitems'][$subItemKey] = $this->processItemRecursive($subItem, false, $newItem['path']);
+                $newItem['subitems'][$subItemKey] = $this->processItemRecursive($subItem, false, $newItem['path'], $newItem['path_name']);
                 
                 if ($newItem['subitems'][$subItemKey] == "...") {
                     $hasVisibleSubItems = false;
@@ -108,7 +112,7 @@ class StatisticsTreeController extends JsonController
         return $newItem;
     }
     
-    private function processResult($result, $path)
+    private function processResult($result, $path, $pathName)
     {
         if (array_key_exists('err', $result)) {
             throw new Exception('ERROR|Неопознанная ошибка');
@@ -119,7 +123,7 @@ class StatisticsTreeController extends JsonController
         $newItem['has_visible_subitems'] = true;
         
         foreach ($result['subitems'] as $subItemKey => $subItem) {
-            $newResult['subitems'][$subItemKey] = $this->processItemRecursive($subItem, true, $path);
+            $newResult['subitems'][$subItemKey] = $this->processItemRecursive($subItem, true, $path, $pathName);
         }
         
         return $newResult;

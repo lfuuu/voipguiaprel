@@ -1,6 +1,6 @@
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
-        <h3 ng-if="item.id">Тест маршрутизации {{item.name}}</h3>
+        <h3 ng-if="item.id">Тест маршрутизации {{::item.name}}</h3>
         <h3 ng-if="!item.id">Создание Теста маршрутизации</h3>
     </div>
     <div class="modal-body">
@@ -16,7 +16,7 @@
             <div class="col-sm-10">
                 <select ui-select2 style="width: 100%" tags="true" placeholder="Группа теста" ng-model="item.testgroup_id" required>
                     <option value="">-- Выберите --</option>
-                    <option ng-repeat="group in testGroupList" value="{{group.id}}">{{group.name}}</option>
+                    <option ng-repeat="group in testGroupList" value="{{::group.id}}">{{::group.name}}</option>
                 </select>
             </div>
         </div>
@@ -25,7 +25,7 @@
             <div class="col-sm-10">
                 <select ui-select2 style="width: 100%" tags="true" placeholder="Транк" ng-model="item.trunk_name" required>
                     <option value="">-- Выберите --</option>
-                    <option ng-repeat="trunk in trunkList" value="{{trunk.trunk_name}}">{{trunk.trunk_name}}</option>
+                    <option ng-repeat="trunk in trunkList" value="{{::trunk.trunk_name}}">{{::trunk.trunk_name}}</option>
                 </select>
             </div>
         </div>
@@ -91,14 +91,14 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Дата тестирования</label>
             <div class="col-sm-6" style="margin-top: 7px;">
-                <span>{{item.tm}}</span>
+                <span>{{::item.tm}}</span>
             </div>
         </div>
 
         <div class="form-group">
             <label class="col-sm-2 control-label">Полученный ответ</label>
             <div class="col-sm-6" style="margin-top: 7px;">
-                <span>{{item.received}}</span>
+                <span>{{::item.received}}</span>
             </div>
         </div>
 

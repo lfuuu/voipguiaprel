@@ -17,13 +17,13 @@ class AppLibAsset extends AssetBundle
         'lib/jquery/jquery-2.1.0.min.js',
         'lib/jquery-ui/js/jquery-ui-1.10.4.custom.min.js',
         'lib/bootstrap/js/bootstrap.min.js',
-        'lib/angularjs/angular.js',
+        'lib/angularjs/angular.min.js',
         'lib/ui-bootstrap-tpls-0.10.0.min.js',
         'lib/select2/select2.js',
         'lib/ui-select2/select2.js',
         'lib/ui-sortable/sortable.js',
         'lib/file-api/FileAPI.min.js',
         'lib/file-api/jquery.fileapi.min.js',
-        'lib/ui-tree/angular-ui-tree.js',
+        'lib/ui-tree/angular-ui-tree.js'
     ];
 }

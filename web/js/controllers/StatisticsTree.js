@@ -1,9 +1,10 @@
 var StatisticsTreeCtrl = function($scope, StatisticsTree, $window) {
 
     $scope.path = '';
+    $scope.pathName = '';
 
     $scope.refresh = function() {
-        StatisticsTree.get({server_id: $scope.server.id, path: $scope.path}).then(function (data) {
+        StatisticsTree.get({server_id: $scope.server.id, path: $scope.path, path_name: $scope.pathName}).then(function (data) {
             $scope.result = data;
         });
     };
@@ -28,8 +29,9 @@ var StatisticsTreeCtrl = function($scope, StatisticsTree, $window) {
 
     $scope.descend = function(subitem) {
         $scope.path = subitem.path;
+        $scope.pathName = subitem.path_name;
         $scope.refresh();
-    }
+    };
 
     $scope.ascend = function() {
         var path = "" + $scope.path;
@@ -37,8 +39,14 @@ var StatisticsTreeCtrl = function($scope, StatisticsTree, $window) {
 
         pathArray.pop();
 
+        var pathName = "" + $scope.pathName;
+        var pathNameArray = pathName.split('/');
+
+        pathNameArray.pop();
+
         $scope.path = pathArray.join();
+        $scope.pathName = pathNameArray.join('/');
 
         $scope.refresh();
-    }
+    };
 };
