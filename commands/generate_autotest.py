@@ -62,7 +62,8 @@ def retrieveTests(regions, db):
     try :
         sql = '''SELECT DISTINCT ON (auth.trunk.server_id) public.server.name,
                  public.server.name_short, auth.trunk.name, auth.trunk.server_id
-                 FROM public.server, auth.trunk WHERE auth.trunk.name LIKE '%mcn_ast%'
+                 FROM public.server, auth.trunk WHERE ( auth.trunk.name LIKE '%mcn_ast%'
+                 OR auth.trunk.name LIKE 'mcn_%_ast%' )
                  AND public.server.id = auth.trunk.server_id;'''
         cur.execute(sql)
         rows = cur.fetchall()
@@ -71,8 +72,14 @@ def retrieveTests(regions, db):
             region["short_name"] = serverNameShort.lower()
             region["city_name"] = serverName
             region["federald"] = str(serverId)
+            region["trunk"] = str(trunkName)
             try:
-                region["asterisk"] = re.search ('.*mcn_ast([0-9]*)', trunkName).group(1)
+                if trunkName.find(region["short_name"]) == 0:
+                    region["asterisk"] = re.search ('.*mcn_ast([0-9]*)', trunkName).group(1)
+                elif trunkName.find("mcn_") == 0:
+                    region["asterisk"] = re.search ('.*_ast([0-9]*)', trunkName).group(1)
+                else:
+                    continue
             except:
                 continue
             regions[str(serverId)] = region 
@@ -86,7 +93,8 @@ def retrieveTests(regions, db):
     moscow["short_name"] = "msk"
     moscow["city_name"] = "MSK"
     moscow["federald"] = "99"
-    moscow["asterisk"] = "mcn_msk_ast16_99"
+    moscow["asterisk"] = "16"
+    moscow["trunk"] = "mcn_msk_ast16_99"
     regions["99"] = moscow
 
 def fillConfigWithNumbers(regions, db):
@@ -196,7 +204,7 @@ def deleteInvalid(autotests):
 def generateTest1(originateParams, terminateParams, conf):
     autotest = AutoTest()
     autotest.name = "From_" + originateParams["city_name"] + '_To_' + terminateParams["city_name"] + '_Leg1_652'
-    autotest.trunk = originateParams["short_name"] + "_mcn_ast" + originateParams["asterisk"]
+    autotest.trunk = originateParams["trunk"]
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
     autotest.result = originateParams["short_name"] + "_mcn_mgmn_loop"
@@ -238,7 +246,7 @@ def generateTest4(originateParams, terminateParams, test3):
 def generateMoscowTest1(originateParams, terminateParams, conf):
     autotest = AutoTest()
     autotest.name = "From_" + originateParams["city_name"] + '_To_' + terminateParams["city_name"] + '_Leg1_652'
-    autotest.trunk = originateParams["asterisk"]
+    autotest.trunk = originateParams["trunk"]
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
     autotest.result = "^RESULT\|ROUTE CASE\|ECSS_"
