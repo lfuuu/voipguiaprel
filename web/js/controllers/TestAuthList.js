@@ -1,4 +1,6 @@
-var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
+var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $window) {
+
+    $scope.TEST_GROUP_AUTOMATIC = 2;
 
     $scope.sortType = 'name';
     $scope.sortReverse = false;
@@ -50,13 +52,43 @@ var TestAuthListCtrl = function($scope, TestAuth, List, Redirect, $window) {
         $scope.testGroupId = testGroupId;
 
         $scope.refreshList();
-    }
+    };
 
     $scope.testResultChanged = function(testResult) {
         $scope.testResult = testResult;
 
         $scope.refreshList();
-    }
+    };
+
+    $scope.generateTests = function () {
+        Scripts.generateTests().then(function (result) {
+            if (result.success == 1) {
+                alert('Создание тестов успешно инициировано.');
+            } else {
+                alert('Ошибка создания тестов.');
+            }
+        });
+    };
+
+    $scope.deleteTests = function () {
+        Scripts.deleteTests().then(function (result) {
+            if (result.success == 1) {
+                alert('Удаление тестов успешно инициировано.');
+            } else {
+                alert('Ошибка удаления тестов.');
+            }
+        });
+    };
+
+    $scope.viewTestsLog = function () {
+        Scripts.viewTestsLog().then(function (result) {
+            if (result.success == 1) {
+                alert(result.file);
+            } else {
+                alert('Ошибка чтения лога создания тестов.');
+            }
+        });
+    };
 
     $scope.clickItem = function (item) {
         if (!userPermissions['test_auth_edit']) {

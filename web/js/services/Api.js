@@ -1011,6 +1011,21 @@ app.factory('StatisticsTree', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('Scripts', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/scripts/';
+    return {
+        generateTests: function() {
+            return ApiLoader.post(url + 'generate-tests');
+        },
+        deleteTests: function() {
+            return ApiLoader.post(url + 'delete-tests');
+        },
+        viewTestsLog: function() {
+            return ApiLoader.post(url + 'view-tests-log');
+        },
+    };
+});
+
 app.filter('belongsToTestGroup', function () {
   return function (items, groupId) {
     if (!items) {

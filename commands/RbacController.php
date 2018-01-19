@@ -81,6 +81,7 @@ class RbacController extends Controller {
         ['name' => 'test_call_create', 'description' => 'Создание теста звонков'],
         ['name' => 'test_call_edit', 'description' => 'Редактирование теста звонков'],
         ['name' => 'test_call_delete', 'description' => 'Удаление теста звонков'],
+        ['name' => 'auto_test_management', 'description' => 'Управление автоматическими тестами'],
         ['name' => 'test_group_list', 'description' => 'Просмотр списка групп тестов'],
         ['name' => 'test_group_create', 'description' => 'Создание групп тестов'],
         ['name' => 'test_group_edit', 'description' => 'Редактирование групп тестов'],
@@ -115,7 +116,7 @@ class RbacController extends Controller {
                 'test_auth_list', 'test_auth_create', 'test_auth_edit', 'test_auth_delete',
                 'test_call_list', 'test_call_create', 'test_call_edit', 'test_call_delete',
                 'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete',
-                'trunkhealth_view_list', 'statistics_tree'
+                'trunkhealth_view_list', 'statistics_tree', 'auto_test_management'
             ]
         ],
         ['role' => 'engineer', 'permissions' => [

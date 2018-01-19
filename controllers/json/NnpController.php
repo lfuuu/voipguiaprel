@@ -23,8 +23,9 @@ class NnpController extends JsonController
     public function actionDestination()
     {
         return Destination::find()
-            ->asArray(['id', 'name'])
+            ->select(['id', 'name'])
             ->orderBy('name')
+            ->asArray()
             ->all();
     }
 
@@ -34,8 +35,9 @@ class NnpController extends JsonController
     public function actionCountry()
     {
         return Country::find()
-            ->asArray(['code', 'name_rus'])
+            ->select(['code', 'name_rus'])
             ->orderBy('name_rus')
+            ->asArray()
             ->all();
     }
 
@@ -107,8 +109,9 @@ class NnpController extends JsonController
     public function actionNdcType()
     {
         return NdcType::find()
-            ->asArray(['id', 'name'])
+            ->select(['id', 'name'])
             ->orderBy('name')
+            ->asArray()
             ->all();
     }
 
