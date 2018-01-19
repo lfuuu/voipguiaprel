@@ -16,8 +16,8 @@
                     </select>
                 </div>
                 <div class="form-group col-sm-6">
-                    <select ui-select2 style="width: 100%" tags="true" ng-change="testResultChanged(result)" placeholder="Результат" ng-model="testResult" required>
-                        <option value="">Все тесты</option>
+                    <select ui-select2 style="width: 100%" tags="true" ng-change="testResultChanged(testResult)" placeholder="Результат" ng-model="testResult" required>
+                        <option value="undefined">Все тесты</option>
                         <option ng-repeat="result in testResultList" value="{{result.id}}">{{result.name}}</option>
                     </select>
                 </div>
@@ -90,7 +90,7 @@
     </thead>
     <tbody>
 
-    <tr ng-repeat="item in list | testHasResult:testResult | orderBy:sortType:sortReverse | filter:searchQuery">
+    <tr ng-repeat="item in list | orderBy:sortType:sortReverse | filter:searchQuery">
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
             <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">
         </td>

@@ -4,7 +4,7 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
     $scope.sortReverse = false;
     $scope.searchQuery = '';
     $scope.testGroupId = 'undefined';
-    $scope.testResult = null;
+    $scope.testResult = 'undefined';
 
     $scope.currentPage = 1;
     $scope.limit = 15;
@@ -22,7 +22,13 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
             return;
         }
 
-        TestCall.read({server_id: $scope.server.id, test_group_id: $scope.testGroupId, offset: $scope.offset, limit: $scope.limit}).then(function (data) {
+        TestCall.read({
+            server_id: $scope.server.id,
+            test_group_id: $scope.testGroupId,
+            test_result: $scope.testResult,
+            offset: $scope.offset,
+            limit: $scope.limit
+        }).then(function (data) {
             $scope.list = data.data;
             $scope.totalItems = data.totalCount;
         });
@@ -34,7 +40,7 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
 
     $scope.testResultList = List.testResult();
 
-    $scope.clickCreate = function() {
+    $scope.clickCreate = function () {
         Redirect.testCallCreate($scope.testGroupId).then(function () {
             $scope.init();
         });
@@ -48,6 +54,8 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
 
     $scope.testResultChanged = function(testResult) {
         $scope.testResult = testResult;
+
+        $scope.refreshList();
     }
 
     $scope.clickItem = function(item) {

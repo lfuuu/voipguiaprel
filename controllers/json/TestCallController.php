@@ -40,8 +40,24 @@ class TestCallController extends JsonController
         
         $server = $this->getServerOr404($this->request['server_id']);
         $testGroupId = $this->request['test_group_id'];
+        $testResult = $this->request['test_result'];
         $limit = $this->request['limit'];
         $offset = $this->request['offset'];
+    
+        switch ($testResult) {
+            case 'not_executed':
+                $resultWhere = 'is_autotest AND (tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\')';
+                break;
+            case 'passed':
+                $resultWhere = 'is_autotest AND tr.passed = true AND now() AT TIME ZONE \'UTC\' - tr.tm::timestamp <= INTERVAL \'1 HOUR\'';
+                break;
+            case 'failed':
+                $resultWhere = 'is_autotest AND tr.passed = false AND now() AT TIME ZONE \'UTC\' - tr.tm::timestamp <= INTERVAL \'1 HOUR\'';
+                break;
+            default:
+                $resultWhere = 'true';
+                break;
+        }
     
         $data = TestCall::find()
                 ->select(
@@ -54,6 +70,7 @@ class TestCallController extends JsonController
                 ->leftJoin('auth.test_group tg', 'tg.id = auth.test_call.testgroup_id')
                 ->where(['test_call.server_id' => $server->id])
                 ->andWhere(['auth.test_call.testgroup_id' => $testGroupId])
+                ->andWhere($resultWhere)
                 ->orderBy('name')
                 ->limit($limit)
                 ->offset($offset)
@@ -62,8 +79,10 @@ class TestCallController extends JsonController
     
         $count = TestCall::find()
             ->select(['id'])
-            ->where(['server_id' => $server->id])
+            ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
+            ->where(['auth.test_call.server_id' => $server->id])
             ->andWhere(['testgroup_id' => $testGroupId])
+            ->andWhere($resultWhere)
             ->count();
     
         return [
