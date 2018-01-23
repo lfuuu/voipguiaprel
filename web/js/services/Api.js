@@ -786,7 +786,10 @@ app.factory('TestAuth', function ($q, ApiLoader, $rootScope) {
 		delete: function(id) {
 			list = undefined;
 			return ApiLoader.post(url + 'delete', {id: id});
-		}
+		},
+        descend: function(data) {
+            return ApiLoader.post(url + 'descend', data);
+        },
 	};
 });
 

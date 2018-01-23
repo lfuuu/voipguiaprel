@@ -6,14 +6,19 @@ use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use app\models\Server;
 use app\models\TestAuth;
+use yii\base\Exception;
 use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
+use Yii;
 
 class TestAuthController extends JsonController
 {
     const TEST_RESULT_DIVIDER_START = '2B2EKSTARTJSON';
     const TEST_RESULT_DIVIDER_STOP = '2B2EKSTOPJSON';
+    
+    const TEST_RESULT_DEFAULT_DEPTH = 1;
+    const TEST_RESULT_INITIAL_DEPTH = 2;
 
     /**
      * @return array|\yii\db\ActiveRecord[]
@@ -226,64 +231,141 @@ class TestAuthController extends JsonController
         }
         
         $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
-
+        
+        $apiParams['user'] = Yii::$app->user->getId();
+        
+        $requestForKey = $apiUrl . 'test/auth?' . http_build_query($apiParams);
+        
+        $key = md5($requestForKey);
+        
         $response = file_get_contents($request);
-
+    
         return [
             'item' => $item->toArray(),
-            'result' => $this->generateOldResult($response),
-            'result_new' => $this->generateNewResult($response)
+            'key' => $key,
+            'result_new' => $this->generateNewResult($response, $key)
         ];
     }
 
-    private function generateOldResult($resultString)
+    private function generateNewResult($resultString, $key)
     {
-        $resultString = str_replace("\r", "", $resultString);
-
-        if (strpos($resultString, self::TEST_RESULT_DIVIDER_START) !== false) {
+        $result = Yii::$app->cache->getOrSet($key, function () use ($resultString) {
+            if (strpos($resultString, self::TEST_RESULT_DIVIDER_START) === false) {
+                return null;
+            }
+    
+            $resultString = str_replace("\r", "", $resultString);
+            $resultString = str_replace("\n", "", $resultString);
+    
             $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
-            $resultArrayEnd = explode(self::TEST_RESULT_DIVIDER_STOP, $resultString);
-
-            $resultArray = explode("\n", $resultArray[0]);
-            $resultArray[] = trim($resultArrayEnd[1]);
-        } else {
-            $resultArray = explode("\n", $resultString);
-        }
-
-        $result = [];
-        foreach ($resultArray as $text) {
-            $m = explode('|', $text);
-            $type = isset($m[0]) ? $m[0] : '';
-            $action = isset($m[1]) ? $m[1] : '';
-            $params = isset($m[2]) ? $m[2] : '';
-
-            $result[] = [
-                'type' => $type,
-                'action' => $action,
-                'params' => $params,
-            ];
-        }
-
-        return $result;
+    
+            if (count($resultArray) > 1) {
+                $resultArray = explode(self::TEST_RESULT_DIVIDER_STOP, $resultArray[1]);
+            } else {
+                $resultArray = explode(self::TEST_RESULT_DIVIDER_STOP, $resultArray[0]);
+            }
+    
+            $tempResult = json_decode($resultArray[0], true);
+            
+            $processedResult = $this->processResult($tempResult);
+    
+            return $processedResult;
+        });
+        
+        $finalResult = $this->findByPath($result, '', self::TEST_RESULT_INITIAL_DEPTH);
+        
+        return $finalResult;
     }
-
-    private function generateNewResult($resultString)
+    
+    private function processResult($result)
     {
-        if (strpos($resultString, self::TEST_RESULT_DIVIDER_START) === false) {
-            return null;
+        $newResult = [];
+    
+        foreach ($result[0]['steps'] as $stepKey => $step) {
+            $newResult['steps'][$stepKey] = $this->processItemRecursive($step, $stepKey);
         }
-
-        $resultString = str_replace("\r", "", $resultString);
-        $resultString = str_replace("\n", "", $resultString);
-
-        $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
-
-        if (count($resultArray) > 1) {
-            $resultArray = explode(self::TEST_RESULT_DIVIDER_STOP, $resultArray[1]);
+    
+        return $newResult;
+    }
+    
+    private function processItemRecursive($item, $path = '')
+    {
+        $newItem = $item;
+    
+        $newItem['path'] = $path;
+    
+        if (array_key_exists('steps', $item) && count($item['steps']) > 0) {
+            foreach ($item['steps'] as $stepKey => $step) {
+                $newItem['steps'][$stepKey] = $this->processItemRecursive($step, $path . ',' . $stepKey);
+            }
+        }
+        
+        return $newItem;
+    }
+    
+    private function findByPath($result, $path, $depth = self::TEST_RESULT_DEFAULT_DEPTH)
+    {
+        $newResult = [];
+        
+        if (empty($path)) {
+            foreach ($result['steps'] as $stepKey => $step) {
+                $newResult['steps'][$stepKey] = $this->findByPathRecursive($step, $depth - 1);
+            }
         } else {
-            $resultArray = explode(self::TEST_RESULT_DIVIDER_STOP, $resultArray[0]);
+            $pathArray = explode(',', $path);
+            
+            $newResult = &$result;
+    
+            foreach ($pathArray as $key) {
+                $newResult = &$newResult['steps'][$key];
+            }
+            
+            if (array_key_exists('steps', $newResult)) {
+                foreach ($newResult['steps'] as &$step) {
+                    if (array_key_exists('steps', $step)) {
+                        $step['steps'] = [];
+                    }
+                }
+            }
         }
-
-        return json_decode($resultArray[0], true);
+        
+        return $newResult;
+    }
+    
+    private function findByPathRecursive($item, $depth)
+    {
+        $newItem = $item;
+    
+        if ($depth == 0) {
+            if (array_key_exists('steps', $item)) {
+                $newItem['steps'] = [];
+            }
+        } else {
+            if (array_key_exists('steps', $item) && count($item['steps']) > 0) {
+                foreach ($item['steps'] as $stepKey => $step) {
+                    $newItem['steps'][$stepKey] = $this->findByPathRecursive($step, $depth - 1);
+                }
+            }
+        }
+    
+        return $newItem;
+    }
+    
+    public function actionDescend()
+    {
+        if (!\Yii::$app->user->can('test_auth_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $path = $this->request['path'];
+        $key = $this->request['key'];
+        
+        $data = Yii::$app->cache->get($key);
+        
+        if ($data === false) {
+            throw new Exception('No data in cache');
+        }
+        
+        return $this->findByPath($data, $path);
     }
 }

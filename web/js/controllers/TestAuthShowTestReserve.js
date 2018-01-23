@@ -3,16 +3,13 @@ var TestAuthShowTestReserveCtrl = function($scope, TestAuth, params, $modalInsta
     $scope.details = 0;
 
     if (params.id) {
-        TestAuth.result({id: params.id, isReserve: true, displayTreeView: params.displayTreeView}).then(function (data) {
+        TestAuth.result({id: params.id, isReserve: true, displayTreeView: true}).then(function (data) {
             $scope.item = data.item;
-            $scope.result = data.result;
             $scope.isStageRowType = function (row) {
                 return row.type == 'STAGE';
             };
             $scope.result_new = data.result_new;
-            if ($scope.result_new == null) {
-                $scope.details = 4;
-            }
+            $scope.key = data.key;
         });
     } else {
         $scope.item = {
@@ -24,6 +21,25 @@ var TestAuthShowTestReserveCtrl = function($scope, TestAuth, params, $modalInsta
         TestAuth.save($scope.item).then(function () {
             $modalInstance.close();
         });
+    };
+
+    $scope.descend = function (item) {
+        if (item.steps && item.steps.length == 0) {
+            TestAuth.descend({'path': item.path, 'key': $scope.key}).then(function (result) {
+                var pathArray = item.path.split(',');
+
+                $scope.updateItemRecursively($scope.result_new, pathArray, result.steps);
+            });
+        }
+    };
+
+    $scope.updateItemRecursively = function (item, path, steps) {
+        if (path.length > 0) {
+            var index = path.shift();
+            $scope.updateItemRecursively(item['steps'][index], path, steps);
+        } else {
+            item.steps = steps;
+        }
     };
 
     $scope.back = function () {
