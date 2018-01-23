@@ -54,8 +54,9 @@ def retrieveTests(regions, db):
     conn = None
     try :
         conn = psycopg2.connect(db)
-    except Exception as e:
-        print 'Cant connect to db'
+    except psycopg2.Error as e:
+        print 'Cant connect to db to retrieve tests'
+        print e.message
         sys.exit(1)
 
     cur = conn.cursor()
@@ -84,8 +85,11 @@ def retrieveTests(regions, db):
                 continue
             regions[str(serverId)] = region 
 
+    except psycopg2.Error as e:
+        print 'DB error retreiving tests'
+        print e.message
     except Exception as e:
-        print 'DB error retrieving tests'
+        print 'Error retrieving tests'
     conn.close()
 
     # Adding Moscow
@@ -102,8 +106,9 @@ def fillConfigWithNumbers(regions, db):
     deleteList = []
     try :
         conn = psycopg2.connect(db)
-    except Exception as e:
-        print 'Cant connect to db'
+    except psycopg2.Error as e:
+        print 'Cant connect to db, to fill config with numbers'
+        print e.message
         sys.exit(1)
 
     cur = conn.cursor()
@@ -117,6 +122,9 @@ def fillConfigWithNumbers(regions, db):
             rows = cur.fetchall()
             number = str(rows[0])
             values["number"] = re.search ('\\(\'*([0-9]*)', number).group(1)
+        except psycopg2.Error as e:
+            print 'Region ' + str(region) + ' skipped, because of DB error'
+            print e.message
         except Exception as e:
             print 'Region ' + str(region) + ' skipped, because no service number was found'
             deleteList.append(str(region))
@@ -144,6 +152,9 @@ def saveTest (autotests, db):
             cur.execute(sql)
         conn.commit()
         conn.close()
+    except psycopg2.Error as e:
+        print 'DB error saving to db'
+        print e.message
     except Exception as e:
         print 'Error saving to db\n'
 
@@ -155,6 +166,9 @@ def deleteTests (db):
         cur.execute(sql)
         conn.commit()
         conn.close()
+    except psycopg2.Error as e:
+        print 'DB error deleting tests'
+        print e.message
     except Exception as e:
         print 'Error deleting from db\n'
 
