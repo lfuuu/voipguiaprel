@@ -32,6 +32,7 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
             server_id: $scope.server.id,
             default_priority: 0,
             source_rule_default_allowed: false,
+            source_trunk_rule_default_allowed: false,
             destination_rule_default_allowed: false,
             priorities: [],
             trunkRules: [],
