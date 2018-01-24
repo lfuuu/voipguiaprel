@@ -13,7 +13,7 @@ class ScriptsController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
     
-        $command = './../scripts/generate_autotest/generate_autotest.py 2>&1 -c ../../generate_autotest.conf > ../scripts/generate_autotest/log.txt';
+        $command = 'python ./../scripts/generate_autotest/generate_autotest.py 2>&1 -c ../../generate_autotest.conf > ../scripts/generate_autotest/log.txt';
         
         shell_exec($command);
         
@@ -26,7 +26,7 @@ class ScriptsController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
     
-        $command = './../scripts/generate_autotest/generate_autotest.py 2>&1 -c ../../generate_autotest.conf -delete > ../scripts/generate_autotest/log.txt';
+        $command = 'python ./../scripts/generate_autotest/generate_autotest.py 2>&1 -c ../../generate_autotest.conf -delete > ../scripts/generate_autotest/log.txt';
     
         shell_exec($command);
     
