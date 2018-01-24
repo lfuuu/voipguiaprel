@@ -8,19 +8,13 @@
         <br />
         <div class="tree-container-bordered">
             <div ng-if="subitem.name" ui-tree-handle class="tree-node tree-node-content">
-                <a class="btn btn-success btn-xs" ng-disabled="!subitem.subitems || subitem.subitems.length <= 0 || subitem.has_visible_subitems == false" data-nodrag ng-click="toggle(this)">
+                <a class="btn btn-success btn-xs" ng-disabled="!subitem.subitems" data-nodrag ng-click="toggle(this); descend(subitem, collapsed)">
                     <span class="glyphicon" ng-class="{
                       'glyphicon-chevron-right': collapsed,
                       'glyphicon-chevron-down': !collapsed
                     }"></span>
                 </a>
-                <a class="btn btn-danger btn-xs" ng-if="subitem.is_top_item && subitem.path != ''" ng-click="ascend()">
-                    <span class="glyphicon" ng-class="{'glyphicon-chevron-up': true}"></span>
-                </a>
-                <a class="btn btn-warning btn-xs" ng-if="!subitem.is_top_item" ng-click="descend(subitem)">
-                    <span class="glyphicon" ng-class="{'glyphicon-chevron-right': true}"></span>
-                </a>
-                <span>[{{::subitem.name}}: {{::subitem.key}}: {{::subitem.item_name}}]: [Звонки: {{::subitem.calls}}], [ACD: {{::subitem.acd.join(', ')}}], [ASR: {{::subitem.asr.join(', ')}}]</span>
+                <span>[{{subitem.name}}: {{subitem.key}}: {{subitem.item_name}}]: [Звонки: {{subitem.calls}}], [ACD: {{subitem.acd.join(', ')}}], [ASR: {{subitem.asr.join(', ')}}]</span>
             </div>
 
             <ol ui-tree-nodes="" ng-model="subitem.subitems" ng-class="{hidden: collapsed}">
@@ -32,7 +26,6 @@
     </script>
 
     <div>
-        <button ng-click="expandAll()">Развернуть все<div></div></button>
         <button ng-click="collapseAll()">Свернуть все<div></div></button>
         <div>
             <span style="font-weight: bold;">{{pathName}}</span>

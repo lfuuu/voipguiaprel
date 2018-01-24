@@ -23,7 +23,7 @@ class StatisticsTreeController extends JsonController
     {
         $serverId = $this->request['server_id'];
         $path = $this->request['path'];
-        $pathName = $this->request['path_name'];
+        $coreKey = $this->request['core_key'];
         
         $server = $this->getServerOr404($serverId);
     
@@ -32,19 +32,43 @@ class StatisticsTreeController extends JsonController
         $apiParams = [
             'cmd' => 'getAsrAcdSubTree',
             'path' => '[' . $path . ']',
-            'max_level' => 3,
+            'max_level' => 2,
         ];
     
         $request = $apiUrl . 'api/asracd?' . http_build_query($apiParams);
         
         $response = file_get_contents($request);
         
-        $result = $this->processResult(json_decode($response, true), $path, $pathName);
+        list ($result, $coreKey) = $this->processResult(json_decode($response, true), $path, $coreKey);
         
-        return $result;
+        return ['result' => $result, 'core_key' => $coreKey];
     }
     
-    private function processItemRecursive($item, $isTopItem, $path = '', $pathName = '')
+    private function processResult($result, $path, $coreKey)
+    {
+        if (array_key_exists('err', $result)) {
+            throw new Exception('ERROR|Неопознанная ошибка');
+        }
+        
+        $newResult = [];
+        
+        $newItem['has_visible_subitems'] = true;
+        
+        if (empty($coreKey)) {
+            foreach ($result['subitems'] as $subitem) {
+                $coreKey = $subitem['key'];
+                break;
+            }
+        }
+        
+        foreach ($result['subitems'] as $subItemKey => $subItem) {
+            $newResult['subitems'][$subItemKey] = $this->processItemRecursive($subItem, true, $path);
+        }
+        
+        return array($newResult, $coreKey);
+    }
+    
+    private function processItemRecursive($item, $isTopItem, $path = '')
     {
         if ($item == "...") {
             return $item;
@@ -81,21 +105,18 @@ class StatisticsTreeController extends JsonController
         if (!$isTopItem) {
             if (!empty($path)) {
                 $newItem['path'] = $path . ',' . $newItem['key'];
-                $newItem['path_name'] = $pathName . '/[' . $newItem['name'] . ': ' . $newItem['key'] . ': ' . $newItem['item_name'] . ']';
             } else {
                 $newItem['path'] = $newItem['key'];
-                $newItem['path_name'] = '[' . $newItem['name'] . ': ' . $newItem['key'] . ': ' . $newItem['item_name'] . ']';
             }
         } else {
             $newItem['path'] = $path;
-            $newItem['path_name'] = $pathName;
         }
-
+        
         if (array_key_exists('subitems', $item) && count($item['subitems']) > 0) {
             $hasVisibleSubItems = true;
             
             foreach ($item['subitems'] as $subItemKey => $subItem) {
-                $newItem['subitems'][$subItemKey] = $this->processItemRecursive($subItem, false, $newItem['path'], $newItem['path_name']);
+                $newItem['subitems'][$subItemKey] = $this->processItemRecursive($subItem, false, $newItem['path']);
                 
                 if ($newItem['subitems'][$subItemKey] == "...") {
                     $hasVisibleSubItems = false;
@@ -105,28 +126,10 @@ class StatisticsTreeController extends JsonController
                 $newItem['has_visible_subitems'] = $hasVisibleSubItems;
             }
         } else {
-            $item['subitems'] = [];
-    
             $newItem['has_visible_subitems'] = false;
         }
         
         return $newItem;
     }
-    
-    private function processResult($result, $path, $pathName)
-    {
-        if (array_key_exists('err', $result)) {
-            throw new Exception('ERROR|Неопознанная ошибка');
-        }
-        
-        $newResult = [];
-    
-        $newItem['has_visible_subitems'] = true;
-        
-        foreach ($result['subitems'] as $subItemKey => $subItem) {
-            $newResult['subitems'][$subItemKey] = $this->processItemRecursive($subItem, true, $path, $pathName);
-        }
-        
-        return $newResult;
-    }
+
 }

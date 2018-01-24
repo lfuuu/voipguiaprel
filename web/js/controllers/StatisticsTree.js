@@ -2,10 +2,12 @@ var StatisticsTreeCtrl = function($scope, StatisticsTree, $window) {
 
     $scope.path = '';
     $scope.pathName = '';
+    $scope.coreKey = '';
 
     $scope.refresh = function() {
-        StatisticsTree.get({server_id: $scope.server.id, path: $scope.path, path_name: $scope.pathName}).then(function (data) {
-            $scope.result = data;
+        StatisticsTree.get({server_id: $scope.server.id, path: $scope.path, core_key: $scope.coreKey}).then(function (data) {
+            $scope.result = data.result;
+            $scope.coreKey = data.core_key;
         });
     };
 
@@ -27,26 +29,27 @@ var StatisticsTreeCtrl = function($scope, StatisticsTree, $window) {
         $scope.collapsed = false;
     });
 
-    $scope.descend = function(subitem) {
-        $scope.path = subitem.path;
-        $scope.pathName = subitem.path_name;
-        $scope.refresh();
+    $scope.descend = function (subitem, collapsed) {
+        if (subitem.subitems && subitem.subitems.length == 0 && !collapsed) {
+            StatisticsTree.get({server_id: $scope.server.id, path: subitem.path, core_key: $scope.coreKey}).then(function (result) {
+                var pathArray = ($scope.coreKey + "," + subitem.path).split(',');
+
+                for (var i in result.result.subitems) {
+                    var wantedResult = result.result.subitems[i].subitems;
+                    break;
+                }
+
+                $scope.updateItemRecursively($scope.result, pathArray, wantedResult);
+            });
+        }
     };
 
-    $scope.ascend = function() {
-        var path = "" + $scope.path;
-        var pathArray = path.split(',');
-
-        pathArray.pop();
-
-        var pathName = "" + $scope.pathName;
-        var pathNameArray = pathName.split('/');
-
-        pathNameArray.pop();
-
-        $scope.path = pathArray.join();
-        $scope.pathName = pathNameArray.join('/');
-
-        $scope.refresh();
+    $scope.updateItemRecursively = function (item, path, subitems) {
+        if (path.length > 0) {
+            var index = path.shift();
+            $scope.updateItemRecursively(item['subitems'][index], path, subitems);
+        } else {
+            item.subitems = subitems;
+        }
     };
 };
