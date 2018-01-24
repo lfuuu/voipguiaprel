@@ -20,7 +20,7 @@ class TestAuthController extends JsonController
     const TEST_RESULT_DEFAULT_DEPTH = 1;
     const TEST_RESULT_INITIAL_DEPTH = 2;
     
-    const TEST_RESULT_OLD_TYPES = ['ERROR', 'RESULT', 'INFO'];
+    private $_oldTestResultTypes = ['ERROR', 'RESULT', 'INFO'];
 
     /**
      * @return array|\yii\db\ActiveRecord[]
@@ -271,7 +271,7 @@ class TestAuthController extends JsonController
             $action = isset($m[1]) ? $m[1] : '';
             $params = isset($m[2]) ? $m[2] : '';
             
-            if (in_array($type, self::TEST_RESULT_OLD_TYPES)) {
+            if (in_array($type, $this->_oldTestResultTypes)) {
                 $result[] = [
                     'type' => $type,
                     'action' => $action,
