@@ -2,7 +2,26 @@
     <div class="modal-header">
         <h3 ng-if="item.id">Результаты теста {{item.name}}</h3>
     </div>
+
     <div class="modal-body" style="display:block; overflow:auto;">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Детальность</label>
+            <div class="col-sm-10">
+                <div class="btn-group">
+                    <button type="button" class="btn {{details == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 1">Инфо</button>
+                    <button type="button" class="btn {{details == 0 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 0">Дерево</button>
+                </div>
+            </div>
+        </div>
+
+        <table class="table" ng-if="details == 1">
+            <tr ng-repeat="row in result" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO'">
+                <td nowrap>{{::row.type}}</td>
+                <td nowrap>{{::row.action}}</td>
+                <td width="100%">{{::row.params}}</td>
+            </tr>
+        </table>
+
         <script type="text/ng-template" id="nodes_renderer.html">
             <br />
             <div class="tree-container-bordered">

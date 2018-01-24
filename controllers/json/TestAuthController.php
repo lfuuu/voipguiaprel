@@ -19,6 +19,8 @@ class TestAuthController extends JsonController
     
     const TEST_RESULT_DEFAULT_DEPTH = 1;
     const TEST_RESULT_INITIAL_DEPTH = 2;
+    
+    const TEST_RESULT_OLD_TYPES = ['ERROR', 'RESULT', 'INFO'];
 
     /**
      * @return array|\yii\db\ActiveRecord[]
@@ -243,8 +245,42 @@ class TestAuthController extends JsonController
         return [
             'item' => $item->toArray(),
             'key' => $key,
+            'result' => $this->generateOldResult($response),
             'result_new' => $this->generateNewResult($response, $key)
         ];
+    }
+    
+    private function generateOldResult($resultString)
+    {
+        $resultString = str_replace("\r", "", $resultString);
+        
+        if (strpos($resultString, self::TEST_RESULT_DIVIDER_START) !== false) {
+            $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
+            $resultArrayEnd = explode(self::TEST_RESULT_DIVIDER_STOP, $resultString);
+            
+            $resultArray = explode("\n", $resultArray[0]);
+            $resultArray[] = trim($resultArrayEnd[1]);
+        } else {
+            $resultArray = explode("\n", $resultString);
+        }
+        
+        $result = [];
+        foreach ($resultArray as $text) {
+            $m = explode('|', $text);
+            $type = isset($m[0]) ? $m[0] : '';
+            $action = isset($m[1]) ? $m[1] : '';
+            $params = isset($m[2]) ? $m[2] : '';
+            
+            if (in_array($type, self::TEST_RESULT_OLD_TYPES)) {
+                $result[] = [
+                    'type' => $type,
+                    'action' => $action,
+                    'params' => $params,
+                ];
+            }
+        }
+        
+        return $result;
     }
 
     private function generateNewResult($resultString, $key)
