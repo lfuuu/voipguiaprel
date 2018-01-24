@@ -71,7 +71,7 @@ function getData($resource)
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_NOBODY => false,
         CURLOPT_HEADER => false,
-        CURLOPT_TIMEOUT => 10,
+        CURLOPT_TIMEOUT => 20,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_SSL_VERIFYHOST => false,
     ];
