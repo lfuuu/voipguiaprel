@@ -43,7 +43,7 @@ class ScriptsController extends JsonController
     
         return [
             'success' => 1,
-            'file' => $file
+            'file' => explode("\n", $file)
         ];
     }
 }

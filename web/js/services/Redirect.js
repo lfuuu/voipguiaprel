@@ -245,5 +245,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         statisticsTree: function() {
             return openTab(StatisticsTreeCtrl, '/templates/statistics_tree.html');
         },
+        testGenerateLog: function() {
+            return openModal(TestGenerateLogCtrl, '/templates/test_generate_log.html');
+        }
     };
 });

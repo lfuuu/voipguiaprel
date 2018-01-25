@@ -91,12 +91,8 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
     };
 
     $scope.viewTestsLog = function () {
-        Scripts.viewTestsLog().then(function (result) {
-            if (result.success == 1) {
-                alert(result.file);
-            } else {
-                alert('Ошибка чтения лога создания тестов.');
-            }
+        Redirect.testGenerateLog().then(function () {
+            $scope.init();
         });
     };
 
