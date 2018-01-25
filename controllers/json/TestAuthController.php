@@ -344,8 +344,10 @@ class TestAuthController extends JsonController
         $newResult = [];
         
         if (empty($path)) {
-            foreach ($result['steps'] as $stepKey => $step) {
-                $newResult['steps'][$stepKey] = $this->findByPathRecursive($step, $depth - 1);
+            if (!empty($result) && array_key_exists('steps', $result)) {
+                foreach ($result['steps'] as $stepKey => $step) {
+                    $newResult['steps'][$stepKey] = $this->findByPathRecursive($step, $depth - 1);
+                }
             }
         } else {
             $pathArray = explode(',', $path);
@@ -403,5 +405,16 @@ class TestAuthController extends JsonController
         }
         
         return $this->findByPath($data, $path);
+    }
+    
+    public function actionClearCache()
+    {
+        if (!\Yii::$app->user->can('test_auth_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
+        Yii::$app->cache->flush();
+        
+        return ['success' => 1];
     }
 }

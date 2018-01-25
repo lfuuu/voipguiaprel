@@ -28,6 +28,7 @@
 
 <div>
     <pagination style="display: inline;" total-items="totalItems" items-per-page="limit" page="currentPage" on-select-page="setPagingData(page)"></pagination>
+    <button ng-if="userPermissions['test_auth_edit']" style="display: inline; margin-left: 10px;" class="btn btn-info" ng-click="clearCache()">Очистить кэш</button>
     <button ng-if="testGroupId == TEST_GROUP_AUTOMATIC && userPermissions['auto_test_management']" style="display: inline; margin-left: 10px;" class="btn btn-success" ng-click="generateTests()">Создать тесты</button>
     <button ng-if="testGroupId == TEST_GROUP_AUTOMATIC && userPermissions['auto_test_management']" style="display: inline; margin-left: 10px;" class="btn btn-danger" ng-click="deleteTests()">Удалить тесты</button>
     <button ng-if="testGroupId == TEST_GROUP_AUTOMATIC && userPermissions['auto_test_management']" style="display: inline; margin-left: 10px;" class="btn btn-warning" ng-click="viewTestsLog()">Открыть лог</button>

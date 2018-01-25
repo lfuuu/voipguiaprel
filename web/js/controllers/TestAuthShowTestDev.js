@@ -1,6 +1,6 @@
 var TestAuthShowTestDevCtrl = function($scope, TestAuth, params, $modalInstance) {
 
-    $scope.details = 0;
+    $scope.details = 1;
 
     if (params.id) {
         TestAuth.result({id: params.id, isDev: true, displayTreeView: true}).then(function (data) {

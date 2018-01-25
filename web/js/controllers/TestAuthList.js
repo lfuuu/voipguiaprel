@@ -60,6 +60,16 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
         $scope.refreshList();
     };
 
+    $scope.clearCache = function () {
+        TestAuth.clearCache().then(function (result) {
+            if (result.success == 1) {
+                alert('Кэш очищен успешно');
+            } else {
+                alert('Ошибка очистки кэша');
+            }
+        });
+    }
+
     $scope.generateTests = function () {
         Scripts.generateTests().then(function (result) {
             if (result.success == 1) {
