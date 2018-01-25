@@ -68,7 +68,7 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
                 alert('Ошибка очистки кэша');
             }
         });
-    }
+    };
 
     $scope.generateTests = function () {
         Scripts.generateTests().then(function (result) {

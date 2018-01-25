@@ -26,12 +26,15 @@
     </div>
 </form>
 
-<pagination total-items="totalItems" items-per-page="limit" page="currentPage" on-select-page="setPagingData(page)"></pagination>
+<div>
+    <pagination style="display: inline;" total-items="totalItems" items-per-page="limit" page="currentPage" on-select-page="setPagingData(page)"></pagination>
+    <button ng-if="userPermissions['test_call_edit']" style="display: inline; margin-left: 10px;" class="btn btn-info" ng-click="clearCache()">Очистить кэш</button>
+</div>
+
 <table class="table table-striped table-hover table-condensed" >
     <thead>
     <tr>
         <th width="1%"> </th>
-        <th width="9%">С деревом</th>
         <th width="10%">
             <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                 Название
@@ -93,9 +96,6 @@
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse | filter:searchQuery">
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
             <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">
-        </td>
-        <td style="cursor: pointer" nowrap>
-            <input ng-click="toggleDisplayTreeView(item)" type="checkbox">
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
         <td>

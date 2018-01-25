@@ -50,13 +50,23 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
         $scope.testGroupId = testGroupId;
 
         $scope.refreshList();
-    }
+    };
 
     $scope.testResultChanged = function(testResult) {
         $scope.testResult = testResult;
 
         $scope.refreshList();
-    }
+    };
+
+    $scope.clearCache = function () {
+        TestCall.clearCache().then(function (result) {
+            if (result.success == 1) {
+                alert('Кэш очищен успешно');
+            } else {
+                alert('Ошибка очистки кэша');
+            }
+        });
+    };
 
     $scope.clickItem = function(item) {
         if (!userPermissions['test_call_edit']) {

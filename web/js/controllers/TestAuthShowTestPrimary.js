@@ -18,12 +18,6 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, params, $modalInsta
         };
     }
 
-    $scope.save = function () {
-        TestAuth.save($scope.item).then(function () {
-            $modalInstance.close();
-        });
-    };
-
     $scope.descend = function (item) {
         if (item.steps && item.steps.length == 0) {
             TestAuth.descend({'path': item.path, 'key': $scope.key}).then(function (result) {

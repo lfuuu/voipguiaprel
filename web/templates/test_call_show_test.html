@@ -2,28 +2,17 @@
     <div class="modal-header">
         <h3 ng-if="item.id">Результаты теста {{item.name}}</h3>
     </div>
-    <div class="modal-body" style="display:block; overflow:auto;">
 
+    <div class="modal-body" style="display:block; overflow:auto;">
         <div class="form-group">
             <label class="col-sm-2 control-label">Детальность</label>
             <div class="col-sm-10">
                 <div class="btn-group">
-                    <button type="button" class="btn {{details == 4 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 4">Результат</button>
                     <button type="button" class="btn {{details == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 1">Инфо</button>
-                    <button type="button" class="btn {{details == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 2">Подробно</button>
-                    <button type="button" class="btn {{details == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 3">Отладка</button>
                     <button type="button" class="btn {{details == 0 ? 'btn-primary active' : 'btn-default'}}" ng-click="details = 0">Дерево</button>
                 </div>
             </div>
         </div>
-
-        <table class="table" ng-if="details == 4">
-            <tr ng-repeat="row in result" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT'">
-                <td nowrap>{{row.type}}</td>
-                <td nowrap>{{row.action}}</td>
-                <td width="100%">{{row.params}}</td>
-            </tr>
-        </table>
 
         <table class="table" ng-if="details == 1">
             <tr ng-repeat="row in result" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO'">
@@ -33,28 +22,11 @@
             </tr>
         </table>
 
-        <table class="table" ng-if="details == 2">
-            <tr ng-repeat="row in result" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO' || row.type == 'DEBUG'">
-                <td nowrap>{{row.type}}</td>
-                <td nowrap>{{row.action}}</td>
-                <td width="100%">{{row.params}}</td>
-            </tr>
-        </table>
-
-        <table class="table" ng-if="details == 3">
-            <tr ng-repeat="row in result" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}">
-                <td nowrap ng-if-start="!isStageRowType(row)">{{row.type}}</td>
-                <td nowrap>{{row.action}}</td>
-                <td width="100%" ng-if-end>{{row.params}}</td>
-                <td colspan="3" ng-if="isStageRowType(row)" ng-style="{'font-size': 'larger', 'background-color': 'azure'}"><b>{{row.action}}</b></td>
-            </tr>
-        </table>
-
         <script type="text/ng-template" id="nodes_renderer.html">
             <br />
             <div class="tree-container-bordered">
             <div ng-if="step.name" ui-tree-handle class="tree-node tree-node-content">
-                <a class="btn btn-success btn-xs" ng-disabled="!step.steps || step.steps.length <= 0" data-nodrag ng-click="toggle(this)">
+                <a class="btn btn-success btn-xs" ng-disabled="!step.steps" data-nodrag ng-click="toggle(this); descend(step)">
                     <span class="glyphicon" ng-class="{
                       'glyphicon-chevron-right': collapsed,
                       'glyphicon-chevron-down': !collapsed
@@ -92,11 +64,10 @@
         </script>
 
         <div ng-if="details == 0">
-            <button ng-click="expandAll()">Развернуть все<div></div></button>
             <button ng-click="collapseAll()">Свернуть все<div></div></button>
             <div ui-tree data-drag-enabled="false" id="tree-root">
                 <ol ui-tree-nodes ng-model="result_new">
-                    <li ng-repeat="step in result_new" collapsed="false" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                    <li ng-repeat="step in result_new.steps" collapsed="true" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                 </ol>
             </div>
         </div>

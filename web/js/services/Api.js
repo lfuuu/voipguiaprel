@@ -886,6 +886,12 @@ app.factory('TestCall', function ($q, ApiLoader, $rootScope) {
         delete: function(id) {
             list = undefined;
             return ApiLoader.post(url + 'delete', {id: id});
+        },
+        descend: function(data) {
+            return ApiLoader.post(url + 'descend', data);
+        },
+        clearCache: function() {
+            return ApiLoader.post(url + 'clear-cache');
         }
     };
 });
