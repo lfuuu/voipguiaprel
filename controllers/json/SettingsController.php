@@ -50,6 +50,7 @@ class SettingsController extends JsonController
             'rc_mgmn_action_disable' => $server->rc_mgmn_action_disable,
             'ast_trunk_group_id' => $server->ast_trunk_group_id,
             'fsb_blacklist_id' => $server->fsb_blacklist_id,
+            'global_replacement_id' => $server->global_replacement_id,
             'is_route_to_class5' => $server->is_route_to_class5,
             'is_route_to_class5_phase1_enable' => $server->is_route_to_class5_phase1_enable,
             'number_id_filter_b_route_to_class5' => $server->number_id_filter_b_route_to_class5,
