@@ -217,7 +217,7 @@ def deleteInvalid(autotests):
 
 def generateTest1(originateParams, terminateParams, conf):
     autotest = AutoTest()
-    autotest.name = "From_" + originateParams["city_name"] + '_To_' + terminateParams["city_name"] + '_Leg1_652'
+    autotest.name = 'To_' + terminateParams["city_name"] + '_Leg1_652'
     autotest.trunk = originateParams["trunk"]
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
@@ -227,7 +227,7 @@ def generateTest1(originateParams, terminateParams, conf):
 
 def generateTest2(originateParams, terminateParams, test1):
     autotest = AutoTest()
-    autotest.name = "From_" + originateParams["city_name"] + '_To_' + terminateParams["city_name"] + '_Leg2_652'
+    autotest.name = 'To_' + terminateParams["city_name"] + '_Leg2_652'
     autotest.trunk = test1.result
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
@@ -237,29 +237,29 @@ def generateTest2(originateParams, terminateParams, test1):
 
 def generateTest3(originateParams, terminateParams, test2):
     autotest = AutoTest()
-    autotest.name = "From_" + terminateParams["city_name"] + '_To_' + originateParams["city_name"] + '_Leg3_652'
+    autotest.name = "From_" + originateParams["city_name"] + '_Leg3_652'
     autotest.trunk = getAuthRegexp(test2, '(.*ROUTE CASE\\|.*)(ECSS_[^,]*)(,.*)', 2)
-    autotest.aNum = terminateParams["number"]
-    autotest.bNum = originateParams["number"]
-    autotest.result = originateParams["short_name"] + "_mcn_mgmn_loop"
-    autotest.region = originateParams["federald"]
+    autotest.aNum = originateParams["number"]
+    autotest.bNum = terminateParams["number"]
+    autotest.result = terminateParams["short_name"] + "_mcn_mgmn_loop"
+    autotest.region = terminateParams["federald"]
     return autotest
 
 def generateTest4(originateParams, terminateParams, test3):
     autotest = AutoTest()
-    autotest.name = "From_" + terminateParams["city_name"] + '_To_' + originateParams["city_name"] + '_Leg4_652'
+    autotest.name = "From_" + originateParams["city_name"] + '_Leg4_652'
     autotest.trunk = getAuthRegexp(test3, '(.*ROUTE CASE\\|)([^,]*)(.*)', 2)
-    autotest.aNum = terminateParams["number"]
-    autotest.bNum = originateParams["number"]
-    resultName = str(originateParams["short_name"])
+    autotest.aNum = originateParams["number"]
+    autotest.bNum = terminateParams["number"]
+    resultName = str(terminateParams["short_name"])
     resultName = resultName.capitalize()
     autotest.result = 'RC_' + resultName + '_MCN_Ast'
-    autotest.region = originateParams["federald"]
+    autotest.region = terminateParams["federald"]
     return autotest
 
 def generateMoscowTest1(originateParams, terminateParams, conf):
     autotest = AutoTest()
-    autotest.name = "From_" + originateParams["city_name"] + '_To_' + terminateParams["city_name"] + '_Leg1_652'
+    autotest.name = 'To_' + terminateParams["city_name"] + '_Leg1_652'
     autotest.trunk = originateParams["trunk"]
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
@@ -269,12 +269,12 @@ def generateMoscowTest1(originateParams, terminateParams, conf):
 
 def generateMoscowTest4(originateParams, terminateParams, test1):
     autotest = AutoTest()
-    autotest.name = "From_" + terminateParams["city_name"] + '_To_' + originateParams["city_name"] + '_Leg4_652'
+    autotest.name = "From_" + terminateParams["city_name"] + '_Leg4_652'
     autotest.trunk = getAuthRegexp(test1, '(.*ROUTE CASE\\|.*)(ECSS_[^,]*)(,.*)', 2)
-    autotest.aNum = terminateParams["number"]
-    autotest.bNum = originateParams["number"]
+    autotest.aNum = originateParams["number"]
+    autotest.bNum = terminateParams["number"]
     autotest.result = "^RESULT\|ROUTE CASE\|mcn_msk_ast"
-    autotest.region = originateParams["federald"]
+    autotest.region = terminateParams["federald"]
     return autotest
 
 def generateTests(originateParams, terminateParams, config, result):
@@ -288,8 +288,10 @@ def generateTests(originateParams, terminateParams, config, result):
     result.append(test4)
 
 def generateMoscowTests(moscowParams, terminateParams, conf, result):    
+    if moscowParams["federald"] != "99":
+        return 
     test1 = generateMoscowTest1(moscowParams, terminateParams, conf)
-    test4 = generateMoscowTest4(originateParams, terminateParams, test1)
+    test4 = generateMoscowTest4(moscowParams, terminateParams, test1)
     result.append(test1)
     result.append(test4)
 
@@ -320,7 +322,7 @@ for originateRegion, originateParams in config["regions"].iteritems():
     for terminateRegion, terminateParams in config["regions"].iteritems():
         if originateRegion == terminateRegion:
             continue
-        if originateParams["federald"] == "99":
+        if originateParams["federald"] == "99" or terminateParams["federald"] == "99":
             generateMoscowTests(originateParams, terminateParams, config, result)
         else:
             generateTests(originateParams, terminateParams, config, result)
