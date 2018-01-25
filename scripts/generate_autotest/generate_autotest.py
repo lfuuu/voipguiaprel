@@ -215,6 +215,17 @@ def deleteInvalid(autotests):
 
     return correctAutotests
 
+def fetchBackTrunk(trunk_name, db):
+    try:
+       cur.execute ('SELECT back_trunk FROM auth.trunk WHERE name=\'' + trunk_name + '\';')
+       result = cur.fetchall()
+       return str(result[0][0])
+    except psycopg2.Error as e:
+        print 'Cant fetch back trunk DB error:' + e.what()
+    except Exception as e:
+        print 'Cant fetch back trunk for:' + trunk_name
+    return None
+
 def generateTest1(originateParams, terminateParams, conf):
     autotest = AutoTest()
     autotest.name = 'To_' + terminateParams["city_name"] + '_Leg1_652'
@@ -235,10 +246,11 @@ def generateTest2(originateParams, terminateParams, test1):
     autotest.region = originateParams["federald"]
     return autotest
 
-def generateTest3(originateParams, terminateParams, test2):
+def generateTest3(originateParams, terminateParams, test2, db):
     autotest = AutoTest()
     autotest.name = "From_" + originateParams["city_name"] + '_Leg3_652'
     autotest.trunk = getAuthRegexp(test2, '(.*ROUTE CASE\\|.*)(ECSS_[^,]*)(,.*)', 2)
+    autotest.trunk = fetchBackTrunk(autotest.trunk, db)
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
     autotest.result = terminateParams["short_name"] + "_mcn_mgmn_loop"
@@ -253,7 +265,7 @@ def generateTest4(originateParams, terminateParams, test3):
     autotest.bNum = terminateParams["number"]
     resultName = str(terminateParams["short_name"])
     resultName = resultName.capitalize()
-    autotest.result = 'RC_' + resultName + '_MCN_Ast'
+    autotest.result = 'RC_' + resultName + '_MCN_Ast|ACCEPT'
     autotest.region = terminateParams["federald"]
     return autotest
 
@@ -277,10 +289,10 @@ def generateMoscowTest4(originateParams, terminateParams, test1):
     autotest.region = terminateParams["federald"]
     return autotest
 
-def generateTests(originateParams, terminateParams, config, result):
+def generateTests(originateParams, terminateParams, config, result, db):
     test1 = generateTest1(originateParams, terminateParams, config)
     test2 = generateTest2(originateParams, terminateParams, test1)
-    test3 = generateTest3(originateParams, terminateParams, test2)
+    test3 = generateTest3(originateParams, terminateParams, test2, db)
     test4 = generateTest4(originateParams, terminateParams, test3)
     result.append(test1)
     result.append(test2)
@@ -314,6 +326,9 @@ fillConfigWithNumbers (config["regions"], config["db"])
 
 result = []    
 
+connection = psycopg2.connect(config["db"])
+cursor = connection.cursor()
+
 size = len(config["regions"])
 index = 0
 for originateRegion, originateParams in config["regions"].iteritems():
@@ -325,8 +340,10 @@ for originateRegion, originateParams in config["regions"].iteritems():
         if originateParams["federald"] == "99" or terminateParams["federald"] == "99":
             generateMoscowTests(originateParams, terminateParams, config, result)
         else:
-            generateTests(originateParams, terminateParams, config, result)
+            generateTests(originateParams, terminateParams, config, result, cursor)
     index += 1
+
+connection.close()
 
 result = deleteInvalid(result)
 
