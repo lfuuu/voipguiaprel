@@ -260,28 +260,26 @@ class TestCallController extends JsonController
     
     private function generateNewResult($resultString, $key)
     {
-        $result = Yii::$app->cache->getOrSet($key, function () use ($resultString) {
-            if (strpos($resultString, self::TEST_RESULT_DIVIDER_START) === false) {
-                return null;
-            }
-            
-            $resultString = str_replace("\r", "", $resultString);
-            $resultString = str_replace("\n", "", $resultString);
-            
-            $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
-            
-            if (count($resultArray) > 1) {
-                $resultArray = explode(self::TEST_RESULT_DIVIDER_STOP, $resultArray[1]);
-            } else {
-                $resultArray = explode(self::TEST_RESULT_DIVIDER_STOP, $resultArray[0]);
-            }
-            
-            $tempResult = json_decode($resultArray[0], true);
-            
-            $processedResult = $this->processResult($tempResult);
-            
-            return $processedResult;
-        });
+        if (strpos($resultString, self::TEST_RESULT_DIVIDER_START) === false) {
+            return null;
+        }
+    
+        $resultString = str_replace("\r", "", $resultString);
+        $resultString = str_replace("\n", "", $resultString);
+    
+        $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
+    
+        if (count($resultArray) > 1) {
+            $resultArray = explode(self::TEST_RESULT_DIVIDER_STOP, $resultArray[1]);
+        } else {
+            $resultArray = explode(self::TEST_RESULT_DIVIDER_STOP, $resultArray[0]);
+        }
+    
+        $tempResult = json_decode($resultArray[0], true);
+    
+        $result = $this->processResult($tempResult);
+        
+        Yii::$app->cache->set($key, $result);
         
         $finalResult = $this->findByPath($result, '', self::TEST_RESULT_INITIAL_DEPTH);
         
