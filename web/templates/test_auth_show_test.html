@@ -33,7 +33,8 @@
                     }"></span>
                 </a>
                 <span ng-if="step.color && step.color == 'red'" class="bg-danger">{{step.name}}</span>
-                <span ng-if="!step.color || step.color != 'red'">{{step.name}}</span>
+                <span ng-if="step.color && step.color == 'yellow'" class="bg-warning">{{step.name}}</span>
+                <span ng-if="!step.color || step.color != 'red' || step.color != 'yellow'">{{step.name}}</span>
             </div>
             <div ng-if="!step.name" style="display: inline-block;" ui-tree-handle class="tree-node tree-node-content">
                 <table>
