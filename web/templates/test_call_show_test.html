@@ -48,7 +48,8 @@
                         <td>
                             &nbsp;
                             <span ng-if="step.color && step.color == 'red'" class="bg-danger">{{step.trace}}</span>
-                            <span ng-if="!step.color || step.color != 'red'">{{step.trace}}</span>
+                            <span ng-if="step.color && step.color == 'yellow'" class="bg-warning">{{step.trace}}</span>
+                            <span ng-if="!step.color || step.color != 'red' || step.color != 'yellow'">{{step.trace}}</span>
                         </td>
                     </tr>
                 </table>

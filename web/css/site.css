@@ -183,6 +183,10 @@ td > div > .select2-container > .select2-choice {
 	background-color: #FA7777;
 }
 
+.bg-warning {
+	background-color: #f0ad4e;
+}
+
 .div-warning {
 	display: inline-block;
 	padding: 6px 12px;
