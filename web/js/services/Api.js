@@ -512,6 +512,9 @@ app.factory('Server', function ($q, ApiLoader) {
     return {
         list: function(data) {
             return ApiLoader.post(url + 'list', data);
+        },
+        checkSyncProgress: function(data) {
+            return ApiLoader.post(url + 'check-sync-progress', data);
         }
     };
 });
