@@ -22,7 +22,7 @@ class ServerController extends JsonController
     {
         $server = $this->getServerOr404($this->request['server_id']);
     
-        if (!$server->hub_id) {
+        if (!empty($server->hub_id)) {
             $where = "server_id = " . $this->request['server_id'];
         } else {
             $where = "(server_id in (select id from public.server where hub_id = " . $this->hub_id . ")) or server_id = " . $this->request['server_id'];
