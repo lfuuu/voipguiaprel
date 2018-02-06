@@ -3,7 +3,7 @@ var TestCallShowTestReserve2Ctrl = function($scope, TestCall, params, $modalInst
     $scope.details = 1;
 
     if (params.id) {
-        TestCall.result({id: params.id, isReserve2: true, displayTreeView: params.displayTreeView}).then(function (data) {
+        TestCall.result({id: params.id, isReserve2: true, displayTreeView: true}).then(function (data) {
             $scope.item = data.item;
             $scope.isStageRowType = function (row) {
                 return row.type == 'STAGE';
@@ -37,7 +37,7 @@ var TestCallShowTestReserve2Ctrl = function($scope, TestCall, params, $modalInst
         }
     };
 
-    $scope.back = function() {
+    $scope.back = function () {
         $modalInstance.dismiss();
     };
 

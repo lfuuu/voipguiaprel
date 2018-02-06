@@ -3,7 +3,7 @@ var TestCallShowTestDevCtrl = function($scope, TestCall, params, $modalInstance)
     $scope.details = 1;
 
     if (params.id) {
-        TestCall.result({id: params.id, isDev: true, displayTreeView: params.displayTreeView}).then(function (data) {
+        TestCall.result({id: params.id, isDev: true, displayTreeView: true}).then(function (data) {
             $scope.item = data.item;
             $scope.isStageRowType = function (row) {
                 return row.type == 'STAGE';
@@ -37,7 +37,7 @@ var TestCallShowTestDevCtrl = function($scope, TestCall, params, $modalInstance)
         }
     };
 
-    $scope.back = function() {
+    $scope.back = function () {
         $modalInstance.dismiss();
     };
 
