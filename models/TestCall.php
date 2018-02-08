@@ -10,7 +10,8 @@ use app\queries\NumberQuery;
  * @property int    $server_id
  * @property string $name
  * @property bool   $orig
- * @property string $trunk_name
+ * @property string $src_trunk_name
+ * @property string $dst_trunk_name
  * @property string $connect_time
  * @property int    $session_time
  * @property string $src_number
@@ -50,7 +51,7 @@ class TestCall extends \yii\db\ActiveRecord
             [['session_time'], 'integer'],
             [['src_number', 'dst_number', 'redirect_number'], 'string', 'max' => 32],
             [['src_noa','dst_noa'], 'integer'],
-            [['trunk_name'], 'string', 'max' => 32],
+            [['src_trunk_name', 'dst_trunk_name'], 'string', 'max' => 32],
             [['is_autotest',], 'boolean'],
             [['correct_answer'], 'string', 'max' => 128],
             [['testgroup_id'], 'integer'],
