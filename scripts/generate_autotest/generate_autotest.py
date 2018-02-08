@@ -95,7 +95,7 @@ def retrieveTests(regions, db):
     # Adding Moscow
     moscow = dict()
     moscow["short_name"] = "msk"
-    moscow["city_name"] = "MSK"
+    moscow["city_name"] = "Москвa"
     moscow["federald"] = "99"
     moscow["asterisk"] = "16"
     moscow["trunk"] = "mcn_msk_ast16_99"
@@ -192,24 +192,25 @@ def getAuthRegexp(autotest, regexp, groupNum):
         if route_case == None:
             route_case = 'http error'
         error += '\nRECEIVED: ' + route_case
-        ERROR_LIST.append(error)
+        #ERROR_LIST.append(error)
+        print error
         return None
 
 def deleteInvalid(autotests):
     correctAutotests = []
 
     for test in autotests :
-        if test.aNum == None or test.aNum == "" :
+        if test.aNum == None or test.aNum == "" or test.aNum == "None":
             continue
-        if test.bNum == None or test.bNum == "" :
+        if test.bNum == None or test.bNum == "" or test.bNum == "None":
             continue
-        if test.trunk == None or test.trunk == "" :
+        if test.trunk == None or test.trunk == "" or test.trunk == "None":
             continue
-        if test.name == None or test.name == "" :
+        if test.name == None or test.name == "" or test.name == "None":
             continue
-        if test.region == None or test.region == "" :
+        if test.region == None or test.region == "" or test.region == "None":
             continue
-        if test.result == None or test.result == "" :
+        if test.result == None or test.result == "" or test.result == "None":
             continue
         correctAutotests.append(test)
 
@@ -217,9 +218,15 @@ def deleteInvalid(autotests):
 
 def fetchBackTrunk(trunk_name, db):
     try:
-       cur.execute ('SELECT back_trunk FROM auth.trunk WHERE name=\'' + trunk_name + '\';')
-       result = cur.fetchall()
-       return str(result[0][0])
+       if trunk_name == None or trunk_name == "":
+           return None
+       db.execute ('SELECT back_trunk FROM auth.trunk WHERE name=\'' + trunk_name + '\';')
+       result = db.fetchall()
+       if result[0][0] == None or result[0][0] == "":
+           print 'Cant find back_trunk for:' + trunk_name
+           return None
+       return result[0][0]
+
     except psycopg2.Error as e:
         print 'Cant fetch back trunk DB error:' + e.what()
     except Exception as e:
@@ -250,7 +257,13 @@ def generateTest3(originateParams, terminateParams, test2, db):
     autotest = AutoTest()
     autotest.name = "From_" + originateParams["city_name"] + '_Leg3_652'
     autotest.trunk = getAuthRegexp(test2, '(.*ROUTE CASE\\|.*)(ECSS_[^,]*)(,.*)', 2)
+    if autotest.trunk == None:
+        print 'Leg3, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, bad auth\n'
+        return None
     autotest.trunk = fetchBackTrunk(autotest.trunk, db)
+    if autotest.trunk == None:
+        print 'Leg3, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, no backtrunk\n'
+        return None
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
     autotest.result = terminateParams["short_name"] + "_mcn_mgmn_loop"
@@ -261,6 +274,9 @@ def generateTest4(originateParams, terminateParams, test3):
     autotest = AutoTest()
     autotest.name = "From_" + originateParams["city_name"] + '_Leg4_652'
     autotest.trunk = getAuthRegexp(test3, '(.*ROUTE CASE\\|)([^,]*)(.*)', 2)
+    if autotest.trunk == None:
+        print 'Leg4, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, bad auth\n'
+        return None
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
     resultName = str(terminateParams["short_name"])
@@ -291,21 +307,38 @@ def generateMoscowTest4(originateParams, terminateParams, test1):
 
 def generateTests(originateParams, terminateParams, config, result, db):
     test1 = generateTest1(originateParams, terminateParams, config)
+    result.append(test1)
     test2 = generateTest2(originateParams, terminateParams, test1)
-    test3 = generateTest3(originateParams, terminateParams, test2, db)
-    test4 = generateTest4(originateParams, terminateParams, test3)
-    result.append(test1)
     result.append(test2)
-    result.append(test3)
-    result.append(test4)
+    test3 = generateTest3(originateParams, terminateParams, test2, db)
+    if test3 != None:
+        result.append(test3)
+        test4 = generateTest4(originateParams, terminateParams, test3)
+        if test4 != None:
+            result.append(test4)
 
-def generateMoscowTests(moscowParams, terminateParams, conf, result):    
-    if moscowParams["federald"] != "99":
-        return 
-    test1 = generateMoscowTest1(moscowParams, terminateParams, conf)
-    test4 = generateMoscowTest4(moscowParams, terminateParams, test1)
-    result.append(test1)
-    result.append(test4)
+def generateMoscowTests(moscowParams, terminateParams, conf, result, db):    
+    if moscowParams["federald"] == "99":
+        test1 = AutoTest()
+        test1.result = "mcn_msk_ast16_99"
+        test2 = generateTest2(moscowParams, terminateParams, test1)
+        result.append(test2)
+        test3 = generateTest3(moscowParams, terminateParams, test2, db)
+        if test3 != None:
+            result.append(test3)
+            test4 = generateTest4(moscowParams, terminateParams, test3)
+            if test4 != None:
+                result.append(test4)
+
+    elif terminateParams["federald"] == "99":
+        test1 = generateTest1(moscowParams, terminateParams, conf)
+        result.append(test1)
+        test2 = generateTest2(moscowParams, terminateParams, test1)
+        result.append(test2)
+        test3 = generateTest3(moscowParams, terminateParams, test2, db)
+        if test3 != None:
+            test3.result = "mcn_msk_ast"
+            result.append(test3)
 
 args = parseArgs()
 configFilename = args.c
@@ -338,7 +371,7 @@ for originateRegion, originateParams in config["regions"].iteritems():
         if originateRegion == terminateRegion:
             continue
         if originateParams["federald"] == "99" or terminateParams["federald"] == "99":
-            generateMoscowTests(originateParams, terminateParams, config, result)
+            generateMoscowTests(originateParams, terminateParams, config, result, cursor)
         else:
             generateTests(originateParams, terminateParams, config, result, cursor)
     index += 1
@@ -352,7 +385,6 @@ for i in ERROR_LIST:
     print ""
 
 print 'Generated:' + str(len(result)) + ' tests'
-print 'Not generated:' + str(len(ERROR_LIST))
 
 if args.dry == None:
     saveTest(result, config["db"])
