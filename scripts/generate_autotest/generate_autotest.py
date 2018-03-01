@@ -33,6 +33,7 @@ def printToLog(info):
     if LOG_FILE != None:
         f = open(LOG_FILE, 'a')
         f.write(str(info) + '\n')
+        f.flush()
         f.close()
     else:
         print info
@@ -361,6 +362,7 @@ if args.l != "" and args.l != None:
         LOG_FILE=args.l
         f = open(LOG_FILE, 'w')
 	f.write('Log:\n')
+        f.flush()
 	f.close()
     except Exception as e:
         LOG_FILE=None
