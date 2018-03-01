@@ -22,12 +22,31 @@ class BlacklistSettingsController extends JsonController
         
         $server = $this->getServerOr404($this->request['server_id']);
         
-        $blacklistSettings = $this->getBlacklistSettingsOr404($server->fsb_blacklist_id);
+        if (!empty($server->fsb_blacklist_id)) {
+            $blacklistSettings = $this->getBlacklistSettingsOr404($server->fsb_blacklist_id);
+            $a = [
+                'id' => $blacklistSettings->id,
+                'server_id' => $server->id,
+                'name' => $blacklistSettings->name
+            ];
+        } else {
+            $a = [];
+        }
+    
+        if (!empty($server->fsb_b_blacklist_id)) {
+            $blacklistSettingsB = $this->getBlacklistSettingsOr404($server->fsb_b_blacklist_id);
+            $b = [
+                'id' => $blacklistSettingsB->id,
+                'server_id' => $server->id,
+                'name' => $blacklistSettingsB->name
+            ];
+        } else {
+            $b = [];
+        }
         
         return [
-            'id' => $blacklistSettings->id,
-            'server_id' => $server->id,
-            'name' => $blacklistSettings->name
+            'a' => $a,
+            'b' => $b
         ];
     }
     

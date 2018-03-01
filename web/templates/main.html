@@ -56,7 +56,7 @@
             <a href="#" class="list-group-item" ng-if="userPermissions['test_auth_list']" ng-click="Redirect.testAuthList()" ng-class="{active:tabs.isController('TestAuthListCtrl')}">Тестирование маршрутизации</a>
             <a href="#" class="list-group-item" ng-if="userPermissions['test_call_list']" ng-click="Redirect.testCallList()" ng-class="{active:tabs.isController('TestCallListCtrl')}">Тестирование звонков</a>
             <a href="#" class="list-group-item" ng-if="userPermissions['test_group_list']" ng-click="Redirect.testGroupList()" ng-class="{active:tabs.isController('TestGroupListCtrl')}">Группы тестов</a>
-            <a href="#" class="list-group-item" ng-if="userPermissions['blacklist_edit']" ng-click="Redirect.blacklistSettings()">Блокировка по А-номеру</a>
+            <a href="#" class="list-group-item" ng-if="userPermissions['blacklist_edit']" ng-click="Redirect.blacklistSettings()">Блокировка по номеру</a>
             <a href="/health/health.html" ng-if="userPermissions['trunkhealth_view_list']" class="list-group-item">Здоровье биллеров</a>
         </div>
         <div ng-if="userPermissions['statistics_tree']" class="list-group">

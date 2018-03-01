@@ -14,24 +14,43 @@ var BlacklistSettingsEditCtrl = function($scope, BlacklistSettings, $modalInstan
     };
 
     BlacklistSettings.get({server_id: $scope.server.id}).then(function(data){
-        $scope.item = data;
+        $scope.itemA = data['a'];
+        $scope.itemB = data['b'];
     });
 
 
-    $scope.add = function() {
-        BlacklistSettings.add({id: $scope.item.id, prefixes: $scope.item.prefixes}).then(function(response) {
+    $scope.addA = function() {
+        BlacklistSettings.add({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes}).then(function(response) {
             $scope.processResponse(response);
         });
     };
 
-    $scope.delete = function() {
-        BlacklistSettings.delete({id: $scope.item.id, prefixes: $scope.item.prefixes}).then(function(response) {
+    $scope.deleteA = function() {
+        BlacklistSettings.delete({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes}).then(function(response) {
             $scope.processResponse(response);
         });
     };
 
-    $scope.check = function() {
-        BlacklistSettings.check({id: $scope.item.id, prefixes: $scope.item.prefixes}).then(function(response) {
+    $scope.checkA = function() {
+        BlacklistSettings.check({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes}).then(function(response) {
+            $scope.processResponse(response);
+        });
+    };
+
+    $scope.addB = function() {
+        BlacklistSettings.add({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes}).then(function(response) {
+            $scope.processResponse(response);
+        });
+    };
+
+    $scope.deleteB = function() {
+        BlacklistSettings.delete({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes}).then(function(response) {
+            $scope.processResponse(response);
+        });
+    };
+
+    $scope.checkB = function() {
+        BlacklistSettings.check({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes}).then(function(response) {
             $scope.processResponse(response);
         });
     };
