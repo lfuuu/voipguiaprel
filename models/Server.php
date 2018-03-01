@@ -35,6 +35,7 @@ use app\models\event\Queue;
  * @property string $nas_ip_address
  * @property int $ast_trunk_group_id
  * @property int $fsb_blacklist_id
+ * @property int $fsb_b_blacklist_id
  * @property int $global_replacement_id
  * @property bool $is_route_to_class5
  * @property bool $is_route_to_class5_phase1_enable
@@ -82,7 +83,7 @@ class Server extends \yii\db\ActiveRecord
         return [
             [['low_balance_outcome_id', 'blocked_outcome_id', 'hub_id', 'emergency_prefixlist_id',
                 'mcn_prefixlist_id','rc_mgmn_outcome_id','vats_trunk_id', 'ast_trunk_group_id',
-                'fsb_blacklist_id', 'global_replacement_id', 'number_id_filter_b_route_to_class5', 'cpc_id'], 'integer'],
+                'fsb_blacklist_id', 'fsb_b_blacklist_id', 'global_replacement_id', 'number_id_filter_b_route_to_class5', 'cpc_id'], 'integer'],
             [['is_sormed', 'is_production','rc_mgmn_action_disable','is_route_to_class5','is_route_to_class5_phase1_enable'], 'boolean'],
 
             [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],
