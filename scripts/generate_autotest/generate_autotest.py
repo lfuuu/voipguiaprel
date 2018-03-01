@@ -12,6 +12,7 @@ sys.setdefaultencoding('utf8')
 
 OUR_CLIENT = 652
 ERROR_LIST = []
+LOG_FILE   = None
 
 class AutoTest:
     name = ""
@@ -28,10 +29,20 @@ class AutoTest:
         output = output + str(self.result)
         return output
 
+def printToLog(info):
+    if LOG_FILE != None:
+        f = open(LOG_FILE, 'a')
+        f.write(str(info) + '\n')
+        f.close()
+    else:
+        print info
+
+
 def parseArgs():
     parser = argparse.ArgumentParser(description='billing voip autotest generation tool')
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', help='name of json-config file')
+    parser.add_argument('-l', help='log file name')
     parser.add_argument('-dry', help='generate tests, but do not push them to DB (dry run)', const=1, default=None, action='store_const')
     parser.add_argument('-delete', help='delete autotests from DB', const=1, default=None, action='store_const')
     return parser.parse_args()
@@ -43,10 +54,10 @@ def readConfig(filename):
         data.close()
         return result
     except IOError as e:
-        print ('Couldn\'t load file : ' + e.filename + ' : ' + e.strerror)
+        printToLog ('Couldn\'t load file : ' + e.filename + ' : ' + e.strerror)
         return None
     except ValueError as e:
-        print ('Parsing config file failed')
+        printToLog ('Parsing config file failed')
         return None
     return None
 
@@ -55,8 +66,8 @@ def retrieveTests(regions, db):
     try :
         conn = psycopg2.connect(db)
     except psycopg2.Error as e:
-        print 'Cant connect to db to retrieve tests'
-        print e.message
+        printToLog( 'Cant connect to db to retrieve tests' )
+        printToLog( str(e.pgerror) )
         sys.exit(1)
 
     cur = conn.cursor()
@@ -86,10 +97,10 @@ def retrieveTests(regions, db):
             regions[str(serverId)] = region 
 
     except psycopg2.Error as e:
-        print 'DB error retreiving tests'
-        print e.message
+        printToLog( 'DB error retreiving tests' )
+        printToLog( e.pgerror )
     except Exception as e:
-        print 'Error retrieving tests'
+        printToLog( 'Error retrieving tests' )
     conn.close()
 
     # Adding Moscow
@@ -107,8 +118,8 @@ def fillConfigWithNumbers(regions, db):
     try :
         conn = psycopg2.connect(db)
     except psycopg2.Error as e:
-        print 'Cant connect to db, to fill config with numbers'
-        print e.message
+        printToLog( 'Cant connect to db, to fill config with numbers' )
+        printToLog( e.pgerror )
         sys.exit(1)
 
     cur = conn.cursor()
@@ -123,10 +134,10 @@ def fillConfigWithNumbers(regions, db):
             number = str(rows[0])
             values["number"] = re.search ('\\(\'*([0-9]*)', number).group(1)
         except psycopg2.Error as e:
-            print 'Region ' + str(region) + ' skipped, because of DB error'
-            print e.message
+            printToLog( 'Region ' + str(region) + ' skipped, because of DB error' )
+            printToLog( e.pgerror )
         except Exception as e:
-            print 'Region ' + str(region) + ' skipped, because no service number was found'
+            printToLog( 'Region ' + str(region) + ' skipped, because no service number was found' )
             deleteList.append(str(region))
     conn.close()
     for region in deleteList :
@@ -153,10 +164,10 @@ def saveTest (autotests, db):
         conn.commit()
         conn.close()
     except psycopg2.Error as e:
-        print 'DB error saving to db'
-        print e.message
+        printToLog( 'DB error saving to db' )
+        printToLog( e.pgerror )
     except Exception as e:
-        print 'Error saving to db\n'
+        printToLog( 'Error saving to db\n' )
 
 def deleteTests (db):
     try :
@@ -167,10 +178,10 @@ def deleteTests (db):
         conn.commit()
         conn.close()
     except psycopg2.Error as e:
-        print 'DB error deleting tests'
-        print e.message
+        printToLog( 'DB error deleting tests' )
+        printToLog( e.pgerror )
     except Exception as e:
-        print 'Error deleting from db\n'
+        printToLog( 'Error deleting from db\n' )
 
 def getAuthRegexp(autotest, regexp, groupNum):
     A = autotest.aNum
@@ -193,7 +204,7 @@ def getAuthRegexp(autotest, regexp, groupNum):
             route_case = 'http error'
         error += '\nRECEIVED: ' + route_case
         #ERROR_LIST.append(error)
-        print error
+        printToLog( error )
         return None
 
 def deleteInvalid(autotests):
@@ -223,14 +234,14 @@ def fetchBackTrunk(trunk_name, db):
        db.execute ('SELECT back_trunk FROM auth.trunk WHERE name=\'' + trunk_name + '\';')
        result = db.fetchall()
        if result[0][0] == None or result[0][0] == "":
-           print 'Cant find back_trunk for:' + trunk_name
+           printToLog( 'Cant find back_trunk for:' + trunk_name )
            return None
        return result[0][0]
 
     except psycopg2.Error as e:
-        print 'Cant fetch back trunk DB error:' + e.what()
+        printToLog( 'Cant fetch back trunk DB error:' + e.pgerror )
     except Exception as e:
-        print 'Cant fetch back trunk for:' + trunk_name
+        printToLog( 'Cant fetch back trunk for:' + trunk_name )
     return None
 
 def generateTest1(originateParams, terminateParams, conf):
@@ -258,11 +269,11 @@ def generateTest3(originateParams, terminateParams, test2, db):
     autotest.name = "From_" + originateParams["city_name"] + '_Leg3_652'
     autotest.trunk = getAuthRegexp(test2, '(.*ROUTE CASE\\|.*)(ECSS_[^,]*)(,.*)', 2)
     if autotest.trunk == None:
-        print 'Leg3, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, bad auth\n'
+        printToLog( 'Leg3, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, bad auth\n' )
         return None
     autotest.trunk = fetchBackTrunk(autotest.trunk, db)
     if autotest.trunk == None:
-        print 'Leg3, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, no backtrunk\n'
+        printToLog( 'Leg3, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, no backtrunk\n' )
         return None
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
@@ -275,7 +286,7 @@ def generateTest4(originateParams, terminateParams, test3):
     autotest.name = "From_" + originateParams["city_name"] + '_Leg4_652'
     autotest.trunk = getAuthRegexp(test3, '(.*ROUTE CASE\\|)([^,]*)(.*)', 2)
     if autotest.trunk == None:
-        print 'Leg4, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, bad auth\n'
+        printToLog( 'Leg4, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, bad auth\n' )
         return None
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
@@ -345,12 +356,22 @@ configFilename = args.c
 if args.c == None:
     configFilename = 'config.json'
 
+if args.l != "" and args.l != None:
+    try:
+        LOG_FILE=args.l
+        f = open(LOG_FILE, 'w')
+	f.write('Log:\n')
+	f.close()
+    except Exception as e:
+        LOG_FILE=None
+
 config = readConfig(configFilename)
 if config == None:
     sys.exit(1)
 
 if args.delete != None:
     deleteTests (config["db"])
+    printToLog( 'FINISHED DELETING TESTS' )
     sys.exit(1)
 
 config["regions"] = dict()
@@ -381,10 +402,12 @@ connection.close()
 result = deleteInvalid(result)
 
 for i in ERROR_LIST:
-    print i
-    print ""
+    printToLog( i )
+    printToLog( "" )
 
-print 'Generated:' + str(len(result)) + ' tests'
+printToLog( 'Generated:' + str(len(result)) + ' tests' )
 
 if args.dry == None:
     saveTest(result, config["db"])
+
+printToLog ( '\nTEST GENERATION COMPLETED!\n' )
