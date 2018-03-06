@@ -6,6 +6,7 @@ use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use app\models\Server;
 use app\models\TestAuth;
+use app\models\Trunk;
 use yii\base\Exception;
 use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
@@ -19,6 +20,11 @@ class TestAuthController extends JsonController
     
     const TEST_RESULT_DEFAULT_DEPTH = 1;
     const TEST_RESULT_INITIAL_DEPTH = 2;
+    
+    const TEST_DIRECTION_MAIN = 1;
+    const TEST_DIRECTION_RESERVE = 2;
+    const TEST_DIRECTION_RESERVE_2 = 3;
+    const TEST_DIRECTION_DEV = 4;
     
     private $_oldTestResultTypes = ['ERROR', 'RESULT', 'INFO'];
 
@@ -199,6 +205,8 @@ class TestAuthController extends JsonController
         if ($item === null) {
             throw new HttpException(404, 'TestAuth не найден');
         }
+        
+        $direction = self::TEST_DIRECTION_MAIN;
 
         $apiUrl = $item->server->apiUrl;
         $apiParams = [
@@ -213,24 +221,29 @@ class TestAuthController extends JsonController
         if ($item->cpc) {
             $apiParams['cpc'] = $item->cpc;
         }
-
+        
         if ($this->request['displayTreeView']) {
             $apiParams['trace_tree'] = 1;
         }
 
         if (isset($this->request['isReserve']) && $item->server->hostname_reserve) {
+            $direction = self::TEST_DIRECTION_RESERVE;
             $apiUrl = $item->server->apiUrlReserve;
             $apiParams['server_id'] = $item->server_id;
         }
     
         if (isset($this->request['isReserve2']) && $item->server->hostname_reserve_2) {
+            $direction = self::TEST_DIRECTION_RESERVE_2;
             $apiUrl = $item->server->apiUrlReserve2;
             $apiParams['server_id'] = $item->server_id;
         }
     
         if (isset($this->request['isDev']) && $item->server->hostname_dev) {
+            $direction = self::TEST_DIRECTION_DEV;
             $apiUrl = $item->server->apiUrlDev;
         }
+        
+        $ttl = $this->request['ttl'];
         
         $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
         
@@ -242,15 +255,19 @@ class TestAuthController extends JsonController
         
         $response = file_get_contents($request);
     
+        list($result, $trace) = $this->generateOldResult($response, $item->server, $apiParams, $direction, $ttl);
+        
         return [
             'item' => $item->toArray(),
+            'name' => 'root',
             'key' => $key,
-            'result' => $this->generateOldResult($response),
-            'result_new' => $this->generateNewResult($response, $key)
+            'result' => $result,
+            'result_new' => $this->generateNewResult($response, $key),
+            'trace' => $trace
         ];
     }
     
-    private function generateOldResult($resultString)
+    private function generateOldResult($resultString, $server, $apiParams, $direction, $ttl = false)
     {
         $resultString = str_replace("\r", "", $resultString);
         
@@ -264,7 +281,11 @@ class TestAuthController extends JsonController
             $resultArray = explode("\n", $resultString);
         }
         
+        $hub_id = $server->hub_id > 0 ? $server->hub_id : 0;
+        
         $result = [];
+        $trace = [];
+        
         foreach ($resultArray as $text) {
             $m = explode('|', $text);
             $type = isset($m[0]) ? $m[0] : '';
@@ -277,10 +298,98 @@ class TestAuthController extends JsonController
                     'action' => $action,
                     'params' => $params,
                 ];
+                
+                if ($type == 'RESULT' && $ttl) {
+                    $paramsArray = explode(',', $params);
+                    
+                    foreach ($paramsArray as $trunkName) {
+                        $trunk = Trunk::find()
+                            ->where('auth.trunk.trunk_name = \'' . $trunkName . '\'')
+                            ->andWhere("(auth.trunk.server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or auth.trunk.server_id = ".$server->id)
+                            ->andWhere('our_trunk = true')
+                            ->andWhere('back_trunk is not null')
+                            ->one();
+                        
+                        if (!empty($trunk)) {
+                            $trace[$params] = $this->trace($trunk->back_trunk, $trunk->road_to_regions, $apiParams, $direction, $trunkName, $trunk->server_id);
+                        }
+                        
+                    }
+                }
             }
         }
         
-        return $result;
+        return array($result, $trace);
+    }
+    
+    private function trace($trunkName, $roadToRegions, $apiParams, $direction, $origTrunk, $origServerId)
+    {
+        $serverIds = explode('; ', $roadToRegions);
+        
+        if (count($serverIds) < 1) {
+            return [];
+        }
+        
+        $serverForSearch = Server::find()->where('id = ' . $serverIds[0])->one();
+    
+        $hub_id = $serverForSearch->hub_id > 0 ? $serverForSearch->hub_id : 0;
+        
+        $trunk = Trunk::find()
+            ->where('auth.trunk.trunk_name = \'' . $trunkName . '\'')
+            ->andWhere("(auth.trunk.server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or auth.trunk.server_id = ".$serverForSearch->id)
+            ->one();
+    
+        if (!empty($trunk)) {
+            $server = Server::find()->where('id = ' . $trunk->server_id)->one();
+            
+            switch ($direction) {
+                case self::TEST_DIRECTION_MAIN:
+                    $apiUrl = $server->apiUrl;
+                    break;
+                case self::TEST_DIRECTION_RESERVE:
+                    $apiUrl = $server->apiUrlReserve;
+                    break;
+                case self::TEST_DIRECTION_RESERVE_2:
+                    $apiUrl = $server->apiUrlReserve2;
+                    break;
+                case self::TEST_DIRECTION_DEV:
+                    $apiUrl = $server->apiUrlDev;
+                    break;
+                default:
+                    $apiUrl = $server->apiUrl;
+                    break;
+            }
+        
+            $apiParams['trunk_name'] = $trunkName;
+            $apiParams['server_id'] = $server->id;
+    
+            $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
+    
+            $apiParams['user'] = Yii::$app->user->getId();
+    
+            $requestForKey = $apiUrl . 'test/auth?' . http_build_query($apiParams);
+    
+            $key = md5($requestForKey);
+    
+            $response = file_get_contents($request);
+    
+            list($result, $trace) = $this->generateOldResult($response, $server, $apiParams, $direction, true);
+    
+            $origServer = Server::find()->where('id = ' . $origServerId)->one();
+            
+            return [
+                'name' => $trunkName,
+                'trunk_id' => $trunk->id,
+                'server_id' => $server->id,
+                'server_name' => $server->name,
+                'orig_name' => $origTrunk,
+                'orig_server_id' => $origServerId,
+                'orig_server_name' => $origServer->name,
+                'key' => $key,
+                'result' => $result,
+                'trace' => $trace
+            ];
+        }
     }
 
     private function generateNewResult($resultString, $key)

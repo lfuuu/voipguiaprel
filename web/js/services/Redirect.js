@@ -195,17 +195,20 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         testAuthCreate: function(testGroupId) {
             return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {testGroupId: testGroupId});
         },
-        testAuthShowTestPrimary: function(id, displayTreeView) {
-            return openModal(TestAuthShowTestPrimaryCtrl, '/templates/test_auth_show_test.html', {id: id, displayTreeView: displayTreeView});
+        testAuthCreateAndFill: function(default_params) {
+            return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {default_params: default_params});
         },
-        testAuthShowTestReserve: function(id, displayTreeView) {
-            return openModal(TestAuthShowTestReserveCtrl, '/templates/test_auth_show_test.html', {id: id, displayTreeView: displayTreeView});
+        testAuthShowTestPrimary: function(id, ttl) {
+            return openModal(TestAuthShowTestPrimaryCtrl, '/templates/test_auth_show_test.html', {id: id, ttl: ttl});
         },
-        testAuthShowTestReserve2: function(id, displayTreeView) {
-            return openModal(TestAuthShowTestReserve2Ctrl, '/templates/test_auth_show_test.html', {id: id, displayTreeView: displayTreeView});
+        testAuthShowTestReserve: function(id, ttl) {
+            return openModal(TestAuthShowTestReserveCtrl, '/templates/test_auth_show_test.html', {id: id, ttl: ttl});
         },
-        testAuthShowTestDev: function(id, displayTreeView) {
-            return openModal(TestAuthShowTestDevCtrl, '/templates/test_auth_show_test.html', {id: id, displayTreeView: displayTreeView});
+        testAuthShowTestReserve2: function(id, ttl) {
+            return openModal(TestAuthShowTestReserve2Ctrl, '/templates/test_auth_show_test.html', {id: id, ttl: ttl});
+        },
+        testAuthShowTestDev: function(id, ttl) {
+            return openModal(TestAuthShowTestDevCtrl, '/templates/test_auth_show_test.html', {id: id, ttl: ttl});
         },
 
         testCallList: function() {

@@ -121,6 +121,10 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
+        listByServer: function(server_id) {
+            var data = {server_id: server_id};
+            return ApiLoader.post(url + 'list', data);
+        },
         save: function(data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
@@ -558,7 +562,6 @@ app.factory('BlacklistSettings', function ($q, ApiLoader) {
             return ApiLoader.post(url + 'get', data);
         },
         add: function(data) {
-            console.log(data);
             return ApiLoader.post(url + 'add', data);
         },
         delete: function(data) {
@@ -938,6 +941,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
 		trunk: function() {
 			return Trunk.list();
 		},
+        trunkByServer: function(server_id) {
+            return Trunk.listByServer(server_id);
+        },
 		trunkGroup: function() {
 			return TrunkGroup.list();
 		},

@@ -3,13 +3,13 @@ var TestAuthShowTestReserveCtrl = function($scope, TestAuth, params, $modalInsta
     $scope.details = 1;
 
     if (params.id) {
-        TestAuth.result({id: params.id, isReserve: true, displayTreeView: true}).then(function (data) {
+        TestAuth.result({id: params.id, isReserve: true, displayTreeView: true, ttl: params.ttl}).then(function (data) {
             $scope.item = data.item;
             $scope.isStageRowType = function (row) {
                 return row.type == 'STAGE';
             };
-            $scope.result = data.result;
             $scope.result_new = data.result_new;
+            $scope.full_item = data;
             $scope.key = data.key;
         });
     } else {
@@ -17,12 +17,6 @@ var TestAuthShowTestReserveCtrl = function($scope, TestAuth, params, $modalInsta
             server_id: $scope.server.id
         };
     }
-
-    $scope.save = function () {
-        TestAuth.save($scope.item).then(function () {
-            $modalInstance.close();
-        });
-    };
 
     $scope.descend = function (item) {
         if (item.steps && item.steps.length == 0) {
@@ -43,9 +37,23 @@ var TestAuthShowTestReserveCtrl = function($scope, TestAuth, params, $modalInsta
         }
     };
 
+    $scope.createTest = function (item) {
+        var params = {
+            server_id: item.server_id,
+            trunk_name: item.name,
+            dst_number: $scope.item.dst_number,
+            src_number: $scope.item.src_number,
+            testgroup_id: $scope.item.testgroup_id
+        };
+
+        Redirect.testAuthCreateAndFill(params).then(function () {
+            $scope.init();
+        });
+    };
+
     $scope.back = function () {
         $modalInstance.dismiss();
-    }
+    };
 
     $scope.collapseAll = function () {
         $scope.$broadcast('angular-ui-tree:collapse-all');

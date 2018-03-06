@@ -14,13 +14,39 @@
             </div>
         </div>
 
-        <table class="table" ng-if="details == 1">
-            <tr ng-repeat="row in result" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO'">
-                <td nowrap>{{::row.type}}</td>
-                <td nowrap>{{::row.action}}</td>
-                <td width="100%">{{::row.params}}</td>
-            </tr>
-        </table>
+        <script type="text/ng-template" id="result_renderer.html">
+            <div ng-show="full_item.name != 'root'">
+                <table class="table">
+                    <tr>
+                        <td nowrap width="5%"><span style="font-weight: bold;">Уровень {{level}}</span></td>
+                        <td nowrap width="30%">
+                            <span>Ушел в регион {{full_item.server_id}}.</span><br />
+                            <span>{{full_item.orig_server_name}} [{{full_item.orig_name}}] : {{full_item.server_name}} [{{full_item.name}}]</span>
+                        </td>
+                        <td nowrap width="15%"><button class="btn btn-warning" ng-click="isCollapsed = !isCollapsed">Результаты теста</button></td>
+                        <td nowrap><button class="btn btn-info" ng-click="createTest(full_item)">Создать тест</button></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div collapse="isCollapsed">
+                <table class="table" ng-if="details == 1">
+                    <tr ng-repeat="row in full_item.result track by $index" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO'">
+                        <td nowrap>{{::row.type}}</td>
+                        <td nowrap>{{::row.action}}</td>
+                        <td width="100%">{{::row.params}}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div ng-init="isCollapsed=true;level=level+1" ng-repeat="full_item in full_item.trace track by $index" ng-include="'result_renderer.html'">
+
+            </div>
+        </script>
+
+        <div ng-init="isCollapsed=false;level=1" ng-include="'result_renderer.html'">
+
+        </div>
 
         <script type="text/ng-template" id="nodes_renderer.html">
             <br />

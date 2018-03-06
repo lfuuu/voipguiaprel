@@ -122,9 +122,9 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
         });
     };
 
-    $scope.toggleDisplayTreeView = function(item) {
-        item.displayTreeView = !item.displayTreeView;
-    }
+    $scope.toggleTTL = function(item) {
+        item.ttl = !item.ttl;
+    };
 
     $scope.showTestPrimary = function (item) {
         $scope.showTestBasic(item, 'testAuthShowTestPrimary');
@@ -147,11 +147,11 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
             return;
         }
 
-        if (typeof item.displayTreeView == 'undefined') {
-            item.displayTreeView = false;
+        if (typeof item.ttl == 'undefined') {
+            item.ttl = false;
         }
 
-        Redirect[method](item.id, item.displayTreeView).then(function () {
+        Redirect[method](item.id, item.ttl).then(function () {
             $scope.init();
         });
     };
