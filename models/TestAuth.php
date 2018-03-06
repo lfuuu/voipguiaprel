@@ -15,6 +15,7 @@ use app\queries\NumberQuery;
  * @property string $redirect_number
  * @property int    $src_noa
  * @property int    $dst_noa
+ * @property int    $ttl
  * @property string $note
  * @property string $cpc
 
@@ -41,7 +42,7 @@ class TestAuth extends \yii\db\ActiveRecord
         return [
             [['name'], 'string', 'max' => 100],
             [['src_number', 'dst_number', 'redirect_number'], 'string', 'max' => 32],
-            [['src_noa','dst_noa'], 'integer'],
+            [['src_noa','dst_noa', 'ttl'], 'integer'],
             [['trunk_name'], 'string', 'max' => 32],
             [['is_autotest',], 'boolean'],
             [['correct_answer'], 'string', 'max' => 128],

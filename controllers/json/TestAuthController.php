@@ -243,7 +243,11 @@ class TestAuthController extends JsonController
             $apiUrl = $item->server->apiUrlDev;
         }
         
-        $ttl = $this->request['ttl'];
+        $ttl = $item->ttl;
+        
+        if (empty($ttl)) {
+            $ttl = 0;
+        }
         
         $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
         
@@ -263,11 +267,12 @@ class TestAuthController extends JsonController
             'key' => $key,
             'result' => $result,
             'result_new' => $this->generateNewResult($response, $key),
-            'trace' => $trace
+            'trace' => $trace,
+            'ttl' => $ttl
         ];
     }
     
-    private function generateOldResult($resultString, $server, $apiParams, $direction, $ttl = false)
+    private function generateOldResult($resultString, $server, $apiParams, $direction, $ttl = 0)
     {
         $resultString = str_replace("\r", "", $resultString);
         
@@ -302,18 +307,19 @@ class TestAuthController extends JsonController
                 if ($type == 'RESULT' && $ttl) {
                     $paramsArray = explode(',', $params);
                     
-                    foreach ($paramsArray as $trunkName) {
-                        $trunk = Trunk::find()
-                            ->where('auth.trunk.trunk_name = \'' . $trunkName . '\'')
-                            ->andWhere("(auth.trunk.server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or auth.trunk.server_id = ".$server->id)
-                            ->andWhere('our_trunk = true')
-                            ->andWhere('back_trunk is not null')
-                            ->one();
-                        
-                        if (!empty($trunk)) {
-                            $trace[$params] = $this->trace($trunk->back_trunk, $trunk->road_to_regions, $apiParams, $direction, $trunkName, $trunk->server_id);
-                        }
-                        
+                    --$ttl;
+                    
+                    $trunkName = $paramsArray[0];
+                    
+                    $trunk = Trunk::find()
+                        ->where('auth.trunk.trunk_name = \'' . $trunkName . '\'')
+                        ->andWhere("(auth.trunk.server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or auth.trunk.server_id = ".$server->id)
+                        ->andWhere('our_trunk = true')
+                        ->andWhere('back_trunk is not null')
+                        ->one();
+                    
+                    if (!empty($trunk)) {
+                        $trace[$params] = $this->trace($trunk->back_trunk, $trunk->road_to_regions, $apiParams, $direction, $trunkName, $trunk->server_id, $ttl);
                     }
                 }
             }
@@ -322,7 +328,7 @@ class TestAuthController extends JsonController
         return array($result, $trace);
     }
     
-    private function trace($trunkName, $roadToRegions, $apiParams, $direction, $origTrunk, $origServerId)
+    private function trace($trunkName, $roadToRegions, $apiParams, $direction, $origTrunk, $origServerId, $ttl)
     {
         $serverIds = explode('; ', $roadToRegions);
         
@@ -373,7 +379,7 @@ class TestAuthController extends JsonController
     
             $response = file_get_contents($request);
     
-            list($result, $trace) = $this->generateOldResult($response, $server, $apiParams, $direction, true);
+            list($result, $trace) = $this->generateOldResult($response, $server, $apiParams, $direction, $ttl);
     
             $origServer = Server::find()->where('id = ' . $origServerId)->one();
             
@@ -387,7 +393,8 @@ class TestAuthController extends JsonController
                 'orig_server_name' => $origServer->name,
                 'key' => $key,
                 'result' => $result,
-                'trace' => $trace
+                'trace' => $trace,
+                'ttl' => $ttl
             ];
         }
     }

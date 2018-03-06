@@ -3,7 +3,7 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
     $scope.details = 1;
 
     if (params.id) {
-        TestAuth.result({id: params.id, displayTreeView: true, ttl: params.ttl}).then(function (data) {
+        TestAuth.result({id: params.id, displayTreeView: true}).then(function (data) {
             $scope.item = data.item;
             $scope.isStageRowType = function (row) {
                 return row.type == 'STAGE';

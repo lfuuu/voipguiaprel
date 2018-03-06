@@ -18,10 +18,10 @@
             <div ng-show="full_item.name != 'root'">
                 <table class="table">
                     <tr>
-                        <td nowrap width="5%"><span style="font-weight: bold;">Уровень {{level}}</span></td>
-                        <td nowrap width="30%">
+                        <td nowrap width="5%"><span style="font-weight: bold;">{{level}}</span></td>
+                        <td nowrap width="35%">
                             <span>Ушел в регион {{full_item.server_id}}.</span><br />
-                            <span>{{full_item.orig_server_name}} [{{full_item.orig_name}}] : {{full_item.server_name}} [{{full_item.name}}]</span>
+                            <span>{{full_item.orig_server_name}} [{{full_item.orig_name}}] : {{full_item.server_name}} [{{full_item.name}}] : TTL {{full_item.ttl}}</span>
                         </td>
                         <td nowrap width="15%"><button class="btn btn-warning" ng-click="isCollapsed = !isCollapsed">Результаты теста</button></td>
                         <td nowrap><button class="btn btn-info" ng-click="createTest(full_item)">Создать тест</button></td>

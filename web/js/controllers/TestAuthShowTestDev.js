@@ -3,7 +3,7 @@ var TestAuthShowTestDevCtrl = function($scope, TestAuth, params, $modalInstance)
     $scope.details = 1;
 
     if (params.id) {
-        TestAuth.result({id: params.id, isDev: true, displayTreeView: true, ttl: params.ttl}).then(function (data) {
+        TestAuth.result({id: params.id, isDev: true, displayTreeView: true}).then(function (data) {
             $scope.item = data.item;
             $scope.isStageRowType = function (row) {
                 return row.type == 'STAGE';
