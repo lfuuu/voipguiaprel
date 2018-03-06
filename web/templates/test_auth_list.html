@@ -45,6 +45,7 @@
                     <span ng-show="sortType == 'name' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
+            <th width="5%">C TTL</th>
             <th width="20%"></th>
             <th width="20%">
                 <a href="#" ng-click="sortType = 'trunk_name'; sortReverse = !sortReverse">
@@ -93,6 +94,9 @@
                 <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">
             </td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
+            <td style="cursor: pointer" nowrap>
+                <input ng-click="toggleTTL(item)" type="checkbox">
+            </td>
             <td>
                 <button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">MAIN</button>
                 <button type="button" class="btn btn-default btn-sm" ng-click="showTestReserve(item)">RES</button>
