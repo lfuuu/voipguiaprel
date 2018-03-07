@@ -90,6 +90,7 @@ a:hover {
 .block div.header.info {
     padding: 2px;
     border-bottom: 1px solid #AAA;
+    overflow: hidden;
 }
 
 .block div.footer {
