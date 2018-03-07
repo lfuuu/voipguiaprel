@@ -202,6 +202,7 @@ class TestAuthController extends JsonController
         }
         
         $item = TestAuth::findOne($this->request['id']); /** @var TestAuth $item */
+        
         if ($item === null) {
             throw new HttpException(404, 'TestAuth не найден');
         }
@@ -304,13 +305,33 @@ class TestAuthController extends JsonController
                     'params' => $params,
                 ];
                 
-                if ($type == 'RESULT' && $ttl) {
+                if ($type == 'RESULT' && $ttl > 1) {
                     $paramsArray = explode(',', $params);
                     
                     --$ttl;
                     
+                    $redirectNumber = null;
+                    $srcNumber = null;
+                    
+                    foreach ($paramsArray as $item) {
+                        //Если в ответе есть редирект, то используем его для дальнейших тестов.
+                        if (strpos($item, 'RN') !== false) {
+                            $tmp = explode(' ', $item);
+                            $redirectNumber = $tmp[3];
+                            continue;
+                        }
+
+                        //Если в ответе есть calling, то используем его как номер А для дальнейших тестов.
+                        if (strpos($item, 'calling') !== false) {
+                            $tmp = explode(' ', $item);
+                            $srcNumber = $tmp[3];
+                            continue;
+                        }
+                    }
+                    
                     $trunkName = $paramsArray[0];
                     
+                    //Ищем новый транк, для которого будем запускать следующий уровень тестов.
                     $trunk = Trunk::find()
                         ->where('auth.trunk.trunk_name = \'' . $trunkName . '\'')
                         ->andWhere("(auth.trunk.server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or auth.trunk.server_id = ".$server->id)
@@ -319,7 +340,8 @@ class TestAuthController extends JsonController
                         ->one();
                     
                     if (!empty($trunk)) {
-                        $trace[$params] = $this->trace($trunk->back_trunk, $trunk->road_to_regions, $apiParams, $direction, $trunkName, $trunk->server_id, $ttl);
+                        $trace[$params] = $this->trace($trunk->back_trunk, $trunk->road_to_regions, $apiParams,
+                            $direction, $trunkName, $trunk->server_id, $ttl, $redirectNumber, $srcNumber);
                     }
                 }
             }
@@ -328,7 +350,7 @@ class TestAuthController extends JsonController
         return array($result, $trace);
     }
     
-    private function trace($trunkName, $roadToRegions, $apiParams, $direction, $origTrunk, $origServerId, $ttl)
+    private function trace($trunkName, $roadToRegions, $apiParams, $direction, $origTrunk, $origServerId, $ttl, $redirectNumber = null, $srcNumber = null)
     {
         $serverIds = explode('; ', $roadToRegions);
         
@@ -368,7 +390,15 @@ class TestAuthController extends JsonController
         
             $apiParams['trunk_name'] = $trunkName;
             $apiParams['server_id'] = $server->id;
-    
+            
+            if ($redirectNumber) {
+                $apiParams['redirect_number'] = $redirectNumber;
+            }
+            
+            if ($srcNumber) {
+                $apiParams['src_number'] = $srcNumber;
+            }
+            
             $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
     
             $apiParams['user'] = Yii::$app->user->getId();
