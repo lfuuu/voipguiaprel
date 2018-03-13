@@ -68,7 +68,8 @@ class Trunk extends \yii\db\ActiveRecord
                 'term_afilter_default_allowed', 'term_bfilter_default_allowed',
             ], 'boolean'],
             [['route_table_id', 'capacity', 'load_warning', 'id_pbx'], 'integer'],
-            [['road_to_regions', 'back_trunk'], 'string', 'max' => 50],
+            [['back_trunk'], 'string', 'max' => 50],
+            [['road_to_regions', 'trace_to_regions'], 'string', 'max' => 100],
         ];
     }
 
