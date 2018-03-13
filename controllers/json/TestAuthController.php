@@ -340,7 +340,7 @@ class TestAuthController extends JsonController
                         ->one();
                     
                     if (!empty($trunk)) {
-                        $trace[$params] = $this->trace($trunk->back_trunk, $trunk->road_to_regions, $apiParams,
+                        $trace[$params] = $this->trace($trunk->back_trunk, $trunk->trace_to_regions, $apiParams,
                             $direction, $trunkName, $trunk->server_id, $ttl, $redirectNumber, $srcNumber);
                     }
                 }
@@ -350,9 +350,9 @@ class TestAuthController extends JsonController
         return array($result, $trace);
     }
     
-    private function trace($trunkName, $roadToRegions, $apiParams, $direction, $origTrunk, $origServerId, $ttl, $redirectNumber = null, $srcNumber = null)
+    private function trace($trunkName, $traceToRegions, $apiParams, $direction, $origTrunk, $origServerId, $ttl, $redirectNumber = null, $srcNumber = null)
     {
-        $serverIds = explode('; ', $roadToRegions);
+        $serverIds = explode('; ', $traceToRegions);
         
         if (count($serverIds) < 1) {
             return [];
@@ -426,6 +426,8 @@ class TestAuthController extends JsonController
                 'trace' => $trace,
                 'ttl' => $ttl
             ];
+        } else {
+            return [];
         }
     }
 
