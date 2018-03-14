@@ -20,37 +20,37 @@ var BlacklistSettingsEditCtrl = function($scope, BlacklistSettings, $modalInstan
 
 
     $scope.addA = function() {
-        BlacklistSettings.add({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes}).then(function(response) {
+        BlacklistSettings.add({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes, shared_prefix: $scope.itemA.shared_prefix}).then(function(response) {
             $scope.processResponse(response);
         });
     };
 
     $scope.deleteA = function() {
-        BlacklistSettings.delete({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes}).then(function(response) {
+        BlacklistSettings.delete({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes, shared_prefix: $scope.itemA.shared_prefix}).then(function(response) {
             $scope.processResponse(response);
         });
     };
 
     $scope.checkA = function() {
-        BlacklistSettings.check({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes}).then(function(response) {
+        BlacklistSettings.check({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes, shared_prefix: $scope.itemA.shared_prefix}).then(function(response) {
             $scope.processResponse(response);
         });
     };
 
     $scope.addB = function() {
-        BlacklistSettings.add({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes}).then(function(response) {
+        BlacklistSettings.add({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes, shared_prefix: $scope.itemB.shared_prefix}).then(function(response) {
             $scope.processResponse(response);
         });
     };
 
     $scope.deleteB = function() {
-        BlacklistSettings.delete({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes}).then(function(response) {
+        BlacklistSettings.delete({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes, shared_prefix: $scope.itemB.shared_prefix}).then(function(response) {
             $scope.processResponse(response);
         });
     };
 
     $scope.checkB = function() {
-        BlacklistSettings.check({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes}).then(function(response) {
+        BlacklistSettings.check({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes, shared_prefix: $scope.itemB.shared_prefix}).then(function(response) {
             $scope.processResponse(response);
         });
     };

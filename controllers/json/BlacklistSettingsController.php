@@ -58,9 +58,10 @@ class BlacklistSettingsController extends JsonController
     
         $id = $this->request['id'];
         $prefixesText = $this->request['prefixes'];
+        $sharedPrefix = $this->request['shared_prefix'];
         
-        $data = $this->getData($id, $prefixesText);
-    
+        $data = $this->getData($id, $prefixesText, $sharedPrefix);
+        
         $transaction = Prefixlist::getDb()->beginTransaction();
         try {
             $result = [];
@@ -98,8 +99,9 @@ class BlacklistSettingsController extends JsonController
         
         $id = $this->request['id'];
         $prefixesText = $this->request['prefixes'];
+        $sharedPrefix = $this->request['shared_prefix'];
     
-        $data = $this->getData($id, $prefixesText);
+        $data = $this->getData($id, $prefixesText, $sharedPrefix);
         
         $transaction = Prefixlist::getDb()->beginTransaction();
         try {
@@ -139,8 +141,9 @@ class BlacklistSettingsController extends JsonController
         
         $id = $this->request['id'];
         $prefixesText = $this->request['prefixes'];
+        $sharedPrefix = $this->request['shared_prefix'];
         
-        $data = $this->getData($id, $prefixesText);
+        $data = $this->getData($id, $prefixesText, $sharedPrefix);
         
         $result = [];
         
@@ -157,7 +160,7 @@ class BlacklistSettingsController extends JsonController
         return ['data'=>['result' => $result]];
     }
     
-    private function getData($id, $prefixesText)
+    private function getData($id, $prefixesText, $sharedPrefix)
     {
         $del = array(' ', ',', ';', '.', "\n");
     
@@ -165,9 +168,17 @@ class BlacklistSettingsController extends JsonController
     
         $data = [];
     
-        foreach ($prefixes as $prefix) {
-            if ($prefix) {
-                $data[] = ['prefixlist_id' => $id, 'prefix' => $prefix];
+        if ($sharedPrefix) {
+            foreach ($prefixes as $prefix) {
+                if ($prefix) {
+                    $data[] = ['prefixlist_id' => $id, 'prefix' => $sharedPrefix . $prefix];
+                }
+            }
+        } else {
+            foreach ($prefixes as $prefix) {
+                if ($prefix) {
+                    $data[] = ['prefixlist_id' => $id, 'prefix' => $prefix];
+                }
             }
         }
         
