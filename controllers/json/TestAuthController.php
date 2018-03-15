@@ -413,6 +413,10 @@ class TestAuthController extends JsonController
     
     private function trace($trunkName, $traceToRegions, $apiParams, $direction, $origTrunk, $origServerId, $ttl, $redirectNumber = null, $srcNumber = null)
     {
+        if (empty($traceToRegions)) {
+            return [];
+        }
+        
         $serverIds = explode('; ', $traceToRegions);
         
         if (count($serverIds) < 1) {
