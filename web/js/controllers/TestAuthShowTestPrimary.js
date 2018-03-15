@@ -28,6 +28,10 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
         }
     };
 
+    $scope.isObject = function (item) {
+        return (typeof item === 'object');
+    };
+
     $scope.updateItemRecursively = function (item, path, steps) {
         if (path.length > 0) {
             var index = path.shift();
