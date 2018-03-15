@@ -51,6 +51,26 @@ var TestAuthShowTestReserveCtrl = function($scope, TestAuth, params, $modalInsta
         });
     };
 
+    $scope.clickTrunk = function (item, full_item) {
+        var params = {
+            server_id: full_item.item.server_id,
+            trunk_name: item.back_trunk,
+            orig_trunk: item.name,
+            trace_to_regions: item.trace_to_regions,
+            src_number: full_item.item.src_number,
+            dst_number: full_item.item.dst_number,
+            src_noa: full_item.item.src_noa,
+            dst_noa: full_item.item.dst_noa,
+            redirect_number: full_item.item.redirect_number,
+            ttl: full_item.item.ttl - 1,
+            isReserve: true
+        };
+
+        TestAuth.trace(params).then(function (result) {
+            full_item.trace[result.key] = result;
+        });
+    };
+
     $scope.back = function () {
         $modalInstance.dismiss();
     };

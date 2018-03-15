@@ -34,7 +34,13 @@
                     <tr ng-repeat="row in full_item.result track by $index" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO'">
                         <td nowrap>{{::row.type}}</td>
                         <td nowrap>{{::row.action}}</td>
-                        <td width="100%">{{::row.params}}</td>
+                        <td ng-if="row.type != 'RESULT'" width="100%">{{::row.params}}</td>
+                        <td ng-if="row.type == 'RESULT'" width="100%">
+                            <span ng-repeat="param in row.params">
+                                <a ng-if="param.is_url" href="#" ng-click="clickTrunk(param, full_item)">{{param.name}},</a>
+                                <span ng-if="!param.is_url">{{param.name}},</span>
+                            </span>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -44,7 +50,7 @@
             </div>
         </script>
 
-        <div ng-init="isCollapsed=false;level=1" ng-include="'result_renderer.html'">
+        <div ng-if="details == 1" ng-init="isCollapsed=false;level=1" ng-include="'result_renderer.html'">
 
         </div>
 

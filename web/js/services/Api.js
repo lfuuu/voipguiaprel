@@ -798,7 +798,10 @@ app.factory('TestAuth', function ($q, ApiLoader, $rootScope) {
         },
         clearCache: function() {
 		    return ApiLoader.post(url + 'clear-cache');
-        }
+        },
+        trace: function(data) {
+            return ApiLoader.post(url + 'trace', data);
+        },
 	};
 });
 

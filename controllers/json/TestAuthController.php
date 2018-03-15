@@ -273,6 +273,38 @@ class TestAuthController extends JsonController
         ];
     }
     
+    public function actionTrace()
+    {
+        if (!\Yii::$app->user->can('test_auth_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
+        $direction = self::TEST_DIRECTION_MAIN;
+
+        $apiParams = [
+            'src_number' => $this->request['src_number'],
+            'dst_number' => $this->request['dst_number'],
+            'redirect_number' => $this->request['redirect_number'],
+            'src_noa' => $this->request['src_noa'],
+            'dst_noa' => $this->request['dst_noa'],
+            'trace_tree' => 1
+        ];
+        
+        if (isset($this->request['isReserve'])) {
+            $direction = self::TEST_DIRECTION_RESERVE;
+        }
+        
+        if (isset($this->request['isReserve2'])) {
+            $direction = self::TEST_DIRECTION_RESERVE_2;
+        }
+        
+        if (isset($this->request['isDev'])) {
+            $direction = self::TEST_DIRECTION_DEV;
+        }
+    
+        return $this->trace($this->request['trunk_name'], $this->request['trace_to_regions'], $apiParams, $direction, $this->request['orig_trunk'], $this->request['server_id'], $this->request['ttl']);
+    }
+    
     private function generateOldResult($resultString, $server, $apiParams, $direction, $ttl = 0)
     {
         $resultString = str_replace("\r", "", $resultString);
@@ -299,12 +331,6 @@ class TestAuthController extends JsonController
             $params = isset($m[2]) ? $m[2] : '';
             
             if (in_array($type, $this->_oldTestResultTypes)) {
-                $result[] = [
-                    'type' => $type,
-                    'action' => $action,
-                    'params' => $params,
-                ];
-                
                 if ($type == 'RESULT' && $ttl > 1) {
                     $paramsArray = explode(',', $params);
                     
@@ -328,21 +354,56 @@ class TestAuthController extends JsonController
                             continue;
                         }
                     }
-                    
-                    $trunkName = $paramsArray[0];
-                    
-                    //Ищем новый транк, для которого будем запускать следующий уровень тестов.
-                    $trunk = Trunk::find()
-                        ->where('auth.trunk.trunk_name = \'' . $trunkName . '\'')
-                        ->andWhere("(auth.trunk.server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or auth.trunk.server_id = ".$server->id)
-                        ->andWhere('our_trunk = true')
-                        ->andWhere('back_trunk is not null')
-                        ->one();
-                    
-                    if (!empty($trunk)) {
-                        $trace[$params] = $this->trace($trunk->back_trunk, $trunk->trace_to_regions, $apiParams,
-                            $direction, $trunkName, $trunk->server_id, $ttl, $redirectNumber, $srcNumber);
+
+                    $displayParams = [];
+    
+                    foreach ($paramsArray as $trunkName) {
+                        $trunk = Trunk::find()
+                            ->where('auth.trunk.trunk_name = \'' . $trunkName . '\'')
+                            ->andWhere("(auth.trunk.server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or auth.trunk.server_id = ".$server->id)
+                            ->andWhere('our_trunk = true')
+                            ->andWhere('back_trunk is not null')
+                            ->one();
+                        
+                        if (empty($traceTrunk) && !empty($trunk)) {
+                            $traceTrunk = $trunk;
+                        }
+                        
+                        if (!empty($trunk)) {
+                            $item = [
+                                'name' => $trunkName,
+                                'is_url' => true,
+                                'back_trunk' => $trunk->back_trunk,
+                                'trace_to_regions' => $trunk->trace_to_regions
+                            ];
+                        } else {
+                            $item = [
+                                'name' => $trunkName,
+                                'is_url' => false,
+                                'back_trunk' => '',
+                                'trace_to_regions' => ''
+                            ];
+                        }
+                        
+                        $displayParams[] = $item;
                     }
+                    
+                    $result[] = [
+                        'type' => $type,
+                        'action' => $action,
+                        'params' => $displayParams
+                    ];
+                    
+                    if (!empty($traceTrunk)) {
+                        $trace[$params] = $this->trace($traceTrunk->back_trunk, $traceTrunk->trace_to_regions, $apiParams,
+                            $direction, $traceTrunk->trunk_name, $traceTrunk->server_id, $ttl, $redirectNumber, $srcNumber);
+                    }
+                } else {
+                    $result[] = [
+                        'type' => $type,
+                        'action' => $action,
+                        'params' => $params,
+                    ];
                 }
             }
         }
