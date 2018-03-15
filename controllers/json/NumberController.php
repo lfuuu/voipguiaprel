@@ -153,4 +153,19 @@ class NumberController extends JsonController
 
         return $number->findUsagesInTrunkRules();
     }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionFindUsagesInStatRules()
+    {
+        if (!\Yii::$app->user->can('number_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $number = $this->getNumberOr404($this->request['id']);
+        
+        return $number->findUsagesInStatRules();
+    }
 }

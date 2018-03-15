@@ -10,17 +10,21 @@ var NumberEditCtrl = function($scope, Number, Redirect, Prefixlist, params, $mod
 			$scope.item.prefixlist_ids = prefixlist_ids;
 		});
 
-    Number.findUsagesInRouteTables({id: params.id}).then(function(data){
-      $scope.usagesInRouteTables = data;
-    });
+		Number.findUsagesInRouteTables({id: params.id}).then(function(data){
+		    $scope.usagesInRouteTables = data;
+		});
 
-    Number.findUsagesInTrunkPriority({id: params.id}).then(function(data){
-      $scope.usagesInTrunkPriority = data;
-    });
+		Number.findUsagesInTrunkPriority({id: params.id}).then(function(data){
+		    $scope.usagesInTrunkPriority = data;
+		});
 
-    Number.findUsagesInTrunkRules({id: params.id}).then(function(data){
-      $scope.usagesInTrunkRules = data;
-    });
+		Number.findUsagesInTrunkRules({id: params.id}).then(function(data){
+		    $scope.usagesInTrunkRules = data;
+		});
+
+        Number.findUsagesInStatRules({id: params.id}).then(function(data){
+            $scope.usagesInStatRules = data;
+        });
 	} else {
 		$scope.item = {
             server_id: $scope.server.id,
@@ -40,7 +44,6 @@ var NumberEditCtrl = function($scope, Number, Redirect, Prefixlist, params, $mod
 		$scope.item.prefixlist_ids.splice(index, 1);
 	};
 
-
 	$scope.save = function()
 	{
 		var data = angular.copy($scope.item);
@@ -52,12 +55,12 @@ var NumberEditCtrl = function($scope, Number, Redirect, Prefixlist, params, $mod
 		Number.save(data).then(function(response) {
 			$modalInstance.close();
 		});
-	}
+	};
 
 	$scope.back = function()
 	{
 		$modalInstance.dismiss();
-	}
+	};
 
   $scope.clickRouteTableItem = function(item) {
     if (window.getSelection().type == 'Range') return;

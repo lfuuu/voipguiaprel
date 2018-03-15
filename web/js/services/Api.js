@@ -441,15 +441,18 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
 			listA = listB = undefined;
 			return ApiLoader.post(url + 'delete', {id: id});
 		},
-    findUsagesInRouteTables: function(id) {
-      return ApiLoader.post(url + 'find-usages-in-route-tables', {id: id});
-    },
-    findUsagesInTrunkPriority: function(id) {
-      return ApiLoader.post(url + 'find-usages-in-trunk-priority', {id: id});
-    },
-    findUsagesInTrunkRules: function(id) {
-      return ApiLoader.post(url + 'find-usages-in-trunk-rules', {id: id});
-    }
+        findUsagesInRouteTables: function(id) {
+            return ApiLoader.post(url + 'find-usages-in-route-tables', {id: id});
+        },
+        findUsagesInTrunkPriority: function(id) {
+            return ApiLoader.post(url + 'find-usages-in-trunk-priority', {id: id});
+        },
+        findUsagesInTrunkRules: function(id) {
+            return ApiLoader.post(url + 'find-usages-in-trunk-rules', {id: id});
+        },
+        findUsagesInStatRules: function(id) {
+            return ApiLoader.post(url + 'find-usages-in-stat-rules', {id: id});
+        },
 	};
 });
 

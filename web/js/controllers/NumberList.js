@@ -28,7 +28,7 @@ var NumberListCtrl = function($scope, Number, Redirect, $window) {
 		Redirect.numberEdit(item.id).then(function () {
 			$scope.init();
 		});
-	}
+	};
 
 	$scope.deleteItem = function(item)
 	{

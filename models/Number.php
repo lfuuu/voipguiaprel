@@ -130,4 +130,17 @@ class Number extends \yii\db\ActiveRecord
                 ->where('n.id = ' . $this->id)
                 ->all();
     }
+    
+    public function findUsagesInStatRules()
+    {
+        return
+            (new Query)
+                ->select(['t.id as trunk_id', 't.name', 't.trunk_name'])
+                ->distinct()
+                ->from('billing.service_trunk_settings as sts')
+                ->innerJoin('billing.service_trunk st', 'st.id = sts.trunk_id')
+                ->innerJoin(Trunk::tableName() . ' as t', 't.id = st.trunk_id')
+                ->where('sts.src_number_id = ' . $this->id . ' or sts.src_number_id = ' . $this->id)
+                ->all();
+    }
 }
