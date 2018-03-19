@@ -41,7 +41,8 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
             orig_afilter_default_allowed: true,
             orig_bfilter_default_allowed: true,
             term_afilter_default_allowed: true,
-            term_bfilter_default_allowed: true
+            term_bfilter_default_allowed: true,
+            location_id: 1
         };
     }
 
@@ -87,6 +88,12 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                 };
         }
     };
+
+    $scope.locationIds = [
+        {id: 1, name: 'Домашний регион'},
+        {id: 2, name: 'Национальный роуминг'},
+        {id: 3, name: 'Международный роуминг'}
+    ];
 
     $scope.addNumbersRule = function (key) {
         var mode = $scope.transcriptMode(key);

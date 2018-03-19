@@ -9,6 +9,7 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
             <li class="active"><a href="#trunk" data-toggle="tab">Транк</a></li>
+            <li><a href="#trunk_extra" data-toggle="tab">Дополнительно</a></li>
             <li><a href="#priority" data-toggle="tab">Приоритеты</a></li>
 
             <li><a href="#numbers_rules_orig_a" data-toggle="tab">Правила Orig A</a></li>
@@ -25,6 +26,7 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane active" id="trunk" ng-include="'/templates/tabs/trunk_edit/trunk.html'"></div>
+            <div class="tab-pane" id="trunk_extra" ng-include="'/templates/tabs/trunk_edit/trunk_extra.html'"></div>
 
             <div class="tab-pane" id="priority" ng-include="'/templates/tabs/trunk_edit/priority.html'"></div>
 
