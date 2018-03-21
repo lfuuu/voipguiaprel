@@ -375,4 +375,20 @@ class Prefixlist extends \yii\db\ActiveRecord
                 ->where('p.id = ' . $this->id)
                 ->all();
     }
+    
+    /**
+     * @return array
+     */
+    public function findUsagesInTrunkABRules()
+    {
+        return
+            (new Query)
+                ->select([
+                    't.id', 't.trunk_name', 't.server_id'
+                ])
+                ->from(TrunkABfiltersRule::tableName() . ' as tab')
+                ->innerJoin(Trunk::tableName() . ' as t', 't.id = tab.trunk_id')
+                ->where('tab.prefixlist_id = ' . $this->id)
+                ->all();
+    }
 }

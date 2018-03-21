@@ -188,6 +188,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         Prefixlist.findUsagesInNumbers({id: params.id}).then(function (data) {
             $scope.usagesInNumbers = data;
         });
+
+        Prefixlist.findUsagesInTrunkABRules({id: params.id}).then(function (data) {
+            $scope.usagesInTrunkABRules = data;
+        });
     } else {
         $scope.item = {
             server_id: $scope.server.id,
@@ -507,4 +511,11 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
     }
 
+    $scope.clickTrunkItem = function(item) {
+        if (window.getSelection().type == 'Range') return;
+
+        Redirect.trunkEdit(item.id).then(function () {
+            $scope.init();
+        });
+    }
 };

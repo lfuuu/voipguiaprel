@@ -479,9 +479,23 @@ SQL;
             throw new ForbiddenHttpException('Access denied');
         }
         
-        $group = $this->getPrefixlistOr404($this->request['id']);
+        $prefixlist = $this->getPrefixlistOr404($this->request['id']);
 
-        return $group->findUsagesInNumbers();
+        return $prefixlist->findUsagesInNumbers();
     }
-
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionFindUsagesInTrunkABRules()
+    {
+        if (!\Yii::$app->user->can('prefixlist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $prefixlist = $this->getPrefixlistOr404($this->request['id']);
+        
+        return $prefixlist->findUsagesInTrunkABRules();
+    }
 }

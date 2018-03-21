@@ -243,6 +243,9 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
         },
         findUsagesInNumbers: function (id) {
             return ApiLoader.post(url + 'find-usages-in-numbers', {id: id});
+        },
+        findUsagesInTrunkABRules: function (id) {
+            return ApiLoader.post(url + 'find-usages-in-trunk-a-b-rules', {id: id});
         }
     };
 });
