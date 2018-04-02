@@ -28,6 +28,7 @@ use yii\db\Query;
  * @property int $network_config_id
  * @property bool $sw_shared
  * @property string $nnp_filter_json
+ * @property bool $invert
  *
  * @property PrefixlistPrefix $prefixlistPrefix
  */
@@ -65,6 +66,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             ['nnp_filter_json', 'string'],
             [['is_global'], 'boolean'],
             [['is_auto_update'], 'boolean'],
+            [['invert'], 'boolean'],
         ];
     }
 
