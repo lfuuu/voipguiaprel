@@ -10,7 +10,7 @@ import re
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-OUR_CLIENT = 652
+OUR_CLIENT = 1279
 ERROR_LIST = []
 LOG_FILE   = None
 
