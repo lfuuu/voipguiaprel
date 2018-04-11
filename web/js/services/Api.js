@@ -273,8 +273,7 @@ app.factory('Uplink', function ($q, ApiLoader, $rootScope) {
         deferred.resolve(list);
         return deferred.promise;
       } else {
-        var data = {server_id: $rootScope.server.id};
-        ApiLoader.post(url + 'list', data)
+        ApiLoader.post(url + 'list')
           .then(function(data){
             list = data;
             promise = undefined;

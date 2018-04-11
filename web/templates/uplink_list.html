@@ -77,7 +77,7 @@
                                                                       'glyphicon-chevron-down': !collapsed
                                                                     }"></span>
                                                                 </a>
-                                                                <span>Договор: [<a href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{ltrunkValue.client_account_id}}&trunkId={{ptrunkValue.id}}">{{ltrunkKey}}</a>]</span>
+                                                                <span>Договор: [<a target="_blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{ltrunkValue.client_account_id}}&trunkId={{ptrunkValue.id}}">{{ltrunkKey}}</a>]</span>
                                                                 <a ng-if="userPermissions['uplink_edit']" class="btn btn-info btn-xs" data-nodrag ng-click="clickItem(ltrunkValue.id)">
                                                                     <span class="glyphicon glyphicon-pencil"></span>
                                                                 </a>
@@ -93,7 +93,7 @@
                                                                             <!--<a class="btn btn-danger btn-xs" data-nodrag>-->
                                                                                 <!--<span class="glyphicon glyphicon-chevron-down"></span>-->
                                                                             <!--</a>-->
-                                                                            <span class="{{!itemValue.pricelist_is_global ? 'alert-danger' : ''}}">{{itemValue.a_name ? 'A: [' + itemValue.a_name + '], ' : ''}}{{itemValue.b_name ? 'B: [' + itemValue.b_name + '], ' : ''}}Прайс: [<a href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{itemValue.client_account_id}}&trunkId={{itemValue.p_trunk_id}}">{{itemValue.price_name}}</a>]</span>
+                                                                            <span class="{{!itemValue.pricelist_is_global ? 'alert-danger' : ''}}">{{itemValue.a_name ? 'A: [' + itemValue.a_name + '], ' : ''}}{{itemValue.b_name ? 'B: [' + itemValue.b_name + '], ' : ''}}Прайс: [<a target="_blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{itemValue.client_account_id}}&trunkId={{itemValue.p_trunk_id}}">{{itemValue.price_name}}</a>]</span>
                                                                         </div>
                                                                     </div>
                                                                 </li>

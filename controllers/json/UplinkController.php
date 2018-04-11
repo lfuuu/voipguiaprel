@@ -57,7 +57,6 @@ class UplinkController extends JsonController
         $items = Uplink::find()
                 ->select(['auth.uplink.*',
                     new Expression('case when auth.uplink.active then concat(st.id, \': \', st.id, \', \', \'Вкл\') else concat(st.id, \': \', st.id, \', \', \'Выкл\') end as l_trunk_name'),
-                    'sts.id as price_name',
                     new Expression('concat(s.id, \': \', s.name) as server_name'),
                     new Expression('case when h.id is not null then concat(h.id, \': \', h.name) else \'Без хаба\' end as hub_name'),
                     new Expression('concat(t.id, \': \', t.trunk_name) as p_trunk_name'),
@@ -67,6 +66,7 @@ class UplinkController extends JsonController
                     's.id as server_id',
                     'st.client_account_id',
                     new Expression('case when vp.is_global = false and vp5.is_global = false then false else true end as pricelist_is_global'),
+                    new Expression('case when vp.id is not null then vp.name else case when vp5.id is not null then vp5.name else sts.id::varchar end end as price_name'),
                 ])
                 ->innerJoin('billing.service_trunk st', 'auth.uplink.l_trunk_id = st.id')
                 ->innerJoin('billing.service_trunk_settings sts', 'sts.trunk_id = st.id')

@@ -31,40 +31,40 @@ var OutcomeEditCtrl = function($scope, Redirect, Outcome, params, $modalInstance
 
 	$scope.save = function()
 	{
-		if ($scope.item.type_id == $scope.TYPE_ID_AUTOMATIC) {
-			$scope.item.route_case_id = null;
-			$scope.item.release_reason_id = null;
-			$scope.item.airp_id = null;
-			$scope.item.calling_station_id = null;
-			$scope.item.called_station_id= null;
-		}
-		if ($scope.item.type_id == $scope.TYPE_ID_ROUTE_CASE) {
-			$scope.item.release_reason_id = null;
-			$scope.item.airp_id = null;
-		}
-		if ($scope.item.type_id == $scope.TYPE_ID_RELEASE_REASON) {
-			$scope.item.route_case_id = null;
-			$scope.item.airp_id = null;
-			$scope.item.calling_station_id = null;
-			$scope.item.called_station_id= null;
-		}
-		if ($scope.item.type_id == $scope.TYPE_ID_AIRP) {
-			$scope.item.route_case_id = null;
-			$scope.item.release_reason_id = null;
-		}
-		if ($scope.item.type_id == $scope.TYPE_ID_ACCEPT) {
-			$scope.item.route_case_id = null;
-			$scope.item.release_reason_id = null;
-			$scope.item.airp_id = null;
-			$scope.item.calling_station_id = null;
-			$scope.item.called_station_id= null;
-		}
+    if ($scope.item.type_id == $scope.TYPE_ID_AUTOMATIC) {
+      $scope.item.route_case_id = null;
+      $scope.item.release_reason_id = null;
+      $scope.item.airp_id = null;
+      $scope.item.calling_station_id = null;
+      $scope.item.called_station_id = null;
+    }
+    if ($scope.item.type_id == $scope.TYPE_ID_ROUTE_CASE) {
+      $scope.item.release_reason_id = null;
+      $scope.item.airp_id = null;
+    }
+    if ($scope.item.type_id == $scope.TYPE_ID_RELEASE_REASON) {
+      $scope.item.route_case_id = null;
+      $scope.item.airp_id = null;
+      $scope.item.calling_station_id = null;
+      $scope.item.called_station_id = null;
+    }
+    if ($scope.item.type_id == $scope.TYPE_ID_AIRP) {
+      $scope.item.route_case_id = null;
+      $scope.item.release_reason_id = null;
+    }
+    if ($scope.item.type_id == $scope.TYPE_ID_ACCEPT) {
+      $scope.item.route_case_id = null;
+      $scope.item.release_reason_id = null;
+      $scope.item.airp_id = null;
+      $scope.item.calling_station_id = null;
+      $scope.item.called_station_id = null;
+    }
     if ($scope.item.type_id == $scope.TYPE_ID_AUTOMATIC_2) {
       $scope.item.route_case_id = null;
       $scope.item.release_reason_id = null;
       $scope.item.airp_id = null;
       $scope.item.calling_station_id = null;
-      $scope.item.called_station_id= null;
+      $scope.item.called_station_id = null;
     }
 
 		Outcome.save($scope.item).then(function(response) {
