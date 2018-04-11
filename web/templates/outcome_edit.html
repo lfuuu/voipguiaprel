@@ -26,42 +26,64 @@
                     <span class="col-sm-2 control-label"></span>
                     <div class="col-sm-10">
                         <div class="btn-group">
-                            <button type="button" class="btn {{item.type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(1)">Автоматически</button>
-                            <button type="button" class="btn {{item.type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(2)">Route case</button>
-                            <button type="button" class="btn {{item.type_id == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(3)">Release reason</button>
-                            <button type="button" class="btn {{item.type_id == 4 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(4)">AIRP</button>
-                            <button type="button" class="btn {{item.type_id == 5 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(5)">Accept</button>
-                            <button type="button" class="btn {{item.type_id == 6 ? 'btn-primary active' : 'btn-default'}}"
-                                ng-click="setType(6)">Meg-to-Reg
+                            <button type="button"
+                                    class="btn {{item.type_id == TYPE_ID_AUTOMATIC ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_AUTOMATIC)">Автоматически
                             </button>
-                            <button type="button" class="btn {{item.type_id == 7 ? 'btn-primary active' : 'btn-default'}}"
-                                ng-click="setType(7)">Meg-to-Meg
+                            <button type="button"
+                                    class="btn {{item.type_id == TYPE_ID_AUTOMATIC_2 ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_AUTOMATIC_2)">Автоматически 2
+                            </button>
+                            <button type="button"
+                                    class="btn {{item.type_id == TYPE_ID_ROUTE_CASE ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_ROUTE_CASE)">Route case
+                            </button>
+                            <button type="button"
+                                    class="btn {{item.type_id == TYPE_ID_RELEASE_REASON ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_RELEASE_REASON)">Release reason
+                            </button>
+                            <button type="button"
+                                    class="btn {{item.type_id == TYPE_ID_AIRP ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_AIRP)">AIRP
+                            </button>
+                            <button type="button"
+                                    class="btn {{item.type_id == TYPE_ID_ACCEPT ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_ACCEPT)">Accept
+                            </button>
+                            <button type="button"
+                                    class="btn {{item.type_id == TYPE_ID_MEG_TO_REG ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_MEG_TO_REG)">Meg-to-Reg
+                            </button>
+                            <button type="button"
+                                    class="btn {{item.type_id == TYPE_ID_MEG_TO_MEG ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_MEG_TO_MEG)">Meg-to-Meg
                             </button>
 
                             <!-- Спрятано до лучших времен -->
 
-                            <button type="button" ng-hide="true" class="btn {{item.type_id == 8 ? 'btn-primary active' : 'btn-default'}}"
-                                    ng-click="setType(8)">Trunk group
+                            <button type="button" ng-hide="true"
+                                    class="btn {{item.type_id == TYPE_ID_TRUNK_GROUP ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_TRUNK_GROUP)">Trunk group
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group" ng-if="item.type_id == 2">
+                <div class="form-group" ng-if="item.type_id == TYPE_ID_ROUTE_CASE">
                     <label class="col-sm-2 control-label">Route case 1</label>
                     <div class="col-sm-10">
                         <select-box list="routeCase" model="item.route_case_id" placeholder="Выберите route case" required="true"></select-box>
                     </div>
                 </div>
 
-                <div class="form-group" ng-if="item.type_id == 2">
+                <div class="form-group" ng-if="item.type_id == TYPE_ID_ROUTE_CASE">
                     <label class="col-sm-2 control-label">Route case 2</label>
                     <div class="col-sm-10">
                         <select-box list="routeCase" model="item.route_case_1_id" placeholder="Выберите route case" required="no" default="Любой номер"></select-box>
                     </div>
                 </div>
 
-                <div class="form-group" ng-if="item.type_id == 2">
+                <div class="form-group" ng-if="item.type_id == TYPE_ID_ROUTE_CASE">
                     <label class="col-sm-2 control-label">Route case 3</label>
                     <div class="col-sm-10">
                         <select-box list="routeCase" model="item.route_case_2_id" placeholder="Выберите route case" required="no" default="Любой номер"></select-box>
@@ -69,28 +91,28 @@
                 </div>
 
 
-                <div class="form-group" ng-if="item.type_id == 3">
+                <div class="form-group" ng-if="item.type_id == TYPE_ID_RELEASE_REASON">
                     <label class="col-sm-2 control-label">Release reason</label>
                     <div class="col-sm-10">
                         <select-box list="releaseReason" model="item.release_reason_id" placeholder="Выберите release reason" required="true"></select-box>
                     </div>
                 </div>
 
-                <div class="form-group" ng-if="item.type_id == 4">
+                <div class="form-group" ng-if="item.type_id == TYPE_ID_AIRP">
                     <label class="col-sm-2 control-label">AIRP</label>
                     <div class="col-sm-10">
                         <select-box list="airp" model="item.airp_id" placeholder="Выберите AIRP" required="true"></select-box>
                     </div>
                 </div>
 
-                <div class="form-group" ng-if="item.type_id == 2 || item.type_id == 4">
+                <div class="form-group" ng-if="item.type_id == TYPE_ID_ROUTE_CASE || item.type_id == TYPE_ID_AIRP">
                     <label class="col-sm-2 control-label">Calling Station Id</label>
                     <div class="col-sm-10">
                         <input class="form-control" placeholder="Release reason" ng-model="item.calling_station_id">
                     </div>
                 </div>
 
-                <div class="form-group" ng-if="item.type_id == 2 || item.type_id == 4">
+                <div class="form-group" ng-if="item.type_id == TYPE_ID_ROUTE_CASE || item.type_id == TYPE_ID_AIRP">
                     <label class="col-sm-2 control-label">Called Station Id</label>
                     <div class="col-sm-10">
                         <input class="form-control" placeholder="Called Station Id" ng-model="item.called_station_id">
@@ -107,14 +129,14 @@
                     </div>
                 </div>
 
-                <div class="form-group" ng-if="item.type_id == 2">
+                <div class="form-group" ng-if="item.type_id == TYPE_ID_ROUTE_CASE">
                     <label class="col-sm-2 control-label">RN</label>
                     <div class="col-sm-10">
                         <input class="form-control" placeholder="RN" ng-model="item.rn">
                     </div>
                 </div>
 
-                <div class="form-group" ng-if="item.type_id == 2">
+                <div class="form-group" ng-if="item.type_id == TYPE_ID_ROUTE_CASE">
                     <label class="col-sm-2 control-label">OCPN</label>
                     <div class="col-sm-10">
                         <input class="form-control" placeholder="OCPN" ng-model="item.ocpn">
@@ -123,7 +145,7 @@
 
                 <!-- Спрятано до лучших времен -->
 
-                <div class="form-group" ng-hide="true" ng-if="item.type_id == 8">
+                <div class="form-group" ng-hide="true" ng-if="item.type_id == TYPE_ID_TRUNK_GROUP">
                     <label class="col-sm-2 control-label">Trunk group</label>
                     <div class="col-sm-10">
                         <select-box list="trunkGroup" model="item.trunk_group_id" placeholder="Выберите"

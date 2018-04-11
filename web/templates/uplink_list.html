@@ -1,0 +1,115 @@
+<div ng-if="userPermissions['uplink_create']" class="pull-right">
+    <a class="btn btn-primary btn-sm" ng-click="clickCreate()">Создать</a>
+</div>
+<h4>Аплинки</h4>
+
+<div>
+    <div>
+        <button ng-click="collapseAll()">Свернуть все</button>
+        <button ng-click="expandAll()">Развернуть все</button>
+        <div ui-tree="treeOptions" data-drag-enabled="false" id="tree-root">
+            <ol ui-tree-nodes ng-model="list">
+                <li ng-repeat="(hubKey, hubValue) in list" collapsed="true" ui-tree-node>
+                    <br/>
+                    <div class="tree-container-bordered">
+                        <div ui-tree-handle class="tree-node tree-node-content">
+                            <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this);">
+                                <span class="glyphicon" ng-class="{
+                                  'glyphicon-chevron-right': collapsed,
+                                  'glyphicon-chevron-down': !collapsed
+                                }"></span>
+                            </a>
+                            <span>Хаб: [{{hubKey}}]</span>
+                            <a ng-if="userPermissions['uplink_create']" class="btn btn-info btn-xs" data-nodrag ng-click="add(hubValue.id);">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </a>
+                            <a ng-if="userPermissions['uplink_delete']" class="btn btn-danger btn-xs" data-nodrag ng-click="delete(hubValue.id, 1);">
+                                <span class="glyphicon glyphicon-minus"></span>
+                            </a>
+                        </div>
+
+                        <ol ui-tree-nodes="" ng-model="hubValue" ng-class="{hidden: collapsed}">
+                            <li ng-repeat="(regionKey, regionValue) in hubValue.items" ui-tree-node collapsed="true" class="stripe">
+                                <br/>
+                                <div class="tree-container-bordered">
+                                    <div ui-tree-handle class="tree-node tree-node-content">
+                                        <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this);">
+                                            <span class="glyphicon" ng-class="{
+                                              'glyphicon-chevron-right': collapsed,
+                                              'glyphicon-chevron-down': !collapsed
+                                            }"></span>
+                                        </a>
+                                        <span>Регион: [{{regionKey}}]</span>
+                                        <a ng-if="userPermissions['uplink_create']" class="btn btn-info btn-xs" data-nodrag ng-click="add(hubValue.id, regionValue.id);">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </a>
+                                        <a ng-if="userPermissions['uplink_delete']" class="btn btn-danger btn-xs" data-nodrag ng-click="delete(regionValue.id, 2);">
+                                            <span class="glyphicon glyphicon-minus"></span>
+                                        </a>
+                                    </div>
+                                    <ol ui-tree-nodes="" ng-model="regionValue" ng-class="{hidden: collapsed}">
+                                        <li ng-repeat="(ptrunkKey, ptrunkValue) in regionValue.items" ui-tree-node collapsed="true" class="stripe">
+                                            <div class="tree-container-bordered">
+                                                <br/>
+                                                <div ui-tree-handle class="tree-node tree-node-content">
+                                                    <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this);">
+                                                        <span class="glyphicon" ng-class="{
+                                                          'glyphicon-chevron-right': collapsed,
+                                                          'glyphicon-chevron-down': !collapsed
+                                                        }"></span>
+                                                    </a>
+                                                    <span>Транк: [{{ptrunkKey}}]</span>
+                                                    <a ng-if="userPermissions['uplink_create']" class="btn btn-info btn-xs" data-nodrag ng-click="add(hubValue.id, regionValue.id, ptrunkValue.id);">
+                                                        <span class="glyphicon glyphicon-plus"></span>
+                                                    </a>
+                                                    <a ng-if="userPermissions['uplink_delete']" class="btn btn-danger btn-xs" data-nodrag ng-click="delete(ptrunkValue.id, 3);">
+                                                        <span class="glyphicon glyphicon-minus"></span>
+                                                    </a>
+                                                </div>
+                                                <ol ui-tree-nodes="" ng-model="ptrunkValue" ng-class="{hidden: collapsed}">
+                                                    <li ng-repeat="(ltrunkKey, ltrunkValue) in ptrunkValue.items" ui-tree-node collapsed="true" class="stripe">
+                                                        <div class="tree-container-bordered">
+                                                            <br/>
+                                                            <div ui-tree-handle class="tree-node tree-node-content">
+                                                                <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this);">
+                                                                    <span class="glyphicon" ng-class="{
+                                                                      'glyphicon-chevron-right': collapsed,
+                                                                      'glyphicon-chevron-down': !collapsed
+                                                                    }"></span>
+                                                                </a>
+                                                                <span>Договор: [<a href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{ltrunkValue.client_account_id}}&trunkId={{ptrunkValue.id}}">{{ltrunkKey}}</a>]</span>
+                                                                <a ng-if="userPermissions['uplink_edit']" class="btn btn-info btn-xs" data-nodrag ng-click="clickItem(ltrunkValue.id)">
+                                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                                </a>
+                                                                <a ng-if="userPermissions['uplink_delete']" class="btn btn-danger btn-xs" data-nodrag ng-click="delete(ltrunkValue.id, 4);">
+                                                                    <span class="glyphicon glyphicon-minus"></span>
+                                                                </a>
+                                                            </div>
+                                                            <ol ui-tree-nodes="" ng-model="ltrunkValue" ng-class="{hidden: collapsed}">
+                                                                <li ng-repeat="(itemKey, itemValue) in ltrunkValue.items" ui-tree-node collapsed="true" class="stripe">
+                                                                    <div class="tree-container-bordered">
+                                                                        <br/>
+                                                                        <div ui-tree-handle class="tree-node tree-node-content">
+                                                                            <!--<a class="btn btn-danger btn-xs" data-nodrag>-->
+                                                                                <!--<span class="glyphicon glyphicon-chevron-down"></span>-->
+                                                                            <!--</a>-->
+                                                                            <span class="{{!itemValue.pricelist_is_global ? 'alert-danger' : ''}}">{{itemValue.a_name ? 'A: [' + itemValue.a_name + '], ' : ''}}{{itemValue.b_name ? 'B: [' + itemValue.b_name + '], ' : ''}}Прайс: [<a href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{itemValue.client_account_id}}&trunkId={{itemValue.p_trunk_id}}">{{itemValue.price_name}}</a>]</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ol>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>

@@ -18,6 +18,52 @@ class ServerController extends JsonController
                 ->all();
     }
     
+    public function actionListByHub()
+    {
+        $hubId = $this->request['hub_id'];
+        
+        if ($hubId) {
+            $where = ['hub_id' => $hubId];
+        } else {
+            $where = 'hub_id is null';
+        }
+        
+        $result = Server::find()
+                ->select(['id', 'concat(name, \' (\', id, \')\') as name'])
+                ->where($where)
+                ->orderBy('id')
+                ->asArray()
+                ->all();
+        
+        return $result;
+    }
+    
+    public function actionListByHubWithContract()
+    {
+        $hubId = $this->request['hub_id'];
+        
+        if ($hubId) {
+            $where = ['hub_id' => $hubId];
+        } else {
+            $where = 'hub_id is null';
+        }
+        
+        $result = Server::find()
+            ->select(['server.id', 'concat(server.name, \' (\', server.id, \')\') as name'])
+            ->innerJoin('auth.trunk t', 't.server_id = server.id')
+            ->innerJoin('billing.service_trunk st', 'st.trunk_id = t.id')
+            ->where($where)
+            ->andWhere('t.our_trunk = false')
+            ->andWhere('st.activation_dt < now()')
+            ->andWhere('st.expire_dt > now()')
+            ->andWhere('st.term_enabled = true')
+            ->orderBy('id')
+            ->asArray()
+            ->all();
+        
+        return $result;
+    }
+    
     public function actionCheckSyncProgress()
     {
         $server = $this->getServerOr404($this->request['server_id']);

@@ -206,3 +206,7 @@ td > div > .select2-container > .select2-choice {
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
+
+.angular-ui-tree-empty {
+	display: none;
+}

@@ -41,6 +41,34 @@ class TrunkController extends JsonController
                 ->asArray()
                 ->all();
     }
+    
+    /**
+     * @return \app\models\Trunk[]
+     * @throws HttpException
+     */
+    public function actionListWithContract()
+    {
+        if (!\Yii::$app->user->can('trunk_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $server = $this->getServerOr404($this->request['server_id']);
+        
+        $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+        
+        return
+            Trunk::find()
+                ->select(['trunk.id', 'trunk.name', 'trunk.trunk_name'])
+                ->innerJoin('billing.service_trunk st', 'st.trunk_id = auth.trunk.id')
+                ->where("( trunk.server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or trunk.server_id = ".$server->id)
+                ->andWhere('auth.trunk.our_trunk = false')
+                ->andWhere('st.activation_dt < now()')
+                ->andWhere('st.expire_dt > now()')
+                ->andWhere('st.term_enabled = true')
+                ->orderBy('name')
+                ->asArray()
+                ->all();
+    }
 
     /**
      * @return \app\models\Trunk[]

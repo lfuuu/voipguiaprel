@@ -26,10 +26,11 @@
         <div ng-if="userPermissions['instance_settings_edit']" class="list-group">
             <a href="#" class="list-group-item" ng-if="userPermissions['instance_settings_edit']" ng-click="Redirect.instanceSettings()">Дополнительные настройки</a>
         </div>
-        <div ng-if="userPermissions['trunk_list'] || userPermissions['trunk_group_list'] || userPermissions['route_table_list']" class="list-group">
+        <div ng-if="userPermissions['trunk_list'] || userPermissions['trunk_group_list'] || userPermissions['route_table_list'] || userPermissions['uplink_list']" class="list-group">
             <a href="#" class="list-group-item" ng-if="userPermissions['trunk_list']" ng-click="Redirect.trunkList()" ng-class="{active:tabs.isController('TrunkListCtrl')}">Транки</a>
             <a href="#" class="list-group-item" ng-if="userPermissions['trunk_group_list']" ng-click="Redirect.trunkGroupList()" ng-class="{active:tabs.isController('TrunkGroupListCtrl')}">Группы транков</a>
             <a href="#" class="list-group-item" ng-if="userPermissions['route_table_list']" ng-click="Redirect.routeTableList()" ng-class="{active:tabs.isController('RouteTableListCtrl')}">Таблицы маршрутизации</a>
+            <a href="#" class="list-group-item" ng-if="userPermissions['uplink_list']" ng-click="Redirect.uplinkList()" ng-class="{active:tabs.isController('UplinkListCtrl')}">Аплинки</a>
         </div>
         <div ng-if="userPermissions['number_list'] || userPermissions['outcome_list']" class="list-group">
             <a href="#" class="list-group-item" ng-if="userPermissions['number_list']" ng-click="Redirect.numberList()" ng-class="{active:tabs.isController('NumberListCtrl')}">A/B номера</a>

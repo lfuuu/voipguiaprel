@@ -250,6 +250,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         },
         testGenerateLog: function() {
             return openModal(TestGenerateLogCtrl, '/templates/test_generate_log.html');
+        },
+        uplinkList: function() {
+            return openTab(UplinkListCtrl, '/templates/uplink_list.html');
+        },
+        uplinkEdit: function(id) {
+            return openModal(UplinkEditCtrl, '/templates/uplink_edit.html', {id: id});
+        },
+        uplinkCreate: function(data) {
+            return openModal(UplinkEditCtrl, '/templates/uplink_edit.html', data);
         }
     };
 });

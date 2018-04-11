@@ -65,7 +65,8 @@ class AppAsset extends AssetBundle
         'js/controllers/AttributeGroupList.js',
         'js/controllers/AttributeGroupEdit.js',
         'js/controllers/StatisticsTree.js',
-
+        'js/controllers/UplinkList.js',
+        'js/controllers/UplinkEdit.js',
     ];
 
     public $templates = [
@@ -113,5 +114,7 @@ class AppAsset extends AssetBundle
         'templates/statistics_tree.html',
         'templates/directives/select-box.html',
         'templates/directives/outcome-select-box.html',
+        'templates/uplink_list.html',
+        'templates/uplink_edit.html',
     ];
 }

@@ -125,6 +125,10 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
             var data = {server_id: server_id};
             return ApiLoader.post(url + 'list', data);
         },
+        listByServerWithContract: function(server_id) {
+          var data = {server_id: server_id};
+          return ApiLoader.post(url + 'list-with-contract', data);
+        },
         save: function(data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
@@ -248,6 +252,48 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
             return ApiLoader.post(url + 'find-usages-in-trunk-a-b-rules', {id: id});
         }
     };
+});
+
+app.factory('Uplink', function ($q, ApiLoader, $rootScope) {
+  var url = '/json/uplink/';
+  var list = undefined;
+  var promise = undefined;
+  return {
+    read: function() {
+      return ApiLoader.post(url + 'read');
+    },
+    get: function(data) {
+      return ApiLoader.post(url + 'get', data);
+    },
+    list: function() {
+      if (promise !== undefined) return promise;
+
+      var deferred = $q.defer();
+      if (list !== undefined) {
+        deferred.resolve(list);
+        return deferred.promise;
+      } else {
+        var data = {server_id: $rootScope.server.id};
+        ApiLoader.post(url + 'list', data)
+          .then(function(data){
+            list = data;
+            promise = undefined;
+            deferred.resolve(data);
+          }, function(data){
+            promise = undefined;
+            deferred.reject(data);
+          });
+        promise = deferred.promise;
+      }
+      return deferred.promise;
+    },
+    save: function(data) {
+      return ApiLoader.post(url + 'save', data);
+    },
+    delete: function(id, level) {
+      return ApiLoader.post(url + 'delete', {id: id, level: level});
+    }
+  };
 });
 
 app.factory('Billing', function (ApiLoader) {
@@ -522,6 +568,12 @@ app.factory('Server', function ($q, ApiLoader) {
     return {
         list: function(data) {
             return ApiLoader.post(url + 'list', data);
+        },
+        listByHub: function(data) {
+            return ApiLoader.post(url + 'list-by-hub', data);
+        },
+        listByHubWithContract: function(data) {
+          return ApiLoader.post(url + 'list-by-hub-with-contract', data);
         },
         checkSyncProgress: function(data) {
             return ApiLoader.post(url + 'check-sync-progress', data);
@@ -945,67 +997,86 @@ app.factory('Network', function ($q, ApiLoader, $rootScope) {
 app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               RouteCase, Outcome, Number, Destination,
                               Airp, ReleaseReason, RouteTable, Network,
-                              Attribute, Server, FmcTrunk, Cpc) {
-	return {
-		trunk: function() {
-			return Trunk.list();
-		},
-        trunkByServer: function(server_id) {
-            return Trunk.listByServer(server_id);
-        },
-		trunkGroup: function() {
-			return TrunkGroup.list();
-		},
-        testGroup: function() {
-          return TestGroup.list();
-        },
-		prefixlist: function() {
-			return Prefixlist.list();
-		},
-        attribute: function () {
-            return Attribute.list();
-        },
-		routeCase: function() {
-			return RouteCase.list();
-		},
-		outcome: function() {
-			return Outcome.list();
-		},
-		number: function(type) {
-			return Number.list(type);
-		},
-        destination: function () {
-            return Destination.list();
-        },
-		airp: function() {
-			return Airp.list();
-		},
-		releaseReason: function() {
-			return ReleaseReason.list();
-		},
-		routeTable: function() {
-			return RouteTable.list();
-		},
-        network: function () {
-            return Network.list();
-        },
-        server: function() {
-            return Server.list();
-        },
-        fmcTrunk: function() {
-            return FmcTrunk.list();
-        },
-        cpc: function() {
-		    return Cpc.list();
-        },
-        testResult: function() {
-		    return [
-                {'id': 'not_executed', 'name': 'Не выполнен'},
-                {'id': 'passed', 'name': 'Успех'},
-                {'id': 'failed', 'name': 'Неудача'}
-            ];
-        }
-    };
+                              Attribute, Server, FmcTrunk, Cpc, Hub) {
+  return {
+    trunk: function () {
+      return Trunk.list();
+    },
+    trunkByServer: function (server_id) {
+      return Trunk.listByServer(server_id);
+    },
+    trunkGroup: function () {
+      return TrunkGroup.list();
+    },
+    testGroup: function () {
+      return TestGroup.list();
+    },
+    prefixlist: function () {
+      return Prefixlist.list();
+    },
+    attribute: function () {
+      return Attribute.list();
+    },
+    routeCase: function () {
+      return RouteCase.list();
+    },
+    outcome: function () {
+      return Outcome.list();
+    },
+    number: function (type) {
+      return Number.list(type);
+    },
+    destination: function () {
+      return Destination.list();
+    },
+    airp: function () {
+      return Airp.list();
+    },
+    releaseReason: function () {
+      return ReleaseReason.list();
+    },
+    routeTable: function () {
+      return RouteTable.list();
+    },
+    network: function () {
+      return Network.list();
+    },
+    server: function () {
+      return Server.list();
+    },
+    fmcTrunk: function () {
+      return FmcTrunk.list();
+    },
+    cpc: function () {
+      return Cpc.list();
+    },
+    testResult: function () {
+      return [
+        {'id': 'not_executed', 'name': 'Не выполнен'},
+        {'id': 'passed', 'name': 'Успех'},
+        {'id': 'failed', 'name': 'Неудача'}
+      ];
+    },
+    uplinkActiveType: function () {
+      return [
+        {'id': 1, 'name': 'all'},
+        {'id': 2, 'name': 'inc'},
+        {'id': 3, 'name': 'exc'}
+      ];
+    },
+    hub: function () {
+      return Hub.list();
+    }
+  };
+});
+
+app.factory('Hub', function ($q, ApiLoader, $rootScope) {
+  var url = '/json/hub/';
+  return {
+    list: function(data) {
+      return ApiLoader.post(url + 'list', data);
+    }
+  };
 });
 
 app.factory('Nnp', function (ApiLoader) {

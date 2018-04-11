@@ -22,6 +22,7 @@ use app\models\Server;
 use app\models\TrunkGroup;
 use app\models\Hub;
 use app\models\InstanceSettings;
+use app\models\Uplink;
 use yii\filters\AccessControl;
 use yii\web\HttpException;
 
@@ -108,6 +109,20 @@ class BaseController extends \yii\web\Controller
         $item = Trunk::findOne($trunkId);
         if ($item === null) {
             throw new HttpException(404, 'Транк не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $uplinkId
+     * @return Uplink
+     * @throws HttpException
+     */
+    protected function getUplinkOr404($uplinkId)
+    {
+        $item = Uplink::findOne($uplinkId);
+        if ($item === null) {
+            throw new HttpException(404, 'Аплинк не найден');
         }
         return $item;
     }
