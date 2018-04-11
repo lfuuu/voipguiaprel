@@ -67,6 +67,7 @@ class UplinkController extends JsonController
                     'st.client_account_id',
                     new Expression('case when vp.is_global = false and vp5.is_global = false then false else true end as pricelist_is_global'),
                     new Expression('case when vp.id is not null then vp.name else case when vp5.id is not null then vp5.name else sts.id::varchar end end as price_name'),
+                    'auth.uplink.active as uplink_active'
                 ])
                 ->innerJoin('billing.service_trunk st', 'auth.uplink.l_trunk_id = st.id')
                 ->innerJoin('billing.service_trunk_settings sts', 'sts.trunk_id = st.id')
@@ -93,6 +94,7 @@ class UplinkController extends JsonController
             $result[$item['hub_name']]['items'][$item['server_name']]['id'] = $item['server_id'];
             $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['id'] = $item['p_trunk_id'];
             $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['id'] = $item['l_trunk_id'];
+            $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['uplink_active'] = $item['uplink_active'];
             $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['client_account_id'] = $item['client_account_id'];
         }
         
