@@ -92,8 +92,8 @@ class UplinkController extends JsonController
         
         $result = [];
         
-        if ($this->request['as_tree']) {
-            foreach ($items as $item) {
+        foreach ($items as $item) {
+            if ($this->request['as_tree']) {
                 //Для того, чтобы вывести аплинки в виде дерева, нам нужна древесная структура данных.
                 $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['items'][] = $item;
                 //А для того, чтобы можно было каждый уровень удалять и/или расширять...
@@ -105,8 +105,8 @@ class UplinkController extends JsonController
                 $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['uplink_active'] = $item['uplink_active'];
                 $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['client_account_id'] = $item['client_account_id'];
             }
-        } else {
-            foreach ($items as $item) {
+            else {
+                //Тут то же самое, только на уровень меньше.
                 $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['items'][$item['p_trunk_name_basic']]['items'][] = $item;
                 $result[$item['hub_name_basic']]['id'] = $item['hub_id'];
                 $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['id'] = $item['server_id'];

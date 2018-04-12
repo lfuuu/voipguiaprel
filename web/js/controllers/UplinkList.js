@@ -46,7 +46,8 @@ var UplinkListCtrl = function ($scope, List, Uplink, Redirect, $window) {
               a_id: item.a_id,
               b_id: item.b_id,
               price_name: item.price_name,
-              is_active: (item.active ? 'Вкл' : 'Выкл'),
+              is_active: item.active,
+              is_active_text: (item.active ? 'Вкл' : 'Выкл'),
               active_mode: $scope.activeModeList[(item.active_mode - 1)].name,
               client_account_id: item.client_account_id,
               hub_id: item.hub_id,
@@ -179,4 +180,9 @@ var UplinkListCtrl = function ($scope, List, Uplink, Redirect, $window) {
       $scope.init();
     });
   };
+
+  $scope.trunkInfo = function (id) {
+    $window.open('/trunk/full-info?trunkId=' + id);
+  };
+
 };
