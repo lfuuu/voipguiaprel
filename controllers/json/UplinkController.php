@@ -93,6 +93,22 @@ class UplinkController extends JsonController
         $result = [];
         
         foreach ($items as $item) {
+    
+//            $del = array(' ', ',', ';', '.', "\n");
+//
+//            $regionList = explode($del[0], str_replace($del, $del[0], $item['region_filter']));
+//
+//            foreach ($regionList as $regionId) {
+//                $hasRoad = Trunk::find()
+//                    ->where(['server_id' => $regionId])
+//                    ->andWhere(new Expression('road_to_regions like \'%?%\'', $item['region_id']))
+//                    ->exists();
+//                var_dump($hasRoad);
+//
+//            }
+//
+//            die();
+            
             if ($this->request['as_tree']) {
                 //Для того, чтобы вывести аплинки в виде дерева, нам нужна древесная структура данных.
                 $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['items'][] = $item;

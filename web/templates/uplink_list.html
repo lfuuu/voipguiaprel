@@ -13,11 +13,11 @@
         <table class="table table-condensed">
             <tbody>
             <tr ng-repeat="item in list">
-                <td ng-if="item.is_hub">&nbsp;</td>
-                <td ng-if="item.is_hub" style="text-align: center;" colspan="7">
+                <td style="background-color: darkgrey" ng-if="item.is_hub">&nbsp;</td>
+                <td ng-if="item.is_hub" style="text-align: center; background-color: darkgrey;" colspan="7">
                     <b>{{item.name}}</b>
                 </td>
-                <td ng-if="item.is_hub">
+                <td style="background-color: darkgrey" ng-if="item.is_hub">
                     <a ng-if="userPermissions['uplink_create']" class="btn btn-info btn-xs" data-nodrag ng-click="add(item.hub_id);">
                         <span class="glyphicon glyphicon-plus"></span>
                     </a>
@@ -26,15 +26,15 @@
                     </a>
                 </td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_header">&nbsp;</td>
-                <td ng-if="item.is_header"><b>Физический транк</b></td>
-                <td ng-if="item.is_header"><b>Логический транк</b></td>
-                <td ng-if="item.is_header"><b>А-номер</b></td>
-                <td ng-if="item.is_header"><b>В-номер</b></td>
-                <td ng-if="item.is_header"><b>Прайслист</b></td>
-                <td ng-if="item.is_header"><b>Включено</b></td>
-                <td ng-if="item.is_header"><b>Режим</b></td>
-                <td ng-if="item.is_header">&nbsp;</td>
+                <td style="background-color: lightgrey" ng-if="item.is_header">&nbsp;</td>
+                <td style="background-color: lightgrey" ng-if="item.is_header"><b>Физический транк</b></td>
+                <td style="background-color: lightgrey" ng-if="item.is_header"><b>Логический транк</b></td>
+                <td style="background-color: lightgrey" ng-if="item.is_header"><b>А-номер</b></td>
+                <td style="background-color: lightgrey" ng-if="item.is_header"><b>В-номер</b></td>
+                <td style="background-color: lightgrey" ng-if="item.is_header"><b>Прайслист</b></td>
+                <td style="background-color: lightgrey" ng-if="item.is_header"><b>Включено</b></td>
+                <td style="background-color: lightgrey" ng-if="item.is_header"><b>Режим</b></td>
+                <td style="background-color: lightgrey" ng-if="item.is_header">&nbsp;</td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_region">&nbsp;</td>
                 <td ng-if="item.is_region" style="text-align: center;" colspan="7">
@@ -91,7 +91,7 @@
                 <li ng-repeat="(hubKey, hubValue) in tree" collapsed="true" ui-tree-node>
                     <br/>
                     <div class="tree-container-bordered">
-                        <div ui-tree-handle class="tree-node tree-node-content">
+                        <div style="background-color: darkgrey;" ui-tree-handle class="tree-node tree-node-content">
                             <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this);">
                                 <span class="glyphicon" ng-class="{
                                   'glyphicon-chevron-right': collapsed,
@@ -156,7 +156,7 @@
                                                                       'glyphicon-chevron-down': !collapsed
                                                                     }"></span>
                                                                 </a>
-                                                                <span class="{{!ltrunkValue.uplink_active ? 'alert-danger' : ''}}">{{ltrunkValue.client_account_id}}: [<a target="_blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{ltrunkValue.client_account_id}}&trunkId={{ptrunkValue.id}}">{{ltrunkKey}}</a>]</span>
+                                                                <span class="{{!ltrunkValue.uplink_active ? 'alert-danger' : ''}}"><a target="_blank" href="https://stat.mcn.ru/client/view?id={{ltrunkValue.client_account_id}}">{{ltrunkValue.client_account_id}}</a>: [<a target="_blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{ltrunkValue.client_account_id}}&trunkId={{ptrunkValue.id}}">{{ltrunkKey}}</a>]</span>
                                                                 <a ng-if="userPermissions['uplink_edit']" class="btn btn-info btn-xs" data-nodrag ng-click="clickItem(ltrunkValue.id)">
                                                                     <span class="glyphicon glyphicon-pencil"></span>
                                                                 </a>
