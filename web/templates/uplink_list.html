@@ -15,7 +15,7 @@
             <tr ng-repeat="item in list">
                 <td style="background-color: darkgrey" ng-if="item.is_hub">&nbsp;</td>
                 <td ng-if="item.is_hub" style="text-align: center; background-color: darkgrey;" colspan="7">
-                    <b>{{item.name}}</b>
+                    <b>{{item.name}} (#{{item.hub_id}})</b>
                 </td>
                 <td style="background-color: darkgrey" ng-if="item.is_hub">
                     <a ng-if="userPermissions['uplink_create']" class="btn btn-info btn-xs" data-nodrag ng-click="add(item.hub_id);">
@@ -38,7 +38,7 @@
                 <!---------------------------------------------------->
                 <td ng-if="item.is_region">&nbsp;</td>
                 <td ng-if="item.is_region" style="text-align: center;" colspan="7">
-                    <b>{{item.name}}</b>
+                    <b>{{item.name}} (#{{item.region_id}})</b>
                 </td>
                 <td ng-if="item.is_region">
                     <a ng-if="userPermissions['uplink_create']" class="btn btn-info btn-xs" data-nodrag ng-click="add(item.hub_id, item.region_id);">
