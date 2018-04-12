@@ -61,13 +61,20 @@ class UplinkController extends JsonController
                     new Expression('case when h.id is not null then concat(h.id, \': \', h.name) else \'Без хаба\' end as hub_name'),
                     new Expression('concat(t.id, \': \', t.trunk_name) as p_trunk_name'),
                     'n_a.name as a_name',
+                    'n_a.id as a_id',
                     'n_b.name as b_name',
+                    'n_b.id as b_id',
                     'h.id as hub_id',
                     's.id as server_id',
                     'st.client_account_id',
                     new Expression('case when vp.is_global = false and vp5.is_global = false then false else true end as pricelist_is_global'),
                     new Expression('case when vp.id is not null then vp.name else case when vp5.id is not null then vp5.name else sts.id::varchar end end as price_name'),
-                    'auth.uplink.active as uplink_active'
+                    'auth.uplink.active as uplink_active',
+                    'sts.id l_trunk_name_basic',
+                    's.name as server_name_basic',
+                    new Expression('case when h.id is not null then h.name else \'Без хаба\' end as hub_name_basic'),
+                    't.trunk_name as p_trunk_name_basic',
+                    'st.id as l_trunk_name_basic'
                 ])
                 ->innerJoin('billing.service_trunk st', 'auth.uplink.l_trunk_id = st.id')
                 ->innerJoin('billing.service_trunk_settings sts', 'sts.trunk_id = st.id')
@@ -85,17 +92,26 @@ class UplinkController extends JsonController
         
         $result = [];
         
-        foreach ($items as $item) {
-            //Для того, чтобы вывести аплинки в виде дерева, нам нужна древесная структура данных.
-            $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['items'][] = $item;
-            //А для того, чтобы можно было каждый уровень удалять и/или расширять...
-            //...у каждого уровня должны быть айдишники.
-            $result[$item['hub_name']]['id'] = $item['hub_id'];
-            $result[$item['hub_name']]['items'][$item['server_name']]['id'] = $item['server_id'];
-            $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['id'] = $item['p_trunk_id'];
-            $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['id'] = $item['l_trunk_id'];
-            $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['uplink_active'] = $item['uplink_active'];
-            $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['client_account_id'] = $item['client_account_id'];
+        if ($this->request['as_tree']) {
+            foreach ($items as $item) {
+                //Для того, чтобы вывести аплинки в виде дерева, нам нужна древесная структура данных.
+                $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['items'][] = $item;
+                //А для того, чтобы можно было каждый уровень удалять и/или расширять...
+                //...у каждого уровня должны быть айдишники.
+                $result[$item['hub_name']]['id'] = $item['hub_id'];
+                $result[$item['hub_name']]['items'][$item['server_name']]['id'] = $item['server_id'];
+                $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['id'] = $item['p_trunk_id'];
+                $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['id'] = $item['l_trunk_id'];
+                $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['uplink_active'] = $item['uplink_active'];
+                $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['client_account_id'] = $item['client_account_id'];
+            }
+        } else {
+            foreach ($items as $item) {
+                $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['items'][$item['p_trunk_name_basic']]['items'][] = $item;
+                $result[$item['hub_name_basic']]['id'] = $item['hub_id'];
+                $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['id'] = $item['server_id'];
+                $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['items'][$item['p_trunk_name_basic']]['id'] = $item['p_trunk_id'];
+            }
         }
         
         return $result;
@@ -161,11 +177,9 @@ class UplinkController extends JsonController
         
             } elseif (!empty($params['region_id'])) {
                 unset($params['hub_id']);
-        
-                $pTrunks = Trunk::find()
-                    ->where(['server_id' => $params['region_id']])
-                    ->all();
-        
+    
+                $pTrunks = $this->getActualTrunkList($params['region_id']);
+    
                 foreach ($pTrunks as $pTrunk) {
                     $lTrunks = ServiceTrunk::findActualByTrunkId($pTrunk->id);
             
@@ -190,13 +204,12 @@ class UplinkController extends JsonController
                 unset($params['hub_id']);
         
                 $regionList = Server::find()
+                    ->select(['id'])
                     ->where($where)
                     ->all();
         
                 foreach ($regionList as $region) {
-                    $pTrunks = Trunk::find()
-                        ->where(['server_id' => $region->id])
-                        ->all();
+                    $pTrunks = $this->getActualTrunkList($region->id);
             
                     foreach ($pTrunks as $pTrunk) {
                         $lTrunks = ServiceTrunk::findActualByTrunkId($pTrunk->id);
@@ -229,6 +242,19 @@ class UplinkController extends JsonController
         }
         
         return ['success' => 1];
+    }
+    
+    private function getActualTrunkList($regionId)
+    {
+        return Trunk::find()
+            ->select(['trunk.id'])
+            ->innerJoin('billing.service_trunk st', 'st.trunk_id = auth.trunk.id')
+            ->where(['trunk.server_id' => $regionId])
+            ->andWhere('auth.trunk.our_trunk = false')
+            ->andWhere('st.activation_dt < now()')
+            ->andWhere('st.expire_dt > now()')
+            ->andWhere('st.term_enabled = true')
+            ->all();
     }
 
     /**

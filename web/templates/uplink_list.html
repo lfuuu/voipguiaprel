@@ -3,13 +3,89 @@
 </div>
 <h4>Аплинки</h4>
 
-<div>
-    <div>
+<ul class="nav nav-tabs">
+    <li class="active" ng-click="activateTab('table-tab')"><a data-toggle="tab">Таблица</a></li>
+    <li ng-click="activateTab('tree-tab')"><a data-toggle="tab">Дерево</a></li>
+</ul>
+
+<div id="tabCtrl" class="tab-content">
+    <div class="tab-pane active" id="table-tab">
+        <table class="table table-striped table-hover table-condensed">
+            <tbody>
+            <tr ng-repeat="item in list">
+                <td ng-if="item.is_hub">&nbsp;</td>
+                <td ng-if="item.is_hub" style="text-align: center;" colspan="7">
+                    <b>{{item.name}}</b>
+                </td>
+                <td ng-if="item.is_hub">
+                    <a ng-if="userPermissions['uplink_create']" class="btn btn-info btn-xs" data-nodrag ng-click="add(item.hub_id);">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                    <a ng-if="userPermissions['uplink_delete']" class="btn btn-danger btn-xs" data-nodrag ng-click="delete(item.hub_id, 1);">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </a>
+                </td>
+                <!---------------------------------------------------->
+                <td ng-if="item.is_header">&nbsp;</td>
+                <td ng-if="item.is_header"><b>Физический транк</b></td>
+                <td ng-if="item.is_header"><b>Логический транк</b></td>
+                <td ng-if="item.is_header"><b>А-номер</b></td>
+                <td ng-if="item.is_header"><b>В-номер</b></td>
+                <td ng-if="item.is_header"><b>Прайслист</b></td>
+                <td ng-if="item.is_header"><b>Включено</b></td>
+                <td ng-if="item.is_header"><b>Режим</b></td>
+                <td ng-if="item.is_header">&nbsp;</td>
+                <!---------------------------------------------------->
+                <td ng-if="item.is_region">&nbsp;</td>
+                <td ng-if="item.is_region" style="text-align: center;" colspan="7">
+                    <b>{{item.name}}</b>
+                </td>
+                <td ng-if="item.is_region">
+                    <a ng-if="userPermissions['uplink_create']" class="btn btn-info btn-xs" data-nodrag ng-click="add(item.hub_id, item.region_id);">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                    <a ng-if="userPermissions['uplink_delete']" class="btn btn-danger btn-xs" data-nodrag ng-click="delete(item.region_id, 2);">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </a>
+                </td>
+                <!---------------------------------------------------->
+                <td ng-if="item.is_l_trunk">
+                    <a ng-if="userPermissions['uplink_create'] && item.p_trunk_name != ' '" class="btn btn-info btn-xs" data-nodrag ng-click="add(item.hub_id, item.region_id, item.p_trunk_id);">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                    <a ng-if="userPermissions['uplink_delete'] && item.p_trunk_name != ' '" class="btn btn-danger btn-xs" data-nodrag ng-click="delete(item.p_trunk_id, 3);">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </a>
+                </td>
+                <td ng-if="item.is_l_trunk">
+                    <a href="#" ng-click="clickTrunk(item.p_trunk_id)">{{item.p_trunk_name}}</a>
+                </td>
+                <td ng-if="item.is_l_trunk">
+                    <a target="_blank" href="https://stat.mcn.ru/client/view?id={{item.client_account_id}}">{{item.client_account_id}}</a>
+                </td>
+                <td ng-if="item.is_l_trunk"><a href="#" ng-click="clickNumber(item.a_id)">{{item.a_name}}</a></td>
+                <td ng-if="item.is_l_trunk"><a href="#" ng-click="clickNumber(item.b_id)">{{item.b_name}}</a></td>
+                <td ng-if="item.is_l_trunk"><a target="_blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{item.client_account_id}}&trunkId={{item.p_trunk_id}}">{{item.price_name}}</a></td>
+                <td ng-if="item.is_l_trunk">{{item.is_active}}</td>
+                <td ng-if="item.is_l_trunk">{{item.active_mode}}</td>
+                <td ng-if="item.is_l_trunk">
+                    <a ng-if="userPermissions['uplink_edit']" class="btn btn-info btn-xs" data-nodrag ng-click="clickItem(item.l_trunk_id)">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                    <a ng-if="userPermissions['uplink_delete']" class="btn btn-danger btn-xs" data-nodrag ng-click="delete(item.l_trunk_id, 4);">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" id="tree-tab">
         <button ng-click="collapseAll()">Свернуть все</button>
         <button ng-click="expandAll()">Развернуть все</button>
         <div ui-tree="treeOptions" data-drag-enabled="false" id="tree-root">
-            <ol ui-tree-nodes ng-model="list">
-                <li ng-repeat="(hubKey, hubValue) in list" collapsed="true" ui-tree-node>
+            <ol ui-tree-nodes ng-model="tree">
+                <li ng-repeat="(hubKey, hubValue) in tree" collapsed="true" ui-tree-node>
                     <br/>
                     <div class="tree-container-bordered">
                         <div ui-tree-handle class="tree-node tree-node-content">
@@ -90,9 +166,6 @@
                                                                     <div class="tree-container-bordered">
                                                                         <br/>
                                                                         <div ui-tree-handle class="tree-node tree-node-content">
-                                                                            <!--<a class="btn btn-danger btn-xs" data-nodrag>-->
-                                                                                <!--<span class="glyphicon glyphicon-chevron-down"></span>-->
-                                                                            <!--</a>-->
                                                                             <span class="{{!itemValue.pricelist_is_global || !itemValue.uplink_active ? 'alert-danger' : ''}}">{{itemValue.a_name ? 'A: [' + itemValue.a_name + '], ' : ''}}{{itemValue.b_name ? 'B: [' + itemValue.b_name + '], ' : ''}}Прайс: [<a target="_blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{itemValue.client_account_id}}&trunkId={{itemValue.p_trunk_id}}">{{itemValue.price_name}}</a>]</span>
                                                                         </div>
                                                                     </div>

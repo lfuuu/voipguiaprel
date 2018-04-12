@@ -98,7 +98,7 @@ var UplinkEditCtrl = function ($scope, Uplink, Redirect, Server, Trunk, List, pa
     }
   }
 
-  $scope.activeTypes = List.uplinkActiveType();
+  $scope.activeTypes = List.uplinkActiveMode();
 
   $scope.save = function () {
     Uplink.save($scope.item).then(function (response) {

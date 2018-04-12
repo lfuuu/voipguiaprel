@@ -260,7 +260,10 @@ app.factory('Uplink', function ($q, ApiLoader, $rootScope) {
   var promise = undefined;
   return {
     read: function() {
-      return ApiLoader.post(url + 'read');
+      return ApiLoader.post(url + 'read', {as_tree: false});
+    },
+    readTree: function() {
+      return ApiLoader.post(url + 'read', {as_tree: true});
     },
     get: function(data) {
       return ApiLoader.post(url + 'get', data);
@@ -1056,7 +1059,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         {'id': 'failed', 'name': 'Неудача'}
       ];
     },
-    uplinkActiveType: function () {
+    uplinkActiveMode: function () {
       return [
         {'id': 1, 'name': 'all'},
         {'id': 2, 'name': 'inc'},
