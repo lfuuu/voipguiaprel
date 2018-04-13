@@ -14,6 +14,7 @@
             <tbody>
             <tr ng-repeat="item in list">
                 <td style="background-color: darkgrey" ng-if="item.is_hub">&nbsp;</td>
+                <td style="background-color: darkgrey" ng-if="item.is_hub">&nbsp;</td>
                 <td ng-if="item.is_hub" style="text-align: center; background-color: darkgrey;" colspan="7">
                     <b>{{item.name}} (#{{item.hub_id}})</b>
                 </td>
@@ -27,6 +28,7 @@
                 </td>
                 <!---------------------------------------------------->
                 <td style="background-color: lightgrey" ng-if="item.is_header">&nbsp;</td>
+                <td style="background-color: lightgrey" ng-if="item.is_header">&nbsp;</td>
                 <td style="background-color: lightgrey" ng-if="item.is_header"><b>Физический транк</b></td>
                 <td style="background-color: lightgrey" ng-if="item.is_header"><b>Логический транк</b></td>
                 <td style="background-color: lightgrey" ng-if="item.is_header"><b>А-номер</b></td>
@@ -36,6 +38,7 @@
                 <td style="background-color: lightgrey" ng-if="item.is_header"><b>Режим</b></td>
                 <td style="background-color: lightgrey" ng-if="item.is_header">&nbsp;</td>
                 <!---------------------------------------------------->
+                <td ng-if="item.is_region">&nbsp;</td>
                 <td ng-if="item.is_region">&nbsp;</td>
                 <td ng-if="item.is_region" style="text-align: center;" colspan="7">
                     <b>{{item.name}} (#{{item.region_id}})</b>
@@ -49,6 +52,9 @@
                     </a>
                 </td>
                 <!---------------------------------------------------->
+                <td class="{{!item.is_active ? 'alert-danger' : ''}}" ng-if="item.is_l_trunk">
+                    <img ng-if="!item.has_road" src="../img/failed.png">
+                </td>
                 <td class="{{!item.is_active ? 'alert-danger' : ''}}" ng-if="item.is_l_trunk">
                     <a ng-if="userPermissions['uplink_create'] && item.p_trunk_name != ' '" class="btn btn-info btn-xs" data-nodrag ng-click="add(item.hub_id, item.region_id, item.p_trunk_id);">
                         <span class="glyphicon glyphicon-plus"></span>

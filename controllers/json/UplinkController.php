@@ -3,18 +3,11 @@
 namespace app\controllers\json;
 
 use app\classes\JsonController;
-use app\exceptions\FormValidationException;
 use app\models\billing\ServiceTrunk;
-use app\models\nnp\Region;
 use app\models\Server;
 use app\models\Trunk;
 use app\models\Uplink;
-use app\models\TrunkABfiltersRule;
-use app\models\TrunkNumberPreprocessing;
-use app\models\TrunkPriority;
-use app\models\TrunkTrunkRule;
-use Yii;
-use yii\db\StaleObjectException;
+use yii\base\Exception;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\db\Expression;
@@ -26,6 +19,12 @@ class UplinkController extends JsonController
     const LEVEL_REGION = 2;
     const LEVEL_PHYSICAL_TRUNK = 3;
     const LEVEL_LOGICAL_TRUNK = 4;
+    
+    const ACTIVE_MODE_ALL = 1;
+    const ACTIVE_MODE_INC = 2;
+    const ACTIVE_MODE_EXC = 3;
+    
+    private $_regionIds = [];
     
     /**
      * @return \app\models\Uplink[]
@@ -92,23 +91,57 @@ class UplinkController extends JsonController
         
         $result = [];
         
+        
+        
         foreach ($items as $item) {
+            $del = array(' ', ',', ';', '.', "\n");
     
-//            $del = array(' ', ',', ';', '.', "\n");
-//
-//            $regionList = explode($del[0], str_replace($del, $del[0], $item['region_filter']));
-//
-//            foreach ($regionList as $regionId) {
-//                $hasRoad = Trunk::find()
-//                    ->where(['server_id' => $regionId])
-//                    ->andWhere(new Expression('road_to_regions like \'%?%\'', $item['region_id']))
-//                    ->exists();
-//                var_dump($hasRoad);
-//
-//            }
-//
-//            die();
+            $regionFilter = explode($del[0], str_replace($del, $del[0], $item['region_filter']));
             
+            $regionIds = $this->getRegionIds($item['hub_id']);
+            
+            switch ($item['active_mode']) {
+                case self::ACTIVE_MODE_ALL:
+                    $filteredRegionIds = $regionIds;
+                    
+                    break;
+                case self::ACTIVE_MODE_INC:
+                    if (empty($regionFilter)) {
+                        $filteredRegionIds = [];
+                    } else {
+                        $filteredRegionIds = array_intersect($regionIds, $regionFilter);
+                    }
+                    
+                    break;
+                case self::ACTIVE_MODE_EXC:
+                    if (empty($regionList)) {
+                        $filteredRegionIds = $regionIds;
+                    } else {
+                        $filteredRegionIds = array_diff($regionIds, $regionFilter);
+                    }
+                    
+                    break;
+                default:
+                    throw new Exception();
+                    break;
+            }
+            
+            $item['has_road'] = true;
+            
+            if (is_array($filteredRegionIds) && !empty($filteredRegionIds)) {
+                foreach ($filteredRegionIds as $regionId) {
+                    $hasRoad = Trunk::find()
+                        ->where(['server_id' => $regionId])
+                        ->andWhere('road_to_regions like \'%' . $item['region_id'] . '\'')
+                        ->exists();
+    
+                    if (!$hasRoad) {
+                        $item['has_road'] = false;
+                        break;
+                    }
+                }
+            }
+
             if ($this->request['as_tree']) {
                 //Для того, чтобы вывести аплинки в виде дерева, нам нужна древесная структура данных.
                 $result[$item['hub_name']]['items'][$item['server_name']]['items'][$item['p_trunk_name']]['items'][$item['l_trunk_name']]['items'][] = $item;
@@ -129,6 +162,40 @@ class UplinkController extends JsonController
                 $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['items'][$item['p_trunk_name_basic']]['id'] = $item['p_trunk_id'];
             }
         }
+        
+        return $result;
+    }
+    
+    private function getRegionIds($hubId)
+    {
+        if (empty($hubId)) {
+            $where = 'hub_id is not null';
+            $params = [];
+            $id = 'none';
+        } else {
+            $where = 'hub_id <> :hub_id';
+            $params = [':hub_id' => $hubId];
+            $id = $hubId;
+        }
+        
+        if (isset($this->_regionIds[$id])) {
+            return $this->_regionIds[$id];
+        }
+        
+        $servers = Server::find()
+            ->select(['id'])
+            ->where($where)
+            ->addParams($params)
+            ->asArray()
+            ->all();
+        
+        $result = [];
+        
+        foreach ($servers as $server) {
+            $result[] = $server['id'];
+        }
+        
+        $this->_regionIds[$id] = $result;
         
         return $result;
     }

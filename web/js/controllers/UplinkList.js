@@ -51,7 +51,8 @@ var UplinkListCtrl = function ($scope, List, Uplink, Redirect, $window) {
               active_mode: $scope.activeModeList[(item.active_mode - 1)].name,
               client_account_id: item.client_account_id,
               hub_id: item.hub_id,
-              region_id: item.region_id
+              region_id: item.region_id,
+              has_road: item.has_road
             });
 
             pTrunkFlag = false;
