@@ -53,7 +53,7 @@
                 </td>
                 <!---------------------------------------------------->
                 <td class="{{!item.is_active ? 'alert-danger' : ''}}" ng-if="item.is_l_trunk">
-                    <img ng-if="!item.has_road" src="../img/failed.png">
+                    <img popover="{{item.road_errors}}" data-popover-trigger="mouseenter" popover-placement="right" ng-if="!item.has_road" src="../img/failed.png">
                 </td>
                 <td class="{{!item.is_active ? 'alert-danger' : ''}}" ng-if="item.is_l_trunk">
                     <a ng-if="userPermissions['uplink_create'] && item.p_trunk_name != ' '" class="btn btn-info btn-xs" data-nodrag ng-click="add(item.hub_id, item.region_id, item.p_trunk_id);">
