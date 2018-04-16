@@ -141,7 +141,7 @@ class UplinkController extends JsonController
                     }
                 }
                 
-                if ($item['road_errors']) {
+                if (!empty($item['road_errors'])) {
                     $item['road_errors'] = "Нет пути: " . implode(", ", $item['road_errors']);
                 }
             }
