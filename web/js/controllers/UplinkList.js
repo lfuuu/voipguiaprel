@@ -53,7 +53,8 @@ var UplinkListCtrl = function ($scope, List, Uplink, Redirect, $window) {
               hub_id: item.hub_id,
               region_id: item.region_id,
               has_road: item.has_road,
-              road_errors: item.road_errors
+              road_errors: item.road_errors,
+              region_filter: item.region_filter
             });
 
             pTrunkFlag = false;

@@ -76,7 +76,7 @@
                 <td class="{{!item.is_active ? 'alert-danger' : ''}}" ng-if="item.is_l_trunk"><a href="#" ng-click="clickNumber(item.b_id)">{{item.b_name}}</a></td>
                 <td class="{{!item.is_active ? 'alert-danger' : ''}}" ng-if="item.is_l_trunk"><a target="_blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{item.client_account_id}}&trunkId={{item.p_trunk_id}}">{{item.price_name}}</a></td>
                 <td class="{{!item.is_active ? 'alert-danger' : ''}}" ng-if="item.is_l_trunk">{{item.is_active_text}}</td>
-                <td class="{{!item.is_active ? 'alert-danger' : ''}}" ng-if="item.is_l_trunk">{{item.active_mode}}</td>
+                <td class="{{!item.is_active ? 'alert-danger' : ''}}" ng-if="item.is_l_trunk"><span popover="{{item.region_filter}}" data-popover-trigger="mouseenter" popover-placement="left">{{item.active_mode}}</span></td>
                 <td class="{{!item.is_active ? 'alert-danger' : ''}}" ng-if="item.is_l_trunk">
                     <a ng-if="userPermissions['uplink_edit']" class="btn btn-info btn-xs" data-nodrag ng-click="clickItem(item.l_trunk_id)">
                         <span class="glyphicon glyphicon-pencil"></span>
