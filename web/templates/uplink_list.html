@@ -3,6 +3,27 @@
 </div>
 <h4>Аплинки</h4>
 
+<script type="text/ng-template" id="asr_acd_renderer.html">
+    <br />
+    <div class="tree-container-bordered">
+        <div ng-if="subitem.name" ui-tree-handle class="tree-node tree-node-content">
+            <a class="btn btn-success btn-xs" ng-disabled="!subitem.subitems" data-nodrag ng-click="toggle(this); descend(subitem, collapsed)">
+                    <span class="glyphicon" ng-class="{
+                      'glyphicon-chevron-right': collapsed,
+                      'glyphicon-chevron-down': !collapsed
+                    }"></span>
+            </a>
+            <span>[{{subitem.name}}: {{subitem.key}}: {{subitem.item_name}}]: [Звонки: {{subitem.calls}}], [ACD: {{subitem.acd.join(', ')}}], [ASR: {{subitem.asr.join(', ')}}]</span>
+        </div>
+
+        <ol ui-tree-nodes="" ng-model="subitem.subitems" ng-class="{hidden: collapsed}">
+            <li ng-repeat="subitem in subitem.subitems" ui-tree-node collapsed="true" class="stripe" ng-include="'asr_acd_renderer.html'">
+            </li>
+        </ol>
+
+    </div>
+</script>
+
 <ul class="nav nav-tabs">
     <li class="active" ng-click="activateTab('table-tab')"><a data-toggle="tab">Таблица</a></li>
     <li ng-click="activateTab('tree-tab')"><a data-toggle="tab">Дерево</a></li>
@@ -180,6 +201,26 @@
                                                                     </div>
                                                                 </li>
                                                             </ol>
+                                                        </div>
+                                                    </li>
+                                                    <li ng-repeat="subitem in ptrunkValue.asr_acd_items" collapsed="true" ui-tree-node>
+                                                        <div class="tree-container-bordered">
+                                                            <br />
+                                                            <div ui-tree-handle class="tree-node tree-node-content">
+                                                                <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this); descendFirst(regionValue.id, ptrunkValue.id, subitem, collapsed)">
+                                                                    <span class="glyphicon" ng-class="{
+                                                                      'glyphicon-chevron-right': collapsed,
+                                                                      'glyphicon-chevron-down': !collapsed
+                                                                    }"></span>
+                                                                </a>
+                                                                <span>Дерево ASR-ACD</span>
+                                                            </div>
+
+                                                            <ol ui-tree-nodes="" ng-model="ptrunkValue" ng-class="{hidden: collapsed}">
+                                                                <li ng-repeat="subitem in subitem.subitems" ui-tree-node collapsed="true" class="stripe" ng-include="'asr_acd_renderer.html'">
+                                                                </li>
+                                                            </ol>
+
                                                         </div>
                                                     </li>
                                                 </ol>

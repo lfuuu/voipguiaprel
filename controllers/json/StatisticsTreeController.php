@@ -47,7 +47,7 @@ class StatisticsTreeController extends JsonController
     private function processResult($result, $path, $coreKey)
     {
         if (array_key_exists('err', $result)) {
-            throw new Exception('ERROR|Неопознанная ошибка');
+            return [[], ''];
         }
         
         $newResult = [];

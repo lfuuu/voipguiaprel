@@ -1,4 +1,4 @@
-var UplinkListCtrl = function ($scope, List, Uplink, Redirect, $window) {
+var UplinkListCtrl = function ($scope, List, Uplink, StatisticsTree, Redirect, $window) {
 
   $scope.sortType = 'name';
   $scope.sortReverse = false;
@@ -188,4 +188,31 @@ var UplinkListCtrl = function ($scope, List, Uplink, Redirect, $window) {
     $window.open('/trunk/full-info?trunkId=' + id);
   };
 
+  $scope.descend = function (subitem, collapsed) {
+    if (!collapsed) {
+      if (subitem.subitems && subitem.subitems.length == 0 && !collapsed) {
+        StatisticsTree.get({server_id: $scope.server.id, path: subitem.path, core_key: ''}).then(function (result) {
+          for (var i in result.result.subitems) {
+            var wantedResult = result.result.subitems[i].subitems;
+            break;
+          }
+
+          subitem.subitems = wantedResult;
+        });
+      }
+    }
+  };
+
+  $scope.descendFirst = function (regionId, trunkId, subitem, collapsed) {
+    if (!collapsed) {
+      StatisticsTree.get({server_id: $scope.server.id, path: regionId + ',' + trunkId, core_key: ''}).then(function (result) {
+        for (var i in result.result.subitems) {
+          var wantedResult = result.result.subitems[i].subitems;
+          break;
+        }
+
+        subitem.subitems = wantedResult;
+      });
+    }
+  };
 };
