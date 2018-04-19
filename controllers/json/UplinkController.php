@@ -91,7 +91,7 @@ class UplinkController extends JsonController
         
         $result = [];
         
-        
+        $regionHubs = $this->getRegionHubIds();
         
         foreach ($items as $item) {
             $del = array(' ', ',', ';', '.', "\n");
@@ -130,11 +130,19 @@ class UplinkController extends JsonController
             
             if (is_array($filteredRegionIds) && !empty($filteredRegionIds)) {
                 foreach ($filteredRegionIds as $regionId) {
+                    $hubId = $regionHubs[$regionId];
+                    
+                    if ($hubId) {
+                        $where = "((server_id in (select id from public.server where hub_id = ".$hubId.") and sw_shared) or server_id = ".$regionId.")";
+                    } else {
+                        $where = ["server_id" => $regionId];
+                    }
+                    
                     $hasRoad = Trunk::find()
-                        ->where(['server_id' => $regionId])
+                        ->where($where)
                         ->andWhere('road_to_regions like \'%' . $item['region_id'] . '\'')
                         ->exists();
-    
+                    
                     if (!$hasRoad) {
                         $item['has_road'] = false;
                         $item['road_errors'][$regionId] = '[' . $regionId . ' => ' . $item['region_id'] . ']';
@@ -167,6 +175,22 @@ class UplinkController extends JsonController
                 $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['id'] = $item['server_id'];
                 $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['items'][$item['p_trunk_name_basic']]['id'] = $item['p_trunk_id'];
             }
+        }
+        
+        return $result;
+    }
+    
+    private function getRegionHubIds()
+    {
+        $items = Server::find()
+            ->select(['id', 'hub_id'])
+            ->asArray()
+            ->all();
+        
+        $result = [];
+        
+        foreach ($items as $item) {
+            $result[$item['id']] = $item['hub_id'];
         }
         
         return $result;
