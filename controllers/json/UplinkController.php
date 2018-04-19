@@ -137,11 +137,12 @@ class UplinkController extends JsonController
     
                     if (!$hasRoad) {
                         $item['has_road'] = false;
-                        $item['road_errors'][] = '[' . $regionId . ' => ' . $item['region_id'] . ']';
+                        $item['road_errors'][$regionId] = '[' . $regionId . ' => ' . $item['region_id'] . ']';
                     }
                 }
                 
                 if (!empty($item['road_errors'])) {
+                    ksort($item['road_errors']);
                     $item['road_errors'] = "Нет пути: " . implode(", ", $item['road_errors']);
                 }
             }
