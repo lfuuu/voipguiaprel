@@ -82,9 +82,9 @@ class UplinkController extends JsonController
                 ->leftJoin('auth.hub h', 'h.id = s.hub_id')
                 ->leftJoin('auth.number n_a', 'n_a.id = sts.src_number_id')
                 ->leftJoin('auth.number n_b', 'n_b.id = sts.dst_number_id')
-                ->leftJoin('voip.pricelist vp', 'vp.id = sts.pricelist_id')
+                ->leftJoin('voip.pricelist vp', 'vp.id = sts.pricelist_id and vp.orig = false')
                 ->leftJoin('billing_uu.package_pricelist bpp', 'bpp.tariff_id = sts.nnp_tariff_id')
-                ->leftJoin('voip.pricelist vp5', 'vp5.id = bpp.pricelist_id')
+                ->leftJoin('voip.pricelist vp5', 'vp5.id = bpp.pricelist_id and vp5.orig = false')
                 ->orderBy('region_id')
                 ->asArray()
                 ->all();
