@@ -69,7 +69,7 @@ class UplinkController extends JsonController
                     new Expression('case when vp.is_global = false and vp5.is_global = false then false else true end as pricelist_is_global'),
                     new Expression('case when vp.id is not null then vp.name else case when vp5.id is not null then vp5.name else sts.id::varchar end end as price_name'),
                     'auth.uplink.active as uplink_active',
-                    'sts.id l_trunk_name_basic',
+                    'sts.id price_name_basic',
                     's.name as server_name_basic',
                     new Expression('case when h.id is not null then h.name else \'Без хаба\' end as hub_name_basic'),
                     't.trunk_name as p_trunk_name_basic',
@@ -85,7 +85,8 @@ class UplinkController extends JsonController
                 ->leftJoin('voip.pricelist vp', 'vp.id = sts.pricelist_id and vp.orig = false')
                 ->leftJoin('billing_uu.package_pricelist bpp', 'bpp.tariff_id = sts.nnp_tariff_id')
                 ->leftJoin('voip.pricelist vp5', 'vp5.id = bpp.pricelist_id and vp5.orig = false')
-                ->orderBy('region_id')
+                ->orderBy('region_id, l_trunk_id')
+                ->indexBy('price_name_basic')
                 ->asArray()
                 ->all();
         
