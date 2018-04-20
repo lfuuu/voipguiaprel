@@ -417,7 +417,9 @@ class TestAuthController extends JsonController
             return [];
         }
         
-        $serverIds = explode('; ', $traceToRegions);
+        $del = array(' ', ',', ';', '.', "\n");
+    
+        $serverIds = explode($del[0], str_replace($del, $del[0], $traceToRegions));
         
         if (count($serverIds) < 1) {
             return [];
