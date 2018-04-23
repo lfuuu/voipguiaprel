@@ -24,6 +24,9 @@ class UplinkController extends JsonController
     const ACTIVE_MODE_INC = 2;
     const ACTIVE_MODE_EXC = 3;
     
+    const TYPE_ORIGINATION = 1;
+    const TYPE_TERMINATION = 2;
+    
     private $_regionIds = [];
     
     /**
@@ -52,43 +55,45 @@ class UplinkController extends JsonController
         if (!\Yii::$app->user->can('uplink_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
+    
         $items = Uplink::find()
-                ->select(['auth.uplink.*',
-                    new Expression('case when auth.uplink.active then concat(st.id, \': \', st.id, \', \', \'Вкл\') else concat(st.id, \': \', st.id, \', \', \'Выкл\') end as l_trunk_name'),
-                    new Expression('concat(s.id, \': \', s.name) as server_name'),
-                    new Expression('case when h.id is not null then concat(h.id, \': \', h.name) else \'Без хаба\' end as hub_name'),
-                    new Expression('concat(t.id, \': \', t.trunk_name) as p_trunk_name'),
-                    'n_a.name as a_name',
-                    'n_a.id as a_id',
-                    'n_b.name as b_name',
-                    'n_b.id as b_id',
-                    'h.id as hub_id',
-                    's.id as server_id',
-                    'st.client_account_id',
-                    new Expression('case when vp.is_global = false and vp5.is_global = false then false else true end as pricelist_is_global'),
-                    new Expression('case when vp.id is not null then vp.name else case when vp5.id is not null then vp5.name else sts.id::varchar end end as price_name'),
-                    'auth.uplink.active as uplink_active',
-                    'sts.id price_name_basic',
-                    's.name as server_name_basic',
-                    new Expression('case when h.id is not null then h.name else \'Без хаба\' end as hub_name_basic'),
-                    't.trunk_name as p_trunk_name_basic',
-                    'st.id as l_trunk_name_basic'
-                ])
-                ->innerJoin('billing.service_trunk st', 'auth.uplink.l_trunk_id = st.id')
-                ->innerJoin('billing.service_trunk_settings sts', 'sts.trunk_id = st.id')
-                ->innerJoin('auth.trunk t', 'auth.uplink.p_trunk_id = t.id')
-                ->innerJoin('public.server s', 's.id = auth.uplink.region_id')
-                ->leftJoin('auth.hub h', 'h.id = s.hub_id')
-                ->leftJoin('auth.number n_a', 'n_a.id = sts.src_number_id')
-                ->leftJoin('auth.number n_b', 'n_b.id = sts.dst_number_id')
-                ->leftJoin('voip.pricelist vp', 'vp.id = sts.pricelist_id and vp.orig = false')
-                ->leftJoin('billing_uu.package_pricelist bpp', 'bpp.tariff_id = sts.nnp_tariff_id')
-                ->leftJoin('voip.pricelist vp5', 'vp5.id = bpp.pricelist_id and vp5.orig = false')
-                ->orderBy('region_id, l_trunk_id')
-                ->indexBy('price_name_basic')
-                ->asArray()
-                ->all();
+            ->select([
+                'auth.uplink.*',
+                new Expression('case when auth.uplink.active then concat(st.id, \': \', st.id, \', \', \'Вкл\') else concat(st.id, \': \', st.id, \', \', \'Выкл\') end as l_trunk_name'),
+                new Expression('concat(s.id, \': \', s.name) as server_name'),
+                new Expression('case when h.id is not null then concat(h.id, \': \', h.name) else \'Без хаба\' end as hub_name'),
+                new Expression('concat(t.id, \': \', t.trunk_name) as p_trunk_name'),
+                'n_a.name as a_name',
+                'n_a.id as a_id',
+                'n_b.name as b_name',
+                'n_b.id as b_id',
+                'h.id as hub_id',
+                's.id as server_id',
+                'st.client_account_id',
+                new Expression('case when vp.is_global = false then false else true end as pricelist_is_global'),
+                new Expression('case when vp.id is not null then vp.name else case when bp.tariff_id is not null then bp.name else sts.id::varchar end end as price_name'),
+                'auth.uplink.active as uplink_active',
+                'sts.id price_name_basic',
+                's.name as server_name_basic',
+                new Expression('case when h.id is not null then h.name else \'Без хаба\' end as hub_name_basic'),
+                't.trunk_name as p_trunk_name_basic',
+                'st.id as l_trunk_name_basic'
+            ])
+            ->innerJoin('billing.service_trunk st', 'auth.uplink.l_trunk_id = st.id')
+            ->innerJoin('billing.service_trunk_settings sts', 'sts.trunk_id = st.id')
+            ->innerJoin('auth.trunk t', 'auth.uplink.p_trunk_id = t.id')
+            ->innerJoin('public.server s', 's.id = auth.uplink.region_id')
+            ->leftJoin('auth.hub h', 'h.id = s.hub_id')
+            ->leftJoin('auth.number n_a', 'n_a.id = sts.src_number_id')
+            ->leftJoin('auth.number n_b', 'n_b.id = sts.dst_number_id')
+            ->leftJoin('voip.pricelist vp', 'vp.id = sts.pricelist_id')
+            ->leftJoin('billing_uu.package bp', 'bp.tariff_id = sts.nnp_tariff_id')
+            ->where('sts.type = ' . self::TYPE_TERMINATION)
+            ->andWhere('sts.pricelist_id is not null or sts.nnp_tariff_id is not null')
+            ->orderBy('region_id, l_trunk_id, sts.order')
+            ->indexBy('price_name_basic')
+            ->asArray()
+            ->all();
         
         $result = [];
         
