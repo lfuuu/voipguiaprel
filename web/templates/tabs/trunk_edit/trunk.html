@@ -195,8 +195,14 @@
 </div>
 
 <div class="form-group">
-
     <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Роуминг оригинация</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.roaming_orig = !item.roaming_orig">
+                <button type="button" class="btn btn-sm {{item.roaming_orig ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.roaming_orig ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
     </div>
 
     <div class="col-sm-4">
@@ -218,7 +224,24 @@
             </div>
         </div>
     </div>
+</div>
 
+<div class="form-group">
+    <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Роуминг терминация</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.roaming_term = !item.roaming_term">
+                <button type="button" class="btn btn-sm {{item.roaming_term ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.roaming_term ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+    </div>
+
+    <div class="col-sm-4">
+    </div>
 </div>
 
 <div class="form-group">

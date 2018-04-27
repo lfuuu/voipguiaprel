@@ -31,6 +31,8 @@ use app\queries\TrunkQuery;
  * @property bool $orig_bfilter_default_allowed
  * @property bool $term_afilter_default_allowed
  * @property bool $term_bfilter_default_allowed
+ * @property bool $roaming_orig
+ * @property bool $roaming_term
  * @property int $id_pbx
  * @property string $back_trunk
  * @property int $location_id
@@ -67,6 +69,7 @@ class Trunk extends \yii\db\ActiveRecord
                 'tech_trunk', 'pstn_trunk', 'mgmn_trunk','mgmn_orig_trunk','le8accept',
                 'orig_afilter_default_allowed', 'orig_bfilter_default_allowed',
                 'term_afilter_default_allowed', 'term_bfilter_default_allowed',
+                'roaming_orig', 'roaming_term',
             ], 'boolean'],
             [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id'], 'integer'],
             [['back_trunk'], 'string', 'max' => 50],
