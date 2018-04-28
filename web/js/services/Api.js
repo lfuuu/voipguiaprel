@@ -139,6 +139,9 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
         },
         serviceTrunks: function (trunkId) {
             return ApiLoader.post(url + 'get-service-trunks', {'trunk_id': trunkId});
+        },
+        listRoaming: function (servers) {
+            return ApiLoader.post(url + 'list-roaming', {'servers': servers});
         }
     };
 });
@@ -1009,6 +1012,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     trunkGroup: function () {
       return TrunkGroup.list();
+    },
+    trunkRoaming: function (servers) {
+      return Trunk.listRoaming(servers)
     },
     testGroup: function () {
       return TestGroup.list();

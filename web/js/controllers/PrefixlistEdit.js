@@ -1,4 +1,4 @@
-var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, Pbx, Server, params, $modalInstance, $window, Redirect) {
+var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, Pbx, List, Server, params, $modalInstance, $window, Redirect) {
 
     var STATUS_SUCCESS = 'SUCCESS';
     var STATUS_ERROR = 'ERROR';
@@ -13,13 +13,15 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     $scope.TYPE_ID_DID_ON_VPBX = 8;
     $scope.TYPE_ID_FMC = 9;
     $scope.TYPE_ID_PARTED_NUM = 10;
+    $scope.TYPE_ID_ROAMING = 11;
 
     $scope.NNP_MODE_DIRECTION = 1;
     $scope.NNP_MODE_FILTER = 2;
 
     $scope.nnpMode = $scope.NNP_MODE_DIRECTION;
 
-    var typeWithBuffer = [$scope.TYPE_ID_NNP, $scope.TYPE_ID_7800, $scope.TYPE_ID_DID_ON_VPBX, $scope.TYPE_ID_FMC, $scope.TYPE_ID_PARTED_NUM];
+    var typeWithBuffer = [$scope.TYPE_ID_NNP, $scope.TYPE_ID_7800, $scope.TYPE_ID_DID_ON_VPBX, $scope.TYPE_ID_FMC,
+      $scope.TYPE_ID_PARTED_NUM, $scope.TYPE_ID_ROAMING];
 
     var countryLoadComplete = false;
     var regionLoadComplete = false;
@@ -123,9 +125,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 $scope.hasBuffer = false;
             }
 
-            Pbx.read($scope.item.servers).then(function (data) {
-                $scope.pbxList = data;
-            });
+            $scope.serverSelected();
 
             $scope.setType($scope.item.type_id);
             $scope.item.count = $scope.item.prefixes;
@@ -336,7 +336,11 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         Pbx.read($scope.item.servers).then(function (data) {
             $scope.pbxList = data;
         });
-    }
+
+        List.trunkRoaming($scope.item.servers).then(function (data) {
+          $scope.trunkRoamingList = data;
+        });
+    };
 
     $scope.addPbx = function() {
         if (!$scope.item.pbx_list) {
@@ -352,6 +356,21 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             $scope.item.pbx_list.splice(index, 1);
         }
     };
+
+  $scope.addTrunkRoaming = function() {
+    if (!$scope.item.trunk_roaming_list) {
+      $scope.item.trunk_roaming_list = [];
+    }
+    $scope.item.trunk_roaming_list.push({id: null});
+  };
+
+  $scope.removeTrunkRoaming = function(index) {
+    if (!$scope.item.trunk_roaming_list) {
+      $scope.item.trunk_roaming_list = [];
+    } else {
+      $scope.item.trunk_roaming_list.splice(index, 1);
+    }
+  };
 
     $scope.save = function () {
         var data = angular.copy($scope.item);

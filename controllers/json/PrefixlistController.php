@@ -115,39 +115,43 @@ class PrefixlistController extends JsonController
         }
 
         $prefixlist->load($this->request, '');
-        if ($prefixlist->type_id == 1) {
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_MANUAL) {
             $prefixlist->setManualList($this->request['manual_list']);
         } else {
             $prefixlist->manual_list = null;
         }
-        if ($prefixlist->type_id == 2) {
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_LOCAL_PREFIXES) {
             $prefixlist->setSmezhnostList($this->request['smezhnost_list']);
         } else {
             $prefixlist->smezhnost_list = null;
             $prefixlist->network_config_id = null;
 
         }
-        if ($prefixlist->type_id == 3) {
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_ROSSVYAZ) {
             $prefixlist->setRossvyazOperators($this->request['rossvyaz_operators']);
         } else {
             $prefixlist->rossvyaz_operator_ids = null;
             $prefixlist->rossvyaz_operators = null;
         }
 
-        if ($prefixlist->type_id == 6) {
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_NNP) {
             $prefixlist->setNnpFilters($this->request);
         }
 
-        if ($prefixlist->type_id == 7) {
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_7800) {
             $prefixlist->setToken($this->request);
         }
     
-        if ($prefixlist->type_id == 8) {
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_DID_ON_VPBX) {
             $prefixlist->setPbxFilters($this->request);
         }
     
-        if ($prefixlist->type_id == 9) {
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_FMC) {
             $prefixlist->setFmcFilters($this->request);
+        }
+    
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_ROAMING) {
+            $prefixlist->setTrunkRoamingFilters($this->request);
         }
 
         $transaction = Prefixlist::getDb()->beginTransaction();

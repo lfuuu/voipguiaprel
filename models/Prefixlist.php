@@ -41,6 +41,11 @@ class Prefixlist extends \yii\db\ActiveRecord
     const PREFIXLIST_TYPE_CSV = 4; // CSV
     const PREFIXLIST_TYPE_DEARLY_CODES = 5; // Дорогие коды
     const PREFIXLIST_TYPE_NNP = 6; // ННП
+    const PREFIXLIST_TYPE_7800 = 7; // 7800
+    const PREFIXLIST_TYPE_DID_ON_VPBX = 8; // Дид на ВАТС
+    const PREFIXLIST_TYPE_FMC = 9; // FMC
+    const PREFIXLIST_TYPE_PARTED_NUM = 10; // Parted num
+    const PREFIXLIST_TYPE_ROAMING = 11; // Роуминг
 
     /**
      * @return string
@@ -292,6 +297,32 @@ class Prefixlist extends \yii\db\ActiveRecord
         return $this;
     }
     
+    /**
+     * @param array $input
+     * @return $this
+     */
+    public function setTrunkRoamingFilters(array $input)
+    {
+        $token = null;
+        
+        if (!empty($this->nnp_filter_json)) {
+            $nnpFilter = json_decode($this->nnp_filter_json, true);
+            
+            if (!empty($nnpFilter['token'])) {
+                $token = $nnpFilter['token'];
+            }
+        }
+        
+        $filters = [
+            'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
+            'trunk_list' => isset($input['trunk_roaming_list']) ? $input['trunk_roaming_list'] : '',
+            'servers' => isset($input['servers']) ? $input['servers'] : ''
+        ];
+        
+        $this->nnp_filter_json = Json::encode($filters);
+        return $this;
+    }
+    
     public function setFmcFilters(array $input)
     {
         $token = null;
@@ -357,6 +388,7 @@ class Prefixlist extends \yii\db\ActiveRecord
         $data['dt_prepare'] = $data['dt_prepare'] ? date('Y-m-d H:i:s', strtotime($data['dt_prepare'])) : '';
         $data['servers'] = isset($nnpFilter['servers']) ? $nnpFilter['servers'] : [];
         $data['pbx_list'] = isset($nnpFilter['pbx_list']) ? $nnpFilter['pbx_list'] : [];
+        $data['trunk_roaming_list'] = isset($nnpFilter['trunk_list']) ? $nnpFilter['trunk_list'] : [];
         $data['fmc_trunk'] = isset($nnpFilter['fmc_trunk']) ? $nnpFilter['fmc_trunk'] : [];
         return $data;
     }

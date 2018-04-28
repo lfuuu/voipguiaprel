@@ -69,6 +69,40 @@ class TrunkController extends JsonController
                 ->asArray()
                 ->all();
     }
+    
+    /**
+     * @return \app\models\Trunk[]
+     * @throws HttpException
+     */
+    public function actionListRoaming()
+    {
+        if (!\Yii::$app->user->can('trunk_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        if (empty($this->request['servers'])) {
+            return [];
+        }
+    
+        $servers = [];
+        $hubs = [];
+        
+        foreach ($this->request['servers'] as $server) {
+            $server = $this->getServerOr404($server['id']);
+    
+            $servers[] = $server['id'];
+            $hubs[] = $server->hub_id > 0 ? $server->hub_id : 0;
+        }
+        
+        return
+            Trunk::find()
+                ->select(['id', 'name', 'trunk_name'])
+                ->where("(server_id in (select id from public.server where hub_id in (" . implode(',', $hubs) . ")) and sw_shared) or server_id in (" . implode(',', $servers) . ")")
+                ->andWhere('roaming_orig = true or roaming_term = true')
+                ->orderBy('name')
+                ->asArray()
+                ->all();
+    }
 
     /**
      * @return \app\models\Trunk[]

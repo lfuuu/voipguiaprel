@@ -36,6 +36,7 @@
                         <button type="button" class="btn {{item.type_id == TYPE_ID_DID_ON_VPBX ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_DID_ON_VPBX)">Did на ВАТС</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_FMC ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_FMC)">FMC</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_PARTED_NUM ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_PARTED_NUM)">Parted num</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_ROAMING ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_ROAMING)">Роуминг</button>
                     </div>
                 </div>
             </div>
@@ -426,6 +427,64 @@
                             <tr>
                                 <td colspan="3">
                                     <button type="button" class="btn btn-success btn-xs" ng-click="addPbx()"><i class="glyphicon glyphicon-plus"></i> PBX</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="item.type_id == TYPE_ID_ROAMING">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Сервера</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr ng-repeat="server in item.servers">
+                                <td width="100%">
+                                    <select ui-select2 ng-model="server.id" style="width: 100%" ng-change="serverSelected()">
+                                        <option value="">-- Выберите --</option>
+                                        <option ng-repeat="serverObject in serverList" value="{{serverObject.id}}">{{serverObject.name}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeServer($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addServer()"><i class="glyphicon glyphicon-plus"></i> Сервер</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Список транков роуминг</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr ng-repeat="pbx in item.trunk_roaming_list">
+                                <td width="100%">
+                                    <select ui-select2 ng-model="pbx.id" style="width: 100%" >
+                                        <option value="">-- Выберите --</option>
+                                        <option ng-repeat="trunkObject in trunkRoamingList" value="{{trunkObject.id}}">{{trunkObject.trunk_name}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkRoaming($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkRoaming()"><i class="glyphicon glyphicon-plus"></i> Транк</button>
                                 </td>
                             </tr>
                             </tfoot>
