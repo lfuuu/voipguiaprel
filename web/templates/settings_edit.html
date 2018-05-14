@@ -183,6 +183,17 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+
+                    <label class="col-sm-4 control-label">Ошибки автотестов в здоровье</label>
+                    <div class="col-sm-8">
+                        <div class="btn-group" ng-click="item.is_autotest_error_enabled = !item.is_autotest_error_enabled">
+                            <button type="button" class="btn btn-sm {{item.is_autotest_error_enabled ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.is_autotest_error_enabled ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <div class="tab-pane" id="healthsettings">
