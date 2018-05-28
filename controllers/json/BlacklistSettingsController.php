@@ -13,6 +13,9 @@ class BlacklistSettingsController extends JsonController
     const RESULT_SUCCESS = 1;
     const RESULT_ALREADY_EXISTS = 2;
     const RESULT_DELETE_SUCCESS = 3;
+    const RESULT_LENGTH_TOO_SHORT = 4;
+    
+    const PREFIX_MIN_LENGTH = 6;
     
     public function actionGet()
     {
@@ -68,7 +71,9 @@ class BlacklistSettingsController extends JsonController
             
             if (count($data) > 0) {
                 foreach ($data as $item) {
-                    if (!PrefixlistPrefix::find()->where($item)->exists()) {
+                    if (strlen($item['prefix']) < self::PREFIX_MIN_LENGTH) {
+                        $result[$item['prefix']] = self::RESULT_LENGTH_TOO_SHORT;
+                    } else if (!PrefixlistPrefix::find()->where($item)->exists()) {
                         PrefixlistPrefix::getDb()->createCommand()->insert(
                             PrefixlistPrefix::tableName(),
                             $item
