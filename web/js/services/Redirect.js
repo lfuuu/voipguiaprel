@@ -259,6 +259,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         },
         uplinkCreate: function(data) {
             return openModal(UplinkEditCtrl, '/templates/uplink_edit.html', data);
+        },
+        imsiPartnerList: function() {
+            return openTab(ImsiPartnerListCtrl, '/templates/imsi_partner_list.html');
+        },
+        imsiPartnerEdit: function(id) {
+            return openModal(ImsiPartnerEditCtrl, '/templates/imsi_partner_edit.html', {id: id});
+        },
+        imsiPartnerCreate: function() {
+            return openModal(ImsiPartnerEditCtrl, '/templates/imsi_partner_edit.html', {id: null});
         }
     };
 });

@@ -93,6 +93,10 @@ class RbacController extends Controller {
         ['name' => 'uplink_create', 'description' => 'Создание аплинков'],
         ['name' => 'uplink_edit', 'description' => 'Редактирование аплинков'],
         ['name' => 'uplink_delete', 'description' => 'Удаление аплинков'],
+        ['name' => 'imsi_partner_list', 'description' => 'Просмотр списка IMSI партнеров'],
+        ['name' => 'imsi_partner_create', 'description' => 'Создание IMSI партнеров'],
+        ['name' => 'imsi_partner_edit', 'description' => 'Редактирование IMSI партнеров'],
+        ['name' => 'imsi_partner_delete', 'description' => 'Удаление IMSI партнеров'],
     ];
     
     private $_roles = [
@@ -122,7 +126,8 @@ class RbacController extends Controller {
                 'test_call_list', 'test_call_create', 'test_call_edit', 'test_call_delete',
                 'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete',
                 'trunkhealth_view_list', 'statistics_tree', 'auto_test_management',
-                'hub_list', 'uplink_list', 'uplink_create', 'uplink_edit', 'uplink_delete'
+                'hub_list', 'uplink_list', 'uplink_create', 'uplink_edit', 'uplink_delete',
+                'imsi_partner_list', 'imsi_partner_create', 'imsi_partner_edit', 'imsi_partner_delete'
             ]
         ],
         ['role' => 'engineer', 'permissions' => [

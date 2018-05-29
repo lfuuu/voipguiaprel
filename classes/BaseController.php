@@ -5,6 +5,7 @@ use app\components\View;
 use app\models\Airp;
 use app\models\Attribute;
 use app\models\AttributeGroup;
+use app\models\billing_uu\ImsiPartner;
 use app\models\Cpc;
 use app\models\Destination;
 use app\models\Number;
@@ -109,6 +110,20 @@ class BaseController extends \yii\web\Controller
         $item = Trunk::findOne($trunkId);
         if ($item === null) {
             throw new HttpException(404, 'Транк не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $imsiPartnerId
+     * @return ImsiPartner
+     * @throws HttpException
+     */
+    protected function getImsiPartnerOr404($imsiPartnerId)
+    {
+        $item = ImsiPartner::findOne($imsiPartnerId);
+        if ($item === null) {
+            throw new HttpException(404, 'IMSI партнер не найден');
         }
         return $item;
     }

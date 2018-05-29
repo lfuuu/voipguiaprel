@@ -67,6 +67,8 @@ class AppAsset extends AssetBundle
         'js/controllers/StatisticsTree.js',
         'js/controllers/UplinkList.js',
         'js/controllers/UplinkEdit.js',
+        'js/controllers/ImsiPartnerList.js',
+        'js/controllers/ImsiPartnerEdit.js',
     ];
 
     public $templates = [
@@ -116,5 +118,7 @@ class AppAsset extends AssetBundle
         'templates/directives/outcome-select-box.html',
         'templates/uplink_list.html',
         'templates/uplink_edit.html',
+        'templates/imsi_partner_list.html',
+        'templates/imsi_partner_edit.html',
     ];
 }
