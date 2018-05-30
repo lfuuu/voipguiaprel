@@ -244,10 +244,14 @@ class TestAuthController extends JsonController
             $apiUrl = $item->server->apiUrlDev;
         }
         
-        $ttl = $item->ttl;
-        
-        if (empty($ttl)) {
+        if (isset($this->request['ttl']) && $this->request['ttl'] == 'none') {
             $ttl = 0;
+        } else {
+            $ttl = $item->ttl;
+    
+            if (empty($ttl)) {
+                $ttl = 0;
+            }
         }
         
         $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);

@@ -7,6 +7,7 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
     $scope.searchQuery = '';
     $scope.testGroupId = 'undefined';
     $scope.testResult = 'undefined';
+    $scope.displayOnlineResult = false;
 
     $scope.currentPage = 1;
     $scope.limit = 15;
@@ -24,6 +25,8 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
             return;
         }
 
+        $scope.displayOnlineResult = false;
+
         TestAuth.read({
                 server_id: $scope.server.id,
                 test_group_id: $scope.testGroupId,
@@ -34,7 +37,7 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
             $scope.list = data.data;
             $scope.totalItems = data.totalCount;
         });
-    }
+    };
 
     List.testGroup().then(function (data) {
         $scope.testGroupList = data;
@@ -68,6 +71,26 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
                 alert('Ошибка очистки кэша');
             }
         });
+    };
+
+    $scope.runAll = function () {
+        if (typeof $scope.list == 'undefined' || $scope.list.length < 1) {
+            return;
+        }
+
+        $scope.displayOnlineResult = true;
+
+        for (var i in $scope.list) {
+            (function (_i) {
+                TestAuth.result({id: $scope.list[_i].id, displayTreeView: false, ttl: 'none'}).then(function (data) {
+                    for (var j in data.result) {
+                        if (data.result[j].type === 'RESULT') {
+                            $scope.list[_i].result_online = data.result[j].action + (data.result[j].params ? ': ' + data.result[j].params : '');
+                        }
+                    }
+                });
+            } (i));
+        }
     };
 
     $scope.generateTests = function () {

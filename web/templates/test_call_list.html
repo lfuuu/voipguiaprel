@@ -28,6 +28,7 @@
 
 <div>
     <pagination style="display: inline;" total-items="totalItems" items-per-page="limit" page="currentPage" on-select-page="setPagingData(page)"></pagination>
+    <button style="display: inline; margin-left: 10px;" class="btn btn-info" ng-click="runAll()">Запустить все</button>
     <button ng-if="userPermissions['test_call_edit']" style="display: inline; margin-left: 10px;" class="btn btn-info" ng-click="clearCache()">Очистить кэш</button>
 </div>
 
@@ -44,14 +45,14 @@
         </th>
         <th width="25%"></th>
         <th width="1%"></th>
-        <th width="15%">
+        <th width="10%">
             <a href="#" ng-click="sortType = 'src_trunk_name'; sortReverse = !sortReverse">
                 Транк оригинации
                 <span ng-show="sortType == 'src_trunk_name' && sortReverse" class="caret-down"></span>
                 <span ng-show="sortType == 'src_trunk_name' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
-        <th width="15%">
+        <th width="10%">
             <a href="#" ng-click="sortType = 'dst_trunk_name'; sortReverse = !sortReverse">
                 Транк терминации
                 <span ng-show="sortType == 'dst_trunk_name' && sortReverse" class="caret-down"></span>
@@ -93,6 +94,13 @@
                 <span ng-show="sortType == 'session_time' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
+        <th ng-hide="!displayOnlineResult" width="5%">
+            <a href="#" ng-click="sortType = 'redirect_number'; sortReverse = !sortReverse">
+                Результат
+                <span ng-show="sortType == 'redirect_number' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'redirect_number' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
         <th width="1%">&nbsp;</th>
         <th ng-if="userPermissions['test_call_create']" width="1%">&nbsp;</th>
         <th ng-if="userPermissions['test_call_delete']">&nbsp;</th>
@@ -122,6 +130,7 @@
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.redirect_number}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.connect_time}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.session_time}}</td>
+        <td ng-hide="!displayOnlineResult" style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.result_online}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
                 <span class="label label-success" ng-if="item.is_autotest">AUTO</span>
         </td>

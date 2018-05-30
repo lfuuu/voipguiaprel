@@ -28,6 +28,7 @@
 
 <div>
     <pagination style="display: inline;" total-items="totalItems" items-per-page="limit" page="currentPage" on-select-page="setPagingData(page)"></pagination>
+    <button style="display: inline; margin-left: 10px;" class="btn btn-info" ng-click="runAll()">Запустить все</button>
     <button ng-if="userPermissions['test_auth_edit']" style="display: inline; margin-left: 10px;" class="btn btn-info" ng-click="clearCache()">Очистить кэш</button>
     <button ng-if="testGroupId == TEST_GROUP_AUTOMATIC && userPermissions['auto_test_management']" style="display: inline; margin-left: 10px;" class="btn btn-success" ng-click="generateTests()">Создать тесты</button>
     <button ng-if="testGroupId == TEST_GROUP_AUTOMATIC && userPermissions['auto_test_management']" style="display: inline; margin-left: 10px;" class="btn btn-danger" ng-click="deleteTests()">Удалить тесты</button>
@@ -46,21 +47,21 @@
                 </a>
             </th>
             <th width="20%"></th>
-            <th width="20%">
+            <th width="10%">
                 <a href="#" ng-click="sortType = 'trunk_name'; sortReverse = !sortReverse">
                     Транк
                     <span ng-show="sortType == 'trunk_name' && sortReverse" class="caret-down"></span>
                     <span ng-show="sortType == 'trunk_name' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="15%">
+            <th width="10%">
                 <a href="#" ng-click="sortType = 'src_number'; sortReverse = !sortReverse">
                     Номер A
                     <span ng-show="sortType == 'src_number' && sortReverse" class="caret-down"></span>
                     <span ng-show="sortType == 'src_number' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="15%">
+            <th width="10%">
                 <a href="#" ng-click="sortType = 'dst_number'; sortReverse = !sortReverse">
                     Номер B
                     <span ng-show="sortType == 'dst_number' && sortReverse" class="caret-down"></span>
@@ -77,6 +78,13 @@
             <th width="15%">
                 <a href="#" ng-click="sortType = 'redirect_number'; sortReverse = !sortReverse">
                     CPC
+                    <span ng-show="sortType == 'redirect_number' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'redirect_number' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
+            <th ng-hide="!displayOnlineResult" width="5%">
+                <a href="#" ng-click="sortType = 'redirect_number'; sortReverse = !sortReverse">
+                    Результат
                     <span ng-show="sortType == 'redirect_number' && sortReverse" class="caret-down"></span>
                     <span ng-show="sortType == 'redirect_number' && !sortReverse" class="caret-up"></span>
                 </a>
@@ -104,6 +112,7 @@
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.dst_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.redirect_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.cpc}}</td>
+            <td ng-hide="!displayOnlineResult" style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.result_online}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">
                 <span class="label label-success" ng-if="item.is_autotest">AUTO</span>
             </td>
