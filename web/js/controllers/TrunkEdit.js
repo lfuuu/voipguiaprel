@@ -142,6 +142,14 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
         $scope.item.numberPreprocessing.splice(index, 1);
     };
 
+    $scope.toggleAutoRouting = function (on) {
+        if (!$window.confirm('Вы уверены?')) return;
+
+        Trunk.toggleAutorouting($scope.item.id, on).then(function (result) {
+            $scope.item.auto_routing = on;
+        });
+    };
+
     $scope.save = function () {
         Trunk.save($scope.item).then(function () {
             $modalInstance.close();

@@ -142,6 +142,9 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
         },
         listRoaming: function (servers) {
             return ApiLoader.post(url + 'list-roaming', {'servers': servers});
+        },
+        toggleAutorouting: function (trunkId, on) {
+            return ApiLoader.post(url + 'toggle-autorouting', {'trunk_id': trunkId, 'on': on});
         }
     };
 });
