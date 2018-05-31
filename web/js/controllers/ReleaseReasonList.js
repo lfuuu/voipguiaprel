@@ -4,7 +4,11 @@ var ReleaseReasonListCtrl = function($scope, ReleaseReason, Redirect, $window) {
   $scope.sortReverse = false;
   $scope.searchQuery = '';
 
-	$scope.init = function(tab) {
+  $scope.filterFields = [
+    'name', 'server_id'
+  ];
+
+  $scope.init = function(tab) {
 		if (tab) tab.title = 'Release reason';
 
 		ReleaseReason.read({server_id: $scope.server.id}).then(function(data){

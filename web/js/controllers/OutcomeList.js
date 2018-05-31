@@ -4,6 +4,10 @@ var OutcomeListCtrl = function($scope, Outcome, Redirect, $window) {
   $scope.sortReverse = false;
   $scope.searchQuery = '';
 
+  $scope.filterFields = [
+    'name', 'calling_station_id', 'called_station_id', 'server_id'
+  ];
+
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'Outcomes';
 
@@ -28,7 +32,7 @@ var OutcomeListCtrl = function($scope, Outcome, Redirect, $window) {
 		Redirect.outcomeEdit(item.id).then(function () {
 			$scope.init();
 		});
-	}
+	};
 
 	$scope.deleteItem = function(item)
 	{

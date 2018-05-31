@@ -4,6 +4,10 @@ var AttributeListCtrl = function ($scope, Attribute, Redirect, $window) {
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
+    $scope.filterFields = [
+        'name', 'note'
+    ];
+
     $scope.init = function (tab) {
         if (tab) tab.title = 'Attribute';
 

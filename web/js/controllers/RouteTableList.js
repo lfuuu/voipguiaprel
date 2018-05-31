@@ -4,6 +4,10 @@ var RouteTableListCtrl = function($scope, RouteTable, Redirect, $window) {
   $scope.sortReverse = false;
   $scope.searchQuery = '';
 
+  $scope.filterFields = [
+    'name', 'server_id'
+  ];
+
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'Таблицы маршрутизации';
 

@@ -4,6 +4,10 @@ var NumberListCtrl = function($scope, Number, Redirect, $window) {
   $scope.sortReverse = false;
   $scope.searchQuery = '';
 
+  $scope.filterFields = [
+    'name', 'server_id'
+  ];
+
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'A/B номера';
 

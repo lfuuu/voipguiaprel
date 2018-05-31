@@ -5,6 +5,13 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
     $scope.sortType = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';
+
+    $scope.filterFields = [
+        'name', 'trunk_name', 'src_number',
+        'dst_number', 'redirect_number', 'cpc',
+        'result_online'
+    ];
+
     $scope.testGroupId = 'undefined';
     $scope.testResult = 'undefined';
     $scope.displayOnlineResult = false;

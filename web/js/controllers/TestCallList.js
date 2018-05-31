@@ -3,7 +3,14 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
     $scope.sortType = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';
-    $scope.testGroupId = 'undefined';
+
+    $scope.filterFields = [
+        'name', 'src_trunk_name', 'dst_trunk_name',
+        'src_number', 'dst_number', 'redirect_number',
+        'cpc', 'connect_time', 'session_time', 'result_online'
+    ];
+
+  $scope.testGroupId = 'undefined';
     $scope.testResult = 'undefined';
     $scope.displayOnlineResult = false;
 

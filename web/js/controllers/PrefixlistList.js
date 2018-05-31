@@ -4,6 +4,10 @@ var PrefixlistListCtrl = function($scope, Prefixlist, Redirect, $window) {
   $scope.sortReverse = false;
   $scope.searchQuery = '';
 
+  $scope.filterFields = [
+    'name', 'dt_update', 'server_id'
+  ];
+
 	$scope.init = function(tab) {
 		if (tab) tab.title = 'Списки префиксов';
 
@@ -16,7 +20,8 @@ var PrefixlistListCtrl = function($scope, Prefixlist, Redirect, $window) {
 		Redirect.prefixlistCreate().then(function () {
 			$scope.init();
 		});
-	}
+	};
+
 	$scope.clickItem = function(item) {
         if (!userPermissions['prefixlist_edit']) {
             return;
@@ -27,7 +32,7 @@ var PrefixlistListCtrl = function($scope, Prefixlist, Redirect, $window) {
 		Redirect.prefixlistEdit(item.id).then(function () {
 			$scope.init();
 		});
-	}
+	};
 
 	$scope.deleteItem = function(item)
 	{

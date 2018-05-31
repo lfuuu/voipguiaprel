@@ -4,6 +4,10 @@ var TrunkGroupListCtrl = function($scope, TrunkGroup, Redirect, $window) {
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
+    $scope.filterFields = [
+        'name', 'server_id'
+    ];
+
     $scope.init = function(tab) {
         if (tab) tab.title = 'Группы транков';
 

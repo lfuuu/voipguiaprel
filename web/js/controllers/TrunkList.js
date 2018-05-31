@@ -4,7 +4,13 @@ var TrunkListCtrl = function($scope, Trunk, Redirect, $window) {
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
-  $scope.init = function(tab) {
+    $scope.filterFields = [
+        'id', 'trunk_name', 'name',
+        'capacity', 'load_warning',
+        'road_to_regions', 'server_id'
+    ];
+
+    $scope.init = function(tab) {
         if (tab) tab.title = 'Транки';
 
         Trunk.read({server_id: $scope.server.id}).then(function(data){
@@ -49,5 +55,4 @@ var TrunkListCtrl = function($scope, Trunk, Redirect, $window) {
     $scope.fullInfoItem = function(item) {
         $window.open('/trunk/full-info?trunkId=' + item.id);
     };
-
 };

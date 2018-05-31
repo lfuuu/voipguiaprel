@@ -4,6 +4,10 @@ var AttributeGroupListCtrl = function ($scope, AttributeGroup, Redirect, $window
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
+    $scope.filterFields = [
+        'name', 'note'
+    ];
+
     $scope.init = function (tab) {
         if (tab) tab.title = 'AttributeGroup';
 

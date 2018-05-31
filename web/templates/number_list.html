@@ -42,7 +42,7 @@
     </thead>
     <tbody>
 
-    <tr ng-repeat="item in list | orderBy:sortType:sortReverse | filter:searchQuery">
+    <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
             <span class="label label-default" ng-if="item.type_id == 1">A - номер</span>
             <span class="label label-default" ng-if="item.type_id == 2">B - номер</span>

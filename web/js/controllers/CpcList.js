@@ -4,7 +4,11 @@ var CpcListCtrl = function($scope, Cpc, Redirect, $window) {
   $scope.sortReverse = false;
   $scope.searchQuery = '';
 
-	$scope.init = function(tab) {
+  $scope.filterFields = [
+    'name', 'description'
+  ];
+
+  $scope.init = function(tab) {
 		if (tab) tab.title = 'CPC';
 
 		Cpc.read().then(function(data){

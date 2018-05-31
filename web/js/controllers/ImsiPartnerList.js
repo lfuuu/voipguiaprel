@@ -4,6 +4,11 @@ var ImsiPartnerListCtrl = function($scope, ImsiPartner, Redirect, $window) {
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
+    $scope.filterFields = [
+        'name', 'orig_trunk_name',
+        'term_trunk_name', 'mvno_region_name'
+    ];
+
     $scope.init = function(tab) {
         if (tab) tab.title = 'IMSI партнеры';
 

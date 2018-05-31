@@ -13,6 +13,7 @@ class AppAsset extends AssetBundle
         'js/app.js',
         'js/services/ApiLoader.js',
         'js/services/Api.js',
+        'js/services/Filter.js',
         'js/services/Redirect.js',
         'js/directives/select-box.js',
         'js/directives/outcome-select-box.js',

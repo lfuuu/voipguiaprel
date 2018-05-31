@@ -4,6 +4,10 @@ var TestGroupListCtrl = function($scope, TestGroup, Redirect, $window) {
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
+    $scope.filterFields = [
+      'id', 'name'
+    ];
+
     $scope.init = function (tab) {
         if (tab) tab.title = 'Test groups';
 

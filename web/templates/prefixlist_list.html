@@ -50,7 +50,7 @@
     </thead>
     <tbody>
 
-    <tr ng-repeat="item in list | orderBy:sortType:sortReverse | filter:searchQuery">
+    <tr ng-repeat="item in list | orderBy:sortType:sortReverse | prefixlistFilter:searchQuery:filterFields">
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
             <img ng-if="item.dt_prepare" src="../img/not_executed.png">
         </td>

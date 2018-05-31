@@ -77,7 +77,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="item in list | orderBy:sortType:sortReverse | filter:searchQuery">
+        <tr ng-repeat="item in list | orderBy:sortType:sortReverse | trunkFilter:searchQuery:filterFields">
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
                 <img ng-if="item.is_blacklisted" src="../img/failed.png">
             </td>
@@ -102,7 +102,6 @@
                 <span class="label label-warning" ng-if="item.pstn_trunk">PSTN</span>
                 <span class="label label-success" ng-if="item.mgmn_trunk">MGMN-t</span>
                 <span class="label label-success" ng-if="item.mgmn_orig_trunk">MGMN-o</span>
-
             </td>
             <td>
                 <a ng-if="item.routeTable.id && userPermissions['route_table_edit']" href="#" ng-click="openRouteTable(item.routeTable.id);">{{item.routeTable.name}}</a>

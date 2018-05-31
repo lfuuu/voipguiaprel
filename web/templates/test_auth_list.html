@@ -96,7 +96,7 @@
     </thead>
     <tbody>
 
-        <tr ng-repeat="item in list | orderBy:sortType:sortReverse | filter:searchQuery">
+        <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
                 <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">
             </td>

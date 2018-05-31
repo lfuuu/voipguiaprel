@@ -34,7 +34,7 @@
     </thead>
     <tbody>
 
-    <tr ng-repeat="item in list | orderBy:sortType:sortReverse | filter:searchQuery">
+    <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.note}}</td>
         <td ng-if="userPermissions['attribute_group_delete']">
