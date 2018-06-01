@@ -7,6 +7,8 @@ import argparse
 import httplib
 import urllib2
 import re
+import os
+import stat
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -32,6 +34,8 @@ class AutoTest:
 def printToLog(info):
     if LOG_FILE != None:
         f = open(LOG_FILE, 'a')
+        os.chmod (LOG_FILE, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH | stat.S_IWOTH)
+####### Everyone can read
         f.write(str(info) + '\n')
         f.flush()
         f.close()
