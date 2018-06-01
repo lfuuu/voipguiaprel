@@ -142,15 +142,11 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
         $scope.item.numberPreprocessing.splice(index, 1);
     };
 
-    $scope.toggleAutoRouting = function (on) {
-        if (!$window.confirm('Вы уверены?')) return;
-
-        Trunk.toggleAutorouting($scope.item.id, on).then(function (result) {
-            $scope.item.auto_routing = on;
-        });
-    };
-
     $scope.save = function () {
+        if ($scope.item.auto_routing != $scope.item.default_auto_routing) {
+            if (!$window.confirm('Произойдет синхронизация прайс-листов. Вы уверены?')) return;
+        }
+
         Trunk.save($scope.item).then(function () {
             $modalInstance.close();
         });

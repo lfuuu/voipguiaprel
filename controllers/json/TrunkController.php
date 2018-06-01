@@ -127,7 +127,8 @@ class TrunkController extends JsonController
                     'default_priority', 'source_rule_default_allowed', 'destination_rule_default_allowed',
                     'auto_routing', 'our_trunk', 'auth_by_number', 'orig_redirect_number_7800', 'orig_redirect_number',
                     'term_redirect_number', 'show_in_stat', 'route_table_id', 'auth.trunk.server_id', 'capacity','sw_shared',
-                    'road_to_regions', 'load_warning', 'orig_enabled', 'term_enabled', 'tech_trunk', 'pstn_trunk', 'mgmn_trunk', 'mgmn_orig_trunk', 'le8accept',
+                    'road_to_regions', 'load_warning', 'orig_enabled', 'term_enabled', 'tech_trunk', 'pstn_trunk',
+                    'mgmn_trunk', 'mgmn_orig_trunk', 'le8accept',
                     new Expression('CASE WHEN bb.id is null THEN false ELSE true END as is_blacklisted')
                 ])
                 ->with('routeTable')
@@ -174,6 +175,8 @@ class TrunkController extends JsonController
         if ($item === null) {
             throw new HttpException(404, 'Транк не найден');
         }
+        
+        $item['default_auto_routing'] = $item['auto_routing'];
 
         return $item;
     }
@@ -182,66 +185,42 @@ class TrunkController extends JsonController
      * @return array
      * @throws HttpException
      */
-    public function actionToggleAutorouting()
+    private function toggleAutorouting($on, $trunkId)
     {
-        if (!\Yii::$app->user->can('trunk_edit')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
+        if ($on) {
+            $items = Pricelist::find()
+                ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
+                ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
+                ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
+                ->where('st.term_enabled is true')
+                ->andWhere("voip.pricelist.name ~ 'gist$'")
+                ->andWhere('voip.pricelist.is_global is false')
+                ->andWhere(['st.trunk_id' => $trunkId])
+                ->all();
     
-        $transaction = Pricelist::getDb()->beginTransaction();
-        
-        try {
-            if ($this->request['on']) {
-                $items = Pricelist::find()
-                    ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
-                    ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
-                    ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
-                    ->where('st.term_enabled is true')
-                    ->andWhere("voip.pricelist.name ~ 'gist$'")
-                    ->andWhere('voip.pricelist.is_global is false')
-                    ->andWhere(['st.trunk_id' => $this->request['trunk_id']])
-                    ->all();
-        
-                foreach ($items as $item) {
-                    $item->is_global = true;
-                    $item->name = str_replace(' gist', '', $item->name);
-                    $item->save();
-                }
-        
-                $trunk = $this->getTrunkOr404($this->request['trunk_id']);
-                $trunk->auto_routing = true;
-                $trunk->save();
-            } else {
-                $items = Pricelist::find()
-                    ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
-                    ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
-                    ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
-                    ->where('st.term_enabled is true')
-                    ->andWhere('voip.pricelist.is_global is true')
-                    ->andWhere(['st.trunk_id' => $this->request['trunk_id']])
-                    ->all();
-        
-                foreach ($items as $item) {
-                    $item->is_global = false;
-                    $item->name = $item->name . ' gist';
-                    $item->save();
-                }
-        
-                $trunk = $this->getTrunkOr404($this->request['trunk_id']);
-                $trunk->auto_routing = false;
-                $trunk->save();
+            foreach ($items as $item) {
+                $item->is_global = $item->backup_is_global;
+                $item->save();
             }
+        } else {
+            $items = Pricelist::find()
+                ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
+                ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
+                ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
+                ->where('st.term_enabled is true')
+                ->andWhere('voip.pricelist.is_global is true')
+                ->andWhere(['st.trunk_id' => $trunkId])
+                ->all();
     
-            (new Query())->select(new Expression('event.notify(\'defs-manual\',0)'))->all();
-            (new Query())->select(new Expression('event.notify(\'pricelist-manual\',0)'))->all();
-    
-            $transaction->commit();
-        } finally {
-            if ($transaction->getIsActive()) {
-                $transaction->rollBack();
+            foreach ($items as $item) {
+                $item->backup_is_global = $item->is_global;
+                $item->is_global = false;
+                $item->save();
             }
         }
-        
+
+        (new Query())->select(new Expression('event.notify(\'defs-manual\',0)'))->all();
+        (new Query())->select(new Expression('event.notify(\'pricelist-manual\',0)'))->all();
     }
 
     /**
@@ -293,6 +272,10 @@ class TrunkController extends JsonController
                 if (!$server->save()) {
                     throw new FormValidationException($server);
                 }
+            }
+    
+            if ($trunk->isAttributeChanged('auto_routing')) {
+                $this->toggleAutorouting($trunk->auto_routing, $trunk->id);
             }
 
             if (!$trunk->save()) {
