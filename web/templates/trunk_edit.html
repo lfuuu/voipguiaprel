@@ -46,7 +46,7 @@
         <div class="pull-left">
             <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
-            <div ng-hide="item.auto_routing == item.default_auto_routing" class="btn btn-warning">
+            <div ng-hide="!item.do_sync || item.auto_routing == item.default_auto_routing" class="btn btn-warning">
                 Прайс-листы будут синхронизированы
             </div>
         </div>

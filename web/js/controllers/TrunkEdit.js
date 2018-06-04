@@ -143,7 +143,7 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
     };
 
     $scope.save = function () {
-        if ($scope.item.auto_routing != $scope.item.default_auto_routing) {
+        if ($scope.item.do_sync && $scope.item.auto_routing != $scope.item.default_auto_routing) {
             if (!$window.confirm('Произойдет синхронизация прайс-листов. Вы уверены?')) return;
         }
 

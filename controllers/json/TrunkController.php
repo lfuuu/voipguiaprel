@@ -177,6 +177,35 @@ class TrunkController extends JsonController
         }
         
         $item['default_auto_routing'] = $item['auto_routing'];
+        $item['do_sync'] = false;
+        
+        if ($item['auto_routing']) {
+            $count = Pricelist::find()
+                ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
+                ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
+                ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
+                ->where('st.term_enabled is true')
+                ->andWhere('voip.pricelist.is_global is true')
+                ->andWhere(['st.trunk_id' => $this->request['id']])
+                ->count();
+            
+            if ($count > 0) {
+                $item['do_sync'] = true;
+            }
+        } else {
+            $count = Pricelist::find()
+                ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
+                ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
+                ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
+                ->where('st.term_enabled is true')
+                ->andWhere('voip.pricelist.backup_is_global is true and voip.pricelist.is_global is false')
+                ->andWhere(['st.trunk_id' => $this->request['id']])
+                ->count();
+    
+            if ($count > 0) {
+                $item['do_sync'] = true;
+            }
+        }
 
         return $item;
     }
@@ -187,18 +216,23 @@ class TrunkController extends JsonController
      */
     private function toggleAutorouting($on, $trunkId)
     {
+        $doSync = false;
+        
         if ($on) {
             $items = Pricelist::find()
                 ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
                 ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
                 ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
                 ->where('st.term_enabled is true')
-                ->andWhere("voip.pricelist.name ~ 'gist$'")
                 ->andWhere('voip.pricelist.is_global is false')
                 ->andWhere(['st.trunk_id' => $trunkId])
                 ->all();
     
             foreach ($items as $item) {
+                if ($item->backup_is_global && !$item->is_global) {
+                    $doSync = true;
+                }
+                
                 $item->is_global = $item->backup_is_global;
                 $item->save();
             }
@@ -213,14 +247,20 @@ class TrunkController extends JsonController
                 ->all();
     
             foreach ($items as $item) {
+                if ($item->is_global) {
+                    $doSync = true;
+                }
+                
                 $item->backup_is_global = $item->is_global;
                 $item->is_global = false;
                 $item->save();
             }
         }
 
-        (new Query())->select(new Expression('event.notify(\'defs-manual\',0)'))->all();
-        (new Query())->select(new Expression('event.notify(\'pricelist-manual\',0)'))->all();
+        if ($doSync) {
+            (new Query())->select(new Expression('event.notify(\'defs-manual\',0)'))->all();
+            (new Query())->select(new Expression('event.notify(\'pricelist-manual\',0)'))->all();
+        }
     }
 
     /**
