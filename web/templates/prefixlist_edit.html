@@ -470,10 +470,17 @@
                         <table class="table table-striped">
                             <tbody>
                             <tr ng-repeat="pbx in item.trunk_roaming_list">
-                                <td width="100%">
+                                <td width="80%">
                                     <select ui-select2 ng-model="pbx.id" style="width: 100%" >
                                         <option value="">-- Выберите --</option>
                                         <option ng-repeat="trunkObject in trunkRoamingList" value="{{trunkObject.id}}">{{trunkObject.trunk_name}}</option>
+                                    </select>
+                                </td>
+                                <td width="20%">
+                                    <select ui-select2 ng-model="pbx.type" style="width: 100%" >
+                                        <option value="any">Любой тип</option>
+                                        <option value="msisdn">MSISDN</option>
+                                        <option value="did">DID</option>
                                     </select>
                                 </td>
                                 <td>

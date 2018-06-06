@@ -361,7 +361,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     if (!$scope.item.trunk_roaming_list) {
       $scope.item.trunk_roaming_list = [];
     }
-    $scope.item.trunk_roaming_list.push({id: null});
+    $scope.item.trunk_roaming_list.push({id: null, type: 'any'});
   };
 
   $scope.removeTrunkRoaming = function(index) {
