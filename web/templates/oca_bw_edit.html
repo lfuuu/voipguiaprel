@@ -1,0 +1,94 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Список OCA BW {{item.name}}</h3>
+        <h3 ng-if="!item.id">Создание списка OCA BW</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.name" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Методы</label>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Добавление</label>
+            <div class="col-sm-4">
+                <input class="form-control" placeholder="Добавление" ng-model="item.add_method_name" ng-readonly="!addEditable">
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-success glyphicon glyphicon-ok" ng-click="addEditable = false"></button>
+                <button class="btn btn-info glyphicon glyphicon-pencil" ng-click="addEditable = true"></button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Удаление</label>
+            <div class="col-sm-4">
+                <input class="form-control" placeholder="Удаление" ng-model="item.delete_method_name" ng-readonly="!deleteEditable">
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-success glyphicon glyphicon-ok" ng-click="deleteEditable = false"></button>
+                <button class="btn btn-info glyphicon glyphicon-pencil" ng-click="deleteEditable = true"></button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Чтение</label>
+            <div class="col-sm-4">
+                <input class="form-control" placeholder="Чтение" ng-model="item.read_method_name" ng-readonly="!readEditable">
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-success glyphicon glyphicon-ok" ng-click="readEditable = false"></button>
+                <button class="btn btn-info glyphicon glyphicon-pencil" ng-click="readEditable = true"></button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Список префиксов</label>
+            <div class="col-sm-10">
+                <table class="table table-striped">
+                    <tbody>
+                    <tr ng-repeat="line in item.prefixlist">
+                        <td width="100%">
+                            <select-box list="prefixlist" model="line.id" placeholder="Выберите список префиксов" required="true"></select-box>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePrefixlist($index)"></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            <button type="button" class="btn btn-success btn-xs" ng-click="addPrefixlist()"><i class="glyphicon glyphicon-plus"></i> Список префиксов</button>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Сервер</label>
+            <div class="col-sm-10">
+                <select ui-select2 ng-model="item.server_id" style="width: 100%" >
+                    <option value="">-- Выберите --</option>
+                    <option ng-repeat="serverObject in serverList" value="{{serverObject.id}}">{{serverObject.name}}</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

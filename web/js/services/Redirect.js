@@ -268,6 +268,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal) {
         },
         imsiPartnerCreate: function() {
             return openModal(ImsiPartnerEditCtrl, '/templates/imsi_partner_edit.html', {id: null});
+        },
+        ocaBwList: function() {
+            return openTab(OcaBwListCtrl, '/templates/oca_bw_list.html');
+        },
+        ocaBwEdit: function(id) {
+            return openModal(OcaBwEditCtrl, '/templates/oca_bw_edit.html', {id: id});
+        },
+        ocaBwCreate: function() {
+            return openModal(OcaBwEditCtrl, '/templates/oca_bw_edit.html', {id: null});
         }
     };
 });

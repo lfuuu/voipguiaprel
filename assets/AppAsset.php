@@ -70,6 +70,8 @@ class AppAsset extends AssetBundle
         'js/controllers/UplinkEdit.js',
         'js/controllers/ImsiPartnerList.js',
         'js/controllers/ImsiPartnerEdit.js',
+        'js/controllers/OcaBwList.js',
+        'js/controllers/OcaBwEdit.js',
     ];
 
     public $templates = [
@@ -121,5 +123,7 @@ class AppAsset extends AssetBundle
         'templates/uplink_edit.html',
         'templates/imsi_partner_list.html',
         'templates/imsi_partner_edit.html',
+        'templates/oca_bw_list.html',
+        'templates/oca_bw_edit.html',
     ];
 }

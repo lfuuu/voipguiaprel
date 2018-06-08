@@ -13,7 +13,7 @@ var CpcEditCtrl = function($scope, Cpc, params, $modalInstance, $window) {
 		Cpc.save($scope.item).then(function(response) {
 			$modalInstance.close();
 		});
-	}
+	};
 
 	$scope.back = function()
 	{

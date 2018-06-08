@@ -97,6 +97,10 @@ class RbacController extends Controller {
         ['name' => 'imsi_partner_create', 'description' => 'Создание IMSI партнеров'],
         ['name' => 'imsi_partner_edit', 'description' => 'Редактирование IMSI партнеров'],
         ['name' => 'imsi_partner_delete', 'description' => 'Удаление IMSI партнеров'],
+        ['name' => 'oca_bw_list', 'description' => 'Просмотр списков OCA BW'],
+        ['name' => 'oca_bw_create', 'description' => 'Создание списков OCA BW'],
+        ['name' => 'oca_bw_edit', 'description' => 'Редактирование списков OCA BW'],
+        ['name' => 'oca_bw_delete', 'description' => 'Удаление списков OCA BW'],
     ];
     
     private $_roles = [
@@ -127,7 +131,8 @@ class RbacController extends Controller {
                 'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete',
                 'trunkhealth_view_list', 'statistics_tree', 'auto_test_management',
                 'hub_list', 'uplink_list', 'uplink_create', 'uplink_edit', 'uplink_delete',
-                'imsi_partner_list', 'imsi_partner_create', 'imsi_partner_edit', 'imsi_partner_delete'
+                'imsi_partner_list', 'imsi_partner_create', 'imsi_partner_edit', 'imsi_partner_delete',
+                'oca_bw_list', 'oca_bw_create', 'oca_bw_edit', 'oca_bw_delete'
             ]
         ],
         ['role' => 'engineer', 'permissions' => [

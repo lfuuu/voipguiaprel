@@ -9,6 +9,7 @@ use app\models\billing_uu\ImsiPartner;
 use app\models\Cpc;
 use app\models\Destination;
 use app\models\Number;
+use app\models\OcaBw;
 use app\models\PrefixlistPrefix;
 use app\models\TestAuth;
 use app\models\TestCall;
@@ -280,6 +281,20 @@ class BaseController extends \yii\web\Controller
         $item = Cpc::findOne($cpcId);
         if ($item === null) {
             throw new HttpException(404, 'CPC не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $ocaBwId
+     * @return OcaBw
+     * @throws HttpException
+     */
+    protected function getOcaBwOr404($ocaBwId)
+    {
+        $item = OcaBw::findOne($ocaBwId);
+        if ($item === null) {
+            throw new HttpException(404, 'Список OCA BW не найден');
         }
         return $item;
     }
