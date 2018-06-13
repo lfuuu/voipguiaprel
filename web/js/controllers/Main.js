@@ -1,4 +1,4 @@
-app.controller('MainCtrl', function ($rootScope, $scope, $timeout, $modal, Redirect, Server) {
+app.controller('MainCtrl', function ($rootScope, $scope, $cookies, $timeout, $modal, Redirect, Server) {
   $rootScope.server = dataServer;
   $rootScope.userName = userName;
   $rootScope.userPermissions = userPermissions;
@@ -17,12 +17,16 @@ app.controller('MainCtrl', function ($rootScope, $scope, $timeout, $modal, Redir
 
   var funcName = false;
 
-  for (var permissionName in $rootScope.userPermissions) {
-    if (permissionName.includes('list') && permissionName !== 'user_list' && permissionName !== 'role_list' && permissionName !== 'acl_list') {
-      funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
-        return w.toUpperCase();
-      });
-      break;
+  if ($cookies.selectedPage !== undefined) {
+    funcName = $cookies.selectedPage;
+  } else {
+    for (var permissionName in $rootScope.userPermissions) {
+      if (permissionName.includes('list') && permissionName !== 'user_list' && permissionName !== 'role_list' && permissionName !== 'acl_list') {
+        funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
+          return w.toUpperCase();
+        });
+        break;
+      }
     }
   }
 

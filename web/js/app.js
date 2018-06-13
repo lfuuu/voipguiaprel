@@ -1,5 +1,5 @@
 var app = angular
-    .module('app', ['ui.bootstrap', 'ui.select2', 'ui.sortable', 'ui.tree'])
+    .module('app', ['ui.bootstrap', 'ui.select2', 'ui.sortable', 'ui.tree', 'ngCookies'])
     .constant('STAT_HOST', 'https://stat.mcn.ru');
 
 app.run(function($rootScope, $templateCache){

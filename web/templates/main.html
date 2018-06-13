@@ -40,7 +40,7 @@
         <div ng-if="userPermissions['route_case_list'] || userPermissions['prefixlist_list']" class="list-group">
             <a href="#" class="list-group-item" ng-if="userPermissions['route_case_list']" ng-click="Redirect.routeCaseList()" ng-class="{active:tabs.isController('RouteCaseListCtrl')}">Route cases</a>
             <a href="#" class="list-group-item" ng-if="userPermissions['prefixlist_list']" ng-click="Redirect.prefixlistList()" ng-class="{active:tabs.isController('PrefixlistListCtrl')}">Списки префиксов</a>
-            <a href="#" class="list-group-item" ng-if="userPermissions['oca_bw_list']" ng-click="Redirect.ocaBwList()" ng-class="{active:tabs.isController('ocaBwListCtrl')}">Списки OCA BW</a>
+            <a href="#" class="list-group-item" ng-if="userPermissions['oca_bw_list']" ng-click="Redirect.ocaBwList()" ng-class="{active:tabs.isController('OcaBwListCtrl')}">Списки OCA BW</a>
         </div>
         <div ng-if="userPermissions['airp_list'] || userPermissions['cpc_list'] || userPermissions['release_reason_list']" class="list-group">
             <a href="#" class="list-group-item" ng-if="userPermissions['airp_list']" ng-click="Redirect.airpList()" ng-class="{active:tabs.isController('AirpListCtrl')}">AIRP</a>
