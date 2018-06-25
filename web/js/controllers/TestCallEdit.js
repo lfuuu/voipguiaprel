@@ -1,13 +1,34 @@
-var TestCallEditCtrl = function($scope, TestCall, List, params, $modalInstance, $window) {
+var TestCallEditCtrl = function($scope, TestCall, TestAuth, List, Redirect, params, $modalInstance, $window) {
 
     if (params.id) {
-        TestCall.get({id: params.id}).then(function(data){
-            $scope.item = data;
+        if (params.cloneFromAuth) {
+            TestAuth.get({id: params.id}).then(function (data) {
 
-            if (params.clone) {
-                delete $scope.item.id;
-            }
-        });
+                var item = {
+                    name: data.name,
+                    server_id: data.server_id,
+                    testgroup_id: data.testgroup_id,
+                    src_trunk_name: data.trunk_name,
+                    src_number: data.src_number,
+                    dst_number: data.dst_number,
+                    src_noa: data.src_noa,
+                    dst_noa: data.dst_noa,
+                    redirect_number: '',
+                    orig: true,
+                    connect_time: 'now()'
+                };
+
+                $scope.item = item;
+            });
+        } else {
+            TestCall.get({id: params.id}).then(function (data) {
+                $scope.item = data;
+
+                if (params.clone) {
+                    delete $scope.item.id;
+                }
+            });
+        }
     } else {
         if (params.testGroupId) {
             $scope.item = {
@@ -35,6 +56,14 @@ var TestCallEditCtrl = function($scope, TestCall, List, params, $modalInstance, 
         $scope.testGroupList = data;
     });
 
+    $scope.cloneToAuth = function(id) {
+        if (!userPermissions['test_auth_create']) {
+            return;
+        }
+
+        Redirect.testAuthCloneFromCall(id);
+    };
+
     $scope.save = function()
     {
         TestCall.save($scope.item).then(function(response) {
@@ -45,5 +74,5 @@ var TestCallEditCtrl = function($scope, TestCall, List, params, $modalInstance, 
     $scope.back = function()
     {
         $modalInstance.dismiss();
-    }
+    };
 };

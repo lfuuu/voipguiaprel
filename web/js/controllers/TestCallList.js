@@ -124,7 +124,7 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
 
     $scope.toggleDisplayTreeView = function(item) {
         item.displayTreeView = !item.displayTreeView;
-    }
+    };
 
     $scope.showTestPrimary = function (item) {
         $scope.showTestBasic(item, 'testCallShowTest');

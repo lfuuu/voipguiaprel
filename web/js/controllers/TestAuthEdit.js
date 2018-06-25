@@ -1,15 +1,34 @@
-var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, List, params, $modalInstance, $window) {
+var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect, List, params, $modalInstance, $window) {
 
     $scope.server_id = null;
 
     if (params.id) {
-        TestAuth.get({id: params.id}).then(function(data){
-            $scope.item = data;
+        if (params.cloneFromCall) {
+            TestCall.get({id: params.id}).then(function (data) {
 
-            if (params.clone) {
-                delete $scope.item.id;
-            }
-        });
+                var item = {
+                    name: data.name,
+                    server_id: data.server_id,
+                    testgroup_id: data.testgroup_id,
+                    trunk_name: data.src_trunk_name,
+                    src_number: data.src_number,
+                    dst_number: data.dst_number,
+                    src_noa: data.src_noa,
+                    dst_noa: data.dst_noa,
+                    redirect_number: ''
+                };
+
+                $scope.item = item;
+            });
+        } else {
+            TestAuth.get({id: params.id}).then(function (data) {
+                $scope.item = data;
+
+                if (params.clone) {
+                    delete $scope.item.id;
+                }
+            });
+        }
     } else {
         if (params.testGroupId) {
             $scope.item = {
@@ -52,19 +71,25 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, List, params, $mod
         });
     }
 
+    $scope.cloneToCall = function(id) {
+        if (!userPermissions['test_call_create']) {
+            return;
+        }
+
+        Redirect.testCallCloneFromAuth(id);
+    };
+
     List.testGroup().then(function (data) {
         $scope.testGroupList = data;
     });
 
-    $scope.save = function()
-    {
-        TestAuth.save($scope.item).then(function(response) {
+    $scope.save = function () {
+        TestAuth.save($scope.item).then(function (response) {
             $modalInstance.close();
         });
     };
 
-    $scope.back = function()
-    {
+    $scope.back = function () {
         $modalInstance.dismiss();
-    }
+    };
 };
