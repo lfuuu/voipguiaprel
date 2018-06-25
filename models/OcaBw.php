@@ -37,6 +37,7 @@ class OcaBw extends \yii\db\ActiveRecord
         return [
             [['name', 'add_method_name', 'delete_method_name', 'read_method_name', 'prefixlist'], 'string'],
             [['server_id'], 'integer'],
+            [['is_global'], 'boolean'],
         ];
     }
 }

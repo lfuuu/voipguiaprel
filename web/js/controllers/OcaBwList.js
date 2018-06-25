@@ -11,7 +11,7 @@ var OcaBwListCtrl = function ($scope, OcaBw, Redirect, $window) {
   $scope.init = function (tab) {
     if (tab) tab.title = 'Списки OCA BW';
 
-    OcaBw.read().then(function (data) {
+    OcaBw.read({server_id: $scope.server.id}).then(function (data) {
       $scope.list = data;
     });
   };

@@ -16,10 +16,13 @@ class OcaBwController extends JsonController
         if (!\Yii::$app->user->can('oca_bw_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
+        
+        $server = $this->getServerOr404($this->request['server_id']);
     
         return
             OcaBw::find()
                 ->select(['id', 'name'])
+                ->where("is_global or server_id = ".$server->id)
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -30,10 +33,13 @@ class OcaBwController extends JsonController
         if (!\Yii::$app->user->can('oca_bw_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
+    
+        $server = $this->getServerOr404($this->request['server_id']);
+    
         return
             OcaBw::find()
                 ->select(['id', 'name'])
+                ->where("is_global or server_id = ".$server->id)
                 ->orderBy('name')
                 ->asArray()
                 ->all();
