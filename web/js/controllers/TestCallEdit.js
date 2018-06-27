@@ -15,7 +15,8 @@ var TestCallEditCtrl = function($scope, TestCall, TestAuth, List, Redirect, para
                     dst_noa: data.dst_noa,
                     redirect_number: '',
                     orig: true,
-                    connect_time: 'now()'
+                    connect_time: 'now()',
+                    session_time: 60
                 };
 
                 $scope.item = item;
@@ -36,14 +37,18 @@ var TestCallEditCtrl = function($scope, TestCall, TestAuth, List, Redirect, para
                 src_noa: 3,
                 dst_noa: 3,
                 redirect_number: '',
-                testgroup_id: params.testGroupId
+                testgroup_id: params.testGroupId,
+                orig: false,
+                session_time: 60
             }
         } else {
             $scope.item = {
                 server_id: $scope.server.id,
                 src_noa: 3,
                 dst_noa: 3,
-                redirect_number: ''
+                redirect_number: '',
+                orig: false,
+                session_time: 60
             }
         }
     }
