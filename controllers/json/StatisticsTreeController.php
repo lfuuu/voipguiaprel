@@ -141,15 +141,15 @@ class StatisticsTreeController extends JsonController
         foreach ($item['money'] as $money) {
             if (!empty($money)) {
                 foreach ($money as $moneyName => $moneyArray) {
-                    $newMoney[$moneyName]['cost'][] = $moneyArray['cost'];
-                    $newMoney[$moneyName]['rate'][] = $moneyArray['rate'];
+                    $newMoney[$moneyName]['cost'][] = $moneyArray['cost'] ? $moneyArray['cost'] : '---';
+                    $newMoney[$moneyName]['rate'][] = $moneyArray['rate'] ? $moneyArray['rate'] : '---';
                 }
             }
         }
     
         foreach ($newMoney as $currency => $money) {
-            $cost = implode(', ', $money['cost']);
-            $rate = implode(', ', $money['rate']);
+            $cost = implode(', ', array_reverse($money['cost']));
+            $rate = implode(', ', array_reverse($money['rate']));
             $newMoneyText .= $currency . ': cost: [' . $cost . '], rate: [' . $rate . "]\n";
         }
         
