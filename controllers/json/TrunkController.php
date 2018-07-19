@@ -233,7 +233,7 @@ class TrunkController extends JsonController
                     $doSync = true;
                 }
                 
-                $item->is_global = $item->backup_is_global;
+                $item->is_global = is_null($item->backup_is_global) ? false : $item->backup_is_global;
                 $item->save();
             }
         } else {
