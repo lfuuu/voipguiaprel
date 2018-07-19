@@ -210,3 +210,11 @@ td > div > .select2-container > .select2-choice {
 .angular-ui-tree-empty {
 	display: none;
 }
+
+.popover{
+	max-width: 100%;
+}
+
+.popover-content {
+	white-space: pre-wrap;
+}

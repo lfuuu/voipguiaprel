@@ -75,6 +75,7 @@ class StatisticsTreeController extends JsonController
         }
         
         $newItem = $item;
+        $newItem['money'] = $this->getMoneyText($item);
         $newItem['asr'] = [];
         $newItem['acd'] = [];
     
@@ -132,4 +133,27 @@ class StatisticsTreeController extends JsonController
         return $newItem;
     }
 
+    private function getMoneyText($item)
+    {
+        $newMoney = [];
+        $newMoneyText = "";
+    
+        foreach ($item['money'] as $money) {
+            if (!empty($money)) {
+                foreach ($money as $moneyName => $moneyArray) {
+                    $newMoney[$moneyName]['cost'][] = $moneyArray['cost'];
+                    $newMoney[$moneyName]['rate'][] = $moneyArray['rate'];
+                }
+            }
+        }
+    
+        foreach ($newMoney as $currency => $money) {
+            $cost = implode(', ', $money['cost']);
+            $rate = implode(', ', $money['rate']);
+            $newMoneyText .= $currency . ': cost: [' . $cost . '], rate: [' . $rate . "]\n";
+        }
+        
+        return $newMoneyText;
+    }
+    
 }
