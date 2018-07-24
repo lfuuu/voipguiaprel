@@ -37,6 +37,7 @@
                         <button type="button" class="btn {{item.type_id == TYPE_ID_FMC ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_FMC)">FMC</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_PARTED_NUM ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_PARTED_NUM)">Parted num</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_ROAMING ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_ROAMING)">Роуминг</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_NUMBER_REGISTRY ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_NUMBER_REGISTRY)">Реестр номеров</button>
                     </div>
                 </div>
             </div>
@@ -363,6 +364,63 @@
 
                         </div>
                     </div>
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="text-center">
+                    <div class="alert alert-danger" ng-if="nnpProcessFailed">
+                        <b>Ошибка обработки префиксов</b><br /> {{nnpProcessFailed}}
+                    </div>
+                    <div class="alert alert-info" ng-if="nnpProcessed">Идет обработка префиксов...</div>
+                    <div class="alert alert-success" ng-if="nnpProcessComplete">
+                        Обработано префиксов: <b>{{item.count}}</b>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="item.type_id == TYPE_ID_NUMBER_REGISTRY">
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-10">
+                    <div class="alert alert-danger text-center" ng-if="nnpDataParseError">
+                        Ошибка разбора данных по реестру номеров
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Страна</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.registry_country" style="width: 100%" >
+                                <option ng-repeat="country in geoCountryList" value="{{::country.id}}">{{::country.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Город</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.registry_city" style="width: 100%" >
+                                <option ng-repeat="city in geoCityList" value="{{::city.id}}">{{::city.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Тип NDC</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.registry_ndc_type" style="width: 100%" >
+                                <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Источник</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.registry_source" style="width: 100%" >
+                                <option ng-repeat="source in sourceList" value="{{::source.id}}">{{::source.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="clearfix"></div>
 

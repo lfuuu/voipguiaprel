@@ -3,12 +3,15 @@
 namespace app\controllers\json;
 
 use app\classes\JsonController;
+use app\models\billing\VoipRegistry;
 use app\models\nnp\City;
 use app\models\nnp\Country;
 use app\models\nnp\Destination;
 use app\models\nnp\NdcType;
 use app\models\nnp\Operator;
 use app\models\nnp\Region;
+use app\models\geo\Country as GeoCountry;
+use app\models\geo\City as GeoCity;
 use yii\db\Expression;
 use Yii;
 
@@ -114,5 +117,42 @@ class NnpController extends JsonController
             ->asArray()
             ->all();
     }
-
+    
+    /**
+     * @return array
+     */
+    public function actionGeoCountry()
+    {
+        return GeoCountry::find()
+            ->select(['id', 'name'])
+            ->orderBy('name')
+            ->asArray()
+            ->all();
+    }
+    
+    /**
+     * @return array
+     */
+    public function actionGeoCity()
+    {
+        return GeoCity::find()
+            ->select(['id', 'name'])
+            ->orderBy('name')
+            ->asArray()
+            ->all();
+    }
+    
+    /**
+     * @return array
+     */
+    public function actionSource()
+    {
+        $query = VoipRegistry::find()
+            ->select(['source as id', 'source as name'])
+            ->distinct()
+            ->asArray()
+            ->orderBy('source');
+        
+        return $query->all();
+    }
 }

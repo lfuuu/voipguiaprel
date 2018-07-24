@@ -46,6 +46,7 @@ class Prefixlist extends \yii\db\ActiveRecord
     const PREFIXLIST_TYPE_FMC = 9; // FMC
     const PREFIXLIST_TYPE_PARTED_NUM = 10; // Parted num
     const PREFIXLIST_TYPE_ROAMING = 11; // Роуминг
+    const PREFIXLIST_TYPE_NUMBER_REGISTRY = 12; // Реестр номеров
 
     /**
      * @return string
@@ -267,6 +268,34 @@ class Prefixlist extends \yii\db\ActiveRecord
                 '';
         }
 
+        $this->nnp_filter_json = Json::encode($filters);
+        return $this;
+    }
+    
+    /**
+     * @param array $input
+     * @return $this
+     */
+    public function setNumberRegistryFilters(array $input)
+    {
+        $token = null;
+        
+        if (!empty($this->nnp_filter_json)) {
+            $nnpFilter = json_decode($this->nnp_filter_json, true);
+            
+            if (!empty($nnpFilter['token'])) {
+                $token = $nnpFilter['token'];
+            }
+        }
+        
+        $filters = [
+            'country_code' => isset($input['registry_country']) ? $input['registry_country'] : '',
+            'city_id' => isset($input['registry_city']) ? $input['registry_city'] : '',
+            'ndc_type_id' => isset($input['registry_ndc_type']) ? $input['registry_ndc_type'] : '',
+            'source' => isset($input['registry_source']) ? $input['registry_source'] : '',
+            'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
+        ];
+        
         $this->nnp_filter_json = Json::encode($filters);
         return $this;
     }

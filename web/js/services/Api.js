@@ -1198,6 +1198,15 @@ app.factory('Nnp', function (ApiLoader) {
         },
         ndcTypeList: function () {
             return ApiLoader.post(url + 'ndc-type');
+        },
+        sourceList: function () {
+            return ApiLoader.post(url + 'source');
+        },
+        geoCountryList: function () {
+            return ApiLoader.post(url + 'geo-country');
+        },
+        geoCityList: function (data) {
+            return ApiLoader.post(url + 'geo-city', data);
         }
     };
 });

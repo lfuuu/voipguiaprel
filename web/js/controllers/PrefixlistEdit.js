@@ -14,6 +14,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     $scope.TYPE_ID_FMC = 9;
     $scope.TYPE_ID_PARTED_NUM = 10;
     $scope.TYPE_ID_ROAMING = 11;
+    $scope.TYPE_ID_NUMBER_REGISTRY = 12;
 
     $scope.NNP_MODE_DIRECTION = 1;
     $scope.NNP_MODE_FILTER = 2;
@@ -156,6 +157,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             }
 
             $scope.setNnpFields(data);
+            $scope.setNumberRegistryFields(data);
 
             if ($scope.item.type_id == $scope.TYPE_ID_CSV) {
                 setTimeout(function () {
@@ -240,6 +242,18 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
     Nnp.ndcTypeList().then(function (data) {
         $scope.ndcTypeList = data;
+    });
+
+    Nnp.sourceList().then(function (data) {
+        $scope.sourceList = data;
+    });
+
+    Nnp.geoCityList().then(function (data) {
+        $scope.geoCityList = data;
+    });
+
+    Nnp.geoCountryList().then(function (data) {
+        $scope.geoCountryList = data;
     });
 
     Server.list().then(function (data) {
@@ -443,7 +457,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 });
             }
         });
-    }
+    };
 
     $scope.generatePrefixlist = function (id, type) {
         Prefixlist.generatePrefixlist(id, type).then(function (data) {
@@ -473,7 +487,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 });
             }
         });
-    }
+    };
 
     $scope.setNnpFields = function(data) {
         if ($scope.item.type_id == $scope.TYPE_ID_NNP) {
@@ -516,7 +530,25 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             }
 
         }
-    }
+    };
+
+    $scope.setNumberRegistryFields = function(data) {
+        if ($scope.item.type_id == $scope.TYPE_ID_NUMBER_REGISTRY) {
+            try {
+                var filterData = $.parseJSON($scope.item.nnp_filter_json);
+
+                $scope.item.registry_country = filterData.country_code;
+                $scope.item.registry_city = filterData.city_id;
+                $scope.item.registry_ndc_type = filterData.ndc_type_id;
+                $scope.item.registry_source = filterData.source;
+
+
+            } catch (error) {
+                $scope.nnpDataParseError = true;
+            }
+
+        }
+    };
 
     $scope.back = function () {
         $modalInstance.close();
@@ -528,7 +560,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         Redirect.numberEdit(item.id).then(function () {
             $scope.init();
         });
-    }
+    };
 
     $scope.clickTrunkItem = function(item) {
         if (window.getSelection().type == 'Range') return;
@@ -536,5 +568,5 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         Redirect.trunkEdit(item.id).then(function () {
             $scope.init();
         });
-    }
+    };
 };

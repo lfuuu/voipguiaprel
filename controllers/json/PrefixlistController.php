@@ -153,6 +153,10 @@ class PrefixlistController extends JsonController
         if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_ROAMING) {
             $prefixlist->setTrunkRoamingFilters($this->request);
         }
+    
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_NUMBER_REGISTRY) {
+            $prefixlist->setNumberRegistryFilters($this->request);
+        }
 
         $transaction = Prefixlist::getDb()->beginTransaction();
         try {
