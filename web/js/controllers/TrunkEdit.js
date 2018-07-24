@@ -26,6 +26,13 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
             });
 
             $scope.item.numbersRules = numbersRules;
+
+            $scope.item.sorm = {
+                enabled: data.trunkSorm ? true : false,
+                name: data.trunkSorm.name,
+                is_show: data.trunkSorm.is_show,
+                groups: data.trunkSorm.groups.replace('{', '').replace('}', '').split(',')
+            };
         });
     } else {
         $scope.item = {
@@ -42,7 +49,13 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
             orig_bfilter_default_allowed: true,
             term_afilter_default_allowed: true,
             term_bfilter_default_allowed: true,
-            location_id: 1
+            location_id: 1,
+            sorm: {
+                enabled: false,
+                name: '',
+                is_show: false,
+                groups: {}
+            }
         };
     }
 
@@ -93,6 +106,13 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
         {id: 1, name: 'Домашний регион'},
         {id: 2, name: 'Национальный роуминг'},
         {id: 3, name: 'Международный роуминг'}
+    ];
+
+    $scope.groupTypes = [
+        {id: 1, name: 'Транзит'},
+        {id: 2, name: 'Местный узел'},
+        {id: 3, name: 'Точка подключения'},
+        {id: 4, name: 'Специальная'}
     ];
 
     $scope.addNumbersRule = function (key) {
@@ -165,6 +185,12 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                 })
             );
         });
+    };
+
+    $scope.toggleSormIsShow = function () {
+        if ($scope.item.sorm.enabled) {
+            $scope.item.sorm.is_show = !$scope.item.sorm.is_show;
+        }
     };
 
 };

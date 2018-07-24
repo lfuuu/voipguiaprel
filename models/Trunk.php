@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\queries\TrunkQuery;
+use \app\models\sorm\Trunk as TrunkSorm;
 
 /**
  * @property int $id
@@ -129,6 +130,14 @@ class Trunk extends \yii\db\ActiveRecord
     public function getRouteTable()
     {
         return $this->hasOne(RouteTable::className(), ['id' => 'route_table_id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrunkSorm()
+    {
+        return $this->hasOne(TrunkSorm::className(), ['code_trunk' => 'id']);
     }
 
     /**

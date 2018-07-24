@@ -1,0 +1,35 @@
+<div class="form-group">
+    <label class="col-sm-2 control-label">Передать в СОРМ</label>
+    <div class="col-sm-10">
+        <div class="btn-group" ng-click="item.sorm.enabled = !item.sorm.enabled">
+            <button type="button" class="btn btn-sm {{item.sorm.enabled ? 'btn-success active' : 'btn-default'}}">Да</button>
+            <button type="button" class="btn btn-sm {{!item.sorm.enabled ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">Название</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="Название" ng-model="item.sorm.name" ng-disabled="!item.sorm.enabled" ng-required="item.sorm.enabled"/>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">Группы</label>
+    <div class="col-sm-10">
+        <select ui-select2 ng-disabled="!item.sorm.enabled" ng-model="item.sorm.groups" multiple="multiple" style="width: 100%" >
+            <option ng-repeat="group in groupTypes" value="{{::group.id}}">{{::group.name}}</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">Выгрузить на пульт</label>
+    <div class="col-sm-10">
+        <div class="btn-group" ng-click="toggleSormIsShow()">
+            <button ng-disabled="!item.sorm.enabled" type="button" class="btn btn-sm {{item.sorm.is_show ? 'btn-success active' : 'btn-default'}}">Да</button>
+            <button ng-disabled="!item.sorm.enabled" type="button" class="btn btn-sm {{!item.sorm.is_show ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+        </div>
+    </div>
+</div>

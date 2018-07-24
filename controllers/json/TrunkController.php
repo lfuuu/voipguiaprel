@@ -4,9 +4,12 @@ namespace app\controllers\json;
 
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use app\models\sorm\Commutator;
+use app\models\sorm\Operator;
 use app\models\voip\Pricelist;
 use app\models\billing\ServiceTrunk;
 use app\models\Trunk;
+use app\models\sorm\Trunk as TrunkSorm;
 use app\models\TrunkABfiltersRule;
 use app\models\TrunkNumberPreprocessing;
 use app\models\TrunkPriority;
@@ -169,6 +172,7 @@ class TrunkController extends JsonController
                 ->with('trunkRules')
                 ->with('numberPreprocessing')
                 ->with('numbersRules')
+                ->with('trunkSorm')
                 ->where(['id' => $this->request['id']])
                 ->asArray()
                 ->one();
@@ -262,6 +266,56 @@ class TrunkController extends JsonController
             (new Query())->select(new Expression('event.notify(\'pricelist-manual\',0)'))->all();
         }
     }
+    
+    private function toggleSorm($trunk, $data)
+    {
+        $trunkSorm = TrunkSorm::find()
+            ->where(['code_trunk' => $trunk->id])
+            ->one();
+        
+        switch (true) {
+            case ($trunkSorm && $data['enabled']):
+                //edit
+                $trunkSorm->name = $data['name'];
+                $trunkSorm->is_show = isset($data['is_show']) ? $data['is_show'] : false;
+                $trunkSorm->groups = $data['groups'] ? '{' . implode(',', $data['groups']) . '}' : '{}';
+                
+                $trunkSorm->save();
+                
+                break;
+            case ($trunkSorm && !$data['enabled']):
+                //delete
+                $trunkSorm->delete();
+                break;
+            case (!$trunkSorm && $data['enabled']):
+                //create
+                $operator = Operator::find()
+                    ->with('commutator')
+                    ->where(['server_id' => $trunk->server_id])
+                    ->one();
+                
+                $dataToCreate = [
+                    'operator_id' => $operator->id,
+                    'code_trunk' => $trunk->id,
+                    'ats_mnemo_code' => $operator->commutator->comutator_str_id,
+                    'type' => 2,
+                    'start_date' => date('Y-m-d H:i:s'),
+                    'name' => $data['name'],
+                    'old_name' => $trunk->name,
+                    'is_show' => isset($data['is_show']) ? $data['is_show'] : false,
+                    'groups' => $data['groups'] ? '{' . implode(',', $data['groups']) . '}' : '{}',
+                    'region_id' => $trunk->server_id
+                ];
+                
+                $trunkSorm = TrunkSorm::create($dataToCreate);
+                $trunkSorm->save();
+                
+                break;
+            case (!$trunkSorm && !$data['enabled']):
+                //do_nothing
+                break;
+        }
+    }
 
     /**
      * @return \app\models\billing\ServiceTrunk[]
@@ -317,6 +371,8 @@ class TrunkController extends JsonController
             if ($trunk->isAttributeChanged('auto_routing')) {
                 $this->toggleAutorouting($trunk->auto_routing, $trunk->id);
             }
+    
+            $this->toggleSorm($trunk, $this->request['sorm']);
 
             if (!$trunk->save()) {
                 throw new FormValidationException($trunk);
