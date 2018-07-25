@@ -372,7 +372,9 @@ class TrunkController extends JsonController
                 $this->toggleAutorouting($trunk->auto_routing, $trunk->id);
             }
     
-            $this->toggleSorm($trunk, $this->request['sorm']);
+            if (isset($this->request['sorm'])) {
+                $this->toggleSorm($trunk, $this->request['sorm']);
+            }
 
             if (!$trunk->save()) {
                 throw new FormValidationException($trunk);
