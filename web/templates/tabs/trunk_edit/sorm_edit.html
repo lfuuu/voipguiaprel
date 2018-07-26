@@ -25,11 +25,38 @@
 </div>
 
 <div class="form-group">
-    <label class="col-sm-2 control-label">Выгрузить на пульт</label>
-    <div class="col-sm-10">
-        <div class="btn-group" ng-click="toggleSormIsShow()">
-            <button ng-disabled="!item.sorm.enabled" type="button" class="btn btn-sm {{item.sorm.is_show ? 'btn-success active' : 'btn-default'}}">Да</button>
-            <button ng-disabled="!item.sorm.enabled" type="button" class="btn btn-sm {{!item.sorm.is_show ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-        </div>
+    <div class="col-sm-12">
+        <table class="table table-striped">
+            <tbody ui-sortable="{axis: 'y'}" ng-model="item.sorm.items">
+            <tr ng-repeat="line in item.sorm.items">
+                <td width="7%">
+                </td>
+                <td width="5%">
+                    <button ng-if="line.is_show" ng-click="line.is_show = !line.is_show" class="btn label label-success">Выгружать</button>
+                    <button ng-if="!line.is_show" ng-click="line.is_show = !line.is_show" class="btn label label-danger">Не выгружать</button>
+                </td>
+                <td width="5%" style="cursor: ns-resize">
+                    <span>Имя транка:</span>
+                </td>
+                <td width="70%">
+                    <input class="form-control" placeholder="Название" ng-model="line.old_name" ng-disabled="!item.sorm.enabled" required/>
+                </td>
+                <td width="10%">
+                    &nbsp;
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeSormItem($index)"></button>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td colspan="6">
+                    <button type="button" class="btn btn-success btn-xs" ng-click="addSormItem()"><i class="glyphicon glyphicon-plus"></i> СОРМ транк</button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
     </div>
 </div>

@@ -137,7 +137,7 @@ class Trunk extends \yii\db\ActiveRecord
      */
     public function getTrunkSorm()
     {
-        return $this->hasOne(TrunkSorm::className(), ['code_trunk' => 'id']);
+        return $this->hasMany(TrunkSorm::className(), ['code_trunk' => 'id']);
     }
 
     /**

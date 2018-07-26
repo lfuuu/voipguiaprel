@@ -27,12 +27,29 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
 
             $scope.item.numbersRules = numbersRules;
 
-            $scope.item.sorm = {
-                enabled: data.trunkSorm ? true : false,
-                name: data.trunkSorm.name,
-                is_show: data.trunkSorm.is_show,
-                groups: data.trunkSorm.groups.replace('{', '').replace('}', '').split(',')
-            };
+            if (data.trunkSorm.length > 0) {
+                $scope.item.sorm = {
+                    enabled: true,
+                    name: data.trunkSorm[0].name,
+                    groups: data.trunkSorm[0].groups.replace('{', '').replace('}', '').split(','),
+                    items: []
+                };
+
+                for(var id in data.trunkSorm) {
+                    $scope.item.sorm.items.push({
+                        id: data.trunkSorm[id].id,
+                        old_name: data.trunkSorm[id].old_name,
+                        is_show: data.trunkSorm[id].is_show,
+                    });
+                }
+            } else {
+                $scope.item.sorm = {
+                    enabled: false,
+                    name: '',
+                    groups: {},
+                    items: []
+                };
+            }
         });
     } else {
         $scope.item = {
@@ -193,4 +210,26 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
         }
     };
 
+    $scope.removeSormItem = function (index) {
+        if ($scope.item.name == $scope.item.sorm.items[index].old_name) {
+            return;
+        }
+
+        $scope.item.sorm.items.splice(index, 1);
+    };
+
+    $scope.addSormItem = function () {
+        if ($scope.item.sorm.enabled) {
+            var oldName = '';
+            
+            if ($scope.item.sorm.items.length == 0) {
+                oldName = $scope.item.name;
+            }
+
+            $scope.item.sorm.items.push({
+                old_name: oldName,
+                is_show: false
+            });
+        }
+    };
 };

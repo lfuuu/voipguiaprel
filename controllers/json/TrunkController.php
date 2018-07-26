@@ -269,51 +269,66 @@ class TrunkController extends JsonController
     
     private function toggleSorm($trunk, $data)
     {
-        $trunkSorm = TrunkSorm::find()
-            ->where(['code_trunk' => $trunk->id])
-            ->one();
-        
-        switch (true) {
-            case ($trunkSorm && $data['enabled']):
-                //edit
-                $trunkSorm->name = $data['name'];
-                $trunkSorm->is_show = isset($data['is_show']) ? $data['is_show'] : false;
-                $trunkSorm->groups = $data['groups'] ? '{' . implode(',', $data['groups']) . '}' : '{}';
-                
-                $trunkSorm->save();
-                
-                break;
-            case ($trunkSorm && !$data['enabled']):
-                //delete
-                $trunkSorm->delete();
-                break;
-            case (!$trunkSorm && $data['enabled']):
-                //create
-                $operator = Operator::find()
-                    ->with('commutator')
-                    ->where(['server_id' => $trunk->server_id])
-                    ->one();
-                
-                $dataToCreate = [
-                    'operator_id' => $operator->id,
-                    'code_trunk' => $trunk->id,
-                    'ats_mnemo_code' => $operator->commutator->comutator_str_id,
-                    'type' => 2,
-                    'start_date' => date('Y-m-d H:i:s'),
-                    'name' => $data['name'],
-                    'old_name' => $trunk->name,
-                    'is_show' => isset($data['is_show']) ? $data['is_show'] : false,
-                    'groups' => $data['groups'] ? '{' . implode(',', $data['groups']) . '}' : '{}',
-                    'region_id' => $trunk->server_id
-                ];
-                
-                $trunkSorm = TrunkSorm::create($dataToCreate);
-                $trunkSorm->save();
-                
-                break;
-            case (!$trunkSorm && !$data['enabled']):
-                //do_nothing
-                break;
+        if (!$data['enabled']) {
+            TrunkSorm::deleteAll(['code_trunk' => $trunk->id]);
+        } else {
+            $idsToStay = [];
+    
+            foreach ($data['items'] as $item) {
+                if (isset($item['id'])) {
+                    $idsToStay[] = $item['id'];
+                }
+            }
+    
+            TrunkSorm::deleteAll(['AND', 'code_trunk = :code_trunk', ['NOT IN', 'id', $idsToStay]], [':code_trunk' => $trunk->id]);
+    
+            foreach ($data['items'] as $item) {
+                $this->processSormData($trunk, $item['old_name'], $data['name'], $item['is_show'], $data['groups'],
+                    isset($item['id']) ? $item['id'] : null);
+            }
+        }
+    }
+    
+    private function processSormData($trunk, $oldName, $name, $isShow, $groups, $id = null)
+    {
+        if (!is_null($id)) {
+            $trunkSorm = TrunkSorm::find()
+                ->where(['code_trunk' => $trunk->id, 'id' => $id])
+                ->one();
+        } else {
+            $trunkSorm = false;
+        }
+    
+        if ($trunkSorm) {
+            //edit
+            $trunkSorm->name = $name;
+            $trunkSorm->is_show = isset($isShow) ? $isShow : false;
+            $trunkSorm->groups = $groups ? '{' . implode(',', $groups) . '}' : '{}';
+            $trunkSorm->old_name = $oldName;
+    
+            $trunkSorm->save();
+        } else {
+            //create
+            $operator = Operator::find()
+                ->with('commutator')
+                ->where(['server_id' => $trunk->server_id])
+                ->one();
+    
+            $dataToCreate = [
+                'operator_id' => $operator->id,
+                'code_trunk' => $trunk->id,
+                'ats_mnemo_code' => $operator->commutator->comutator_str_id,
+                'type' => 2,
+                'start_date' => date('Y-m-d H:i:s'),
+                'name' => $name,
+                'old_name' => $oldName,
+                'is_show' => isset($isShow) ? $isShow : false,
+                'groups' => $groups ? '{' . implode(',', $groups) . '}' : '{}',
+                'region_id' => $trunk->server_id
+            ];
+    
+            $trunkSorm = TrunkSorm::create($dataToCreate);
+            $trunkSorm->save();
         }
     }
 
