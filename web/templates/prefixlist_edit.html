@@ -389,6 +389,7 @@
                         <label class="col-sm-2 control-label">Страна</label>
                         <div class="col-sm-10">
                             <select ui-select2 ng-model="item.registry_country" style="width: 100%" >
+                                <option value="">-- Выберите --</option>
                                 <option ng-repeat="country in countryList" value="{{::country.code}}">{{::country.name_rus}}</option>
                             </select>
                         </div>
@@ -398,6 +399,7 @@
                         <label class="col-sm-2 control-label">Город</label>
                         <div class="col-sm-10">
                             <select ui-select2 ng-model="item.registry_city" style="width: 100%" >
+                                <option value="">-- Выберите --</option>
                                 <option ng-repeat="city in cityList" value="{{::city.id}}">{{::city.name}}</option>
                             </select>
                         </div>
@@ -407,6 +409,7 @@
                         <label class="col-sm-2 control-label">Тип NDC</label>
                         <div class="col-sm-10">
                             <select ui-select2 ng-model="item.registry_ndc_type" style="width: 100%" >
+                                <option value="">-- Выберите --</option>
                                 <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}</option>
                             </select>
                         </div>
@@ -416,6 +419,7 @@
                         <label class="col-sm-2 control-label">Источник</label>
                         <div class="col-sm-10">
                             <select ui-select2 ng-model="item.registry_source" style="width: 100%" >
+                                <option value="">-- Выберите --</option>
                                 <option ng-repeat="source in sourceList" value="{{::source.id}}">{{::source.name}}</option>
                             </select>
                         </div>
