@@ -89,6 +89,28 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 });
             }
         },
+        registry_country: function (newValue, oldValue) {
+            cityLoadComplete = false;
+            if (!newValue || newValue.length == 0) {
+                $scope.item.registry_city = null;
+            }
+
+            if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
+                $scope.cityList = null;
+
+                if (countryLoadComplete) {
+                    var city = $scope.item.registry_city;
+                }
+
+                Nnp.cityList({country_code: newValue}).then(function (data) {
+                    $scope.cityList = data;
+                    $scope.cities = data;
+
+                    $scope.item.registry_city = city;
+                    cityLoadComplete = true;
+                });
+            }
+        },
         nnp_region: function (newValue, oldValue) {
             cityLoadComplete = false;
             if (!newValue || newValue.length == 0) {
@@ -185,6 +207,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
             $scope.$watch('item.nnp_country', watchers.nnp_country);
             $scope.$watch('item.nnp_region', watchers.nnp_region);
+            $scope.$watch('item.registry_country', watchers.registry_country);
         });
 
         Prefixlist.findUsagesInNumbers({id: params.id}).then(function (data) {
@@ -216,6 +239,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
         $scope.$watch('item.nnp_country', watchers.nnp_country);
         $scope.$watch('item.nnp_region', watchers.nnp_region);
+        $scope.$watch('item.registry_country', watchers.registry_country);
     }
 
     Billing.countries().then(function(data){
@@ -538,11 +562,17 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 var filterData = $.parseJSON($scope.item.nnp_filter_json);
 
                 $scope.item.registry_country = filterData.country_code;
-                $scope.item.registry_city = filterData.city_id;
                 $scope.item.registry_ndc_type = filterData.ndc_type_id;
                 $scope.item.registry_source = filterData.source;
 
-
+                if ($scope.item.registry_country) {
+                    Nnp.cityList({country_code: $scope.item.registry_country}).then(function (data) {
+                        $scope.cityList = data;
+                        $scope.cities = data;
+                        $scope.item.registry_city = filterData.city_id;
+                        console.log($scope.item.registry_city);
+                    });
+                }
             } catch (error) {
                 $scope.nnpDataParseError = true;
             }

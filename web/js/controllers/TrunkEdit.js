@@ -221,7 +221,7 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
     $scope.addSormItem = function () {
         if ($scope.item.sorm.enabled) {
             var oldName = '';
-            
+
             if ($scope.item.sorm.items.length == 0) {
                 oldName = $scope.item.name;
             }
