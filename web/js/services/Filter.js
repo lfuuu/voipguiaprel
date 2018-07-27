@@ -132,7 +132,8 @@ app.filter('prefixlistFilter', function () {
       8: 'Did на ВАТС',
       9: 'FMC',
       10: 'Parted num',
-      11: 'Роуминг'
+      11: 'Роуминг',
+      12: 'Реестр номеров'
     };
 
     searchQuery = searchQuery.toLowerCase();
