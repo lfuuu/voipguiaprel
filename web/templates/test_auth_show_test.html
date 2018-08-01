@@ -34,9 +34,9 @@
                     <tr ng-repeat="row in full_item.result track by $index" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO'">
                         <td nowrap>{{::row.type}}</td>
                         <td nowrap>{{::row.action}}</td>
-                        <td ng-if="row.type == 'RESULT' && row.params.length == 1 && row.params[0].name == ''" width="100%">&nbsp;</td>
-                        <td ng-if="row.type != 'RESULT' || (row.type == 'RESULT' && !isObject(row.params) && row.params.length < 1)" width="100%">{{::row.params}}</td>
-                        <td ng-if="row.type == 'RESULT' && (isObject(row.params) || row.params.length > 0)" width="100%">
+                        <td ng-if="row.type == 'RESULT' && row.is_params_array && !row.is_not_empty_params" width="100%">&nbsp;</td>
+                        <td ng-if="row.type != 'RESULT' || (row.type == 'RESULT' && !row.is_params_array)" width="100%">{{::row.params}}</td>
+                        <td ng-if="row.type == 'RESULT' && row.is_params_array && row.is_not_empty_params" width="100%">
                             <span ng-repeat="param in row.params">
                                 <a ng-if="param.is_url" href="#" ng-click="clickTrunk(param, full_item)">{{param.name}},</a>
                                 <span ng-if="!param.is_url">{{param.name}},</span>

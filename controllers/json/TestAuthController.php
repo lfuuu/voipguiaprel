@@ -360,8 +360,16 @@ class TestAuthController extends JsonController
                     }
 
                     $displayParams = [];
+                    $isNotEmptyParams = false;
+                    $isParamsArray = false;
     
                     foreach ($paramsArray as $trunkName) {
+                        $isParamsArray = true;
+                        
+                        if (!empty($trunkName)) {
+                            $isNotEmptyParams = true;
+                        }
+                        
                         $trunk = Trunk::find()
                             ->where('auth.trunk.trunk_name = \'' . $trunkName . '\'')
                             ->andWhere("(auth.trunk.server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or auth.trunk.server_id = ".$server->id)
@@ -395,7 +403,9 @@ class TestAuthController extends JsonController
                     $result[] = [
                         'type' => $type,
                         'action' => $action,
-                        'params' => $displayParams
+                        'params' => $displayParams,
+                        'is_not_empty_params' => $isNotEmptyParams,
+                        'is_params_array' => $isParamsArray
                     ];
                     
                     if (!empty($traceTrunk)) {
@@ -407,6 +417,8 @@ class TestAuthController extends JsonController
                         'type' => $type,
                         'action' => $action,
                         'params' => $params,
+                        'is_not_empty_params' => false,
+                        'is_params_array' => false
                     ];
                 }
             }
