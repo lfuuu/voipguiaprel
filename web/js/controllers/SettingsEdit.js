@@ -1,5 +1,6 @@
-var SettingsEditCtrl = function($scope, Settings, List, $modalInstance) {
+var SettingsEditCtrl = function($scope, $window, Settings, List, $modalInstance) {
 	$scope.title = 'Общие настройки';
+	$scope.name_changed = false;
 
 	Settings.get({server_id: $scope.server.id}).then(function(data){
 		$scope.item = data;
@@ -26,7 +27,11 @@ var SettingsEditCtrl = function($scope, Settings, List, $modalInstance) {
         }
 
 		Settings.save($scope.item).then(function(response) {
-			$modalInstance.close();
+			if ($scope.name_changed) {
+                $window.location.reload();
+			} else {
+                $modalInstance.close();
+            }
 		});
 	};
 
@@ -36,11 +41,14 @@ var SettingsEditCtrl = function($scope, Settings, List, $modalInstance) {
 
 	$scope.setVpbxType = function (type_id) {
 		$scope.vpbx_type_id = type_id;
-	}
+	};
 
 	$scope.back = function()
 	{
 		$modalInstance.dismiss();
 	};
 
+	$scope.nameChanged = function() {
+		$scope.name_changed = true;
+	};
 };
