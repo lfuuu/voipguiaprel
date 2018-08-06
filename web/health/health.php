@@ -44,7 +44,7 @@ foreach ($config['resources'] as $resource) {
     }
 
     $resourceData = parse_url($url);
-    !$title && $title = $resourceData['host'];
+    !$title && $title = $resourceData['host'] . ($resourceData['port'] ? ':' . $resourceData['port'] : '');
 
     $data = getData($url);
     $dataJSON = json_decode($data, $assoc = true);
