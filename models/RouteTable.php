@@ -36,4 +36,20 @@ class RouteTable extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 50],
         ];
     }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRouteRules()
+    {
+        return $this->hasMany(RouteRouteRule::className(), ['route_table_id' => 'id'])->orderBy('order');
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoutes()
+    {
+        return $this->hasMany(RouteTableRoute::className(), ['route_table_id' => 'id'])->orderBy('order');
+    }
 }

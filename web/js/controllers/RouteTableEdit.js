@@ -7,7 +7,8 @@ var RouteTableEditCtrl = function($scope, RouteTable, Outcome, params, $modalIns
 	} else {
 		$scope.item = {
             server_id: $scope.server.id,
-			routes: []
+			routes: [],
+			routeRules: []
 		};
 
 	}
@@ -50,11 +51,22 @@ var RouteTableEditCtrl = function($scope, RouteTable, Outcome, params, $modalIns
 		RouteTable.save($scope.item).then(function(response) {
 			$modalInstance.close();
 		});
-	}
+	};
 
 	$scope.back = function()
 	{
 		$modalInstance.dismiss();
-	}
+	};
+
+    $scope.addRouteRule = function () {
+        $scope.item.routeRules.push({
+            trunk_group_id: '',
+            allow: $scope.item.source_trunk_rule_default_allowed
+        });
+    };
+
+    $scope.removeRouteRule = function (index) {
+        $scope.item.routeRules.splice(index, 1);
+    };
 };
 

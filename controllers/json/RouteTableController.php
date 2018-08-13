@@ -2,6 +2,7 @@
 
 namespace app\controllers\json;
 
+use app\models\RouteRouteRule;
 use app\models\RouteTableRoute;
 use Yii;
 use app\models\RouteTable;
@@ -54,20 +55,18 @@ class RouteTableController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
-        $item = RouteTable::findOne($this->request['id']);
+        $item = RouteTable::find()
+            ->with('routeRules')
+            ->with('routes')
+            ->where(['id' => $this->request['id']])
+            ->asArray()
+            ->one();
+        
         if ($item === null) {
             throw new HttpException(404, 'Таблица маршрутизации не найдена');
         }
-        $data = $item->toArray();
 
-        $routes =
-            RouteTableRoute::find()
-                ->where(['route_table_id' => $item->id])
-                ->orderBy('order');
-
-        $data['routes'] = $routes->asArray()->all();
-
-        return $data;
+        return $item;
     }
 
     public function actionSave()
@@ -104,6 +103,17 @@ class RouteTableController extends JsonController
             $order = 1;
             foreach ($this->request['routes'] as $routeData) {
                 $route = RouteTableRoute::create($routeTable, $routeData);
+                $route->order = $order;
+                if (!$route->save()) {
+                    throw new FormValidationException($route);
+                }
+                $order++;
+            }
+    
+            RouteRouteRule::deleteByRouteTable($routeTable);
+            $order = 1;
+            foreach ($this->request['routeRules'] as $routeData) {
+                $route = RouteRouteRule::create($routeTable, $routeData);
                 $route->order = $order;
                 if (!$route->save()) {
                     throw new FormValidationException($route);
