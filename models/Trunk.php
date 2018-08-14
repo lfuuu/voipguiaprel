@@ -139,6 +139,14 @@ class Trunk extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TrunkSorm::className(), ['code_trunk' => 'id']);
     }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoadLimit()
+    {
+        return $this->hasMany(TrunkLoadLimit::className(), ['trunk_id' => 'id'])->orderBy('order');
+    }
 
     /**
      * @return \yii\db\ActiveQuery

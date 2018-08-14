@@ -6,6 +6,7 @@ use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use app\models\sorm\Commutator;
 use app\models\sorm\Operator;
+use app\models\TrunkLoadLimit;
 use app\models\voip\Pricelist;
 use app\models\billing\ServiceTrunk;
 use app\models\Trunk;
@@ -173,6 +174,7 @@ class TrunkController extends JsonController
                 ->with('numberPreprocessing')
                 ->with('numbersRules')
                 ->with('trunkSorm')
+                ->with('loadLimit')
                 ->where(['id' => $this->request['id']])
                 ->asArray()
                 ->one();
@@ -446,6 +448,19 @@ class TrunkController extends JsonController
                         }
                         $order++;
                     }
+                }
+            }
+    
+            TrunkLoadLimit::deleteByTrunk($trunk);
+            if (isset($this->request['loadLimit'])) {
+                $order = 1;
+                foreach ($this->request['loadLimit'] as $row) {
+                    $limit = TrunkLoadLimit::create($trunk, $row);
+                    $limit->order = $order;
+                    if (!$limit->save()) {
+                        throw new FormValidationException($limit);
+                    }
+                    $order++;
                 }
             }
 

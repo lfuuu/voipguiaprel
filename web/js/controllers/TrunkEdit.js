@@ -61,6 +61,7 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
             priorities: [],
             trunkRules: [],
             numberPreprocessing: [],
+            loadLimit: [],
             numbersRules: {},
             orig_afilter_default_allowed: true,
             orig_bfilter_default_allowed: true,
@@ -231,5 +232,16 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                 is_show: false
             });
         }
+    };
+
+    $scope.addLoadLimit = function () {
+        $scope.item.loadLimit.push({
+            trunk_id: $scope.item.id,
+            is_orig: true
+        });
+    };
+
+    $scope.removeLoadLimit = function (index) {
+        $scope.item.loadLimit.splice(index, 1);
     };
 };

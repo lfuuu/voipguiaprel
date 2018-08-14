@@ -1,0 +1,55 @@
+<div class="form-group">
+    <div class="col-sm-10">
+        <table class="table table-striped">
+            <tbody ui-sortable="{axis: 'y'}" ng-model="item.loadLimit">
+            <tr ng-repeat="line in item.loadLimit">
+                <td width="10%" style="cursor: ns-resize" ng-click="line.is_orig = !line.is_orig">
+                    <button ng-if="line.is_orig" class="btn btn-success">Orig</button>
+                    <button ng-if="!line.is_orig" class="btn btn-danger">Term</button>
+                </td>
+                <td width="5%" style="cursor: ns-resize">
+                    Порог (слот):
+                </td>
+                <td width="10%">
+                    <input style="width: 60px;" class="form-control input-sm" ng-model="line.limit_absolute" required />
+                </td>
+                <td width="5%" style="cursor: ns-resize">
+                    Порог (процент):
+                </td>
+                <td width="10%">
+                    <input style="width: 60px;" class="form-control input-sm" ng-model="line.limit_relative" required />
+                </td>
+                <td width="5%" style="cursor: ns-resize">
+                    Порог (ком/уст):
+                </td>
+                <td width="10%">
+                    <input style="width: 60px;" class="form-control input-sm" ng-model="line.limit_ratio" required />
+                </td>
+                <td width="3%" style="cursor: ns-resize">
+                    <span ng-if="line.number_id_filter_a !== null">A:</span>
+                </td>
+                <td width="15%">
+                    <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
+                </td>
+
+                <td width="3%" style="cursor: ns-resize">
+                    <span ng-if="line.number_id_filter_b !== null">B:</span>
+                </td>
+                <td width="15%">
+                    <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
+                </td>
+                <td width="3%">
+                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeLoadLimit($index)"></button>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="12">
+                    <button type="button" class="btn btn-success btn-xs" ng-click="addLoadLimit()"><i class="glyphicon glyphicon-plus"></i> Ограничение</button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
