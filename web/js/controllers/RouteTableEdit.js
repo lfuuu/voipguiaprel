@@ -61,7 +61,7 @@ var RouteTableEditCtrl = function($scope, RouteTable, Outcome, params, $modalIns
     $scope.addRouteRule = function () {
         $scope.item.routeRules.push({
             trunk_group_id: '',
-            allow: $scope.item.source_route_rule_default_allowed
+            allow: $scope.item.destination_route_rule_default_allowed
         });
     };
 
