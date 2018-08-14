@@ -185,6 +185,16 @@ class TrunkController extends JsonController
         $item['default_auto_routing'] = $item['auto_routing'];
         $item['do_sync'] = false;
         
+        foreach ($item['loadLimit'] as &$limit) {
+            if (isset($limit['limit_absolute'])) {
+                $limit['limit_mode'] = TrunkLoadLimit::LOAD_LIMIT_TYPE_ABSOLUTE;
+                $limit['limit_value'] = $limit['limit_absolute'];
+            } else {
+                $limit['limit_mode'] = TrunkLoadLimit::LOAD_LIMIT_TYPE_RELATIVE;
+                $limit['limit_value'] = $limit['limit_relative'];
+            }
+        }
+        
         if ($item['auto_routing']) {
             $count = Pricelist::find()
                 ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
@@ -455,6 +465,14 @@ class TrunkController extends JsonController
             if (isset($this->request['loadLimit'])) {
                 $order = 1;
                 foreach ($this->request['loadLimit'] as $row) {
+                    if ($row['limit_mode'] == TrunkLoadLimit::LOAD_LIMIT_TYPE_ABSOLUTE) {
+                        $row['limit_absolute'] = $row['limit_value'];
+                        $row['limit_relative'] = null;
+                    } else {
+                        $row['limit_absolute'] = null;
+                        $row['limit_relative'] = $row['limit_value'];
+                    }
+                    
                     $limit = TrunkLoadLimit::create($trunk, $row);
                     $limit->order = $order;
                     if (!$limit->save()) {

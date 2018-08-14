@@ -129,9 +129,9 @@ input.ng-invalid {
     }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1500px) {
     .modal-dialog {
-        width: 1160px;
+        width: 1460px;
         margin: 30px auto;
     }
 }

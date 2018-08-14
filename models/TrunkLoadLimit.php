@@ -15,6 +15,9 @@ namespace app\models;
 class TrunkLoadLimit extends \yii\db\ActiveRecord
 {
 
+    const LOAD_LIMIT_TYPE_ABSOLUTE = 1;
+    const LOAD_LIMIT_TYPE_RELATIVE = 2;
+    
     /**
      * @return string
      */
@@ -29,7 +32,7 @@ class TrunkLoadLimit extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['limit_absolute', 'limit_relative', 'number_id_filter_a', 'number_id_filter_b'], 'integer'],
+            [['limit_absolute', 'limit_relative', 'number_id_filter_a', 'number_id_filter_b', 'mode'], 'integer'],
             [['limit_ratio'], 'string'],
             [['is_orig'], 'boolean'],
         ];
