@@ -135,9 +135,13 @@ class StatisticsTreeController extends JsonController
 
     private function getMoneyText($item)
     {
+        if (empty($item['money'])) {
+            return '';
+        }
+    
         $newMoney = [];
         $newMoneyText = "";
-
+    
         foreach ($item['money'] as $money) {
             if (!empty($money)) {
                 foreach ($money as $moneyName => $moneyArray) {
