@@ -49,7 +49,7 @@ class TestCall extends \yii\db\ActiveRecord
             [['orig'], 'boolean'],
             [['connect_time', 'note'], 'string'],
             [['session_time'], 'integer'],
-            [['src_number', 'dst_number', 'redirect_number'], 'string', 'max' => 32],
+            [['src_number', 'dst_number', 'redirect_number'], 'string', 'max' => 64],
             [['src_noa','dst_noa'], 'integer'],
             [['src_trunk_name', 'dst_trunk_name'], 'string', 'max' => 32],
             [['is_autotest',], 'boolean'],
