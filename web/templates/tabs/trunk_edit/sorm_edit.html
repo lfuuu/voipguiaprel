@@ -9,6 +9,16 @@
 </div>
 
 <div class="form-group">
+    <label class="col-sm-2 control-label">Оператор</label>
+    <div class="col-sm-10">
+        <select ui-select2 ng-model="item.sorm.sorm_operator_id" style="width: 180px;">
+            <option value="1">НорсиТранс</option>
+            <option value="2">Ит-Град</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
     <label class="col-sm-2 control-label">Название</label>
     <div class="col-sm-10">
         <input class="form-control" placeholder="Название" ng-model="item.sorm.name" ng-disabled="!item.sorm.enabled" ng-required="item.sorm.enabled"/>

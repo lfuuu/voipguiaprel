@@ -32,6 +32,7 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                     enabled: true,
                     name: data.trunkSorm[0].name,
                     groups: data.trunkSorm[0].groups.replace('{', '').replace('}', '').split(','),
+                    sorm_operator_id: data.trunkSorm[0].sorm_operator_id,
                     items: []
                 };
 
@@ -72,7 +73,8 @@ var TrunkEditCtrl = function($scope, Trunk, params, $modalInstance, STAT_HOST, $
                 enabled: false,
                 name: '',
                 is_show: false,
-                groups: {}
+                groups: {},
+                sorm_operator_id: 1
             }
         };
     }

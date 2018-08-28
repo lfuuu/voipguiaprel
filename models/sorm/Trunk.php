@@ -17,6 +17,7 @@ use app\queries\sorm\TrunkQuery;
  * @property boolean $is_show
  * @property integer[] $groups
  * @property integer $region_id
+ * @property integer $sorm_operator_id
  * @property string $trunk_ip
  * @property boolean $is_local
  * @property string $border_ats_code
@@ -38,7 +39,7 @@ class Trunk extends \yii\db\ActiveRecord
     {
         return [
             [['ats_mnemo_code', 'start_date', 'stop_date', 'name', 'old_name', 'trunk_ip', 'groups'], 'string'],
-            [['operator_id', 'code_trunk', 'type', 'region_id'], 'integer'],
+            [['operator_id', 'code_trunk', 'type', 'region_id', 'sorm_operator_id'], 'integer'],
             [['is_ip', 'is_show'], 'boolean']
         ];
     }
