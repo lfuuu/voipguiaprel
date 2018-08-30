@@ -189,9 +189,12 @@ class TrunkController extends JsonController
             if (isset($limit['limit_absolute'])) {
                 $limit['limit_mode'] = TrunkLoadLimit::LOAD_LIMIT_TYPE_ABSOLUTE;
                 $limit['limit_value'] = $limit['limit_absolute'];
-            } else {
+            } elseif (isset($limit['limit_relative'])) {
                 $limit['limit_mode'] = TrunkLoadLimit::LOAD_LIMIT_TYPE_RELATIVE;
                 $limit['limit_value'] = $limit['limit_relative'];
+            } else {
+                $limit['limit_mode'] = '';
+                $limit['limit_value'] = '';
             }
         }
         
@@ -467,7 +470,10 @@ class TrunkController extends JsonController
             if (isset($this->request['loadLimit'])) {
                 $order = 1;
                 foreach ($this->request['loadLimit'] as $row) {
-                    if ($row['limit_mode'] == TrunkLoadLimit::LOAD_LIMIT_TYPE_ABSOLUTE) {
+                    if (!isset($row['limit_mode'])) {
+                        $row['limit_absolute'] = null;
+                        $row['limit_relative'] = null;
+                    } elseif ($row['limit_mode'] == TrunkLoadLimit::LOAD_LIMIT_TYPE_ABSOLUTE) {
                         $row['limit_absolute'] = $row['limit_value'];
                         $row['limit_relative'] = null;
                     } else {
