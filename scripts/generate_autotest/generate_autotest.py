@@ -66,6 +66,21 @@ def readConfig(filename):
         return None
     return None
 
+def getHubServers (region, cur):
+    sql = 'SELECT hub_id FROM public.server WHERE id =' + str(region)
+    cur.execute(sql)
+    rows = cur.fetchall()
+    hub = str(rows[0][0])
+    if hub == 'None':
+        return str(region)
+    cur.execute('SELECT id FROM public.server WHERE hub_id=' + hub)
+    hub = ''
+    rows = cur.fetchall()
+    for row in rows:
+        hub += str(row[0]) + ','
+    hub = hub[:-1]
+    return hub
+
 def retrieveTests(regions, db):
     conn = None
     try :
@@ -90,6 +105,7 @@ def retrieveTests(regions, db):
             region["city_name"] = serverName
             region["federald"] = str(serverId)
             region["trunk"] = str(trunkName)
+            region["hub_servers"] = getHubServers(region["federald"], cur)
             try:
                 if trunkName.find(region["short_name"]) == 0:
                     region["asterisk"] = re.search ('.*mcn_ast([0-9]*)', trunkName).group(1)
@@ -115,6 +131,7 @@ def retrieveTests(regions, db):
     moscow["federald"] = "99"
     moscow["asterisk"] = "16"
     moscow["trunk"] = "mcn_msk_ast16_99"
+    moscow["hub_servers"] = "99"
     regions["99"] = moscow
 
 def fillConfigWithNumbers(regions, db):
@@ -147,6 +164,8 @@ def fillConfigWithNumbers(regions, db):
     conn.close()
     for region in deleteList :
         regions.pop(region)
+
+
 
 def saveTest (autotests, db):
     try :
@@ -232,15 +251,20 @@ def deleteInvalid(autotests):
 
     return correctAutotests
 
-def fetchBackTrunk(trunk_name, db):
+def fetchBackTrunk(trunk_name, back_trunks, server_id, db):
     try:
        if trunk_name == None or trunk_name == "":
            return None
-       db.execute ('SELECT back_trunk FROM auth.trunk WHERE name=\'' + trunk_name + '\';')
+       queryServer = 'SELECT back_trunk FROM auth.trunk WHERE server_id = ' + server_id + ' AND name=\'' + trunk_name + '\';'
+       db.execute (queryServer)
        result = db.fetchall()
-       if result[0][0] == None or result[0][0] == "":
-           printToLog( 'Cant find back_trunk for:' + trunk_name )
-           return None
+       if len(result) == 0 or result[0][0] == None or result[0][0] == "":
+           queryHub = 'SELECT back_trunk FROM auth.trunk WHERE server_id IN (' + back_trunks + ') AND name=\'' + trunk_name + '\';'
+           db.execute (queryHub)
+           result = db.fetchall()
+           if len(result) == 0 or result[0][0] == None or result[0][0] == "":
+               printToLog( 'Cant find back_trunk for:' + trunk_name + '\nQ1:' + queryServer + '\nQ2:' + queryHub)
+               return None
        return result[0][0]
 
     except psycopg2.Error as e:
@@ -276,7 +300,7 @@ def generateTest3(originateParams, terminateParams, test2, db):
     if autotest.trunk == None:
         printToLog( 'Leg3, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, bad auth\n' )
         return None
-    autotest.trunk = fetchBackTrunk(autotest.trunk, db)
+    autotest.trunk = fetchBackTrunk(autotest.trunk, originateParams['hub_servers'], originateParams['federald'], db)
     if autotest.trunk == None:
         printToLog( 'Leg3, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, no backtrunk\n' )
         return None
