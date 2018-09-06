@@ -1,0 +1,168 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Фильтр B, id {{item.id}}</h3>
+        <h3 ng-if="!item.id">Создание фильтра B</h3>
+    </div>
+    <div class="modal-body">
+        <div class="col-sm-10">
+
+            <div class="alert alert-danger text-center" ng-if="nnpDataParseError">
+                Ошибка разбора данных по NNP
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Режим работы</label>
+                <div class="col-sm-10">
+                    <div class="btn-group" ng-click="item.mode_selected = !item.mode_selected">
+                        <button type="button" class="btn btn-sm {{item.mode_selected ? 'btn-success active' : 'btn-default'}}">Выбранные</button>
+                        <button type="button" class="btn btn-sm {{!item.mode_selected ? 'btn-primary active' : 'btn-default'}}">Кроме выбранных</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Цена интерконнекта</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="1.234" ng-model="item.interconnect_price" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Цена портированного номера</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="1.234" ng-model="item.ported_num_price" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Бесплатно, секунд</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="1" ng-model="item.tarification_free_seconds" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Интервал билингования, секунд</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="1" ng-model="item.tarification_interval_seconds" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Тип округления. 1 - round, 2 - ceil</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="1" ng-model="item.tarification_type" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Минимальное кол-во платных секунд</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="1" ng-model="item.tarification_min_paid_seconds" required>
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs">
+                <li class="{{(nnpMode == NNP_MODE_DIRECTION) ? 'active' : '' }}">
+                    <a href="#npp-destination" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_DIRECTION)">ННП-Направление</a>
+                </li>
+                <li class="{{(nnpMode == NNP_MODE_FILTER) ? 'active' : '' }}">
+                    <a href="#nnp-filters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_FILTER)">ННП-Фильтры</a>
+                </li>
+            </ul>
+            <br/>
+
+            <div class="tab-content">
+                <div class="tab-pane{{(nnpMode == NNP_MODE_DIRECTION) ? ' active' : '' }}" id="npp-destination">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Направление</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_destination" multiple="multiple" style="width: 100%">
+                                <option ng-repeat="destination in destinationList" value="{{::destination.id}}">
+                                    {{::destination.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filters">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Страна</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_country" multiple="multiple" style="width: 100%">
+                                <option ng-repeat="country in countryList" value="{{::country.code}}">
+                                    {{::country.name_rus}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-if="item.nnp_country">
+                        <label class="col-sm-2 control-label">Регион</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_region" multiple="multiple" style="width: 100%">
+                                <option ng-repeat="region in regionList" value="{{::region.id}}">{{::region.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-if="item.nnp_country && item.nnp_region">
+                        <label class="col-sm-2 control-label">Город</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_city" multiple="multiple" style="width: 100%">
+                                <option ng-repeat="city in cityList" value="{{::city.id}}">{{::city.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-if="item.nnp_country">
+                        <label class="col-sm-2 control-label">Оператор</label>
+                        <div class="col-sm-6">
+                            <select ui-select2 ng-model="item.nnp_operator" multiple="multiple" style="width: 100%">
+                                <option ng-repeat="operator in operatorList" value="{{::operator.id}}">
+                                    {{::operator.name}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn {{!item.nnp_is_exclude_operators ? 'btn-primary active' : 'btn-default'}}"
+                                        ng-click="item.nnp_is_exclude_operators = false">Выбранные
+                                </button>
+                                <button type="button"
+                                        class="btn {{item.nnp_is_exclude_operators ? 'btn-danger active' : 'btn-default'}}"
+                                        ng-click="item.nnp_is_exclude_operators = true">Кроме выбранных
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Тип NDC</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_ndc_type" multiple="multiple" style="width: 100%">
+                                <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid"
+                    ng-click="save()">Сохранить
+            </button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

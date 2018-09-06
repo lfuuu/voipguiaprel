@@ -55,7 +55,7 @@ class Hub extends \yii\db\ActiveRecord
      */
     public function getServers()
     {
-        return $this->hasMany(Server::className(), ['hub_id' => 'id']);
+        return $this->hasMany(Server::className(), ['hub_id' => 'id'])->orderBy('name');
     }
 
     /**

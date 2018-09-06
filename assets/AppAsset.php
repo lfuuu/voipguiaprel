@@ -72,6 +72,13 @@ class AppAsset extends AssetBundle
         'js/controllers/ImsiPartnerEdit.js',
         'js/controllers/OcaBwList.js',
         'js/controllers/OcaBwEdit.js',
+        'js/controllers/PricelistList.js',
+        'js/controllers/PricelistView.js',
+        'js/controllers/PricelistEdit.js',
+        'js/controllers/PricelistLocationEdit.js',
+        'js/controllers/PricelistFilterAEdit.js',
+        'js/controllers/PricelistFilterBEdit.js',
+        'js/controllers/PricelistPrefixPriceEdit.js',
     ];
 
     public $templates = [
@@ -125,5 +132,12 @@ class AppAsset extends AssetBundle
         'templates/imsi_partner_edit.html',
         'templates/oca_bw_list.html',
         'templates/oca_bw_edit.html',
+        'templates/pricelist_list.html',
+        'templates/pricelist_view.html',
+        'templates/pricelist_edit.html',
+        'templates/pricelist_location_edit.html',
+        'templates/pricelist_filter_a_edit.html',
+        'templates/pricelist_filter_b_edit.html',
+        'templates/pricelist_prefix_price_edit.html',
     ];
 }

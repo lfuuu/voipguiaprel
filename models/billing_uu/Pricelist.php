@@ -1,0 +1,67 @@
+<?php
+
+namespace app\models\billing_uu;
+use app\queries\billing_uu\PricelistQuery;
+use yii\db\Expression;
+
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $currency_id
+ * @property bool $orig
+ * @property string $date_created
+ * @property string $date_start
+ * @property string $date_end
+ * @property int $pricelist_version
+ * @property bool $is_global
+ * @property bool $is_active
+ */
+class Pricelist extends \yii\db\ActiveRecord
+{
+    public static function tableName()
+    {
+        return 'billing_uu.pricelist';
+    }
+    
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['name', 'currency_id', 'date_created', 'date_start', 'date_end'], 'string'],
+            [['pricelist_version'], 'integer'],
+            [['orig', 'is_global', 'is_active'], 'boolean']
+        ];
+    }
+
+    public static function find()
+    {
+        return new PricelistQuery(get_called_class());
+    }
+    
+    /**
+     * @param array|null $data
+     * @return ImsiPartner
+     */
+    public static function create(array $data = null)
+    {
+        $item = new self();
+        $item->load($data, '');
+        return $item;
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLocation()
+    {
+        return $this->hasMany(PricelistLocation::className(), ['pricelist_id' => 'id'])
+            ->select([
+                'billing_uu.pricelist_location.*',
+                'mcc_string' => new Expression('array_to_string(mcc, \', \')'),
+                'mnc_string' => new Expression('array_to_string(mnc, \', \')')
+            ])
+            ->orderBy('id');
+    }
+}

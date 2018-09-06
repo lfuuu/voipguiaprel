@@ -55,7 +55,7 @@ class SiteController extends BaseController
         Yii::info('index');
         return $this->render('index', [
             'hubs' => Hub::find()->orderBy('id')->with('servers', 'servers.preparedPrefixlists','instanceSettings')->all(),
-            'servers' => Server::find()->where('hub_id is null')->with('instanceSettings', 'preparedPrefixlists')->orderBy('id')->all(),
+            'servers' => Server::find()->where('hub_id is null')->with('instanceSettings', 'preparedPrefixlists')->orderBy('name')->all(),
         ]);
     }
 

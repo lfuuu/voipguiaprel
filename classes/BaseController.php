@@ -6,6 +6,11 @@ use app\models\Airp;
 use app\models\Attribute;
 use app\models\AttributeGroup;
 use app\models\billing_uu\ImsiPartner;
+use app\models\billing_uu\Pricelist;
+use app\models\billing_uu\PricelistFilterA;
+use app\models\billing_uu\PricelistFilterB;
+use app\models\billing_uu\PricelistLocation;
+use app\models\billing_uu\PricelistPrefixPrice;
 use app\models\Cpc;
 use app\models\Destination;
 use app\models\Number;
@@ -111,6 +116,76 @@ class BaseController extends \yii\web\Controller
         $item = Trunk::findOne($trunkId);
         if ($item === null) {
             throw new HttpException(404, 'Транк не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return Pricelist
+     * @throws HttpException
+     */
+    protected function getPricelistOr404($id)
+    {
+        $item = Pricelist::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Прайслист не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return PricelistLocation
+     * @throws HttpException
+     */
+    protected function getPricelistLocationOr404($id)
+    {
+        $item = PricelistLocation::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Местоположение прайслиста не найдено');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return PricelistFilterA
+     * @throws HttpException
+     */
+    protected function getPricelistFilterAOr404($id)
+    {
+        $item = PricelistFilterA::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Фильтр A не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return PricelistFilterB
+     * @throws HttpException
+     */
+    protected function getPricelistFilterBOr404($id)
+    {
+        $item = PricelistFilterB::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Фильтр B не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return PricelistPrefixPrice
+     * @throws HttpException
+     */
+    protected function getPricelistPrefixPriceOr404($id)
+    {
+        $item = PricelistPrefixPrice::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Цена префикса не найдена');
         }
         return $item;
     }

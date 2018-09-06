@@ -11,8 +11,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         return modal.result;
     };
 
-    var openTab = function(controller, template, params) {
-        var key = controller + template + params;
+    var openTab = function(controller, template, params, selectedTab) {
+        $rootScope.selectedTab = (typeof selectedTab == 'undefined') ? 'routing' : selectedTab;
+        var key = controller + template + params + $rootScope.selectedTab;
         var tab;
         if ($rootScope.tabsMap[key] == undefined) {
             tab = {
@@ -302,6 +303,43 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
         ocaBwCreate: function() {
             return openModal(OcaBwEditCtrl, '/templates/oca_bw_edit.html', {id: null});
-        }
+        },
+        pricelistList: function() {
+            $cookies.selectedPage = 'pricelistList';
+            return openTab(PricelistListCtrl, '/templates/pricelist_list.html', {}, 'billing');
+        },
+        pricelistView: function(id) {
+            return openModal(PricelistViewCtrl, '/templates/pricelist_view.html', {id: id});
+        },
+        pricelistEdit: function(id) {
+            return openModal(PricelistEditCtrl, '/templates/pricelist_edit.html', {id: id});
+        },
+        pricelistCreate: function(id) {
+            return openModal(PricelistEditCtrl, '/templates/pricelist_edit.html', {});
+        },
+        pricelistLocationEdit: function(id) {
+            return openModal(PricelistLocationEditCtrl, '/templates/pricelist_location_edit.html', {id: id});
+        },
+        pricelistLocationCreate: function(id) {
+            return openModal(PricelistLocationEditCtrl, '/templates/pricelist_location_edit.html', {pricelist_id: id});
+        },
+        pricelistFilterAEdit: function(id) {
+            return openModal(PricelistFilterAEditCtrl, '/templates/pricelist_filter_a_edit.html', {id: id});
+        },
+        pricelistFilterACreate: function(id) {
+            return openModal(PricelistFilterAEditCtrl, '/templates/pricelist_filter_a_edit.html', {location_id: id});
+        },
+        pricelistFilterBEdit: function(id) {
+            return openModal(PricelistFilterBEditCtrl, '/templates/pricelist_filter_b_edit.html', {id: id});
+        },
+        pricelistFilterBCreate: function(id) {
+            return openModal(PricelistFilterBEditCtrl, '/templates/pricelist_filter_b_edit.html', {filter_a_id: id});
+        },
+        pricelistPrefixPriceEdit: function(id) {
+            return openModal(PricelistPrefixPriceEditCtrl, '/templates/pricelist_prefix_price_edit.html', {id: id});
+        },
+        pricelistPrefixPriceCreate: function(id) {
+            return openModal(PricelistPrefixPriceEditCtrl, '/templates/pricelist_prefix_price_edit.html', {filter_b_id: id});
+        },
     };
 });

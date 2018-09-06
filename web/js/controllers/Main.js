@@ -2,6 +2,11 @@ app.controller('MainCtrl', function ($rootScope, $scope, $cookies, $timeout, $mo
   $rootScope.server = dataServer;
   $rootScope.userName = userName;
   $rootScope.userPermissions = userPermissions;
+  $rootScope.billingEnabled = billingEnabled;
+  $rootScope.routingEnabled = routingEnabled;
+  $rootScope.routingIsActive = (!billingEnabled || (billingEnabled && routingEnabled));
+  $rootScope.billingIsActive = !$rootScope.routingIsActive;
+  $rootScope.navHeight = (billingEnabled && routingEnabled) ? 100 : 65;
   $rootScope.Redirect = Redirect;
 
   $rootScope.tabs = [];
@@ -9,6 +14,14 @@ app.controller('MainCtrl', function ($rootScope, $scope, $cookies, $timeout, $mo
 
   $rootScope.tabs.isController = function (ctrl) {
     return $rootScope.tabs.controller == window[ctrl];
+  };
+
+  $rootScope.tabs.isTabSelected = function (tab) {
+      if (tab == 'routing') {
+          return $rootScope.selectedTab == tab && $rootScope.routingEnabled;
+      } else if (tab == 'billing') {
+          return $rootScope.selectedTab == tab && $rootScope.billingEnabled;
+      }
   };
 
   $scope.closeErrorsPopup = function () {

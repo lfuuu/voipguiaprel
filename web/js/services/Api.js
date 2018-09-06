@@ -1059,6 +1059,119 @@ app.factory('ImsiPartner', function ($q, ApiLoader, $rootScope) {
   };
 });
 
+app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/pricelist/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        getWithDependents: function(data) {
+            return ApiLoader.post(url + 'get-with-dependents', data);
+        },
+        list: function() {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {server_id: $rootScope.server.id};
+                ApiLoader.post(url + 'list', data)
+                    .then(function(data){
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function(data){
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function(data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
+});
+
+app.factory('PricelistLocation', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/pricelist-location/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        save: function(data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
+});
+
+app.factory('PricelistFilterA', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/pricelist-filter-a/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        save: function(data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
+});
+
+app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/pricelist-filter-b/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        save: function(data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
+});
+
+app.factory('PricelistPrefixPrice', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/pricelist-prefix-price/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        save: function(data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
+});
+
 app.factory('Network', function ($q, ApiLoader, $rootScope) {
 	var url = '/json/network/';
 	var list = undefined;
@@ -1088,7 +1201,6 @@ app.factory('Network', function ($q, ApiLoader, $rootScope) {
 		}
 	};
 });
-
 
 app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               RouteCase, Outcome, Number, Destination,
@@ -1161,6 +1273,20 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         {'id': 1, 'name': 'all'},
         {'id': 2, 'name': 'inc'},
         {'id': 3, 'name': 'exc'}
+      ];
+    },
+    currency: function () {
+      return [
+        {'id': 'RUB', 'name': 'RUB'},
+        {'id': 'EUR', 'name': 'EUR'},
+        {'id': 'HUF', 'name': 'HUF'}
+      ];
+    },
+    location: function () {
+      return [
+        {'id': '1', 'name': 'Домашний регион'},
+        {'id': '2', 'name': 'Гостевой регион'},
+        {'id': '3', 'name': 'Международный регион'}
       ];
     },
     hub: function () {

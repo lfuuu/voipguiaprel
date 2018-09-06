@@ -1,0 +1,50 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Прайс префикса, id {{item.id}}</h3>
+        <h3 ng-if="!item.id">Создание прайса префикса</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Префикс номера B</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="1234" ng-model="item.prefix_b" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Цена номера B</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="12.34" ng-model="item.b_number_price" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Флаг изменения</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="1" ng-model="item.change_flag" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Дата начала действия</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Время (UTC)" ng-model="item.date_from" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Дата окончания действия</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Время (UTC)" ng-model="item.date_to" required>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

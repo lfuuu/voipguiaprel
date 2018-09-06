@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use app\assets\AppAsset;
 use app\assets\AppLibAsset;
+use app\commands\RbacController;
 
 /**
  * @var \app\components\View $this
@@ -26,12 +27,26 @@ AppAsset::register($this);
     var userName = <?= json_encode(Yii::$app->user->identity->name, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
     <?php
         $userPermissions = Yii::$app->authManager->getPermissionsByUser(Yii::$app->user->identity->getId());
+        $billingPermissions = RbacController::getBillingPermissions();
+        $routingPermissions = RbacController::getRoutingPermissions();
         $shortUserPermissions = [];
+        $billingEnabled = false;
+        $routingEnabled = false;
         foreach ($userPermissions as $permissionKey => $permission) {
             $shortUserPermissions[$permissionKey] = true;
+            
+            if (!$billingEnabled && in_array($permissionKey, $billingPermissions)) {
+                $billingEnabled = true;
+            }
+            
+            if (!$routingEnabled && in_array($permissionKey, $routingPermissions)) {
+                $routingEnabled = true;
+            }
         }
     ?>
     var userPermissions = <?= json_encode($shortUserPermissions, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
+    var billingEnabled = <?= json_encode($billingEnabled, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
+    var routingEnabled = <?= json_encode($routingEnabled, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
 </script>
 <div ng-controller="MainCtrl" ng-include="'/templates/main.html'">
 </div>
