@@ -135,10 +135,18 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, PricelistFilterA, Nn
     });
 
     $scope.parseNnpData = function (data) {
+        if (!data) {
+            return [];
+        }
+
         return data.replace('{', '').replace('}', '').split(',');
     };
 
     $scope.stringifyNnpData = function (data) {
+        if (!data) {
+            return '{}';
+        }
+
         return '{' + data.join(',') + '}';
     };
 

@@ -6,7 +6,7 @@ var PricelistEditCtrl = function($scope, List, Pricelist, params, $modalInstance
         });
     } else {
         $scope.item = {
-
+            pricelist_version: 1
         };
     }
 
