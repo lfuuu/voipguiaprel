@@ -1,4 +1,6 @@
-var ImsiPartnerEditCtrl = function ($scope, Redirect, ImsiPartner, params, $modalInstance, $window) {
+var ImsiPartnerEditCtrl = function ($scope, List, ImsiPartner, params, $modalInstance, $window) {
+
+    $scope.location = List.location();
 
     if (params.id) {
         ImsiPartner.get({id: params.id}).then(function (data) {

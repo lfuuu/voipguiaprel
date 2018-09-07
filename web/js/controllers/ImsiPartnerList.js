@@ -1,4 +1,4 @@
-var ImsiPartnerListCtrl = function($scope, ImsiPartner, Redirect, $window) {
+var ImsiPartnerListCtrl = function($scope, List, ImsiPartner, Redirect, $window) {
 
     $scope.sortType = 'name';
     $scope.sortReverse = false;
@@ -6,14 +6,21 @@ var ImsiPartnerListCtrl = function($scope, ImsiPartner, Redirect, $window) {
 
     $scope.filterFields = [
         'name', 'orig_trunk_name',
-        'term_trunk_name', 'mvno_region_name'
+        'term_trunk_name', 'mvno_region_name',
+        'location_name'
     ];
+
+    $scope.location = List.location();
 
     $scope.init = function(tab) {
         if (tab) tab.title = 'IMSI партнеры';
 
         ImsiPartner.read().then(function(data){
             $scope.list = data;
+
+            for (var i in $scope.list) {
+                $scope.list[i].location_name = $scope.location.find(function(e) {return e.id == $scope.list[i].location_id;}).name
+            }
         });
     };
 
