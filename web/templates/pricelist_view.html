@@ -167,21 +167,15 @@
                 </td>
                 <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header" colspan="10"></td>
                 <!---------------------------------------------------->
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="4"></td>
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Дата начала</td>
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Дата окончания</td>
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Цена номера B</td>
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Флаг изменения</td>
+                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="5"></td>
+                <td style="text-align: right; background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Цена номера B</td>
                 <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Префикс номера</td>
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="8"></td>
+                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="10"></td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_prefix_price" colspan="4"></td>
-                <td ng-if="item.is_prefix_price">{{item.date_from}}</td>
-                <td ng-if="item.is_prefix_price">{{item.date_to}}</td>
-                <td ng-if="item.is_prefix_price">{{item.b_number_price}}</td>
-                <td ng-if="item.is_prefix_price">{{item.change_flag}}</td>
-                <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
                 <td ng-if="item.is_prefix_price" colspan="5"></td>
+                <td style="text-align: right;" ng-if="item.is_prefix_price">{{item.b_number_price}}</td>
+                <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
+                <td ng-if="item.is_prefix_price" colspan="7"></td>
                 <td ng-if="item.is_prefix_price"></td>
                 <td ng-if="item.is_prefix_price">
                     <a class="btn btn-info btn-xs" ng-click="editPrefixPrice(item.prefix_price_id)">
@@ -199,9 +193,7 @@
     </div>
     <div class="modal-footer">
         <div class="pull-left">
-            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить
-            </button>
-            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+            <button type="button" class="btn btn-success btn-sm" ng-click="back()">Закрыть</button>
         </div>
     </div>
 

@@ -8,6 +8,11 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nn
     var cityLoadComplete = false;
     var operatorLoadComplete = false;
 
+    $scope.round_type = [
+        {id: 1, name: 'round'},
+        {id: 2, name: 'ceil'}
+    ];
+
     var watchers = {
         nnp_country: function (newValue, oldValue) {
             regionLoadComplete = false;

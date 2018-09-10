@@ -57,10 +57,16 @@
 
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.orig}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">
+            <span ng-if="item.orig">Оригинация</span>
+            <span ng-if="!item.orig">Терминация</span>
+        </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_created}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_end}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.is_global}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">
+            <span ng-if="item.is_global">Да</span>
+            <span ng-if="!item.is_global">Нет</span>
+        </td>
         <td ng-if="userPermissions['pricelist_delete']">
             <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus"
                     ng-click="deleteItem(item)"></button>

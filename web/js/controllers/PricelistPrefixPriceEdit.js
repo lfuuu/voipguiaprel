@@ -6,10 +6,15 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
         });
     } else if (params.filter_b_id) {
         $scope.item = {
-            pricelist_filter_b_id: params.filter_b_id
+            pricelist_filter_b_id: params.filter_b_id,
+            date_from: 'now()',
+            date_to: '3000-01-01'
         };
-    }else {
-        $scope.item = {};
+    } else {
+        $scope.item = {
+            date_from: 'now()',
+            date_to: '3000-01-01'
+        };
     }
 
     $scope.save = function()
