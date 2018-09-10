@@ -296,7 +296,7 @@ def generateTest2(originateParams, terminateParams, test1):
 def generateTest3(originateParams, terminateParams, test2, db):
     autotest = AutoTest()
     autotest.name = "From_" + originateParams["city_name"] + '_Leg3_652'
-    autotest.trunk = getAuthRegexp(test2, '(.*ROUTE CASE\\|.*)(ECSS_[^,]*)(,.*)', 2)
+    autotest.trunk = getAuthRegexp(test2, '(.*ROUTE CASE\\|.*)(ECSS_[^,]*)(,?.*)', 2)
     if autotest.trunk == None:
         printToLog( 'Leg3, A:'+originateParams["federald"] +',B:'+terminateParams["federald"] + ' failed, bad auth\n' )
         return None
@@ -338,7 +338,7 @@ def generateMoscowTest1(originateParams, terminateParams, conf):
 def generateMoscowTest4(originateParams, terminateParams, test1):
     autotest = AutoTest()
     autotest.name = "From_" + terminateParams["city_name"] + '_Leg4_652'
-    autotest.trunk = getAuthRegexp(test1, '(.*ROUTE CASE\\|.*)(ECSS_[^,]*)(,.*)', 2)
+    autotest.trunk = getAuthRegexp(test1, '(.*ROUTE CASE\\|.*)(ECSS_[^,]*)(,?.*)', 2)
     autotest.aNum = originateParams["number"]
     autotest.bNum = terminateParams["number"]
     autotest.result = "^RESULT\|ROUTE CASE\|mcn_msk_ast"
