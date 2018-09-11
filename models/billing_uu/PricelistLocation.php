@@ -50,7 +50,9 @@ class PricelistLocation extends \yii\db\ActiveRecord
     public function getFilterA()
     {
         return $this->hasMany(PricelistFilterA::className(), ['pricelist_location_id' => 'id'])
-            ->select(['billing_uu.pricelist_filter_a.*', 'c.nnp_country_name', 'd.nnp_destination_name', 'o.nnp_operator_name', 'r.nnp_region_name', 'cty.nnp_city_name', 't.nnp_ndc_type_name'])
+            ->select(['billing_uu.pricelist_filter_a.*', 'date_trunc(\'second\', billing_uu.pricelist_filter_a.time_start) as time_start',
+                'date_trunc(\'second\', billing_uu.pricelist_filter_a.time_end) as time_end',
+                'c.nnp_country_name', 'd.nnp_destination_name', 'o.nnp_operator_name', 'r.nnp_region_name', 'cty.nnp_city_name', 't.nnp_ndc_type_name'])
             ->leftJoin('(select b.id, string_agg(name_rus, \', \') as nnp_country_name from nnp.country c join billing_uu.pricelist_filter_a b on c.code = any(b.nnp_country) group by b.id) as c', 'c.id = billing_uu.pricelist_filter_a.id')
             ->leftJoin('(select b.id, string_agg(name, \', \') as nnp_destination_name from nnp.destination d join billing_uu.pricelist_filter_a b on d.id = any(b.nnp_destination) group by b.id) as d', 'd.id = billing_uu.pricelist_filter_a.id')
             ->leftJoin('(select b.id, string_agg(name, \', \') as nnp_operator_name from nnp.operator o join billing_uu.pricelist_filter_a b on o.id = any(b.nnp_operator) group by b.id) as o', 'o.id = billing_uu.pricelist_filter_a.id')

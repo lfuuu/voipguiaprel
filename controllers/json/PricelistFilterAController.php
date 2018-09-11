@@ -19,6 +19,10 @@ class PricelistFilterAController extends JsonController
         
         return
             PricelistFilterA::find()
+                ->select(
+                    ['*', 'date_trunc(\'second\', time_start) as time_start',
+                    'date_trunc(\'second\', time_end) as time_end']
+                )
                 ->where(['id' => $this->request['id']])
                 ->asArray()
                 ->one();

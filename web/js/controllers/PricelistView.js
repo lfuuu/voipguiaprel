@@ -83,6 +83,8 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                     nnp_region: item.nnp_region_name,
                     nnp_city: item.nnp_city_name,
                     nnp_ndc_type: item.nnp_ndc_type_name,
+                    time_start: item.time_start,
+                    time_end: item.time_end,
                     has_children: data.location[locationKey].filterA[filterAKey].filterB.length > 0
                 });
 
@@ -121,6 +123,8 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                         tarification_interval_seconds: item.tarification_interval_seconds,
                         tarification_min_paid_seconds: item.tarification_min_paid_seconds,
                         tarification_type: item.tarification_type,
+                        time_start: item.time_start,
+                        time_end: item.time_end,
                         has_children: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPrice.length > 0
                     });
 

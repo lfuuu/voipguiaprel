@@ -19,6 +19,8 @@ use app\queries\billing_uu\PricelistFilterBQuery;
  * @property int $tarification_interval_seconds
  * @property int $tarification_type
  * @property int $tarification_min_paid_seconds
+ * @property string $time_start
+ * @property string $time_end
  */
 class PricelistFilterB extends \yii\db\ActiveRecord
 {
@@ -34,7 +36,7 @@ class PricelistFilterB extends \yii\db\ActiveRecord
     {
         return [
             [['nnp_destination', 'nnp_country', 'nnp_operator', 'nnp_region', 'nnp_city', 'nnp_ndc_type',
-                'interconnect_price', 'ported_num_price'], 'string'],
+                'interconnect_price', 'ported_num_price', 'time_start', 'time_end'], 'string'],
             [['pricelist_filter_a_id', 'tarification_free_seconds', 'tarification_interval_seconds',
                 'tarification_type', 'tarification_min_paid_seconds'], 'integer'],
             [['mode_selected'], 'boolean']

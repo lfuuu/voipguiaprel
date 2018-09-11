@@ -3,13 +3,13 @@
         <table class="table table-condensed">
             <tbody>
             <tr ng-repeat="item in list">
-                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header" colspan="6"></td>
+                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header" colspan="5"></td>
                 <td style="text-align: center; background-color: #BBAAAA" ng-if="item.is_pricelist_header">
                     <b>Прайслист</b>
                 </td>
-                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header" colspan="10"></td>
+                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header" colspan="11"></td>
                 <!--------------------------------------------------->
-                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="3"></td>
+                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="2"></td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Валюта</td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Дата начала</td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Дата окончания</td>
@@ -18,9 +18,9 @@
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Глобальный</td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Активный</td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Версия</td>
-                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="6"></td>
+                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="7"></td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_pricelist" colspan="3"></td>
+                <td ng-if="item.is_pricelist" colspan="2"></td>
                 <td ng-if="item.is_pricelist">{{item.currency_id}}</td>
                 <td ng-if="item.is_pricelist">{{item.date_start}}</td>
                 <td ng-if="item.is_pricelist">{{item.date_end}}</td>
@@ -29,7 +29,7 @@
                 <td ng-if="item.is_pricelist">{{item.is_global}}</td>
                 <td ng-if="item.is_pricelist">{{item.is_active}}</td>
                 <td ng-if="item.is_pricelist">{{item.version}}</td>
-                <td ng-if="item.is_pricelist" colspan="3"></td>
+                <td ng-if="item.is_pricelist" colspan="4"></td>
                 <td ng-if="item.is_pricelist">
                     <a class="btn btn-success btn-xs" ng-click="addLocation(item.id)">
                         <span class="glyphicon glyphicon-plus"></span>
@@ -42,23 +42,23 @@
                 </td>
                 <td ng-if="item.is_pricelist"></td>
                 <!---------------------------------------------------->
-                <td style="background-color: #BBAABB" ng-if="item.is_location_header" colspan="6"></td>
+                <td style="background-color: #BBAABB" ng-if="item.is_location_header" colspan="5"></td>
                 <td style="text-align: center; background-color: #BBAABB" ng-if="item.is_location_header">
                     <b>Местоположение</b>
                 </td>
-                <td style="background-color: #BBAABB" ng-if="item.is_location_header" colspan="10"></td>
+                <td style="background-color: #BBAABB" ng-if="item.is_location_header" colspan="11"></td>
                 <!---------------------------------------------------->
-                <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns" colspan="5"></td>
+                <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns" colspan="4"></td>
                 <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">Местоположение</td>
                 <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">MCC</td>
                 <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">MNC</td>
-                <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns" colspan="9"></td>
+                <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns" colspan="10"></td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_location" colspan="5"></td>
+                <td ng-if="item.is_location" colspan="4"></td>
                 <td ng-if="item.is_location">{{item.location_id}}</td>
                 <td ng-if="item.is_location" style="text-align: left;">{{item.mcc}}</td>
                 <td ng-if="item.is_location" style="text-align: left;">{{item.mnc}}</td>
-                <td ng-if="item.is_location" colspan="6"></td>
+                <td ng-if="item.is_location" colspan="7"></td>
                 <td ng-if="item.is_location">
                     <a class="btn btn-success btn-xs" ng-click="addFilterA(item.id)">
                         <span class="glyphicon glyphicon-plus"></span>
@@ -75,13 +75,15 @@
                     </a>
                 </td>
                 <!---------------------------------------------------->
-                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header" colspan="6"></td>
+                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header" colspan="5"></td>
                 <td style="text-align: center; background-color: #AAAABB" ng-if="item.is_filter_a_header">
                     <b>Фильтр А</b>
                 </td>
-                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header" colspan="10"></td>
+                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header" colspan="11"></td>
                 <!---------------------------------------------------->
-                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns" colspan="3"></td>
+                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns" colspan="2"></td>
+                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Время с</td>
+                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Время по</td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Режим</td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Направление</td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Страна</td>
@@ -89,9 +91,11 @@
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Регион</td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Город</td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Тип NDC</td>
-                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns" colspan="7"></td>
+                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns" colspan="6"></td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_filter_a" colspan="3"></td>
+                <td ng-if="item.is_filter_a" colspan="2"></td>
+                <td ng-if="item.is_filter_a">{{item.time_start}}</td>
+                <td ng-if="item.is_filter_a">{{item.time_end}}</td>
                 <td ng-if="item.is_filter_a">{{item.mode_selected}}</td>
                 <td ng-if="item.is_filter_a">{{item.nnp_destination}}</td>
                 <td ng-if="item.is_filter_a">{{item.nnp_country}}</td>
@@ -99,7 +103,7 @@
                 <td ng-if="item.is_filter_a">{{item.nnp_region}}</td>
                 <td ng-if="item.is_filter_a">{{item.nnp_city}}</td>
                 <td ng-if="item.is_filter_a">{{item.nnp_ndc_type}}</td>
-                <td ng-if="item.is_filter_a" colspan="4"></td>
+                <td ng-if="item.is_filter_a" colspan="3"></td>
                 <td ng-if="item.is_filter_a">
                     <a class="btn btn-success btn-xs" ng-click="addFilterB(item.id)">
                         <span class="glyphicon glyphicon-plus"></span>
@@ -116,14 +120,16 @@
                     </a>
                 </td>
                 <!---------------------------------------------------->
-                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header" colspan="6"></td>
+                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header" colspan="5"></td>
                 <td style="text-align: center; background-color: #AABBBB" ng-if="item.is_filter_b_header">
                     <b>Фильтр В</b>
                 </td>
-                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header" colspan="10"></td>
+                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header" colspan="11"></td>
                 <!---------------------------------------------------->
-                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns" colspan="2"></td>
-                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Цена портированного номера</td>
+                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Цена порт.</td>
+                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Цена инт.</td>
+                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Время с</td>
+                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Время по</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Режим</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Направление</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Страна</td>
@@ -131,11 +137,12 @@
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Регион</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Город</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Тип NDC</td>
-                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Цена интерконнекта</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns" colspan="6"></td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_filter_b" colspan="2"></td>
                 <td ng-if="item.is_filter_b">{{item.ported_num_price}}</td>
+                <td ng-if="item.is_filter_b">{{item.interconnect_price}}</td>
+                <td ng-if="item.is_filter_b">{{item.time_start}}</td>
+                <td ng-if="item.is_filter_b">{{item.time_end}}</td>
                 <td ng-if="item.is_filter_b">{{item.mode_selected}}</td>
                 <td ng-if="item.is_filter_b">{{item.nnp_destination}}</td>
                 <td ng-if="item.is_filter_b">{{item.nnp_country}}</td>
@@ -143,7 +150,6 @@
                 <td ng-if="item.is_filter_b">{{item.nnp_region}}</td>
                 <td ng-if="item.is_filter_b">{{item.nnp_city}}</td>
                 <td ng-if="item.is_filter_b">{{item.nnp_ndc_type}}</td>
-                <td ng-if="item.is_filter_b">{{item.interconnect_price}}</td>
                 <td ng-if="item.is_filter_b" colspan="3"></td>
                 <td ng-if="item.is_filter_b">
                     <a class="btn btn-success btn-xs" ng-click="addPrefixPrice(item.id)">
@@ -161,21 +167,21 @@
                     </a>
                 </td>
                 <!---------------------------------------------------->
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header" colspan="6"></td>
+                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header" colspan="5"></td>
                 <td style="text-align: center; background-color: #AABBAA" ng-if="item.is_prefix_price_header">
                     <b>Префикс</b>
                 </td>
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header" colspan="10"></td>
+                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header" colspan="11"></td>
                 <!---------------------------------------------------->
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="5"></td>
+                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="4"></td>
                 <td style="text-align: right; background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Цена номера B</td>
                 <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Префикс номера</td>
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="10"></td>
+                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="11"></td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_prefix_price" colspan="5"></td>
+                <td ng-if="item.is_prefix_price" colspan="4"></td>
                 <td style="text-align: right;" ng-if="item.is_prefix_price">{{item.b_number_price}}</td>
                 <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
-                <td ng-if="item.is_prefix_price" colspan="7"></td>
+                <td ng-if="item.is_prefix_price" colspan="8"></td>
                 <td ng-if="item.is_prefix_price"></td>
                 <td ng-if="item.is_prefix_price">
                     <a class="btn btn-info btn-xs" ng-click="editPrefixPrice(item.prefix_price_id)">

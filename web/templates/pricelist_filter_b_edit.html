@@ -64,6 +64,20 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Время с</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="23:59:59" ng-model="item.time_start">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Время по</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="23:59:59" ng-model="item.time_end">
+                </div>
+            </div>
+
             <ul class="nav nav-tabs">
                 <li class="{{(nnpMode == NNP_MODE_DIRECTION) ? 'active' : '' }}">
                     <a href="#npp-destination" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_DIRECTION)">ННП-Направление</a>
