@@ -23,8 +23,8 @@ var PricelistLocationEditCtrl = function($scope, List, PricelistLocation, params
     {
         var data = angular.copy($scope.item);
 
-        data.mcc = '{' + data.mcc + '}';
-        data.mnc = '{' + data.mnc + '}';
+        data.mcc = (typeof data.mcc == 'undefined') ? '{}' : '{' + data.mcc + '}';
+        data.mnc = (typeof data.mnc == 'undefined') ? '{}' : '{' + data.mnc + '}';
 
         PricelistLocation.save(data).then(function(response) {
             $modalInstance.close();
