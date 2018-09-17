@@ -2,6 +2,7 @@
 
 namespace app\models\billing_uu;
 use app\queries\billing_uu\PricelistFilterBQuery;
+use yii\db\Expression;
 
 /**
  * @property int $id
@@ -64,7 +65,9 @@ class PricelistFilterB extends \yii\db\ActiveRecord
      */
     public function getPrefixPrice()
     {
-        return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])->orderBy('prefix_b');
+        return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])
+            ->select(['*', 'b_number_price' => new Expression('round(b_number_price, 4)')])
+            ->orderBy('prefix_b');
     }
 
 }

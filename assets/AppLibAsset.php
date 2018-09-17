@@ -18,6 +18,7 @@ class AppLibAsset extends AssetBundle
         'lib/jquery-ui/js/jquery-ui-1.10.4.custom.min.js',
         'lib/bootstrap/js/bootstrap.min.js',
         'lib/angularjs/angular.min.js',
+//        'lib/angularjs/i18n/angular-locale_ru-ru.js',
         'lib/angularjs/angular-cookies.min.js',
         'lib/ui-bootstrap-tpls-0.10.0.min.js',
         'lib/select2/select2.js',
