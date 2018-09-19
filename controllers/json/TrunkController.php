@@ -167,13 +167,19 @@ class TrunkController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
+        $regionId = $this->request['region_id'];
+        
         $item =
             Trunk::find()
                 ->with('priorities')
                 ->with('trunkRules')
                 ->with('numberPreprocessing')
                 ->with('numbersRules')
-                ->with('trunkSorm')
+                ->with([
+                    'trunkSorm' => function($query) use ($regionId) {
+                        $query->where(['region_id' => $regionId]);
+                    },
+                ])
                 ->with('loadLimit')
                 ->where(['id' => $this->request['id']])
                 ->asArray()
@@ -282,10 +288,10 @@ class TrunkController extends JsonController
         }
     }
     
-    private function toggleSorm($trunk, $data)
+    private function toggleSorm($trunk, $data, $regionId)
     {
         if (!$data['enabled']) {
-            TrunkSorm::deleteAll(['code_trunk' => $trunk->id]);
+            TrunkSorm::deleteAll(['code_trunk' => $trunk->id, 'region_id' => $regionId]);
         } else {
             $idsToStay = [];
     
@@ -295,16 +301,16 @@ class TrunkController extends JsonController
                 }
             }
     
-            TrunkSorm::deleteAll(['AND', 'code_trunk = :code_trunk', ['NOT IN', 'id', $idsToStay]], [':code_trunk' => $trunk->id]);
+            TrunkSorm::deleteAll(['AND', 'code_trunk = :code_trunk AND region_id = :region_id', ['NOT IN', 'id', $idsToStay]], [':code_trunk' => $trunk->id, ':region_id' => $regionId]);
     
             foreach ($data['items'] as $item) {
                 $this->processSormData($trunk, $item['old_name'], $data['name'], $item['is_show'], $data['groups'],
-                    $data['sorm_operator_id'], isset($item['id']) ? $item['id'] : null);
+                    $data['sorm_operator_id'], $regionId, isset($item['id']) ? $item['id'] : null);
             }
         }
     }
     
-    private function processSormData($trunk, $oldName, $name, $isShow, $groups, $sormOperatorId, $id = null)
+    private function processSormData($trunk, $oldName, $name, $isShow, $groups, $sormOperatorId, $regionId, $id = null)
     {
         if (!is_null($id)) {
             $trunkSorm = TrunkSorm::find()
@@ -320,27 +326,30 @@ class TrunkController extends JsonController
             $trunkSorm->is_show = isset($isShow) ? $isShow : false;
             $trunkSorm->groups = $groups ? '{' . implode(',', $groups) . '}' : '{}';
             $trunkSorm->old_name = $oldName;
-            $trunkSorm->sorm_operator_id = $sormOperatorId;
     
             $trunkSorm->save();
         } else {
             //create
-            $operator = Operator::find()
-                ->with('commutator')
-                ->where(['server_id' => $trunk->server_id])
-                ->one();
+            if ($sormOperatorId == 1) {
+                $operator = Operator::find()
+                    ->with('commutator')
+                    ->where(['server_id' => $trunk->server_id])
+                    ->one();
+            } else {
+                $operator = null;
+            }
     
             $dataToCreate = [
-                'operator_id' => $operator->id,
+                'operator_id' => $operator ? $operator->id : '',
                 'code_trunk' => $trunk->id,
-                'ats_mnemo_code' => $operator->commutator->comutator_str_id,
+                'ats_mnemo_code' => $operator ? $operator->commutator->comutator_str_id : 'reg' . $regionId,
                 'type' => 2,
                 'start_date' => date('Y-m-d H:i:s'),
                 'name' => $name,
                 'old_name' => $oldName,
                 'is_show' => isset($isShow) ? $isShow : false,
                 'groups' => $groups ? '{' . implode(',', $groups) . '}' : '{}',
-                'region_id' => $trunk->server_id,
+                'region_id' => $regionId,
                 'sorm_operator_id' => $sormOperatorId
             ];
     
@@ -405,7 +414,7 @@ class TrunkController extends JsonController
             }
     
             if (isset($this->request['sorm'])) {
-                $this->toggleSorm($trunk, $this->request['sorm']);
+                $this->toggleSorm($trunk, $this->request['sorm'], $this->request['region_id']);
             }
 
             if (!$trunk->save()) {
