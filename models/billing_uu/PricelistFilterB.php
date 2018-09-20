@@ -66,9 +66,13 @@ class PricelistFilterB extends \yii\db\ActiveRecord
     public function getPrefixPrice()
     {
         return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])
-            ->select(['*', 'b_number_price' => new Expression('round(b_number_price, 4)')])
-            ->orderBy('prefix_b')
-            ->limit(PricelistPrefixPrice::PAGE_LIMIT);
+            ->select(['*', 'b_number_price' => new Expression('round(billing_uu.pricelist_prefix_price.b_number_price, 4)')])
+            ->innerJoin('(select *, row_number() over (partition by pricelist_filter_b_id order by prefix_b) as rownum 
+                from billing_uu.pricelist_prefix_price p
+                ) p1', 'p1.id = billing_uu.pricelist_prefix_price.id')
+            ->where('p1.rownum <= :limit')
+            ->orderBy('billing_uu.pricelist_prefix_price.prefix_b')
+            ->addParams([':limit' => PricelistPrefixPrice::PAGE_LIMIT]);
     }
     
     public function getPrefixPriceCount()

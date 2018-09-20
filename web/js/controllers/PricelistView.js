@@ -166,13 +166,15 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
 
                     }
 
-                    $scope.list.push({
-                        is_prefix_price_footer: true,
-                        totalCount: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count,
-                        currentPage: 1,
-                        offset: 0,
-                        filter_b_id: filterBItem.id
-                    });
+                    if (data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count > $scope.limit) {
+                        $scope.list.push({
+                            is_prefix_price_footer: true,
+                            totalCount: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count,
+                            currentPage: 1,
+                            offset: 0,
+                            filter_b_id: filterBItem.id
+                        });
+                    }
                 }
             }
         }

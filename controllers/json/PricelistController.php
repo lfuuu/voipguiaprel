@@ -99,6 +99,10 @@ class PricelistController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+        
+        if (isset($this->request['old_pricelist_id'])) {
+            $item->importFromOldVersion($this->request['old_pricelist_id']);
+        }
     }
     
     /**

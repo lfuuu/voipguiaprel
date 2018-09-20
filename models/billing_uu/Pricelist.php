@@ -3,6 +3,7 @@
 namespace app\models\billing_uu;
 use app\queries\billing_uu\PricelistQuery;
 use yii\db\Expression;
+use yii\db\Query;
 
 /**
  * @property int $id
@@ -49,6 +50,13 @@ class Pricelist extends \yii\db\ActiveRecord
         $item = new self();
         $item->load($data, '');
         return $item;
+    }
+    
+    public function importFromOldVersion($oldPricelistId)
+    {
+        return (new Query())->select(new Expression('billing_uu.transfer_pricelist(:old_pricelist_id,:new_pricelist_id)'))
+            ->addParams([':old_pricelist_id' => $oldPricelistId, ':new_pricelist_id' => $this->id])
+            ->one();
     }
     
     /**
