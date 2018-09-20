@@ -67,7 +67,15 @@ class PricelistFilterB extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])
             ->select(['*', 'b_number_price' => new Expression('round(b_number_price, 4)')])
-            ->orderBy('prefix_b');
+            ->orderBy('prefix_b')
+            ->limit(PricelistPrefixPrice::PAGE_LIMIT);
+    }
+    
+    public function getPrefixPriceCount()
+    {
+        return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])
+            ->select(['pricelist_filter_b_id', 'total_count' => new Expression('count(*)')])
+            ->groupBy('pricelist_filter_b_id');
     }
 
 }

@@ -2,6 +2,9 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
 
     $scope.locationIds = List.location();
 
+    $scope.limit = 10;
+    $scope.prefixes = [];
+
     $scope.drawTable = function (data) {
         $scope.list = [];
 
@@ -107,7 +110,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
 
                     filterAHeaderSet = false;
 
-                    $scope.list.push({
+                    var filterBItem = {
                         is_filter_b: true,
                         id: item.id,
                         mode_selected: item.mode_selected ? 'Выбранные' : 'Кроме выбранных',
@@ -126,7 +129,9 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                         time_start: item.time_start,
                         time_end: item.time_end,
                         has_children: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPrice.length > 0
-                    });
+                    };
+
+                    $scope.list.push(filterBItem);
 
                     var prefixPriceHeaderSet = false;
 
@@ -149,15 +154,25 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
 
                         $scope.list.push({
                             is_prefix_price: true,
+                            filter_b_id: filterBItem.id,
                             prefix_price_id: item.id,
                             b_number_price: item.b_number_price,
                             change_flag: item.change_flag,
                             prefix_b: item.prefix_b,
                             date_from: item.date_from,
-                            date_to: item.date_to
+                            date_to: item.date_to,
+                            has_buttons: true
                         });
 
                     }
+
+                    $scope.list.push({
+                        is_prefix_price_footer: true,
+                        totalCount: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count,
+                        currentPage: 1,
+                        offset: 0,
+                        filter_b_id: filterBItem.id
+                    });
                 }
             }
         }
@@ -168,6 +183,59 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
             $scope.item = data;
             $scope.drawTable(data);
         });
+    };
+
+    $scope.getPrefixPriceList = function (filter_b_id, page) {
+        PricelistPrefixPrice.read({pricelist_filter_b_id: filter_b_id, page_number: page}).then(function (data) {
+            $scope.prefixes[filter_b_id] = data;
+
+            var index = '';
+
+            for (var i in $scope.list) {
+                if ($scope.list[i].is_prefix_price == true && $scope.list[i].filter_b_id == filter_b_id) {
+                    if (index == '') {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+
+            $scope.list.splice(index, $scope.limit);
+
+            for (var i = $scope.limit - 1; i >= 0; i--) {
+                var item = $scope.prefixes[filter_b_id][i];
+
+                if (typeof item !== 'undefined') {
+                    $scope.list.splice(index, 0, {
+                        is_prefix_price: true,
+                        filter_b_id: filter_b_id,
+                        prefix_price_id: item.id,
+                        b_number_price: item.b_number_price,
+                        change_flag: item.change_flag,
+                        prefix_b: item.prefix_b,
+                        date_from: item.date_from,
+                        date_to: item.date_to,
+                        has_buttons: true
+                    });
+                } else {
+                    $scope.list.splice(index, 0, {
+                        is_prefix_price: true,
+                        filter_b_id: filter_b_id,
+                        prefix_price_id: '',
+                        b_number_price: '',
+                        change_flag: '',
+                        prefix_b: '',
+                        date_from: '',
+                        date_to: '',
+                        has_buttons: false
+                    });
+                }
+            }
+        });
+    };
+
+    $scope.setPagingData = function (page, filterBId) {
+        $scope.getPrefixPriceList(filterBId, page);
     };
 
     if (params.id) {
@@ -264,5 +332,9 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
         PricelistPrefixPrice.delete(id).then(function(response) {
             $scope.initData($scope.item.id);
         });
+    };
+
+    $scope.displayEmptyAlert = function () {
+        alert('Это пустая строка.');
     };
 };

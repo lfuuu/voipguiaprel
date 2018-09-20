@@ -168,5 +168,5 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
     $scope.setPagingData = function (page) {
         $scope.offset = ((page - 1) * $scope.limit);
         $scope.refreshList();
-    }
+    };
 };

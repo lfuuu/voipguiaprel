@@ -229,15 +229,29 @@
                 <td ng-if="item.is_prefix_price" colspan="8"></td>
                 <td ng-if="item.is_prefix_price"></td>
                 <td ng-if="item.is_prefix_price">
-                    <a class="btn btn-info btn-xs" ng-click="editPrefixPrice(item.prefix_price_id)">
+                    <a ng-if="item.has_buttons" class="btn btn-info btn-xs" ng-click="editPrefixPrice(item.prefix_price_id)">
                         <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                    <a ng-if="!item.has_buttons" class="btn btn-info btn-xs" ng-click="displayEmptyAlert()">
+                        <span class="glyphicon glyphicon-question-sign"></span>
                     </a>
                 </td>
                 <td ng-if="item.is_prefix_price">
-                    <a class="btn btn-danger btn-xs" ng-click="deletePrefixPrice(item.prefix_price_id)">
+                    <a ng-if="item.has_buttons" class="btn btn-danger btn-xs" ng-click="deletePrefixPrice(item.prefix_price_id)">
                         <span class="glyphicon glyphicon-minus"></span>
                     </a>
                 </td>
+                <!---------------------------------------------------->
+                <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price_footer"></td>
+                <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price_footer"></td>
+                <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price_footer"></td>
+                <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price_footer"></td>
+                <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price_footer"></td>
+                <td ng-if="item.is_prefix_price_footer" colspan="3"></td>
+                <td ng-if="item.is_prefix_price_footer" colspan="7">
+                    <pagination style="display: inline;" total-items="item.totalCount" items-per-page="limit" page="item.currentPage" on-select-page="setPagingData(page, item.filter_b_id)"></pagination>
+                </td>
+                <td ng-if="item.is_prefix_price_footer" colspan="6"></td>
             </tr>
             </tbody>
         </table>

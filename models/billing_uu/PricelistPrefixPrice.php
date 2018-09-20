@@ -12,6 +12,8 @@ use app\queries\billing_uu\PricelistPrefixPriceQuery;
  */
 class PricelistPrefixPrice extends \yii\db\ActiveRecord
 {
+    const PAGE_LIMIT = 10;
+    
     public static function tableName()
     {
         return 'billing_uu.pricelist_prefix_price';

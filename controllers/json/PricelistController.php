@@ -47,6 +47,7 @@ class PricelistController extends JsonController
         return
             Pricelist::find()
                 ->with('location.filterA.filterB.prefixPrice')
+                ->with('location.filterA.filterB.prefixPriceCount')
                 ->where(['id' => $this->request['id']])
                 ->asArray()
                 ->one();

@@ -1160,6 +1160,9 @@ app.factory('PricelistPrefixPrice', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
         get: function(data) {
             return ApiLoader.post(url + 'get', data);
         },
