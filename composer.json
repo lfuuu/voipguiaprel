@@ -3,9 +3,10 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=5.5.0",
-    "yiisoft/yii2": "2.0.4",
+    "yiisoft/yii2": "2.0.*",
     "graylog2/gelf-php": "*",
-    "kartik-v/yii2-widget-select2": "@dev"
+    "kartik-v/yii2-widget-select2": "@dev",
+    "phpoffice/phpspreadsheet": "dev-master"
   },
   "config": {
     "process-timeout": 1800

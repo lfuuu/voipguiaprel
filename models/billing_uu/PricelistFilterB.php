@@ -75,6 +75,16 @@ class PricelistFilterB extends \yii\db\ActiveRecord
             ->addParams([':limit' => PricelistPrefixPrice::PAGE_LIMIT]);
     }
     
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPrefixPriceNoLimit()
+    {
+        return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])
+            ->select(['*', 'b_number_price' => new Expression('round(billing_uu.pricelist_prefix_price.b_number_price, 4)')])
+            ->orderBy('billing_uu.pricelist_prefix_price.prefix_b');
+    }
+    
     public function getPrefixPriceCount()
     {
         return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])

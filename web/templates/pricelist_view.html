@@ -32,7 +32,12 @@
                 <td ng-if="item.is_pricelist">{{item.is_global}}</td>
                 <td ng-if="item.is_pricelist">{{item.is_active}}</td>
                 <td ng-if="item.is_pricelist">{{item.version}}</td>
-                <td ng-if="item.is_pricelist" colspan="4"></td>
+                <td ng-if="item.is_pricelist" colspan="3"></td>
+                <td ng-if="item.is_pricelist">
+                    <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-success btn-xs">
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                    </a>
+                </td>
                 <td ng-if="item.is_pricelist">
                     <a class="btn btn-success btn-xs" ng-click="addLocation(item.id)">
                         <span class="glyphicon glyphicon-plus"></span>
