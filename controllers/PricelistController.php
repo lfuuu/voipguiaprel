@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\classes\BaseController;
 use app\models\billing_uu\Pricelist;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use \PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
@@ -35,8 +36,8 @@ class PricelistController extends BaseController
     {
         $currentRowNumber = 1;
         $columnNameNumber = 1;
-        $minColumnNumber = 2;
-        $maxColumnNumber = 4;
+        $minColumnNumber = 1;
+        $maxColumnNumber = 3;
         
         $spreadsheet = new Spreadsheet();
     
@@ -45,11 +46,13 @@ class PricelistController extends BaseController
         $sheet->getColumnDimension('B')->setAutoSize(true);
         $sheet->getColumnDimension('C')->setAutoSize(true);
         $sheet->getColumnDimension('D')->setAutoSize(true);
-        $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Прайслист');
+//        $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Прайслист');
         $pricelistHeader = $pricelist['name'] . ', валюта ' . $pricelist['currency_id'];
         $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber);
         $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
-            ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
+            ->getFont()->setItalic(true);
         $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $pricelistHeader);
         $currentRowNumber++;
     
@@ -58,11 +61,15 @@ class PricelistController extends BaseController
                 continue;
             }
     
-            $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Местоположение');
-            $locationHeader = $this->_locations[$location['location_id']];
+//            $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Местоположение');
+            $locationHeader = 'Местоположение: ' . $this->_locations[$location['location_id']];
             $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber);
             $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
-                ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
+                ->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
+            $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
+                ->getFont()->setItalic(true);
             $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $locationHeader);
             $currentRowNumber++;
             
@@ -78,15 +85,15 @@ class PricelistController extends BaseController
                     (isset($filterA['nnp_city_name']) ? (' ' . $filterA['nnp_country_name']) : ''));
                 
                 if (empty($filterAHeader)) {
-                    $filterAHeader = 'Пустой фильтр А';
+                    $filterAHeader = '';
                 }
     
-                $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Фильтр А');
-                $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber);
-                $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
-                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $filterAHeader);
-                $currentRowNumber++;
+//                $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Фильтр А');
+//                $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber);
+//                $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
+//                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+//                $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $filterAHeader);
+//                $currentRowNumber++;
                 foreach ($filterA['filterB'] as $filterB) {
                     if (empty($filterB['prefixPriceNoLimit'])) {
                         continue;
@@ -102,14 +109,20 @@ class PricelistController extends BaseController
                         $filterBText = 'Пустой фильтр B';
                     }
                     
+                    if (!empty($filterAHeader)) {
+                        $filterBText .= "\n" . '(' . $filterAHeader . ')';
+                    }
+                    
                     $prefixCount = count($filterB['prefixPriceNoLimit']);
-                    $sheet->mergeCellsByColumnAndRow($columnNameNumber, $currentRowNumber, $columnNameNumber, $currentRowNumber + $prefixCount - 1);
-                    $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Фильтр B');
-                    $sheet->getStyleByColumnAndRow($columnNameNumber, $currentRowNumber, 1, $currentRowNumber + $prefixCount - 1)
-                        ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+//                    $sheet->mergeCellsByColumnAndRow($columnNameNumber, $currentRowNumber, $columnNameNumber, $currentRowNumber + $prefixCount - 1);
+//                    $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Фильтр B');
+//                    $sheet->getStyleByColumnAndRow($columnNameNumber, $currentRowNumber, 1, $currentRowNumber + $prefixCount - 1)
+//                        ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
                     $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber + $prefixCount - 1);
                     $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber + $prefixCount - 1)
                         ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                    $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber + $prefixCount - 1)
+                        ->getAlignment()->setWrapText(true);
                     $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $filterBText);
                     foreach ($filterB['prefixPriceNoLimit'] as $prefixPrice) {
                         $sheet->getStyleByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $minColumnNumber + 1, $currentRowNumber)
