@@ -33,7 +33,7 @@ class RouteReplaceController extends JsonController
     
     public function actionSaveMultiple()
     {
-        if (!\Yii::$app->user->can('route_replace_edit') && !\Yii::$app->user->can('route_replace_create')) {
+        if (!\Yii::$app->user->can('route_replace_edit')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -47,17 +47,8 @@ class RouteReplaceController extends JsonController
             $server = $this->getServerOr404($serverId);
     
             if (isset($requestItem['id'])) {
-                if (!\Yii::$app->user->can('route_replace_edit')) {
-                    throw new ForbiddenHttpException('Access denied');
-                }
-        
                 $item = $this->getRouteReplaceOr404($requestItem['id']);
-                
             } else {
-                if (!\Yii::$app->user->can('route_replace_create')) {
-                    throw new ForbiddenHttpException('Access denied');
-                }
-        
                 $item = RouteReplace::create($server);
             }
     
