@@ -238,11 +238,23 @@
     </div>
 
     <div class="col-sm-4">
-
+        <label class="col-sm-8 control-label">МГ/МН2-оригинация</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.mgmn2_orig = !item.mgmn2_orig">
+                <button type="button" class="btn btn-sm {{item.mgmn2_orig ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.mgmn2_orig ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
     </div>
 
     <div class="col-sm-4">
-
+        <label class="col-sm-8 control-label">МГ/МН2-терминация</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.mgmn2_term = !item.mgmn2_term">
+                <button type="button" class="btn btn-sm {{item.mgmn2_term ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.mgmn2_term ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
     </div>
 </div>
 

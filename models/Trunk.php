@@ -37,6 +37,8 @@ use \app\models\sorm\Trunk as TrunkSorm;
  * @property int $id_pbx
  * @property string $back_trunk
  * @property int $location_id
+ * @property bool $mgmn2_orig
+ * @property bool $mgmn2_term
  *
  * @property \yii\db\ActiveQuery rulesSourceOrig
  * @property \yii\db\ActiveQuery rulesDestinationOrig
@@ -70,7 +72,7 @@ class Trunk extends \yii\db\ActiveRecord
                 'tech_trunk', 'pstn_trunk', 'mgmn_trunk','mgmn_orig_trunk','le8accept',
                 'orig_afilter_default_allowed', 'orig_bfilter_default_allowed',
                 'term_afilter_default_allowed', 'term_bfilter_default_allowed',
-                'roaming_orig', 'roaming_term',
+                'roaming_orig', 'roaming_term', 'mgmn2_orig', 'mgmn2_term'
             ], 'boolean'],
             [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id'], 'integer'],
             [['back_trunk'], 'string', 'max' => 50],

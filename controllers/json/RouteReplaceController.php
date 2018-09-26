@@ -43,18 +43,6 @@ class RouteReplaceController extends JsonController
         
         foreach ($this->request['items'] as $requestItem) {
             $requestItem['order'] = $order;
-            
-            if ($requestItem['is_orig_group']) {
-                unset($requestItem['orig_trunk_id']);
-            } else {
-                unset($requestItem['orig_trunk_group_id']);
-            }
-    
-            if ($requestItem['is_term_group']) {
-                unset($requestItem['term_trunk_id']);
-            } else {
-                unset($requestItem['term_trunk_group_id']);
-            }
     
             $server = $this->getServerOr404($serverId);
     

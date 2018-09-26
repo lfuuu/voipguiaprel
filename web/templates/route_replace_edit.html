@@ -7,11 +7,9 @@
             <thead>
             <tr>
                 <th width="1%">&nbsp;</th>
-                <th>Группа?</th>
-                <th>Транк оригинации</th>
+                <th>Группа транков оригинации</th>
                 <th>Атрибут оригинации</th>
-                <th>Группа?</th>
-                <th>Транк терминации</th>
+                <th>Группа транков терминации</th>
                 <th>Атрибут терминации</th>
                 <th>Действие</th>
                 <th>Значение</th>
@@ -23,12 +21,8 @@
                 <td style="cursor: ns-resize">
                     <span class="badge">{{$index + 1}}</span>
                 </td>
-                <td width="5%">
-                    <input type="checkbox" ng-model="line.is_orig_group">
-                </td>
                 <td width="15%">
-                    <select-box ng-if="!line.is_orig_group" list="trunk" model="line.orig_trunk_id" default="Любой транк"></select-box>
-                    <select-box ng-if="line.is_orig_group" list="trunkGroup" model="line.orig_trunk_group_id" default="Любая группа"></select-box>
+                    <select-box list="trunkGroup" model="line.orig_trunk_group_id" default="Любая группа"></select-box>
                 </td>
                 <td width="15%">
                     <select ui-select2 ng-model="line.orig_attr" placeholder="Любой" style="width: 100%">
@@ -36,12 +30,8 @@
                         <option ng-repeat="attr in origAttrList" value="{{attr.id}}">{{attr.name}}</option>
                     </select>
                 </td>
-                <td width="5%">
-                    <input type="checkbox" ng-model="line.is_term_group">
-                </td>
                 <td width="15%">
-                    <select-box ng-if="!line.is_term_group" list="trunk" model="line.term_trunk_id" default="Любой транк"></select-box>
-                    <select-box ng-if="line.is_term_group" list="trunkGroup" model="line.term_trunk_group_id" default="Любая группа"></select-box>
+                    <select-box list="trunkGroup" model="line.term_trunk_group_id" default="Любая группа"></select-box>
                 </td>
                 <td width="15%">
                     <select ui-select2 ng-model="line.term_attr" placeholder="Любой" style="width: 100%">
@@ -56,7 +46,7 @@
                     </select>
                 </td>
                 <td width="15%">
-                    <select-box list="trunk" model="line.replace_trunk_id" default="Любой транк"></select-box>
+                    <select-box ng-if="line.action_type != 'accept'" list="trunk" model="line.replace_trunk_id" default="Любой транк"></select-box>
                 </td>
                 <td>
                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="remove($index)"></button>
