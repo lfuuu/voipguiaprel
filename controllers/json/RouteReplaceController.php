@@ -10,26 +10,9 @@ use yii\web\ForbiddenHttpException;
 
 class RouteReplaceController extends JsonController
 {
-    public function actionList()
-    {
-        if (!\Yii::$app->user->can('route_replace_list')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-        
-        $server = $this->getServerOr404($this->request['server_id']);
-
-        return
-            RouteReplace::find()
-                ->select(['id', 'name'])
-                ->where(['server_id' => $server->id])
-                ->orderBy('id')
-                ->asArray()
-                ->all();
-    }
-
     public function actionRead()
     {
-        if (!\Yii::$app->user->can('route_replace_list')) {
+        if (!\Yii::$app->user->can('route_replace_edit')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
