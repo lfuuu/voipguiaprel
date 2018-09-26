@@ -79,6 +79,7 @@ class AppAsset extends AssetBundle
         'js/controllers/PricelistFilterAEdit.js',
         'js/controllers/PricelistFilterBEdit.js',
         'js/controllers/PricelistPrefixPriceEdit.js',
+        'js/controllers/RouteReplaceEdit.js',
     ];
 
     public $templates = [
@@ -139,5 +140,6 @@ class AppAsset extends AssetBundle
         'templates/pricelist_filter_a_edit.html',
         'templates/pricelist_filter_b_edit.html',
         'templates/pricelist_prefix_price_edit.html',
+        'templates/route_replace_edit.html',
     ];
 }

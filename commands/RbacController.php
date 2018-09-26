@@ -105,6 +105,7 @@ class RbacController extends Controller {
         ['name' => 'pricelist_create', 'description' => 'Создание прайслистов второй версии'],
         ['name' => 'pricelist_edit', 'description' => 'Редактирование прайслистов второй версии'],
         ['name' => 'pricelist_delete', 'description' => 'Удаление прайслистов второй версии'],
+        ['name' => 'route_replace_edit', 'description' => 'Редактирование списков подмены пути'],
     ];
     
     private static $_roles = [
@@ -139,7 +140,8 @@ class RbacController extends Controller {
             'hub_list', 'uplink_list', 'uplink_create', 'uplink_edit', 'uplink_delete',
             'imsi_partner_list', 'imsi_partner_create', 'imsi_partner_edit', 'imsi_partner_delete',
             'oca_bw_list', 'oca_bw_create', 'oca_bw_edit', 'oca_bw_delete',
-            'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete'
+            'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete',
+            'route_replace_edit'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete'
@@ -166,7 +168,8 @@ class RbacController extends Controller {
             'trunkhealth_view_list', 'statistics_tree', 'auto_test_management',
             'hub_list', 'uplink_list', 'uplink_create', 'uplink_edit', 'uplink_delete',
             'imsi_partner_list', 'imsi_partner_create', 'imsi_partner_edit', 'imsi_partner_delete',
-            'oca_bw_list', 'oca_bw_create', 'oca_bw_edit', 'oca_bw_delete'
+            'oca_bw_list', 'oca_bw_create', 'oca_bw_edit', 'oca_bw_delete',
+            'route_replace_edit'
         ]],
         ['role' => 'engineer', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view',

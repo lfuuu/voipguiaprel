@@ -304,6 +304,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         ocaBwCreate: function() {
             return openModal(OcaBwEditCtrl, '/templates/oca_bw_edit.html', {id: null});
         },
+        routeReplaceEdit: function() {
+            return openModal(RouteReplaceEditCtrl, '/templates/route_replace_edit.html');
+        },
         pricelistList: function() {
             $cookies.selectedPage = 'pricelistList';
             return openTab(PricelistListCtrl, '/templates/pricelist_list.html', {}, 'billing');

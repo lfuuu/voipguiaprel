@@ -5,6 +5,7 @@ use app\components\View;
 use app\models\Airp;
 use app\models\Attribute;
 use app\models\AttributeGroup;
+use app\models\auth\RouteReplace;
 use app\models\billing_uu\ImsiPartner;
 use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterA;
@@ -387,7 +388,22 @@ class BaseController extends \yii\web\Controller
         }
         return $item;
     }
-
+    
+    /**
+     * @param int $tableId
+     * @return RouteReplace
+     * @throws HttpException
+     */
+    protected function getRouteReplaceOr404($id)
+    {
+        $item = RouteReplace::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Список подмены пути не найден');
+        }
+        return $item;
+    }
+    
+    
     /**
      * @param int $releaseReasonId
      * @return ReleaseReason

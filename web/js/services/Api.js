@@ -861,6 +861,21 @@ app.factory('RouteTable', function ($q, ApiLoader, $rootScope) {
 	};
 });
 
+app.factory('RouteReplace', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/route-replace/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        saveMultiple: function(data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save-multiple', data);
+        },
+    };
+});
+
 app.factory('TestAuth', function ($q, ApiLoader, $rootScope) {
 	var url = '/json/test-auth/';
 	var list = undefined;
@@ -1290,6 +1305,18 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         {'id': '1', 'name': 'Домашний регион'},
         {'id': '2', 'name': 'Гостевой регион'},
         {'id': '3', 'name': 'Международный регион'}
+      ];
+    },
+    origAttribute: function () {
+      return [
+        {'id': '1', 'name': 'МГ/МН-оригинация'},
+        {'id': '2', 'name': 'Loop-оригинация'}
+      ];
+    },
+    termAttribute: function () {
+      return [
+        {'id': '3', 'name': 'МГ/МН-терминация'},
+        {'id': '4', 'name': 'Loop-терминация'}
       ];
     },
     hub: function () {

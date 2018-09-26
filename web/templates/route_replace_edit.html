@@ -1,0 +1,80 @@
+<form class="form-horizontal" name="form">
+    <div class="modal-header">
+        <h3>Подмена пути</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th width="1%">&nbsp;</th>
+                <th>Группа?</th>
+                <th>Транк оригинации</th>
+                <th>Атрибут оригинации</th>
+                <th>Группа?</th>
+                <th>Транк терминации</th>
+                <th>Атрибут терминации</th>
+                <th>Действие</th>
+                <th>Значение</th>
+                <th width="1%">&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody ui-sortable="sortableOptions" ng-model="items">
+            <tr ng-repeat="line in items">
+                <td style="cursor: ns-resize">
+                    <span class="badge">{{$index + 1}}</span>
+                </td>
+                <td width="5%">
+                    <input type="checkbox" ng-model="line.is_orig_group">
+                </td>
+                <td width="15%">
+                    <select-box ng-if="!line.is_orig_group" list="trunk" model="line.orig_trunk_id" default="Любой транк"></select-box>
+                    <select-box ng-if="line.is_orig_group" list="trunkGroup" model="line.orig_trunk_group_id" default="Любая группа"></select-box>
+                </td>
+                <td width="15%">
+                    <select ui-select2 ng-model="line.orig_attr" placeholder="Любой" style="width: 100%">
+                        <option value="">-- Любой --</option>
+                        <option ng-repeat="attr in origAttrList" value="{{attr.id}}">{{attr.name}}</option>
+                    </select>
+                </td>
+                <td width="5%">
+                    <input type="checkbox" ng-model="line.is_term_group">
+                </td>
+                <td width="15%">
+                    <select-box ng-if="!line.is_term_group" list="trunk" model="line.term_trunk_id" default="Любой транк"></select-box>
+                    <select-box ng-if="line.is_term_group" list="trunkGroup" model="line.term_trunk_group_id" default="Любая группа"></select-box>
+                </td>
+                <td width="15%">
+                    <select ui-select2 ng-model="line.term_attr" placeholder="Любой" style="width: 100%">
+                        <option value="">-- Любой --</option>
+                        <option ng-repeat="attr in termAttrList" value="{{attr.id}}">{{attr.name}}</option>
+                    </select>
+                </td>
+                <td width="15%">
+                    <select ui-select2 ng-model="line.action_type" placeholder="Любой" style="width: 100%">
+                        <option value="accept">ACCEPT</option>
+                        <option value="replace">Заменить транк терминации</option>
+                    </select>
+                </td>
+                <td width="15%">
+                    <select-box list="trunk" model="line.replace_trunk_id" default="Любой транк"></select-box>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="remove($index)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="10">
+                    <button type="button" class="btn btn-success btn-xs" ng-click="add()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

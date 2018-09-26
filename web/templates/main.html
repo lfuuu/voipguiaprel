@@ -59,6 +59,7 @@
                        ng-class="{active:tabs.isController('AttributeListCtrl')}">Атрибуты</a>
                     <a class="list-group-item" ng-if="userPermissions['attribute_group_list']" ng-click="Redirect.attributeGroupList()"
                        ng-class="{active:tabs.isController('AttributeGroupListCtrl')}">Группы атрибутов</a>
+                    <a class="list-group-item" ng-if="userPermissions['route_replace_edit']" ng-click="Redirect.routeReplaceEdit()">Подмена пути</a>
                 </div>
                 <div ng-if="userPermissions['test_auth_list'] || userPermissions['test_call_list'] || userPermissions['test_group_list'] || userPermissions['blacklist_edit'] || userPermissions['trunkhealth_view_list']" class="list-group">
                     <!-- <a class="list-group-item" ng-click="Redirect.routingReport()" ng-class="{active:tabs.isController('RoutingReportCtrl')}">Отчет по маршрутизации</a> -->
