@@ -101,7 +101,9 @@
                 <span class="label label-warning" ng-if="item.tech_trunk">Тех-Транк</span>
                 <span class="label label-warning" ng-if="item.pstn_trunk">PSTN</span>
                 <span class="label label-success" ng-if="item.mgmn_trunk">MGMN-t</span>
+                <span class="label label-success" ng-if="item.mgmn2_term">MGMN2-t</span>
                 <span class="label label-success" ng-if="item.mgmn_orig_trunk">MGMN-o</span>
+                <span class="label label-success" ng-if="item.mgmn2_orig">MGMN2-o</span>
             </td>
             <td>
                 <a ng-if="item.routeTable.id && userPermissions['route_table_edit']" href="#" ng-click="openRouteTable(item.routeTable.id);">{{item.routeTable.name}}</a>
