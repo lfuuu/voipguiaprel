@@ -20,11 +20,6 @@ class RouteReplaceController extends JsonController
 
         return
             RouteReplace::find()
-                ->select([
-                    '*',
-                    new Expression('case when orig_trunk_group_id is not null then true else false end as is_orig_group'),
-                    new Expression('case when term_trunk_group_id is not null then true else false end as is_term_group')
-                    ])
                 ->where(['server_id' => $server->id])
                 ->orderBy('order')
                 ->asArray()
