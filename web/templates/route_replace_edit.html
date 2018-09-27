@@ -7,12 +7,12 @@
             <thead>
             <tr>
                 <th width="1%">&nbsp;</th>
-                <th>Группа транков оригинации</th>
+                <th>Группа оригинации</th>
                 <th>Номер А</th>
-                <th>Атрибут оригинации</th>
-                <th>Группа транков терминации</th>
+                <th>Атрибут ориг.</th>
+                <th>Группа терминации</th>
                 <th>Номер B</th>
-                <th>Атрибут терминации</th>
+                <th>Атрибут терм.</th>
                 <th>Действие</th>
                 <th>Значение</th>
                 <th width="1%">&nbsp;</th>
@@ -29,7 +29,7 @@
                 <td width="15%">
                     <select-box list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
                 </td>
-                <td width="15%">
+                <td width="5%">
                     <select ui-select2 ng-model="line.orig_attr" placeholder="Любой" style="width: 100%">
                         <option value="">-- Любой --</option>
                         <option ng-repeat="attr in origAttrList" value="{{attr.id}}">{{attr.name}}</option>
@@ -41,7 +41,7 @@
                 <td width="15%">
                     <select-box list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box>
                 </td>
-                <td width="15%">
+                <td width="5%">
                     <select ui-select2 ng-model="line.term_attr" placeholder="Любой" style="width: 100%">
                         <option value="">-- Любой --</option>
                         <option ng-repeat="attr in termAttrList" value="{{attr.id}}">{{attr.name}}</option>
@@ -50,7 +50,7 @@
                 <td width="15%">
                     <select ui-select2 ng-model="line.action_type" placeholder="Любой" style="width: 100%">
                         <option value="accept">ACCEPT</option>
-                        <option value="replace">Заменить транк терминации</option>
+                        <option value="replace">Заменить транк терм.</option>
                     </select>
                 </td>
                 <td width="15%">

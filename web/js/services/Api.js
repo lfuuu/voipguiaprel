@@ -1309,14 +1309,14 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     origAttribute: function () {
       return [
-        {'id': '1', 'name': 'МГ/МН-оригинация'},
-        {'id': '2', 'name': 'МГ/МН2-оригинация'}
+        {'id': '1', 'name': 'МГ/МН-о'},
+        {'id': '2', 'name': 'МГ/МН2-о'}
       ];
     },
     termAttribute: function () {
       return [
-        {'id': '3', 'name': 'МГ/МН-терминация'},
-        {'id': '4', 'name': 'МГ/МН2-терминация'}
+        {'id': '3', 'name': 'МГ/МН-т'},
+        {'id': '4', 'name': 'МГ/МН2-т'}
       ];
     },
     hub: function () {
