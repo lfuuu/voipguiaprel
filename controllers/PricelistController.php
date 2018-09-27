@@ -83,6 +83,10 @@ class PricelistController extends BaseController
                     (isset($filterA['nnp_operator_name']) ? (' ' . $filterA['nnp_operator_name']) : '') .
                     (isset($filterA['nnp_region_name']) ? (' ' . $filterA['nnp_region_name']) : '') .
                     (isset($filterA['nnp_city_name']) ? (' ' . $filterA['nnp_country_name']) : ''));
+    
+                if (empty($filterAHeader)) {
+                    $filterAHeader = trim(isset($filterA['nnp_destination_name']) ? ($filterA['nnp_destination_name']) : '');
+                }
                 
                 if (empty($filterAHeader)) {
                     $filterAHeader = '';
@@ -105,6 +109,10 @@ class PricelistController extends BaseController
                         (isset($filterB['nnp_region_name']) ? (' ' . $filterB['nnp_region_name']) : '') .
                         (isset($filterB['nnp_city_name']) ? (' ' . $filterB['nnp_country_name']) : ''));
     
+                    if (empty($filterBText)) {
+                        $filterBText = trim(isset($filterB['nnp_destination_name']) ? ($filterB['nnp_destination_name']) : '');
+                    }
+                    
                     if (empty($filterBText)) {
                         $filterBText = 'Пустой фильтр B';
                     }
