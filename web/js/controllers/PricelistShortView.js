@@ -30,28 +30,24 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             for (var filterAKey in data.location[locationKey].filterA) {
                 var item = data.location[locationKey].filterA[filterAKey];
 
-                var filterAName = (item.nnp_country_name == null) ? '' : item.nnp_country_name +
-                    (item.nnp_ndc_type_name == null) ? '' : item.nnp_ndc_type_name +
-                    (item.nnp_operator_name == null) ? '' : item.nnp_operator_name +
-                    (item.nnp_region_name == null) ? '' : item.nnp_region_name +
-                    (item.nnp_city_name == null) ? '' : item.nnp_city_name;
+                var filterAName = ((item.nnp_country_name == null) ? '' : item.nnp_country_name) +
+                    ((item.nnp_ndc_type_name == null) ? '' : (' ' + item.nnp_ndc_type_name)) +
+                    ((item.nnp_operator_name == null) ? '' : (' ' + item.nnp_operator_name)) +
+                    ((item.nnp_region_name == null) ? '' : (' ' + item.nnp_region_name)) +
+                    ((item.nnp_city_name == null) ? '' : (' ' + item.nnp_city_name));
 
                 if (!filterAName) {
                     filterAName = item.nnp_destination_name;
                 }
 
-                if (!filterAName) {
-                    filterAName = 'Пустой фильтр А';
-                }
-
                 for (var filterBKey in data.location[locationKey].filterA[filterAKey].filterB) {
                     var item = data.location[locationKey].filterA[filterAKey].filterB[filterBKey];
 
-                    var filterBName = (item.nnp_country_name == null) ? '' : item.nnp_country_name +
-                        (item.nnp_ndc_type_name == null) ? '' : item.nnp_ndc_type_name +
-                        (item.nnp_operator_name == null) ? '' : item.nnp_operator_name +
-                        (item.nnp_region_name == null) ? '' : item.nnp_region_name +
-                        (item.nnp_city_name == null) ? '' : item.nnp_city_name;
+                    var filterBName = ((item.nnp_country_name == null) ? '' : item.nnp_country_name) +
+                        ((item.nnp_ndc_type_name == null) ? '' : (' ' + item.nnp_ndc_type_name)) +
+                        ((item.nnp_operator_name == null) ? '' : (' ' + item.nnp_operator_name)) +
+                        ((item.nnp_region_name == null) ? '' : (' ' + item.nnp_region_name)) +
+                        ((item.nnp_city_name == null) ? '' : (' ' + item.nnp_city_name));
 
                     if (!filterBName) {
                         filterBName = item.nnp_destination_name;
@@ -60,8 +56,6 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     if (!filterBName) {
                         filterBName = 'Пустой фильтр B';
                     }
-
-                    console.log(item);
 
                     var prefixCount = item.prefixPriceNoLimit.length;
 

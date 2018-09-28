@@ -13,7 +13,10 @@
                 <td ng-if="item.is_location" colspan="3" style="border-bottom: 2px solid black;">Местоположение: {{item.location_id}}</td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;"></td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_prefix_price && item.is_filter_header" rowspan="{{item.count}}" style="text-align: center; vertical-align: middle;">{{item.filter_b_name}}<br/>({{item.filter_a_name}})</td>
+                <td ng-if="item.is_prefix_price && item.is_filter_header" rowspan="{{item.count}}" style="text-align: center; vertical-align: middle;">
+                    {{item.filter_b_name}}
+                    <span ng-if="item.filter_a_name"><br/>({{item.filter_a_name}})</span>
+                </td>
                 <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
                 <td ng-if="item.is_prefix_price">{{item.b_number_price}}</td>
                 <td ng-if="item.is_prefix_price"></td>
