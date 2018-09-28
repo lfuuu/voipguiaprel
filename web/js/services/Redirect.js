@@ -314,6 +314,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         pricelistView: function(id) {
             return openModal(PricelistViewCtrl, '/templates/pricelist_view.html', {id: id});
         },
+        pricelistShortView: function(id) {
+            return openModal(PricelistShortViewCtrl, '/templates/pricelist_short_view.html', {id: id});
+        },
         pricelistEdit: function(id) {
             return openModal(PricelistEditCtrl, '/templates/pricelist_edit.html', {id: id});
         },

@@ -53,6 +53,20 @@ class PricelistController extends JsonController
                 ->one();
     }
     
+    public function actionGetWithDependentsNoLimit()
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        return
+            Pricelist::find()
+                ->with('location.filterA.filterB.prefixPriceNoLimit')
+                ->where(['id' => $this->request['id']])
+                ->asArray()
+                ->one();
+    }
+    
     public function actionGet()
     {
         if (!\Yii::$app->user->can('pricelist_edit')) {

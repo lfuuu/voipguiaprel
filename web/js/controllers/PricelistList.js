@@ -29,7 +29,7 @@ var PricelistListCtrl = function ($scope, Pricelist, Redirect, $window) {
 
         if (window.getSelection().type == 'Range') return;
 
-        Redirect.pricelistView(item.id).then(function () {
+        Redirect.pricelistShortView(item.id).then(function () {
             $scope.init();
         });
     };

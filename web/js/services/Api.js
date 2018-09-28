@@ -1088,6 +1088,9 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         getWithDependents: function(data) {
             return ApiLoader.post(url + 'get-with-dependents', data);
         },
+        getWithDependentsNoLimit: function(data) {
+            return ApiLoader.post(url + 'get-with-dependents-no-limit', data);
+        },
         list: function() {
             if (promise !== undefined) return promise;
 
