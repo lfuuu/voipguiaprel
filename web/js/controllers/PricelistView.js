@@ -166,7 +166,8 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
 
                     }
 
-                    if (data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count > $scope.limit) {
+                    if (typeof data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0] !== 'undefined' &&
+                        data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count > $scope.limit) {
                         $scope.list.push({
                             is_prefix_price_footer: true,
                             totalCount: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count,

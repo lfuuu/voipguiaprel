@@ -1300,7 +1300,8 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
       return [
         {'id': 'RUB', 'name': 'RUB'},
         {'id': 'EUR', 'name': 'EUR'},
-        {'id': 'HUF', 'name': 'HUF'}
+        {'id': 'HUF', 'name': 'HUF'},
+        {'id': 'USD', 'name': 'USD'}
       ];
     },
     location: function () {

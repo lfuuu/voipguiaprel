@@ -24,6 +24,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 is_location: true,
                 id: item.id,
                 location_id: $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name,
+                mcc: item.mcc_string,
+                mnc: item.mnc_string,
                 has_children: data.location[locationKey].filterA.length > 0
             });
 
@@ -40,6 +42,18 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     filterAName = item.nnp_destination_name;
                 }
 
+                if (!filterAName) {
+                    filterAName = '--';
+                }
+
+                var hasFilterAHeader = false;
+                var totalPrefixCount = 0;
+
+                for (var filterBKey in data.location[locationKey].filterA[filterAKey].filterB) {
+                    var item = data.location[locationKey].filterA[filterAKey].filterB[filterBKey];
+                    totalPrefixCount += item.prefixPriceNoLimit.length;
+                }
+
                 for (var filterBKey in data.location[locationKey].filterA[filterAKey].filterB) {
                     var item = data.location[locationKey].filterA[filterAKey].filterB[filterBKey];
 
@@ -54,38 +68,43 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     }
 
                     if (!filterBName) {
-                        filterBName = 'Пустой фильтр B';
+                        filterBName = '--';
                     }
 
                     var prefixCount = item.prefixPriceNoLimit.length;
 
-                    var hasFilterHeader = false;
+                    var hasFilterBHeader = false;
 
                     for (var prefixPriceKey in data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit) {
                         var item = data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit[prefixPriceKey];
 
-                        if (!hasFilterHeader) {
+                        if (!hasFilterBHeader) {
                             $scope.list.push({
-                                is_filter_header: true,
+                                is_filter_b_header: true,
+                                is_filter_a_header: !hasFilterAHeader,
                                 filter_a_name: filterAName,
                                 filter_b_name: filterBName,
                                 is_prefix_price: true,
                                 prefix_price_id: item.id,
                                 b_number_price: item.b_number_price,
                                 prefix_b: item.prefix_b,
-                                count: prefixCount
+                                prefix_count: prefixCount,
+                                total_prefix_count: totalPrefixCount
                             });
 
-                            hasFilterHeader = true;
+                            hasFilterBHeader = true;
                         } else {
                             $scope.list.push({
-                                is_filter_header: false,
+                                is_filter_b_header: false,
+                                is_filter_a_header: !hasFilterAHeader,
                                 is_prefix_price: true,
                                 prefix_price_id: item.id,
                                 b_number_price: item.b_number_price,
                                 prefix_b: item.prefix_b
                             });
                         }
+
+                        hasFilterAHeader = true;
                     }
                 }
             }

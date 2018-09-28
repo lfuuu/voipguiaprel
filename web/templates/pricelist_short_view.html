@@ -3,7 +3,7 @@
         <table class="table table-condensed" style="width: 500px;">
             <tbody>
             <tr ng-repeat="item in list">
-                <td ng-if="item.is_pricelist" colspan="3">{{item.name}}, валюта {{item.currency_id}}</td>
+                <td ng-if="item.is_pricelist" colspan="4">{{item.name}}, валюта {{item.currency_id}}</td>
                 <td ng-if="item.is_pricelist">
                     <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-success btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>
@@ -15,13 +15,15 @@
                     </a>
                 </td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_location" colspan="3" style="border-bottom: 2px solid black;">Местоположение: {{item.location_id}}</td>
+                <td ng-if="item.is_location" colspan="4" style="border-bottom: 2px solid black;">Местоположение: {{item.location_id}}, MCC: {{item.mcc}}, MNC: {{item.mnc}}</td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;"></td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;"></td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_prefix_price && item.is_filter_header" rowspan="{{item.count}}" style="text-align: center; vertical-align: middle;">
+                <td ng-if="item.is_prefix_price && item.is_filter_a_header" rowspan="{{item.total_prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
+                    {{item.filter_a_name}}
+                </td>
+                <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
                     {{item.filter_b_name}}
-                    <span ng-if="item.filter_a_name"><br/>({{item.filter_a_name}})</span>
                 </td>
                 <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
                 <td ng-if="item.is_prefix_price">{{item.b_number_price}}</td>
