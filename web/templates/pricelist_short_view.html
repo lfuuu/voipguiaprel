@@ -5,12 +5,18 @@
             <tr ng-repeat="item in list">
                 <td ng-if="item.is_pricelist" colspan="3">{{item.name}}, валюта {{item.currency_id}}</td>
                 <td ng-if="item.is_pricelist">
+                    <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-success btn-xs">
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                    </a>
+                </td>
+                <td ng-if="item.is_pricelist">
                     <a class="btn btn-success btn-xs" ng-click="viewPricelist(item.id)">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </a>
                 </td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_location" colspan="3" style="border-bottom: 2px solid black;">Местоположение: {{item.location_id}}</td>
+                <td ng-if="item.is_location" style="border-bottom: 2px solid black;"></td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;"></td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_prefix_price && item.is_filter_header" rowspan="{{item.count}}" style="text-align: center; vertical-align: middle;">
@@ -20,6 +26,11 @@
                 <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
                 <td ng-if="item.is_prefix_price">{{item.b_number_price}}</td>
                 <td ng-if="item.is_prefix_price"></td>
+                <td ng-if="item.is_prefix_price">
+                    <a class="btn btn-info btn-xs" ng-click="editPrefixPrice(item.prefix_price_id)">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                </td>
             </tr>
             </tbody>
         </table>
