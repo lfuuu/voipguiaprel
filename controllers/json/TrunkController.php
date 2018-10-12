@@ -305,12 +305,12 @@ class TrunkController extends JsonController
     
             foreach ($data['items'] as $item) {
                 $this->processSormData($trunk, $item['old_name'], $data['name'], $item['is_show'], $data['groups'],
-                    $data['sorm_operator_id'], $regionId, isset($item['id']) ? $item['id'] : null);
+                    $data['sorm_operator_id'], $data['source_type_id'], $regionId, isset($item['id']) ? $item['id'] : null);
             }
         }
     }
     
-    private function processSormData($trunk, $oldName, $name, $isShow, $groups, $sormOperatorId, $regionId, $id = null)
+    private function processSormData($trunk, $oldName, $name, $isShow, $groups, $sormOperatorId, $sourceTypeId, $regionId, $id = null)
     {
         if (!is_null($id)) {
             $trunkSorm = TrunkSorm::find()
@@ -326,6 +326,7 @@ class TrunkController extends JsonController
             $trunkSorm->is_show = isset($isShow) ? $isShow : false;
             $trunkSorm->groups = $groups ? '{' . implode(',', $groups) . '}' : '{}';
             $trunkSorm->old_name = $oldName;
+            $trunkSorm->source_type_id = $sourceTypeId;
     
             $trunkSorm->save();
         } else {
@@ -350,7 +351,8 @@ class TrunkController extends JsonController
                 'is_show' => isset($isShow) ? $isShow : false,
                 'groups' => $groups ? '{' . implode(',', $groups) . '}' : '{}',
                 'region_id' => $regionId,
-                'sorm_operator_id' => $sormOperatorId
+                'sorm_operator_id' => $sormOperatorId,
+                'source_type_id' => $sourceTypeId
             ];
     
             $trunkSorm = TrunkSorm::create($dataToCreate);

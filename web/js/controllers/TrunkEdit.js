@@ -33,6 +33,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Trunk, params, $modalInstance, 
                     name: data.trunkSorm[0].name,
                     groups: data.trunkSorm[0].groups.replace('{', '').replace('}', '').split(','),
                     sorm_operator_id: data.trunkSorm[0].sorm_operator_id,
+                    source_type_id: data.trunkSorm[0].source_type_id,
                     items: []
                 };
 

@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<div class="form-group">
+<div ng-hide="!item.sorm.enabled" class="form-group">
     <label class="col-sm-2 control-label">Оператор</label>
     <div class="col-sm-10">
         <select ui-select2 ng-model="item.sorm.sorm_operator_id" style="width: 180px;">
@@ -18,14 +18,25 @@
     </div>
 </div>
 
-<div class="form-group">
+<div ng-hide="item.sorm.sorm_operator_id != 2 || !item.sorm.enabled" class="form-group">
+    <label class="col-sm-2 control-label">Тип транка</label>
+    <div class="col-sm-10">
+        <select ui-select2 ng-model="item.sorm.source_type_id" style="width: 180px;">
+            <option value="1">Sip-user</option>
+            <option value="2">trunk-SIP</option>
+            <option value="3">trunk-SS7</option>
+        </select>
+    </div>
+</div>
+
+<div ng-hide="!item.sorm.enabled" class="form-group">
     <label class="col-sm-2 control-label">Название</label>
     <div class="col-sm-10">
         <input class="form-control" placeholder="Название" ng-model="item.sorm.name" ng-disabled="!item.sorm.enabled" ng-required="item.sorm.enabled"/>
     </div>
 </div>
 
-<div class="form-group">
+<div ng-hide="!item.sorm.enabled" class="form-group">
     <label class="col-sm-2 control-label">Группы</label>
     <div class="col-sm-10">
         <select ui-select2 ng-disabled="!item.sorm.enabled" ng-model="item.sorm.groups" multiple="multiple" style="width: 100%" >
@@ -34,7 +45,7 @@
     </div>
 </div>
 
-<div class="form-group">
+<div ng-hide="!item.sorm.enabled" class="form-group">
     <div class="col-sm-12">
         <table class="table table-striped">
             <tbody ui-sortable="{axis: 'y'}" ng-model="item.sorm.items">
