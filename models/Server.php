@@ -108,7 +108,9 @@ class Server extends \yii\db\ActiveRecord
      */
     public function getApiUrl()
     {
-        return 'http://' . $this->hostname . ':8032/';
+        return 'http://' . $this->hostname
+            . (!parse_url($this->hostname, PHP_URL_PORT) ? ':' . self::API_DEFAULT_PORT : '')
+            . '/';
     }
 
     /**
