@@ -3,7 +3,7 @@
         <table class="table table-condensed" style="width: 500px;">
             <tbody>
             <tr ng-repeat="item in list">
-                <td ng-if="item.is_pricelist" colspan="4">{{item.name}}, валюта {{item.currency_id}}</td>
+                <td ng-if="item.is_pricelist" colspan="4" style="text-align: center;">{{item.name}} (#{{item.id}}), валюта {{item.currency_id}}</td>
                 <td ng-if="item.is_pricelist">
                     <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-success btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>
@@ -15,7 +15,7 @@
                     </a>
                 </td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_location" colspan="4" style="border-bottom: 2px solid black;">Местоположение: {{item.location_id}}, MCC: {{item.mcc}}, MNC: {{item.mnc}}</td>
+                <td ng-if="item.is_location" colspan="4" style="border-bottom: 2px solid black;text-align: center;">{{item.location_text}}</td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;"></td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;"></td>
                 <!---------------------------------------------------->

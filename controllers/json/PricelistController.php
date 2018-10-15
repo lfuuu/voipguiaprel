@@ -6,6 +6,9 @@ use app\models\billing_uu\Pricelist;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use yii\db\Expression;
+use yii\db\IntegrityException;
+use yii\db\Query;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -119,6 +122,17 @@ class PricelistController extends JsonController
         }
     }
     
+    public function actionClone()
+    {
+        if (!\Yii::$app->user->can('pricelist_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
+        $result = (new Query())->select(['id' => new Expression('billing_uu.clone_pricelist(:old_pricelist_id)')])->addParams([':old_pricelist_id' => $this->request['id']])->one();
+        
+        return $result;
+    }
+    
     /**
      * @throws StaleObjectException
      * @throws HttpException
@@ -131,6 +145,11 @@ class PricelistController extends JsonController
         }
         
         $item = $this->getPricelistOr404($this->request['id']);
-        $item->delete();
+        
+//        try {
+            $item->delete();
+//        } catch (IntegrityException $e) {
+//            return ['errors' => [['code' => $e->getCode(), 'message' => $e->getMessage()]]];
+//        }
     }
 }

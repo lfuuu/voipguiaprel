@@ -34,6 +34,18 @@ var PricelistListCtrl = function ($scope, Pricelist, Redirect, $window) {
         });
     };
 
+    $scope.cloneItem = function (item) {
+        if (!$window.confirm('Клонировать?')) return;
+
+        Pricelist.clone(item.id).then(function (response) {
+            $scope.init();
+
+            Redirect.pricelistShortView(response.id).then(function () {
+                $scope.init();
+            });
+        });
+    };
+
     $scope.deleteItem = function (item) {
         if (!$window.confirm('Удалить?')) return;
 

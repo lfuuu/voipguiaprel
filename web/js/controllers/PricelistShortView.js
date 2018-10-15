@@ -20,12 +20,15 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         for (var locationKey in data.location) {
             var item = data.location[locationKey];
 
+            var locationText = 'Местоположение: ' +
+                $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name +
+                ((item.mcc_string == '' || item.mcc_string == null) ? '' : ', MCC: ' + item.mcc_string) +
+                ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string);
+
             $scope.list.push({
                 is_location: true,
                 id: item.id,
-                location_id: $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name,
-                mcc: item.mcc_string,
-                mnc: item.mnc_string,
+                location_text: locationText,
                 has_children: data.location[locationKey].filterA.length > 0
             });
 
@@ -183,7 +186,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
     $scope.viewPricelist = function (id) {
         Redirect.pricelistView(id).then(function () {
-            $scope.initData(id);
+            $scope.initData($scope.item.id);
         });
     };
 

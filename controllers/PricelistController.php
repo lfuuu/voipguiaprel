@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use app\classes\BaseController;
 use app\models\billing_uu\Pricelist;
+use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use \PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -46,6 +48,9 @@ class PricelistController extends BaseController
         $sheet->getColumnDimension('B')->setAutoSize(true);
         $sheet->getColumnDimension('C')->setAutoSize(true);
         $sheet->getColumnDimension('D')->setAutoSize(true);
+    
+        Cell::setValueBinder(new AdvancedValueBinder());
+        
 //        $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Прайслист');
         $pricelistHeader = $pricelist['name'] . ', валюта ' . $pricelist['currency_id'];
         $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber);

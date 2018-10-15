@@ -248,7 +248,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     }
 
     $scope.back = function () {
-        $modalInstance.dismiss();
+        $modalInstance.close();
     };
 
     $scope.addLocation = function (pricelistId) {
