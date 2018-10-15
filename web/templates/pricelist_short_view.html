@@ -23,7 +23,7 @@
                     {{item.filter_a_name}}
                 </td>
                 <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
-                    {{item.filter_b_name}}
+                    {{item.filter_b_name}}<br/>(Интерконнект: {{item.interconnect_price}})
                 </td>
                 <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
                 <td ng-if="item.is_prefix_price">{{item.b_number_price}}</td>

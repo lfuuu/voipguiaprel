@@ -75,6 +75,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     }
 
                     var prefixCount = item.prefixPriceNoLimit.length;
+                    var interconnectPrice = item.interconnect_price;
 
                     var hasFilterBHeader = false;
 
@@ -89,10 +90,11 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                                 filter_b_name: filterBName,
                                 is_prefix_price: true,
                                 prefix_price_id: item.id,
-                                b_number_price: item.b_number_price,
+                                b_number_price: (parseFloat(item.b_number_price) + parseFloat(interconnectPrice)),
                                 prefix_b: item.prefix_b,
                                 prefix_count: prefixCount,
-                                total_prefix_count: totalPrefixCount
+                                total_prefix_count: totalPrefixCount,
+                                interconnect_price: parseFloat(interconnectPrice)
                             });
 
                             hasFilterBHeader = true;
@@ -102,7 +104,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                                 is_filter_a_header: !hasFilterAHeader,
                                 is_prefix_price: true,
                                 prefix_price_id: item.id,
-                                b_number_price: item.b_number_price,
+                                b_number_price: (parseFloat(item.b_number_price) + parseFloat(interconnectPrice)),
                                 prefix_b: item.prefix_b
                             });
                         }
