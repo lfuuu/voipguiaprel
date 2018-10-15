@@ -29,11 +29,18 @@
                 <span ng-show="sortType == 'name' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
-        <th width="20%">
+        <th width="10%">
             <a href="#" ng-click="sortType = 'currency_id'; sortReverse = !sortReverse">
                 Валюта
-                <span ng-show="sortType == 'orig' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'orig' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'currency_id' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'currency_id' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
+        <th width="10%">
+            <a href="#" ng-click="sortType = 'group_name'; sortReverse = !sortReverse">
+                Группа
+                <span ng-show="sortType == 'group_name' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'group_name' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th width="35%"></th>
@@ -54,6 +61,7 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.currency_id}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.group_name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
             <span class="label label-success" ng-if="item.orig">ORIG</span>
             <span class="label label-info" ng-if="!item.orig">TERM</span>

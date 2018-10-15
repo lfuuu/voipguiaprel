@@ -36,6 +36,8 @@ class PricelistController extends JsonController
         
         return
             Pricelist::find()
+                ->select(['billing_uu.pricelist.*', 'g.name as group_name'])
+                ->leftJoin('billing_uu.pricelist_group g', 'g.id = billing_uu.pricelist.pricelist_group_id')
                 ->orderBy('name')
                 ->asArray()
                 ->all();
