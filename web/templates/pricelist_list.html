@@ -30,31 +30,18 @@
             </a>
         </th>
         <th width="20%">
-            <a href="#" ng-click="sortType = 'orig'; sortReverse = !sortReverse">
-                Тип
+            <a href="#" ng-click="sortType = 'currency_id'; sortReverse = !sortReverse">
+                Валюта
                 <span ng-show="sortType == 'orig' && sortReverse" class="caret-down"></span>
                 <span ng-show="sortType == 'orig' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
+        <th width="35%"></th>
         <th width="20%">
             <a href="#" ng-click="sortType = 'date_created'; sortReverse = !sortReverse">
                 Дата создания
                 <span ng-show="sortType == 'date_created' && sortReverse" class="caret-down"></span>
                 <span ng-show="sortType == 'date_created' && !sortReverse" class="caret-up"></span>
-            </a>
-        </th>
-        <th width="20%">
-            <a href="#" ng-click="sortType = 'date_end'; sortReverse = !sortReverse">
-                Дата окончания действия
-                <span ng-show="sortType == 'date_end' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'date_end' && !sortReverse" class="caret-up"></span>
-            </a>
-        </th>
-        <th width="15%">
-            <a href="#" ng-click="sortType = 'is_global'; sortReverse = !sortReverse">
-                Глобальный
-                <span ng-show="sortType == 'is_global' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'is_global' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th ng-if="userPermissions['pricelist_create']">&nbsp;</th>
@@ -66,16 +53,14 @@
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.currency_id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
-            <span ng-if="item.orig">Оригинация</span>
-            <span ng-if="!item.orig">Терминация</span>
+            <span class="label label-success" ng-if="item.orig">ORIG</span>
+            <span class="label label-info" ng-if="!item.orig">TERM</span>
+            <span class="label label-success" ng-if="item.is_global">Глобальный</span>
+            <span class="label label-success" ng-if="item.is_active">Активный</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_created}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_end}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)">
-            <span ng-if="item.is_global">Да</span>
-            <span ng-if="!item.is_global">Нет</span>
-        </td>
         <td ng-if="userPermissions['pricelist_create']">
             <button type="button" class="btn btn-default btn-sm"
                     ng-click="cloneItem(item)">Клонировать</button>

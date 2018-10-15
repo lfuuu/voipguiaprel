@@ -1,4 +1,4 @@
-var PricelistListCtrl = function ($scope, Pricelist, Redirect, $window) {
+var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
 
     $scope.sortType = 'name';
     $scope.sortReverse = false;

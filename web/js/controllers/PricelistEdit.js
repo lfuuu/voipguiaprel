@@ -12,6 +12,10 @@ var PricelistEditCtrl = function($scope, List, Pricelist, params, $modalInstance
 
     $scope.currency = List.currency();
 
+    List.pricelistGroup().then(function (data) {
+        $scope.pricelistGroupList = data;
+    });
+
     $scope.save = function()
     {
         Pricelist.save($scope.item).then(function(response) {

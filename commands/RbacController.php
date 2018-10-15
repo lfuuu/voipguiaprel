@@ -106,6 +106,10 @@ class RbacController extends Controller {
         ['name' => 'pricelist_edit', 'description' => 'Редактирование прайслистов второй версии'],
         ['name' => 'pricelist_delete', 'description' => 'Удаление прайслистов второй версии'],
         ['name' => 'route_replace_edit', 'description' => 'Редактирование списков подмены пути'],
+        ['name' => 'pricelist_group_list', 'description' => 'Просмотр групп прайслистов второй версии'],
+        ['name' => 'pricelist_group_create', 'description' => 'Создание групп прайслистов второй версии'],
+        ['name' => 'pricelist_group_edit', 'description' => 'Редактирование групп прайслистов второй версии'],
+        ['name' => 'pricelist_group_delete', 'description' => 'Удаление групп прайслистов второй версии'],
     ];
     
     private static $_roles = [
@@ -140,11 +144,12 @@ class RbacController extends Controller {
             'hub_list', 'uplink_list', 'uplink_create', 'uplink_edit', 'uplink_delete',
             'imsi_partner_list', 'imsi_partner_create', 'imsi_partner_edit', 'imsi_partner_delete',
             'oca_bw_list', 'oca_bw_create', 'oca_bw_edit', 'oca_bw_delete',
-            'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete',
-            'route_replace_edit'
+            'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'route_replace_edit',
+            'pricelist_group_list', 'pricelist_group_create', 'pricelist_group_edit', 'pricelist_group_delete'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
-            'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete'
+            'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete',
+            'pricelist_group_list', 'pricelist_group_create', 'pricelist_group_edit', 'pricelist_group_delete'
         ]],
         ['role' => 'admin_routing', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view', 'user_list',

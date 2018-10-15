@@ -347,5 +347,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         pricelistPrefixPriceCreate: function(id) {
             return openModal(PricelistPrefixPriceEditCtrl, '/templates/pricelist_prefix_price_edit.html', {filter_b_id: id});
         },
+        pricelistGroupList: function() {
+            $cookies.selectedPage = 'pricelistGroupList';
+            return openTab(PricelistGroupListCtrl, '/templates/pricelist_group_list.html', {}, 'billing');
+        },
+        pricelistGroupCreate: function() {
+            return openModal(PricelistGroupEditCtrl, '/templates/pricelist_group_edit.html', {});
+        },
+        pricelistGroupEdit: function(id) {
+            return openModal(PricelistGroupEditCtrl, '/templates/pricelist_group_edit.html', {id: id});
+        }
     };
 });

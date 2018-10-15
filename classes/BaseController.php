@@ -10,6 +10,7 @@ use app\models\billing_uu\ImsiPartner;
 use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterA;
 use app\models\billing_uu\PricelistFilterB;
+use app\models\billing_uu\PricelistGroup;
 use app\models\billing_uu\PricelistLocation;
 use app\models\billing_uu\PricelistPrefixPrice;
 use app\models\Cpc;
@@ -187,6 +188,20 @@ class BaseController extends \yii\web\Controller
         $item = PricelistPrefixPrice::findOne($id);
         if ($item === null) {
             throw new HttpException(404, 'Цена префикса не найдена');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return PricelistGroup
+     * @throws HttpException
+     */
+    protected function getPricelistGroupOr404($id)
+    {
+        $item = PricelistGroup::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Группа прайслистов не найдена');
         }
         return $item;
     }

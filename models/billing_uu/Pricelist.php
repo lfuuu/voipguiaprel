@@ -31,7 +31,7 @@ class Pricelist extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'currency_id', 'date_created', 'date_start', 'date_end'], 'string'],
-            [['pricelist_version'], 'integer'],
+            [['pricelist_version', 'pricelist_group_id', 'type_id'], 'integer'],
             [['orig', 'is_global', 'is_active'], 'boolean']
         ];
     }
