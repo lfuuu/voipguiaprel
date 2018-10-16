@@ -231,6 +231,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             nnp_operator: null,
             nnp_exclude_operators: false,
             nnp_ndc_type: null,
+            nnp_is_default: true,
+            nnp_use_nnp_ported: false,
             count: 0
         };
 
@@ -435,6 +437,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 delete data.nnp_operator;
                 delete data.nnp_is_exclude_operators;
                 delete data.nnp_ndc_type;
+                delete data.nnp_is_default;
+                delete data.nnp_use_nnp_ported;
             } else {
                 delete data.nnp_destination;
             }
@@ -473,6 +477,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
                     $scope.item.nnp_destination = filterData.nnp_destination_id;
                     $scope.item.nnp_is_exclude_operators = filterData.is_exclude_operators;
+                    $scope.item.nnp_is_default = filterData.is_default;
+                    $scope.item.nnp_use_nnp_ported = filterData.use_nnp_ported;
                     $scope.item.nnp_ndc_type = filterData.ndc_type_id;
                     $scope.item.nnp_country = filterData.country_code;
                     $scope.item.nnp_region = filterData.region_id;
@@ -503,6 +509,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
                     $scope.item.nnp_destination = filterData.nnp_destination_id;
                     $scope.item.nnp_is_exclude_operators = filterData.is_exclude_operators;
+                    $scope.item.nnp_is_default = filterData.is_default;
+                    $scope.item.nnp_use_nnp_ported = filterData.use_nnp_ported;
                     $scope.item.nnp_ndc_type = filterData.ndc_type_id;
                     $scope.item.nnp_country = filterData.country_code;
                     $scope.item.nnp_region = filterData.region_id;
@@ -521,6 +529,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 $scope.item.nnp_destination = filterData.nnp_destination_id;
                 $scope.item.nnp_is_exclude_operators = filterData.is_exclude_operators;
                 $scope.item.nnp_ndc_type = filterData.ndc_type_id;
+                $scope.item.nnp_is_default = filterData.is_default;
+                $scope.item.nnp_use_nnp_ported = filterData.use_nnp_ported;
 
                 if (filterData.country_code) {
                     $scope.nnpMode = $scope.NNP_MODE_FILTER;

@@ -258,6 +258,8 @@ class Prefixlist extends \yii\db\ActiveRecord
             'region_id' => isset($input['nnp_region']) ? $input['nnp_region'] : '',
             'city_id' => isset($input['nnp_city']) ? $input['nnp_city'] : '',
             'ndc_type_id' => isset($input['nnp_ndc_type']) ? $input['nnp_ndc_type'] : '',
+            'is_default' => isset($input['nnp_is_default']) ? $input['nnp_is_default'] : '',
+            'use_nnp_ported' => isset($input['nnp_use_nnp_ported']) ? $input['nnp_use_nnp_ported'] : '',
             'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
         ];
         
