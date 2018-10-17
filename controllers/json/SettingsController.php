@@ -56,7 +56,8 @@ class SettingsController extends JsonController
             'is_route_to_class5_phase1_enable' => $server->is_route_to_class5_phase1_enable,
             'number_id_filter_b_route_to_class5' => $server->number_id_filter_b_route_to_class5,
             'cpc_id' => $server->cpc_id,
-            'is_autotest_error_enabled' => $server->is_autotest_error_enabled
+            'is_autotest_error_enabled' => $server->is_autotest_error_enabled,
+            'is_open_numeric_plan_enabled' => $server->is_open_numeric_plan_enabled
         ];
     }
 

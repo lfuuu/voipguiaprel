@@ -42,6 +42,7 @@ use app\models\event\Queue;
  * @property int $number_id_filter_b_route_to_class5
  * @property int $cpc_id
  * @property bool $is_autotest_error_enabled
+ * @property bool $is_open_numeric_plan_enabled
  *
  * @property InstanceSettings $instanceSettings
  * @property string $apiUrl
@@ -86,17 +87,11 @@ class Server extends \yii\db\ActiveRecord
                 'mcn_prefixlist_id','rc_mgmn_outcome_id','vats_trunk_id', 'ast_trunk_group_id',
                 'fsb_blacklist_id', 'fsb_b_blacklist_id', 'global_replacement_id', 'number_id_filter_b_route_to_class5', 'cpc_id'], 'integer'],
             [['is_sormed', 'is_production','rc_mgmn_action_disable','is_route_to_class5',
-                'is_route_to_class5_phase1_enable','is_autotest_error_enabled'], 'boolean'],
-
-            [['calling_station_id_for_line_without_number'], 'string', 'max' => 100],
-            [   [
-                    'h_call_sync_delay', 'h_cdr_sync_delay', 'h_call_save_delay', 'h_cdr_proc_wait_count',
-                    'h_call_save_wait_count', 'h_thread_error_count', 'h_radius_request_delay',
-                    'h_event_management', 'h_local_events',
-                ],
-                'string',
-                'max' => 100
-            ],
+                'is_route_to_class5_phase1_enable','is_autotest_error_enabled', 'is_open_numeric_plan_enabled'], 'boolean'],
+            [['calling_station_id_for_line_without_number',
+                'h_call_sync_delay', 'h_cdr_sync_delay', 'h_call_save_delay', 'h_cdr_proc_wait_count',
+                'h_call_save_wait_count', 'h_thread_error_count', 'h_radius_request_delay',
+                'h_event_management', 'h_local_events'], 'string', 'max' => 100],
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
             [['service_numbers', 'hostname_reserve', 'hostname_reserve_2', 'hostname_dev', 'nas_ip_address', 'name_short'], 'string'],
             [['hostname', 'name_short', 'name'], 'string', 'max' => 30],
