@@ -23,7 +23,7 @@ class PricelistLocation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['mcc', 'mnc'], 'string'],
+            [['mcc', 'mnc', 'delta_price'], 'string'],
             [['pricelist_id','location_id'], 'integer'],
         ];
     }

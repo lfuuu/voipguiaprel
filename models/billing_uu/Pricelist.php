@@ -68,7 +68,8 @@ class Pricelist extends \yii\db\ActiveRecord
             ->select([
                 'billing_uu.pricelist_location.*',
                 'mcc_string' => new Expression('array_to_string(mcc, \', \')'),
-                'mnc_string' => new Expression('array_to_string(mnc, \', \')')
+                'mnc_string' => new Expression('array_to_string(mnc, \', \')'),
+                'delta_price' => new Expression('round(billing_uu.pricelist_location.delta_price, 4)')
             ])
             ->orderBy('id');
     }

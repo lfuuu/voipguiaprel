@@ -54,6 +54,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                 location_id: $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name,
                 mcc: item.mcc_string,
                 mnc: item.mnc_string,
+                delta_price: item.delta_price,
                 has_children: data.location[locationKey].filterA.length > 0
             });
 

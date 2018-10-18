@@ -64,7 +64,8 @@
                 <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">Местоположение</td>
                 <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">MCC</td>
                 <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">MNC</td>
-                <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns" colspan="10"></td>
+                <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">Добавочная цена</td>
+                <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns" colspan="9"></td>
                 <!---------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_location"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_location"></td>
@@ -72,7 +73,8 @@
                 <td ng-if="item.is_location">{{item.location_id}}</td>
                 <td ng-if="item.is_location" style="text-align: left;">{{item.mcc}}</td>
                 <td ng-if="item.is_location" style="text-align: left;">{{item.mnc}}</td>
-                <td ng-if="item.is_location" colspan="7"></td>
+                <td ng-if="item.is_location" style="text-align: left;">{{item.delta_price}}</td>
+                <td ng-if="item.is_location" colspan="6"></td>
                 <td ng-if="item.is_location">
                     <a class="btn btn-success btn-xs" ng-click="addFilterA(item.id)">
                         <span class="glyphicon glyphicon-plus"></span>

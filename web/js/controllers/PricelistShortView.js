@@ -23,7 +23,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             var locationText = 'Местоположение: ' +
                 $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name +
                 ((item.mcc_string == '' || item.mcc_string == null) ? '' : ', MCC: ' + item.mcc_string) +
-                ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string);
+                ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string) +
+                ((item.delta_price == '' || item.delta_price == null) ? '' : ', Наценка: ' + item.delta_price);
 
             $scope.list.push({
                 is_location: true,
