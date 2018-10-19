@@ -83,6 +83,10 @@ class AppAsset extends AssetBundle
         'js/controllers/RouteReplaceEdit.js',
         'js/controllers/PricelistGroupList.js',
         'js/controllers/PricelistGroupEdit.js',
+        'js/controllers/MccList.js',
+        'js/controllers/MccEdit.js',
+        'js/controllers/MncList.js',
+        'js/controllers/MncEdit.js',
     ];
 
     public $templates = [
@@ -147,5 +151,9 @@ class AppAsset extends AssetBundle
         'templates/route_replace_edit.html',
         'templates/pricelist_group_list.html',
         'templates/pricelist_group_edit.html',
+        'templates/mcc_list.html',
+        'templates/mcc_edit.html',
+        'templates/mnc_list.html',
+        'templates/mnc_edit.html',
     ];
 }

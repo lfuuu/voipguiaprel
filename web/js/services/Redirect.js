@@ -356,6 +356,26 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
         pricelistGroupEdit: function(id) {
             return openModal(PricelistGroupEditCtrl, '/templates/pricelist_group_edit.html', {id: id});
+        },
+        mccList: function() {
+            $cookies.selectedPage = 'mccList';
+            return openTab(MccListCtrl, '/templates/mcc_list.html', {}, 'billing');
+        },
+        mccCreate: function() {
+            return openModal(MccEditCtrl, '/templates/mcc_edit.html', {});
+        },
+        mccEdit: function(mcc) {
+            return openModal(MccEditCtrl, '/templates/mcc_edit.html', {mcc: mcc});
+        },
+        mncList: function() {
+            $cookies.selectedPage = 'mncList';
+            return openTab(MncListCtrl, '/templates/mnc_list.html', {}, 'billing');
+        },
+        mncCreate: function() {
+            return openModal(MncEditCtrl, '/templates/mnc_edit.html', {});
+        },
+        mncEdit: function(mnc) {
+            return openModal(MncEditCtrl, '/templates/mnc_edit.html', {mnc: mnc});
         }
     };
 });

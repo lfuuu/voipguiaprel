@@ -773,6 +773,94 @@ app.factory('Cpc', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('Mcc', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/mcc/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function() {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function(data){
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function(data){
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function(data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
+});
+
+app.factory('Mnc', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/mnc/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function() {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function(data){
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function(data){
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function(data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
+});
+
 app.factory('ReleaseReason', function ($q, ApiLoader, $rootScope) {
 	var url = '/json/release-reason/';
 	var list = undefined;
@@ -1272,7 +1360,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               RouteCase, Outcome, Number, Destination,
                               Airp, ReleaseReason, RouteTable, Network,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
-                              PricelistGroup) {
+                              PricelistGroup, Mcc) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -1330,6 +1418,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     pricelistGroup: function () {
       return PricelistGroup.list();
+    },
+    mcc: function () {
+      return Mcc.list();
     },
     testResult: function () {
       return [

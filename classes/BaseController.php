@@ -15,6 +15,8 @@ use app\models\billing_uu\PricelistLocation;
 use app\models\billing_uu\PricelistPrefixPrice;
 use app\models\Cpc;
 use app\models\Destination;
+use app\models\nnp\Mcc;
+use app\models\nnp\Mnc;
 use app\models\Number;
 use app\models\OcaBw;
 use app\models\PrefixlistPrefix;
@@ -372,6 +374,34 @@ class BaseController extends \yii\web\Controller
         $item = Cpc::findOne($cpcId);
         if ($item === null) {
             throw new HttpException(404, 'CPC не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return Mcc
+     * @throws HttpException
+     */
+    protected function getMccOr404($mcc)
+    {
+        $item = Mcc::findOne(['mcc' => $mcc]);
+        if ($item === null) {
+            throw new HttpException(404, 'MCC не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return Mnc
+     * @throws HttpException
+     */
+    protected function getMncOr404($mnc)
+    {
+        $item = Mnc::findOne(['mnc' => $mnc]);
+        if ($item === null) {
+            throw new HttpException(404, 'MNC не найден');
         }
         return $item;
     }

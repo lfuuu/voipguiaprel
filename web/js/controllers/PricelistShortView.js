@@ -20,7 +20,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         for (var locationKey in data.location) {
             var item = data.location[locationKey];
 
-            var locationText = 'Местоположение: ' +
+            var locationText = '(#' + item.id + ') Местоположение: ' +
                 $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name +
                 ((item.mcc_string == '' || item.mcc_string == null) ? '' : ', MCC: ' + item.mcc_string) +
                 ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string) +
@@ -50,6 +50,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     filterAName = '--';
                 }
 
+                filterAName = '(#' + item.id + ') ' + filterAName;
+
                 var hasFilterAHeader = false;
                 var totalPrefixCount = 0;
 
@@ -74,6 +76,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     if (!filterBName) {
                         filterBName = '--';
                     }
+
+                    filterBName = '(#' + item.id + ') ' + filterBName;
 
                     var prefixCount = item.prefixPriceNoLimit.length;
                     var interconnectPrice = isNaN(parseFloat(item.interconnect_price)) ? 0 : parseFloat(item.interconnect_price);

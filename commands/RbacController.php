@@ -110,6 +110,14 @@ class RbacController extends Controller {
         ['name' => 'pricelist_group_create', 'description' => 'Создание групп прайслистов второй версии'],
         ['name' => 'pricelist_group_edit', 'description' => 'Редактирование групп прайслистов второй версии'],
         ['name' => 'pricelist_group_delete', 'description' => 'Удаление групп прайслистов второй версии'],
+        ['name' => 'mcc_list', 'description' => 'Просмотр списка MCC'],
+        ['name' => 'mcc_create', 'description' => 'Создание MCC'],
+        ['name' => 'mcc_edit', 'description' => 'Редактирование MCC'],
+        ['name' => 'mcc_delete', 'description' => 'Удаление MCC'],
+        ['name' => 'mnc_list', 'description' => 'Просмотр списка MNC'],
+        ['name' => 'mnc_create', 'description' => 'Создание MNC'],
+        ['name' => 'mnc_edit', 'description' => 'Редактирование MNC'],
+        ['name' => 'mnc_delete', 'description' => 'Удаление MNC'],
     ];
     
     private static $_roles = [
@@ -145,11 +153,13 @@ class RbacController extends Controller {
             'imsi_partner_list', 'imsi_partner_create', 'imsi_partner_edit', 'imsi_partner_delete',
             'oca_bw_list', 'oca_bw_create', 'oca_bw_edit', 'oca_bw_delete',
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'route_replace_edit',
-            'pricelist_group_list', 'pricelist_group_create', 'pricelist_group_edit', 'pricelist_group_delete'
+            'pricelist_group_list', 'pricelist_group_create', 'pricelist_group_edit', 'pricelist_group_delete',
+            'mcc_list', 'mcc_create', 'mcc_edit', 'mcc_delete', 'mnc_list', 'mnc_create', 'mnc_edit', 'mnc_delete'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete',
-            'pricelist_group_list', 'pricelist_group_create', 'pricelist_group_edit', 'pricelist_group_delete'
+            'pricelist_group_list', 'pricelist_group_create', 'pricelist_group_edit', 'pricelist_group_delete',
+            'mcc_list', 'mcc_create', 'mcc_edit', 'mcc_delete', 'mnc_list', 'mnc_create', 'mnc_edit', 'mnc_delete'
         ]],
         ['role' => 'admin_routing', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view', 'user_list',

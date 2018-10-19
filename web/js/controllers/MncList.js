@@ -1,0 +1,44 @@
+var MncListCtrl = function ($scope, Mnc, Redirect, $window) {
+
+    $scope.sortType = 'name';
+    $scope.sortReverse = false;
+    $scope.searchQuery = '';
+
+    $scope.filterFields = [
+        'name'
+    ];
+
+    $scope.init = function (tab) {
+        if (tab) tab.title = 'MNC';
+
+        Mnc.read().then(function (data) {
+            $scope.list = data;
+        });
+    };
+
+    $scope.clickCreate = function () {
+        Redirect.mncCreate().then(function () {
+            $scope.init();
+        });
+    };
+
+    $scope.clickItem = function (item) {
+        if (!userPermissions['mnc_edit']) {
+            return;
+        }
+
+        if (window.getSelection().type == 'Range') return;
+
+        Redirect.mncEdit(item.mnc).then(function () {
+            $scope.init();
+        });
+    };
+
+    $scope.deleteItem = function (item) {
+        if (!$window.confirm('Удалить?')) return;
+
+        Mnc.delete(item.mnc).then(function (response) {
+            $scope.init()
+        });
+    };
+};

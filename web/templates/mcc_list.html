@@ -1,0 +1,60 @@
+<div ng-if="userPermissions['mcc_create']">
+    <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
+</div>
+<h4>MCC</h4>
+
+<form>
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa-search"></i></div>
+            <input type="text" class="form-control" placeholder="Поиск" ng-model="searchQuery">
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped table-hover table-condensed" >
+    <thead>
+    <tr>
+        <th width="10%">
+            <a href="#" ng-click="sortType = 'mcc'; sortReverse = !sortReverse">
+                MCC
+                <span ng-show="sortType == 'mcc' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'mcc' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
+        <th width="29%">
+            <a href="#" ng-click="sortType = 'country'; sortReverse = !sortReverse">
+                Страна
+                <span ng-show="sortType == 'country' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'country' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
+        <th width="29%">
+            <a href="#" ng-click="sortType = 'iso'; sortReverse = !sortReverse">
+                ISO
+                <span ng-show="sortType == 'iso' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'iso' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
+        <th width="29%">
+            <a href="#" ng-click="sortType = 'country_code'; sortReverse = !sortReverse">
+                Код страны
+                <span ng-show="sortType == 'country_code' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'country_code' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
+        <th ng-if="userPermissions['mcc_delete']">&nbsp;</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.mcc}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.country}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.iso}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.country_code}}</td>
+        <td ng-if="userPermissions['mcc_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
+    </tr>
+
+    </tbody>
+</table>
