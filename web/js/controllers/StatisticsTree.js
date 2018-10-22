@@ -1,13 +1,20 @@
 var StatisticsTreeCtrl = function($scope, StatisticsTree, $window) {
 
-    $scope.path = '';
+    $scope.origPath = '';
+    $scope.termPath = '';
     $scope.pathName = '';
-    $scope.coreKey = '';
+    $scope.origCoreKey = '';
+    $scope.termCoreKey = '';
 
     $scope.refresh = function() {
-        StatisticsTree.get({server_id: $scope.server.id, path: $scope.path, core_key: $scope.coreKey}).then(function (data) {
-            $scope.result = data.result;
-            $scope.coreKey = data.core_key;
+        StatisticsTree.get({server_id: $scope.server.id, path: $scope.origPath, core_key: $scope.origCoreKey, is_orig: true}).then(function (data) {
+            $scope.origResult = data.result;
+            $scope.origCoreKey = data.core_key;
+        });
+
+        StatisticsTree.get({server_id: $scope.server.id, path: $scope.termPath, core_key: $scope.termCoreKey, is_orig: false}).then(function (data) {
+            $scope.termResult = data.result;
+            $scope.termCoreKey = data.core_key;
         });
     };
 
@@ -21,25 +28,28 @@ var StatisticsTreeCtrl = function($scope, StatisticsTree, $window) {
         $scope.$broadcast('angular-ui-tree:expand-all');
     };
 
-    $scope.$on('angular-ui-tree:collapse-all', function () {
-        $scope.collapsed = true;
-    });
+    $scope.descend = function (subitem, collapsed, isOrig) {
+        var coreKey;
+        var resultName;
 
-    $scope.$on('angular-ui-tree:expand-all', function () {
-        $scope.collapsed = false;
-    });
+        if (isOrig) {
+            coreKey = $scope.origCoreKey;
+            resultName = 'origResult';
+        } else {
+            coreKey = $scope.termCoreKey;
+            resultName = 'termResult';
+        }
 
-    $scope.descend = function (subitem, collapsed) {
         if (subitem.subitems && subitem.subitems.length == 0 && !collapsed) {
-            StatisticsTree.get({server_id: $scope.server.id, path: subitem.path, core_key: $scope.coreKey}).then(function (result) {
-                var pathArray = ($scope.coreKey + "," + subitem.path).split(',');
+            StatisticsTree.get({server_id: $scope.server.id, path: subitem.path, core_key: coreKey, is_orig: isOrig}).then(function (result) {
+                var pathArray = (coreKey + "," + subitem.path).split(',');
 
                 for (var i in result.result.subitems) {
                     var wantedResult = result.result.subitems[i].subitems;
                     break;
                 }
 
-                $scope.updateItemRecursively($scope.result, pathArray, wantedResult);
+                $scope.updateItemRecursively($scope[resultName], pathArray, wantedResult);
             });
         }
     };

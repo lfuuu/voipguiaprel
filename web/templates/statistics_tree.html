@@ -3,38 +3,85 @@
     <h4>Дерево ASR-ACD</h4>
 </div>
 
-<div>
-    <script type="text/ng-template" id="nodes_renderer.html">
-        <br />
-        <div class="tree-container-bordered">
-            <div ng-if="subitem.name" ui-tree-handle class="tree-node tree-node-content">
-                <a class="btn btn-success btn-xs" ng-disabled="!subitem.subitems" data-nodrag ng-click="toggle(this); descend(subitem, collapsed)">
-                    <span class="glyphicon" ng-class="{
-                      'glyphicon-chevron-right': collapsed,
-                      'glyphicon-chevron-down': !collapsed
-                    }"></span>
-                </a>
-                <span>[{{subitem.name}}: {{subitem.key}}: {{subitem.item_name}}]: [Звонки: {{subitem.calls}}], [ACD: {{subitem.acd.join(', ')}}], [ASR: {{subitem.asr.join(', ')}}]</span>
-                <span><img popover="{{subitem.money}}" data-popover-trigger="mouseenter" popover-placement="right" src="../img/moneybag.png"></span>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#orig" data-toggle="tab">Оригинация</a></li>
+    <li><a href="#term" data-toggle="tab">Терминация</a></li>
+</ul>
+
+<br />
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <div class="tab-pane active" id="orig">
+        <script type="text/ng-template" id="nodes_renderer_orig.html">
+            <br />
+            <div class="tree-container-bordered">
+                <div ng-if="subitem.name" ui-tree-handle class="tree-node tree-node-content">
+                    <a class="btn btn-success btn-xs" ng-disabled="!subitem.subitems" data-nodrag ng-click="toggle(this); descend(subitem, collapsed, true)">
+                <span class="glyphicon" ng-class="{
+                  'glyphicon-chevron-right': collapsed,
+                  'glyphicon-chevron-down': !collapsed
+                }"></span>
+                    </a>
+                    <span>[{{subitem.name}}: {{subitem.key}}: {{subitem.item_name}}]: [Звонки: {{subitem.calls}}], [ACD: {{subitem.acd.join(', ')}}], [ASR: {{subitem.asr.join(', ')}}]</span>
+                    <span><img popover="{{subitem.money}}" data-popover-trigger="mouseenter" popover-placement="right" src="../img/moneybag.png"></span>
+                </div>
+
+                <ol ui-tree-nodes="" ng-model="subitem.subitems" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="subitem in subitem.subitems" ui-tree-node is-orig="true" collapsed="true" class="stripe" ng-include="'nodes_renderer_orig.html'">
+                    </li>
+                </ol>
+
             </div>
+        </script>
 
-            <ol ui-tree-nodes="" ng-model="subitem.subitems" ng-class="{hidden: collapsed}">
-                <li ng-repeat="subitem in subitem.subitems" ui-tree-node collapsed="true" class="stripe" ng-include="'nodes_renderer.html'">
-                </li>
-            </ol>
-
-        </div>
-    </script>
-
-    <div>
-        <button ng-click="collapseAll()">Свернуть все<div></div></button>
         <div>
-            <span style="font-weight: bold;">{{pathName}}</span>
+            <button ng-click="collapseAll()">Свернуть все<div></div></button>
+            <div>
+                <span style="font-weight: bold;">{{pathName}}</span>
+            </div>
+            <div ui-tree="treeOptions" data-drag-enabled="false" id="tree-root-orig">
+                <ol ui-tree-nodes ng-model="origResult">
+                    <li ng-repeat="subitem in origResult.subitems" collapsed="false" ui-tree-node is-orig="true" ng-include="'nodes_renderer_orig.html'"></li>
+                </ol>
+            </div>
         </div>
-        <div ui-tree="treeOptions" data-drag-enabled="false" id="tree-root">
-            <ol ui-tree-nodes ng-model="result">
-                <li ng-repeat="subitem in result.subitems" collapsed="false" ui-tree-node ng-include="'nodes_renderer.html'"></li>
-            </ol>
+    </div>
+    <div class="tab-pane" id="term">
+        <script type="text/ng-template" id="nodes_renderer_term.html">
+            <br />
+            <div class="tree-container-bordered">
+                <div ng-if="subitem.name" ui-tree-handle class="tree-node tree-node-content">
+                    <a class="btn btn-success btn-xs" ng-disabled="!subitem.subitems" data-nodrag ng-click="toggle(this); descend(subitem, collapsed, false)">
+                <span class="glyphicon" ng-class="{
+                  'glyphicon-chevron-right': collapsed,
+                  'glyphicon-chevron-down': !collapsed
+                }"></span>
+                    </a>
+                    <span>[{{subitem.name}}: {{subitem.key}}: {{subitem.item_name}}]: [Звонки: {{subitem.calls}}], [ACD: {{subitem.acd.join(', ')}}], [ASR: {{subitem.asr.join(', ')}}]</span>
+                    <span><img popover="{{subitem.money}}" data-popover-trigger="mouseenter" popover-placement="right" src="../img/moneybag.png"></span>
+                </div>
+
+                <ol ui-tree-nodes="" ng-model="subitem.subitems" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="subitem in subitem.subitems" ui-tree-node is-orig="false" collapsed="true" class="stripe" ng-include="'nodes_renderer_term.html'">
+                    </li>
+                </ol>
+
+            </div>
+        </script>
+
+        <div>
+            <button ng-click="collapseAll()">Свернуть все<div></div></button>
+            <div>
+                <span style="font-weight: bold;">{{pathName}}</span>
+            </div>
+            <div ui-tree="treeOptions" data-drag-enabled="false" id="tree-root-term">
+                <ol ui-tree-nodes ng-model="termResult">
+                    <li ng-repeat="subitem in termResult.subitems" collapsed="false" ui-tree-node is-orig="false" ng-include="'nodes_renderer_term.html'"></li>
+                </ol>
+            </div>
         </div>
     </div>
 </div>
+

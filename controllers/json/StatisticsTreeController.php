@@ -24,6 +24,7 @@ class StatisticsTreeController extends JsonController
         $serverId = $this->request['server_id'];
         $path = $this->request['path'];
         $coreKey = $this->request['core_key'];
+        $isOrig = $this->request['is_orig'];
         
         $server = $this->getServerOr404($serverId);
     
@@ -34,6 +35,10 @@ class StatisticsTreeController extends JsonController
             'path' => '[' . $path . ']',
             'max_level' => 2,
         ];
+        
+        if ($isOrig) {
+            $apiParams['origination'] = true;
+        }
     
         $request = $apiUrl . 'api/asracd?' . http_build_query($apiParams);
         
@@ -156,6 +161,36 @@ class StatisticsTreeController extends JsonController
             $rate = implode(', ', array_reverse($money['rate']));
             $newMoneyText .= $currency . ': cost: [' . $cost . '], rate: [' . $rate . "]\n";
         }
+        
+        if (!empty($item['all_money'])) {
+            $currentMoney = [];
+            $previousMoney = [];
+            
+            foreach ($item['all_money']['current']['sum'] as $currency => $sum) {
+                if ($sum && $sum > 0) {
+                    $currentMoney[] = $currency . ': ' . $sum;
+                }
+            }
+    
+            foreach ($item['all_money']['previous']['sum'] as $currency => $sum) {
+                if ($sum && $sum > 0) {
+                    $previousMoney[] = $currency . ': ' . $sum;
+                }
+            }
+            
+            if (count($currentMoney) > 0) {
+                $currentMoneyText = implode(', ', $currentMoney);
+                
+                $newMoneyText .= 'Сумма c ' . $item['all_money']['current']['start'] . ': ' . $currentMoneyText . "\n";
+            }
+    
+            if (count($previousMoney) > 0) {
+                $previousMoneyText = implode(', ', $previousMoney);
+        
+                $newMoneyText .= 'Сумма c ' . $item['all_money']['previous']['start'] . ': ' . $previousMoneyText . "\n";
+            }
+        }
+        
         
         return $newMoneyText;
     }
