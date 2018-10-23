@@ -15,6 +15,12 @@ use app\queries\billing_uu\PricelistFilterAQuery;
  * @property string $time_start
  * @property string $time_end
  * @property bool $mode_selected
+ * @property bool $f_inv_nnp_destination
+ * @property bool $f_inv_nnp_country
+ * @property bool $f_inv_nnp_operator
+ * @property bool $f_inv_nnp_region
+ * @property bool $f_inv_nnp_city
+ * @property bool $f_inv_nnp_ndc_type
  */
 class PricelistFilterA extends \yii\db\ActiveRecord
 {
@@ -31,7 +37,8 @@ class PricelistFilterA extends \yii\db\ActiveRecord
         return [
             [['nnp_destination', 'nnp_country', 'nnp_operator', 'nnp_region', 'nnp_city', 'nnp_ndc_type', 'time_start', 'time_end'], 'string'],
             [['pricelist_location_id'], 'integer'],
-            [['mode_selected'], 'boolean']
+            [['mode_selected', 'f_inv_nnp_destination', 'f_inv_nnp_country', 'f_inv_nnp_operator',
+                'f_inv_nnp_region', 'f_inv_nnp_city', 'f_inv_nnp_ndc_type'], 'boolean']
         ];
     }
 

@@ -14,8 +14,8 @@
                 <label class="col-sm-2 control-label">Режим работы</label>
                 <div class="col-sm-10">
                     <div class="btn-group" ng-click="item.mode_selected = !item.mode_selected">
-                        <button type="button" class="btn btn-sm {{item.mode_selected ? 'btn-success active' : 'btn-default'}}">Выбранные</button>
-                        <button type="button" class="btn btn-sm {{!item.mode_selected ? 'btn-primary active' : 'btn-default'}}">Кроме выбранных</button>
+                        <button type="button" class="btn btn-sm {{item.mode_selected ? 'btn-primary active' : 'btn-default'}}">Выбранные</button>
+                        <button type="button" class="btn btn-sm {{!item.mode_selected ? 'btn-danger active' : 'btn-default'}}">Кроме выбранных</button>
                     </div>
                 </div>
             </div>
@@ -48,12 +48,24 @@
                 <div class="tab-pane{{(nnpMode == NNP_MODE_DIRECTION) ? ' active' : '' }}" id="npp-destination">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Направление</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-6">
                             <select ui-select2 ng-model="item.nnp_destination" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="destination in destinationList" value="{{::destination.id}}">
                                     {{::destination.name}}
                                 </option>
                             </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn {{!item.f_inv_nnp_destination ? 'btn-primary active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_destination = false">Выбранные
+                                </button>
+                                <button type="button"
+                                        class="btn {{item.f_inv_nnp_destination ? 'btn-danger active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_destination = true">Кроме выбранных
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -61,31 +73,67 @@
                 <div class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filters">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Страна</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-6">
                             <select ui-select2 ng-model="item.nnp_country" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="country in countryList" value="{{::country.code}}">
                                     {{::country.name_rus}}
                                 </option>
                             </select>
                         </div>
+                        <div class="col-sm-4">
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn {{!item.f_inv_nnp_country ? 'btn-primary active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_country = false">Выбранные
+                                </button>
+                                <button type="button"
+                                        class="btn {{item.f_inv_nnp_country ? 'btn-danger active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_country = true">Кроме выбранных
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group" ng-if="item.nnp_country">
                         <label class="col-sm-2 control-label">Регион</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-6">
                             <select ui-select2 ng-model="item.nnp_region" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="region in regionList" value="{{::region.id}}">{{::region.name}}
                                 </option>
                             </select>
                         </div>
+                        <div class="col-sm-4">
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn {{!item.f_inv_nnp_region ? 'btn-primary active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_region = false">Выбранные
+                                </button>
+                                <button type="button"
+                                        class="btn {{item.f_inv_nnp_region ? 'btn-danger active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_region = true">Кроме выбранных
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group" ng-if="item.nnp_country && item.nnp_region">
                         <label class="col-sm-2 control-label">Город</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-6">
                             <select ui-select2 ng-model="item.nnp_city" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="city in cityList" value="{{::city.id}}">{{::city.name}}</option>
                             </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn {{!item.f_inv_nnp_city ? 'btn-primary active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_city = false">Выбранные
+                                </button>
+                                <button type="button"
+                                        class="btn {{item.f_inv_nnp_city ? 'btn-danger active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_city = true">Кроме выбранных
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -101,12 +149,12 @@
                         <div class="col-sm-4">
                             <div class="btn-group">
                                 <button type="button"
-                                        class="btn {{!item.nnp_is_exclude_operators ? 'btn-primary active' : 'btn-default'}}"
-                                        ng-click="item.nnp_is_exclude_operators = false">Выбранные
+                                        class="btn {{!item.f_inv_nnp_operator ? 'btn-primary active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_operator = false">Выбранные
                                 </button>
                                 <button type="button"
-                                        class="btn {{item.nnp_is_exclude_operators ? 'btn-danger active' : 'btn-default'}}"
-                                        ng-click="item.nnp_is_exclude_operators = true">Кроме выбранных
+                                        class="btn {{item.f_inv_nnp_operator ? 'btn-danger active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_operator = true">Кроме выбранных
                                 </button>
                             </div>
                         </div>
@@ -114,11 +162,23 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Тип NDC</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-6">
                             <select ui-select2 ng-model="item.nnp_ndc_type" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}
                                 </option>
                             </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn {{!item.f_inv_nnp_ndc_type ? 'btn-primary active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_ndc_type = false">Выбранные
+                                </button>
+                                <button type="button"
+                                        class="btn {{item.f_inv_nnp_ndc_type ? 'btn-danger active' : 'btn-default'}}"
+                                        ng-click="item.f_inv_nnp_ndc_type = true">Кроме выбранных
+                                </button>
+                            </div>
                         </div>
                     </div>
 

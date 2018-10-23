@@ -159,9 +159,15 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, PricelistFilterA, Nn
             data.nnp_city = '{}';
             data.nnp_operator = '{}';
             data.nnp_ndc_type = '{}';
+            data.f_inv_nnp_country = false;
+            data.f_inv_nnp_operator = false;
+            data.f_inv_nnp_region = false;
+            data.f_inv_nnp_city = false;
+            data.f_inv_nnp_ndc_type = false;
             data.nnp_destination = $scope.stringifyNnpData(data.nnp_destination);
         } else {
             data.nnp_destination = '{}';
+            data.f_inv_nnp_destination = false;
             data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
             data.nnp_region = $scope.stringifyNnpData(data.nnp_region);
             data.nnp_city = $scope.stringifyNnpData(data.nnp_city);
