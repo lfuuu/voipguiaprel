@@ -6,6 +6,7 @@ use app\models\Airp;
 use app\models\Attribute;
 use app\models\AttributeGroup;
 use app\models\auth\RouteReplace;
+use app\models\auth\TestPricelist;
 use app\models\billing_uu\ImsiPartner;
 use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterA;
@@ -487,6 +488,20 @@ class BaseController extends \yii\web\Controller
         $item = TestCall::findOne($testCallId);
         if ($item === null) {
             throw new HttpException(404, 'TestCall не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return TestPricelist
+     * @throws HttpException
+     */
+    protected function getTestPricelistOr404($id)
+    {
+        $item = TestPricelist::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'TestPricelist не найден');
         }
         return $item;
     }

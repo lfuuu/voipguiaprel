@@ -118,6 +118,10 @@ class RbacController extends Controller {
         ['name' => 'mnc_create', 'description' => 'Создание MNC'],
         ['name' => 'mnc_edit', 'description' => 'Редактирование MNC'],
         ['name' => 'mnc_delete', 'description' => 'Удаление MNC'],
+        ['name' => 'test_pricelist_list', 'description' => 'Просмотр списка тестов прайслистов'],
+        ['name' => 'test_pricelist_create', 'description' => 'Создание теста прайслистов'],
+        ['name' => 'test_pricelist_edit', 'description' => 'Редактирование теста прайслистов'],
+        ['name' => 'test_pricelist_delete', 'description' => 'Удаление теста прайслистов'],
     ];
     
     private static $_roles = [
@@ -154,12 +158,14 @@ class RbacController extends Controller {
             'oca_bw_list', 'oca_bw_create', 'oca_bw_edit', 'oca_bw_delete',
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'route_replace_edit',
             'pricelist_group_list', 'pricelist_group_create', 'pricelist_group_edit', 'pricelist_group_delete',
-            'mcc_list', 'mcc_create', 'mcc_edit', 'mcc_delete', 'mnc_list', 'mnc_create', 'mnc_edit', 'mnc_delete'
+            'mcc_list', 'mcc_create', 'mcc_edit', 'mcc_delete', 'mnc_list', 'mnc_create', 'mnc_edit', 'mnc_delete',
+            'test_pricelist_list', 'test_pricelist_create', 'test_pricelist_edit', 'test_pricelist_delete'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete',
             'pricelist_group_list', 'pricelist_group_create', 'pricelist_group_edit', 'pricelist_group_delete',
-            'mcc_list', 'mcc_create', 'mcc_edit', 'mcc_delete', 'mnc_list', 'mnc_create', 'mnc_edit', 'mnc_delete'
+            'mcc_list', 'mcc_create', 'mcc_edit', 'mcc_delete', 'mnc_list', 'mnc_create', 'mnc_edit', 'mnc_delete',
+            'test_pricelist_list', 'test_pricelist_create', 'test_pricelist_edit', 'test_pricelist_delete'
         ]],
         ['role' => 'admin_routing', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view', 'user_list',

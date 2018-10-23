@@ -33,9 +33,27 @@ class MncController extends JsonController
         
         return
             Mnc::find()
-                ->select(['mnc', 'network'])
+                ->select(['mcc', 'mnc', 'network'])
                 ->orderBy('network')
                 ->asArray()
+                ->all();
+    }
+    
+    public function actionListByMcc()
+    {
+        if (!\Yii::$app->user->can('mnc_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $mcc = $this->request['mcc'];
+        
+        return
+            Mnc::find()
+                ->select(['id' => 'mnc', 'name' => 'network'])
+                ->where('mcc = :mcc')
+                ->orderBy('network')
+                ->asArray()
+                ->addParams([':mcc' => $mcc])
                 ->all();
     }
 

@@ -87,6 +87,9 @@ class AppAsset extends AssetBundle
         'js/controllers/MccEdit.js',
         'js/controllers/MncList.js',
         'js/controllers/MncEdit.js',
+        'js/controllers/TestPricelistEdit.js',
+        'js/controllers/TestPricelistList.js',
+        'js/controllers/TestPricelistShowTestPrimary.js',
     ];
 
     public $templates = [
@@ -155,5 +158,8 @@ class AppAsset extends AssetBundle
         'templates/mcc_edit.html',
         'templates/mnc_list.html',
         'templates/mnc_edit.html',
+        'templates/test_pricelist_edit.html',
+        'templates/test_pricelist_list.html',
+        'templates/test_pricelist_show_test.html',
     ];
 }

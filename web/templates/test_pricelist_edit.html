@@ -1,0 +1,73 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">
+            Тест прайслистов {{::item.name}}
+        </h3>
+        <h3 ng-if="!item.id">Создание Теста прайслистов</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.name" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Прайслист</label>
+            <div class="col-sm-6">
+                <select-box list="pricelist" model="item.pricelist_id" placeholder="Выберите прайслист" required="true"></select-box>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Номер А</label>
+            <div class="col-sm-6">
+                <input class="form-control" placeholder="Номер А" ng-model="item.a_number" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Номер B</label>
+            <div class="col-sm-6">
+                <input class="form-control" placeholder="Номер B" ng-model="item.b_number" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Местоположение</label>
+            <div class="col-sm-6">
+                <select ui-select2 ng-model="item.location_id" placeholder="Местоположение" style="width: 100%">
+                    <option ng-repeat="locationItem in locationList" value="{{locationItem.id}}">{{locationItem.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div ng-hide="item.location_id != 3" class="form-group">
+            <label class="col-sm-2 control-label">MCC</label>
+            <div class="col-sm-6">
+                <select ui-select2 ng-model="item.mcc" style="width: 100%">
+                    <option value="">-- Выберите --</option>
+                    <option ng-repeat="mcc in mccList" value="{{::mcc.id}}">{{::mcc.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div ng-hide="item.location_id != 3 || !item.mcc" class="form-group">
+            <label class="col-sm-2 control-label">MNC</label>
+            <div class="col-sm-6">
+                <select ui-select2 ng-model="item.mnc" style="width: 100%">
+                    <option value="">-- Выберите --</option>
+                    <option ng-repeat="mnc in mncList" value="{{::mnc.id}}">{{::mnc.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

@@ -376,6 +376,19 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
         mncEdit: function(mnc) {
             return openModal(MncEditCtrl, '/templates/mnc_edit.html', {mnc: mnc});
-        }
+        },
+        testPricelistList: function() {
+            $cookies.selectedPage = 'testPricelistList';
+            return openTab(TestPricelistListCtrl, '/templates/test_pricelist_list.html', {}, 'billing');
+        },
+        testPricelistEdit: function(id) {
+            return openModal(TestPricelistEditCtrl, '/templates/test_pricelist_edit.html', {id: id});
+        },
+        testPricelistCreate: function() {
+            return openModal(TestPricelistEditCtrl, '/templates/test_pricelist_edit.html', {});
+        },
+        testPricelistShowTest: function(id, displayTreeView) {
+            return openModal(TestPricelistShowTestCtrl, '/templates/test_pricelist_show_test.html', {id: id, displayTreeView: displayTreeView});
+        },
     };
 });

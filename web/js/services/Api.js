@@ -828,6 +828,9 @@ app.factory('Mnc', function ($q, ApiLoader, $rootScope) {
         get: function(data) {
             return ApiLoader.post(url + 'get', data);
         },
+        listByMcc: function (data) {
+            return ApiLoader.post(url + 'list-by-mcc', data);
+        },
         list: function() {
             if (promise !== undefined) return promise;
 
@@ -1016,8 +1019,64 @@ app.factory('TestAuth', function ($q, ApiLoader, $rootScope) {
         },
         trace: function(data) {
             return ApiLoader.post(url + 'trace', data);
-        },
+        }
 	};
+});
+
+app.factory('TestPricelist', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/test-pricelist/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        result: function(data) {
+            return ApiLoader.post(url + 'result', data);
+        },
+        list: function() {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {server_id: $rootScope.server.id};
+                ApiLoader.post(url + 'list', data)
+                    .then(function(data){
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function(data){
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function(data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', {id: id});
+        },
+        descend: function(data) {
+            return ApiLoader.post(url + 'descend', data);
+        },
+        clearCache: function() {
+            return ApiLoader.post(url + 'clear-cache');
+        },
+        trace: function(data) {
+            return ApiLoader.post(url + 'trace', data);
+        }
+    };
 });
 
 app.factory('TestGroup', function ($q, ApiLoader, $rootScope) {
@@ -1360,7 +1419,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               RouteCase, Outcome, Number, Destination,
                               Airp, ReleaseReason, RouteTable, Network,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
-                              PricelistGroup, Mcc) {
+                              PricelistGroup, Mcc, Pricelist) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -1418,6 +1477,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     pricelistGroup: function () {
       return PricelistGroup.list();
+    },
+    pricelist: function () {
+      return Pricelist.list();
     },
     mcc: function () {
       return Mcc.list();
