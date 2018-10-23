@@ -22,21 +22,22 @@
                     <span ng-show="sortType == 'id' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="10%">
+            <th width="15%">
                 <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                     Название
                     <span ng-show="sortType == 'name' && sortReverse" class="caret-down"></span>
                     <span ng-show="sortType == 'name' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="10%"></th>
-            <th width="15%">
+            <th width="5%"></th>
+            <th width="10%">
                 <a href="#" ng-click="sortType = 'pricelist_name'; sortReverse = !sortReverse">
                     Прайслист
                     <span ng-show="sortType == 'pricelist_name' && sortReverse" class="caret-down"></span>
                     <span ng-show="sortType == 'pricelist_name' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
+            <th width="5%"></th>
             <th width="10%">
                 <a href="#" ng-click="sortType = 'a_number'; sortReverse = !sortReverse">
                     Номер А
@@ -80,10 +81,12 @@
         <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
-            <td>
-                <button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">MAIN</button>
-            </td>
+            <td><button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">MAIN</button></td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.pricelist_name}}</td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">
+                <span class="label label-success" ng-if="item.is_orig">ORIG</span>
+                <span class="label label-danger" ng-if="!item.is_orig">TERM</span>
+            </td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.a_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.b_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.location_name}}</td>

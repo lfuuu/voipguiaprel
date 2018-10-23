@@ -20,11 +20,12 @@
                     <table>
                         <tr>
                             <td style="vertical-align:top;">
-                                <span class="label label-primary" >[{{step.type}}]</span>
+                                <span ng-if="step.type" class="label label-primary" >[{{step.type}}]</span>
                             </td>
                             <td>
                                 &nbsp;
-                                <span>{{step.trace}}</span>
+                                <span ng-if="step.trace">{{step.trace}}</span>
+                                <span ng-if="!step.trace">Нет результата</span>
                             </td>
                         </tr>
                     </table>
@@ -43,7 +44,7 @@
             <button ng-click="collapseAll()">Свернуть все<div></div></button>
             <div ui-tree data-drag-enabled="false" id="tree-root">
                 <ol ui-tree-nodes ng-model="item">
-                    <li ng-repeat="step in item.item.steps" collapsed="false" ui-tree-node ng-include="'nodes_renderer.html'">123123</li>
+                    <li ng-repeat="step in item.steps" collapsed="false" ui-tree-node ng-include="'nodes_renderer.html'">123123</li>
                 </ol>
             </div>
         </div>

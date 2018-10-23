@@ -21,7 +21,8 @@ var TestPricelistEditCtrl = function($scope, $rootScope, TestPricelist, Mcc, Mnc
     } else {
         $scope.item = {
             name: 'testName',
-            location_id: 1
+            location_id: 1,
+            is_orig: true
         };
 
         $scope.$watch('item.mcc', watchers.mcc);

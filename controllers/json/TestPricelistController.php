@@ -154,7 +154,7 @@ class TestPricelistController extends JsonController
             'mnc' => $item->mnc,
             'location_id' => $item->location_id,
             'pricelist_id' => $item->pricelist_id,
-            'orig' => true
+            'orig' => $item->is_orig
         ];
         
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
@@ -162,7 +162,7 @@ class TestPricelistController extends JsonController
         $response = file_get_contents($request);
         
         return [
-            'item' => ['steps' => [json_decode($response, true)]],
+            'steps' => [json_decode($response, true)],
             'id' => $item->id,
             'name' => $item->name
         ];
