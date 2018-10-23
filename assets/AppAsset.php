@@ -89,7 +89,7 @@ class AppAsset extends AssetBundle
         'js/controllers/MncEdit.js',
         'js/controllers/TestPricelistEdit.js',
         'js/controllers/TestPricelistList.js',
-        'js/controllers/TestPricelistShowTestPrimary.js',
+        'js/controllers/TestPricelistShowTest.js',
     ];
 
     public $templates = [
