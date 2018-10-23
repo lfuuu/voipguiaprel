@@ -39,6 +39,11 @@ var TestPricelistEditCtrl = function($scope, $rootScope, TestPricelist, Mcc, Mnc
     $scope.locationList = List.location();
 
     $scope.save = function () {
+        if ($scope.item.location_id != 3) {
+            $scope.item.mcc = '';
+            $scope.item.mnc = '';
+        }
+
         TestPricelist.save($scope.item).then(function (response) {
             $modalInstance.close();
         });

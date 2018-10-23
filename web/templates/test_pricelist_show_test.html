@@ -20,7 +20,7 @@
                     <table>
                         <tr>
                             <td style="vertical-align:top;">
-                                <span ng-if="step.type" class="label label-primary" >[{{step.type}}]</span>
+                                <span ng-if="step.type" class="label label-primary">[{{step.type}}]</span>
                             </td>
                             <td>
                                 &nbsp;
@@ -29,7 +29,6 @@
                             </td>
                         </tr>
                     </table>
-                    <br />
                 </div>
 
                 <ol ui-tree-nodes="" ng-model="step.steps" ng-class="{hidden: collapsed}">
@@ -37,9 +36,32 @@
                     </li>
                 </ol>
 
+                <div ng-if="step.match === true || step.match === false">
+                    <br />
+                    <span ng-if="step.match === true && step.fix_price" class="label label-success">[Фиксированная цена звонка: {{step.fix_price}}]</span>
+                    <span ng-if="step.match === true && step.rate_price" class="label label-success">[Цена за минуту: {{step.rate_price}}]</span>
+                    <span ng-if="step.match === true && step.interconnect_price" class="label label-success">[Цена интерконнекта: {{step.interconnect_price}}]</span>
+                    <span ng-if="step.match === false" class="label label-danger">[ПРАЙСЛИСТ НЕ ПОДОШЕЛ]</span>
+                </div>
             </div>
         </script>
 
+        <div>
+            <span class="label label-success">Номер А:</span>
+            <br />
+            <b>{{item.number_range_a}}</b>
+            <br />
+            <b>{{item.destination_a}}</b>
+        </div>
+        <br />
+        <div>
+            <span class="label label-danger">Номер B:</span>
+            <br />
+            <b>{{item.number_range_b}}</b>
+            <br />
+            <b>{{item.destination_b}}</b>
+        </div>
+        <br />
         <div>
             <button ng-click="collapseAll()">Свернуть все<div></div></button>
             <div ui-tree data-drag-enabled="false" id="tree-root">

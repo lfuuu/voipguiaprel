@@ -148,7 +148,7 @@ class TestPricelistController extends JsonController
     
         $apiParams = [
             'cmd' => 'priceV2Calc',
-            'num_a' => $item->b_number,
+            'num_a' => $item->a_number,
             'num_b' => $item->b_number,
             'mcc' => $item->mcc,
             'mnc' => $item->mnc,
@@ -163,8 +163,94 @@ class TestPricelistController extends JsonController
         
         return [
             'steps' => [json_decode($response, true)],
+            'number_range_a' => $this->getNumberRangeByNum($item->a_number, $apiUrl),
+            'number_range_b' => $this->getNumberRangeByNum($item->b_number, $apiUrl),
+            'destination_a' => $this->getDestinationByNum($item->a_number, $apiUrl),
+            'destination_b' => $this->getDestinationByNum($item->b_number, $apiUrl),
             'id' => $item->id,
             'name' => $item->name
         ];
+    }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionGetNumberRangeByNum()
+    {
+        if (!\Yii::$app->user->can('test_pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
+        $number = $this->request['number'];
+    
+        $server = $this->getServerOr404($this->request['server_id']);
+    
+        $apiUrl = $server->apiUrl;
+        
+        return $this->getNumberRangeByNum($number, $apiUrl);
+    }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionGetDestinationByNum()
+    {
+        if (!\Yii::$app->user->can('test_pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $number = $this->request['number'];
+        
+        $server = $this->getServerOr404($this->request['server_id']);
+        
+        $apiUrl = $server->apiUrl;
+        
+        return $this->getDestinationByNum($number, $apiUrl);
+    }
+    
+    private function getNumberRangeByNum($number, $apiUrl)
+    {
+        $fields = [
+            'nnp_city_id' => 'app\models\nnp\City',
+            'ndc_type_id' => 'app\models\nnp\NdcType',
+            'nnp_operator_id' => 'app\models\nnp\Operator',
+            'nnp_region_id' => 'app\models\nnp\Region',
+            'ported_operator_id' => 'app\models\nnp\Operator',
+        ];
+        
+        return $this->getCmdByNum('getNumberRangeByNum', $number, $apiUrl, $fields);
+    }
+    
+    private function getDestinationByNum($number, $apiUrl)
+    {
+        return $this->getCmdByNum('getDestinationByNum', $number, $apiUrl);
+    }
+    
+    private function getCmdByNum($cmd, $number, $apiUrl, $fields = [])
+    {
+        $apiParams = [
+            'cmd' => $cmd,
+            'num' => $number
+        ];
+    
+        $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
+    
+        $response = file_get_contents($request);
+        $result = json_decode($response, true);
+        
+        if (!empty($fields)) {
+            foreach ($result as $key => $value) {
+                if (array_key_exists($key, $fields)) {
+                    $newItem = $fields[$key]::findOne(['id' => $value]);
+                    if ($newItem) {
+                        $result[$key] = $newItem->name;
+                    }
+                }
+            }
+        }
+        
+        return $result;
     }
 }

@@ -16,17 +16,17 @@
     <thead>
     <tr>
         <th width="10%">
-            <a href="#" ng-click="sortType = 'mnc'; sortReverse = !sortReverse">
-                MNC
-                <span ng-show="sortType == 'mnc' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'mnc' && !sortReverse" class="caret-up"></span>
-            </a>
-        </th>
-        <th width="10%">
             <a href="#" ng-click="sortType = 'mcc'; sortReverse = !sortReverse">
                 MCC
                 <span ng-show="sortType == 'mcc' && sortReverse" class="caret-down"></span>
                 <span ng-show="sortType == 'mcc' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
+        <th width="10%">
+            <a href="#" ng-click="sortType = 'mnc'; sortReverse = !sortReverse">
+                MNC
+                <span ng-show="sortType == 'mnc' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'mnc' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th width="79%">
@@ -42,8 +42,8 @@
     <tbody>
 
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.mnc}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.mcc}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.mnc}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.network}}</td>
         <td ng-if="userPermissions['mnc_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
     </tr>
