@@ -129,4 +129,42 @@ class TestPricelistController extends JsonController
         $item = TestPricelist::findOne($this->request['id']);
         $item->delete();
     }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionResult()
+    {
+        if (!\Yii::$app->user->can('test_pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $item = $this->getTestPricelistOr404($this->request['id']);
+        
+        $server = $this->getServerOr404($this->request['server_id']);
+        
+        $apiUrl = $server->apiUrl;
+    
+        $apiParams = [
+            'cmd' => 'priceV2Calc',
+            'num_a' => $item->b_number,
+            'num_b' => $item->b_number,
+            'mcc' => $item->mcc,
+            'mnc' => $item->mnc,
+            'location_id' => $item->location_id,
+            'pricelist_id' => $item->pricelist_id,
+            'orig' => true
+        ];
+        
+        $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
+        
+        $response = file_get_contents($request);
+        
+        return [
+            'item' => ['steps' => [json_decode($response, true)]],
+            'id' => $item->id,
+            'name' => $item->name
+        ];
+    }
 }

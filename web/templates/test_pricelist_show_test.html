@@ -3,10 +3,55 @@
         <h3 ng-if="item.id">Результаты теста {{item.name}}</h3>
     </div>
 
+    <div class="modal-body" style="display:block; overflow:auto;">
+        <script type="text/ng-template" id="nodes_renderer.html">
+            <br />
+            <div class="tree-container-bordered">
+                <div ng-if="step.name" ui-tree-handle class="tree-node tree-node-content">
+                    <a class="btn btn-success btn-xs" ng-disabled="!step.steps" data-nodrag ng-click="toggle(this)">
+                    <span class="glyphicon" ng-class="{
+                      'glyphicon-chevron-right': collapsed,
+                      'glyphicon-chevron-down': !collapsed
+                    }"></span>
+                    </a>
+                    <span>{{step.name}}</span>
+                </div>
+                <div ng-if="!step.name" style="display: inline-block;" ui-tree-handle class="tree-node tree-node-content">
+                    <table>
+                        <tr>
+                            <td style="vertical-align:top;">
+                                <span class="label label-primary" >[{{step.type}}]</span>
+                            </td>
+                            <td>
+                                &nbsp;
+                                <span>{{step.trace}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                </div>
+
+                <ol ui-tree-nodes="" ng-model="step.steps" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="step in step.steps" ui-tree-node collapsed="false" class="stripe" ng-include="'nodes_renderer.html'">
+                    </li>
+                </ol>
+
+            </div>
+        </script>
+
+        <div>
+            <button ng-click="collapseAll()">Свернуть все<div></div></button>
+            <div ui-tree data-drag-enabled="false" id="tree-root">
+                <ol ui-tree-nodes ng-model="item">
+                    <li ng-repeat="step in item.item.steps" collapsed="false" ui-tree-node ng-include="'nodes_renderer.html'">123123</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-footer">
         <div class="pull-left">
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
         </div>
     </div>
-
 </form>

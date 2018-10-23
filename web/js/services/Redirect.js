@@ -387,8 +387,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         testPricelistCreate: function() {
             return openModal(TestPricelistEditCtrl, '/templates/test_pricelist_edit.html', {});
         },
-        testPricelistShowTest: function(id, displayTreeView) {
-            return openModal(TestPricelistShowTestCtrl, '/templates/test_pricelist_show_test.html', {id: id, displayTreeView: displayTreeView});
+        testPricelistShowTest: function(id) {
+            return openModal(TestPricelistShowTestCtrl, '/templates/test_pricelist_show_test.html', {id: id});
         },
     };
 });

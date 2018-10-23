@@ -44,7 +44,7 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     };
 
     $scope.showTestPrimary = function (item) {
-        $scope.showTestBasic(item, 'testAuthShowTestPrimary');
+        $scope.showTestBasic(item, 'testPricelistShowTest');
     };
 
     $scope.showTestBasic = function (item, method) {
