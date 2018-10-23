@@ -6,6 +6,7 @@ use Yii;
 use app\classes\JsonController;
 use app\models\nnp\Mcc;
 use app\exceptions\FormValidationException;
+use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -19,7 +20,7 @@ class MccController extends JsonController
     
         return
             Mcc::find()
-                ->select(['id' => 'mcc', 'name' => 'country'])
+                ->select(['id' => 'mcc', 'mcc' => new Expression('LPAD(mcc::text, 3, \'0\')'), 'name' => 'country'])
                 ->orderBy('country')
                 ->asArray()
                 ->all();
@@ -33,7 +34,7 @@ class MccController extends JsonController
         
         return
             Mcc::find()
-                ->select(['mcc', 'country', 'iso', 'country_code'])
+                ->select([new Expression('LPAD(mcc::text, 3, \'0\') as mcc'), 'country', 'iso', 'country_code'])
                 ->orderBy('country')
                 ->asArray()
                 ->all();

@@ -6,6 +6,7 @@ use Yii;
 use app\classes\JsonController;
 use app\models\nnp\Mnc;
 use app\exceptions\FormValidationException;
+use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -19,7 +20,7 @@ class MncController extends JsonController
     
         return
             Mnc::find()
-                ->select(['id' => 'mnc', 'name' => 'network'])
+                ->select(['id' => 'mnc', 'mnc' => new Expression('LPAD(mnc::text, 2, \'0\')'), 'name' => 'network'])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -33,7 +34,7 @@ class MncController extends JsonController
         
         return
             Mnc::find()
-                ->select(['mcc', 'mnc', 'network'])
+                ->select([new Expression('LPAD(mcc::text, 3, \'0\') as mcc'), new Expression('LPAD(mnc::text, 2, \'0\') as mnc'), 'network'])
                 ->orderBy('network')
                 ->asArray()
                 ->all();
@@ -49,7 +50,7 @@ class MncController extends JsonController
         
         return
             Mnc::find()
-                ->select(['id' => 'mnc', 'name' => 'network'])
+                ->select(['id' => 'mnc', 'mnc' => new Expression('LPAD(mnc::text, 2, \'0\')'), 'name' => 'network'])
                 ->where('mcc = :mcc')
                 ->orderBy('network')
                 ->asArray()

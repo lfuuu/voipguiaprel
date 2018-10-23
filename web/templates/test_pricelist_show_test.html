@@ -38,10 +38,10 @@
 
                 <div ng-if="step.match === true || step.match === false">
                     <br />
-                    <span ng-if="step.match === true && step.fix_price" class="label label-success">[Фиксированная цена звонка: {{step.fix_price}}]</span>
-                    <span ng-if="step.match === true && step.rate_price" class="label label-success">[Цена за минуту: {{step.rate_price}}]</span>
-                    <span ng-if="step.match === true && step.interconnect_price" class="label label-success">[Цена интерконнекта: {{step.interconnect_price}}]</span>
-                    <span ng-if="step.match === false" class="label label-danger">[ПРАЙСЛИСТ НЕ ПОДОШЕЛ]</span>
+                    <span ng-if="step.match === true && step.fix_price" class="label-big label-success">[Фиксированная цена звонка: {{step.fix_price}}]</span>
+                    <span ng-if="step.match === true && step.rate_price" class="label-big label-success">[Цена за минуту: {{step.rate_price}}]</span>
+                    <span ng-if="step.match === true && step.interconnect_price" class="label-big label-success">[Цена интерконнекта: {{step.interconnect_price}}]</span>
+                    <span ng-if="step.match === false" class="label-big label-danger">[ПРАЙСЛИСТ НЕ ПОДОШЕЛ]</span>
                 </div>
             </div>
         </script>
@@ -66,7 +66,7 @@
             <button ng-click="collapseAll()">Свернуть все<div></div></button>
             <div ui-tree data-drag-enabled="false" id="tree-root">
                 <ol ui-tree-nodes ng-model="item">
-                    <li ng-repeat="step in item.steps" collapsed="false" ui-tree-node ng-include="'nodes_renderer.html'">123123</li>
+                    <li ng-repeat="step in item.steps" collapsed="true" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                 </ol>
             </div>
         </div>

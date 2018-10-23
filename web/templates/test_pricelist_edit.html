@@ -65,7 +65,7 @@
             <div class="col-sm-6">
                 <select ui-select2 ng-model="item.mcc" style="width: 100%">
                     <option value="">-- Выберите --</option>
-                    <option ng-repeat="mcc in mccList" value="{{::mcc.id}}">{{::mcc.name}}</option>
+                    <option ng-repeat="mcc in mccList" value="{{::mcc.id}}">#{{::mcc.mcc}} {{::mcc.name}}</option>
                 </select>
             </div>
         </div>
@@ -75,7 +75,7 @@
             <div class="col-sm-6">
                 <select ui-select2 ng-model="item.mnc" style="width: 100%">
                     <option value="">-- Выберите --</option>
-                    <option ng-repeat="mnc in mncList" value="{{::mnc.id}}">{{::mnc.name}}</option>
+                    <option ng-repeat="mnc in mncList" value="{{::mnc.id}}">#{{::mnc.mnc}} {{::mnc.name}}</option>
                 </select>
             </div>
         </div>

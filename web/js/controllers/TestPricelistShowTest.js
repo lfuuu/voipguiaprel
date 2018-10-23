@@ -5,6 +5,10 @@ var TestPricelistShowTestCtrl = function($scope, TestPricelist, Redirect, params
         });
     }
 
+    $scope.collapseAll = function () {
+        $scope.$broadcast('angular-ui-tree:collapse-all');
+    };
+
     $scope.back = function () {
         $modalInstance.dismiss();
     };
