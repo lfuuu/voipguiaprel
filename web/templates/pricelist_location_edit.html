@@ -8,7 +8,7 @@
             <label class="col-sm-2 control-label">MCC</label>
             <div class="col-sm-10">
                 <select ui-select2 ng-model="item.mcc" multiple="multiple" style="width: 100%" >
-                    <option ng-repeat="mcc in mccList" value="{{::mcc.id}}">{{::mcc.name}}</option>
+                    <option ng-repeat="mcc in mccList" value="{{::mcc.id}}">#{{mcc.mcc}} {{::mcc.name}}</option>
                 </select>
             </div>
         </div>
@@ -17,7 +17,7 @@
             <label class="col-sm-2 control-label">MNC</label>
             <div class="col-sm-10">
                 <select ui-select2 ng-model="item.mnc" multiple="multiple" style="width: 100%" >
-                    <option ng-repeat="mnc in mncList" value="{{::mnc.id}}">{{::mnc.name}}</option>
+                    <option ng-repeat="mnc in mncList" value="{{::mnc.id}}">#{{mnc.mnc}} {{::mnc.name}}</option>
                 </select>
             </div>
         </div>
