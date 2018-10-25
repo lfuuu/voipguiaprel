@@ -48,9 +48,12 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                 locationHeaderSet = true;
             }
 
+            var locationId = item.id;
+
             $scope.list.push({
                 is_location: true,
                 id: item.id,
+                parent_id: $scope.item.id,
                 location_id: $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name,
                 mcc: item.mcc_string,
                 mnc: item.mnc_string,
@@ -77,9 +80,12 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
 
                 locationHeaderSet = false;
 
+                var filterAId = item.id;
+
                 $scope.list.push({
                     is_filter_a: true,
                     id: item.id,
+                    parent_id: locationId,
                     mode_selected: item.mode_selected ? 'Выбранные' : 'Кроме выбранных',
                     nnp_destination: (item.nnp_destination == '{}' && item.f_inv_nnp_destination) ? 'Запрещено все!' : (item.f_inv_nnp_destination ? ('Кроме: ' + item.nnp_destination_name) : item.nnp_destination_name),
                     nnp_country: (item.nnp_country == '{}' && item.f_inv_nnp_country) ? 'Запрещено все!' : (item.f_inv_nnp_country ? ('Кроме: ' + item.nnp_country_name) : item.nnp_country_name),
@@ -114,6 +120,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                     var filterBItem = {
                         is_filter_b: true,
                         id: item.id,
+                        parent_id: filterAId,
                         mode_selected: item.mode_selected ? 'Выбранные' : 'Кроме выбранных',
                         nnp_destination: (item.nnp_destination == '{}' && item.f_inv_nnp_destination) ? 'Запрещено все!' : (item.f_inv_nnp_destination ? ('Кроме: ' + item.nnp_destination_name) : item.nnp_destination_name),
                         nnp_country: (item.nnp_country == '{}' && item.f_inv_nnp_country) ? 'Запрещено все!' : (item.f_inv_nnp_country ? ('Кроме: ' + item.nnp_country_name) : item.nnp_country_name),

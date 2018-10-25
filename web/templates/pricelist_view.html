@@ -74,7 +74,12 @@
                 <td ng-if="item.is_location" style="text-align: left;">{{item.mcc}}</td>
                 <td ng-if="item.is_location" style="text-align: left;">{{item.mnc}}</td>
                 <td ng-if="item.is_location" style="text-align: left;">{{item.delta_price}}</td>
-                <td ng-if="item.is_location" colspan="6"></td>
+                <td ng-if="item.is_location" colspan="5"></td>
+                <td ng-if="item.is_location">
+                    <a class="btn btn-success btn-xs" ng-click="addLocation(item.parent_id)">
+                        <span class="glyphicon glyphicon-repeat"></span>
+                    </a>
+                </td>
                 <td ng-if="item.is_location">
                     <a class="btn btn-success btn-xs" ng-click="addFilterA(item.id)">
                         <span class="glyphicon glyphicon-plus"></span>
@@ -128,7 +133,12 @@
                 <td ng-if="item.is_filter_a">{{item.nnp_region}}</td>
                 <td ng-if="item.is_filter_a">{{item.nnp_city}}</td>
                 <td ng-if="item.is_filter_a">{{item.nnp_ndc_type}}</td>
-                <td ng-if="item.is_filter_a" colspan="3"></td>
+                <td ng-if="item.is_filter_a" colspan="2"></td>
+                <td ng-if="item.is_filter_a">
+                    <a class="btn btn-success btn-xs" ng-click="addFilterA(item.parent_id)">
+                        <span class="glyphicon glyphicon-repeat"></span>
+                    </a>
+                </td>
                 <td ng-if="item.is_filter_a">
                     <a class="btn btn-success btn-xs" ng-click="addFilterB(item.id)">
                         <span class="glyphicon glyphicon-plus"></span>
@@ -187,7 +197,12 @@
                 <td ng-if="item.is_filter_b">{{item.nnp_region}}</td>
                 <td ng-if="item.is_filter_b">{{item.nnp_city}}</td>
                 <td ng-if="item.is_filter_b">{{item.nnp_ndc_type}}</td>
-                <td ng-if="item.is_filter_b" colspan="3"></td>
+                <td ng-if="item.is_filter_b" colspan="2"></td>
+                <td ng-if="item.is_filter_b">
+                    <a class="btn btn-success btn-xs" ng-click="addFilterB(item.parent_id)">
+                        <span class="glyphicon glyphicon-repeat"></span>
+                    </a>
+                </td>
                 <td ng-if="item.is_filter_b">
                     <a class="btn btn-success btn-xs" ng-click="addPrefixPrice(item.id)">
                         <span class="glyphicon glyphicon-plus"></span>
