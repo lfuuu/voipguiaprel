@@ -1,9 +1,9 @@
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-body">
-        <table class="table table-condensed" style="width: 500px;">
+        <table class="table table-condensed" style="width: 700px;">
             <tbody>
             <tr ng-repeat="item in list">
-                <td ng-if="item.is_pricelist" colspan="4" style="text-align: center;"> (#{{item.id}}) {{item.name}}, валюта {{item.currency_id}}</td>
+                <td ng-if="item.is_pricelist" colspan="5" style="text-align: center;">{{item.name}}, валюта {{item.currency_id}} <span style="color: grey">(#{{item.id}})</span></td>
                 <td ng-if="item.is_pricelist">
                     <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-success btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>
@@ -15,15 +15,18 @@
                     </a>
                 </td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_location" colspan="4" style="border-bottom: 2px solid black;text-align: center;">{{item.location_text}}</td>
+                <td ng-if="item.is_location" colspan="5" style="border-bottom: 2px solid black;text-align: center;">{{item.location_text}} <span style="color: grey">(#{{item.id}})</span></td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;"></td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;"></td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_prefix_price && item.is_filter_a_header" rowspan="{{item.total_prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
-                    {{item.filter_a_name}}
+                    {{item.filter_a_name}} <span style="color: grey">(#{{item.filter_a_id}})</span>
                 </td>
                 <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
-                    {{item.filter_b_name}}<br/>(Интерконнект: {{item.interconnect_price}})
+                    {{item.filter_b_name}} <span style="color: grey">(#{{item.filter_b_id}})</span>
+                </td>
+                <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
+                    Интерконнект:&nbsp;{{item.interconnect_price}}</span>
                 </td>
                 <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
                 <td ng-if="item.is_prefix_price">{{item.b_number_price}}</td>

@@ -143,7 +143,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, PricelistFilterA, Nn
     };
 
     $scope.stringifyNnpData = function (data) {
-        if (!data) {
+        if (!data || data == '{}') {
             return '{}';
         }
 

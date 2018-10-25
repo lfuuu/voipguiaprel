@@ -34,7 +34,8 @@ class MncController extends JsonController
         
         return
             Mnc::find()
-                ->select([new Expression('LPAD(mcc::text, 3, \'0\') as mcc'), new Expression('LPAD(mnc::text, 2, \'0\') as mnc'), 'network'])
+                ->select([new Expression('LPAD(nnp.mnc.mcc::text, 3, \'0\') as mcc'), new Expression('LPAD(nnp.mnc.mnc::text, 2, \'0\') as mnc'), 'nnp.mnc.network', 'mcc.country'])
+                ->innerJoin('nnp.mcc mcc', 'mcc.mcc = nnp.mnc.mcc')
                 ->orderBy('network')
                 ->asArray()
                 ->all();

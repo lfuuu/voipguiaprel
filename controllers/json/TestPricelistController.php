@@ -167,6 +167,8 @@ class TestPricelistController extends JsonController
             'number_range_b' => $this->getNumberRangeByNum($item->b_number, $apiUrl),
             'destination_a' => $this->getDestinationByNum($item->a_number, $apiUrl),
             'destination_b' => $this->getDestinationByNum($item->b_number, $apiUrl),
+            'a_number' => $item->a_number,
+            'b_number' => $item->b_number,
             'id' => $item->id,
             'name' => $item->name
         ];

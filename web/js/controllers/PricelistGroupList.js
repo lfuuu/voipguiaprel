@@ -5,7 +5,7 @@ var PricelistGroupListCtrl = function ($scope, PricelistGroup, Redirect, $window
     $scope.searchQuery = '';
 
     $scope.filterFields = [
-        'name'
+        'id', 'name'
     ];
 
     $scope.init = function (tab) {

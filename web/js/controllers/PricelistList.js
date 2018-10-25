@@ -5,7 +5,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
     $scope.searchQuery = '';
 
     $scope.filterFields = [
-        'name', 'orig', 'date_created', 'date_end', 'is_global'
+        'id', 'name', 'currency_id', 'group_name', 'date_created'
     ];
 
     $scope.init = function (tab) {

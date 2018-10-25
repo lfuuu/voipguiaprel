@@ -20,7 +20,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         for (var locationKey in data.location) {
             var item = data.location[locationKey];
 
-            var locationText = '(#' + item.id + ') Местоположение: ' +
+            var locationText = 'Местоположение: ' +
                 $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name +
                 ((item.mcc_string == '' || item.mcc_string == null) ? '' : ', MCC: ' + item.mcc_string) +
                 ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string) +
@@ -35,22 +35,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
             for (var filterAKey in data.location[locationKey].filterA) {
                 var item = data.location[locationKey].filterA[filterAKey];
-
-                var filterAName = ((item.nnp_country_name == null) ? '' : item.nnp_country_name) +
-                    ((item.nnp_ndc_type_name == null) ? '' : (' ' + item.nnp_ndc_type_name)) +
-                    ((item.nnp_operator_name == null) ? '' : (' ' + item.nnp_operator_name)) +
-                    ((item.nnp_region_name == null) ? '' : (' ' + item.nnp_region_name)) +
-                    ((item.nnp_city_name == null) ? '' : (' ' + item.nnp_city_name));
-
-                if (!filterAName) {
-                    filterAName = item.nnp_destination_name;
-                }
-
-                if (!filterAName) {
-                    filterAName = '--';
-                }
-
-                filterAName = '(#' + item.id + ') ' + filterAName;
+                var filterAName = $scope.formFilterText(item);
+                var filterAId = item.id;
 
                 var hasFilterAHeader = false;
                 var totalPrefixCount = 0;
@@ -62,22 +48,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
                 for (var filterBKey in data.location[locationKey].filterA[filterAKey].filterB) {
                     var item = data.location[locationKey].filterA[filterAKey].filterB[filterBKey];
-
-                    var filterBName = ((item.nnp_country_name == null) ? '' : item.nnp_country_name) +
-                        ((item.nnp_ndc_type_name == null) ? '' : (' ' + item.nnp_ndc_type_name)) +
-                        ((item.nnp_operator_name == null) ? '' : (' ' + item.nnp_operator_name)) +
-                        ((item.nnp_region_name == null) ? '' : (' ' + item.nnp_region_name)) +
-                        ((item.nnp_city_name == null) ? '' : (' ' + item.nnp_city_name));
-
-                    if (!filterBName) {
-                        filterBName = item.nnp_destination_name;
-                    }
-
-                    if (!filterBName) {
-                        filterBName = '--';
-                    }
-
-                    filterBName = '(#' + item.id + ') ' + filterBName;
+                    var filterBName = $scope.formFilterText(item);
+                    var filterBId = item.id;
 
                     var prefixCount = item.prefixPriceNoLimit.length;
                     var interconnectPrice = isNaN(parseFloat(item.interconnect_price)) ? 0 : parseFloat(item.interconnect_price);
@@ -93,6 +65,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                                 is_filter_a_header: !hasFilterAHeader,
                                 filter_a_name: filterAName,
                                 filter_b_name: filterBName,
+                                filter_a_id: filterAId,
+                                filter_b_id: filterBId,
                                 is_prefix_price: true,
                                 prefix_price_id: item.id,
                                 b_number_price: (parseFloat(item.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000,
@@ -119,6 +93,35 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 }
             }
         }
+    };
+
+    $scope.formFilterText = function (item) {
+        var filterText;
+
+        if (item.nnp_country == '{}' && item.f_inv_nnp_country ||
+            item.nnp_city == '{}' && item.f_inv_nnp_city ||
+            item.nnp_destination == '{}' && item.f_inv_nnp_destination ||
+            item.nnp_region == '{}' && item.f_inv_nnp_region ||
+            item.nnp_ndc_type == '{}' && item.f_inv_nnp_ndc_type ||
+            item.nnp_operator == '{}' && item.f_inv_nnp_operator) {
+            filterText = 'Запрещено все!'
+        } else {
+            filterText = ((item.nnp_country_name == null) ? '' : (item.f_inv_nnp_country ? ('Кроме: ' + item.nnp_country_name) : item.nnp_country_name)) +
+                ((item.nnp_ndc_type_name == null) ? '' : (item.f_inv_nnp_ndc_type ? (' Кроме: ' + item.nnp_ndc_type_name) : (' ' + item.nnp_ndc_type_name))) +
+                ((item.nnp_operator_name == null) ? '' : (item.f_inv_nnp_operator ? (' Кроме: ' + item.nnp_operator_name) : (' ' + item.nnp_operator_name))) +
+                ((item.nnp_region_name == null) ? '' : (item.f_inv_nnp_region ? (' Кроме: ' + item.nnp_region_name) : (' ' + item.nnp_region_name))) +
+                ((item.nnp_city_name == null) ? '' : (item.f_inv_nnp_city ? (' Кроме: ' + item.nnp_city_name) : (' ' + item.nnp_city_name)));
+
+            if (!filterText) {
+                filterText = item.f_inv_nnp_destination ? ('Кроме: ' + item.nnp_destination_name) : item.nnp_destination_name;
+            }
+
+            if (!filterText) {
+                filterText = '--';
+            }
+        }
+
+        return filterText;
     };
 
     $scope.initData = function (id) {

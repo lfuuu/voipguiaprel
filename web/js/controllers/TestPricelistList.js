@@ -4,9 +4,9 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     $scope.searchQuery = '';
 
     $scope.filterFields = [
-        'name', 'trunk_name', 'src_number',
-        'dst_number', 'redirect_number', 'cpc',
-        'result_online'
+        'id', 'name', 'pricelist_name', 'a_number',
+        'b_number', 'location_name', 'mcc',
+        'mnc'
     ];
 
     $scope.init = function (tab) {

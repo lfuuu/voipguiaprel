@@ -5,7 +5,7 @@ var MncListCtrl = function ($scope, Mnc, Redirect, $window) {
     $scope.searchQuery = '';
 
     $scope.filterFields = [
-        'name'
+        'mcc', 'mnc', 'country', 'network'
     ];
 
     $scope.init = function (tab) {
