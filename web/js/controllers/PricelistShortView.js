@@ -200,6 +200,24 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         });
     };
 
+    $scope.editLocation = function (id) {
+        Redirect.pricelistLocationEdit(id).then(function () {
+            $scope.initData($scope.item.id);
+        });
+    };
+
+    $scope.editFilterA = function (id) {
+        Redirect.pricelistFilterAEdit(id).then(function () {
+            $scope.initData($scope.item.id);
+        });
+    };
+
+    $scope.editFilterB = function (id) {
+        Redirect.pricelistFilterBEdit(id).then(function () {
+            $scope.initData($scope.item.id);
+        });
+    };
+
     $scope.editPrefixPrice = function (id) {
         Redirect.pricelistPrefixPriceEdit(id).then(function () {
             $scope.initData($scope.item.id);
