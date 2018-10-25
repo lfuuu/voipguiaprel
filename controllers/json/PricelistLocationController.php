@@ -24,6 +24,20 @@ class PricelistLocationController extends JsonController
                 ->one();
     }
     
+    public function actionListBasic()
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        return
+            PricelistLocation::find()
+                ->select(['id' => 'id', 'name' => 'id'])
+                ->where(['is_basic' => true])
+                ->asArray()
+                ->all();
+    }
+    
     public function actionSave()
     {
         if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {

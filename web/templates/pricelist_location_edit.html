@@ -37,6 +37,23 @@
                 </select>
             </div>
         </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Базовый</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.is_basic = !item.is_basic">
+                    <button type="button" class="btn btn-sm {{item.is_basic ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.is_basic ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Базовое местоположение</label>
+            <div class="col-sm-10">
+                <select-box list="locationBasic" model="item.basic_pricelist_location_id" placeholder="Выберите местоположение"></select-box>
+            </div>
+        </div>
     <div class="modal-footer">
         <div class="pull-left">
             <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>

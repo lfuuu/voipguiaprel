@@ -67,7 +67,7 @@ class Pricelist extends \yii\db\ActiveRecord
         return $this->hasMany(PricelistLocation::className(), ['pricelist_id' => 'id'])
             ->select([
                 'billing_uu.pricelist_location.*',
-                'mcc_string' => new Expression('array_to_string(mcc, \', \')'),
+                'mcc_string' => new Expression('(select string_agg(country, \', \') from nnp.mcc where nnp.mcc.mcc = ANY (billing_uu.pricelist_location.mcc))'),
                 'mnc_string' => new Expression('array_to_string(mnc, \', \')'),
                 'delta_price' => new Expression('round(billing_uu.pricelist_location.delta_price, 4)')
             ])
