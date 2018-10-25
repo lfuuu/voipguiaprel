@@ -1325,27 +1325,8 @@ app.factory('PricelistLocation', function ($q, ApiLoader, $rootScope) {
         save: function(data) {
             return ApiLoader.post(url + 'save', data);
         },
-        listBasic: function(data) {
-            if (promise !== undefined) return promise;
-
-            var deferred = $q.defer();
-            if (list !== undefined) {
-                deferred.resolve(list);
-                return deferred.promise;
-            } else {
-                var data = {server_id: $rootScope.server.id};
-                ApiLoader.post(url + 'list-basic', data)
-                    .then(function(data){
-                        list = data;
-                        promise = undefined;
-                        deferred.resolve(data);
-                    }, function(data){
-                        promise = undefined;
-                        deferred.reject(data);
-                    });
-                promise = deferred.promise;
-            }
-            return deferred.promise;
+        listByPricelist: function(data) {
+            return ApiLoader.post(url + 'list-by-pricelist', data);
         },
         delete: function(id) {
             return ApiLoader.post(url + 'delete', {id: id});
@@ -1505,9 +1486,6 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     mcc: function () {
       return Mcc.list();
-    },
-    locationBasic: function () {
-      return PricelistLocation.listBasic();
     },
     testResult: function () {
       return [

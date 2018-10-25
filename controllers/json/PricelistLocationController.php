@@ -24,16 +24,18 @@ class PricelistLocationController extends JsonController
                 ->one();
     }
     
-    public function actionListBasic()
+    public function actionListByPricelist()
     {
         if (!\Yii::$app->user->can('pricelist_edit')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
+        $pricelistId = $this->request['pricelist_id'];
+        
         return
             PricelistLocation::find()
                 ->select(['id' => 'id', 'name' => 'id'])
-                ->where(['is_basic' => true])
+                ->where(['pricelist_id' => $pricelistId])
                 ->asArray()
                 ->all();
     }

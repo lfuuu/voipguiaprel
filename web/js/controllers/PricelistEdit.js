@@ -1,8 +1,12 @@
-var PricelistEditCtrl = function($scope, List, Pricelist, params, $modalInstance, $window) {
+var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, params, $modalInstance, $window) {
 
     if (params.id) {
         Pricelist.get({id: params.id}).then(function(data){
             $scope.item = data;
+
+            PricelistLocation.listByPricelist({'pricelist_id': $scope.item.id}).then(function (data) {
+                $scope.locations = data;
+            });
         });
     } else {
         $scope.item = {

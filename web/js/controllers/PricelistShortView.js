@@ -20,7 +20,9 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         for (var locationKey in data.location) {
             var item = data.location[locationKey];
 
-            var locationText = 'Местоположение: ' +
+            var isBasic = (item.id == $scope.item.basic_pricelist_location_id);
+
+            var locationText = (isBasic ? 'Базовое местоположение: ' : 'Местоположение: ') +
                 $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name +
                 ((item.mcc_string == '' || item.mcc_string == null) ? '' : ', MCC: ' + item.mcc_string) +
                 ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string) +
@@ -30,7 +32,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 is_location: true,
                 id: item.id,
                 location_text: locationText,
-                has_children: data.location[locationKey].filterA.length > 0
+                has_children: data.location[locationKey].filterA.length > 0,
+                is_basic: isBasic
             });
 
             for (var filterAKey in data.location[locationKey].filterA) {
