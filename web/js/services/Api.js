@@ -1037,6 +1037,9 @@ app.factory('TestPricelist', function ($q, ApiLoader, $rootScope) {
         result: function(data) {
             return ApiLoader.post(url + 'result', data);
         },
+        numberResult: function(data) {
+            return ApiLoader.post(url + 'number-result', data);
+        },
         list: function() {
             if (promise !== undefined) return promise;
 

@@ -126,6 +126,7 @@ class RbacController extends Controller {
         ['name' => 'test_pricelist_group_create', 'description' => 'Создание группы тестов прайслистов'],
         ['name' => 'test_pricelist_group_edit', 'description' => 'Редактирование группы тестов прайслистов'],
         ['name' => 'test_pricelist_group_delete', 'description' => 'Удаление группы тестов прайслистов'],
+        ['name' => 'test_number_edit', 'description' => 'Тестирование номера'],
     ];
     
     private static $_roles = [
@@ -148,7 +149,7 @@ class RbacController extends Controller {
             'outcome_edit', 'outcome_delete', 'route_case_list', 'route_case_create',
             'route_case_edit', 'route_case_delete', 'blacklist_edit', 'prefixlist_list', 'prefixlist_create',
             'prefixlist_edit', 'prefixlist_delete', 'airp_list', 'airp_create', 'airp_edit',
-            'airp_delete', 'cpc_list', 'cpc_create', 'cpc_edit',
+            'airp_delete', 'cpc_list', 'cpc_create', 'cpc_edit', 'test_number_edit',
             'cpc_delete','release_reason_list', 'release_reason_create',
             'release_reason_edit', 'release_reason_delete', 'attribute_list',
             'attribute_create', 'attribute_edit', 'attribute_delete', 'attribute_group_list',
@@ -167,7 +168,7 @@ class RbacController extends Controller {
             'test_pricelist_group_list', 'test_pricelist_group_create', 'test_pricelist_group_edit', 'test_pricelist_group_delete'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
-            'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete',
+            'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'test_number_edit',
             'pricelist_group_list', 'pricelist_group_create', 'pricelist_group_edit', 'pricelist_group_delete',
             'mcc_list', 'mcc_create', 'mcc_edit', 'mcc_delete', 'mnc_list', 'mnc_create', 'mnc_edit', 'mnc_delete',
             'test_pricelist_list', 'test_pricelist_create', 'test_pricelist_edit', 'test_pricelist_delete',

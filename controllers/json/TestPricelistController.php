@@ -195,6 +195,29 @@ class TestPricelistController extends JsonController
      * @return array
      * @throws HttpException
      */
+    public function actionNumberResult()
+    {
+        if (!\Yii::$app->user->can('test_pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $number = $this->request['number'];
+        
+        $server = $this->getServerOr404($this->request['server_id']);
+        
+        $apiUrl = $server->apiUrl;
+        
+        return [
+            'number' => $number,
+            'number_range' => $this->getNumberRangeByNum($number, $apiUrl),
+            'destination' => $this->getDestinationByNum($number, $apiUrl),
+        ];
+    }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
     public function actionGetNumberRangeByNum()
     {
         if (!\Yii::$app->user->can('test_pricelist_list')) {
@@ -255,11 +278,11 @@ class TestPricelistController extends JsonController
         ];
     
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
-    
+
         $response = file_get_contents($request);
         $result = json_decode($response, true);
         
-        if (!empty($fields)) {
+        if (!empty($fields) && !empty($result)) {
             foreach ($result as $key => $value) {
                 if (array_key_exists($key, $fields)) {
                     $newItem = $fields[$key]::findOne(['id' => $value]);

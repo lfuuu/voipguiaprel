@@ -400,5 +400,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         testPricelistGroupCreate: function() {
             return openModal(TestPricelistGroupEditCtrl, '/templates/test_pricelist_group_edit.html', {id: null});
         },
+        testNumberEdit: function() {
+            return openModal(TestNumberEditCtrl, '/templates/test_number_edit.html', {});
+        },
     };
 });

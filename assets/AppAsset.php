@@ -92,6 +92,7 @@ class AppAsset extends AssetBundle
         'js/controllers/TestPricelistShowTest.js',
         'js/controllers/TestPricelistGroupEdit.js',
         'js/controllers/TestPricelistGroupList.js',
+        'js/controllers/TestNumberEdit.js',
     ];
 
     public $templates = [
@@ -165,5 +166,6 @@ class AppAsset extends AssetBundle
         'templates/test_pricelist_show_test.html',
         'templates/test_pricelist_group_edit.html',
         'templates/test_pricelist_group_list.html',
+        'templates/test_number_edit.html',
     ];
 }
