@@ -19,10 +19,37 @@
             <span class="label label-success">Номер: {{item.number}}</span>
             <br />
             <br />
-            <b>{{item.number_range}}</b>
+            <table class="table table-condensed">
+                <tr>
+                    <th>Город</th>
+                    <th>NDC</th>
+                    <th>Оператор</th>
+                    <th>Портирован</th>
+                    <th>Тип NDC</th>
+                    <th>Регион</th>
+                    <th>Оператор порт.</th>
+                </tr>
+                <tr>
+                    <td>{{item.number_range.nnp_city_id}}</td>
+                    <td>{{item.number_range.ndc}}</td>
+                    <td>{{item.number_range.nnp_operator_id}}</td>
+                    <td>{{item.number_range.is_number_ported ? 'Да' : 'Нет'}}</td>
+                    <td>{{item.number_range.ndc_type_id}}</td>
+                    <td>{{item.number_range.nnp_region_id}}</td>
+                    <td>{{item.number_range.ported_operator_id}}</td>
+                </tr>
+            </table>
             <br />
-            <br />
-            <b>{{item.destination}}</b>
+            <table class="table table-condensed">
+                <tr>
+                    <th>ID</th>
+                    <th>Направление</th>
+                </tr>
+                <tr ng-repeat="row in item.destination">
+                    <td>{{row.id}}</td>
+                    <td>{{row.name}}</td>
+                </tr>
+            </table>
         </div>
     </div>
 
