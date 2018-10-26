@@ -3,6 +3,13 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
+    $scope.testGroupId = 'undefined';
+
+    $scope.currentPage = 1;
+    $scope.limit = 15;
+    $scope.offset = (($scope.currentPage - 1) * $scope.limit);
+    $scope.totalItems = 0;
+
     $scope.filterFields = [
         'id', 'name', 'pricelist_name', 'a_number',
         'b_number', 'location_name', 'mcc',
@@ -18,15 +25,35 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     $scope.locationList = List.location();
 
     $scope.refreshList = function() {
-        TestPricelist.read().then(function (data) {
-            $scope.list = data;
+        if ($scope.testGroupId == 'undefined') {
+            return;
+        }
+
+        TestPricelist.read({
+            test_group_id: $scope.testGroupId,
+            test_result: $scope.testResult,
+            offset: $scope.offset,
+            limit: $scope.limit
+        }).then(function (data) {
+            $scope.list = data.data;
+            $scope.totalItems = data.totalCount;
         });
     };
+
+    List.testPricelistGroup().then(function (data) {
+        $scope.testGroupList = data;
+    });
 
     $scope.clickCreate = function () {
         Redirect.testPricelistCreate().then(function () {
             $scope.init();
         });
+    };
+
+    $scope.testGroupChanged = function(testGroupId) {
+        $scope.testGroupId = testGroupId;
+
+        $scope.refreshList();
     };
 
     $scope.clickItem = function (item) {
@@ -66,4 +93,9 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
             $scope.init()
         });
     };
+
+    $scope.setPagingData = function (page) {
+        $scope.offset = ((page - 1) * $scope.limit);
+        $scope.refreshList();
+    }
 };

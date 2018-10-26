@@ -39,8 +39,12 @@ class TestPricelistController extends JsonController
         if (!\Yii::$app->user->can('test_pricelist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $testGroupId = $this->request['test_group_id'];
+        $limit = $this->request['limit'];
+        $offset = $this->request['offset'];
         
-        return TestPricelist::find()
+        $data = TestPricelist::find()
                 ->select(['auth.test_pricelist.*', 'mcc.country as mcc_name', 'mnc.network as mnc_name', 'p.name as pricelist_name',
                     new Expression('case 
                         when auth.test_pricelist.location_id = 1 then \'Домашний регион\' 
@@ -50,9 +54,22 @@ class TestPricelistController extends JsonController
                 ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = auth.test_pricelist.mcc')
                 ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = auth.test_pricelist.mnc')
                 ->leftJoin('billing_uu.pricelist as p', 'p.id = auth.test_pricelist.pricelist_id')
+                ->where(['auth.test_pricelist.test_pricelist_group_id' => $testGroupId])
                 ->orderBy('name')
+                ->limit($limit)
+                ->offset($offset)
                 ->asArray()
                 ->all();
+    
+        $count = TestPricelist::find()
+            ->select(['id'])
+            ->where(['test_pricelist_group_id' => $testGroupId])
+            ->count();
+    
+        return [
+            'totalCount' => $count,
+            'data' => $data
+        ];
     }
 
     /**
