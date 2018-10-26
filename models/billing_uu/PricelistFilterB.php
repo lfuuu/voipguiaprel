@@ -28,6 +28,8 @@ use yii\db\Expression;
  * @property bool $f_inv_nnp_region
  * @property bool $f_inv_nnp_city
  * @property bool $f_inv_nnp_ndc_type
+ * @property string $description
+ * @property int $parent_id
  */
 class PricelistFilterB extends \yii\db\ActiveRecord
 {
@@ -43,9 +45,9 @@ class PricelistFilterB extends \yii\db\ActiveRecord
     {
         return [
             [['nnp_destination', 'nnp_country', 'nnp_operator', 'nnp_region', 'nnp_city', 'nnp_ndc_type',
-                'interconnect_price', 'ported_num_price', 'time_start', 'time_end'], 'string'],
+                'interconnect_price', 'ported_num_price', 'time_start', 'time_end', 'description'], 'string'],
             [['pricelist_filter_a_id', 'tarification_free_seconds', 'tarification_interval_seconds',
-                'tarification_type', 'tarification_min_paid_seconds'], 'integer'],
+                'tarification_type', 'tarification_min_paid_seconds', 'parent_id'], 'integer'],
             [['mode_selected', 'f_inv_nnp_destination', 'f_inv_nnp_country', 'f_inv_nnp_operator',
                 'f_inv_nnp_region', 'f_inv_nnp_city', 'f_inv_nnp_ndc_type'], 'boolean']
         ];

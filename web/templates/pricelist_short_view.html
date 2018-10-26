@@ -3,7 +3,7 @@
         <table class="table table-condensed" style="width: 700px;">
             <tbody>
             <tr ng-repeat="item in list">
-                <td ng-if="item.is_pricelist" colspan="5" style="text-align: center;">{{item.name}}, валюта {{item.currency_id}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span></td>
+                <td ng-if="item.is_pricelist" colspan="5" style="text-align: center;">{{item.name}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span></td>
                 <td ng-if="item.is_pricelist">
                     <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-success btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>

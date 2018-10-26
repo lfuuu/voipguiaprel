@@ -13,8 +13,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         $scope.list.push({
             id: data.id,
             is_pricelist: true,
-            name: data.name,
-            currency_id: data.currency_id
+            name: data.description ? data.description : (data.name + ', валюта ' + data.currency_id),
         });
 
         for (var locationKey in data.location) {
@@ -22,11 +21,11 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
             var isBasic = (item.id == $scope.item.basic_pricelist_location_id);
 
-            var locationText = (isBasic ? 'Базовое местоположение: ' : 'Местоположение: ') +
+            var locationText = item.description ? item.description : ((isBasic ? 'Базовое местоположение: ' : 'Местоположение: ') +
                 $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name +
                 ((item.mcc_string == '' || item.mcc_string == null) ? '' : ', MCC: ' + item.mcc_string) +
                 ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string) +
-                ((item.delta_price == '' || item.delta_price == null) ? '' : ', Наценка: ' + item.delta_price);
+                ((item.delta_price == '' || item.delta_price == null) ? '' : ', Наценка: ' + item.delta_price));
 
             $scope.list.push({
                 is_location: true,
@@ -99,6 +98,10 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     };
 
     $scope.formFilterText = function (item) {
+        if (item.description) {
+            return item.description;
+        }
+
         var filterText;
 
         if (item.nnp_country == '{}' && item.f_inv_nnp_country ||

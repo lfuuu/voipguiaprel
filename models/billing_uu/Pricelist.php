@@ -17,6 +17,8 @@ use yii\db\Query;
  * @property bool $is_global
  * @property bool $is_active
  * @property int $basic_pricelist_location_id
+ * @property string $description
+ * @property int $parent_id
  */
 class Pricelist extends \yii\db\ActiveRecord
 {
@@ -31,8 +33,8 @@ class Pricelist extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'currency_id', 'date_created', 'date_start', 'date_end'], 'string'],
-            [['pricelist_version', 'pricelist_group_id', 'type_id', 'basic_pricelist_location_id'], 'integer'],
+            [['name', 'currency_id', 'date_created', 'date_start', 'date_end', 'description'], 'string'],
+            [['pricelist_version', 'pricelist_group_id', 'type_id', 'basic_pricelist_location_id', 'parent_id'], 'integer'],
             [['orig', 'is_global', 'is_active'], 'boolean']
         ];
     }
