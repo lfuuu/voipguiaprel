@@ -14,6 +14,7 @@ use app\queries\auth\TestPricelistQuery;
  * @property int $pricelist_id
  * @property boolean $is_orig
  * @property string $expected_result
+ * @property int $test_pricelist_group_id
  */
 class TestPricelist extends \yii\db\ActiveRecord
 {
@@ -37,7 +38,7 @@ class TestPricelist extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['location_id', 'pricelist_id', 'mcc', 'mnc'], 'integer'],
+            [['location_id', 'pricelist_id', 'mcc', 'mnc', 'test_pricelist_group_id'], 'integer'],
             [['name', 'a_number', 'b_number', 'expected_price'], 'string'],
             [['is_orig'], 'boolean']
         ];

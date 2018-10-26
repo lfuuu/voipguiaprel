@@ -390,5 +390,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         testPricelistShowTest: function(id) {
             return openModal(TestPricelistShowTestCtrl, '/templates/test_pricelist_show_test.html', {id: id});
         },
+        testPricelistGroupList: function() {
+            $cookies.selectedPage = 'testPricelistGroupList';
+            return openTab(TestPricelistGroupListCtrl, '/templates/test_pricelist_group_list.html', {}, 'billing');
+        },
+        testPricelistGroupEdit: function(id) {
+            return openModal(TestPricelistGroupEditCtrl, '/templates/test_pricelist_group_edit.html', {id: id});
+        },
+        testPricelistGroupCreate: function() {
+            return openModal(TestPricelistGroupEditCtrl, '/templates/test_pricelist_group_edit.html', {id: null});
+        },
     };
 });

@@ -82,8 +82,9 @@
                     <a class="list-group-item" ng-if="userPermissions['pricelist_list']" ng-click="Redirect.pricelistList()">Прайслисты</a>
                     <a class="list-group-item" ng-if="userPermissions['pricelist_group_list']" ng-click="Redirect.pricelistGroupList()">Группы прайслистов</a>
                 </div>
-                <div ng-if="userPermissions['test_pricelist_list']" class="list-group">
+                <div ng-if="userPermissions['test_pricelist_list'] || userPermissions['test_pricelist_group_list']" class="list-group">
                     <a class="list-group-item" ng-if="userPermissions['test_pricelist_list']" ng-click="Redirect.testPricelistList()">Тесты прайслистов</a>
+                    <a class="list-group-item" ng-if="userPermissions['test_pricelist_group_list']" ng-click="Redirect.testPricelistGroupList()">Группы тестов прайслистов</a>
                 </div>
                 <div ng-if="userPermissions['mcc_list'] || userPermissions['mnc_list']" class="list-group">
                     <a class="list-group-item" ng-if="userPermissions['mcc_list']" ng-click="Redirect.mccList()">MCC</a>

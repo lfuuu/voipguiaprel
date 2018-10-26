@@ -7,6 +7,7 @@ use app\models\Attribute;
 use app\models\AttributeGroup;
 use app\models\auth\RouteReplace;
 use app\models\auth\TestPricelist;
+use app\models\auth\TestPricelistGroup;
 use app\models\billing_uu\ImsiPartner;
 use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterA;
@@ -516,6 +517,20 @@ class BaseController extends \yii\web\Controller
         $item = TestGroup::findOne($testGroupId);
         if ($item === null) {
             throw new HttpException(404, 'TestGroup не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return TestPricelistGroup
+     * @throws HttpException
+     */
+    protected function getTestPricelistGroupOr404($id)
+    {
+        $item = TestPricelistGroup::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'TestPricelistGroup не найден');
         }
         return $item;
     }
