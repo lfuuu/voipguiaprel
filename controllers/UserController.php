@@ -36,15 +36,16 @@ class UserController extends BaseController
         $rolePairs = $this->getRolePairs();
         
         if ($model->load(Yii::$app->request->post()) && $model->createUser()) {
-            $role = Yii::$app->request->post()['UserForm']['role'];
-
-            $this->createUserAcl($role, $model->id);
+            $userRole = Yii::$app->request->getBodyParam('userRole');
+    
+            $this->createUserAcl($userRole, $model->id);
             
             return $this->redirect(['user/list']);
         } else {
-            return $this->render('edit', [
+            return $this->renderAjax('edit', [
                 'model' => $model,
-                'rolePairs' => $rolePairs
+                'rolePairs' => $rolePairs,
+                'userRolePairs' => []
             ]);
         }
     }
@@ -62,26 +63,23 @@ class UserController extends BaseController
         $model->id = $user->id;
         $model->login = $user->login;
         $model->name = $user->name;
-        $auth = Yii::$app->authManager;
         
-        $role = array_pop($auth->getRolesByUser($user->id));
-        
-        $model->role = $role ? $role->name : '';
-    
         $rolePairs = $this->getRolePairs();
+        $userRolePairs = $this->getUserRolePairs($model->id);
 
         if ($model->load(Yii::$app->request->post()) && $model->updateUser()) {
-            $role = Yii::$app->request->post()['UserForm']['role'];
+            $userRole = Yii::$app->request->getBodyParam('userRole');
             
             UserAcl::deleteAll('user_id = \'' . $model->id . '\'');
     
-            $this->createUserAcl($role, $model->id);
+            $this->createUserAcl($userRole, $model->id);
             
             return $this->redirect(['user/list']);
         } else {
-            return $this->render('edit', [
+            return $this->renderAjax('edit', [
                 'model' => $model,
-                'rolePairs' => $rolePairs
+                'rolePairs' => $rolePairs,
+                'userRolePairs' => $userRolePairs
             ]);
         }
     }
@@ -101,13 +99,33 @@ class UserController extends BaseController
         return $formattedRoleList;
     }
     
-    private function createUserAcl($role, $userId)
+    private function getUserRolePairs($userId)
     {
-        $auth = Yii::$app->authManager;
+        $list = UserAcl::find()
+            ->select('item_name')
+            ->where('user_id = :user_id')
+            ->addParams([':user_id' => $userId])
+            ->asArray()
+            ->all();
         
-        $roleObject = $auth->getRole($role);
+        $formattedList = [];
         
-        $auth->assign($roleObject, $userId);
+        foreach ($list as $item) {
+            $formattedList[] = $item['item_name'];
+        }
+        
+        return $formattedList;
+    }
+    
+    private function createUserAcl($roles, $userId)
+    {
+        foreach ($roles as $role) {
+            $auth = Yii::$app->authManager;
+    
+            $roleObject = $auth->getRole($role);
+    
+            $auth->assign($roleObject, $userId);
+        }
     }
 
     public function actionDelete($id)

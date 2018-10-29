@@ -20,16 +20,15 @@ class UserForm extends Model
             [['id', 'login', 'name'], 'required'],
             ['password', 'required', 'on' => 'create'],
             ['id', 'integer'],
-            ['password', 'string'],
-            ['role', 'string']
+            ['password', 'string']
         ];
     }
 
     public function scenarios()
     {
         return [
-            'create' => ['login','name','password', 'role'],
-            'update' => ['id', 'login','name','password', 'role'],
+            'create' => ['login','name','password'],
+            'update' => ['id', 'login','name','password'],
             'delete' => ['id'],
         ];
     }
@@ -48,8 +47,7 @@ class UserForm extends Model
         return [
             'login' => 'Логин',
             'name' => 'Имя',
-            'password' => 'Пароль',
-            'role' => 'Роль',
+            'password' => 'Пароль'
         ];
     }
 

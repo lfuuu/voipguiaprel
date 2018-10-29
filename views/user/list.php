@@ -37,7 +37,13 @@ use yii\helpers\Html;
                 <?= $item->name ?>
             </td>
             <td style="cursor: pointer" <?php if (\Yii::$app->user->can('user_create')) { ?> onclick="location.href='<?= Url::toRoute(['user/edit', 'id' => $item->id]); ?>'" <?php } ?>>
-                <?= isset($item->assignment) ? $item->assignment->description->description : '' ?>
+                <?php if (!empty($item->assignment)): ?>
+                    <?php $descriptionArray = []; ?>
+                    <?php foreach ($item->assignment as $assignment): ?>
+                        <?php $descriptionArray[] = $assignment->description->description ?>
+                    <?php endforeach; ?>
+                    <?= implode(', ', $descriptionArray) ?>
+                <?php endif; ?>
             </td>
             <?php if (\Yii::$app->user->can('user_delete')) { ?>
             <td>
@@ -48,6 +54,5 @@ use yii\helpers\Html;
             <?php } ?>
         </tr>
     <?php endforeach; ?>
-
     </tbody>
 </table>

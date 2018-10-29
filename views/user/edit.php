@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use \kartik\select2\Select2;
 ?>
 <div class="container">
     <?php if ($model->id): ?>
@@ -14,7 +15,21 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'login')->textInput(['autocomplete'=>'off']); ?>
     <?= $form->field($model, 'name')->textInput(['autocomplete'=>'off']); ?>
     <?= $form->field($model, 'password')->passwordInput(['autocomplete'=>'off']); ?>
-    <?= $form->field($model, 'role')->dropDownList($rolePairs); ?>
+    
+    <div class="row">
+        <div class="col-sm-12">
+            <label>Роли</label>
+            <?= Select2::widget([
+                'name' => 'userRole[]',
+                'value' => $userRolePairs,
+                'data' => $rolePairs,
+                'options' => [
+                    'multiple' => true,
+                ],
+            ])
+            ?>
+        </div>
+    </div>
 
     <div class="form-group">
         <label class="col-sm-2 control-label"></label>
