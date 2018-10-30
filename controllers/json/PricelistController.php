@@ -140,13 +140,37 @@ class PricelistController extends JsonController
         }
     }
     
-    public function actionClone()
+    public function actionInherit()
     {
         if (!\Yii::$app->user->can('pricelist_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
     
-        $result = (new Query())->select(['id' => new Expression('billing_uu.clone_pricelist(:old_pricelist_id, true)')])->addParams([':old_pricelist_id' => $this->request['id']])->one();
+        $name = $this->request['name'];
+        
+        if (!empty($name)) {
+            $result = (new Query())->select(['id' => new Expression('billing_uu.clone_pricelist(:old_pricelist_id, true, :name)')])
+                ->addParams([
+                    ':old_pricelist_id' => $this->request['id'],
+                    ':name' => $name
+                ])->one();
+        } else {
+            $result = (new Query())->select(['id' => new Expression('billing_uu.clone_pricelist(:old_pricelist_id, true)')])
+                ->addParams([
+                    ':old_pricelist_id' => $this->request['id']
+                ])->one();
+        }
+        
+        return $result;
+    }
+    
+    public function actionCopy()
+    {
+        if (!\Yii::$app->user->can('pricelist_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
+        $result = (new Query())->select(['id' => new Expression('billing_uu.clone_pricelist(:old_pricelist_id, false)')])->addParams([':old_pricelist_id' => $this->request['id']])->one();
         
         return $result;
     }

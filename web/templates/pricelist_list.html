@@ -65,6 +65,7 @@
             </a>
         </th>
         <th ng-if="userPermissions['pricelist_create']">&nbsp;</th>
+        <th ng-if="userPermissions['pricelist_create']">&nbsp;</th>
         <th ng-if="userPermissions['pricelist_delete']">&nbsp;</th>
     </tr>
     </thead>
@@ -85,7 +86,11 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_created}}</td>
         <td ng-if="userPermissions['pricelist_create']">
             <button type="button" class="btn btn-default btn-sm"
-                    ng-click="cloneItem(item)">Клонировать</button>
+                    ng-click="inheritItem(item)">Наследовать</button>
+        </td>
+        <td ng-if="userPermissions['pricelist_create']">
+            <button type="button" class="btn btn-default btn-sm"
+                    ng-click="copyItem(item)">Копировать</button>
         </td>
         <td ng-if="userPermissions['pricelist_delete']">
             <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus"

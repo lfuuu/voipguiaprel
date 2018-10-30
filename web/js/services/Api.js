@@ -1279,8 +1279,11 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         read: function(data) {
             return ApiLoader.post(url + 'read', data);
         },
-        clone: function(id) {
-            return ApiLoader.post(url + 'clone', {id: id});
+        inherit: function(id, name) {
+            return ApiLoader.post(url + 'inherit', {id: id, name: name});
+        },
+        copy: function(id) {
+            return ApiLoader.post(url + 'copy', {id: id});
         },
         get: function(data) {
             return ApiLoader.post(url + 'get', data);

@@ -64,10 +64,22 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         });
     };
 
-    $scope.cloneItem = function (item) {
-        if (!$window.confirm('Клонировать?')) return;
+    $scope.inheritItem = function (item) {
+        if (!$window.confirm('Наследовать?')) return;
 
-        Pricelist.clone(item.id).then(function (response) {
+        Pricelist.inherit(item.id, item.name).then(function (response) {
+            $scope.init();
+
+            Redirect.pricelistShortView(response.id).then(function () {
+                $scope.init();
+            });
+        });
+    };
+
+    $scope.copyItem = function (item) {
+        if (!$window.confirm('Копировать?')) return;
+
+        Pricelist.copy(item.id).then(function (response) {
             $scope.init();
 
             Redirect.pricelistShortView(response.id).then(function () {
