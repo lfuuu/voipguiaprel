@@ -6,7 +6,7 @@
                 <td ng-if="item.is_pricelist" colspan="5" style="text-align: center;">
                     {{item.name}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
                 </td>
-                <td><span ng-if="item.parent_id" style="color: grey; cursor: pointer" ng-click="viewParentPricelist(item.parent_id)">&uarr;(#{{item.parent_id}})</span></td>
+                <td><span ng-if="item.parent_id" style="color: grey; cursor: pointer" ng-click="viewParentPricelist(item.parent_id)">&#11105;(#{{item.parent_id}})</span></td>
                 <td ng-if="item.is_pricelist">
                     <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>
@@ -28,8 +28,8 @@
                 <td ng-if="item.is_prefix_price"><span style="cursor: pointer" ng-click="editPrefixPrice(item.prefix_price_id)">{{item.prefix_b}}</span></td>
                 <td ng-if="item.is_prefix_price"><span style="cursor: pointer" ng-click="editPrefixPrice(item.prefix_price_id)">{{item.b_number_price}}</span></td>
                 <td ng-if="item.is_prefix_price">
-                    <span ng-hide="!item.old_b_number_price || item.old_b_number_price >= item.b_number_price" style="color: green;">&uarr;</span>
-                    <span ng-hide="!item.old_b_number_price || item.old_b_number_price <= item.b_number_price" style="color: red;">&darr;</span>
+                    <span ng-hide="!item.old_b_number_price || item.old_b_number_price >= item.b_number_price" style="color: green;">&#11105;</span>
+                    <span ng-hide="!item.old_b_number_price || item.old_b_number_price <= item.b_number_price" style="color: red;">&#11107;</span>
                     <span ng-hide="!item.old_b_number_price || item.old_b_number_price == item.b_number_price" style="color: grey;">{{item.old_b_number_price}}</span>
                 </td>
                 <td ng-if="item.is_prefix_price"></td>

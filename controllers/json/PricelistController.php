@@ -148,10 +148,10 @@ class PricelistController extends JsonController
         
         $item = $this->getPricelistOr404($this->request['id']);
         
-//        try {
+        try {
             $item->delete();
-//        } catch (IntegrityException $e) {
-//            return ['errors' => [['code' => $e->getCode(), 'message' => $e->getMessage()]]];
-//        }
+        } catch (IntegrityException $e) {
+            return ['errors' => [['code' => $e->getCode(), 'message' => $e->getMessage()]]];
+        }
     }
 }
