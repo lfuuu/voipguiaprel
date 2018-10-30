@@ -14,6 +14,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             id: data.id,
             is_pricelist: true,
             name: data.description ? data.description : (data.name + ', валюта ' + data.currency_id),
+            parent_id: data.parent_id
         });
 
         for (var locationKey in data.location) {
@@ -72,6 +73,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                                 is_prefix_price: true,
                                 prefix_price_id: item.id,
                                 b_number_price: (parseFloat(item.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000,
+                                old_b_number_price: (parseFloat(item.old_b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000,
                                 prefix_b: item.prefix_b,
                                 prefix_count: prefixCount,
                                 total_prefix_count: totalPrefixCount,
@@ -86,6 +88,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                                 is_prefix_price: true,
                                 prefix_price_id: item.id,
                                 b_number_price: (parseFloat(item.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000,
+                                old_b_number_price: (parseFloat(item.old_b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000,
                                 prefix_b: item.prefix_b
                             });
                         }
@@ -202,6 +205,14 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
     $scope.viewPricelist = function (id) {
         Redirect.pricelistView(id).then(function () {
+            $scope.initData($scope.item.id);
+        });
+    };
+
+    $scope.viewParentPricelist = function (id) {
+        if (!$window.confirm('Перейти в родительский прайслист?')) return;
+
+        Redirect.pricelistShortView(id).then(function () {
             $scope.initData($scope.item.id);
         });
     };

@@ -3,14 +3,17 @@
         <table class="table table-condensed" style="width: 700px;">
             <tbody>
             <tr ng-repeat="item in list">
-                <td ng-if="item.is_pricelist" colspan="5" style="text-align: center;">{{item.name}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span></td>
+                <td ng-if="item.is_pricelist" colspan="5" style="text-align: center;">
+                    {{item.name}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
+                </td>
+                <td><span ng-if="item.parent_id" style="color: grey; cursor: pointer" ng-click="viewParentPricelist(item.parent_id)">&uarr;(#{{item.parent_id}})</span></td>
                 <td ng-if="item.is_pricelist">
-                    <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-success btn-xs">
+                    <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>
                     </a>
                 </td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_location" colspan="5" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.location_text}} <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span></td>
+                <td ng-if="item.is_location" colspan="6" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.location_text}} <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span></td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;{{item.is_basic ? ' background-color: lightgrey;' : ''}}"></td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_prefix_price && item.is_filter_a_header" rowspan="{{item.total_prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
@@ -24,6 +27,11 @@
                 </td>
                 <td ng-if="item.is_prefix_price"><span style="cursor: pointer" ng-click="editPrefixPrice(item.prefix_price_id)">{{item.prefix_b}}</span></td>
                 <td ng-if="item.is_prefix_price"><span style="cursor: pointer" ng-click="editPrefixPrice(item.prefix_price_id)">{{item.b_number_price}}</span></td>
+                <td ng-if="item.is_prefix_price">
+                    <span ng-hide="!item.old_b_number_price || item.old_b_number_price >= item.b_number_price" style="color: green;">&uarr;</span>
+                    <span ng-hide="!item.old_b_number_price || item.old_b_number_price <= item.b_number_price" style="color: red;">&darr;</span>
+                    <span ng-hide="!item.old_b_number_price || item.old_b_number_price == item.b_number_price" style="color: grey;">{{item.old_b_number_price}}</span>
+                </td>
                 <td ng-if="item.is_prefix_price"></td>
             </tr>
             </tbody>

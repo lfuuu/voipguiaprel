@@ -90,7 +90,12 @@ class PricelistFilterB extends \yii\db\ActiveRecord
     public function getPrefixPriceNoLimit()
     {
         return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])
-            ->select(['*', 'b_number_price' => new Expression('round(billing_uu.pricelist_prefix_price.b_number_price, 4)')])
+            ->select([
+                'billing_uu.pricelist_prefix_price.*',
+                'b_number_price' => new Expression('round(billing_uu.pricelist_prefix_price.b_number_price, 4)'),
+                'old_b_number_price' => new Expression('case when o.b_number_price is not null then round(o.b_number_price, 4) else null end')
+            ])
+            ->leftJoin(['o' => 'billing_uu.pricelist_prefix_price'], 'o.id = billing_uu.pricelist_prefix_price.parent_id')
             ->orderBy('billing_uu.pricelist_prefix_price.prefix_b');
     }
     

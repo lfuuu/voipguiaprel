@@ -130,7 +130,7 @@ class PricelistController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
     
-        $result = (new Query())->select(['id' => new Expression('billing_uu.clone_pricelist(:old_pricelist_id)')])->addParams([':old_pricelist_id' => $this->request['id']])->one();
+        $result = (new Query())->select(['id' => new Expression('billing_uu.clone_pricelist(:old_pricelist_id, true)')])->addParams([':old_pricelist_id' => $this->request['id']])->one();
         
         return $result;
     }
