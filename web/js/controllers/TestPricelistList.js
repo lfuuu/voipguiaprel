@@ -97,5 +97,5 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     $scope.setPagingData = function (page) {
         $scope.offset = ((page - 1) * $scope.limit);
         $scope.refreshList();
-    }
+    };
 };

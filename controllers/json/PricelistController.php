@@ -33,14 +33,30 @@ class PricelistController extends JsonController
         if (!\Yii::$app->user->can('pricelist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $groupId = $this->request['group_id'];
+        $limit = $this->request['limit'];
+        $offset = $this->request['offset'];
         
-        return
-            Pricelist::find()
+        $data = Pricelist::find()
                 ->select(['billing_uu.pricelist.*', 'g.name as group_name'])
                 ->leftJoin('billing_uu.pricelist_group g', 'g.id = billing_uu.pricelist.pricelist_group_id')
+                ->where(['billing_uu.pricelist.pricelist_group_id' => $groupId])
                 ->orderBy('name')
+                ->limit($limit)
+                ->offset($offset)
                 ->asArray()
                 ->all();
+    
+        $count = Pricelist::find()
+            ->select(['id'])
+            ->where(['pricelist_group_id' => $groupId])
+            ->count();
+    
+        return [
+            'totalCount' => $count,
+            'data' => $data
+        ];
     }
     
     public function actionGetWithDependents()
