@@ -31,6 +31,9 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
             version: data.pricelist_version
         });
 
+        $scope.pricelistIsActive = data.is_active;
+        $scope.pricelistDateStart = data.date_start;
+
         var locationHeaderSet = false;
 
         for (var locationKey in data.location) {
@@ -278,7 +281,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     };
 
     $scope.addPrefixPrice = function (filterBId) {
-        Redirect.pricelistPrefixPriceCreate(filterBId).then(function () {
+        Redirect.pricelistPrefixPriceCreate(filterBId, $scope.pricelistDateStart, $scope.pricelistIsActive).then(function () {
             $scope.initData($scope.item.id);
         });
     };
@@ -308,7 +311,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     };
 
     $scope.editPrefixPrice = function (id) {
-        Redirect.pricelistPrefixPriceEdit(id).then(function () {
+        Redirect.pricelistPrefixPriceEdit(id, $scope.pricelistIsActive).then(function () {
             $scope.initData($scope.item.id);
         });
     };

@@ -1,5 +1,7 @@
 var PricelistLocationEditCtrl = function($scope, List, PricelistLocation, Mcc, Mnc, params, $modalInstance, $window) {
 
+    $scope.pricelistIsActive = params.pricelist_is_active;
+
     if (params.id) {
         PricelistLocation.get({id: params.id}).then(function(data){
             $scope.item = data;

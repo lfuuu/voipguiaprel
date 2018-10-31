@@ -34,7 +34,6 @@
                 <span ng-show="sortType == 'id' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
-        <th width="5%"></th>
         <th width="20%">
             <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                 Название
@@ -65,7 +64,6 @@
             </a>
         </th>
         <th ng-if="userPermissions['pricelist_create']">&nbsp;</th>
-        <th ng-if="userPermissions['pricelist_create']">&nbsp;</th>
         <th ng-if="userPermissions['pricelist_delete']">&nbsp;</th>
     </tr>
     </thead>
@@ -73,7 +71,6 @@
 
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)"><span ng-if="item.parent_id" style="color: grey;">&#11105;(#{{item.parent_id}})</span></td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.currency_id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.group_name}}</td>
@@ -84,10 +81,6 @@
             <span class="label label-success" ng-if="item.is_active">Активный</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_created}}</td>
-        <td ng-if="userPermissions['pricelist_create']">
-            <button type="button" class="btn btn-default btn-sm"
-                    ng-click="inheritItem(item)">Наследовать</button>
-        </td>
         <td ng-if="userPermissions['pricelist_create']">
             <button type="button" class="btn btn-default btn-sm"
                     ng-click="copyItem(item)">Копировать</button>

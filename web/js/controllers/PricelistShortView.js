@@ -14,8 +14,14 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             id: data.id,
             is_pricelist: true,
             name: data.description ? data.description : (data.name + ', валюта ' + data.currency_id),
+            date_created: data.date_created,
+            date_start: data.date_start,
+            is_active: data.is_active,
             parent_id: data.parent_id
         });
+
+        $scope.pricelistIsActive = data.is_active;
+        $scope.pricelistDateStart = data.date_start;
 
         for (var locationKey in data.location) {
             var item = data.location[locationKey];
@@ -209,34 +215,26 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         });
     };
 
-    $scope.viewParentPricelist = function (id) {
-        if (!$window.confirm('Перейти в родительский прайслист?')) return;
-
-        Redirect.pricelistShortView(id).then(function () {
-            $scope.initData($scope.item.id);
-        });
-    };
-
     $scope.editLocation = function (id) {
-        Redirect.pricelistLocationEdit(id).then(function () {
+        Redirect.pricelistLocationEdit(id, $scope.pricelistIsActive).then(function () {
             $scope.initData($scope.item.id);
         });
     };
 
     $scope.editFilterA = function (id) {
-        Redirect.pricelistFilterAEdit(id).then(function () {
+        Redirect.pricelistFilterAEdit(id, $scope.pricelistIsActive).then(function () {
             $scope.initData($scope.item.id);
         });
     };
 
     $scope.editFilterB = function (id) {
-        Redirect.pricelistFilterBEdit(id).then(function () {
+        Redirect.pricelistFilterBEdit(id, $scope.pricelistIsActive).then(function () {
             $scope.initData($scope.item.id);
         });
     };
 
     $scope.editPrefixPrice = function (id) {
-        Redirect.pricelistPrefixPriceEdit(id).then(function () {
+        Redirect.pricelistPrefixPriceEdit(id, $scope.pricelistIsActive).then(function () {
             $scope.initData($scope.item.id);
         });
     };

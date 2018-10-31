@@ -9,9 +9,22 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
             });
         });
     } else {
+        var date = new Date();
+
+        var dateCreated = date.toISOString().slice(0, 10);
+        date.setDate(date.getDate() + 7);
+        var dateStart = date.toISOString().slice(0, 10);
+
         $scope.item = {
-            pricelist_version: 1
+            pricelist_version: 1,
+            date_created: dateCreated,
+            date_start: dateStart,
+            date_end: '3000-01-01'
         };
+
+        if (params.group_id) {
+            $scope.item.pricelist_group_id = params.group_id;
+        }
     }
 
     $scope.currency = List.currency();
@@ -30,5 +43,10 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
     $scope.back = function()
     {
         $modalInstance.dismiss();
+    };
+
+    $scope.createNewVersion = function()
+    {
+        //do_nothing
     };
 };

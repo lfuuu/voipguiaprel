@@ -47,7 +47,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
     };
 
     $scope.clickCreate = function () {
-        Redirect.pricelistCreate().then(function () {
+        Redirect.pricelistCreate($scope.groupId).then(function () {
             $scope.init();
         });
     };
@@ -61,18 +61,6 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
 
         Redirect.pricelistShortView(item.id).then(function () {
             $scope.init();
-        });
-    };
-
-    $scope.inheritItem = function (item) {
-        if (!$window.confirm('Наследовать?')) return;
-
-        Pricelist.inherit(item.id, item.name).then(function (response) {
-            $scope.init();
-
-            Redirect.pricelistShortView(response.id).then(function () {
-                $scope.init();
-            });
         });
     };
 

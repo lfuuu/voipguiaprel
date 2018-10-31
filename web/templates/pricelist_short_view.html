@@ -3,10 +3,9 @@
         <table class="table table-condensed" style="width: 700px;">
             <tbody>
             <tr ng-repeat="item in list">
-                <td ng-if="item.is_pricelist" colspan="5" style="text-align: center;">
-                    {{item.name}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
+                <td ng-if="item.is_pricelist" colspan="6" style="text-align: center;">
+                    {{item.name}} | Создан: {{item.date_created}}{{item.is_active ? ' | Активен с: ' + item.date_start : ''}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
                 </td>
-                <td><span ng-if="item.parent_id" style="color: grey; cursor: pointer" ng-click="viewParentPricelist(item.parent_id)">&#11105;(#{{item.parent_id}})</span></td>
                 <td ng-if="item.is_pricelist">
                     <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>

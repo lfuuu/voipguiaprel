@@ -84,6 +84,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nn
 
     $scope.nnpMode = $scope.NNP_MODE_DIRECTION;
 
+    $scope.pricelistIsActive = params.pricelist_is_active;
+
     if (params.id) {
         PricelistFilterB.get({id: params.id}).then(function (data) {
             $scope.item = data;
