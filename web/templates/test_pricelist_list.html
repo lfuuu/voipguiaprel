@@ -1,5 +1,5 @@
 <div>
-    <a ng-if="userPermissions['test_auth_create']" class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
+    <a ng-if="userPermissions['test_pricelist_create']" class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
 </div>
 <h4>Тестирование прайслистов</h4>
 
@@ -85,7 +85,7 @@
                     <span ng-show="sortType == 'mnc' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="1" ng-if="userPermissions['test_auth_delete']">&nbsp;</th>
+            <th width="1" ng-if="userPermissions['test_pricelist_delete']">&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -104,7 +104,7 @@
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.location_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.mcc_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.mnc_name}}</td>
-            <td ng-if="userPermissions['test_auth_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
+            <td ng-if="userPermissions['test_pricelist_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
         </tr>
 
     </tbody>
