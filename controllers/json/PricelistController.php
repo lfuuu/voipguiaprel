@@ -6,6 +6,7 @@ use app\models\billing_uu\Pricelist;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use yii\base\Exception;
 use yii\db\Expression;
 use yii\db\IntegrityException;
 use yii\db\Query;
@@ -144,6 +145,23 @@ class PricelistController extends JsonController
         if (isset($this->request['old_pricelist_id'])) {
             $item->importFromOldVersion($this->request['old_pricelist_id']);
         }
+    }
+    
+    public function actionToggleActive()
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $item = $this->getPricelistOr404($this->request['id']);
+        
+        if ($item->isInCommercialUse()) {
+            throw new Exception('In commercial use!');
+        } else {
+            $item->is_active = !$item->is_active;
+            $item->save();
+        }
+        
     }
     
     public function actionInherit()

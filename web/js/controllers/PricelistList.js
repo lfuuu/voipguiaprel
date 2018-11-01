@@ -84,6 +84,15 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         });
     };
 
+    $scope.toggleActive = function (item) {
+        var text = item.is_active ? 'Деактивировать?' : 'Активировать?';
+        if (!$window.confirm(text)) return;
+
+        Pricelist.toggleActive(item.id).then(function (response) {
+            $scope.init()
+        });
+    };
+
     $scope.setPagingData = function (page) {
         $scope.offset = ((page - 1) * $scope.limit);
         $scope.refreshList();
