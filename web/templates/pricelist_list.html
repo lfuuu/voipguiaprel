@@ -64,6 +64,7 @@
             </a>
         </th>
         <th ng-if="userPermissions['pricelist_create']">&nbsp;</th>
+        <th ng-if="false && userPermissions['pricelist_edit']">&nbsp;</th>
         <th ng-if="userPermissions['pricelist_delete']">&nbsp;</th>
     </tr>
     </thead>
@@ -79,11 +80,18 @@
             <span class="label label-info" ng-if="!item.orig">TERM</span>
             <span class="label label-success" ng-if="item.is_global">Глобальный</span>
             <span class="label label-success" ng-if="item.is_active">Активный</span>
+            <span class="label label-danger" ng-if="item.is_in_use">Коммерческий</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_created}}</td>
         <td ng-if="userPermissions['pricelist_create']">
             <button type="button" class="btn btn-default btn-sm"
                     ng-click="copyItem(item)">Копировать</button>
+        </td>
+        <td ng-if="false && userPermissions['pricelist_create']">
+            <button type="button" ng-hide="!item.is_active" class="btn btn-default btn-sm"
+                    ng-click="toggleActive(item)">Деактивировать</button>
+            <button type="button" ng-hide="item.is_active" class="btn btn-default btn-sm"
+                    ng-click="toggleActive(item)">Активировать</button>
         </td>
         <td ng-if="userPermissions['pricelist_delete']">
             <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus"

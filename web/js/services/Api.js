@@ -1294,6 +1294,9 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         getWithDependentsNoLimit: function(data) {
             return ApiLoader.post(url + 'get-with-dependents-no-limit', data);
         },
+        toggleActive: function(id) {
+            return ApiLoader.post(url + 'toggle-active', data);
+        },
         list: function() {
             if (promise !== undefined) return promise;
 

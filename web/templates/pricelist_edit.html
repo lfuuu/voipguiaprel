@@ -43,7 +43,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Валюта</label>
             <div class="col-sm-10">
-                <select ui-select2 ng-model="item.currency_id" placeholder="Валюта" style="width: 100%" >
+                <select ui-select2 ng-model="item.currency_id" placeholder="Валюта" style="width: 100%">
                     <option ng-repeat="currencyItem in currency" value="{{currencyItem.id}}">{{currencyItem.name}}</option>
                 </select>
             </div>
@@ -103,16 +103,6 @@
                 <div class="btn-group" ng-click="item.is_global = !item.is_global">
                     <button type="button" class="btn btn-sm {{item.is_global ? 'btn-success active' : 'btn-default'}}">Да</button>
                     <button type="button" class="btn btn-sm {{!item.is_global ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Активный</label>
-            <div class="col-sm-10">
-                <div class="btn-group" ng-click="item.is_active = !item.is_active">
-                    <button type="button" class="btn btn-sm {{item.is_active ? 'btn-success active' : 'btn-default'}}">Да</button>
-                    <button type="button" class="btn btn-sm {{!item.is_active ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                 </div>
             </div>
         </div>
