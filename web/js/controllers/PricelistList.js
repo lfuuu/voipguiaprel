@@ -8,7 +8,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         'id', 'name', 'currency_id', 'group_name', 'date_created'
     ];
 
-    $scope.groupId = 'undefined';
+    $scope.groupId = 'all';
 
     $scope.currentPage = 1;
     $scope.limit = 15;

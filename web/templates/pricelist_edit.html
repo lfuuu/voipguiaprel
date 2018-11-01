@@ -43,7 +43,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Валюта</label>
             <div class="col-sm-10">
-                <select ui-select2 ng-model="item.currency_id" placeholder="Валюта" style="width: 100%">
+                <select ui-select2 ng-model="item.currency_id" placeholder="Валюта" style="width: 100%" ng-disabled="item.is_active">
                     <option ng-repeat="currencyItem in currency" value="{{currencyItem.id}}">{{currencyItem.name}}</option>
                 </select>
             </div>
@@ -52,7 +52,7 @@
         <div ng-if="item.id" class="form-group">
             <label class="col-sm-2 control-label">Дата создания</label>
             <div class="col-sm-10">
-                <input class="form-control" placeholder="Дата (ГГГГ-ММ-ДД)" ng-model="item.date_created" readonly>
+                <input class="form-control" placeholder="Дата (ГГГГ-ММ-ДД)" ng-model="item.date_created" disabled>
             </div>
             <!--<div class="col-sm-4">-->
                 <!--<button type="button" class="btn btn-success" ng-click="createNewVersion()">Создать новую версию</button>-->
@@ -69,7 +69,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Дата начала действия</label>
             <div class="col-sm-10">
-                <input class="form-control" placeholder="Дата (ГГГГ-ММ-ДД)" ng-model="item.date_start" required>
+                <input class="form-control" placeholder="Дата (ГГГГ-ММ-ДД)" ng-model="item.date_start"  ng-disabled="item.is_active">
             </div>
         </div>
 
@@ -83,16 +83,16 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Версия прайслиста</label>
             <div class="col-sm-10">
-                <input class="form-control" placeholder="1" ng-model="item.pricelist_version" required>
+                <input class="form-control" placeholder="1" ng-model="item.pricelist_version" ng-disabled="item.is_active">
             </div>
         </div>
 
         <div class="form-group">
             <label class="col-sm-2 control-label">Оригинация</label>
             <div class="col-sm-10">
-                <div class="btn-group" ng-click="item.orig = !item.orig">
-                    <button type="button" class="btn btn-sm {{item.orig ? 'btn-success active' : 'btn-default'}}">Да</button>
-                    <button type="button" class="btn btn-sm {{!item.orig ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                <div class="btn-group" ng-click="!item.is_active ? (item.orig = !item.orig) : ''" ng-disabled="item.is_active">
+                    <button type="button" class="btn btn-sm {{item.orig ? 'btn-success active' : 'btn-default'}}" ng-disabled="item.is_active">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.orig ? 'btn-primary active' : 'btn-default'}}" ng-disabled="item.is_active">Нет</button>
                 </div>
             </div>
         </div>
@@ -100,9 +100,9 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Глобальный</label>
             <div class="col-sm-10">
-                <div class="btn-group" ng-click="item.is_global = !item.is_global">
-                    <button type="button" class="btn btn-sm {{item.is_global ? 'btn-success active' : 'btn-default'}}">Да</button>
-                    <button type="button" class="btn btn-sm {{!item.is_global ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                <div class="btn-group" ng-click="!item.is_active ? (item.is_global = !item.is_global) : ''" ng-disabled="item.is_active">
+                    <button type="button" class="btn btn-sm {{item.is_global ? 'btn-success active' : 'btn-default'}}" ng-disabled="item.is_active">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.is_global ? 'btn-primary active' : 'btn-default'}}" ng-disabled="item.is_active">Нет</button>
                 </div>
             </div>
         </div>
@@ -110,14 +110,14 @@
         <div ng-if="item.id" class="form-group">
             <label class="col-sm-2 control-label">Базовое местоположение</label>
             <div class="col-sm-10">
-                <select ui-select2 ng-model="item.basic_pricelist_location_id" placeholder="Базовое местоположение" style="width: 100%" >
+                <select ui-select2 ng-model="item.basic_pricelist_location_id" placeholder="Базовое местоположение" style="width: 100%" ng-disabled="item.is_active">
                     <option value="">-- Выберите --</option>
                     <option ng-repeat="locationItem in locations" value="{{locationItem.id}}">{{locationItem.name}}</option>
                 </select>
             </div>
         </div>
 
-        <div class="form-group">
+        <div ng-if="!item.id" class="form-group">
             <label class="col-sm-2 control-label">Импортировать из прайслиста</label>
             <div class="col-sm-10">
                 <input class="form-control" placeholder="1" ng-model="item.old_pricelist_id">

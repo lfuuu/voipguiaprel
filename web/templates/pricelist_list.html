@@ -12,6 +12,7 @@
                 <div class="form-group col-sm-6">
                     <select ui-select2 style="width: 100%" tags="true" ng-change="groupChanged(groupId)" placeholder="Группа" ng-model="groupId" required>
                         <option value="undefined">-- Выберите группу --</option>
+                        <option value="all">Все группы</option>
                         <option ng-repeat="group in groupList" value="{{group.id}}">{{group.name}}</option>
                     </select>
                 </div>
@@ -55,7 +56,14 @@
                 <span ng-show="sortType == 'group_name' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
-        <th width="35%"></th>
+        <th width="10%">
+            <a href="#" ng-click="sortType = 'type_id'; sortReverse = !sortReverse">
+                Тип
+                <span ng-show="sortType == 'type_id' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'type_id' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
+        <th width="25%"></th>
         <th width="20%">
             <a href="#" ng-click="sortType = 'date_created'; sortReverse = !sortReverse">
                 Дата создания
@@ -75,6 +83,11 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.currency_id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.group_name}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">
+            <span ng-if="item.type_id == 1">Розница</span>
+            <span ng-if="item.type_id == 2">Оператор</span>
+            <span ng-if="item.type_id == 3">ОТТ</span>
+        </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
             <span class="label label-success" ng-if="item.orig">ORIG</span>
             <span class="label label-info" ng-if="!item.orig">TERM</span>

@@ -39,27 +39,32 @@ class PricelistController extends JsonController
         $limit = $this->request['limit'];
         $offset = $this->request['offset'];
         
-        $data = Pricelist::find()
-                ->select([
-                    'billing_uu.pricelist.*',
-                    'g.name as group_name',
-                    'is_in_use' => new Expression('case when atl.id is not null then true else false end')
-                ])
-                ->leftJoin('billing_uu.pricelist_group g', 'g.id = billing_uu.pricelist.pricelist_group_id')
-                ->leftJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = billing_uu.pricelist.id')
-                ->leftJoin('billing_uu.account_tariff_light atl', 'atl.id = pp.tariff_id')
-                ->where(['billing_uu.pricelist.pricelist_group_id' => $groupId])
-                ->orderBy('name')
-                ->limit($limit)
-                ->offset($offset)
-                ->asArray()
-                ->all();
+        $query = Pricelist::find()
+            ->select([
+                'billing_uu.pricelist.*',
+                'g.name as group_name',
+                'is_in_use' => new Expression('case when atl.id is not null then true else false end')
+            ])
+            ->leftJoin('billing_uu.pricelist_group g', 'g.id = billing_uu.pricelist.pricelist_group_id')
+            ->leftJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = billing_uu.pricelist.id')
+            ->leftJoin('billing_uu.account_tariff_light atl', 'atl.id = pp.tariff_id')
+            ->orderBy('name')
+            ->limit($limit)
+            ->offset($offset)
+            ->asArray();
+        
+        $countQuery = Pricelist::find()
+            ->select(['id']);
+        
+        if ($groupId != 'all') {
+            $query->where(['billing_uu.pricelist.pricelist_group_id' => $groupId]);
+            $countQuery->where(['pricelist_group_id' => $groupId]);
+        }
+        
+        $data = $query->all();
     
-        $count = Pricelist::find()
-            ->select(['id'])
-            ->where(['pricelist_group_id' => $groupId])
-            ->count();
-    
+        $count = $countQuery->count();
+        
         return [
             'totalCount' => $count,
             'data' => $data
