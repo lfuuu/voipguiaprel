@@ -17,7 +17,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             date_created: data.date_created,
             date_start: data.date_start,
             is_active: data.is_active,
-            parent_id: data.parent_id
+            parent_id: data.parent_id,
+            orig: data.orig
         });
 
         $scope.pricelistIsActive = data.is_active;

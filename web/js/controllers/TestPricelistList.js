@@ -3,7 +3,7 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
-    $scope.testGroupId = 'undefined';
+    $scope.testGroupId = 'all';
 
     $scope.currentPage = 1;
     $scope.limit = 15;
@@ -66,6 +66,18 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
         }
 
         Redirect.testPricelistEdit(item.id).then(function () {
+            $scope.init();
+        });
+    };
+
+    $scope.cloneTest = function(item) {
+        if (!userPermissions['test_pricelist_create']) {
+            return;
+        }
+
+        if (window.getSelection().type == 'Range') return;
+
+        Redirect.testPricelistClone(item.id).then(function () {
             $scope.init();
         });
     };

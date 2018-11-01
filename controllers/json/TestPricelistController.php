@@ -44,27 +44,32 @@ class TestPricelistController extends JsonController
         $limit = $this->request['limit'];
         $offset = $this->request['offset'];
         
-        $data = TestPricelist::find()
-                ->select(['auth.test_pricelist.*', 'mcc.country as mcc_name', 'mnc.network as mnc_name', 'p.name as pricelist_name',
-                    new Expression('case 
-                        when auth.test_pricelist.location_id = 1 then \'Домашний регион\' 
-                        when auth.test_pricelist.location_id = 2 then \'Гостевой регион\' 
-                        when auth.test_pricelist.location_id = 3 then \'Международный регион\' 
-                        end as location_name')])
-                ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = auth.test_pricelist.mcc')
-                ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = auth.test_pricelist.mnc')
-                ->leftJoin('billing_uu.pricelist as p', 'p.id = auth.test_pricelist.pricelist_id')
-                ->where(['auth.test_pricelist.test_pricelist_group_id' => $testGroupId])
-                ->orderBy('name')
-                ->limit($limit)
-                ->offset($offset)
-                ->asArray()
-                ->all();
+        $query = TestPricelist::find()
+            ->select(['auth.test_pricelist.*', 'mcc.country as mcc_name', 'mnc.network as mnc_name', 'p.name as pricelist_name',
+                new Expression('case 
+                    when auth.test_pricelist.location_id = 1 then \'Домашний регион\' 
+                    when auth.test_pricelist.location_id = 2 then \'Гостевой регион\' 
+                    when auth.test_pricelist.location_id = 3 then \'Международный регион\' 
+                    end as location_name')])
+            ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = auth.test_pricelist.mcc')
+            ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = auth.test_pricelist.mnc and mnc.mcc = auth.test_pricelist.mcc')
+            ->leftJoin('billing_uu.pricelist as p', 'p.id = auth.test_pricelist.pricelist_id')
+            ->orderBy('name')
+            ->limit($limit)
+            ->offset($offset)
+            ->asArray();
+
+        $countQuery = TestPricelist::find()
+            ->select(['id']);
     
-        $count = TestPricelist::find()
-            ->select(['id'])
-            ->where(['test_pricelist_group_id' => $testGroupId])
-            ->count();
+        if ($testGroupId != 'all') {
+            $query->where(['auth.test_pricelist.test_pricelist_group_id' => $testGroupId]);
+            $countQuery->where(['test_pricelist_group_id' => $testGroupId]);
+        }
+    
+        $data = $query->all();
+    
+        $count = $countQuery->count();
     
         return [
             'totalCount' => $count,

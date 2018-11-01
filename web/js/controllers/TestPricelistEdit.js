@@ -16,6 +16,10 @@ var TestPricelistEditCtrl = function($scope, $rootScope, TestPricelist, Mcc, Mnc
         TestPricelist.get({id: params.id}).then(function (data) {
             $scope.item = data;
 
+            if (params.clone) {
+                delete $scope.item.id;
+            }
+
             $scope.$watch('item.mcc', watchers.mcc);
         });
     } else {

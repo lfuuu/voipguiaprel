@@ -4,7 +4,7 @@
             <tbody>
             <tr ng-repeat="item in list">
                 <td ng-if="item.is_pricelist" colspan="6" style="text-align: center;">
-                    {{item.name}} | Создан: {{item.date_created}}{{item.is_active ? ' | Активен с: ' + item.date_start : ''}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
+                    {{item.name}} | {{item.orig ? 'Оригинация' : 'Терминация'}} | Создан: {{item.date_created}}{{item.is_active ? ' | Активен с: ' + item.date_start : ''}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
                 </td>
                 <td ng-if="item.is_pricelist">
                     <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-default btn-xs">
