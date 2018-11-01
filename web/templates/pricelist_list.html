@@ -64,11 +64,18 @@
             </a>
         </th>
         <th width="25%"></th>
-        <th width="20%">
+        <th width="10%">
             <a href="#" ng-click="sortType = 'date_created'; sortReverse = !sortReverse">
                 Дата создания
                 <span ng-show="sortType == 'date_created' && sortReverse" class="caret-down"></span>
                 <span ng-show="sortType == 'date_created' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
+        <th width="10%">
+            <a href="#" ng-click="sortType = 'date_start'; sortReverse = !sortReverse">
+                Дата активации
+                <span ng-show="sortType == 'date_start' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'date_start' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th ng-if="userPermissions['pricelist_create']">&nbsp;</th>
@@ -96,6 +103,7 @@
             <span class="label label-danger" ng-if="item.is_in_use">В коммерции</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_created}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_start}}</td>
         <td ng-if="userPermissions['pricelist_create']">
             <button type="button" class="btn btn-default btn-sm"
                     ng-click="copyItem(item)">Копировать</button>
