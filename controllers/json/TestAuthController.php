@@ -273,7 +273,8 @@ class TestAuthController extends JsonController
             'result' => $result,
             'result_new' => $this->generateNewResult($response, $key),
             'trace' => $trace,
-            'ttl' => $ttl
+            'ttl' => $ttl,
+            'url' => $request
         ];
     }
     

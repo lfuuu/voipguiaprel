@@ -11,6 +11,7 @@ var TestCallShowTestReserve2Ctrl = function($scope, TestCall, params, $modalInst
             $scope.result = data.result;
             $scope.result_new = data.result_new;
             $scope.key = data.key;
+            $scope.url = data.url;
         });
     } else {
         $scope.item = {

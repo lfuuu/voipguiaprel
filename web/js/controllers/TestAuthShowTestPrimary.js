@@ -11,6 +11,7 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
             $scope.result_new = data.result_new;
             $scope.full_item = data;
             $scope.key = data.key;
+            $scope.url = data.url;
         });
     } else {
         $scope.item = {

@@ -221,7 +221,8 @@ class TestCallController extends JsonController
             'item' => $item->toArray(),
             'key' => $key,
             'result' => $this->generateOldResult($response),
-            'result_new' => $this->generateNewResult($response, $key)
+            'result_new' => $this->generateNewResult($response, $key),
+            'url' => $request
         ];
     }
 

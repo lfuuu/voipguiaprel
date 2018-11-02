@@ -11,6 +11,7 @@ var TestAuthShowTestDevCtrl = function($scope, TestAuth, params, $modalInstance)
             $scope.result_new = data.result_new;
             $scope.full_item = data;
             $scope.key = data.key;
+            $scope.url = data.url;
         });
     } else {
         $scope.item = {

@@ -193,7 +193,8 @@ class TestPricelistController extends JsonController
             'a_number' => $item->a_number,
             'b_number' => $item->b_number,
             'id' => $item->id,
-            'name' => $item->name
+            'name' => $item->name,
+            'url' => $request
         ];
     }
     
