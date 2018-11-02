@@ -6,6 +6,7 @@ use app\models\billing_uu\PricelistPrefixPrice;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use yii\base\Exception;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -48,6 +49,16 @@ class PricelistPrefixPriceController extends JsonController
     {
         if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
             throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $prefixB = $this->request['prefix_b'];
+        $filterBId = $this->request['pricelist_filter_b_id'];
+        $id = isset($this->request['id']) ? $this->request['id'] : null;
+
+        $result = PricelistPrefixPrice::checkIfPrefixExists($prefixB, $filterBId, $id);
+
+        if ($result) {
+            return ['error' => 'В этом фильтре B уже есть такой префикс!', 'field' => 'prefix_b'];
         }
         
         if (isset($this->request['id'])) {

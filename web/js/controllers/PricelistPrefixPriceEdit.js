@@ -1,4 +1,5 @@
 var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, params, $modalInstance, $window) {
+    $scope.errors = [];
 
     if (params.id) {
         $scope.pricelistIsActive = params.pricelist_is_active;
@@ -29,8 +30,18 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
     $scope.save = function()
     {
         PricelistPrefixPrice.save($scope.item).then(function(response) {
+            if (response.error) {
+                $scope.displayError(response);
+                return;
+            }
+
             $modalInstance.close();
         });
+    };
+
+    $scope.displayError = function(response)
+    {
+        $scope.errors[response.field + '_error'] = response.error;
     };
 
     $scope.back = function()

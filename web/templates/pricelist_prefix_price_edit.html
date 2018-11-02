@@ -10,6 +10,7 @@
             <div class="col-sm-10">
                 <input class="form-control" placeholder="1234" ng-model="item.prefix_b">
             </div>
+            <label class="col-sm-4 control-label" style="color: red;" ng-if="errors.prefix_b_error">{{ errors.prefix_b_error }}</label>
         </div>
 
         <div class="form-group">

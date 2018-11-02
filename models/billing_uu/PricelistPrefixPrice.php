@@ -36,6 +36,21 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
         return new PricelistPrefixPriceQuery(get_called_class());
     }
     
+    public static function checkIfPrefixExists($prefixB, $filterBId, $id)
+    {
+        $query = self::find()
+            ->where(['prefix_b' => $prefixB, 'pricelist_filter_b_id' => $filterBId]);
+        
+        if ($id) {
+            $query
+                ->andWhere('id <> :id')
+                ->addParams([':id' => $id]);
+        }
+        
+        return $query
+            ->exists();
+    }
+    
     /**
      * @param array|null $data
      * @return ImsiPartner
