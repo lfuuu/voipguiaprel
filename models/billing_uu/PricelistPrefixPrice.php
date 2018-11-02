@@ -9,7 +9,6 @@ use app\queries\billing_uu\PricelistPrefixPriceQuery;
  * @property string $prefix_b
  * @property float $b_number_price
  * @property int $change_flag
- * @property int $parent_id
  */
 class PricelistPrefixPrice extends \yii\db\ActiveRecord
 {
@@ -27,7 +26,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
     {
         return [
             [['prefix_b', 'b_number_price', 'date_from', 'date_to'], 'string'],
-            [['pricelist_filter_b_id', 'change_flag', 'parent_id'], 'integer'],
+            [['pricelist_filter_b_id', 'change_flag'], 'integer'],
         ];
     }
 

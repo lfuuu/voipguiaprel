@@ -65,8 +65,33 @@ class PricelistPrefixPriceController extends JsonController
             if (!\Yii::$app->user->can('pricelist_edit')) {
                 throw new ForbiddenHttpException('Access denied');
             }
+    
+            $dateFromRequest = $this->request['date_from'];
             
             $item = $this->getPricelistPrefixPriceOr404($this->request['id']);
+    
+            $dateFrom = strtotime($item->date_from);
+            $dateFromNew = strtotime($dateFromRequest);
+            $dateNow = strtotime(date('Y-m-d'));
+            
+            if ($dateFrom != $dateFromNew) {
+                if ($dateFrom < $dateNow) {
+                    return [
+                        'error' => 'Нельзя менять дату активации активного прайса префикса!',
+                        'field' => 'date_from'
+                    ];
+                }
+    
+                if ($dateFromNew < $dateNow) {
+                    return ['error' => 'Дата активации прайса префикса должна быть в будущем!', 'field' => 'date_from'];
+                }
+            }
+            
+            $priceRequest = $this->request['b_number_price'];
+            
+            if ($priceRequest != $item->b_number_price) {
+                $item = PricelistPrefixPrice::create();
+            }
         } else {
             if (!\Yii::$app->user->can('pricelist_create')) {
                 throw new ForbiddenHttpException('Access denied');

@@ -10,7 +10,6 @@ use app\queries\billing_uu\PricelistLocationQuery;
  * @property string $mcc
  * @property string $mnc
  * @property string $description
- * @property int $parent_id
  */
 class PricelistLocation extends \yii\db\ActiveRecord
 {
@@ -26,7 +25,7 @@ class PricelistLocation extends \yii\db\ActiveRecord
     {
         return [
             [['mcc', 'mnc', 'delta_price', 'description'], 'string'],
-            [['pricelist_id','location_id', 'parent_id'], 'integer'],
+            [['pricelist_id','location_id'], 'integer'],
         ];
     }
 
