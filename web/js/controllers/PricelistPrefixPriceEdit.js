@@ -45,6 +45,10 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
     };
     
     $scope.isDateBeforeNow = function() {
+        if (!$scope.item.id) {
+            return false;
+        }
+
         var now = new Date();
         var prefixDate = new Date($scope.item.date_from);
 
