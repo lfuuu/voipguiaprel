@@ -13,6 +13,7 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
         $scope.pricelistIsActive = params.pricelist_is_active;
 
         $scope.item = {
+            prefix_b: '',
             pricelist_filter_b_id: params.filter_b_id,
             date_from: pricelistDate.toISOString().slice(0, 10),
             date_to: '3000-01-01'
@@ -22,6 +23,7 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
         var pricelistDate = new Date(params.pricelist_date_start);
 
         $scope.item = {
+            prefix_b: '',
             date_from: pricelistDate.toISOString().slice(0, 10),
             date_to: '3000-01-01'
         };
