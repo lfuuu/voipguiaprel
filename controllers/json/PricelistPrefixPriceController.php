@@ -54,26 +54,50 @@ class PricelistPrefixPriceController extends JsonController
         $prefixB = $this->request['prefix_b'];
         $filterBId = $this->request['pricelist_filter_b_id'];
         $id = isset($this->request['id']) ? $this->request['id'] : null;
-
-        $result = PricelistPrefixPrice::checkIfPrefixExists($prefixB, $filterBId, $id);
-
-        if ($result) {
-            return ['error' => 'В этом фильтре B уже есть такой префикс!', 'field' => 'prefix_b'];
-        }
+        $dateFrom = $this->request['date_from'];
+        $dateTo = $this->request['date_to'];
+        $priceRequest = $this->request['b_number_price'];
         
+        if (strpos($prefixB, ',') !== false) {
+            $prefixBArray = explode(',', $prefixB);
+            
+            foreach ($prefixBArray as $prefixB) {
+                $result = PricelistPrefixPrice::checkIfPrefixExists($prefixB, $filterBId, $id);
+    
+                if ($result) {
+                    return ['error' => 'В этом фильтре B уже есть такой префикс: ' . $prefixB, 'field' => 'prefix_b'];
+                }
+    
+                $saveResult = $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest);
+                
+                if (isset($saveResult['error'])) {
+                    return $saveResult;
+                }
+            }
+        } else {
+            $result = PricelistPrefixPrice::checkIfPrefixExists($prefixB, $filterBId, $id);
+    
+            if ($result) {
+                return ['error' => 'В этом фильтре B уже есть такой префикс: ' . $prefixB, 'field' => 'prefix_b'];
+            }
+            
+            return $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest);
+        }
+    }
+    
+    private function saveSingle($id, $prefixB, $filterBId, $dateFromRequest, $dateToRequest, $priceRequest)
+    {
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('pricelist_edit')) {
                 throw new ForbiddenHttpException('Access denied');
             }
-    
-            $dateFromRequest = $this->request['date_from'];
-            
-            $item = $this->getPricelistPrefixPriceOr404($this->request['id']);
-    
+        
+            $item = $this->getPricelistPrefixPriceOr404($id);
+        
             $dateFrom = strtotime($item->date_from);
             $dateFromNew = strtotime($dateFromRequest);
             $dateNow = strtotime(date('Y-m-d'));
-            
+        
             if ($dateFrom != $dateFromNew) {
                 if ($dateFrom < $dateNow) {
                     return [
@@ -81,14 +105,12 @@ class PricelistPrefixPriceController extends JsonController
                         'field' => 'date_from'
                     ];
                 }
-    
+            
                 if ($dateFromNew < $dateNow) {
                     return ['error' => 'Дата активации прайса префикса должна быть в будущем!', 'field' => 'date_from'];
                 }
             }
-            
-            $priceRequest = $this->request['b_number_price'];
-            
+        
             if ($priceRequest != $item->b_number_price) {
                 $item = PricelistPrefixPrice::create();
             }
@@ -96,18 +118,24 @@ class PricelistPrefixPriceController extends JsonController
             if (!\Yii::$app->user->can('pricelist_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
-            
+        
             $item = PricelistPrefixPrice::create();
         }
-        
-        $item->load($this->request, '');
-        
+    
+        $item->load([
+            'prefix_b' => $prefixB,
+            'pricelist_filter_b_id' => $filterBId,
+            'date_from' => $dateFromRequest,
+            'date_to' => $dateToRequest,
+            'b_number_price' => $priceRequest
+        ], '');
+    
         $transaction = PricelistPrefixPrice::getDb()->beginTransaction();
         try {
             if (!$item->save()) {
                 throw new FormValidationException($item);
             }
-            
+        
             $transaction->commit();
         } finally {
             if ($transaction->getIsActive())
