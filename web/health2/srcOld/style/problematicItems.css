@@ -1,0 +1,29 @@
+.problematic-items {
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+}
+
+.problematic-items-display {
+    /*display: none;*/
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*left: 20px;*/
+    /*right: 20px;*/
+    position: relative;
+    top: 20px;
+}
+
+.problematic-item {
+    margin-bottom: 10px;
+}
+
+.problematic-item .item-name {
+
+}
+
+.problematic-item .message {
+    font-size: 13px;
+}

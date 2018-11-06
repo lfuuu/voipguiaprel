@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Health monitor</title>
+    <link href="./srcOld/style/health.css" rel="stylesheet">
+    <!--<link href="https://fonts.googleapis.com/css?family=Exo+2:400,500,600" rel="stylesheet">-->
+    <!--<link href="Exo2-Regular.ttf" rel="stylesheet">-->
+    <!--<link href="Exo2-Regular.ttf" rel="stylesheet">-->
+    <!--<link href="Exo2-Regular.ttf" rel="stylesheet">-->
+</head>
+<body>
+
+<!-- Green area -->
+<!--<div class="healthy-bar" id="root"></div>-->
+
+<style>
+    #newRoot {
+        height: 100vh;
+        width: 100vh;
+        margin: 0;
+        overflow: hidden;
+        background-color: #33343a;
+    }
+</style>
+<div id="newRoot"></div>
+
+<!-- Yellow area -->
+<!--<div class="cards-area">-->
+    <!--<div class="warning-area">-->
+
+        <!--<div class="background-cards">-->
+            <!--<div class="yellow-card card">-->
+                <!--<span class="node-title" style="font-size: 21px; ">reg89.mcntelecom.ru</span>-->
+                <!--<div class="node-header-info">-->
+                    <!--<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>-->
+                <!--</div>-->
+                <!--<div class="problematic-items">-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="problematic-items-display"></div>-->
+            <!--</div>-->
+            <!--<div class="yellow-card card">-->
+                <!--<span class="node-title" style="font-size: 21px; ">reg99.mcntelecom.ru</span>-->
+                <!--<div class="node-header-info">-->
+                    <!--<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>-->
+                <!--</div>-->
+                <!--<div class="problematic-items">-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="problematic-items-display"></div>-->
+            <!--</div>-->
+            <!--&lt;!&ndash;<div class="yellow-card card">&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="node-title" style="font-size: 21px; ">reg99.mcntelecom.ru</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="node-header-info">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="problematic-items">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">ApihostRadiusStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">ApihostRadiusStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">ApihostRadiusStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="problematic-items-display"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="yellow-card card">&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="node-title" style="font-size: 21px; ">reg99.mcntelecom.ru</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="node-header-info">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="problematic-items">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">ApihostRadiusStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">ApihostRadiusStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="problematic-items-display"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="yellow-card card">&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="node-title" style="font-size: 21px; ">reg99.mcntelecom.ru</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="node-header-info">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="problematic-items">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">ApihostRadiusStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">ApihostRadiusStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="problematic-items-display"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--<div class="yellow-card card">-->
+                <!--<span class="node-title" style="font-size: 21px; ">reg99.mcntelecom.ru</span>-->
+                <!--<div class="node-header-info">-->
+                    <!--<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>-->
+                <!--</div>-->
+                <!--<div class="problematic-items">-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="problematic-items-display"></div>-->
+            <!--</div>-->
+            <!--<div class="yellow-card card">-->
+                <!--<span class="node-title" style="font-size: 21px; ">reg99.mcntelecom.ru</span>-->
+                <!--<div class="node-header-info">-->
+                    <!--<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>-->
+                <!--</div>-->
+                <!--<div class="problematic-items">-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="problematic-items-display"></div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="foreground-cards">-->
+            <!--<div id="card2" class="yellow-card card">-->
+                <!--<span class="node-title" style="font-size: 21px; ">reg99.mcntelecom.ru</span>-->
+                <!--<div class="node-header-info">-->
+                    <!--<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>-->
+                <!--</div>-->
+                <!--<div class="problematic-items">-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="problematic-items-display"></div>-->
+            <!--</div>-->
+            <!--<div class="yellow-card card">-->
+                <!--<span class="node-title" style="font-size: 21px; ">reg99.mcntelecom.ru</span>-->
+                <!--<div class="node-header-info">-->
+                    <!--<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>-->
+                <!--</div>-->
+                <!--<div class="problematic-items">-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="problematic-items-display"></div>-->
+            <!--</div>-->
+            <!--<div class="yellow-card card">-->
+                <!--<span class="node-title" style="font-size: 21px; ">reg99.mcntelecom.ru</span>-->
+                <!--<div class="node-header-info">-->
+                    <!--<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>-->
+                <!--</div>-->
+                <!--<div class="problematic-items">-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="problematic-items-display"></div>-->
+            <!--</div>-->
+            <!--<div class="yellow-card card">-->
+                <!--<span class="node-title" style="font-size: 21px; ">reg99.mcntelecom.ru</span>-->
+                <!--<div class="node-header-info">-->
+                    <!--<span class="runtime">runtime: <span class="hours">04</span><span class="time-pulse">:</span><span class="minutes">47</span></span> | <span>calls: 3655</span>-->
+                <!--</div>-->
+                <!--<div class="problematic-items">-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                    <!--<div class="problematic-item">-->
+                        <!--<span class="item-name">ApihostRadiusStatus</span>-->
+                        <!--<br>-->
+                        <!--<span class="message" title="Apihost received RADIUS request 1 seconds ago from server_id:13">Apihost received RADIUS request 1 seconds ago from server_id:13</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="problematic-items-display"></div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="critical-area" id="123">-->
+        <!--<div class="background-cards">-->
+
+        <!--</div>-->
+        <!--<div class="foreground-cards" id="criticalArea">-->
+            <!--&lt;!&ndash;<div class="red-card card" id="card1">&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="ill-item-before-diagonal-line"></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="ill-item-before-horizontal-line"></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="node-title" style="font-size: 21px; ">reg101.mcntelecom.ru</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="node-header-info">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<span class="runtime">runtime: <span class="hours">00</span><span class="time-pulse">:</span><span class="minutes">25</span></span> | <span>calls: 5134</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="problematic-items">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">ApihostRadiusStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Apihost received RADIUS request 0 seconds ago from server_id:99">Apihost received RADIUS request 0 seconds ago from server_id:99</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">CallSyncStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Delay is 2370 sec">Delay is 2370 sec</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">publicApiWorks</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Public API NOT AVAILABLE">Public API NOT AVAILABLE</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">ApihostRadiusStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Apihost received RADIUS request 0 seconds ago from server_id:99">Apihost received RADIUS request 0 seconds ago from server_id:99</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">CallSyncStatus</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Delay is 2370 sec">Delay is 2370 sec</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="problematic-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="item-name">publicApiWorks</span>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="message" title="Public API NOT AVAILABLE">Public API NOT AVAILABLE</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="problematic-items-display"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="red-card card">&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="ill-item-before-diagonal-line"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="ill-item-before-horizontal-line"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<span class="node-title" style="font-size: 21px; ">reg12.mcntelecom.ru</span>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="node-header-info">&ndash;&gt;-->
+            <!--&lt;!&ndash;<span class="runtime">runtime: <span class="hours">14</span><span class="time-pulse">:</span><span class="minutes">05</span></span> | <span>calls: 8734</span>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="red-card card">&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="ill-item-before-diagonal-line"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="ill-item-before-horizontal-line"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<span class="node-title" style="font-size: 21px; ">reg13.mcntelecom.ru</span>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="node-header-info">&ndash;&gt;-->
+            <!--&lt;!&ndash;<span class="runtime">runtime: <span class="hours">00</span><span class="time-pulse">:</span><span class="minutes">12</span></span> | <span>calls: 49</span>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="red-card card">&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="ill-item-before-diagonal-line"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="ill-item-before-horizontal-line"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<span class="node-title" style="font-size: 21px; ">reg17.mcntelecom.ru</span>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="node-header-info">&ndash;&gt;-->
+            <!--&lt;!&ndash;<span class="runtime">runtime: <span class="hours">08</span><span class="time-pulse">:</span><span class="minutes">51</span></span> | <span>calls: 1357</span>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+        <!--</div>-->
+
+        <!--&lt;!&ndash;reg15.mcntelecom.ru (15)-->
+<!--EventManagementStatus-->
+<!--Billing not ready: GeoPrefixList-->
+<!--EventLoadStatus-->
+<!--Billing not ready: GeoPrefixList-->
+<!--AutoTest-->
+<!--Billing is not ready-->
+<!--RadiusAuthServerStatus-->
+<!--Billing not ready: GeoPrefixList-->
+<!--CallSyncStatus-->
+<!--Billing not ready: GeoPrefixList-->
+<!--CdrWaitProcessing-->
+<!--Number of CDRs waiting to be processed: 28-->
+<!--ThreadErrorStatus-->
+<!--Thread id: checkstarttable, error count: 136, Error message: Thread(Check Start Table):  -> ThreadCheckStartTable::readOpencaCalls ->-->
+<!--Can't receive current calls list-->
+<!--&ndash;&gt;-->
+
+    <!--</div>-->
+
+<!--</div>-->
+
+<!--<script src="./lib/jquery-3.2.1.min.js"></script>-->
+<script src="./dist/health.js"></script>
+<!--<script src="http://localhost:3000"></script>-->
+</body>
+</html>

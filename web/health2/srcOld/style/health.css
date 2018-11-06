@@ -1,0 +1,84 @@
+@import 'healthyBar.css';
+@import 'warningArea.css';
+@import 'criticalArea.css';
+@import 'backgroundCards.css';
+@import 'foregroundCards.css';
+@import 'problematicItems.css';
+
+@font-face {
+    font-family: 'Exo 2';
+    src: url('../../assets/fonts/Exo2-Medium.ttf') format('truetype'),
+         url('../../assets/fonts/Exo2-Regular.ttf') format('truetype'),
+         url('../../assets/fonts/Exo2-SemiBold.ttf') format('truetype');
+}
+
+body {
+    height: 100vh;
+    width: 100vh;
+    margin: 0;
+    overflow: hidden;
+    background-color: #33343a;
+}
+
+* {
+    font-family: 'Exo 2', sans-serif;
+}
+
+.cards-area {
+    display: inline-block;
+    width: calc(100% - 101px);
+    max-width: 900px;
+    position: fixed;
+    left: 102px;
+    top: 0;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+/*========== runtime colon pulse ==========*/
+@keyframes timePulse {
+    0% {opacity: 1}
+    49% {opacity: 1}
+    50% {opacity: 0}
+    99% {opacity: 0}
+    100% {opacity: 1}
+}
+
+/* NOT YET OUTGROUPED */
+.node-title {
+    font-size: 21px;
+}
+
+
+
+/*------------------------------------------------*/
+
+.circle-ripple {
+    background-color: #4f515c;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    animation: ripple 1.7s linear infinite;
+}
+
+@keyframes ripple {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.3),
+        /*0 0 0 3px rgba(255, 0, 0, 0.3),*/
+        /*0 0 0 6px rgba(255, 0, 0, 0.3),*/
+        0 0 0 9px rgba(255, 0, 0, 0.3);
+    }
+    100% {
+        box-shadow: 0 0 0 9px rgba(255, 0, 0, 0.3),
+        0 0 0 12px rgba(255, 0, 0, 0);
+    }
+}
+
+.react-card-out {
+    transition: height .2s linear, top .3s linear, margin .2s linear, padding .2s linear !important;
+    top: -100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    height: 0 !important;
+}

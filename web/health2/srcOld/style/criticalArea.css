@@ -1,0 +1,21 @@
+@import 'redCard.css';
+
+.critical-area {
+    display: inline-block;
+    border-left: 1px solid #33343a;
+    width: calc(50% - 1px);
+    height: 100%;
+    padding: 60px 10px 10px 10px;
+    box-sizing: border-box;
+    background-color: #222326;
+    box-shadow: inset 0px 0 10px 0px rgba(255, 59, 59, 0.54);
+    position: relative;
+    animation: criticalAreaFramePulse 2s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes criticalAreaFramePulse {
+    0% {box-shadow: inset 0px 0 10px 0px rgba(255, 59, 59, 0.54);}
+    50% {box-shadow: inset 0px 0 10px 0px rgba(255, 59, 59, 0.16);}
+    100% {box-shadow: inset 0px 0 10px 0px rgba(255, 59, 59, 0.54);}
+}

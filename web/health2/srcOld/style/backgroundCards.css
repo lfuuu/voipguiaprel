@@ -1,0 +1,32 @@
+.background-cards {
+    position: absolute;
+    right: 10px;
+    left: 10px;
+    top: 60px;
+    bottom: 10px;
+    transform: scale(.8, .8);
+}
+
+.background-cards .card {
+    color: rgba(255, 255, 255, 0.5);
+    box-shadow: none;
+    position: absolute;
+    text-shadow: none;
+    transition: top .2s linear, left .2s linear, right .2s linear;
+}
+
+.background-cards .card:before {
+    border-bottom: 50px solid rgba(51, 52, 58, 0.31);
+}
+
+.background-cards .card-out {
+    top: 200% !important;
+}
+
+.background-cards .card-in {
+    top: -100% !important;
+}
+
+.background-cards .problematic-items {
+
+}

@@ -1,0 +1,20 @@
+.foreground-cards {
+    height: 100%;
+}
+
+.foreground-cards.fg-hidden {
+    visibility: hidden;
+}
+
+.foreground-cards .card {
+    transition: top .3s linear;
+    top: 0;
+}
+
+.foreground-cards .card-out {
+    top: -100%;
+}
+
+.foreground-cards .card-in {
+    top: 200%;
+}

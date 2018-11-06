@@ -1,0 +1,75 @@
+.yellow-card {
+    margin-bottom: 60px;
+    background-color: rgba(51, 52, 58, 0.31);
+    position: relative;
+    color: antiquewhite;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    text-shadow: 0px 0px 10px white;
+
+    height: calc((100% - 180px)/4);
+    transition: height .5s linear;
+    box-shadow: 10px 0 40px -30px #FFEB3B;
+}
+.yellow-card.transporting {
+    height: 0;
+    transition: height .5s linear;
+}
+.yellow-card:after {
+    /*content: '';*/
+    position: absolute;
+    width: 100%;
+    top: 0;
+    height: 1px;
+    background-color: gray;
+    left: 0;
+    box-shadow: 0px 2px 10px 0px #FFEB3B;
+
+}
+.yellow-card:before {
+    /*content: '';*/
+    /*position: absolute;*/
+    /*border-left: 80px solid #222326;*/
+    /*border-top: 50px solid transparent;*/
+    /*bottom: 0;*/
+    /*left: 0;*/
+    /*content: '';*/
+    /*position: absolute;*/
+    /*border-left: 80px solid transparent;*/
+    /*border-top: 50px solid #33343a;*/
+    /*bottom: -50px;*/
+    /*left: 0;*/
+    /*width: calc(100% - 80px);*/
+
+    content: '';
+    position: absolute;
+    /*border-left: 80px solid transparent;*/
+    /*border-top: 50px solid rgba(51, 52, 58, 0.31);*/
+    border-bottom: 50px solid rgba(66, 66, 66, 0.69);
+    top: -50px;
+    left: 0;
+    width: calc(100% - 80px);
+    border-right: 80px solid transparent;
+    box-sizing: border-box;
+}
+
+.yellow-card .node-title {
+    position: absolute;
+    top: -40px;
+}
+
+.yellow-card .node-header-info {
+    position: absolute;
+    top: -15px;
+}
+
+.yellow-card .node-header-info .runtime .time-pulse {
+    animation: timePulse 2s linear;
+    animation-iteration-count: infinite;
+    position: relative;
+    top: -2px;
+}
+
+.foreground-cards .yellow-card {
+    background-color: rgba(66, 66, 66, 0.69);
+}

@@ -1,0 +1,14 @@
+@import 'yellowCard.css';
+
+.warning-area {
+    width: calc(50% - 1px);
+    height: 100%;
+    background-color: #222326;
+    border-right: 1px solid #33343a;
+    display: inline-block;
+    float: left;
+    padding: 60px 10px 10px 10px;
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: inset -10px 0 10px -12px #FFEB3B;
+}
