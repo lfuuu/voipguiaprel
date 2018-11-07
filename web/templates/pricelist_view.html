@@ -238,7 +238,8 @@
                 <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="3"></td>
                 <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Префикс номера</td>
                 <td style="text-align: right; background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Цена номера B</td>
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="11"></td>
+                <td style="text-align: right; background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Дата активации</td>
+                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="10"></td>
                 <!---------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price"></td>
@@ -248,7 +249,8 @@
                 <td ng-if="item.is_prefix_price" colspan="3"></td>
                 <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
                 <td style="text-align: right;" ng-if="item.is_prefix_price">{{item.b_number_price}}</td>
-                <td ng-if="item.is_prefix_price" colspan="8"></td>
+                <td style="text-align: right;" ng-if="item.is_prefix_price">{{item.date_from}}</td>
+                <td ng-if="item.is_prefix_price" colspan="7"></td>
                 <td ng-if="item.is_prefix_price"></td>
                 <td ng-if="item.is_prefix_price">
                     <a ng-if="item.has_buttons" class="btn btn-info btn-xs" ng-click="editPrefixPrice(item.prefix_price_id)">
