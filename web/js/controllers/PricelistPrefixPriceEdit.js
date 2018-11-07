@@ -1,12 +1,36 @@
 var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, params, $modalInstance, $window) {
     $scope.errors = [];
+    $scope.date_now = new Date();
+    $scope.date_one_week = new Date();
+    $scope.date_one_week.setDate($scope.date_one_week.getDate() + 7);
+    $scope.base_price = 0;
+    $scope.base_date_from = '';
+
+    var watchers = {
+        b_number_price: function (newValue, oldValue) {
+            if ($scope.pricelistIsActive && $scope.item) {
+                if (newValue > $scope.base_price) {
+                    $scope.item.date_from = $scope.date_one_week.toISOString().slice(0, 10);
+                } else if (newValue < $scope.base_price) {
+                    $scope.item.date_from = $scope.date_now.toISOString().slice(0, 10);
+                } else {
+                    $scope.item.date_from = $scope.base_date_from;
+                }
+            }
+        }
+    };
 
     if (params.id) {
         $scope.pricelistIsActive = params.pricelist_is_active;
 
         PricelistPrefixPrice.get({id: params.id}).then(function(data){
             $scope.item = data;
+
+            $scope.base_date_from = data.date_from;
+            $scope.base_price = data.b_number_price;
         });
+
+        $scope.$watch('item.b_number_price', watchers.b_number_price);
     } else if (params.filter_b_id) {
         var date = new Date();
         var pricelistDate = new Date(params.pricelist_date_start);
@@ -15,7 +39,7 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
         $scope.item = {
             prefix_b: '',
             pricelist_filter_b_id: params.filter_b_id,
-            date_from: pricelistDate.toISOString().slice(0, 10),
+            date_from: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
             date_to: '3000-01-01'
         };
     } else {
@@ -24,7 +48,7 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
 
         $scope.item = {
             prefix_b: '',
-            date_from: pricelistDate.toISOString().slice(0, 10),
+            date_from: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
             date_to: '3000-01-01'
         };
     }

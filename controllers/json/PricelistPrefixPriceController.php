@@ -93,26 +93,30 @@ class PricelistPrefixPriceController extends JsonController
             }
         
             $item = $this->getPricelistPrefixPriceOr404($id);
-        
-            $dateFrom = strtotime($item->date_from);
-            $dateFromNew = strtotime($dateFromRequest);
-            $dateNow = strtotime(date('Y-m-d'));
-        
-            if ($dateFrom != $dateFromNew) {
-                if ($dateFrom < $dateNow) {
-                    return [
-                        'error' => 'Нельзя менять дату активации активного прайса префикса!',
-                        'field' => 'date_from'
-                    ];
-                }
             
-                if ($dateFromNew < $dateNow) {
-                    return ['error' => 'Дата активации прайса префикса должна быть в будущем!', 'field' => 'date_from'];
-                }
-            }
-        
             if ($priceRequest != $item->b_number_price) {
                 $item = PricelistPrefixPrice::create();
+            } else {
+    
+                $dateFrom = strtotime($item->date_from);
+                $dateFromNew = strtotime($dateFromRequest);
+                $dateNow = strtotime(date('Y-m-d'));
+    
+                if ($dateFrom != $dateFromNew) {
+                    if ($dateFrom < $dateNow) {
+                        return [
+                            'error' => 'Нельзя менять дату активации активного прайса префикса!',
+                            'field' => 'date_from'
+                        ];
+                    }
+        
+                    if ($dateFromNew < $dateNow) {
+                        return [
+                            'error' => 'Дата активации прайса префикса должна быть в будущем!',
+                            'field' => 'date_from'
+                        ];
+                    }
+                }
             }
         } else {
             if (!\Yii::$app->user->can('pricelist_create')) {

@@ -23,14 +23,14 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Дата начала действия</label>
             <div class="col-sm-10">
-                <input class="form-control" placeholder="Время (UTC)" ng-model="item.date_from" required ng-disabled="isDateBeforeNow()">
+                <input class="form-control" placeholder="Время (UTC)" ng-model="item.date_from" required>
             </div>
             <label class="col-sm-4 control-label" style="color: red;" ng-if="errors.date_from_error">{{ errors.date_from_error }}</label>
         </div>
     </div>
     <div class="modal-footer">
         <div class="pull-left">
-            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid || pricelistIsActive" ng-click="save()">Сохранить</button>
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
         </div>
     </div>

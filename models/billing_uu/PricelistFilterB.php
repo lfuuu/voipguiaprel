@@ -93,7 +93,7 @@ class PricelistFilterB extends \yii\db\ActiveRecord
                 'billing_uu.pricelist_prefix_price.*',
                 'b_number_price' => new Expression('round(billing_uu.pricelist_prefix_price.b_number_price, 4)')
             ])
-            ->orderBy('billing_uu.pricelist_prefix_price.prefix_b');
+            ->orderBy('billing_uu.pricelist_prefix_price.prefix_b, billing_uu.pricelist_prefix_price.date_from');
     }
     
     public function getPrefixPriceCount()
