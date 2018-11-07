@@ -406,5 +406,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         testNumberEdit: function() {
             return openModal(TestNumberEditCtrl, '/templates/test_number_edit.html', {});
         },
+        headerList: function() {
+            $cookies.selectedPage = 'headerList';
+            return openTab(HeaderListCtrl, '/templates/header_list.html');
+        },
+        headerEdit: function(id) {
+            return openModal(HeaderEditCtrl, '/templates/header_edit.html', {id: id});
+        },
+        headerCreate: function() {
+            return openModal(HeaderEditCtrl, '/templates/header_edit.html', {id: null});
+        },
     };
 });

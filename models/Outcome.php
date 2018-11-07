@@ -18,6 +18,7 @@ use yii\db\Query;
  * @property ReleaseReason $airp
  * @property int $calling_station_id
  * @property int $called_station_id
+ * @property string $header
  * @property
  */
 class Outcome extends \yii\db\ActiveRecord
@@ -49,7 +50,7 @@ class Outcome extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name','rn','ocpn'], 'string', 'max' => 50],
+            [['name','rn','ocpn', 'header'], 'string', 'max' => 50],
             [['type_id'], 'integer'],
             [['sw_shared'], 'boolean'],
             [['route_case_id', 'release_reason_id', 'airp_id','route_case_1_id','route_case_2_id'], 'integer'],

@@ -5,6 +5,7 @@ use app\components\View;
 use app\models\Airp;
 use app\models\Attribute;
 use app\models\AttributeGroup;
+use app\models\auth\Header;
 use app\models\auth\RouteReplace;
 use app\models\auth\TestPricelist;
 use app\models\auth\TestPricelistGroup;
@@ -376,6 +377,20 @@ class BaseController extends \yii\web\Controller
         $item = Cpc::findOne($cpcId);
         if ($item === null) {
             throw new HttpException(404, 'CPC не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return Header
+     * @throws HttpException
+     */
+    protected function getHeaderOr404($id)
+    {
+        $item = Header::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Header не найден');
         }
         return $item;
     }
