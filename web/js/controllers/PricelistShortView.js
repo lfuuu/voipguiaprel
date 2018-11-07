@@ -51,9 +51,20 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 var hasFilterAHeader = false;
                 var totalPrefixCount = 0;
 
-                for (var filterBKey in data.location[locationKey].filterA[filterAKey].filterB) {
-                    var item = data.location[locationKey].filterA[filterAKey].filterB[filterBKey];
-                    totalPrefixCount += item.prefixPriceNoLimit.length;
+                var totalSimplifiedPrefixList = {};
+
+                for (var filterBCountKey in data.location[locationKey].filterA[filterAKey].filterB) {
+                    for (var prefixPriceCountKey in data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPriceNoLimit) {
+                        var prefixItem = data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPriceNoLimit[prefixPriceCountKey];
+
+                        if (totalSimplifiedPrefixList[prefixItem.pricelist_filter_b_id + '_' + prefixItem.prefix_b]) {
+                            //do_nothing
+                        } else {
+                            totalSimplifiedPrefixList[prefixItem.pricelist_filter_b_id + '_' + prefixItem.prefix_b] = true;
+
+                            totalPrefixCount++;
+                        }
+                    }
                 }
 
                 for (var filterBKey in data.location[locationKey].filterA[filterAKey].filterB) {
@@ -61,13 +72,35 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     var filterBName = $scope.formFilterText(item);
                     var filterBId = item.id;
 
-                    var prefixCount = item.prefixPriceNoLimit.length;
                     var interconnectPrice = isNaN(parseFloat(item.interconnect_price)) ? 0 : parseFloat(item.interconnect_price);
 
                     var hasFilterBHeader = false;
 
+                    var simplifiedPrefixList = {};
+                    var prefixCount = 0;
+
                     for (var prefixPriceKey in data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit) {
-                        var item = data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit[prefixPriceKey];
+                        var prefixItem = data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit[prefixPriceKey];
+
+                        if (simplifiedPrefixList[prefixItem.prefix_b]) {
+                            simplifiedPrefixList[prefixItem.prefix_b].push({
+                                prefix_price_id: prefixItem.id,
+                                b_number_price: ((parseFloat(prefixItem.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000).toFixed(4),
+                                date_from: prefixItem.date_from
+                            });
+                        } else {
+                            simplifiedPrefixList[prefixItem.prefix_b] = [{
+                                prefix_price_id: prefixItem.id,
+                                b_number_price: ((parseFloat(prefixItem.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000).toFixed(4),
+                                date_from: prefixItem.date_from
+                            }];
+
+                            prefixCount++;
+                        }
+                    }
+
+                    for (var prefixB in simplifiedPrefixList) {
+                        var item = simplifiedPrefixList[prefixB];
 
                         if (!hasFilterBHeader) {
                             $scope.list.push({
@@ -78,13 +111,11 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                                 filter_a_id: filterAId,
                                 filter_b_id: filterBId,
                                 is_prefix_price: true,
-                                prefix_price_id: item.id,
-                                b_number_price: (parseFloat(item.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000,
-                                old_b_number_price: (parseFloat(item.old_b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000,
-                                prefix_b: item.prefix_b,
+                                prefix_b: prefixB == 'null' ? '' : prefixB,
                                 prefix_count: prefixCount,
                                 total_prefix_count: totalPrefixCount,
-                                interconnect_price: parseFloat(interconnectPrice)
+                                interconnect_price: parseFloat(interconnectPrice),
+                                prefixes: item
                             });
 
                             hasFilterBHeader = true;
@@ -93,10 +124,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                                 is_filter_b_header: false,
                                 is_filter_a_header: !hasFilterAHeader,
                                 is_prefix_price: true,
-                                prefix_price_id: item.id,
-                                b_number_price: (parseFloat(item.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000,
-                                old_b_number_price: (parseFloat(item.old_b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000,
-                                prefix_b: item.prefix_b
+                                prefix_b: prefixB == 'null' ? '' : prefixB,
+                                prefixes: item
                             });
                         }
 
@@ -145,59 +174,6 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             $scope.item = data;
             $scope.drawTable(data);
         });
-    };
-
-    $scope.getPrefixPriceList = function (filter_b_id, page) {
-        PricelistPrefixPrice.read({pricelist_filter_b_id: filter_b_id, page_number: page}).then(function (data) {
-            $scope.prefixes[filter_b_id] = data;
-
-            var index = '';
-
-            for (var i in $scope.list) {
-                if ($scope.list[i].is_prefix_price == true && $scope.list[i].filter_b_id == filter_b_id) {
-                    if (index == '') {
-                        index = i;
-                        break;
-                    }
-                }
-            }
-
-            $scope.list.splice(index, $scope.limit);
-
-            for (var i = $scope.limit - 1; i >= 0; i--) {
-                var item = $scope.prefixes[filter_b_id][i];
-
-                if (typeof item !== 'undefined') {
-                    $scope.list.splice(index, 0, {
-                        is_prefix_price: true,
-                        filter_b_id: filter_b_id,
-                        prefix_price_id: item.id,
-                        b_number_price: item.b_number_price,
-                        change_flag: item.change_flag,
-                        prefix_b: item.prefix_b,
-                        date_from: item.date_from,
-                        date_to: item.date_to,
-                        has_buttons: true
-                    });
-                } else {
-                    $scope.list.splice(index, 0, {
-                        is_prefix_price: true,
-                        filter_b_id: filter_b_id,
-                        prefix_price_id: '',
-                        b_number_price: '',
-                        change_flag: '',
-                        prefix_b: '',
-                        date_from: '',
-                        date_to: '',
-                        has_buttons: false
-                    });
-                }
-            }
-        });
-    };
-
-    $scope.setPagingData = function (page, filterBId) {
-        $scope.getPrefixPriceList(filterBId, page);
     };
 
     if (params.id) {
