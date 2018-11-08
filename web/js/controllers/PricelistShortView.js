@@ -81,18 +81,24 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
                     for (var prefixPriceKey in data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit) {
                         var prefixItem = data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit[prefixPriceKey];
+                        var bNumberPrice = ((parseFloat(prefixItem.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000).toFixed(4);
 
                         if (simplifiedPrefixList[prefixItem.prefix_b]) {
+                            var previousItem = simplifiedPrefixList[prefixItem.prefix_b][(simplifiedPrefixList[prefixItem.prefix_b].length - 1)];
+                            var previousPrice = parseFloat(previousItem.b_number_price);
+
                             simplifiedPrefixList[prefixItem.prefix_b].push({
                                 prefix_price_id: prefixItem.id,
-                                b_number_price: ((parseFloat(prefixItem.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000).toFixed(4),
-                                date_from: prefixItem.date_from
+                                b_number_price: bNumberPrice,
+                                date_from: prefixItem.date_from,
+                                price_change: previousPrice > bNumberPrice ? 'decrease' : 'increase'
                             });
                         } else {
                             simplifiedPrefixList[prefixItem.prefix_b] = [{
                                 prefix_price_id: prefixItem.id,
-                                b_number_price: ((parseFloat(prefixItem.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000).toFixed(4),
-                                date_from: prefixItem.date_from
+                                b_number_price: bNumberPrice,
+                                date_from: prefixItem.date_from,
+                                price_change: 'none'
                             }];
 
                             prefixCount++;

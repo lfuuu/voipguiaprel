@@ -29,7 +29,8 @@
                     <span ng-repeat="prefixItem in item.prefixes track by prefixItem.prefix_price_id">
                         {{$first ? '' : '|'}}
                         <span style="cursor: pointer" ng-click="editPrefixPrice(prefixItem.prefix_price_id)">
-                            <!--<span ng-if="!$first" style="color: green;">&#11105;</span>-->
+                            <span ng-if="!$first && prefixItem.price_change == 'increase'" style="color: green;">&#11105;</span>
+                            <span ng-if="!$first && prefixItem.price_change == 'decrease'" style="color: red;">&#11107;</span>
                             {{prefixItem.b_number_price}}
                             <span ng-if="!$first" style="color: grey; font-size: smaller;">c&nbsp;{{prefixItem.date_from}}</span>
                         </span>
