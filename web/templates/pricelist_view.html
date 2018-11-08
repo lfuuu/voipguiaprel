@@ -3,7 +3,7 @@
         <table class="table table-condensed">
             <tbody>
             <tr ng-repeat="item in list">
-                <td style="background-color: #BBAAAA;border-left: 1px solid grey;" ng-if="item.is_pricelist_header"></td>
+                <td style="background-color: #BBAAAA;border-left: 1px solid grey;" ng-if="item.is_pricelist_header"><button type="button" class="btn btn-success btn-xs" ng-click="back()">Закрыть</button></td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header" colspan="8"></td>
                 <td style="text-align: center; background-color: #BBAAAA" ng-if="item.is_pricelist_header">
                     <b>Прайслист</b>
@@ -271,11 +271,11 @@
                 <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price_footer"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price_footer"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price_footer"></td>
-                <td ng-if="item.is_prefix_price_footer" colspan="3"></td>
+                <td ng-if="item.is_prefix_price_footer" colspan="4"></td>
                 <td ng-if="item.is_prefix_price_footer" colspan="7">
                     <pagination style="display: inline;" max-size="5" rotate="false" total-items="item.totalCount" items-per-page="limit" page="item.currentPage" on-select-page="setPagingData(page, item.filter_b_id)"></pagination>
                 </td>
-                <td ng-if="item.is_prefix_price_footer" colspan="6"></td>
+                <td ng-if="item.is_prefix_price_footer" colspan="5"></td>
             </tr>
             </tbody>
         </table>

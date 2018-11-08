@@ -341,11 +341,20 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         pricelistFilterBCreate: function(id, pricelistIsActive) {
             return openModal(PricelistFilterBEditCtrl, '/templates/pricelist_filter_b_edit.html', {filter_a_id: id, pricelist_is_active: pricelistIsActive});
         },
-        pricelistPrefixPriceEdit: function(id, pricelistIsActive) {
-            return openModal(PricelistPrefixPriceEditCtrl, '/templates/pricelist_prefix_price_edit.html', {id: id, pricelist_is_active: pricelistIsActive});
+        pricelistPrefixPriceEdit: function (id, pricelistIsActive, pricelistId) {
+            return openModal(PricelistPrefixPriceEditCtrl, '/templates/pricelist_prefix_price_edit.html', {
+                id: id,
+                pricelist_is_active: pricelistIsActive,
+                pricelist_id: pricelistId
+            });
         },
-        pricelistPrefixPriceCreate: function(id, dateStart, pricelistIsActive) {
-            return openModal(PricelistPrefixPriceEditCtrl, '/templates/pricelist_prefix_price_edit.html', {filter_b_id: id, pricelist_date_start: dateStart, pricelist_is_active: pricelistIsActive});
+        pricelistPrefixPriceCreate: function (id, dateStart, pricelistIsActive, pricelistId) {
+            return openModal(PricelistPrefixPriceEditCtrl, '/templates/pricelist_prefix_price_edit.html', {
+                filter_b_id: id,
+                pricelist_date_start: dateStart,
+                pricelist_is_active: pricelistIsActive,
+                pricelist_id: pricelistId
+            });
         },
         pricelistGroupList: function() {
             $cookies.selectedPage = 'pricelistGroupList';

@@ -57,75 +57,139 @@ class PricelistPrefixPriceController extends JsonController
         $dateFrom = $this->request['date_from'];
         $dateTo = $this->request['date_to'];
         $priceRequest = $this->request['b_number_price'];
+        $pricelistIsActive = $this->request['pricelist_is_active'];
+        $pricelistId = $this->request['pricelist_id'];
         
         if (strpos($prefixB, ',') !== false) {
             $prefixBArray = explode(',', $prefixB);
             
             foreach ($prefixBArray as $prefixB) {
-                $result = PricelistPrefixPrice::checkIfPrefixExists($prefixB, $filterBId, $id);
-    
-                if ($result) {
-                    return ['error' => 'В этом фильтре B уже есть такой префикс: ' . $prefixB, 'field' => 'prefix_b'];
-                }
-    
-                $saveResult = $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest);
+                $saveResult = $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest, $pricelistIsActive, $pricelistId);
                 
                 if (isset($saveResult['error'])) {
                     return $saveResult;
                 }
             }
         } else {
-            $result = PricelistPrefixPrice::checkIfPrefixExists($prefixB, $filterBId, $id);
-    
-            if ($result) {
-                return ['error' => 'В этом фильтре B уже есть такой префикс: ' . $prefixB, 'field' => 'prefix_b'];
-            }
-            
-            return $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest);
+            return $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest, $pricelistIsActive, $pricelistId);
         }
     }
     
-    private function saveSingle($id, $prefixB, $filterBId, $dateFromRequest, $dateToRequest, $priceRequest)
+    private function saveSingle($id, $prefixB, $filterBId, $dateFromRequest, $dateToRequest, $priceRequest, $pricelistIsActive, $pricelistId)
     {
-        if (isset($this->request['id'])) {
-            if (!\Yii::$app->user->can('pricelist_edit')) {
-                throw new ForbiddenHttpException('Access denied');
+        if ($pricelistIsActive && !isset($this->request['id'])) {
+            //create----------------------------------------------------------------------------------------------------
+            $pricelist = $this->getPricelistOr404($pricelistId);
+    
+            $dateFromNew = strtotime($dateFromRequest);
+            $dateNow = strtotime(date('Y-m-d'));
+            $dateFromPricelist = strtotime($pricelist->date_start);
+    
+            $dateToCompare = ($dateNow > $dateFromPricelist) ? $dateNow : $dateFromPricelist;
+    
+            if ($dateFromNew < $dateToCompare) {
+                return [
+                    'error' => 'Дата активации прайса префикса должна быть не раньше, чем сегодня, и не раньше даты активации прайслиста!',
+                    'field' => 'date_from'
+                ];
             }
-        
+    
+            $result = PricelistPrefixPrice::checkIfPrefixDateExists($prefixB, $filterBId, $dateFromRequest);
+    
+            if ($result) {
+                return ['error' => 'В этом фильтре B уже есть такой префикс (' . $prefixB . ') c такой датой (' . $dateFromRequest . ')', 'field' => 'date_from'];
+            }
+    
+            $item = PricelistPrefixPrice::create();
+            
+        } elseif ($pricelistIsActive && isset($this->request['id'])) {
+            //create----------------------------------------------------------------------------------------------------
+            $pricelist = $this->getPricelistOr404($pricelistId);
             $item = $this->getPricelistPrefixPriceOr404($id);
             
-            if ($priceRequest != $item->b_number_price) {
-                $item = PricelistPrefixPrice::create();
+            $dateFromNew = strtotime($dateFromRequest);
+            $dateNow = strtotime(date('Y-m-d'));
+            $dateInAWeek = strtotime(date('Y-m-d', strtotime('+7 days')));
+            $dateFromPricelist = strtotime($pricelist->date_start);
+            
+            if ($priceRequest > $item->b_number_price) {
+                $dateToCompare = ($dateInAWeek > $dateFromPricelist) ? $dateInAWeek : $dateFromPricelist;
+                
+                if ($dateFromNew < $dateToCompare) {
+                    return [
+                        'error' => 'Дата активации прайса префикса должна быть не раньше, чем через неделю, и не раньше даты активации прайслиста!',
+                        'field' => 'date_from'
+                    ];
+                }
             } else {
+                $dateToCompare = ($dateNow > $dateFromPricelist) ? $dateNow : $dateFromPricelist;
     
-                $dateFrom = strtotime($item->date_from);
-                $dateFromNew = strtotime($dateFromRequest);
-                $dateNow = strtotime(date('Y-m-d'));
-    
-                if ($dateFrom != $dateFromNew) {
-                    if ($dateFrom < $dateNow) {
-                        return [
-                            'error' => 'Нельзя менять дату активации активного прайса префикса!',
-                            'field' => 'date_from'
-                        ];
-                    }
-        
-                    if ($dateFromNew < $dateNow) {
-                        return [
-                            'error' => 'Дата активации прайса префикса должна быть в будущем!',
-                            'field' => 'date_from'
-                        ];
-                    }
+                if ($dateFromNew < $dateToCompare) {
+                    return [
+                        'error' => 'Дата активации прайса префикса должна быть не раньше, чем сегодня, и не раньше даты активации прайслиста!',
+                        'field' => 'date_from'
+                    ];
                 }
             }
-        } else {
-            if (!\Yii::$app->user->can('pricelist_create')) {
-                throw new ForbiddenHttpException('Access denied');
-            }
-        
-            $item = PricelistPrefixPrice::create();
-        }
+            
+            $result = PricelistPrefixPrice::checkIfPrefixDateExists($prefixB, $filterBId, $dateFromRequest);
     
+            if ($result) {
+                return ['error' => 'В этом фильтре B уже есть такой префикс (' . $prefixB . ') c такой датой (' . $dateFromRequest . ')', 'field' => 'date_from'];
+            }
+    
+            $item = PricelistPrefixPrice::create();
+            
+        } elseif (!$pricelistIsActive && !isset($this->request['id'])) {
+            //create----------------------------------------------------------------------------------------------------
+            $pricelist = $this->getPricelistOr404($pricelistId);
+    
+            $dateFromNew = strtotime($dateFromRequest);
+            $dateNow = strtotime(date('Y-m-d'));
+            $dateFromPricelist = strtotime($pricelist->date_start);
+    
+            $dateToCompare = ($dateNow > $dateFromPricelist) ? $dateNow : $dateFromPricelist;
+    
+            if ($dateFromNew < $dateToCompare) {
+                return [
+                    'error' => 'Дата активации прайса префикса должна быть не раньше, чем сегодня, и не раньше даты активации прайслиста!',
+                    'field' => 'date_from'
+                ];
+            }
+    
+            $result = PricelistPrefixPrice::checkIfPrefixDateExists($prefixB, $filterBId, $dateFromRequest);
+    
+            if ($result) {
+                return ['error' => 'В этом фильтре B уже есть такой префикс (' . $prefixB . ') c такой датой (' . $dateFromRequest . ')', 'field' => 'date_from'];
+            }
+    
+            $item = PricelistPrefixPrice::create();
+            
+        } elseif (!$pricelistIsActive && isset($this->request['id'])) {
+            //edit------------------------------------------------------------------------------------------------------
+            $pricelist = $this->getPricelistOr404($pricelistId);
+            $item = $this->getPricelistPrefixPriceOr404($id);
+    
+            $dateFromNew = strtotime($dateFromRequest);
+            $dateNow = strtotime(date('Y-m-d'));
+            $dateFromPricelist = strtotime($pricelist->date_start);
+            
+            $dateToCompare = ($dateNow > $dateFromPricelist) ? $dateNow : $dateFromPricelist;
+    
+            if ($dateFromNew < $dateToCompare) {
+                return [
+                    'error' => 'Дата активации прайса префикса должна быть не раньше, чем сегодня, и не раньше даты активации прайслиста!',
+                    'field' => 'date_from'
+                ];
+            }
+    
+            $result = PricelistPrefixPrice::checkIfPrefixDateExists($prefixB, $filterBId, $dateFromRequest, $id);
+    
+            if ($result) {
+                return ['error' => 'В этом фильтре B уже есть такой префикс (' . $prefixB . ') c такой датой (' . $dateFromRequest . ')', 'field' => 'date_from'];
+            }
+        }
+        
         $item->load([
             'prefix_b' => $prefixB,
             'pricelist_filter_b_id' => $filterBId,

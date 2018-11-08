@@ -35,10 +35,10 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
         return new PricelistPrefixPriceQuery(get_called_class());
     }
     
-    public static function checkIfPrefixExists($prefixB, $filterBId, $id)
+    public static function checkIfPrefixDateExists($prefixB, $filterBId, $dateFrom, $id = null)
     {
         $query = self::find()
-            ->where(['prefix_b' => $prefixB, 'pricelist_filter_b_id' => $filterBId]);
+            ->where(['prefix_b' => $prefixB, 'pricelist_filter_b_id' => $filterBId, 'date_from' => $dateFrom]);
         
         if ($id) {
             $query
@@ -46,8 +46,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                 ->addParams([':id' => $id]);
         }
         
-        return $query
-            ->exists();
+        return $query->exists();
     }
     
     /**

@@ -22,9 +22,12 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
 
     if (params.id) {
         $scope.pricelistIsActive = params.pricelist_is_active;
+        $scope.pricelistId = params.pricelist_id;
 
-        PricelistPrefixPrice.get({id: params.id}).then(function(data){
+        PricelistPrefixPrice.get({id: params.id}).then(function(data) {
             $scope.item = data;
+            $scope.item.pricelist_is_active = $scope.pricelistIsActive;
+            $scope.item.pricelist_id = $scope.pricelistId;
 
             $scope.base_date_from = data.date_from;
             $scope.base_price = data.b_number_price;
@@ -35,13 +38,18 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
         var date = new Date();
         var pricelistDate = new Date(params.pricelist_date_start);
         $scope.pricelistIsActive = params.pricelist_is_active;
+        $scope.pricelistId = params.pricelist_id;
 
         $scope.item = {
             prefix_b: '',
             pricelist_filter_b_id: params.filter_b_id,
             date_from: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
-            date_to: '3000-01-01'
+            date_to: '3000-01-01',
+            pricelist_is_active: $scope.pricelistIsActive,
+            pricelist_id: $scope.pricelistId
         };
+
+
     } else {
         var date = new Date();
         var pricelistDate = new Date(params.pricelist_date_start);
