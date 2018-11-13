@@ -45,6 +45,7 @@ class PricelistController extends JsonController
                 'g.name as group_name',
                 'is_in_use' => new Expression('case when atl.id is not null then true else false end')
             ])
+            ->distinct()
             ->leftJoin('billing_uu.pricelist_group g', 'g.id = billing_uu.pricelist.pricelist_group_id')
             ->leftJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = billing_uu.pricelist.id')
             ->leftJoin('billing_uu.account_tariff_light atl', 'atl.tariff_id = pp.tariff_id')
@@ -54,7 +55,8 @@ class PricelistController extends JsonController
             ->asArray();
         
         $countQuery = Pricelist::find()
-            ->select(['id']);
+            ->select(['id'])
+            ->distinct();
         
         if ($groupId != 'all') {
             $query->where(['billing_uu.pricelist.pricelist_group_id' => $groupId]);
