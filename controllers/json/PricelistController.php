@@ -47,7 +47,7 @@ class PricelistController extends JsonController
             ])
             ->leftJoin('billing_uu.pricelist_group g', 'g.id = billing_uu.pricelist.pricelist_group_id')
             ->leftJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = billing_uu.pricelist.id')
-            ->leftJoin('billing_uu.account_tariff_light atl', 'atl.id = pp.tariff_id')
+            ->leftJoin('billing_uu.account_tariff_light atl', 'atl.tariff_id = pp.tariff_id')
             ->orderBy('name')
             ->limit($limit)
             ->offset($offset)
