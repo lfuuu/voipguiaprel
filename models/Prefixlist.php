@@ -253,11 +253,6 @@ class Prefixlist extends \yii\db\ActiveRecord
         }
         
         $filters = [
-            'nnp_destination_id' => isset($input['nnp_destination']) ? $input['nnp_destination'] : '',
-            'country_code' => isset($input['nnp_country']) ? $input['nnp_country'] : '',
-            'region_id' => isset($input['nnp_region']) ? $input['nnp_region'] : '',
-            'city_id' => isset($input['nnp_city']) ? $input['nnp_city'] : '',
-            'ndc_type_id' => isset($input['nnp_ndc_type']) ? $input['nnp_ndc_type'] : '',
             'is_default' => isset($input['nnp_is_default']) ? $input['nnp_is_default'] : '',
             'use_nnp_ported' => isset($input['nnp_use_nnp_ported']) ? $input['nnp_use_nnp_ported'] : '',
             'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
@@ -265,8 +260,43 @@ class Prefixlist extends \yii\db\ActiveRecord
         
         if (isset($input['nnp_operator']) && count($input['nnp_operator'])) {
             $filters['operator_id'] = $input['nnp_operator'];
-            $filters['is_exclude_operators'] = array_key_exists('nnp_is_exclude_operators', $input) ?
+            $filters['exclude_operators'] = array_key_exists('nnp_is_exclude_operators', $input) ?
                 $input['nnp_is_exclude_operators'] :
+                '';
+        }
+    
+        if (isset($input['nnp_country']) && count($input['nnp_country'])) {
+            $filters['country_code'] = $input['nnp_country'];
+            $filters['exclude_country'] = array_key_exists('nnp_is_exclude_country', $input) ?
+                $input['nnp_is_exclude_country'] :
+                '';
+        }
+    
+        if (isset($input['nnp_region']) && count($input['nnp_region'])) {
+            $filters['region_id'] = $input['nnp_region'];
+            $filters['exclude_region'] = array_key_exists('nnp_is_exclude_region', $input) ?
+                $input['nnp_is_exclude_region'] :
+                '';
+        }
+    
+        if (isset($input['nnp_city']) && count($input['nnp_city'])) {
+            $filters['city_id'] = $input['nnp_city'];
+            $filters['exclude_city'] = array_key_exists('nnp_is_exclude_city', $input) ?
+                $input['nnp_is_exclude_city'] :
+                '';
+        }
+    
+        if (isset($input['nnp_ndc_type']) && count($input['nnp_ndc_type'])) {
+            $filters['ndc_type_id'] = $input['nnp_ndc_type'];
+            $filters['exclude_ndc_type'] = array_key_exists('nnp_is_exclude_ndc_type', $input) ?
+                $input['nnp_is_exclude_ndc_type'] :
+                '';
+        }
+    
+        if (isset($input['nnp_destination']) && count($input['nnp_destination'])) {
+            $filters['nnp_destination_id'] = $input['nnp_destination'];
+            $filters['exclude_destination'] = array_key_exists('nnp_is_exclude_destination', $input) ?
+                $input['nnp_is_exclude_destination'] :
                 '';
         }
 

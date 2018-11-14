@@ -301,11 +301,17 @@
                         <div class="tab-pane{{(nnpMode == NNP_MODE_DIRECTION) ? ' active' : '' }}" id="npp-destination">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Направление</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-6">
                                     <select ui-select2 ng-model="item.nnp_destination" style="width: 100%" >
                                         <option value="">-- Выберите --</option>
                                         <option ng-repeat="destination in destinationList" value="{{::destination.id}}">{{::destination.name}}</option>
                                     </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn {{!item.nnp_is_exclude_destination ? 'btn-primary active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_destination = false">Выбранные</button>
+                                        <button type="button" class="btn {{item.nnp_is_exclude_destination ? 'btn-danger active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_destination = true">Кроме выбранных</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -333,28 +339,46 @@
 
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Страна</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-6">
                                     <select ui-select2 ng-model="item.nnp_country" multiple="multiple" style="width: 100%" >
                                         <option ng-repeat="country in countryList" value="{{::country.code}}">{{::country.name_rus}}</option>
                                     </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn {{!item.nnp_is_exclude_country ? 'btn-primary active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_country = false">Выбранные</button>
+                                        <button type="button" class="btn {{item.nnp_is_exclude_country ? 'btn-danger active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_country = true">Кроме выбранных</button>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group" ng-if="item.nnp_country">
                                 <label class="col-sm-2 control-label">Регион</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-6">
                                     <select ui-select2 ng-model="item.nnp_region" multiple="multiple" style="width: 100%" >
                                         <option ng-repeat="region in regionList" value="{{::region.id}}">{{::region.name}}</option>
                                     </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn {{!item.nnp_is_exclude_region ? 'btn-primary active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_region = false">Выбранные</button>
+                                        <button type="button" class="btn {{item.nnp_is_exclude_region ? 'btn-danger active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_region = true">Кроме выбранных</button>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group" ng-if="item.nnp_country && item.nnp_region">
                                 <label class="col-sm-2 control-label">Город</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-6">
                                     <select ui-select2 ng-model="item.nnp_city" multiple="multiple" style="width: 100%" >
                                         <option ng-repeat="city in cityList" value="{{::city.id}}">{{::city.name}}</option>
                                     </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn {{!item.nnp_is_exclude_city ? 'btn-primary active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_city = false">Выбранные</button>
+                                        <button type="button" class="btn {{item.nnp_is_exclude_city ? 'btn-danger active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_city = true">Кроме выбранных</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -375,10 +399,16 @@
 
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Тип NDC</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-6">
                                     <select ui-select2 ng-model="item.nnp_ndc_type" multiple="multiple" style="width: 100%" >
                                         <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}</option>
                                     </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn {{!item.nnp_is_exclude_ndc_type ? 'btn-primary active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_ndc_type = false">Выбранные</button>
+                                        <button type="button" class="btn {{item.nnp_is_exclude_ndc_type ? 'btn-danger active' : 'btn-default'}}" ng-click="item.nnp_is_exclude_ndc_type = true">Кроме выбранных</button>
+                                    </div>
                                 </div>
                             </div>
 

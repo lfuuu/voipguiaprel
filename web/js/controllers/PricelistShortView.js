@@ -195,11 +195,15 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     $scope.viewPricelist = function (id) {
         Redirect.pricelistView(id).then(function () {
             $scope.initData($scope.item.id);
+        }, function () {
+            $scope.initData($scope.item.id);
         });
     };
 
     $scope.editLocation = function (id) {
         Redirect.pricelistLocationEdit(id, $scope.pricelistIsActive).then(function () {
+            $scope.initData($scope.item.id);
+        }, function () {
             $scope.initData($scope.item.id);
         });
     };
@@ -207,17 +211,23 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     $scope.editFilterA = function (id) {
         Redirect.pricelistFilterAEdit(id, $scope.pricelistIsActive).then(function () {
             $scope.initData($scope.item.id);
+        }, function () {
+            $scope.initData($scope.item.id);
         });
     };
 
     $scope.editFilterB = function (id) {
         Redirect.pricelistFilterBEdit(id, $scope.pricelistIsActive).then(function () {
             $scope.initData($scope.item.id);
+        }, function () {
+            $scope.initData($scope.item.id);
         });
     };
 
     $scope.editPrefixPrice = function (id) {
         Redirect.pricelistPrefixPriceEdit(id, $scope.pricelistIsActive, $scope.item.id).then(function () {
+            $scope.initData($scope.item.id);
+        }, function () {
             $scope.initData($scope.item.id);
         });
     };

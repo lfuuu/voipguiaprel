@@ -265,11 +265,15 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     $scope.addLocation = function (pricelistId) {
         Redirect.pricelistLocationCreate(pricelistId).then(function () {
             $scope.initData($scope.item.id);
+        }, function () {
+            $scope.initData($scope.item.id);
         });
     };
 
     $scope.addFilterA = function (locationId) {
         Redirect.pricelistFilterACreate(locationId).then(function () {
+            $scope.initData($scope.item.id);
+        }, function () {
             $scope.initData($scope.item.id);
         });
     };
@@ -277,11 +281,15 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     $scope.addFilterB = function (filterAId) {
         Redirect.pricelistFilterBCreate(filterAId).then(function () {
             $scope.initData($scope.item.id);
+        }, function () {
+            $scope.initData($scope.item.id);
         });
     };
 
     $scope.addPrefixPrice = function (filterBId) {
         Redirect.pricelistPrefixPriceCreate(filterBId, $scope.pricelistDateStart, $scope.pricelistIsActive, $scope.item.id).then(function () {
+            $scope.initData($scope.item.id);
+        }, function () {
             $scope.initData($scope.item.id);
         });
     };
@@ -289,11 +297,15 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     $scope.editPricelist = function (id) {
         Redirect.pricelistEdit(id).then(function () {
             $scope.initData($scope.item.id);
+        }, function () {
+            $scope.initData($scope.item.id);
         });
     };
 
     $scope.editLocation = function (id) {
         Redirect.pricelistLocationEdit(id).then(function () {
+            $scope.initData($scope.item.id);
+        }, function () {
             $scope.initData($scope.item.id);
         });
     };
@@ -301,17 +313,23 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     $scope.editFilterA = function (id) {
         Redirect.pricelistFilterAEdit(id).then(function () {
             $scope.initData($scope.item.id);
+        }, function () {
+            $scope.initData($scope.item.id);
         });
     };
 
     $scope.editFilterB = function (id) {
         Redirect.pricelistFilterBEdit(id).then(function () {
             $scope.initData($scope.item.id);
+        }, function () {
+            $scope.initData($scope.item.id);
         });
     };
 
     $scope.editPrefixPrice = function (id) {
         Redirect.pricelistPrefixPriceEdit(id, $scope.pricelistIsActive, $scope.item.id).then(function () {
+            $scope.initData($scope.item.id);
+        }, function () {
             $scope.initData($scope.item.id);
         });
     };
