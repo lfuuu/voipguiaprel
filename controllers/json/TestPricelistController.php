@@ -177,7 +177,7 @@ class TestPricelistController extends JsonController
             'location_id' => $item->location_id,
             'pricelist_id' => $item->pricelist_id,
             'orig' => $item->is_orig ? 'true' : 'false',
-            'test_mode' => true
+            'test_mode' => 'true'
         ];
         
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
