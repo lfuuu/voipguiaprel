@@ -431,5 +431,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         headerCreate: function() {
             return openModal(HeaderEditCtrl, '/templates/header_edit.html', {id: null});
         },
+        majorList: function() {
+            $cookies.selectedPage = 'majorList';
+            return openTab(MajorListCtrl, '/templates/major_list.html', {}, 'billing');
+        },
+        majorEdit: function(id) {
+            return openModal(MajorEditCtrl, '/templates/major_edit.html', {id: id});
+        },
+        majorCreate: function(countryCode, count) {
+            return openModal(MajorEditCtrl, '/templates/major_edit.html', {id: null, country_code: countryCode, count: count});
+        },
     };
 });

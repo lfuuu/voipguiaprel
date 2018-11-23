@@ -131,6 +131,10 @@ class RbacController extends Controller {
         ['name' => 'header_create', 'description' => 'Создание Header'],
         ['name' => 'header_edit', 'description' => 'Редактирование Header'],
         ['name' => 'header_delete', 'description' => 'Удаление Header'],
+        ['name' => 'major_list', 'description' => 'Просмотр списка Мэджоров'],
+        ['name' => 'major_create', 'description' => 'Создание Мэджора'],
+        ['name' => 'major_edit', 'description' => 'Редактирование Мэджора'],
+        ['name' => 'major_delete', 'description' => 'Удаление Мэджора'],
     ];
     
     private static $_roles = [
@@ -170,14 +174,16 @@ class RbacController extends Controller {
             'mcc_list', 'mcc_create', 'mcc_edit', 'mcc_delete', 'mnc_list', 'mnc_create', 'mnc_edit', 'mnc_delete',
             'test_pricelist_list', 'test_pricelist_create', 'test_pricelist_edit', 'test_pricelist_delete',
             'test_pricelist_group_list', 'test_pricelist_group_create', 'test_pricelist_group_edit', 'test_pricelist_group_delete',
-            'header_list', 'header_create', 'header_edit', 'header_delete'
+            'header_list', 'header_create', 'header_edit', 'header_delete',
+            'major_list', 'major_create', 'major_edit', 'major_delete'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'test_number_edit',
             'pricelist_group_list', 'pricelist_group_create', 'pricelist_group_edit', 'pricelist_group_delete',
             'mcc_list', 'mcc_create', 'mcc_edit', 'mcc_delete', 'mnc_list', 'mnc_create', 'mnc_edit', 'mnc_delete',
             'test_pricelist_list', 'test_pricelist_create', 'test_pricelist_edit', 'test_pricelist_delete',
-            'test_pricelist_group_list', 'test_pricelist_group_create', 'test_pricelist_group_edit', 'test_pricelist_group_delete'
+            'test_pricelist_group_list', 'test_pricelist_group_create', 'test_pricelist_group_edit', 'test_pricelist_group_delete',
+            'major_list', 'major_create', 'major_edit', 'major_delete'
         ]],
         ['role' => 'admin_routing', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view', 'user_list',

@@ -10,6 +10,7 @@ use app\models\auth\RouteReplace;
 use app\models\auth\TestPricelist;
 use app\models\auth\TestPricelistGroup;
 use app\models\billing_uu\ImsiPartner;
+use app\models\billing_uu\Major;
 use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterA;
 use app\models\billing_uu\PricelistFilterB;
@@ -137,6 +138,20 @@ class BaseController extends \yii\web\Controller
         $item = Pricelist::findOne($id);
         if ($item === null) {
             throw new HttpException(404, 'Прайслист не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return Major
+     * @throws HttpException
+     */
+    protected function getMajorOr404($id)
+    {
+        $item = Major::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Мэджор не найден');
         }
         return $item;
     }

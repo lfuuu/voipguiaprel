@@ -1491,6 +1491,51 @@ app.factory('PricelistPrefixPrice', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('Major', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/major/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function() {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {server_id: $rootScope.server.id};
+                ApiLoader.post(url + 'list', data)
+                    .then(function(data){
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function(data){
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function(data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            return ApiLoader.post(url + 'delete', {id: id});
+        },
+        move: function(id, direction) {
+            return ApiLoader.post(url + 'move', {id: id, direction: direction});
+        }
+    };
+});
+
 app.factory('Network', function ($q, ApiLoader, $rootScope) {
 	var url = '/json/network/';
 	var list = undefined;
