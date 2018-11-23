@@ -42,6 +42,13 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
         });
     };
 
+    $scope.saveAndUpdate = function()
+    {
+        Pricelist.saveAndUpdate($scope.item).then(function(response) {
+            $modalInstance.close();
+        });
+    };
+
     $scope.back = function()
     {
         $modalInstance.dismiss();

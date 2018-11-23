@@ -338,8 +338,14 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         pricelistFilterBEdit: function(id, pricelistIsActive) {
             return openModal(PricelistFilterBEditCtrl, '/templates/pricelist_filter_b_edit.html', {id: id, pricelist_is_active: pricelistIsActive});
         },
-        pricelistFilterBCreate: function(id, pricelistIsActive) {
-            return openModal(PricelistFilterBEditCtrl, '/templates/pricelist_filter_b_edit.html', {filter_a_id: id, pricelist_is_active: pricelistIsActive});
+        pricelistFilterBCreate: function(id, pricelistIsActive, pricelistDefaultTarificationFreeSeconds, pricelistDefaultTarificationIntervalSeconds, pricelistDefaultTarificationMinPaidSeconds) {
+            return openModal(PricelistFilterBEditCtrl, '/templates/pricelist_filter_b_edit.html', {
+                filter_a_id: id,
+                pricelist_is_active: pricelistIsActive,
+                pricelist_default_tarification_free_seconds: pricelistDefaultTarificationFreeSeconds,
+                pricelist_default_tarification_interval_seconds: pricelistDefaultTarificationIntervalSeconds,
+                pricelist_default_tarification_min_paid_seconds: pricelistDefaultTarificationMinPaidSeconds
+            });
         },
         pricelistPrefixPriceEdit: function (id, pricelistIsActive, pricelistId) {
             return openModal(PricelistPrefixPriceEditCtrl, '/templates/pricelist_prefix_price_edit.html', {

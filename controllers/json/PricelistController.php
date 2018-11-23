@@ -3,6 +3,7 @@
 namespace app\controllers\json;
 
 use app\models\billing_uu\Pricelist;
+use app\models\billing_uu\PricelistFilterB;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
@@ -151,6 +152,47 @@ class PricelistController extends JsonController
         
         if (isset($this->request['old_pricelist_id'])) {
             $item->importFromOldVersion($this->request['old_pricelist_id']);
+        }
+    }
+    
+    public function actionSaveAndUpdate()
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $item = $this->getPricelistOr404($this->request['id']);
+        $item->load($this->request, '');
+        
+        $transaction = Pricelist::getDb()->beginTransaction();
+        try {
+            if (!$item->save()) {
+                throw new FormValidationException($item);
+            }
+            
+            $filterBArray = PricelistFilterB::find()
+                ->alias('fb')
+                ->select('fb.*')
+                ->innerJoin('billing_uu.pricelist_filter_a as fa', 'fa.id = fb.pricelist_filter_a_id')
+                ->innerJoin('billing_uu.pricelist_location as pl', 'pl.id = fa.pricelist_location_id')
+                ->where('pl.pricelist_id = :pricelist_id')
+                ->addParams([':pricelist_id' => $this->request['id']])
+                ->all();
+            
+            foreach ($filterBArray as $filterB) {
+                $filterB->tarification_free_seconds = $item->default_tarification_free_seconds;
+                $filterB->tarification_interval_seconds = $item->default_tarification_interval_seconds;
+                $filterB->tarification_min_paid_seconds = $item->default_tarification_min_paid_seconds;
+    
+                if (!$filterB->save()) {
+                    throw new FormValidationException($item);
+                }
+            }
+            
+            $transaction->commit();
+        } finally {
+            if ($transaction->getIsActive())
+                $transaction->rollBack();
         }
     }
     

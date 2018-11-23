@@ -107,10 +107,10 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nn
             mode_selected: true,
             interconnect_price: 0,
             ported_num_price: 0,
-            tarification_free_seconds: 0,
-            tarification_interval_seconds: 60,
+            tarification_free_seconds: params.pricelist_default_tarification_free_seconds,
+            tarification_interval_seconds: params.pricelist_default_tarification_interval_seconds,
             tarification_type: 1,
-            tarification_min_paid_seconds: 0
+            tarification_min_paid_seconds: params.pricelist_default_tarification_min_paid_seconds
         };
 
         $scope.$watch('item.nnp_country', watchers.nnp_country);

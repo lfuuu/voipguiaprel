@@ -33,6 +33,9 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
 
         $scope.pricelistIsActive = data.is_active;
         $scope.pricelistDateStart = data.date_start;
+        $scope.pricelistDefaultTarificationFreeSeconds = data.default_tarification_free_seconds;
+        $scope.pricelistDefaultTarificationIntervalSeconds = data.default_tarification_interval_seconds;
+        $scope.pricelistDefaultTarificationMinPaidSeconds = data.default_tarification_min_paid_seconds;
 
         var locationHeaderSet = false;
 
@@ -279,7 +282,13 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     };
 
     $scope.addFilterB = function (filterAId) {
-        Redirect.pricelistFilterBCreate(filterAId).then(function () {
+        Redirect.pricelistFilterBCreate(
+            filterAId,
+            $scope.pricelistIsActive,
+            $scope.pricelistDefaultTarificationFreeSeconds,
+            $scope.pricelistDefaultTarificationIntervalSeconds,
+            $scope.pricelistDefaultTarificationMinPaidSeconds
+        ).then(function () {
             $scope.initData($scope.item.id);
         }, function () {
             $scope.initData($scope.item.id);

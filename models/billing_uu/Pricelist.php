@@ -18,6 +18,9 @@ use yii\db\Query;
  * @property bool $is_active
  * @property int $basic_pricelist_location_id
  * @property string $description
+ * @property int $default_tarification_free_seconds
+ * @property int $default_tarification_interval_seconds
+ * @property int $default_tarification_min_paid_seconds
  */
 class Pricelist extends \yii\db\ActiveRecord
 {
@@ -33,7 +36,9 @@ class Pricelist extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'currency_id', 'date_created', 'date_start', 'date_end', 'description'], 'string'],
-            [['pricelist_version', 'pricelist_group_id', 'type_id', 'basic_pricelist_location_id'], 'integer'],
+            [['pricelist_version', 'pricelist_group_id', 'type_id', 'basic_pricelist_location_id',
+                'default_tarification_free_seconds', 'default_tarification_interval_seconds',
+                'default_tarification_min_paid_seconds'], 'integer'],
             [['orig', 'is_global', 'is_active'], 'boolean']
         ];
     }
