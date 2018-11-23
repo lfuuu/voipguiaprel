@@ -21,6 +21,13 @@
         </div>
 
         <div class="form-group">
+            <label class="col-sm-2 control-label">Время (UTC)</label>
+            <div class="col-sm-6">
+                <input class="form-control" placeholder="Время (UTC)" ng-model="item.mock_current_date" required>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label class="col-sm-2 control-label">Прайслист</label>
             <div class="col-sm-6">
                 <select-box list="pricelist" model="item.pricelist_id" placeholder="Выберите прайслист" required="true"></select-box>
