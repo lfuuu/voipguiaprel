@@ -36,6 +36,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
         $scope.pricelistDefaultTarificationFreeSeconds = data.default_tarification_free_seconds;
         $scope.pricelistDefaultTarificationIntervalSeconds = data.default_tarification_interval_seconds;
         $scope.pricelistDefaultTarificationMinPaidSeconds = data.default_tarification_min_paid_seconds;
+        $scope.pricelistServiceTypeId = data.service_type_id;
 
         var locationHeaderSet = false;
 
@@ -64,7 +65,8 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                 mcc: item.mcc_string,
                 mnc: item.mnc_string,
                 delta_price: item.delta_price,
-                has_children: data.location[locationKey].filterA.length > 0
+                has_children: data.location[locationKey].filterA.length > 0,
+                pricelist_service_type_id: $scope.pricelistServiceTypeId
             });
 
             var filterAHeaderSet = false;
