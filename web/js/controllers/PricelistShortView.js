@@ -23,6 +23,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
         $scope.pricelistIsActive = data.is_active;
         $scope.pricelistDateStart = data.date_start;
+        $scope.pricelistServiceTypeId = data.service_type_id;
 
         for (var locationKey in data.location) {
             var item = data.location[locationKey];
