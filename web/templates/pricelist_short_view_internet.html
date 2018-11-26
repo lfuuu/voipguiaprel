@@ -1,0 +1,38 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-body">
+        <table class="table table-condensed">
+            <tbody>
+            <tr ng-repeat="item in list">
+                <td ng-if="item.is_pricelist" colspan="2" style="text-align: center;">
+                    {{item.name}} | {{item.orig ? 'Оригинация' : 'Терминация'}} | Создан: {{item.date_created}}{{item.is_active ? ' | Активен с: ' + item.date_start : ''}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
+                </td>
+                <td ng-if="item.is_pricelist">
+                    <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                    </a>
+                </td>
+                <!---------------------------------------------------->
+                <td ng-if="item.is_location" colspan="3" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.location_text}} <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span></td>
+                <!---------------------------------------------------->
+                <td ng-if="item.is_prefix_price" colspan="3" style="text-align: center;">
+                    <span ng-repeat="prefixItem in item.prefixes track by prefixItem.prefix_price_id">
+                        {{$first ? '' : '|'}}
+                        <span style="cursor: pointer" ng-click="editPrefixPrice(prefixItem.prefix_price_id)">
+                            <span ng-if="!$first && prefixItem.price_change == 'increase'" style="color: green;">&#11105;</span>
+                            <span ng-if="!$first && prefixItem.price_change == 'decrease'" style="color: red;">&#11107;</span>
+                            {{prefixItem.b_number_price}}
+                            <span ng-if="!$first" style="color: grey; font-size: smaller;">c&nbsp;{{prefixItem.date_from}}</span>
+                        </span>
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-success btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

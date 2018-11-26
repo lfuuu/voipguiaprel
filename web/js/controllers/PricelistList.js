@@ -59,7 +59,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
 
         if (window.getSelection().type == 'Range') return;
 
-        Redirect.pricelistShortView(item.id).then(function () {
+        Redirect.pricelistShortView(item.id, item.service_type_id).then(function () {
             $scope.init();
         });
     };
@@ -70,7 +70,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         Pricelist.copy(item.id).then(function (response) {
             $scope.init();
 
-            Redirect.pricelistShortView(response.id).then(function () {
+            Redirect.pricelistShortView(response.id, response.service_type_id).then(function () {
                 $scope.init();
             });
         });

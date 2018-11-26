@@ -96,6 +96,9 @@
             <span ng-if="item.type_id == 3">ОТТ</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
+            <span class="label label-success" ng-if="item.service_type_id == 1">Голос</span>
+            <span class="label label-success" ng-if="item.service_type_id == 2">СМС</span>
+            <span class="label label-success" ng-if="item.service_type_id == 3">Data</span>
             <span class="label label-success" ng-if="item.orig">ORIG</span>
             <span class="label label-info" ng-if="!item.orig">TERM</span>
             <span class="label label-success" ng-if="item.is_global">Глобальный</span>

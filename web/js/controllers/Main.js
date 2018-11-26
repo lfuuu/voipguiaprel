@@ -1,6 +1,7 @@
 app.controller('MainCtrl', function ($rootScope, $scope, $cookies, $timeout, $modal, Redirect, Server) {
   $rootScope.server = dataServer;
   $rootScope.userName = userName;
+  $rootScope.userId = userId;
   $rootScope.userPermissions = userPermissions;
   $rootScope.billingEnabled = billingEnabled;
   $rootScope.routingEnabled = routingEnabled;

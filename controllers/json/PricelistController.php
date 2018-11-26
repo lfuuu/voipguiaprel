@@ -204,7 +204,7 @@ class PricelistController extends JsonController
         
         $item = $this->getPricelistOr404($this->request['id']);
         
-        if ($item->isInCommercialUse()) {
+        if ($item->isInCommercialUse() && $item->is_active) {
             throw new Exception('In commercial use!');
         } else {
             $item->is_active = !$item->is_active;

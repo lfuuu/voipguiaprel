@@ -314,8 +314,23 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         pricelistView: function(id) {
             return openModal(PricelistViewCtrl, '/templates/pricelist_view.html', {id: id});
         },
-        pricelistShortView: function(id) {
-            return openModal(PricelistShortViewCtrl, '/templates/pricelist_short_view.html', {id: id});
+        pricelistShortView: function(id, serviceTypeId) {
+            var templatePath;
+            var controller;
+            if (serviceTypeId == 1) {
+                //голос
+                templatePath = '/templates/pricelist_short_view.html';
+                controller = PricelistShortViewCtrl;
+            } else if (serviceTypeId == 2) {
+                //смс
+                templatePath = '/templates/pricelist_short_view.html';
+                controller = PricelistShortViewCtrl;
+            } else if (serviceTypeId == 3) {
+                //дата (трафик)
+                templatePath = '/templates/pricelist_short_view_internet.html';
+                controller = PricelistShortViewInternetCtrl;
+            }
+            return openModal(controller, templatePath, {id: id});
         },
         pricelistEdit: function(id) {
             return openModal(PricelistEditCtrl, '/templates/pricelist_edit.html', {id: id});
