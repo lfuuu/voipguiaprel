@@ -13,7 +13,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         $scope.list.push({
             id: data.id,
             is_pricelist: true,
-            name: data.description ? data.description : (data.name + ', валюта ' + data.currency_id),
+            name: data.description ? (data.description + ', валюта ' + data.currency_id) : ('Валюта ' + data.currency_id),
             date_created: data.date_created,
             date_start: data.date_start,
             is_active: data.is_active,
@@ -24,6 +24,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         $scope.pricelistIsActive = data.is_active;
         $scope.pricelistDateStart = data.date_start;
         $scope.pricelistServiceTypeId = data.service_type_id;
+        $scope.pricelistName = data.name;
 
         for (var locationKey in data.location) {
             var item = data.location[locationKey];

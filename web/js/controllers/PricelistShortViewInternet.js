@@ -2,9 +2,6 @@ var PricelistShortViewInternetCtrl = function ($scope, Redirect, List, Pricelist
 
     $scope.locationIds = List.location();
 
-    $scope.limit = 10;
-    $scope.prefixes = [];
-
     $scope.drawTable = function (data) {
         $scope.list = [];
 
@@ -13,7 +10,7 @@ var PricelistShortViewInternetCtrl = function ($scope, Redirect, List, Pricelist
         $scope.list.push({
             id: data.id,
             is_pricelist: true,
-            name: data.description ? data.description : (data.name + ', валюта ' + data.currency_id),
+            name: data.description ? (data.description + ', валюта ' + data.currency_id) : ('Валюта ' + data.currency_id),
             date_created: data.date_created,
             date_start: data.date_start,
             is_active: data.is_active,
@@ -23,6 +20,8 @@ var PricelistShortViewInternetCtrl = function ($scope, Redirect, List, Pricelist
 
         $scope.pricelistIsActive = data.is_active;
         $scope.pricelistDateStart = data.date_start;
+        $scope.pricelistName = data.name;
+        $scope.pricelistCurrency = data.currency_id;
 
         for (var locationKey in data.location) {
             var item = data.location[locationKey];
@@ -32,15 +31,15 @@ var PricelistShortViewInternetCtrl = function ($scope, Redirect, List, Pricelist
             var locationText = item.description ? item.description : ((isBasic ? 'Базовое местоположение: ' : 'Местоположение: ') +
                 $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name +
                 ((item.mcc_string == '' || item.mcc_string == null) ? '' : ', MCC: ' + item.mcc_string) +
-                ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string) +
-                ((item.delta_price == '' || item.delta_price == null) ? '' : ', Наценка: ' + item.delta_price));
+                ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string));
 
             $scope.list.push({
                 is_location: true,
                 id: item.id,
                 location_text: locationText,
                 has_children: data.location[locationKey].filterA.length > 0,
-                is_basic: isBasic
+                is_basic: isBasic,
+                delta_price: item.delta_price + ' ' + $scope.pricelistCurrency + '/МБ'
             });
 
             for (var filterAKey in data.location[locationKey].filterA) {
