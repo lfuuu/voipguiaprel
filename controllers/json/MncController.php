@@ -52,10 +52,9 @@ class MncController extends JsonController
         return
             Mnc::find()
                 ->select(['id' => 'mnc', 'mnc' => new Expression('LPAD(mnc::text, 2, \'0\')'), 'name' => 'network'])
-                ->where('mcc = :mcc')
+                ->where(['mcc' => $mcc])
                 ->orderBy('network')
                 ->asArray()
-                ->addParams([':mcc' => $mcc])
                 ->all();
     }
 

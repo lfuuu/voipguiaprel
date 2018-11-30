@@ -1532,7 +1532,10 @@ app.factory('Major', function ($q, ApiLoader, $rootScope) {
         },
         move: function(id, direction) {
             return ApiLoader.post(url + 'move', {id: id, direction: direction});
-        }
+        },
+        findUsagesInPricelists: function(id) {
+            return ApiLoader.post(url + 'find-usages-in-pricelists', {id: id});
+        },
     };
 });
 

@@ -86,42 +86,42 @@
             </div>
 
             <ul class="nav nav-tabs">
-                <li class="{{(nnpMode == NNP_MODE_DIRECTION) ? 'active' : '' }}">
-                    <a href="#npp-destination" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_DIRECTION)">ННП-Направление</a>
-                </li>
                 <li class="{{(nnpMode == NNP_MODE_FILTER) ? 'active' : '' }}">
-                    <a href="#nnp-filters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_FILTER)">ННП-Фильтры</a>
+                    <a href="#nnp-filter" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_FILTER)">ННП-Фильтр</a>
+                </li>
+                <li class="{{(nnpMode == NNP_MODE_PARAMETERS) ? 'active' : '' }}">
+                    <a href="#nnp-parameters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_PARAMETERS)">ННП-Параметры</a>
                 </li>
             </ul>
             <br/>
 
             <div class="tab-content">
-                <div class="tab-pane{{(nnpMode == NNP_MODE_DIRECTION) ? ' active' : '' }}" id="npp-destination">
+                <div class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filter">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Направление</label>
-                        <div class="col-sm-6">
-                            <select ui-select2 ng-model="item.nnp_destination" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="destination in destinationList" value="{{::destination.id}}">
-                                    {{::destination.name}}
+                        <label class="col-sm-2 control-label">Страна</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.filter_country" style="width: 100%">
+                                <option ng-repeat="country in countryList" value="{{::country.code}}">
+                                    {{::country.name_rus}}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn {{!item.f_inv_nnp_destination ? 'btn-primary active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_destination = false">Выбранные
-                                </button>
-                                <button type="button"
-                                        class="btn {{item.f_inv_nnp_destination ? 'btn-danger active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_destination = true">Кроме выбранных
-                                </button>
-                            </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">ННП-фильтр</label>
+                        <div class="col-sm-10">
+                            <select ui-select2 ng-model="item.nnp_filter" style="width: 100%">
+                                <option value="">-- Выберите --</option>
+                                <option ng-repeat="filter in filterList" value="{{filter.id}}">
+                                    {{filter.name}}
+                                </option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filters">
+                <div class="tab-pane{{(nnpMode == NNP_MODE_PARAMETERS) ? ' active' : '' }}" id="nnp-parameters">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Страна</label>
                         <div class="col-sm-6">

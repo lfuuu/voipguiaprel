@@ -72,7 +72,7 @@ class NnpController extends JsonController
         $countryCode = $this->request['country_code'];
         $region = isset($this->request['region']) ? $this->request['region'] : false;
     
-        if (empty($countryCode)) {
+        if (empty($countryCode) || $region == [0 => ''] || empty($region)) {
             return [];
         }
         

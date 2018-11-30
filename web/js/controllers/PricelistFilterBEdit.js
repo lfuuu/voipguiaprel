@@ -1,7 +1,7 @@
-var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nnp, List, params, $modalInstance, $window, Redirect) {
+var PricelistFilterBEditCtrl = function($scope, $rootScope, Major, PricelistFilterB, Nnp, List, params, $modalInstance, $window, Redirect) {
 
-    $scope.NNP_MODE_DIRECTION = 1;
-    $scope.NNP_MODE_FILTER = 2;
+    $scope.NNP_MODE_FILTER = 1;
+    $scope.NNP_MODE_PARAMETERS = 2;
 
     var countryLoadComplete = false;
     var regionLoadComplete = false;
@@ -14,6 +14,13 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nn
     ];
 
     var watchers = {
+        filter_country: function (newValue, oldValue) {
+            if (newValue !== oldValue) {
+                Major.read({country_code: newValue}).then(function (result) {
+                    $scope.filterList = result;
+                });
+            }
+        },
         nnp_country: function (newValue, oldValue) {
             regionLoadComplete = false;
             operatorLoadComplete = false;
@@ -82,7 +89,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nn
     $scope.nnpProcessFailed = false;
     $scope.nnpProcessComplete = false;
 
-    $scope.nnpMode = $scope.NNP_MODE_DIRECTION;
+    $scope.nnpMode = $scope.NNP_MODE_PARAMETERS;
 
     $scope.pricelistIsActive = params.pricelist_is_active;
 
@@ -92,8 +99,15 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nn
 
             $scope.setNnpFields(data);
 
+            if (data.nnp_filter && data.filter_country) {
+                Major.read({country_code: data.filter_country}).then(function (result) {
+                    $scope.filterList = result;
+                });
+            }
+
             $scope.$watch('item.nnp_country', watchers.nnp_country);
             $scope.$watch('item.nnp_region', watchers.nnp_region);
+            $scope.$watch('item.filter_country', watchers.filter_country);
         });
     } else if (params.filter_a_id) {
         $scope.item = {
@@ -110,11 +124,13 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nn
             tarification_free_seconds: params.pricelist_default_tarification_free_seconds,
             tarification_interval_seconds: params.pricelist_default_tarification_interval_seconds,
             tarification_type: 1,
-            tarification_min_paid_seconds: params.pricelist_default_tarification_min_paid_seconds
+            tarification_min_paid_seconds: params.pricelist_default_tarification_min_paid_seconds,
+            filter_country: 643
         };
 
         $scope.$watch('item.nnp_country', watchers.nnp_country);
         $scope.$watch('item.nnp_region', watchers.nnp_region);
+        $scope.$watch('item.filter_country', watchers.filter_country);
     } else {
         $scope.item = {
             nnp_destination: null,
@@ -129,20 +145,18 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nn
             tarification_free_seconds: 0,
             tarification_interval_seconds: 60,
             tarification_type: 1,
-            tarification_min_paid_seconds: 0
+            tarification_min_paid_seconds: 0,
+            filter_country: 643
         };
 
         $scope.$watch('item.nnp_country', watchers.nnp_country);
         $scope.$watch('item.nnp_region', watchers.nnp_region);
+        $scope.$watch('item.filter_country', watchers.filter_country);
     }
 
     $scope.setNnpMode = function(nnpMode) {
         $scope.nnpMode = nnpMode;
     };
-
-    Nnp.destinationList().then(function (data) {
-        $scope.destinationList = data;
-    });
 
     Nnp.countryList().then(function (data) {
         $scope.countryList = data;
@@ -172,27 +186,11 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nn
     $scope.save = function () {
         var data = angular.copy($scope.item);
 
-        if ($scope.nnpMode == $scope.NNP_MODE_DIRECTION) {
-            data.nnp_country = '{}';
-            data.nnp_region = '{}';
-            data.nnp_city = '{}';
-            data.nnp_operator = '{}';
-            data.nnp_ndc_type = '{}';
-            data.f_inv_nnp_country = false;
-            data.f_inv_nnp_operator = false;
-            data.f_inv_nnp_region = false;
-            data.f_inv_nnp_city = false;
-            data.f_inv_nnp_ndc_type = false;
-            data.nnp_destination = $scope.stringifyNnpData(data.nnp_destination);
-        } else {
-            data.nnp_destination = '{}';
-            data.f_inv_nnp_destination = false;
-            data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
-            data.nnp_region = $scope.stringifyNnpData(data.nnp_region);
-            data.nnp_city = $scope.stringifyNnpData(data.nnp_city);
-            data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
-            data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
-        }
+        data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
+        data.nnp_region = $scope.stringifyNnpData(data.nnp_region);
+        data.nnp_city = $scope.stringifyNnpData(data.nnp_city);
+        data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
+        data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
 
         PricelistFilterB.save(data).then(function () {
             $modalInstance.close();
@@ -202,11 +200,12 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, PricelistFilterB, Nn
     $scope.setNnpFields = function(data) {
         try {
             $scope.item.nnp_ndc_type = $scope.parseNnpData($scope.item.nnp_ndc_type);
-            $scope.item.nnp_destination = $scope.parseNnpData($scope.item.nnp_destination);
+
+            if ($scope.item.nnp_filter != '') {
+                $scope.nnpMode = $scope.NNP_MODE_FILTER;
+            }
 
             if ($scope.item.nnp_country !== '{}') {
-                $scope.nnpMode = $scope.NNP_MODE_FILTER;
-
                 $scope.item.nnp_country = $scope.parseNnpData($scope.item.nnp_country);
 
                 if ($scope.item.nnp_country) {

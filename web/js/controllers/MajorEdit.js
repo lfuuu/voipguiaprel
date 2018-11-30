@@ -1,9 +1,4 @@
-var MajorEditCtrl = function($scope, Nnp, Major, params, $modalInstance, $window) {
-    $scope.NNP_MODE_DIRECTION = 1;
-    $scope.NNP_MODE_FILTER = 2;
-
-    $scope.nnpMode = $scope.NNP_MODE_DIRECTION;
-
+var MajorEditCtrl = function($scope, Redirect, Nnp, Major, params, $modalInstance, $window) {
     var countryLoadComplete = false;
     var regionLoadComplete = false;
     var cityLoadComplete = false;
@@ -78,23 +73,25 @@ var MajorEditCtrl = function($scope, Nnp, Major, params, $modalInstance, $window
 
             $scope.setNnpFields(data);
 
+            Major.findUsagesInPricelists({id: params.id}).then(function (data) {
+                $scope.usagesInPricelists = data;
+            });
+
             $scope.$watch('item.nnp_country', watchers.nnp_country);
             $scope.$watch('item.nnp_region', watchers.nnp_region);
         });
     } else {
         $scope.item = {
-            nnp_destination: null,
             nnp_country: null,
             nnp_city: null,
             nnp_region: null,
             nnp_operator: null,
             nnp_ndc_type: null,
-            nnp_exclude_destination: false,
             nnp_exclude_country: false,
             nnp_exclude_city: false,
             nnp_exclude_region: false,
             nnp_exclude_operator: false,
-            nnp_exclude_ndc_type: false,
+            nnp_exclude_ndc_type: false
         };
 
         if (params.country_code) {
@@ -106,10 +103,6 @@ var MajorEditCtrl = function($scope, Nnp, Major, params, $modalInstance, $window
         $scope.$watch('item.nnp_region', watchers.nnp_region);
 
     }
-
-    Nnp.destinationList().then(function (data) {
-        $scope.destinationList = data;
-    });
 
     Nnp.countryList().then(function (data) {
         $scope.countryList = data;
@@ -128,9 +121,7 @@ var MajorEditCtrl = function($scope, Nnp, Major, params, $modalInstance, $window
         try {
             var filterData = $.parseJSON($scope.item.nnp_filter_json);
 
-            $scope.item.nnp_destination = filterData.nnp_destination_id;
             $scope.item.nnp_exclude_operator = filterData.exclude_operators;
-            $scope.item.nnp_exclude_destination = filterData.exclude_destination;
             $scope.item.nnp_exclude_country = filterData.exclude_country;
             $scope.item.nnp_exclude_city = filterData.exclude_city;
             $scope.item.nnp_exclude_region = filterData.exclude_region;
@@ -169,25 +160,17 @@ var MajorEditCtrl = function($scope, Nnp, Major, params, $modalInstance, $window
         }
     };
 
+    $scope.clickPricelistItem = function(item) {
+        if (window.getSelection().type == 'Range') return;
+
+        Redirect.pricelistShortView(item.id, item.service_type_id).then(function () {
+            //do_nothing
+        });
+    };
+
     $scope.save = function()
     {
         var data = angular.copy($scope.item);
-
-        if ($scope.nnpMode == $scope.NNP_MODE_DIRECTION) {
-            delete data.nnp_country;
-            delete data.nnp_region;
-            delete data.nnp_city;
-            delete data.nnp_operator;
-            delete data.nnp_ndc_type;
-            delete data.nnp_exclude_country;
-            delete data.nnp_exclude_region;
-            delete data.nnp_exclude_city;
-            delete data.nnp_exclude_operator;
-            delete data.nnp_exclude_ndc_type;
-        } else {
-            delete data.nnp_destination;
-            delete data.nnp_exclude_destination;
-        }
 
         Major.save(data).then(function(response) {
             $modalInstance.close();

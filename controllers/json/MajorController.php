@@ -5,6 +5,11 @@ namespace app\controllers\json;
 use app\models\billing_uu\Major;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use app\models\billing_uu\Pricelist;
+use app\models\billing_uu\PricelistFilterA;
+use app\models\billing_uu\PricelistFilterB;
+use app\models\billing_uu\PricelistGroup;
+use app\models\billing_uu\PricelistLocation;
 use yii\db\IntegrityException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
@@ -152,5 +157,32 @@ class MajorController extends JsonController
         } catch (IntegrityException $e) {
             return ['errors' => [['code' => $e->getCode(), 'message' => $e->getMessage()]]];
         }
+    }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionFindUsagesInPricelists()
+    {
+        if (!\Yii::$app->user->can('major_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        return Pricelist::find()
+            ->select([
+                'p.*', 'group_name' => 'pg.name'
+            ])
+            ->distinct()
+            ->alias('p')
+            ->innerJoin(['pg' => PricelistGroup::tableName()], 'pg.id = p.pricelist_group_id')
+            ->innerJoin(['pl' => PricelistLocation::tableName()], 'pl.pricelist_id = p.id')
+            ->innerJoin(['a' => PricelistFilterA::tableName()], 'pl.id = a.pricelist_location_id')
+            ->innerJoin(['b' => PricelistFilterB::tableName()], 'a.id = b.pricelist_filter_a_id')
+            ->where(['a.nnp_filter' => $this->request['id']])
+            ->orWhere(['b.nnp_filter' => $this->request['id']])
+            ->asArray()
+            ->orderBy('p.id')
+            ->all();
     }
 }

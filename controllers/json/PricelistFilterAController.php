@@ -2,6 +2,7 @@
 
 namespace app\controllers\json;
 
+use app\models\billing_uu\Major;
 use app\models\billing_uu\PricelistFilterA;
 use Yii;
 use app\classes\JsonController;
@@ -19,11 +20,14 @@ class PricelistFilterAController extends JsonController
         
         return
             PricelistFilterA::find()
+                ->alias('a')
                 ->select(
-                    ['*', 'date_trunc(\'second\', time_start) as time_start',
-                    'date_trunc(\'second\', time_end) as time_end']
+                    ['a.*', 'date_trunc(\'second\', time_start) as time_start',
+                    'date_trunc(\'second\', time_end) as time_end',
+                    'filter_country' => 'm.country_code']
                 )
-                ->where(['id' => $this->request['id']])
+                ->leftJoin(['m' => Major::tableName()], 'm.id = a.nnp_filter')
+                ->where(['a.id' => $this->request['id']])
                 ->asArray()
                 ->one();
     }
