@@ -79,6 +79,7 @@
             </a>
         </th>
         <th ng-if="userPermissions['pricelist_create']">&nbsp;</th>
+        <th ng-if="userPermissions['pricelist_create']">&nbsp;</th>
         <th ng-if="userPermissions['pricelist_edit']">&nbsp;</th>
         <th ng-if="userPermissions['pricelist_delete']">&nbsp;</th>
     </tr>
@@ -110,6 +111,10 @@
         <td ng-if="userPermissions['pricelist_create']">
             <button type="button" class="btn btn-default btn-sm"
                     ng-click="copyItem(item)">Копировать</button>
+        </td>
+        <td ng-if="userPermissions['pricelist_create']">
+            <button type="button" class="btn btn-default btn-sm"
+                    ng-click="copyAndMultiplyItem(item)">Умножить</button>
         </td>
         <td ng-if="userPermissions['pricelist_create']">
             <button type="button" ng-hide="!item.is_active || item.is_in_use" class="btn btn-default btn-sm"

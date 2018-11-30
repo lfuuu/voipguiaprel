@@ -1329,6 +1329,9 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         copy: function(id) {
             return ApiLoader.post(url + 'copy', {id: id});
         },
+        copyAndMultiply: function(id, multiplier) {
+            return ApiLoader.post(url + 'copy-and-multiply', {id: id, multiplier: multiplier});
+        },
         get: function(data) {
             return ApiLoader.post(url + 'get', data);
         },

@@ -248,6 +248,25 @@ class PricelistController extends JsonController
         return $result;
     }
     
+    public function actionCopyAndMultiply()
+    {
+        if (!\Yii::$app->user->can('pricelist_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $result = (new Query())
+            ->select(['id' => new Expression('billing_uu.clone_pricelist(:old_pricelist_id, :multiplier)')])
+            ->addParams(
+                [
+                    ':old_pricelist_id' => $this->request['id'],
+                    ':multiplier' => $this->request['multiplier']
+                ]
+            )
+            ->one();
+        
+        return $result;
+    }
+    
     /**
      * @throws StaleObjectException
      * @throws HttpException

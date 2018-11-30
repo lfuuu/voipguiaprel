@@ -76,6 +76,22 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         });
     };
 
+    $scope.copyAndMultiplyItem = function (item) {
+        var multiplier;
+
+        multiplier = parseFloat($window.prompt('Введите множитель для копирования'));
+
+        if (isNaN(multiplier) || multiplier <= 0) return;
+
+        Pricelist.copyAndMultiply(item.id, multiplier).then(function (response) {
+            $scope.init();
+
+            Redirect.pricelistShortView(response.id, response.service_type_id).then(function () {
+                $scope.init();
+            });
+        });
+    };
+
     $scope.deleteItem = function (item) {
         if (!$window.confirm('Удалить?')) return;
 
