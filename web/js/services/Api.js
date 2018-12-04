@@ -1493,6 +1493,9 @@ app.factory('PricelistFilterA', function ($q, ApiLoader, $rootScope) {
         save: function(data) {
             return ApiLoader.post(url + 'save', data);
         },
+        saveAndUpdate: function(data) {
+            return ApiLoader.post(url + 'save-and-update', data);
+        },
         delete: function(id) {
             return ApiLoader.post(url + 'delete', {id: id});
         }
@@ -1509,6 +1512,9 @@ app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope) {
         },
         save: function(data) {
             return ApiLoader.post(url + 'save', data);
+        },
+        saveAndUpdate: function(data) {
+            return ApiLoader.post(url + 'save-and-update', data);
         },
         delete: function(id) {
             return ApiLoader.post(url + 'delete', {id: id});
@@ -1571,6 +1577,9 @@ app.factory('Major', function ($q, ApiLoader, $rootScope) {
         },
         save: function(data) {
             return ApiLoader.post(url + 'save', data);
+        },
+        saveAndUpdate: function(data) {
+            return ApiLoader.post(url + 'save-and-update', data);
         },
         delete: function(id) {
             return ApiLoader.post(url + 'delete', {id: id});

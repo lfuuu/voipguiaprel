@@ -7,6 +7,8 @@ use app\models\billing_uu\PricelistFilterA;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use yii\db\Expression;
+use yii\db\Query;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -60,6 +62,33 @@ class PricelistFilterAController extends JsonController
                 throw new FormValidationException($item);
             }
             
+            $transaction->commit();
+        } finally {
+            if ($transaction->getIsActive())
+                $transaction->rollBack();
+        }
+    }
+    
+    public function actionSaveAndUpdate()
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
+        $item = $this->getPricelistFilterAOr404($this->request['id']);
+        $item->load($this->request, '');
+    
+        $transaction = PricelistFilterA::getDb()->beginTransaction();
+        try {
+            if (!$item->save()) {
+                throw new FormValidationException($item);
+            }
+    
+            (new Query())->select(new Expression('billing_uu.copy_a_nnp_filter(:filter_a_id)'))
+                ->addParams([
+                    ':filter_a_id' => $this->request['id']
+                ])->one();
+        
             $transaction->commit();
         } finally {
             if ($transaction->getIsActive())

@@ -10,7 +10,9 @@ use app\models\billing_uu\PricelistFilterA;
 use app\models\billing_uu\PricelistFilterB;
 use app\models\billing_uu\PricelistGroup;
 use app\models\billing_uu\PricelistLocation;
+use yii\db\Expression;
 use yii\db\IntegrityException;
+use yii\db\Query;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -37,7 +39,7 @@ class MajorController extends JsonController
         }
     
         $countryCode = $this->request['country_code'];
-        $groupId = $this->request['group_id'];
+        $groupId = isset($this->request['group_id']) ? $this->request['group_id'] : 'undefined';
         
         if ($countryCode == 'undefined' && $groupId == 'undefined') {
             return [];
@@ -103,6 +105,36 @@ class MajorController extends JsonController
             if (!$item->save()) {
                 throw new FormValidationException($item);
             }
+            
+            $transaction->commit();
+        } finally {
+            if ($transaction->getIsActive())
+                $transaction->rollBack();
+        }
+    }
+    
+    public function actionSaveAndUpdate()
+    {
+        if (!\Yii::$app->user->can('major_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $item = $this->getMajorOr404($this->request['id']);
+        
+        $item->load($this->request, '');
+        
+        $item->setNnpFilters($this->request);
+        
+        $transaction = Major::getDb()->beginTransaction();
+        try {
+            if (!$item->save()) {
+                throw new FormValidationException($item);
+            }
+    
+            (new Query())->select(new Expression('billing_uu.copy_nnp_to_filters(:major_id)'))
+                ->addParams([
+                    ':major_id' => $this->request['id']
+                ])->one();
             
             $transaction->commit();
         } finally {

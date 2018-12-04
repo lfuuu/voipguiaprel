@@ -244,6 +244,7 @@
             <button type="submit" class="btn btn-success" ng-disabled="form.$invalid || pricelistIsActive"
                     ng-click="save()">Сохранить
             </button>
+            <button type="submit" class="btn btn-warning" ng-hide="!item.id || pricelistIsActive || !item.nnp_filter" ng-disabled="form.$invalid" ng-click="saveAndUpdate()">Сохранить и применить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
         </div>
     </div>

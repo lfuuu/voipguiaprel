@@ -181,6 +181,15 @@ var MajorEditCtrl = function($scope, Redirect, Nnp, Major, List, params, $modalI
         });
     };
 
+    $scope.saveAndUpdate = function()
+    {
+        var data = angular.copy($scope.item);
+
+        Major.saveAndUpdate(data).then(function(response) {
+            $modalInstance.close();
+        });
+    };
+
     $scope.back = function()
     {
         $modalInstance.dismiss();

@@ -217,6 +217,21 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, Major, PricelistFilt
         }
     };
 
+    $scope.saveAndUpdate = function()
+    {
+        var data = angular.copy($scope.item);
+
+        data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
+        data.nnp_region = $scope.stringifyNnpData(data.nnp_region);
+        data.nnp_city = $scope.stringifyNnpData(data.nnp_city);
+        data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
+        data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
+
+        PricelistFilterA.saveAndUpdate(data).then(function(response) {
+            $modalInstance.close();
+        });
+    };
+
     $scope.back = function () {
         $modalInstance.close();
     };
