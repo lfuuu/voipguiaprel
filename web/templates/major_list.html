@@ -14,6 +14,12 @@
                         <option ng-repeat="country in countryList" value="{{country.code}}">{{country.name_rus}}</option>
                     </select>
                 </div>
+                <div class="form-group col-sm-6">
+                    <select ui-select2 style="width: 100%" tags="true" ng-change="groupChanged(groupId)" placeholder="Группа" ng-model="groupId" required>
+                        <option value="undefined">-- Выберите группу --</option>
+                        <option ng-repeat="group in groupList" value="{{group.id}}">{{group.name}}</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -28,11 +34,14 @@
         <th width="10%">
             Позиция
         </th>
-        <th width="40%">
+        <th width="30%">
             Название
         </th>
-        <th width="40%">
+        <th width="25%">
             Страна
+        </th>
+        <th width="25%">
+            Группа
         </th>
         <th ng-if="userPermissions['major_edit']">&nbsp;</th>
         <th ng-if="userPermissions['major_edit']">&nbsp;</th>
@@ -46,6 +55,7 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.order}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.country_name}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.group_name}}</td>
         <td ng-if="userPermissions['major_edit']">
             <button type="button" ng-hide="$first" class="btn btn-success btn-sm glyphicon glyphicon-arrow-up"
                     ng-click="move(item.id, 'up')"></button>

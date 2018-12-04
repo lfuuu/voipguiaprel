@@ -1420,6 +1420,48 @@ app.factory('PricelistGroup', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('MajorGroup', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/major-group/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function() {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {server_id: $rootScope.server.id};
+                ApiLoader.post(url + 'list', data)
+                    .then(function(data){
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function(data){
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function(data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
+});
+
 app.factory('PricelistLocation', function ($q, ApiLoader, $rootScope) {
     var url = '/json/pricelist-location/';
     var list = undefined;
@@ -1576,7 +1618,8 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               RouteCase, Outcome, Number, Destination,
                               Airp, ReleaseReason, RouteTable, Network,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
-                              PricelistGroup, Mcc, Pricelist, TestPricelistGroup) {
+                              PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
+                              MajorGroup) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -1637,6 +1680,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     pricelistGroup: function () {
       return PricelistGroup.list();
+    },
+    majorGroup: function () {
+      return MajorGroup.list();
     },
     pricelist: function () {
       return Pricelist.list();

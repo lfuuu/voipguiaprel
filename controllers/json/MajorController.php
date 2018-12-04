@@ -37,12 +37,24 @@ class MajorController extends JsonController
         }
     
         $countryCode = $this->request['country_code'];
+        $groupId = $this->request['group_id'];
+        
+        if ($countryCode == 'undefined' && $groupId == 'undefined') {
+            return [];
+        } elseif ($countryCode == 'undefined' && $groupId != 'undefined') {
+            $where = ['m.major_group_id' => $groupId];
+        } elseif ($countryCode != 'undefined' && $groupId == 'undefined') {
+            $where = ['m.country_code' => $countryCode];
+        } else {
+            $where = ['m.country_code' => $countryCode, 'm.major_group_id' => $groupId];
+        }
         
         $query = Major::find()
             ->alias('m')
-            ->select(['m.*', 'country_name' => 'nc.name_rus'])
-            ->where(['m.country_code' => $countryCode])
+            ->select(['m.*', 'country_name' => 'nc.name_rus', 'group_name' => 'mg.name'])
+            ->where($where)
             ->innerJoin('nnp.country nc', 'nc.code = m.country_code')
+            ->leftJoin('billing_uu.major_group mg', 'mg.id = m.major_group_id')
             ->orderBy('order')
             ->asArray();
         

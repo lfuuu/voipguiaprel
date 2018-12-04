@@ -227,6 +227,20 @@ class BaseController extends \yii\web\Controller
     }
     
     /**
+     * @param int $id
+     * @return MajorGroup
+     * @throws HttpException
+     */
+    protected function getMajorGroupOr404($id)
+    {
+        $item = MajorGroup::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Группа NNP-фильтров не найдена');
+        }
+        return $item;
+    }
+    
+    /**
      * @param int $imsiPartnerId
      * @return ImsiPartner
      * @throws HttpException

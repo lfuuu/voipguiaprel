@@ -1,5 +1,6 @@
-var MajorListCtrl = function ($scope, Major, Nnp, List, Redirect, $window) {
+var MajorListCtrl = function ($scope, Major, MajorGroup, Nnp, List, Redirect, $window) {
     $scope.countryCode = '643';
+    $scope.groupId = 'undefined';
 
     $scope.init = function (tab) {
         if (tab) tab.title = 'Мэджор';
@@ -8,12 +9,13 @@ var MajorListCtrl = function ($scope, Major, Nnp, List, Redirect, $window) {
     };
 
     $scope.refreshList = function() {
-        if ($scope.countryCode == 'undefined') {
+        if ($scope.countryCode == 'undefined' && $scope.groupId == 'undefined') {
             return;
         }
 
         Major.read({
-            country_code: $scope.countryCode
+            country_code: $scope.countryCode,
+            group_id: $scope.groupId
         }).then(function (data) {
             $scope.list = data;
         });
@@ -23,8 +25,18 @@ var MajorListCtrl = function ($scope, Major, Nnp, List, Redirect, $window) {
         $scope.countryList = data;
     });
 
+    MajorGroup.list().then(function (data) {
+        $scope.groupList = data;
+    });
+
     $scope.countryChanged = function(countryCode) {
         $scope.countryCode = countryCode;
+
+        $scope.refreshList();
+    };
+
+    $scope.groupChanged = function(groupId) {
+        $scope.groupId = groupId;
 
         $scope.refreshList();
     };

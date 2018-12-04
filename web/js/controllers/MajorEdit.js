@@ -1,4 +1,4 @@
-var MajorEditCtrl = function($scope, Redirect, Nnp, Major, params, $modalInstance, $window) {
+var MajorEditCtrl = function($scope, Redirect, Nnp, Major, List, params, $modalInstance, $window) {
     var countryLoadComplete = false;
     var regionLoadComplete = false;
     var cityLoadComplete = false;
@@ -159,6 +159,10 @@ var MajorEditCtrl = function($scope, Redirect, Nnp, Major, params, $modalInstanc
             $scope.nnpDataParseError = true;
         }
     };
+
+    List.majorGroup().then(function (data) {
+        $scope.majorGroupList = data;
+    });
 
     $scope.clickPricelistItem = function(item) {
         if (window.getSelection().type == 'Range') return;

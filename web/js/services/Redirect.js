@@ -456,5 +456,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         majorCreate: function(countryCode, count) {
             return openModal(MajorEditCtrl, '/templates/major_edit.html', {id: null, country_code: countryCode, count: count});
         },
+        majorGroupList: function() {
+            $cookies.selectedPage = 'majorGroupList';
+            return openTab(MajorGroupListCtrl, '/templates/major_group_list.html', {}, 'billing');
+        },
+        majorGroupCreate: function() {
+            return openModal(MajorGroupEditCtrl, '/templates/major_group_edit.html', {});
+        },
+        majorGroupEdit: function(id) {
+            return openModal(MajorGroupEditCtrl, '/templates/major_group_edit.html', {id: id});
+        },
     };
 });

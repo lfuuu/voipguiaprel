@@ -29,6 +29,16 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="col-sm-2 control-label">Группа</label>
+                    <div class="col-sm-10">
+                        <select ui-select2 style="width: 100%" tags="true" placeholder="Группа NNP-фильтра" ng-model="item.major_group_id" required>
+                            <option value="">-- Выберите --</option>
+                            <option ng-repeat="group in majorGroupList" value="{{group.id}}">{{group.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="col-sm-2 control-label">Страна</label>
                     <div class="col-sm-10">
                         <select ui-select2 style="width: 100%" tags="true" placeholder="Страна" ng-model="item.country_code" required>
