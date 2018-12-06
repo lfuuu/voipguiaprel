@@ -207,6 +207,85 @@ class MajorController extends JsonController
      * @return array
      * @throws HttpException
      */
+    public function actionTest()
+    {
+        if (!\Yii::$app->user->can('major_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $item = $this->getMajorOr404($this->request['id']);
+        $server = $this->getServerOr404($this->request['server_id']);
+        
+        $apiUrl = $server->apiUrl;
+        
+        $filter = json_decode($item->nnp_filter_json, true);
+        
+        $apiParams = [
+            'cmd' => 'getPrefixByFilter',
+            'complement' => 'true',
+            'factor' => $this->request['factor'],
+        ];
+        
+        if (isset($filter['country_code'])) {
+            $apiParams['country_code'] = implode(',', $filter['country_code']);
+        }
+        
+        if (isset($filter['operator_id'])) {
+            $apiParams['operator_id'] = implode(',', $filter['operator_id']);
+        }
+        
+        if (isset($filter['region_id'])) {
+            $apiParams['region_id'] = implode(',', $filter['region_id']);
+        }
+        
+        if (isset($filter['city_id'])) {
+            $apiParams['city_id'] = implode(',', $filter['city_id']);
+        }
+        
+        if (isset($filter['ndc_type_id'])) {
+            $apiParams['ndc_type_id'] = implode(',', $filter['ndc_type_id']);
+        }
+        
+        $exclude_country = isset($filter['exclude_country']) ? ($filter['exclude_country'] ? true : false) : false;
+        $exclude_oper = isset($filter['exclude_operators']) ? ($filter['exclude_operators'] ? true : false) : false;
+        $exclude_region = isset($filter['exclude_region']) ? ($filter['exclude_region'] ? true : false) : false;
+        $exclude_city = isset($filter['exclude_city']) ? ($filter['exclude_city'] ? true : false) : false;
+        $exclude_ndc = isset($filter['exclude_ndc_type']) ? ($filter['exclude_ndc_type'] ? true : false) : false;
+        
+        if ($exclude_country) {
+            $apiParams['exclude_country'] = 'true';
+        }
+    
+        if ($exclude_oper) {
+            $apiParams['exclude_oper'] = 'true';
+        }
+    
+        if ($exclude_region) {
+            $apiParams['exclude_region'] = 'true';
+        }
+    
+        if ($exclude_city) {
+            $apiParams['exclude_city'] = 'true';
+        }
+    
+        if ($exclude_ndc) {
+            $apiParams['exclude_ndc'] = 'true';
+        }
+        
+        $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
+        
+        $response = json_decode(file_get_contents($request), true);
+        
+        return [
+            'item' => $response,
+            'url' => $request
+        ];
+    }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
     public function actionFindUsagesInPricelists()
     {
         if (!\Yii::$app->user->can('major_edit')) {

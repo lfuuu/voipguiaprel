@@ -1590,6 +1590,9 @@ app.factory('Major', function ($q, ApiLoader, $rootScope) {
         findUsagesInPricelists: function(id) {
             return ApiLoader.post(url + 'find-usages-in-pricelists', {id: id});
         },
+        test: function(data) {
+            return ApiLoader.post(url + 'test', data);
+        },
     };
 });
 

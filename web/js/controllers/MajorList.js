@@ -65,6 +65,18 @@ var MajorListCtrl = function ($scope, Major, MajorGroup, Nnp, List, Redirect, $w
         });
     };
 
+    $scope.testItem = function (item) {
+        var factor;
+
+        factor = parseFloat($window.prompt('Введите фактор', 10));
+
+        if (isNaN(factor) || factor <= 0) return;
+
+        Redirect.majorTest(item.id, factor).then(function () {
+            $scope.init();
+        });
+    };
+
     $scope.deleteItem = function (item) {
         if (!$window.confirm('Удалить?')) return;
 

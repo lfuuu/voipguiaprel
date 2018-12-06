@@ -1,0 +1,27 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Результаты теста NNP-фильтра {{item.name}}</h3>
+    </div>
+
+    <div class="modal-body" style="display:block; overflow:auto;">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Ссылка</label>
+            <div class="col-sm-10">
+                {{url}}
+            </div>
+        </div>
+
+        <span>{{item.economy}}</span>
+        <br/>
+        <span ng-repeat="line in item.list">{{line}}<br/></span>
+        <br/>
+        <span>Количество: {{item.size}}</span>
+
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

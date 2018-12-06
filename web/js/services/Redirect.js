@@ -456,6 +456,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         majorCreate: function(countryCode, count) {
             return openModal(MajorEditCtrl, '/templates/major_edit.html', {id: null, country_code: countryCode, count: count});
         },
+        majorTest: function(id, factor) {
+            return openModal(MajorTestCtrl, '/templates/major_test.html', {id: id, factor: factor});
+        },
         majorGroupList: function() {
             $cookies.selectedPage = 'majorGroupList';
             return openTab(MajorGroupListCtrl, '/templates/major_group_list.html', {}, 'billing');

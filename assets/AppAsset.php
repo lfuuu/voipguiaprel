@@ -98,6 +98,7 @@ class AppAsset extends AssetBundle
         'js/controllers/HeaderList.js',
         'js/controllers/MajorEdit.js',
         'js/controllers/MajorList.js',
+        'js/controllers/MajorTest.js',
         'js/controllers/MajorGroupEdit.js',
         'js/controllers/MajorGroupList.js',
     ];
@@ -179,6 +180,7 @@ class AppAsset extends AssetBundle
         'templates/header_list.html',
         'templates/major_edit.html',
         'templates/major_list.html',
+        'templates/major_test.html',
         'templates/major_group_edit.html',
         'templates/major_group_list.html',
     ];
