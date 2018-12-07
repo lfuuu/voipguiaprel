@@ -30,53 +30,89 @@ class PricelistController extends BaseController
             ->where(['id' => $id])
             ->asArray()
             ->one();
-    
+        
         $this->createExcelDocument($data);
     }
     
     private function createExcelDocument($pricelist)
     {
+        $names = [
+            "Направление A (ННП-фильтр)",
+            "Направление B (ННП-фильтр)",
+            "Код",
+            "Валюта",
+            "Цена номера B",
+            "Цена номера B\n(Будущая 1)",
+            "Дата начала\nдействия\n(Будущая 1)",
+            "Статус",
+            "Цена номера B\n(Будущая 2)",
+            "Дата начала\nдействия\n(Будущая 2)",
+            "Статус",
+            "Дата начала\nдействия"
+        ];
+        
         $currentRowNumber = 1;
-        $columnNameNumber = 1;
         $minColumnNumber = 1;
-        $maxColumnNumber = 3;
+        $maxColumnNumber = count($names);
         
         $spreadsheet = new Spreadsheet();
-    
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->getColumnDimension('A')->setAutoSize(true);
-        $sheet->getColumnDimension('B')->setAutoSize(true);
-        $sheet->getColumnDimension('C')->setAutoSize(true);
-        $sheet->getColumnDimension('D')->setAutoSize(true);
-    
-        Cell::setValueBinder(new AdvancedValueBinder());
         
-//        $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Прайслист');
-        $pricelistHeader = $pricelist['name'] . ', валюта ' . $pricelist['currency_id'];
-        $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber);
-        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
-            ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
-            ->getFont()->setItalic(true);
+        $sheet = $spreadsheet->getActiveSheet();
+        for ($i = 0; $i < $maxColumnNumber; $i++) {
+            $sheet->getColumnDimensionByColumn($i + 1)->setAutoSize(true);
+        }
+        
+        Cell::setValueBinder(new AdvancedValueBinder());
+
+        $pricelistHeader = $pricelist['name'];
         $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $pricelistHeader);
-        $currentRowNumber++;
+        $sheet->getRowDimension($currentRowNumber)->setRowHeight(30);
+        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber)
+            ->getFont()->setSize(22);
+        $currentRowNumber += 2;
+        
+        $pricelistDate = $pricelist['date_created'];
+        $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $pricelistDate);
+        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber)
+                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber)
+            ->getFont()->setSize(12);
     
+        if ($pricelist['description']) {
+            $currentRowNumber += 2;
+            $pricelistDescription = $pricelist['description'];
+            $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $pricelistDescription);
+            $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber)
+                ->getFont()->setSize(12);
+            $currentRowNumber += 4;
+        } else {
+            $currentRowNumber += 4;
+        }
+        
+        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
+            ->getAlignment()->setWrapText(true);
+        
+        $sheet->getRowDimension($currentRowNumber)->setRowHeight(50);
+    
+        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
+            ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    
+        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
+            ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        
+        for ($i = 0; $i < count($names); $i++) {
+            $sheet->setCellValueByColumnAndRow($minColumnNumber + $i, $currentRowNumber, $names[$i]);
+        }
+    
+        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
+            ->getBorders()->getAllBorders()->setBorderStyle(true);
+        
+        $currentRowNumber += 1;
+        
         foreach ($pricelist['location'] as $location) {
             if (empty($location['filterA'])) {
                 continue;
             }
-    
-//            $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Местоположение');
-            $locationHeader = 'Местоположение: ' . $this->_locations[$location['location_id']];
-            $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber);
-            $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
-                ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-            $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
-                ->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
-            $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
-                ->getFont()->setItalic(true);
-            $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $locationHeader);
-            $currentRowNumber++;
             
             foreach ($location['filterA'] as $filterA) {
                 if (empty($filterA['filterB'])) {
@@ -88,65 +124,87 @@ class PricelistController extends BaseController
                     (isset($filterA['nnp_operator_name']) ? (' ' . $filterA['nnp_operator_name']) : '') .
                     (isset($filterA['nnp_region_name']) ? (' ' . $filterA['nnp_region_name']) : '') .
                     (isset($filterA['nnp_city_name']) ? (' ' . $filterA['nnp_country_name']) : ''));
-    
-                if (empty($filterAHeader)) {
-                    $filterAHeader = trim(isset($filterA['nnp_destination_name']) ? ($filterA['nnp_destination_name']) : '');
-                }
                 
                 if (empty($filterAHeader)) {
-                    $filterAHeader = '';
+                    $filterAHeader = 'Пустой фильтр A';
                 }
-    
-//                $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Фильтр А');
-//                $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber);
-//                $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
-//                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-//                $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $filterAHeader);
-//                $currentRowNumber++;
+
+                $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $filterAHeader);
+                $filterAStartRowNumber = $currentRowNumber;
+                
                 foreach ($filterA['filterB'] as $filterB) {
                     if (empty($filterB['prefixPriceNoLimit'])) {
                         continue;
                     }
-    
+                    
                     $filterBText = trim((isset($filterB['nnp_country_name']) ? ($filterB['nnp_country_name']) : '') .
                         (isset($filterB['nnp_ndc_type_name']) ? (' ' . $filterB['nnp_ndc_type_name']) : '') .
                         (isset($filterB['nnp_operator_name']) ? (' ' . $filterB['nnp_operator_name']) : '') .
                         (isset($filterB['nnp_region_name']) ? (' ' . $filterB['nnp_region_name']) : '') .
                         (isset($filterB['nnp_city_name']) ? (' ' . $filterB['nnp_country_name']) : ''));
-    
-                    if (empty($filterBText)) {
-                        $filterBText = trim(isset($filterB['nnp_destination_name']) ? ($filterB['nnp_destination_name']) : '');
-                    }
                     
                     if (empty($filterBText)) {
                         $filterBText = 'Пустой фильтр B';
                     }
                     
-                    if (!empty($filterAHeader)) {
-                        $filterBText .= "\n" . '(' . $filterAHeader . ')';
+                    $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $filterBText);
+                    $filterBStartRowNumber = $currentRowNumber;
+    
+                    $simplifiedPrefixList = [];
+                    
+                    foreach ($filterB['prefixPriceNoLimit'] as $prefixPrice) {
+                        if (array_key_exists($prefixPrice['prefix_b'], $simplifiedPrefixList)) {
+                            $simplifiedPrefixList[$prefixPrice['prefix_b']][] = $prefixPrice;
+                        } else {
+                            $simplifiedPrefixList[$prefixPrice['prefix_b']] = [];
+                            $simplifiedPrefixList[$prefixPrice['prefix_b']][] = $prefixPrice;
+                        }
                     }
                     
-                    $prefixCount = count($filterB['prefixPriceNoLimit']);
-//                    $sheet->mergeCellsByColumnAndRow($columnNameNumber, $currentRowNumber, $columnNameNumber, $currentRowNumber + $prefixCount - 1);
-//                    $sheet->setCellValueByColumnAndRow($columnNameNumber, $currentRowNumber, 'Фильтр B');
-//                    $sheet->getStyleByColumnAndRow($columnNameNumber, $currentRowNumber, 1, $currentRowNumber + $prefixCount - 1)
-//                        ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-                    $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber + $prefixCount - 1);
-                    $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber + $prefixCount - 1)
-                        ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-                    $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber + $prefixCount - 1)
-                        ->getAlignment()->setWrapText(true);
-                    $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $filterBText);
-                    foreach ($filterB['prefixPriceNoLimit'] as $prefixPrice) {
-                        $sheet->getStyleByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $minColumnNumber + 1, $currentRowNumber)
-                            ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $prefixPrice['prefix_b']);
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $prefixPrice['b_number_price']);
+                    foreach ($simplifiedPrefixList as $prefixPrice) {
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $prefixPrice[0]['prefix_b']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber, $pricelist['currency_id']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber, $prefixPrice[0]['b_number_price']);
+    
+                        if (isset($prefixPrice[1])) {
+                            $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Повышение' : 'Понижение';
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber, $prefixPrice[1]['b_number_price']);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 6, $currentRowNumber, $prefixPrice[1]['date_from']);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber, $direction);
+        
+                            if (isset($prefixPrice[2])) {
+                                $direction = $prefixPrice[2]['b_number_price'] > $prefixPrice[1]['b_number_price'] ? 'Повышение' : 'Понижение';
+                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 8, $currentRowNumber, $prefixPrice[2]['b_number_price']);
+                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 9, $currentRowNumber, $prefixPrice[2]['date_from']);
+                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 10, $currentRowNumber, $direction);
+                            }
+                        }
+    
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 11, $currentRowNumber, $prefixPrice[0]['date_from']);
+                        
                         $currentRowNumber++;
                     }
+                    
+                    $filterBEndRowNumber = $currentRowNumber - 1;
+                    $sheet->mergeCellsByColumnAndRow($minColumnNumber + 1, $filterBStartRowNumber, $minColumnNumber + 1, $filterBEndRowNumber);
+                    $sheet->getStyleByColumnAndRow($minColumnNumber + 1, $filterBStartRowNumber, $minColumnNumber + 1, $filterBEndRowNumber)
+                        ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
                 }
+                
+                if ($filterAStartRowNumber == $currentRowNumber) {
+                    $filterAEndRowNumber = $currentRowNumber;
+                } else {
+                    $filterAEndRowNumber = $currentRowNumber - 1;
+                }
+                
+                $sheet->mergeCellsByColumnAndRow($minColumnNumber, $filterAStartRowNumber, $minColumnNumber, $filterAEndRowNumber);
+                $sheet->getStyleByColumnAndRow($minColumnNumber, $filterAStartRowNumber, $minColumnNumber, $filterAEndRowNumber)
+                    ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
             }
         }
+    
+        $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber, $currentRowNumber)
+            ->getFont()->setName('Times New Roman');
         
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
