@@ -22,7 +22,8 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
         });
     } else {
         $scope.item = {
-            server_id: $scope.server.id
+            server_id: $scope.server.id,
+            outcomeRules: [],
         };
     }
 
@@ -100,6 +101,18 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
 
     $scope.back = function () {
         $modalInstance.dismiss();
+    };
+
+    $scope.addOutcomeRule = function () {
+        $scope.item.outcomeRules.push({
+            trunk_group_id: '',
+            allow: true,
+            server_id: $scope.server.id
+        });
+    };
+
+    $scope.removeOutcomeRule = function (index) {
+        $scope.item.outcomeRules.splice(index, 1);
     };
 
     $scope.clickRouteTableItem = function (item) {

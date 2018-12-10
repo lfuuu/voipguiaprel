@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models;
+use app\models\auth\OutcomeRule;
 use app\queries\OutcomeQuery;
 use yii\db\Query;
 
@@ -91,5 +92,13 @@ class Outcome extends \yii\db\ActiveRecord
                 ->innerJoin(Outcome::tableName() . ' as o', 'o.id = rtr.outcome_id')
                 ->where('o.id = ' . $this->id)
                 ->all();
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOutcomeRules()
+    {
+        return $this->hasMany(OutcomeRule::className(), ['outcome_id' => 'id'])->orderBy('order');
     }
 }

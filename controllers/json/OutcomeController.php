@@ -2,6 +2,7 @@
 
 namespace app\controllers\json;
 
+use app\models\auth\OutcomeRule;
 use Yii;
 use app\classes\JsonController;
 use app\models\Outcome;
@@ -55,12 +56,17 @@ class OutcomeController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
-        $item = Outcome::findOne($this->request['id']);
+        $item = Outcome::find()
+            ->with('outcomeRules')
+            ->where(['id' => $this->request['id']])
+            ->asArray()
+            ->one();
+        
         if ($item === null) {
             throw new HttpException(404, 'Outcome не найден');
         }
 
-        return $item->toArray();
+        return $item;
     }
 
     public function actionSave()
@@ -91,6 +97,19 @@ class OutcomeController extends JsonController
         try {
             if (!$outcome->save()) {
                 throw new FormValidationException($outcome);
+            }
+    
+            OutcomeRule::deleteByOutcome($outcome);
+            if (isset($this->request['outcomeRules'])) {
+                $order = 1;
+                foreach ($this->request['outcomeRules'] as $ruleData) {
+                    $rule = OutcomeRule::create($outcome, $ruleData);
+                    $rule->order = $order;
+                    if (!$rule->save()) {
+                        throw new FormValidationException($rule);
+                    }
+                    $order++;
+                }
             }
 
             $transaction->commit();
