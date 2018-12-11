@@ -23,6 +23,7 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
     } else {
         $scope.item = {
             server_id: $scope.server.id,
+            outcome_rule_default_allowed: true,
             outcomeRules: [],
         };
     }
@@ -106,8 +107,8 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
     $scope.addOutcomeRule = function () {
         $scope.item.outcomeRules.push({
             trunk_group_id: '',
-            allow: true,
-            server_id: $scope.server.id
+            server_id: $scope.server.id,
+            allow: $scope.item.outcome_rule_default_allowed
         });
     };
 
