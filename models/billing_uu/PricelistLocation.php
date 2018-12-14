@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models\billing_uu;
+use app\models\nnp\Mcc;
 use app\queries\billing_uu\PricelistLocationQuery;
 
 /**

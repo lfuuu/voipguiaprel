@@ -49,6 +49,22 @@ class PricelistController extends BaseController
         $this->createExcelPrefixesDocument($data);
     }
     
+    public function actionExcelLocations($id)
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $data = Pricelist::find()
+            ->alias('p')
+            ->with('location')
+            ->where(['p.id' => $id])
+            ->asArray()
+            ->one();
+        
+        $this->createExcelLocationsDocument($data);
+    }
+    
     private function createExcelDocument($pricelist)
     {
         $names = [
@@ -300,6 +316,40 @@ class PricelistController extends BaseController
             }
         }
                 
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="file.xlsx"');
+        $writer->save('php://output');
+    }
+    
+    private function createExcelLocationsDocument($pricelist)
+    {
+        $rowNumber = 1;
+        $maxColumnNumber = 4;
+    
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        for ($i = 0; $i < $maxColumnNumber; $i++) {
+            $sheet->getColumnDimensionByColumn($i + 1)->setAutoSize(true);
+        }
+    
+        $sheet->setCellValueByColumnAndRow(1, $rowNumber, 'Страна');
+        $sheet->setCellValueByColumnAndRow(2, $rowNumber, 'Код оператора (MNC)');
+        $sheet->setCellValueByColumnAndRow(3, $rowNumber, 'Название оператора');
+        $sheet->setCellValueByColumnAndRow(4, $rowNumber, 'Стоимость');
+    
+        $rowNumber++;
+        
+        foreach ($pricelist['location'] as $location) {
+            $sheet->setCellValueByColumnAndRow(1, $rowNumber, $location['mcc_string']);
+            $sheet->setCellValueByColumnAndRow(2, $rowNumber, $location['mnc_string']);
+            $sheet->setCellValueByColumnAndRow(3, $rowNumber, $location['mnc_name_string']);
+            $sheet->setCellValueByColumnAndRow(4, $rowNumber, $location['delta_price']);
+    
+            $rowNumber++;
+        }
+        
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="file.xlsx"');
