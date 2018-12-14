@@ -10,12 +10,17 @@
                     {{item.name}} | {{item.orig ? 'Оригинация' : 'Терминация'}} | Создан: {{item.date_created}}{{item.is_active ? ' | Активен с: ' + item.date_start : ''}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
                 </td>
                 <td ng-if="item.is_pricelist">
+                    <a target="_blank" href="/pricelist/excel-prefixes?id={{item.id}}" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-list"></span>
+                    </a>
+                </td>
+                <td ng-if="item.is_pricelist">
                     <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>
                     </a>
                 </td>
                 <!---------------------------------------------------->
-                <td ng-if="item.is_location" colspan="5" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.location_text}} <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span></td>
+                <td ng-if="item.is_location" colspan="6" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.location_text}} <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span></td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;{{item.is_basic ? ' background-color: lightgrey;' : ''}}"></td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_prefix_price && item.is_filter_a_header" rowspan="{{item.total_prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
@@ -39,7 +44,7 @@
                         </span>
                     </span>
                 </td>
-                <td ng-if="item.is_prefix_price"></td>
+                <td ng-if="item.is_prefix_price" colspan="2"></td>
             </tr>
             </tbody>
         </table>
