@@ -210,6 +210,7 @@ class TestPricelistController extends JsonController
         }
         
         $number = $this->request['number'];
+        $weakMatching = $this->request['weak_matching'];
         
         $server = $this->getServerOr404($this->request['server_id']);
         
@@ -217,50 +218,13 @@ class TestPricelistController extends JsonController
         
         return [
             'number' => $number,
-            'number_range' => $this->getNumberRangeByNum($number, $apiUrl),
+            'weak_matching' => $weakMatching,
+            'number_range' => $this->getNumberRangeByNum($number, $weakMatching, $apiUrl),
             'destination' => $this->getDestinationByNum($number, $apiUrl),
         ];
     }
     
-    /**
-     * @return array
-     * @throws HttpException
-     */
-    public function actionGetNumberRangeByNum()
-    {
-        if (!\Yii::$app->user->can('test_pricelist_list')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-    
-        $number = $this->request['number'];
-    
-        $server = $this->getServerOr404($this->request['server_id']);
-    
-        $apiUrl = $server->apiUrl;
-        
-        return $this->getNumberRangeByNum($number, $apiUrl);
-    }
-    
-    /**
-     * @return array
-     * @throws HttpException
-     */
-    public function actionGetDestinationByNum()
-    {
-        if (!\Yii::$app->user->can('test_pricelist_list')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-        
-        $number = $this->request['number'];
-        
-        $server = $this->getServerOr404($this->request['server_id']);
-        
-        $apiUrl = $server->apiUrl;
-        
-        return $this->getDestinationByNum($number, $apiUrl);
-    }
-    
-    private function getNumberRangeByNum($number, $apiUrl)
+    private function getNumberRangeByNum($number, $weakMatching, $apiUrl)
     {
         $fields = [
             'nnp_city_id' => 'app\models\nnp\City',
@@ -270,23 +234,27 @@ class TestPricelistController extends JsonController
             'ported_operator_id' => 'app\models\nnp\Operator',
         ];
         
-        return $this->getCmdByNum('getNumberRangeByNum', $number, $apiUrl, $fields);
+        return $this->getCmdByNum('getNumberRangeByNum', $number, $weakMatching, $apiUrl, $fields);
     }
     
     private function getDestinationByNum($number, $apiUrl)
     {
-        return $this->getCmdByNum('getDestinationByNum', $number, $apiUrl);
+        return $this->getCmdByNum('getDestinationByNum', $number, false, $apiUrl);
     }
     
-    private function getCmdByNum($cmd, $number, $apiUrl, $fields = [])
+    private function getCmdByNum($cmd, $number, $weakMatching, $apiUrl, $fields = [])
     {
         $apiParams = [
             'cmd' => $cmd,
             'num' => $number
         ];
+        
+        if ($weakMatching) {
+            $apiParams['weakMatching'] = 1;
+        }
     
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
-
+        
         $response = file_get_contents($request);
         $result = json_decode($response, true);
         
