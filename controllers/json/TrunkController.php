@@ -508,6 +508,21 @@ class TrunkController extends JsonController
             }
         }
     }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionFindUsagesInTrunkGroups()
+    {
+        if (!\Yii::$app->user->can('trunk_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $number = $this->getTrunkOr404($this->request['id']);
+        
+        return $number->findUsagesInTrunkGroups();
+    }
 
     /**
      * @throws StaleObjectException

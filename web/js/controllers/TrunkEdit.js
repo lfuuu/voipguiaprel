@@ -1,4 +1,4 @@
-var TrunkEditCtrl = function($rootScope, $scope, Trunk, params, $modalInstance, STAT_HOST, $window) {
+var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modalInstance, STAT_HOST, $window) {
 
     if (params.id) {
         Trunk.get({id: params.id, region_id: $rootScope.server.id}).then(function (data) {
@@ -6,6 +6,10 @@ var TrunkEditCtrl = function($rootScope, $scope, Trunk, params, $modalInstance, 
 
             Trunk.serviceTrunks(params.id).then(function (serviceTrunks) {
                 $scope.serviceTrunks = serviceTrunks;
+            });
+
+            Trunk.findUsagesInTrunkGroups(params.id).then(function (result) {
+                $scope.usagesInTrunkGroups = result;
             });
 
             var numbersRules = {};
@@ -249,4 +253,12 @@ var TrunkEditCtrl = function($rootScope, $scope, Trunk, params, $modalInstance, 
     $scope.removeLoadLimit = function (index) {
         $scope.item.loadLimit.splice(index, 1);
     };
+
+    $scope.clickTrunkGroupItem = function(item) {
+        if (window.getSelection().type == 'Range') return;
+
+        Redirect.trunkGroupEdit(item.id).then(function () {
+            $scope.init();
+        });
+    }
 };

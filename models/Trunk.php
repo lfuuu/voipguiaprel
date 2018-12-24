@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\queries\TrunkQuery;
 use \app\models\sorm\Trunk as TrunkSorm;
+use yii\db\Query;
 
 /**
  * @property int $id
@@ -229,5 +230,19 @@ class Trunk extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TrunkNumberPreprocessing::className(), ['trunk_id' => 'id'])->orderBy('order');
     }
-
+    
+    /**
+     * @return array
+     */
+    public function findUsagesInTrunkGroups()
+    {
+        return
+            (new Query())
+                ->select(['tg.*'])
+                ->distinct()
+                ->from(TrunkGroup::tableName() . ' as tg')
+                ->innerJoin(TrunkGroupItem::tableName() . ' as tgi', 'tgi.trunk_group_id = tg.id')
+                ->where('tgi.trunk_id = ' . $this->id)
+                ->all();
+    }
 }

@@ -145,6 +145,9 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
         },
         toggleAutorouting: function (trunkId, on) {
             return ApiLoader.post(url + 'toggle-autorouting', {'trunk_id': trunkId, 'on': on});
+        },
+        findUsagesInTrunkGroups: function(id) {
+            return ApiLoader.post(url + 'find-usages-in-trunk-groups', {'id': id});
         }
     };
 });
