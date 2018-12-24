@@ -18,6 +18,7 @@ use app\queries\NumberQuery;
  * @property int    $ttl
  * @property string $note
  * @property string $cpc
+ * @property bool   $with_debug_info
 
  * @property Server $server
  * @property
@@ -44,7 +45,7 @@ class TestAuth extends \yii\db\ActiveRecord
             [['src_number', 'dst_number', 'redirect_number'], 'string', 'max' => 32],
             [['src_noa','dst_noa', 'ttl'], 'integer'],
             [['trunk_name'], 'string', 'max' => 32],
-            [['is_autotest',], 'boolean'],
+            [['is_autotest', 'with_debug_info'], 'boolean'],
             [['correct_answer'], 'string', 'max' => 128],
             [['testgroup_id'], 'integer'],
             [['note', 'cpc'], 'string'],

@@ -15,7 +15,8 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect
                     dst_number: data.dst_number,
                     src_noa: data.src_noa,
                     dst_noa: data.dst_noa,
-                    redirect_number: ''
+                    redirect_number: '',
+                    with_debug_info: data.with_debug_info
                 };
 
                 $scope.item = item;
@@ -36,7 +37,8 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect
                 src_noa: 3,
                 dst_noa: 3,
                 redirect_number: '',
-                testgroup_id: params.testGroupId
+                testgroup_id: params.testGroupId,
+                with_debug_info: false
             }
         } else if (params.default_params) {
             $scope.item = {
@@ -47,7 +49,8 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect
                 trunk_name: params.default_params.trunk_name,
                 dst_number: params.default_params.dst_number,
                 src_number: params.default_params.src_number,
-                testgroup_id: params.default_params.testgroup_id
+                testgroup_id: params.default_params.testgroup_id,
+                with_debug_info: false
             };
 
             $scope.server_id = params.default_params.server_id;
@@ -56,7 +59,8 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect
                 server_id: $scope.server.id,
                 src_noa: 3,
                 dst_noa: 3,
-                redirect_number: ''
+                redirect_number: '',
+                with_debug_info: false
             }
         }
     }

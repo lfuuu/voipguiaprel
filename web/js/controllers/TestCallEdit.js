@@ -16,7 +16,8 @@ var TestCallEditCtrl = function($scope, TestCall, TestAuth, List, Redirect, para
                     redirect_number: '',
                     orig: true,
                     connect_time: 'now()',
-                    session_time: 60
+                    session_time: 60,
+                    with_debug_info: data.with_debug_info
                 };
 
                 $scope.item = item;
@@ -39,7 +40,8 @@ var TestCallEditCtrl = function($scope, TestCall, TestAuth, List, Redirect, para
                 redirect_number: '',
                 testgroup_id: params.testGroupId,
                 orig: false,
-                session_time: 60
+                session_time: 60,
+                with_debug_info: false
             }
         } else {
             $scope.item = {
@@ -48,7 +50,8 @@ var TestCallEditCtrl = function($scope, TestCall, TestAuth, List, Redirect, para
                 dst_noa: 3,
                 redirect_number: '',
                 orig: false,
-                session_time: 60
+                session_time: 60,
+                with_debug_info: false
             }
         }
     }

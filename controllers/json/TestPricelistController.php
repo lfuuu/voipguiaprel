@@ -180,6 +180,10 @@ class TestPricelistController extends JsonController
             'test_mode' => 'true',
             'date' => $item->mock_current_date
         ];
+    
+        if ($item->with_debug_info) {
+            $apiParams['with_debug_info'] = 1;
+        }
         
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
         

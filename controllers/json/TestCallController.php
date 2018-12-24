@@ -188,6 +188,10 @@ class TestCallController extends JsonController
             'src_noa' => $item->src_noa,
             'dst_noa' => $item->dst_noa
         ];
+    
+        if ($item->with_debug_info) {
+            $apiParams['with_debug_info'] = 1;
+        }
 
         if ($this->request['displayTreeView']) {
             $apiParams['trace_tree'] = 1;

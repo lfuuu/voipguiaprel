@@ -219,6 +219,10 @@ class TestAuthController extends JsonController
             'dst_noa' => $item->dst_noa
         ];
         
+        if ($item->with_debug_info) {
+            $apiParams['with_debug_info'] = 1;
+        }
+        
         if ($item->cpc) {
             $apiParams['cpc'] = $item->cpc;
         }

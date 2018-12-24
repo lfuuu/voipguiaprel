@@ -93,6 +93,16 @@
                 </select>
             </div>
         </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Отладочная информация</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.with_debug_info = !item.with_debug_info">
+                    <button type="button" class="btn btn-sm {{item.with_debug_info ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.with_debug_info ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <div class="pull-left">
