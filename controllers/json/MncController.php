@@ -64,7 +64,11 @@ class MncController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
-        $item = Mnc::findOne($this->request['mnc']);
+        $item = Mnc::find()
+            ->where(['mcc' => $this->request['mcc']])
+            ->andWhere(new Expression('LPAD(mnc::text, 2, \'0\')') . ' = :mnc')
+            ->addParams([':mnc' => $this->request['mnc']])
+            ->one();
         
         if ($item === null) {
             throw new HttpException(404, 'MNC не найден');

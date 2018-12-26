@@ -404,8 +404,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         mncCreate: function() {
             return openModal(MncEditCtrl, '/templates/mnc_edit.html', {});
         },
-        mncEdit: function(mnc) {
-            return openModal(MncEditCtrl, '/templates/mnc_edit.html', {mnc: mnc});
+        mncEdit: function(mnc, mcc) {
+            return openModal(MncEditCtrl, '/templates/mnc_edit.html', {mnc: mnc, mcc: mcc});
         },
         testPricelistList: function() {
             $cookies.selectedPage = 'testPricelistList';

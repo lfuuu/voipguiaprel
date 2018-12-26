@@ -29,7 +29,7 @@ var MncListCtrl = function ($scope, Mnc, Redirect, $window) {
 
         if (window.getSelection().type == 'Range') return;
 
-        Redirect.mncEdit(item.mnc).then(function () {
+        Redirect.mncEdit(item.mnc, item.mcc).then(function () {
             $scope.init();
         });
     };

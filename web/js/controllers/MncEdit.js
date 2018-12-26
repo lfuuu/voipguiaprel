@@ -1,7 +1,7 @@
 var MncEditCtrl = function ($scope, Mnc, params, $modalInstance, $window) {
 
-    if (params.mnc) {
-        Mnc.get({mnc: params.mnc}).then(function (data) {
+    if (params.mnc && params.mcc) {
+        Mnc.get({mnc: params.mnc, mcc: params.mcc}).then(function (data) {
             $scope.item = data;
         });
     } else {
