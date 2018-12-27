@@ -411,9 +411,9 @@ class TrunkController extends JsonController
                 }
             }
     
-            if ($trunk->isAttributeChanged('auto_routing')) {
-                $this->toggleAutorouting($trunk->auto_routing, $trunk->id);
-            }
+//            if ($trunk->isAttributeChanged('auto_routing')) {
+//                $this->toggleAutorouting($trunk->auto_routing, $trunk->id);
+//            }
     
             if (isset($this->request['sorm'])) {
                 $this->toggleSorm($trunk, $this->request['sorm'], $this->request['region_id']);

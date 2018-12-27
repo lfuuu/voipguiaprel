@@ -338,8 +338,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         pricelistCreate: function(groupId) {
             return openModal(PricelistEditCtrl, '/templates/pricelist_edit.html', {group_id: groupId});
         },
-        pricelistLocationEdit: function(id, pricelistIsActive) {
-            return openModal(PricelistLocationEditCtrl, '/templates/pricelist_location_edit.html', {id: id, pricelist_is_active: pricelistIsActive});
+        pricelistLocationEdit: function(id, pricelistIsActive, pricelistServiceTypeId) {
+            return openModal(PricelistLocationEditCtrl, '/templates/pricelist_location_edit.html', {id: id, pricelist_is_active: pricelistIsActive, pricelist_service_type_id: pricelistServiceTypeId});
         },
         pricelistLocationCreate: function(id, pricelistIsActive) {
             return openModal(PricelistLocationEditCtrl, '/templates/pricelist_location_edit.html', {pricelist_id: id, pricelist_is_active: pricelistIsActive});

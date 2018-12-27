@@ -112,7 +112,7 @@ var PricelistShortViewInternetCtrl = function ($scope, Redirect, List, Pricelist
     };
 
     $scope.editLocation = function (id) {
-        Redirect.pricelistLocationEdit(id, $scope.pricelistIsActive).then(function () {
+        Redirect.pricelistLocationEdit(id, $scope.pricelistIsActive, 3).then(function () {
             $scope.initData($scope.item.id);
         }, function () {
             $scope.initData($scope.item.id);

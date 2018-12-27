@@ -1,6 +1,7 @@
 var PricelistLocationEditCtrl = function($scope, List, PricelistLocation, Mcc, Mnc, params, $modalInstance, $window) {
 
     $scope.pricelistIsActive = params.pricelist_is_active;
+    $scope.pricelistServiceTypeId = params.pricelist_service_type_id;
 
     var watchers = {
         mcc: function (newValue, oldValue) {

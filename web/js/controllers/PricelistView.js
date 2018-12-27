@@ -314,7 +314,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     };
 
     $scope.editLocation = function (id) {
-        Redirect.pricelistLocationEdit(id).then(function () {
+        Redirect.pricelistLocationEdit(id, $scope.pricelistIsActive, $scope.pricelistServiceTypeId).then(function () {
             $scope.initData($scope.item.id);
         }, function () {
             $scope.initData($scope.item.id);
