@@ -6,7 +6,7 @@
         <table class="table table-condensed">
             <tbody>
             <tr ng-repeat="item in list">
-                <td ng-if="item.is_pricelist" colspan="3" style="text-align: center;">
+                <td ng-if="item.is_pricelist" colspan="4" style="text-align: center;">
                     {{item.name}} | {{item.orig ? 'Оригинация' : 'Терминация'}} | Создан: {{item.date_created}}{{item.is_active ? ' | Активен с: ' + item.date_start : ''}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
                 </td>
                 <td ng-if="item.is_pricelist">
@@ -17,6 +17,7 @@
                 <!---------------------------------------------------->
                 <td ng-if="item.is_location" colspan="2" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.location_text}} <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span></td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.delta_price}}</td>
+                <td ng-if="item.is_location" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.rounding_threshold}}</td>
                 <td ng-if="item.is_location" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}"></td>
             </tr>
             </tbody>

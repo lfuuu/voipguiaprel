@@ -39,7 +39,8 @@ var PricelistShortViewInternetCtrl = function ($scope, Redirect, List, Pricelist
                 location_text: locationText,
                 has_children: data.location[locationKey].filterA.length > 0,
                 is_basic: isBasic,
-                delta_price: (item.delta_price ? (item.delta_price + ' ' + $scope.pricelistCurrency + '/МБ') : '')
+                delta_price: (item.delta_price ? (item.delta_price + ' ' + $scope.pricelistCurrency + '/МБ') : ''),
+                rounding_threshold: (item.rounding_threshold ? (item.rounding_threshold + ' ' + 'КБ') : '')
             });
 
             for (var filterAKey in data.location[locationKey].filterA) {

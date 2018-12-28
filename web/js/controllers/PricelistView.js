@@ -65,6 +65,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                 mcc: item.mcc_string,
                 mnc: item.mnc_string,
                 delta_price: item.delta_price,
+                rounding_threshold: item.rounding_threshold,
                 has_children: data.location[locationKey].filterA.length > 0,
                 pricelist_service_type_id: $scope.pricelistServiceTypeId
             });
