@@ -51,8 +51,8 @@ class TestPricelistController extends JsonController
                     when auth.test_pricelist.location_id = 2 then \'Гостевой регион\' 
                     when auth.test_pricelist.location_id = 3 then \'Международный регион\' 
                     end as location_name')])
-            ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = auth.test_pricelist.mcc')
-            ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = auth.test_pricelist.mnc and mnc.mcc = auth.test_pricelist.mcc')
+            ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = auth.test_pricelist.mcc::text')
+            ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = auth.test_pricelist.mnc::text and mnc.mcc = auth.test_pricelist.mcc::text')
             ->leftJoin('billing_uu.pricelist as p', 'p.id = auth.test_pricelist.pricelist_id')
             ->orderBy('name')
             ->limit($limit)
