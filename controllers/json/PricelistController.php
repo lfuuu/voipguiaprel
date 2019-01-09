@@ -183,6 +183,7 @@ class PricelistController extends JsonController
                 $filterB->tarification_free_seconds = $item->default_tarification_free_seconds;
                 $filterB->tarification_interval_seconds = $item->default_tarification_interval_seconds;
                 $filterB->tarification_min_paid_seconds = $item->default_tarification_min_paid_seconds;
+                $filterB->tarification_type = $item->default_tarification_type;
     
                 if (!$filterB->save()) {
                     throw new FormValidationException($item);

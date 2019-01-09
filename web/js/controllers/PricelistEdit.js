@@ -1,5 +1,10 @@
 var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, params, $modalInstance, $window) {
 
+    $scope.round_type = [
+        {id: 1, name: 'round'},
+        {id: 2, name: 'ceil'}
+    ];
+
     if (params.id) {
         Pricelist.get({id: params.id}).then(function(data){
             $scope.item = data;
@@ -21,7 +26,8 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
             date_start: dateStart,
             date_end: '3000-01-01',
             currency_id: 'RUB',
-            is_active: false
+            is_active: false,
+            default_tarification_type: 2
         };
 
         if (params.group_id) {

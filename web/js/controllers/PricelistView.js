@@ -37,6 +37,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
         $scope.pricelistDefaultTarificationIntervalSeconds = data.default_tarification_interval_seconds;
         $scope.pricelistDefaultTarificationMinPaidSeconds = data.default_tarification_min_paid_seconds;
         $scope.pricelistServiceTypeId = data.service_type_id;
+        $scope.pricelistDefaultTarificationType = data.default_tarification_type;
 
         var locationHeaderSet = false;
 
@@ -290,7 +291,8 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
             $scope.pricelistIsActive,
             $scope.pricelistDefaultTarificationFreeSeconds,
             $scope.pricelistDefaultTarificationIntervalSeconds,
-            $scope.pricelistDefaultTarificationMinPaidSeconds
+            $scope.pricelistDefaultTarificationMinPaidSeconds,
+            $scope.pricelistDefaultTarificationType,
         ).then(function () {
             $scope.initData($scope.item.id);
         }, function () {

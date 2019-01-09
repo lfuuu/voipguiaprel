@@ -123,7 +123,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, Major, PricelistFilt
             ported_num_price: 0,
             tarification_free_seconds: params.pricelist_default_tarification_free_seconds,
             tarification_interval_seconds: params.pricelist_default_tarification_interval_seconds,
-            tarification_type: 1,
+            tarification_type: params.pricelist_default_tarification_type,
             tarification_min_paid_seconds: params.pricelist_default_tarification_min_paid_seconds,
             filter_country: 643
         };
@@ -144,7 +144,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, Major, PricelistFilt
             ported_num_price: 0,
             tarification_free_seconds: 0,
             tarification_interval_seconds: 60,
-            tarification_type: 1,
+            tarification_type: 2,
             tarification_min_paid_seconds: 0,
             filter_country: 643
         };
