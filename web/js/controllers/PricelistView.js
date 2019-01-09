@@ -292,7 +292,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
             $scope.pricelistDefaultTarificationFreeSeconds,
             $scope.pricelistDefaultTarificationIntervalSeconds,
             $scope.pricelistDefaultTarificationMinPaidSeconds,
-            $scope.pricelistDefaultTarificationType,
+            $scope.pricelistDefaultTarificationType
         ).then(function () {
             $scope.initData($scope.item.id);
         }, function () {
