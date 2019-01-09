@@ -64,6 +64,7 @@ class PricelistPrefixPriceController extends JsonController
             $prefixBArray = explode(',', $prefixB);
             
             foreach ($prefixBArray as $prefixB) {
+                $prefixB = trim($prefixB);
                 $saveResult = $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest, $pricelistIsActive, $pricelistId);
                 
                 if (isset($saveResult['error'])) {
@@ -71,6 +72,7 @@ class PricelistPrefixPriceController extends JsonController
                 }
             }
         } else {
+            $prefixB = trim($prefixB);
             return $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest, $pricelistIsActive, $pricelistId);
         }
     }

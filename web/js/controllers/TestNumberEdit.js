@@ -1,7 +1,7 @@
 var TestNumberEditCtrl = function($scope, TestPricelist, Redirect, params, $modalInstance) {
     $scope.params = {
         number: '',
-        weak_matching: false
+        weak_matching: true
     };
 
     $scope.processNumber = function () {
