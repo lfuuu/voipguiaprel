@@ -213,8 +213,7 @@ class TestPricelistController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
-        $number = $this->request['number'];
-        $weakMatching = $this->request['weak_matching'];
+        $number = preg_replace('~\D~', '', $this->request['number']);
         
         $server = $this->getServerOr404($this->request['server_id']);
         
@@ -222,13 +221,12 @@ class TestPricelistController extends JsonController
         
         return [
             'number' => $number,
-            'weak_matching' => $weakMatching,
-            'number_range' => $this->getNumberRangeByNum($number, $weakMatching, $apiUrl),
+            'number_range' => $this->getNumberRangeByNum($number, $apiUrl),
             'destination' => $this->getDestinationByNum($number, $apiUrl),
         ];
     }
     
-    private function getNumberRangeByNum($number, $weakMatching, $apiUrl)
+    private function getNumberRangeByNum($number, $apiUrl)
     {
         $fields = [
             'nnp_city_id' => 'app\models\nnp\City',
@@ -238,25 +236,21 @@ class TestPricelistController extends JsonController
             'ported_operator_id' => 'app\models\nnp\Operator',
         ];
         
-        return $this->getCmdByNum('getNumberRangeByNum', $number, $weakMatching, $apiUrl, $fields);
+        return $this->getCmdByNum('getNumberRangeByNum', $number, $apiUrl, $fields);
     }
     
     private function getDestinationByNum($number, $apiUrl)
     {
-        return $this->getCmdByNum('getDestinationByNum', $number, false, $apiUrl);
+        return $this->getCmdByNum('getDestinationByNum', $number, $apiUrl);
     }
     
-    private function getCmdByNum($cmd, $number, $weakMatching, $apiUrl, $fields = [])
+    private function getCmdByNum($cmd, $number, $apiUrl, $fields = [])
     {
         $apiParams = [
             'cmd' => $cmd,
             'num' => $number
         ];
         
-        if ($weakMatching) {
-            $apiParams['weakMatching'] = 1;
-        }
-    
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
         
         $response = file_get_contents($request);
