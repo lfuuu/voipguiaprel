@@ -29,6 +29,7 @@ use yii\db\Query;
  * @property bool $sw_shared
  * @property string $nnp_filter_json
  * @property bool $invert
+ * @property bool $normalization_disabled
  *
  * @property PrefixlistPrefix $prefixlistPrefix
  */
@@ -67,7 +68,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             [['type_id'], 'integer'],
             [['rossvyaz_country', 'rossvyaz_region', 'rossvyaz_city'], 'string', 'max' => 100],
             [['rossvyaz_country_id', 'rossvyaz_region_id', 'rossvyaz_city_id', 'network_config_id'], 'integer'],
-            [['rossvyaz_mob'], 'boolean'],
+            [['rossvyaz_mob', 'normalization_disabled'], 'boolean'],
             [['exclude_operators'], 'boolean'],
             ['nnp_filter_json', 'string'],
             [['is_global'], 'boolean'],
