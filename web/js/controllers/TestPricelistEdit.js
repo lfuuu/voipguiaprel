@@ -27,7 +27,8 @@ var TestPricelistEditCtrl = function($scope, $rootScope, TestPricelist, Mcc, Mnc
             name: 'testName',
             location_id: 1,
             is_orig: true,
-            with_debug_info: false
+            with_debug_info: false,
+            is_autotest: false
         };
 
         $scope.$watch('item.mcc', watchers.mcc);

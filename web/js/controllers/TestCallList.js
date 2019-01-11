@@ -10,7 +10,7 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
         'cpc', 'connect_time', 'session_time', 'result_online'
     ];
 
-  $scope.testGroupId = 'undefined';
+    $scope.testGroupId = 'undefined';
     $scope.testResult = 'undefined';
     $scope.displayOnlineResult = false;
 

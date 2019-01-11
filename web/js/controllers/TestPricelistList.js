@@ -4,6 +4,7 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     $scope.searchQuery = '';
 
     $scope.testGroupId = 'all';
+    $scope.testResult = 'undefined';
 
     $scope.currentPage = 1;
     $scope.limit = 15;
@@ -44,6 +45,8 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
         $scope.testGroupList = data;
     });
 
+    $scope.testResultList = List.testResult();
+
     $scope.clickCreate = function () {
         Redirect.testPricelistCreate().then(function () {
             $scope.init();
@@ -52,6 +55,12 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
 
     $scope.testGroupChanged = function(testGroupId) {
         $scope.testGroupId = testGroupId;
+
+        $scope.refreshList();
+    };
+
+    $scope.testResultChanged = function(testResult) {
+        $scope.testResult = testResult;
 
         $scope.refreshList();
     };

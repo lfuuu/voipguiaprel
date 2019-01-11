@@ -41,8 +41,24 @@ class TestPricelistController extends JsonController
         }
     
         $testGroupId = $this->request['test_group_id'];
+        $testResult = $this->request['test_result'];
         $limit = $this->request['limit'];
         $offset = $this->request['offset'];
+    
+        switch ($testResult) {
+            case 'not_executed':
+                $resultWhere = 'is_autotest AND (tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\')';
+                break;
+            case 'passed':
+                $resultWhere = 'is_autotest AND tr.passed = true AND now() AT TIME ZONE \'UTC\' - tr.tm::timestamp <= INTERVAL \'1 HOUR\'';
+                break;
+            case 'failed':
+                $resultWhere = 'is_autotest AND tr.passed = false AND now() AT TIME ZONE \'UTC\' - tr.tm::timestamp <= INTERVAL \'1 HOUR\'';
+                break;
+            default:
+                $resultWhere = 'true';
+                break;
+        }
         
         $query = TestPricelist::find()
             ->select(['auth.test_pricelist.*', 'mcc.country as mcc_name', 'mnc.network as mnc_name', 'p.name as pricelist_name',
@@ -50,10 +66,14 @@ class TestPricelistController extends JsonController
                     when auth.test_pricelist.location_id = 1 then \'Домашний регион\' 
                     when auth.test_pricelist.location_id = 2 then \'Гостевой регион\' 
                     when auth.test_pricelist.location_id = 3 then \'Международный регион\' 
-                    end as location_name')])
+                    end as location_name'),
+                new Expression('CASE WHEN tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result')
+            ])
+            ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = auth.test_pricelist.id')
             ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = auth.test_pricelist.mcc::text')
             ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = auth.test_pricelist.mnc::text and mnc.mcc = auth.test_pricelist.mcc::text')
             ->leftJoin('billing_uu.pricelist as p', 'p.id = auth.test_pricelist.pricelist_id')
+            ->where($resultWhere)
             ->orderBy('name')
             ->limit($limit)
             ->offset($offset)

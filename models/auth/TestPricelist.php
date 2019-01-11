@@ -17,6 +17,7 @@ use app\queries\auth\TestPricelistQuery;
  * @property int $test_pricelist_group_id
  * @property string $mock_current_date
  * @property bool $with_debug_info
+ * @property bool $is_autotest
  */
 class TestPricelist extends \yii\db\ActiveRecord
 {
@@ -42,7 +43,7 @@ class TestPricelist extends \yii\db\ActiveRecord
         return [
             [['location_id', 'pricelist_id', 'mcc', 'mnc', 'test_pricelist_group_id'], 'integer'],
             [['name', 'a_number', 'b_number', 'expected_price', 'mock_current_date'], 'string'],
-            [['is_orig', 'with_debug_info'], 'boolean']
+            [['is_orig', 'with_debug_info', 'is_autotest'], 'boolean']
         ];
     }
 }
