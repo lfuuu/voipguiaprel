@@ -76,6 +76,20 @@
         </div>
 
         <div class="form-group">
+            <label class="col-sm-2 control-label">Дата тестирования</label>
+            <div class="col-sm-6" style="margin-top: 7px;">
+                <span>{{item.tm}}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Полученный ответ</label>
+            <div class="col-sm-6" style="margin-top: 7px;">
+                <span>{{item.received}}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label class="col-sm-2 control-label">Местоположение</label>
             <div class="col-sm-6">
                 <select ui-select2 ng-model="item.location_id" placeholder="Местоположение" style="width: 100%">

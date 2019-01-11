@@ -40,6 +40,7 @@ class TestPricelistController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
     
+        $server = $this->getServerOr404($this->request['server_id']);
         $testGroupId = $this->request['test_group_id'];
         $testResult = $this->request['test_result'];
         $limit = $this->request['limit'];
@@ -61,30 +62,34 @@ class TestPricelistController extends JsonController
         }
         
         $query = TestPricelist::find()
-            ->select(['auth.test_pricelist.*', 'mcc.country as mcc_name', 'mnc.network as mnc_name', 'p.name as pricelist_name',
+            ->alias('tp')
+            ->select(['tp.*', 'mcc.country as mcc_name', 'mnc.network as mnc_name', 'p.name as pricelist_name',
                 new Expression('case 
-                    when auth.test_pricelist.location_id = 1 then \'Домашний регион\' 
-                    when auth.test_pricelist.location_id = 2 then \'Гостевой регион\' 
-                    when auth.test_pricelist.location_id = 3 then \'Международный регион\' 
+                    when tp.location_id = 1 then \'Домашний регион\' 
+                    when tp.location_id = 2 then \'Гостевой регион\' 
+                    when tp.location_id = 3 then \'Международный регион\' 
                     end as location_name'),
                 new Expression('CASE WHEN tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result')
             ])
-            ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = auth.test_pricelist.id')
-            ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = auth.test_pricelist.mcc::text')
-            ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = auth.test_pricelist.mnc::text and mnc.mcc = auth.test_pricelist.mcc::text')
-            ->leftJoin('billing_uu.pricelist as p', 'p.id = auth.test_pricelist.pricelist_id')
-            ->where($resultWhere)
+            ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = tp.id')
+            ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = tp.mcc::text')
+            ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = tp.mnc::text and mnc.mcc = tp.mcc::text')
+            ->leftJoin('billing_uu.pricelist as p', 'p.id = tp.pricelist_id')
+            ->where(['tp.server_id' => $server->id])
+            ->andWhere($resultWhere)
             ->orderBy('name')
             ->limit($limit)
             ->offset($offset)
             ->asArray();
 
         $countQuery = TestPricelist::find()
-            ->select(['id']);
+            ->select(['id'])
+            ->where(['server_id' => $server->id])
+            ->andWhere($resultWhere);
     
         if ($testGroupId != 'all') {
-            $query->where(['auth.test_pricelist.test_pricelist_group_id' => $testGroupId]);
-            $countQuery->where(['test_pricelist_group_id' => $testGroupId]);
+            $query->andWhere(['tp.test_pricelist_group_id' => $testGroupId]);
+            $countQuery->andWhere(['test_pricelist_group_id' => $testGroupId]);
         }
     
         $data = $query->all();
@@ -108,7 +113,10 @@ class TestPricelistController extends JsonController
         }
         
         $item = TestPricelist::find()
-            ->where(['id' => $this->request['id']])
+            ->alias('tp')
+            ->select(['tp.*', 'tr.tm', 'tr.received'])
+            ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = tp.id')
+            ->where(['tp.id' => $this->request['id']])
             ->asArray()
             ->one();
 

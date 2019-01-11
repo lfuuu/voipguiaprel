@@ -5,6 +5,7 @@ use app\queries\auth\TestPricelistQuery;
 
 /**
  * @property int $id
+ * @property int $server_id
  * @property string $name
  * @property string $mcc
  * @property string $mnc
@@ -41,7 +42,7 @@ class TestPricelist extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['location_id', 'pricelist_id', 'mcc', 'mnc', 'test_pricelist_group_id'], 'integer'],
+            [['server_id', 'location_id', 'pricelist_id', 'mcc', 'mnc', 'test_pricelist_group_id'], 'integer'],
             [['name', 'a_number', 'b_number', 'expected_price', 'mock_current_date'], 'string'],
             [['is_orig', 'with_debug_info', 'is_autotest'], 'boolean']
         ];

@@ -24,6 +24,7 @@ var TestPricelistEditCtrl = function($scope, $rootScope, TestPricelist, Mcc, Mnc
         });
     } else {
         $scope.item = {
+            server_id: $scope.server.id,
             name: 'testName',
             location_id: 1,
             is_orig: true,
