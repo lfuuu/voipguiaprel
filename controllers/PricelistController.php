@@ -155,6 +155,7 @@ class PricelistController extends BaseController
 
                 if (!empty($filterA['description'])) {
                     $filterAHeader = trim($filterA['description']);
+                    $filterACount = 0;
                 } else {
                     $filterAHeader = '';
                     $filterAHeaderArray = [];
@@ -206,6 +207,7 @@ class PricelistController extends BaseController
     
                     if (!empty($filterB['description'])) {
                         $filterBText = trim($filterB['description']);
+                        $filterBCount = 0;
                     } else {
                         $filterBText = '';
                         $filterBTextArray = [];
@@ -396,6 +398,7 @@ class PricelistController extends BaseController
     
                     if (!empty($filterB['description'])) {
                         $filterBText = trim($filterB['description']);
+                        $filterBCount = 0;
                     } else {
                         $filterBText = '';
                         $filterBTextArray = [];
