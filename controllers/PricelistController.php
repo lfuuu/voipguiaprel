@@ -160,8 +160,8 @@ class PricelistController extends BaseController
                     $filterAHeader = '';
                     $filterAHeaderArray = [];
                     
-                    if (isset($filterA['nnp_country_name'])) {
-                        $filterAHeaderArray = array_merge($filterAHeaderArray, explode(', ', $filterA['nnp_country_name']));
+                    if (isset($filterA['nnp_country_name_eng'])) {
+                        $filterAHeaderArray = array_merge($filterAHeaderArray, explode(', ', $filterA['nnp_country_name_eng']));
                     }
     
                     if (isset($filterA['nnp_ndc_type_name'])) {
@@ -212,8 +212,8 @@ class PricelistController extends BaseController
                         $filterBText = '';
                         $filterBTextArray = [];
         
-                        if (isset($filterB['nnp_country_name'])) {
-                            $filterBTextArray = array_merge($filterBTextArray, explode(', ', $filterB['nnp_country_name']));
+                        if (isset($filterB['nnp_country_name_eng'])) {
+                            $filterBTextArray = array_merge($filterBTextArray, explode(', ', $filterB['nnp_country_name_eng']));
                         }
         
                         if (isset($filterB['nnp_ndc_type_name'])) {
@@ -403,8 +403,8 @@ class PricelistController extends BaseController
                         $filterBText = '';
                         $filterBTextArray = [];
         
-                        if (isset($filterB['nnp_country_name'])) {
-                            $filterBTextArray = array_merge($filterBTextArray, explode(', ', $filterB['nnp_country_name']));
+                        if (isset($filterB['nnp_country_name_eng'])) {
+                            $filterBTextArray = array_merge($filterBTextArray, explode(', ', $filterB['nnp_country_name_eng']));
                         }
         
                         if (isset($filterB['nnp_ndc_type_name'])) {
