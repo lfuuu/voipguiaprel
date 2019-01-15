@@ -4,6 +4,7 @@ namespace app\controllers\json;
 
 use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterB;
+use app\models\billing_uu\PricelistPrefixPrice;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
@@ -175,6 +176,7 @@ class PricelistController extends JsonController
                 ->select('fb.*')
                 ->innerJoin('billing_uu.pricelist_filter_a as fa', 'fa.id = fb.pricelist_filter_a_id')
                 ->innerJoin('billing_uu.pricelist_location as pl', 'pl.id = fa.pricelist_location_id')
+                ->with('prefixPriceBasic')
                 ->where('pl.pricelist_id = :pricelist_id')
                 ->addParams([':pricelist_id' => $this->request['id']])
                 ->all();
@@ -184,6 +186,37 @@ class PricelistController extends JsonController
                 $filterB->tarification_interval_seconds = $item->default_tarification_interval_seconds;
                 $filterB->tarification_min_paid_seconds = $item->default_tarification_min_paid_seconds;
                 $filterB->tarification_type = $item->default_tarification_type;
+                
+                $prefixesToSave = [];
+                $prefixesToSaveFlat = [];
+                
+                foreach ($filterB->prefixPriceBasic as $prefixPrice) {
+                    if (!isset($prefixesToSave[$prefixPrice->prefix_b])) {
+                        $prefixesToSave[$prefixPrice->prefix_b] = ['date_from' => $prefixPrice->date_from, 'id' => $prefixPrice->id];
+                    } else {
+                        $dateFromCompare = date_create_from_format('Y-m-d', $prefixesToSave[$prefixPrice->prefix_b]['date_from']);
+                        $dateFromCurrent = date_create_from_format('Y-m-d', $prefixPrice->date_from);
+                        if ($dateFromCurrent > $dateFromCompare) {
+                            $prefixesToSave[$prefixPrice->prefix_b] = ['date_from' => $prefixPrice->date_from, 'id' => $prefixPrice->id];
+                        }
+                    }
+                }
+                
+                foreach ($prefixesToSave as $prefix) {
+                    $prefixesToSaveFlat[] = $prefix['id'];
+                }
+                
+                foreach ($filterB->prefixPriceBasic as $prefixPrice) {
+                    if (in_array($prefixPrice->id, $prefixesToSaveFlat)) {
+                        $prefixPrice->date_from = $item->date_start;
+    
+                        if (!$prefixPrice->save()) {
+                            throw new FormValidationException($item);
+                        }
+                    } else {
+                        $prefixPrice->delete();
+                    }
+                }
     
                 if (!$filterB->save()) {
                     throw new FormValidationException($item);

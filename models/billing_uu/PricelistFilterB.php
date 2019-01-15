@@ -72,6 +72,14 @@ class PricelistFilterB extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getPrefixPriceBasic()
+    {
+        return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getPrefixPrice()
     {
         return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])

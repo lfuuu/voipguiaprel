@@ -80,21 +80,21 @@
         <div ng-if="billingEnabled" class="tab-pane" ng-class="{active:tabs.isTabSelected('billing')}" id="billing">
             <div style="position: fixed; left: 15px; bottom: 0; top: {{navHeight}}px; width: 230px; overflow-y: auto">
                 <div ng-if="userPermissions['pricelist_list'] || userPermissions['pricelist_group_list']" class="list-group">
-                    <a class="list-group-item" ng-if="userPermissions['pricelist_list']" ng-click="Redirect.pricelistList()">Прайслисты</a>
-                    <a class="list-group-item" ng-if="userPermissions['pricelist_group_list']" ng-click="Redirect.pricelistGroupList()">Группы прайслистов</a>
+                    <a class="list-group-item" ng-if="userPermissions['pricelist_list']" ng-click="Redirect.pricelistList()" ng-class="{active:tabs.isController('PricelistListCtrl')}">Прайслисты</a>
+                    <a class="list-group-item" ng-if="userPermissions['pricelist_group_list']" ng-click="Redirect.pricelistGroupList()" ng-class="{active:tabs.isController('PricelistGroupListCtrl')}">Группы прайслистов</a>
                 </div>
                 <div ng-if="userPermissions['major_list'] || userPermissions['major_group_list']" class="list-group">
-                    <a class="list-group-item" ng-if="userPermissions['major_list']" ng-click="Redirect.majorList()">NNP-фильтры</a>
-                    <a class="list-group-item" ng-if="userPermissions['major_group_list']" ng-click="Redirect.majorGroupList()">Группы NNP-фильтров</a>
+                    <a class="list-group-item" ng-if="userPermissions['major_list']" ng-click="Redirect.majorList()" ng-class="{active:tabs.isController('MajorListCtrl')}">NNP-фильтры</a>
+                    <a class="list-group-item" ng-if="userPermissions['major_group_list']" ng-click="Redirect.majorGroupList()" ng-class="{active:tabs.isController('MajorGroupListCtrl')}">Группы NNP-фильтров</a>
                 </div>
                 <div ng-if="userPermissions['test_pricelist_list'] || userPermissions['test_number_edit'] || userPermissions['test_pricelist_group_list']" class="list-group">
-                    <a class="list-group-item" ng-if="userPermissions['test_pricelist_list']" ng-click="Redirect.testPricelistList()">Тесты прайслистов</a>
+                    <a class="list-group-item" ng-if="userPermissions['test_pricelist_list']" ng-click="Redirect.testPricelistList()" ng-class="{active:tabs.isController('TestPricelistListCtrl')}">Тесты прайслистов</a>
                     <a class="list-group-item" ng-if="userPermissions['test_number_edit']" ng-click="Redirect.testNumberEdit()">Тест номера</a>
-                    <a class="list-group-item" ng-if="userPermissions['test_pricelist_group_list']" ng-click="Redirect.testPricelistGroupList()">Группы тестов прайслистов</a>
+                    <a class="list-group-item" ng-if="userPermissions['test_pricelist_group_list']" ng-click="Redirect.testPricelistGroupList()" ng-class="{active:tabs.isController('TestPricelistGroupListCtrl')}">Группы тестов прайслистов</a>
                 </div>
                 <div ng-if="userPermissions['mcc_list'] || userPermissions['mnc_list']" class="list-group">
-                    <a class="list-group-item" ng-if="userPermissions['mcc_list']" ng-click="Redirect.mccList()">MCC</a>
-                    <a class="list-group-item" ng-if="userPermissions['mnc_list']" ng-click="Redirect.mncList()">MNC</a>
+                    <a class="list-group-item" ng-if="userPermissions['mcc_list']" ng-click="Redirect.mccList()" ng-class="{active:tabs.isController('MccListCtrl')}">MCC</a>
+                    <a class="list-group-item" ng-if="userPermissions['mnc_list']" ng-click="Redirect.mncList()" ng-class="{active:tabs.isController('MncListCtrl')}">MNC</a>
                 </div>
             </div>
         </div>
