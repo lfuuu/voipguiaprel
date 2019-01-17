@@ -23,7 +23,7 @@ var MajorGroupListCtrl = function ($scope, MajorGroup, Redirect, $window) {
     };
 
     $scope.clickItem = function (item) {
-        if (!userPermissions['major_group_edit']) {
+        if (!userPermissions['major_group_list']) {
             return;
         }
 

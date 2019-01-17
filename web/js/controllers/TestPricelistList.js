@@ -67,7 +67,7 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     };
 
     $scope.clickItem = function (item) {
-        if (!userPermissions['test_pricelist_edit']) {
+        if (!userPermissions['test_pricelist_list']) {
             return;
         }
 

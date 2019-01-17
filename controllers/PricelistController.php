@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\classes\BaseController;
 use app\models\billing_uu\Pricelist;
+use app\models\Server;
 use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -19,7 +20,7 @@ class PricelistController extends BaseController
         3 => 'Международный регион'
     ];
     
-    public function actionExcel($id)
+    public function actionExcel($id, $server_id, $factor)
     {
         if (!\Yii::$app->user->can('pricelist_edit')) {
             throw new ForbiddenHttpException('Access denied');
@@ -31,7 +32,7 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
         
-        $this->createExcelDocument($data);
+        $this->createExcelDocument($data, $server_id, $factor);
     }
     
     public function actionExcelPrefixes($id)
@@ -65,7 +66,7 @@ class PricelistController extends BaseController
         $this->createExcelLocationsDocument($data);
     }
     
-    private function createExcelDocument($pricelist)
+    private function createExcelDocument($pricelist, $serverId, $factor)
     {
         $names = [
             "Направление A (ННП-фильтр)",
@@ -444,26 +445,59 @@ class PricelistController extends BaseController
                 
                     $simplifiedPrefixList = [];
                 
+                    $flag = false;
+                    
                     foreach ($filterB['prefixPriceNoLimit'] as $prefixPrice) {
                         if (array_key_exists($prefixPrice['prefix_b'], $simplifiedPrefixList)) {
                             $simplifiedPrefixList[$prefixPrice['prefix_b']][] = $prefixPrice;
                         } else {
+                            if (!empty($prefixPrice['prefix_b'])) {
+                                $flag = true;
+                            }
+                            
                             $simplifiedPrefixList[$prefixPrice['prefix_b']] = [];
                             $simplifiedPrefixList[$prefixPrice['prefix_b']][] = $prefixPrice;
                         }
                     }
                 
-                    foreach ($simplifiedPrefixList as $prefixPrice) {
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $prefixPrice[0]['prefix_b']);
+                    if (!$flag && !empty($filterB['nnp_operator'])) {
+                        $server = Server::findOne($serverId);
+                        $apiUrl = $server->apiUrl;
+    
+                        $apiParams = [
+                            'cmd' => 'getPrefixByFilter',
+                            'complement' => 'true',
+                            'factor' => $factor,
+                        ];
+                        
+                        $operator = str_replace(['{', '}'], '', $filterB['nnp_operator']);
+    
+                        $apiParams['operator_id'] = $operator;
+                        
+                        $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
+    
+                        $response = json_decode(file_get_contents($request), true);
+                        
+                        $prefix = $simplifiedPrefixList[''];
+                        $simplifiedPrefixList = [];
+                        
+                        foreach ($response['list'] as $responseItem) {
+                            $responseItemArray = explode('[', $responseItem, 2);
+                            $simplifiedPrefixList[$responseItemArray[0]] = $prefix;
+                        }
+                    }
+    
+                    foreach ($simplifiedPrefixList as $prefixPriceKey => $prefixPrice) {
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $prefixPriceKey);
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $pricelist['currency_id']);
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber, $prefixPrice[0]['b_number_price']);
-                    
+        
                         if (isset($prefixPrice[1])) {
                             $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Повышение' : 'Понижение';
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber, $prefixPrice[1]['b_number_price']);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber, $prefixPrice[1]['date_from']);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 6, $currentRowNumber, $direction);
-                        
+            
                             if (isset($prefixPrice[2])) {
                                 $direction = $prefixPrice[2]['b_number_price'] > $prefixPrice[1]['b_number_price'] ? 'Повышение' : 'Понижение';
                                 $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber, $prefixPrice[2]['b_number_price']);
@@ -471,9 +505,9 @@ class PricelistController extends BaseController
                                 $sheet->setCellValueByColumnAndRow($minColumnNumber + 9, $currentRowNumber, $direction);
                             }
                         }
-                    
+        
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 10, $currentRowNumber, $prefixPrice[0]['date_from']);
-                    
+        
                         $currentRowNumber++;
                     }
                 

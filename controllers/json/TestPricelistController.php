@@ -108,7 +108,7 @@ class TestPricelistController extends JsonController
      */
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('test_pricelist_edit')) {
+        if (!\Yii::$app->user->can('test_pricelist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

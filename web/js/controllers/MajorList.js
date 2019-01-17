@@ -54,7 +54,7 @@ var MajorListCtrl = function ($scope, Major, MajorGroup, Nnp, List, Redirect, $w
     };
 
     $scope.clickItem = function (item) {
-        if (!userPermissions['major_edit']) {
+        if (!userPermissions['major_list']) {
             return;
         }
 

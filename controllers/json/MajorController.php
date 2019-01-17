@@ -65,7 +65,7 @@ class MajorController extends JsonController
     
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('major_edit')) {
+        if (!\Yii::$app->user->can('major_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

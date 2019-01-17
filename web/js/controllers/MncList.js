@@ -23,7 +23,7 @@ var MncListCtrl = function ($scope, Mnc, Redirect, $window) {
     };
 
     $scope.clickItem = function (item) {
-        if (!userPermissions['mnc_edit']) {
+        if (!userPermissions['mnc_list']) {
             return;
         }
 

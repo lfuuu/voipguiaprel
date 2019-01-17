@@ -40,7 +40,7 @@ class PricelistGroupController extends JsonController
     
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('pricelist_group_edit')) {
+        if (!\Yii::$app->user->can('pricelist_group_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

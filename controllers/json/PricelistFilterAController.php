@@ -16,7 +16,7 @@ class PricelistFilterAController extends JsonController
 {
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('pricelist_edit')) {
+        if (!\Yii::$app->user->can('pricelist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

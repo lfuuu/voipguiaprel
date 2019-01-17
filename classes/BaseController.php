@@ -11,6 +11,7 @@ use app\models\auth\TestPricelist;
 use app\models\auth\TestPricelistGroup;
 use app\models\billing_uu\ImsiPartner;
 use app\models\billing_uu\Major;
+use app\models\billing_uu\MajorGroup;
 use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterA;
 use app\models\billing_uu\PricelistFilterB;

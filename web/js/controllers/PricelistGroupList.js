@@ -23,7 +23,7 @@ var PricelistGroupListCtrl = function ($scope, PricelistGroup, Redirect, $window
     };
 
     $scope.clickItem = function (item) {
-        if (!userPermissions['pricelist_group_edit']) {
+        if (!userPermissions['pricelist_group_list']) {
             return;
         }
 

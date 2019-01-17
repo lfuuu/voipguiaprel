@@ -2,10 +2,10 @@
 
 namespace app\controllers\json;
 
-use app\models\billing_uu\MajorGroup;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use app\models\billing_uu\MajorGroup;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -40,7 +40,7 @@ class MajorGroupController extends JsonController
     
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('major_group_edit')) {
+        if (!\Yii::$app->user->can('major_group_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

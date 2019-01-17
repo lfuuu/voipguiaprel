@@ -60,7 +60,7 @@ class MncController extends JsonController
 
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('mnc_edit')) {
+        if (!\Yii::$app->user->can('mnc_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

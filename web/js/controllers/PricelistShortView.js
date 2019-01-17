@@ -233,6 +233,16 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             $scope.initData($scope.item.id);
         });
     };
+    
+    $scope.printToExcel = function () {
+        var factor;
+
+        factor = parseFloat($window.prompt('Введите фактор', 10));
+
+        if (isNaN(factor) || factor <= 0) return;
+
+        window.open('/pricelist/excel?id=' + $scope.item.id + '&server_id=' + $scope.server.id + '&factor=' + factor,'_blank');
+    };
 
     $scope.displayEmptyAlert = function () {
         alert('Это пустая строка.');

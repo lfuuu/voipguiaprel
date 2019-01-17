@@ -23,7 +23,7 @@ var MccListCtrl = function ($scope, Mcc, Redirect, $window) {
     };
 
     $scope.clickItem = function (item) {
-        if (!userPermissions['mcc_edit']) {
+        if (!userPermissions['mcc_list']) {
             return;
         }
 

@@ -53,7 +53,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
     };
 
     $scope.clickItem = function (item) {
-        if (!userPermissions['pricelist_edit']) {
+        if (!userPermissions['pricelist_list']) {
             return;
         }
 

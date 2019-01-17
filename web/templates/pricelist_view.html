@@ -34,7 +34,7 @@
                 <td ng-if="item.is_pricelist">{{item.version}}</td>
                 <td ng-if="item.is_pricelist" colspan="3"></td>
                 <td ng-if="item.is_pricelist">
-                    <a target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-success btn-xs">
+                    <a ng-click="printToExcel()" href="#" class="btn btn-success btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>
                     </a>
                 </td>
@@ -93,7 +93,7 @@
                     </a>
                 </td>
                 <td ng-if="item.is_location">
-                    <a ng-if="!item.has_children" class="btn btn-danger btn-xs" ng-click="deleteLocation(item.id)">
+                    <a ng-if="!item.has_children && userPermissions['pricelist_delete']" class="btn btn-danger btn-xs" ng-click="deleteLocation(item.id)">
                         <span class="glyphicon glyphicon-minus"></span>
                     </a>
                 </td>
@@ -152,7 +152,7 @@
                     </a>
                 </td>
                 <td ng-if="item.is_filter_a">
-                    <a ng-if="!item.has_children" class="btn btn-danger btn-xs" ng-click="deleteFilterA(item.id)">
+                    <a ng-if="!item.has_children && userPermissions['pricelist_delete']" class="btn btn-danger btn-xs" ng-click="deleteFilterA(item.id)">
                         <span class="glyphicon glyphicon-minus"></span>
                     </a>
                 </td>
@@ -216,7 +216,7 @@
                     </a>
                 </td>
                 <td ng-if="item.is_filter_b">
-                    <a ng-if="!item.has_children" class="btn btn-danger btn-xs" ng-click="deleteFilterB(item.id)">
+                    <a ng-if="!item.has_children && userPermissions['pricelist_delete']" class="btn btn-danger btn-xs" ng-click="deleteFilterB(item.id)">
                         <span class="glyphicon glyphicon-minus"></span>
                     </a>
                 </td>
@@ -263,7 +263,7 @@
                     </a>
                 </td>
                 <td ng-if="item.is_prefix_price">
-                    <a ng-if="item.has_buttons" class="btn btn-danger btn-xs" ng-click="deletePrefixPrice(item.prefix_price_id)">
+                    <a ng-if="item.has_buttons && userPermissions['pricelist_delete']" class="btn btn-danger btn-xs" ng-click="deletePrefixPrice(item.prefix_price_id)">
                         <span class="glyphicon glyphicon-minus"></span>
                     </a>
                 </td>

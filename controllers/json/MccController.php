@@ -42,7 +42,7 @@ class MccController extends JsonController
 
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('mcc_edit')) {
+        if (!\Yii::$app->user->can('mcc_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

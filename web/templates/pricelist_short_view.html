@@ -20,7 +20,7 @@
                     </a>
                 </td>
                 <td ng-if="item.is_pricelist">
-                    <a popover="Прайслист" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel?id={{item.id}}" class="btn btn-default btn-xs">
+                    <a popover="Прайслист" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcel()" href="#" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>
                     </a>
                 </td>
