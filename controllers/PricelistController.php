@@ -71,8 +71,8 @@ class PricelistController extends BaseController
         $names = [
             "Направление A (ННП-фильтр)",
             "Направление B (ННП-фильтр)",
-            "Валюта",
             "Цена номера B",
+            "Валюта",
             "Цена номера B\n(Будущая 1)",
             "Дата начала\nдействия\n(Будущая 1)",
             "Статус",
@@ -265,8 +265,8 @@ class PricelistController extends BaseController
                     }
                     
                     foreach ($simplifiedPrefixList as $prefixPrice) {
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $pricelist['currency_id']);
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber, $prefixPrice[0]['b_number_price']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $prefixPrice[0]['b_number_price']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber, $pricelist['currency_id']);
     
                         if (isset($prefixPrice[1])) {
                             $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Повышение' : 'Понижение';
@@ -316,8 +316,8 @@ class PricelistController extends BaseController
         $names = [
             "Направление (ННП-фильтр)",
             "Код",
-            "Валюта",
             "Цена номера B",
+            "Валюта",
             "Цена номера B\n(Будущая 1)",
             "Дата начала\nдействия\n(Будущая 1)",
             "Статус",
@@ -533,8 +533,8 @@ class PricelistController extends BaseController
     
                     foreach ($simplifiedPrefixList as $prefixPriceKey => $prefixPrice) {
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $prefixPriceKey);
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $pricelist['currency_id']);
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber, $prefixPrice[0]['b_number_price']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $prefixPrice[0]['b_number_price']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber, $pricelist['currency_id']);
         
                         if (isset($prefixPrice[1])) {
                             $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Повышение' : 'Понижение';
