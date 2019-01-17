@@ -460,7 +460,7 @@ class PricelistController extends BaseController
                         }
                     }
                 
-                    if (!$flag && !empty($filterB['nnp_operator'])) {
+                    if (!$flag && !empty($filterB['nnp_operator']) && $filterB['nnp_operator'] !== '{}') {
                         $server = Server::findOne($serverId);
                         $apiUrl = $server->apiUrl;
     
@@ -473,17 +473,61 @@ class PricelistController extends BaseController
                         $operator = str_replace(['{', '}'], '', $filterB['nnp_operator']);
     
                         $apiParams['operator_id'] = $operator;
+    
+                        if (isset($filterB['nnp_country']) && $filterB['nnp_country'] !== '{}') {
+                            $apiParams['country_code'] = str_replace(['{', '}'], '', $filterB['nnp_country']);
+                        }
+    
+                        if (isset($filterB['nnp_region']) && $filterB['nnp_region'] !== '{}') {
+                            $apiParams['region_id'] = str_replace(['{', '}'], '', $filterB['nnp_region']);
+                        }
+    
+                        if (isset($filterB['nnp_city']) && $filterB['nnp_city'] !== '{}') {
+                            $apiParams['city_id'] = str_replace(['{', '}'], '', $filterB['nnp_city']);
+                        }
+    
+                        if (isset($filterB['nnp_ndc_type']) && $filterB['nnp_ndc_type'] !== '{}') {
+                            $apiParams['ndc_type_id'] = str_replace(['{', '}'], '', $filterB['nnp_ndc_type']);
+                        }
+    
+                        $exclude_country = isset($filterB['f_inv_nnp_country']) ? ($filterB['f_inv_nnp_country'] ? true : false) : false;
+                        $exclude_oper = isset($filterB['f_inv_nnp_operator']) ? ($filterB['f_inv_nnp_operator'] ? true : false) : false;
+                        $exclude_region = isset($filterB['f_inv_nnp_region']) ? ($filterB['f_inv_nnp_region'] ? true : false) : false;
+                        $exclude_city = isset($filterB['f_inv_nnp_city']) ? ($filterB['f_inv_nnp_city'] ? true : false) : false;
+                        $exclude_ndc = isset($filterB['f_inv_nnp_ndc_type']) ? ($filterB['f_inv_nnp_ndc_type'] ? true : false) : false;
+    
+                        if ($exclude_country) {
+                            $apiParams['exclude_country'] = 'true';
+                        }
+    
+                        if ($exclude_oper) {
+                            $apiParams['exclude_oper'] = 'true';
+                        }
+    
+                        if ($exclude_region) {
+                            $apiParams['exclude_region'] = 'true';
+                        }
+    
+                        if ($exclude_city) {
+                            $apiParams['exclude_city'] = 'true';
+                        }
+    
+                        if ($exclude_ndc) {
+                            $apiParams['exclude_ndc'] = 'true';
+                        }
                         
                         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
-    
+                        
                         $response = json_decode(file_get_contents($request), true);
                         
                         $prefix = $simplifiedPrefixList[''];
                         $simplifiedPrefixList = [];
-                        
-                        foreach ($response['list'] as $responseItem) {
-                            $responseItemArray = explode('[', $responseItem, 2);
-                            $simplifiedPrefixList[$responseItemArray[0]] = $prefix;
+
+                        if (isset($response['list'])) {
+                            foreach ($response['list'] as $responseItem) {
+                                $responseItemArray = explode('[', $responseItem, 2);
+                                $simplifiedPrefixList[$responseItemArray[0]] = $prefix;
+                            }
                         }
                     }
     
