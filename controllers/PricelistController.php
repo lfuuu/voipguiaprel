@@ -20,7 +20,7 @@ class PricelistController extends BaseController
         3 => 'Международный регион'
     ];
     
-    public function actionExcel($id, $server_id, $factor)
+    public function actionExcel($id, $server_id, $factor, $expanded)
     {
         if (!\Yii::$app->user->can('pricelist_edit')) {
             throw new ForbiddenHttpException('Access denied');
@@ -32,7 +32,7 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
         
-        $this->createExcelDocument($data, $server_id, $factor);
+        $this->createExcelDocument($data, $server_id, $factor, $expanded);
     }
     
     public function actionExcelPrefixes($id)
@@ -66,7 +66,7 @@ class PricelistController extends BaseController
         $this->createExcelLocationsDocument($data);
     }
     
-    private function createExcelDocument($pricelist, $serverId, $factor)
+    private function createExcelDocument($pricelist, $serverId, $factor, $expanded)
     {
         $names = [
             "Направление A (ННП-фильтр)",
@@ -313,19 +313,36 @@ class PricelistController extends BaseController
         $sheet = $spreadsheet->getSheet(1);
         $sheet->setTitle('Single line');
     
-        $names = [
-            "Направление (ННП-фильтр)",
-            "Код",
-            "Цена номера B",
-            "Валюта",
-            "Цена номера B\n(Будущая 1)",
-            "Дата начала\nдействия\n(Будущая 1)",
-            "Статус",
-            "Цена номера B\n(Будущая 2)",
-            "Дата начала\nдействия\n(Будущая 2)",
-            "Статус",
-            "Дата начала\nдействия"
-        ];
+        if ($expanded) {
+            $names = [
+                "Направление (ННП-фильтр)",
+                "Код",
+                "Код (исключение)",
+                "Цена номера B",
+                "Валюта",
+                "Цена номера B\n(Будущая 1)",
+                "Дата начала\nдействия\n(Будущая 1)",
+                "Статус",
+                "Цена номера B\n(Будущая 2)",
+                "Дата начала\nдействия\n(Будущая 2)",
+                "Статус",
+                "Дата начала\nдействия"
+            ];
+        } else {
+            $names = [
+                "Направление (ННП-фильтр)",
+                "Код",
+                "Цена номера B",
+                "Валюта",
+                "Цена номера B\n(Будущая 1)",
+                "Дата начала\nдействия\n(Будущая 1)",
+                "Статус",
+                "Цена номера B\n(Будущая 2)",
+                "Дата начала\nдействия\n(Будущая 2)",
+                "Статус",
+                "Дата начала\nдействия"
+            ];
+        }
     
         $currentRowNumber = 1;
         $minColumnNumber = 1;
@@ -527,30 +544,39 @@ class PricelistController extends BaseController
                             foreach ($response['list'] as $responseItem) {
                                 $responseItemArray = explode('[', $responseItem, 2);
                                 $simplifiedPrefixList[$responseItemArray[0]] = $prefix;
+                                $simplifiedPrefixList[$responseItemArray[0]]['expanded'] = isset($responseItemArray[1]) ? str_replace(']', '', $responseItemArray[1]) : '';
                             }
                         }
                     }
-    
+
                     foreach ($simplifiedPrefixList as $prefixPriceKey => $prefixPrice) {
+                        $expandedIndex = 0;
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $prefixPriceKey);
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $prefixPrice[0]['b_number_price']);
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber, $pricelist['currency_id']);
+                        if ($expanded) {
+                            $expandedIndex = 1;
+                            if (isset($prefixPrice['expanded'])) {
+                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 1 + $expandedIndex, $currentRowNumber, $prefixPrice['expanded']);
+                            }
+                            
+                        }
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2 + $expandedIndex, $currentRowNumber, $prefixPrice[0]['b_number_price']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 3 + $expandedIndex, $currentRowNumber, $pricelist['currency_id']);
         
                         if (isset($prefixPrice[1])) {
                             $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Повышение' : 'Понижение';
-                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber, $prefixPrice[1]['b_number_price']);
-                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber, $prefixPrice[1]['date_from']);
-                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 6, $currentRowNumber, $direction);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 4 + $expandedIndex, $currentRowNumber, $prefixPrice[1]['b_number_price']);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 5 + $expandedIndex, $currentRowNumber, $prefixPrice[1]['date_from']);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 6 + $expandedIndex, $currentRowNumber, $direction);
             
                             if (isset($prefixPrice[2])) {
                                 $direction = $prefixPrice[2]['b_number_price'] > $prefixPrice[1]['b_number_price'] ? 'Повышение' : 'Понижение';
-                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber, $prefixPrice[2]['b_number_price']);
-                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 8, $currentRowNumber, $prefixPrice[2]['date_from']);
-                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 9, $currentRowNumber, $direction);
+                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 7 + $expandedIndex, $currentRowNumber, $prefixPrice[2]['b_number_price']);
+                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 8 + $expandedIndex, $currentRowNumber, $prefixPrice[2]['date_from']);
+                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 9 + $expandedIndex, $currentRowNumber, $direction);
                             }
                         }
         
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 10, $currentRowNumber, $prefixPrice[0]['date_from']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 10 + $expandedIndex, $currentRowNumber, $prefixPrice[0]['date_from']);
         
                         $currentRowNumber++;
                     }

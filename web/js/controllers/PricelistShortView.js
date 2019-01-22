@@ -233,7 +233,17 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             $scope.initData($scope.item.id);
         });
     };
-    
+
+    $scope.printToExcelExpanded = function () {
+        var factor;
+
+        factor = parseFloat($window.prompt('Введите фактор', 10));
+
+        if (isNaN(factor) || factor <= 0) return;
+
+        window.open('/pricelist/excel?id=' + $scope.item.id + '&server_id=' + $scope.server.id + '&factor=' + factor + '&expanded=1','_blank');
+    };
+
     $scope.printToExcel = function () {
         var factor;
 
@@ -241,7 +251,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
         if (isNaN(factor) || factor <= 0) return;
 
-        window.open('/pricelist/excel?id=' + $scope.item.id + '&server_id=' + $scope.server.id + '&factor=' + factor,'_blank');
+        window.open('/pricelist/excel?id=' + $scope.item.id + '&server_id=' + $scope.server.id + '&factor=' + factor + '&expanded=0','_blank');
     };
 
     $scope.displayEmptyAlert = function () {
