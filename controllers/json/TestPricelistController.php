@@ -83,13 +83,15 @@ class TestPricelistController extends JsonController
             ->asArray();
 
         $countQuery = TestPricelist::find()
-            ->select(['id'])
-            ->where(['server_id' => $server->id])
+            ->alias('tp')
+            ->select(['tp.id'])
+            ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = tp.id')
+            ->where(['tp.server_id' => $server->id])
             ->andWhere($resultWhere);
     
-        if ($testGroupId != 'all') {
+        if ($testGroupId != 'all' && $testGroupId != 'undefined') {
             $query->andWhere(['tp.test_pricelist_group_id' => $testGroupId]);
-            $countQuery->andWhere(['test_pricelist_group_id' => $testGroupId]);
+            $countQuery->andWhere(['tp.test_pricelist_group_id' => $testGroupId]);
         }
     
         $data = $query->all();

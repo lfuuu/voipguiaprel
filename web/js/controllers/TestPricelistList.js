@@ -26,7 +26,7 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     $scope.locationList = List.location();
 
     $scope.refreshList = function() {
-        if ($scope.testGroupId == 'undefined') {
+        if ($scope.testGroupId == 'undefined' && $scope.testResult == 'all') {
             return;
         }
 

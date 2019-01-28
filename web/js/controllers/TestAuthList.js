@@ -28,7 +28,7 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
     };
 
     $scope.refreshList = function() {
-        if ($scope.testGroupId == 'undefined') {
+        if ($scope.testGroupId == 'undefined' && $scope.testResult == 'undefined') {
             return;
         }
 

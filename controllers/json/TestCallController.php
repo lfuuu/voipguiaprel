@@ -49,6 +49,12 @@ class TestCallController extends JsonController
         $limit = $this->request['limit'];
         $offset = $this->request['offset'];
     
+        if ($testGroupId == 'undefined') {
+            $groupWhere = 'true';
+        } else {
+            $groupWhere = ['testgroup_id' => $testGroupId];
+        }
+        
         switch ($testResult) {
             case 'not_executed':
                 $resultWhere = 'is_autotest AND (tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\')';
@@ -74,7 +80,7 @@ class TestCallController extends JsonController
                 ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
                 ->leftJoin('auth.test_group tg', 'tg.id = auth.test_call.testgroup_id')
                 ->where(['test_call.server_id' => $server->id])
-                ->andWhere(['auth.test_call.testgroup_id' => $testGroupId])
+                ->andWhere($groupWhere)
                 ->andWhere($resultWhere)
                 ->orderBy('name')
                 ->limit($limit)
@@ -86,7 +92,7 @@ class TestCallController extends JsonController
             ->select(['id'])
             ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
             ->where(['auth.test_call.server_id' => $server->id])
-            ->andWhere(['testgroup_id' => $testGroupId])
+            ->andWhere($groupWhere)
             ->andWhere($resultWhere)
             ->count();
     

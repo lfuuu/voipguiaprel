@@ -26,7 +26,7 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
     };
 
     $scope.refreshList = function() {
-        if ($scope.testGroupId == 'undefined') {
+        if ($scope.testGroupId == 'undefined' && $scope.testResult == 'undefined') {
             return;
         }
 
