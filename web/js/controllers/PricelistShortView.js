@@ -235,23 +235,11 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     };
 
     $scope.printToExcelExpanded = function () {
-        var factor;
-
-        factor = parseFloat($window.prompt('Введите фактор', 10));
-
-        if (isNaN(factor) || factor <= 0) return;
-
-        window.open('/pricelist/excel?id=' + $scope.item.id + '&server_id=' + $scope.server.id + '&factor=' + factor + '&expanded=1','_blank');
+        window.open('/pricelist/excel?id=' + $scope.item.id + '&server_id=' + $scope.server.id + '&factor=1&expanded=1','_blank');
     };
 
     $scope.printToExcel = function () {
-        var factor;
-
-        factor = parseFloat($window.prompt('Введите фактор', 10));
-
-        if (isNaN(factor) || factor <= 0) return;
-
-        window.open('/pricelist/excel?id=' + $scope.item.id + '&server_id=' + $scope.server.id + '&factor=' + factor + '&expanded=0','_blank');
+        window.open('/pricelist/excel?id=' + $scope.item.id + '&server_id=' + $scope.server.id + '&factor=1&expanded=0','_blank');
     };
 
     $scope.displayEmptyAlert = function () {
