@@ -1058,15 +1058,15 @@ app.factory('TestAuth', function ($q, ApiLoader, $rootScope) {
 			list = undefined;
 			return ApiLoader.post(url + 'delete', {id: id});
 		},
-        descend: function(data) {
-            return ApiLoader.post(url + 'descend', data);
-        },
-        clearCache: function() {
-		    return ApiLoader.post(url + 'clear-cache');
-        },
-        trace: function(data) {
-            return ApiLoader.post(url + 'trace', data);
-        }
+    descend: function(data) {
+      return ApiLoader.post(url + 'descend', data);
+    },
+    clearCache: function() {
+      return ApiLoader.post(url + 'clear-cache');
+    },
+    trace: function(data) {
+      return ApiLoader.post(url + 'trace', data);
+    }
 	};
 });
 

@@ -222,7 +222,8 @@ class TestAuthController extends JsonController
             'dst_number' => $item->dst_number,
             'redirect_number' => $item->redirect_number,
             'src_noa' => $item->src_noa,
-            'dst_noa' => $item->dst_noa
+            'dst_noa' => $item->dst_noa,
+            'router_version' => $item->router_version
         ];
         
         if ($item->with_debug_info) {
@@ -302,8 +303,13 @@ class TestAuthController extends JsonController
             'redirect_number' => $this->request['redirect_number'],
             'src_noa' => $this->request['src_noa'],
             'dst_noa' => $this->request['dst_noa'],
+            'router_version' => $this->request['router_version'],
             'trace_tree' => 1
         ];
+    
+        if ($this->request['with_debug_info']) {
+            $apiParams['with_debug_info'] = 1;
+        }
         
         if (isset($this->request['isReserve'])) {
             $direction = self::TEST_DIRECTION_RESERVE;
@@ -317,7 +323,8 @@ class TestAuthController extends JsonController
             $direction = self::TEST_DIRECTION_DEV;
         }
     
-        return $this->trace($this->request['trunk_name'], $this->request['trace_to_regions'], $apiParams, $direction, $this->request['orig_trunk'], $this->request['server_id'], $this->request['ttl']);
+        return $this->trace($this->request['trunk_name'], $this->request['trace_to_regions'], $apiParams,
+            $direction, $this->request['orig_trunk'], $this->request['server_id'], $this->request['ttl']);
     }
     
     private function generateOldResult($resultString, $server, $apiParams, $direction, $ttl = 0)

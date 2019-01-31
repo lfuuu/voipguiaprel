@@ -19,6 +19,7 @@ use app\queries\NumberQuery;
  * @property string $note
  * @property string $cpc
  * @property bool   $with_debug_info
+ * @property int    $router_version
 
  * @property Server $server
  * @property
@@ -43,7 +44,7 @@ class TestAuth extends \yii\db\ActiveRecord
         return [
             [['name'], 'string', 'max' => 100],
             [['src_number', 'dst_number', 'redirect_number'], 'string', 'max' => 32],
-            [['src_noa','dst_noa', 'ttl'], 'integer'],
+            [['src_noa','dst_noa', 'ttl', 'router_version'], 'integer'],
             [['trunk_name'], 'string', 'max' => 32],
             [['is_autotest', 'with_debug_info'], 'boolean'],
             [['correct_answer'], 'string', 'max' => 128],
