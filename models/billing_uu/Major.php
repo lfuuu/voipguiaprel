@@ -53,44 +53,38 @@ class Major extends \yii\db\ActiveRecord
         
         if (isset($input['nnp_operator']) && count($input['nnp_operator'])) {
             $filters['operator_id'] = $input['nnp_operator'];
-            $filters['exclude_operators'] = array_key_exists('nnp_exclude_operator', $input) ?
-                $input['nnp_exclude_operator'] :
-                '';
+            $filters['exclude_operators'] = (array_key_exists('nnp_exclude_operator', $input) && $input['nnp_exclude_operator'] !== '') ?
+                $input['nnp_exclude_operator'] : false;
         }
         
         if (isset($input['nnp_country']) && count($input['nnp_country'])) {
             $filters['country_code'] = $input['nnp_country'];
-            $filters['exclude_country'] = array_key_exists('nnp_exclude_country', $input) ?
-                $input['nnp_exclude_country'] :
-                '';
+            $filters['exclude_country'] = (array_key_exists('nnp_exclude_country', $input) && $input['nnp_exclude_country'] !== '') ?
+                $input['nnp_exclude_country'] : false;
         }
         
         if (isset($input['nnp_region']) && count($input['nnp_region'])) {
             $filters['region_id'] = $input['nnp_region'];
-            $filters['exclude_region'] = array_key_exists('nnp_exclude_region', $input) ?
-                $input['nnp_exclude_region'] :
-                '';
+            $filters['exclude_region'] = (array_key_exists('nnp_exclude_region', $input) && $input['nnp_exclude_region'] !== '') ?
+                $input['nnp_exclude_region'] : false;
         }
         
         if (isset($input['nnp_city']) && count($input['nnp_city'])) {
             $filters['city_id'] = $input['nnp_city'];
-            $filters['exclude_city'] = array_key_exists('nnp_exclude_city', $input) ?
-                $input['nnp_exclude_city'] :
-                '';
+            $filters['exclude_city'] = (array_key_exists('nnp_exclude_city', $input) && $input['nnp_exclude_city'] !== '') ?
+                $input['nnp_exclude_city'] : false;
         }
         
         if (isset($input['nnp_ndc_type']) && count($input['nnp_ndc_type'])) {
             $filters['ndc_type_id'] = $input['nnp_ndc_type'];
-            $filters['exclude_ndc_type'] = array_key_exists('nnp_exclude_ndc_type', $input) ?
-                $input['nnp_exclude_ndc_type'] :
-                '';
+            $filters['exclude_ndc_type'] = (array_key_exists('nnp_exclude_ndc_type', $input) && $input['nnp_exclude_ndc_type'] !== '') ?
+                $input['nnp_exclude_ndc_type'] : false;
         }
         
         if (isset($input['nnp_destination']) && count($input['nnp_destination'])) {
             $filters['nnp_destination_id'] = $input['nnp_destination'];
-            $filters['exclude_destination'] = array_key_exists('nnp_exclude_destination', $input) ?
-                $input['nnp_exclude_destination'] :
-                '';
+            $filters['exclude_destination'] = (array_key_exists('nnp_exclude_destination', $input) && $input['nnp_exclude_destination'] !== '') ?
+                $input['nnp_exclude_destination'] : false;
         }
         
         $this->nnp_filter_json = Json::encode($filters);
