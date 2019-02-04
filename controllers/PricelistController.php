@@ -299,10 +299,8 @@ class PricelistController extends BaseController
                         foreach ($flattenedPrefixPriceNoLimit as $prefixPriceKey => $prefixPrice) {
                             if ($prefixPriceKey == '') {
                                 $simplifiedPrefixPriceList[$prefix] = $prefixPrice;
-                            } elseif (substr($prefix, 0, strlen($prefixPriceKey)) === $prefixPriceKey) {
+                            } elseif (substr($prefix, 0, strlen($prefixPriceKey)) == $prefixPriceKey) {
                                 $simplifiedPrefixPriceList[$prefix] = $prefixPrice;
-                            } else {
-                                continue;
                             }
                         }
                     }
