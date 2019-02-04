@@ -85,14 +85,14 @@ class PricelistController extends BaseController
     private function createPricelistSheet(&$spreadsheet, $pricelist)
     {
         $names = [
-            "Направление A (ННП-фильтр)",
-            "Направление B (ННП-фильтр)",
-            "Цена номера B",
-            "Валюта",
-            "Цена номера B\n(Будущая 1)",
-            "Дата начала\nдействия\n(Будущая 1)",
-            "Статус",
-            "Дата начала\nдействия"
+            "Source country filter",
+            "Destination",
+            "Price",
+            "Сurrency",
+            "Pending price",
+            "Pending date",
+            "Status",
+            "Effective date"
         ];
         
         $currentRowNumber = 1;
@@ -100,7 +100,7 @@ class PricelistController extends BaseController
         $maxColumnNumber = count($names);
         
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Прайслист');
+        $sheet->setTitle('General');
         
         $currentRowNumber = $this->setHeader($sheet, $names, $pricelist, $minColumnNumber, $maxColumnNumber,
             $currentRowNumber);
@@ -126,7 +126,7 @@ class PricelistController extends BaseController
                 list($filterAHeader, $filterACount) = $this->getFilterName($filterA);
                 
                 if (empty($filterAHeader)) {
-                    $filterAHeader = 'Пустой фильтр A';
+                    $filterAHeader = 'Empty filter';
                 }
                 
                 $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $filterAHeader);
@@ -140,7 +140,7 @@ class PricelistController extends BaseController
                     list($filterBText, $filterBCount) = $this->getFilterName($filterB);
                     
                     if (empty($filterBText)) {
-                        $filterBText = 'Пустой фильтр B';
+                        $filterBText = 'Empty filter';
                     }
                     
                     $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $filterBText);
@@ -165,7 +165,7 @@ class PricelistController extends BaseController
                             $pricelist['currency_id']);
                         
                         if (isset($prefixPrice[1])) {
-                            $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Повышение' : 'Понижение';
+                            $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Increase' : 'Decrease';
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber,
                                 $prefixPrice[1]['b_number_price'] + $interconnectPrice);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber,
@@ -222,17 +222,14 @@ class PricelistController extends BaseController
         $sheet->setTitle('Single line');
         
         $names = [
-            "Направление (ННП-фильтр)",
-            "Код",
-            "Цена номера B",
-            "Валюта",
-            "Цена номера B\n(Будущая 1)",
-            "Дата начала\nдействия\n(Будущая 1)",
-            "Статус",
-            "Цена номера B\n(Будущая 2)",
-            "Дата начала\nдействия\n(Будущая 2)",
-            "Статус",
-            "Дата начала\nдействия"
+            "Destination",
+            "Codes",
+            "Price",
+            "Currency",
+            "Pending price",
+            "Pending date",
+            "Status",
+            "Effective date"
         ];
         
         $currentRowNumber = 1;
@@ -313,24 +310,15 @@ class PricelistController extends BaseController
                             $pricelist['currency_id']);
                         
                         if (isset($prefixPrice[1])) {
-                            $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Повышение' : 'Понижение';
+                            $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Increase' : 'Decrease';
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber,
                                 $prefixPrice[1]['b_number_price'] + $interconnectPrice);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber,
                                 $prefixPrice[1]['date_from']);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 6, $currentRowNumber, $direction);
-                            
-                            if (isset($prefixPrice[2])) {
-                                $direction = $prefixPrice[2]['b_number_price'] > $prefixPrice[1]['b_number_price'] ? 'Повышение' : 'Понижение';
-                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber,
-                                    $prefixPrice[2]['b_number_price'] + $interconnectPrice);
-                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 8, $currentRowNumber,
-                                    $prefixPrice[2]['date_from']);
-                                $sheet->setCellValueByColumnAndRow($minColumnNumber + 9, $currentRowNumber, $direction);
-                            }
                         }
                         
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 10, $currentRowNumber,
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber,
                             $prefixPrice[0]['date_from']);
                         
                         $currentRowNumber++;
@@ -345,7 +333,6 @@ class PricelistController extends BaseController
                             $sheet->getRowDimension($i)->setRowHeight(15 * ($filterBCount + 1));
                         }
                     }
-                    
                     
                     $sheet->getStyleByColumnAndRow($minColumnNumber, $filterBStartRowNumber, $minColumnNumber,
                         $filterBEndRowNumber)
@@ -464,7 +451,7 @@ class PricelistController extends BaseController
         $spreadsheet->createSheet();
         
         $sheet = $spreadsheet->getSheet(2);
-        $sheet->setTitle('Страны');
+        $sheet->setTitle('Countries EU');
         $currentRowNumber = 1;
         
         $countryNames = array_unique($countryNames);
