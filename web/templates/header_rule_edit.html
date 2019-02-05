@@ -1,0 +1,86 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Header Rule {{item.name}}</h3>
+        <h3 ng-if="!item.id">Создание Header Rule</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.name" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Описание</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Описание" ng-model="item.description">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Доступен на хабе</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
+                    <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th width="1%">&nbsp;</th>
+                <th>Header</th>
+                <th>Режим</th>
+                <th>Значение</th>
+                <th ng-if="userPermissions['header_rule_item_lock']">Заблокировано</th>
+                <th width="1%">&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody ui-sortable="sortableOptions" ng-model="item.items">
+            <tr ng-repeat="line in item.items">
+                <td style="cursor: ns-resize">
+                    <span class="badge">{{$index + 1}}</span>
+                </td>
+                <td width="20%">
+                    <select-box disabled="{{line.is_locked}}" list="header" model="line.header_id" default="Любой Header"></select-box>
+                </td>
+                <td width="20%">
+                    <select ui-select2 ng-model="line.mode" style="width: 100%" >
+                        <option value="">-- Выберите --</option>
+                        <option ng-repeat="itemMode in headerRuleItemModeList" value="{{itemMode.id}}">{{itemMode.name}}</option>
+                    </select>
+                </td>
+                <td width="20%">
+                    <input class="form-control" placeholder="Значение" ng-model="line.value">
+                </td>
+                <td ng-if="userPermissions['header_rule_item_lock']">
+                    <div class="btn-group" ng-click="line.is_locked = !line.is_locked">
+                        <button type="button" class="btn btn-sm {{line.is_locked ? 'btn-success active' : 'btn-default'}}">Да</button>
+                        <button type="button" class="btn btn-sm {{!line.is_locked ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    </div>
+                </td>
+                <td>
+                    <button ng-if="!line.is_locked" type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeItem($index)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <button type="button" class="btn btn-success btn-xs" ng-click="addItem()"><i class="glyphicon glyphicon-plus"></i> Добавить Item</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

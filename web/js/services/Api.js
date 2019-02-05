@@ -820,6 +820,50 @@ app.factory('Header', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('HeaderRule', function ($q, ApiLoader, $rootScope) {
+  var url = '/json/header-rule/';
+  var list = undefined;
+  var promise = undefined;
+  return {
+    read: function(data) {
+      return ApiLoader.post(url + 'read', data);
+    },
+    get: function(data) {
+      return ApiLoader.post(url + 'get', data);
+    },
+    list: function() {
+      if (promise !== undefined) return promise;
+
+      var deferred = $q.defer();
+      if (list !== undefined) {
+        deferred.resolve(list);
+        return deferred.promise;
+      } else {
+        var data = {};
+        ApiLoader.post(url + 'list', data)
+          .then(function(data){
+            list = data;
+            promise = undefined;
+            deferred.resolve(data);
+          }, function(data){
+            promise = undefined;
+            deferred.reject(data);
+          });
+        promise = deferred.promise;
+      }
+      return deferred.promise;
+    },
+    save: function(data) {
+      list = undefined;
+      return ApiLoader.post(url + 'save', data);
+    },
+    delete: function(id) {
+      list = undefined;
+      return ApiLoader.post(url + 'delete', {id: id});
+    }
+  };
+});
+
 app.factory('Mcc', function ($q, ApiLoader, $rootScope) {
     var url = '/json/mcc/';
     var list = undefined;
@@ -1634,7 +1678,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               Airp, ReleaseReason, RouteTable, Network,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
                               PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
-                              MajorGroup) {
+                              MajorGroup, Header) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -1705,6 +1749,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     mcc: function () {
       return Mcc.list();
     },
+    header: function () {
+      return Header.list();
+    },
     testResult: function () {
       return [
         {'id': 'not_executed', 'name': 'Не выполнен'},
@@ -1744,6 +1791,15 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
       return [
         {'id': '3', 'name': 'МГ/МН-т'},
         {'id': '4', 'name': 'МГ/МН2-т'}
+      ];
+    },
+    headerRuleItemMode: function () {
+      return [
+        {'id': '1', 'name': 'Равно'},
+        {'id': '2', 'name': 'Не равно'},
+        {'id': '3', 'name': 'Присутствует'},
+        {'id': '4', 'name': 'Отсутствует'},
+        {'id': '5', 'name': 'Regexp'}
       ];
     },
     hub: function () {

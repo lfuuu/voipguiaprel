@@ -6,6 +6,7 @@ use app\models\Airp;
 use app\models\Attribute;
 use app\models\AttributeGroup;
 use app\models\auth\Header;
+use app\models\auth\HeaderRule;
 use app\models\auth\RouteReplace;
 use app\models\auth\TestPricelist;
 use app\models\auth\TestPricelistGroup;
@@ -421,6 +422,20 @@ class BaseController extends \yii\web\Controller
         $item = Header::findOne($id);
         if ($item === null) {
             throw new HttpException(404, 'Header не найден');
+        }
+        return $item;
+    }
+    
+    /**
+     * @param int $id
+     * @return HeaderRule
+     * @throws HttpException
+     */
+    protected function getHeaderRuleOr404($id)
+    {
+        $item = HeaderRule::findOne($id);
+        if ($item === null) {
+            throw new HttpException(404, 'Header Rule не найден');
         }
         return $item;
     }

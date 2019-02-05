@@ -101,6 +101,8 @@ class AppAsset extends AssetBundle
         'js/controllers/MajorTest.js',
         'js/controllers/MajorGroupEdit.js',
         'js/controllers/MajorGroupList.js',
+        'js/controllers/HeaderRuleEdit.js',
+        'js/controllers/HeaderRuleList.js',
     ];
 
     public $templates = [
@@ -183,5 +185,7 @@ class AppAsset extends AssetBundle
         'templates/major_test.html',
         'templates/major_group_edit.html',
         'templates/major_group_list.html',
+        'templates/header_rule_edit.html',
+        'templates/header_rule_list.html',
     ];
 }

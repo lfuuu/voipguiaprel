@@ -470,5 +470,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         majorGroupEdit: function(id) {
             return openModal(MajorGroupEditCtrl, '/templates/major_group_edit.html', {id: id});
         },
+        headerRuleList: function() {
+            $cookies.selectedPage = 'headerRuleList';
+            return openTab(HeaderRuleListCtrl, '/templates/header_rule_list.html');
+        },
+        headerRuleEdit: function(id) {
+            return openModal(HeaderRuleEditCtrl, '/templates/header_rule_edit.html', {id: id});
+        },
+        headerRuleCreate: function() {
+            return openModal(HeaderRuleEditCtrl, '/templates/header_rule_edit.html', {id: null});
+        },
     };
 });

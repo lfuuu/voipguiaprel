@@ -139,6 +139,10 @@ class RbacController extends Controller {
         ['name' => 'major_group_create', 'description' => 'Создание группы ННП-фильтров'],
         ['name' => 'major_group_edit', 'description' => 'Редактирование группы ННП-фильтров'],
         ['name' => 'major_group_delete', 'description' => 'Удаление группы ННП-фильтров'],
+        ['name' => 'header_rule_list', 'description' => 'Просмотр списка Header Rule'],
+        ['name' => 'header_rule_create', 'description' => 'Создание Header Rule'],
+        ['name' => 'header_rule_edit', 'description' => 'Редактирование Header Rule'],
+        ['name' => 'header_rule_delete', 'description' => 'Удаление Header Rule'],
     ];
     
     private static $_roles = [
@@ -180,7 +184,8 @@ class RbacController extends Controller {
             'test_pricelist_group_list', 'test_pricelist_group_create', 'test_pricelist_group_edit', 'test_pricelist_group_delete',
             'header_list', 'header_create', 'header_edit', 'header_delete',
             'major_list', 'major_create', 'major_edit', 'major_delete',
-            'major_group_list', 'major_group_create', 'major_group_edit', 'major_group_delete'
+            'major_group_list', 'major_group_create', 'major_group_edit', 'major_group_delete',
+            'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'test_number_edit',
@@ -214,7 +219,8 @@ class RbacController extends Controller {
             'hub_list', 'uplink_list', 'uplink_create', 'uplink_edit', 'uplink_delete',
             'imsi_partner_list', 'imsi_partner_create', 'imsi_partner_edit', 'imsi_partner_delete',
             'oca_bw_list', 'oca_bw_create', 'oca_bw_edit', 'oca_bw_delete',
-            'route_replace_edit', 'header_list', 'header_create', 'header_edit', 'header_delete'
+            'route_replace_edit', 'header_list', 'header_create', 'header_edit', 'header_delete',
+            'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
         ]],
         ['role' => 'engineer', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view',
