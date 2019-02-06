@@ -1678,7 +1678,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               Airp, ReleaseReason, RouteTable, Network,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
                               PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
-                              MajorGroup, Header) {
+                              MajorGroup, Header, HeaderRule) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -1751,6 +1751,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     header: function () {
       return Header.list();
+    },
+    headerRule: function () {
+      return HeaderRule.list();
     },
     testResult: function () {
       return [

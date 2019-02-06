@@ -12,6 +12,7 @@ use app\queries\RouteTableRouteQuery;
  * @property int $outcome_route_table_id
  * @property int $cpc_id
  * @property bool $is_locked
+ * @property integer $header_rule_id
  * @property
  */
 class RouteTableRoute extends \yii\db\ActiveRecord
@@ -42,7 +43,7 @@ class RouteTableRoute extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['a_number_id', 'b_number_id', 'outcome_id', 'outcome_route_table_id', 'cpc_id'], 'integer'],
+            [['a_number_id', 'b_number_id', 'outcome_id', 'outcome_route_table_id', 'cpc_id', 'header_rule_id'], 'integer'],
             [['is_locked'], 'boolean']
         ];
     }
