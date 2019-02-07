@@ -6,9 +6,7 @@
         <option ng-repeat="item in listOutcome" value="{{'oc_' + item.id}}">{{item.name}}</option>
         <option ng-repeat="item in listRouteTable" value="{{'rt_' + item.id}}">Таблица: {{item.name}}</option>
     </select>
-    <span class="input-group-btn">
-        <button class="btn btn-default" ng-disabled="{{disabled}}" type="button" ng-click="open(value)">
-            <i class="glyphicon glyphicon-search"></i>
-        </button>
+    <span style="height: 20px;display: table-cell;">
+        <button class="btn btn-default glyphicon glyphicon-search" ng-disabled="{{disabled}}" type="button" ng-click="open(value)"></button>
     </span>
 </div>
