@@ -37,7 +37,7 @@ class TestAuthController extends JsonController
         if (!\Yii::$app->user->can('test_auth_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-                
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         return
@@ -223,7 +223,8 @@ class TestAuthController extends JsonController
             'redirect_number' => $item->redirect_number,
             'src_noa' => $item->src_noa,
             'dst_noa' => $item->dst_noa,
-            'router_version' => $item->router_version
+            'router_version' => $item->router_version,
+            'headers' => $item->headers
         ];
         
         if ($item->with_debug_info) {
@@ -304,7 +305,8 @@ class TestAuthController extends JsonController
             'src_noa' => $this->request['src_noa'],
             'dst_noa' => $this->request['dst_noa'],
             'router_version' => $this->request['router_version'],
-            'trace_tree' => 1
+            'trace_tree' => 1,
+            'headers' => $this->request['headers']
         ];
     
         if ($this->request['with_debug_info']) {

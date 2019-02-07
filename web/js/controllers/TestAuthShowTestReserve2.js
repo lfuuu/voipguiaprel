@@ -63,8 +63,10 @@ var TestAuthShowTestReserve2Ctrl = function($scope, TestAuth, params, $modalInst
             src_noa: full_item.item.src_noa,
             dst_noa: full_item.item.dst_noa,
             redirect_number: full_item.item.redirect_number,
+            router_version: full_item.item.router_version,
+            with_debug_info: full_item.item.with_debug_info,
             ttl: full_item.item.ttl - 1,
-            isReserve2: true
+            headers: full_item.item.headers,
         };
 
         TestAuth.trace(params).then(function (result) {

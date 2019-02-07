@@ -20,6 +20,7 @@ use app\queries\NumberQuery;
  * @property string $cpc
  * @property bool   $with_debug_info
  * @property int    $router_version
+ * @property string $headers
 
  * @property Server $server
  * @property
@@ -49,7 +50,7 @@ class TestAuth extends \yii\db\ActiveRecord
             [['is_autotest', 'with_debug_info'], 'boolean'],
             [['correct_answer'], 'string', 'max' => 128],
             [['testgroup_id'], 'integer'],
-            [['note', 'cpc'], 'string'],
+            [['note', 'cpc', 'headers'], 'string'],
         ];
     }
 

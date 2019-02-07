@@ -69,7 +69,8 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
             redirect_number: full_item.item.redirect_number,
             router_version: full_item.item.router_version,
             with_debug_info: full_item.item.with_debug_info,
-            ttl: full_item.item.ttl - 1
+            ttl: full_item.item.ttl - 1,
+            headers: full_item.item.headers,
         };
 
         TestAuth.trace(params).then(function (result) {
