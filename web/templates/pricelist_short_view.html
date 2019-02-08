@@ -6,7 +6,7 @@
         <table class="table table-condensed">
             <tbody>
             <tr ng-repeat="item in list">
-                <td ng-if="item.is_pricelist" colspan="5" style="text-align: center;">
+                <td ng-if="item.is_pricelist" colspan="6" style="text-align: center;">
                     {{item.name}} | {{item.orig ? 'Оригинация' : 'Терминация'}} | Создан: {{item.date_created}}{{item.is_active ? ' | Активен с: ' + item.date_start : ''}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
                 </td>
                 <td ng-if="item.is_pricelist">
@@ -24,20 +24,18 @@
                         <span class="glyphicon glyphicon-list-alt"></span>
                     </a>
                 </td>
-                <td ng-if="item.is_pricelist">
-                    <a popover="Прайслист (расширенный)" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcelExpanded()" href="#" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-list-alt"></span>
-                    </a>
-                </td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_location" colspan="5" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.location_text}} <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span></td>
                 <td ng-if="item.is_location" colspan="4" style="border-bottom: 2px solid black;{{item.is_basic ? ' background-color: lightgrey;' : ''}}"></td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_prefix_price && item.is_filter_a_header" rowspan="{{item.total_prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
-                    {{item.filter_a_name}} <span style="color: grey; cursor: pointer" ng-click="editFilterA(item.filter_a_id)">(#{{item.filter_a_id}})</span></span>
+                    {{item.filter_a_name}} <span style="color: grey; cursor: pointer" ng-click="editFilterA(item.filter_a_id)">(#{{item.filter_a_id}})</span>
                 </td>
                 <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
                     {{item.filter_b_name}} <span style="color: grey; cursor: pointer" ng-click="editFilterB(item.filter_b_id)">(#{{item.filter_b_id}})</span>
+                </td>
+                <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
+                    <span ng-if="item.filter_b_rating != ''">Рейтинг:&nbsp;{{item.filter_b_rating}}</span>
                 </td>
                 <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
                     И:&nbsp;{{item.interconnect_price}}</span>
@@ -54,7 +52,7 @@
                         </span>
                     </span>
                 </td>
-                <td ng-if="item.is_prefix_price" colspan="4"></td>
+                <td ng-if="item.is_prefix_price" colspan="3"></td>
             </tr>
             </tbody>
         </table>

@@ -125,7 +125,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, Major, PricelistFilt
             tarification_interval_seconds: params.pricelist_default_tarification_interval_seconds,
             tarification_type: params.pricelist_default_tarification_type,
             tarification_min_paid_seconds: params.pricelist_default_tarification_min_paid_seconds,
-            filter_country: 643
+            filter_country: 643,
+            rating: 1
         };
 
         $scope.$watch('item.nnp_country', watchers.nnp_country);
@@ -146,7 +147,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, Major, PricelistFilt
             tarification_interval_seconds: 60,
             tarification_type: 2,
             tarification_min_paid_seconds: 0,
-            filter_country: 643
+            filter_country: 643,
+            rating: 1
         };
 
         $scope.$watch('item.nnp_country', watchers.nnp_country);

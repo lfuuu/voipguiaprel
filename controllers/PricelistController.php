@@ -87,6 +87,7 @@ class PricelistController extends BaseController
         $names = [
             "Source country filter",
             "Destination",
+            "Rating",
             "Price",
             "Сurrency",
             "Pending price",
@@ -144,6 +145,9 @@ class PricelistController extends BaseController
                     }
                     
                     $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $filterBText);
+                    if ($filterB['rating'] != 1) {
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $filterB['rating']);
+                    }
                     $filterBStartRowNumber = $currentRowNumber;
                     $interconnectPrice = $filterB['interconnect_price'];
                     
@@ -159,21 +163,21 @@ class PricelistController extends BaseController
                     }
                     
                     foreach ($simplifiedPrefixList as $prefixPrice) {
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber,
-                            $prefixPrice[0]['b_number_price'] + $interconnectPrice);
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber,
+                            $prefixPrice[0]['b_number_price'] + $interconnectPrice);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber,
                             $pricelist['currency_id']);
                         
                         if (isset($prefixPrice[1])) {
                             $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Increase' : 'Decrease';
-                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber,
-                                $prefixPrice[1]['b_number_price'] + $interconnectPrice);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber,
+                                $prefixPrice[1]['b_number_price'] + $interconnectPrice);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 6, $currentRowNumber,
                                 $prefixPrice[1]['date_from']);
-                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 6, $currentRowNumber, $direction);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber, $direction);
                         }
                         
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber,
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 8, $currentRowNumber,
                             $prefixPrice[0]['date_from']);
                         
                         $currentRowNumber++;
@@ -182,12 +186,17 @@ class PricelistController extends BaseController
                     $filterBEndRowNumber = $currentRowNumber - 1;
                     $sheet->mergeCellsByColumnAndRow($minColumnNumber + 1, $filterBStartRowNumber, $minColumnNumber + 1,
                         $filterBEndRowNumber);
+                    $sheet->mergeCellsByColumnAndRow($minColumnNumber + 2, $filterBStartRowNumber, $minColumnNumber + 2,
+                        $filterBEndRowNumber);
                     
                     if (($filterBEndRowNumber - $filterBStartRowNumber) < $filterBCount) {
                         $sheet->getRowDimension($filterBStartRowNumber)->setRowHeight(15 * ($filterBCount - $filterBEndRowNumber + $filterBStartRowNumber + 1));
                     }
                     
                     $sheet->getStyleByColumnAndRow($minColumnNumber + 1, $filterBStartRowNumber, $minColumnNumber + 1,
+                        $filterBEndRowNumber)
+                        ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                    $sheet->getStyleByColumnAndRow($minColumnNumber + 2, $filterBStartRowNumber, $minColumnNumber + 2,
                         $filterBEndRowNumber)
                         ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
                 }
