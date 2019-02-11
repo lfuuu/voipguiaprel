@@ -38,7 +38,7 @@
 
             <div collapse="isCollapsed">
                 <table class="table" ng-if="details == 1">
-                    <tr ng-repeat="row in full_item.result track by $index" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO'">
+                    <tr ng-repeat="row in full_item.result track by $index" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO' || row.type == 'HEADER'">
                         <td nowrap>{{::row.type}}</td>
                         <td nowrap>{{::row.action}}</td>
                         <td ng-if="row.type == 'RESULT' && row.is_params_array && !row.is_not_empty_params" width="100%">&nbsp;</td>
