@@ -26,7 +26,7 @@ class TestAuthController extends JsonController
     const TEST_DIRECTION_RESERVE_2 = 3;
     const TEST_DIRECTION_DEV = 4;
     
-    private $_oldTestResultTypes = ['ERROR', 'RESULT', 'INFO'];
+    private $_oldTestResultTypes = ['ERROR', 'RESULT', 'INFO', 'HEADER'];
 
     /**
      * @return array|\yii\db\ActiveRecord[]
