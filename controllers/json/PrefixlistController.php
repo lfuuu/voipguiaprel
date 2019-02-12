@@ -66,7 +66,7 @@ class PrefixlistController extends JsonController
                     'to_char(dt_update, \'YYYY-MM-DD HH24:MI:SS\') as dt_update',
                     'to_char(dt_prepare, \'YYYY-MM-DD HH24:MI:SS\') as dt_prepare', 'is_auto_update'
                 ])
-                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id . "or is_global = true")
+                ->where("(server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or server_id = ".$server->id . "or is_global = true")
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -154,8 +154,12 @@ class PrefixlistController extends JsonController
             $prefixlist->setTrunkRoamingFilters($this->request);
         }
     
-        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_NUMBER_REGISTRY) {
-            $prefixlist->setNumberRegistryFilters($this->request);
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_VOIP_REGISTRY) {
+            $prefixlist->setVoipRegistryFilters($this->request);
+        }
+    
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_VOIP_NUMBER) {
+            $prefixlist->setVoipNumberFilters($this->request);
         }
 
         $transaction = Prefixlist::getDb()->beginTransaction();

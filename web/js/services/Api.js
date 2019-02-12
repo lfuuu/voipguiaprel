@@ -1844,6 +1844,12 @@ app.factory('Nnp', function (ApiLoader) {
         sourceList: function () {
             return ApiLoader.post(url + 'source');
         },
+        numberSourceList: function () {
+            return ApiLoader.post(url + 'number-source');
+        },
+        numberStatusList: function () {
+            return ApiLoader.post(url + 'number-status');
+        },
         geoCountryList: function () {
             return ApiLoader.post(url + 'geo-country');
         },

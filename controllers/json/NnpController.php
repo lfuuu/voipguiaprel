@@ -3,6 +3,7 @@
 namespace app\controllers\json;
 
 use app\classes\JsonController;
+use app\models\billing\VoipNumber;
 use app\models\billing\VoipRegistry;
 use app\models\nnp\City;
 use app\models\nnp\Country;
@@ -160,6 +161,34 @@ class NnpController extends JsonController
             ->distinct()
             ->asArray()
             ->orderBy('source');
+        
+        return $query->all();
+    }
+    
+    /**
+     * @return array
+     */
+    public function actionNumberSource()
+    {
+        $query = VoipNumber::find()
+            ->select(['source as id', 'source as name'])
+            ->distinct()
+            ->asArray()
+            ->orderBy('source');
+        
+        return $query->all();
+    }
+    
+    /**
+     * @return array
+     */
+    public function actionNumberStatus()
+    {
+        $query = VoipNumber::find()
+            ->select(['status as id', 'status as name'])
+            ->distinct()
+            ->asArray()
+            ->orderBy('status');
         
         return $query->all();
     }

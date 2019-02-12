@@ -47,7 +47,8 @@ class Prefixlist extends \yii\db\ActiveRecord
     const PREFIXLIST_TYPE_FMC = 9; // FMC
     const PREFIXLIST_TYPE_PARTED_NUM = 10; // Parted num
     const PREFIXLIST_TYPE_ROAMING = 11; // Роуминг
-    const PREFIXLIST_TYPE_NUMBER_REGISTRY = 12; // Реестр номеров
+    const PREFIXLIST_TYPE_VOIP_REGISTRY = 12; // Реестр номеров
+    const PREFIXLIST_TYPE_VOIP_NUMBER = 13; // Номера
 
     /**
      * @return string
@@ -309,7 +310,7 @@ class Prefixlist extends \yii\db\ActiveRecord
      * @param array $input
      * @return $this
      */
-    public function setNumberRegistryFilters(array $input)
+    public function setVoipRegistryFilters(array $input)
     {
         $token = null;
         
@@ -326,6 +327,36 @@ class Prefixlist extends \yii\db\ActiveRecord
             'city_id' => isset($input['registry_city']) ? $input['registry_city'] : '',
             'ndc_type_id' => isset($input['registry_ndc_type']) ? $input['registry_ndc_type'] : '',
             'source' => isset($input['registry_source']) ? $input['registry_source'] : '',
+            'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
+        ];
+        
+        $this->nnp_filter_json = Json::encode($filters);
+        return $this;
+    }
+    
+    /**
+     * @param array $input
+     * @return $this
+     */
+    public function setVoipNumberFilters(array $input)
+    {
+        $token = null;
+        
+        if (!empty($this->nnp_filter_json)) {
+            $nnpFilter = json_decode($this->nnp_filter_json, true);
+            
+            if (!empty($nnpFilter['token'])) {
+                $token = $nnpFilter['token'];
+            }
+        }
+        
+        $filters = [
+            'country_code' => isset($input['number_country']) ? $input['number_country'] : '',
+            'region_id' => isset($input['number_region']) ? $input['number_region'] : '',
+            'city_id' => isset($input['number_city']) ? $input['number_city'] : '',
+            'ndc_type_id' => isset($input['number_ndc_type']) ? $input['number_ndc_type'] : '',
+            'source' => isset($input['number_source']) ? $input['number_source'] : '',
+            'status' => isset($input['number_status']) ? $input['number_status'] : '',
             'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
         ];
         

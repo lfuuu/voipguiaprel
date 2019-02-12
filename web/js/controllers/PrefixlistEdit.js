@@ -1,4 +1,4 @@
-var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, Pbx, List, Server, params, $modalInstance, $window, Redirect) {
+var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp, Pbx, List, Server, params, $modalInstance, $window, Redirect) {
 
     var STATUS_SUCCESS = 'SUCCESS';
     var STATUS_ERROR = 'ERROR';
@@ -14,7 +14,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     $scope.TYPE_ID_FMC = 9;
     $scope.TYPE_ID_PARTED_NUM = 10;
     $scope.TYPE_ID_ROAMING = 11;
-    $scope.TYPE_ID_NUMBER_REGISTRY = 12;
+    $scope.TYPE_ID_VOIP_REGISTRY = 12;
+    $scope.TYPE_ID_VOIP_NUMBER = 13;
 
     $scope.NNP_MODE_DIRECTION = 1;
     $scope.NNP_MODE_FILTER = 2;
@@ -22,7 +23,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
     $scope.nnpMode = $scope.NNP_MODE_DIRECTION;
 
     var typeWithBuffer = [$scope.TYPE_ID_NNP, $scope.TYPE_ID_7800, $scope.TYPE_ID_DID_ON_VPBX, $scope.TYPE_ID_FMC,
-      $scope.TYPE_ID_PARTED_NUM, $scope.TYPE_ID_ROAMING, $scope.TYPE_ID_NUMBER_REGISTRY];
+        $scope.TYPE_ID_PARTED_NUM, $scope.TYPE_ID_ROAMING, $scope.TYPE_ID_VOIP_REGISTRY, $scope.TYPE_ID_VOIP_NUMBER];
 
     var countryLoadComplete = false;
     var regionLoadComplete = false;
@@ -111,6 +112,32 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                 });
             }
         },
+        number_country: function (newValue, oldValue) {
+            regionLoadComplete = false;
+            if (!newValue || newValue.length == 0) {
+                $scope.item.number_region = null;
+                $scope.item.number_city = null;
+            }
+
+            if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
+                $scope.regionList = null;
+
+                if (countryLoadComplete) {
+                    var region = $scope.item.number_region;
+                    var city = $scope.item.number_city;
+                }
+
+                Nnp.regionList({country_code: newValue}).then(function (data) {
+                    $scope.regionList = data;
+
+                    if (countryLoadComplete) {
+                        $scope.item.number_region = region;
+                        $scope.item.number_city = city;
+                        regionLoadComplete = true;
+                    }
+                });
+            }
+        },
         nnp_region: function (newValue, oldValue) {
             cityLoadComplete = false;
             if (!newValue || newValue.length == 0) {
@@ -127,6 +154,26 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                     $scope.cities = data;
 
                     $scope.item.nnp_city = city;
+                    cityLoadComplete = true;
+                });
+            }
+        },
+        number_region: function (newValue, oldValue) {
+            cityLoadComplete = false;
+            if (!newValue || newValue.length == 0) {
+                $scope.item.number_city = null;
+            }
+
+            if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
+                $scope.cityList = null;
+
+                var city = $scope.item.number_city;
+
+                Nnp.cityList({country_code: $scope.item.number_country, region: newValue}).then(function (data) {
+                    $scope.cityList = data;
+                    $scope.cities = data;
+
+                    $scope.item.number_city = city;
                     cityLoadComplete = true;
                 });
             }
@@ -179,7 +226,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             }
 
             $scope.setNnpFields(data);
-            $scope.setNumberRegistryFields(data);
+            $scope.setVoipRegistryFields(data);
+            $scope.setVoipNumberFields(data);
 
             if ($scope.item.type_id == $scope.TYPE_ID_CSV) {
                 setTimeout(function () {
@@ -190,7 +238,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                         autoUpload: true,
                         elements: {
                             size: '.js-size',
-                            active: { show: '.js-upload', hide: '.js-browse' },
+                            active: {show: '.js-upload', hide: '.js-browse'},
                             progress: '.js-progress'
                         },
                         onComplete: function (e, result) {
@@ -208,6 +256,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             $scope.$watch('item.nnp_country', watchers.nnp_country);
             $scope.$watch('item.nnp_region', watchers.nnp_region);
             $scope.$watch('item.registry_country', watchers.registry_country);
+            $scope.$watch('item.number_country', watchers.number_country);
+            $scope.$watch('item.number_region', watchers.number_region);
         });
 
         Prefixlist.findUsagesInNumbers({id: params.id}).then(function (data) {
@@ -247,18 +297,20 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         $scope.$watch('item.nnp_country', watchers.nnp_country);
         $scope.$watch('item.nnp_region', watchers.nnp_region);
         $scope.$watch('item.registry_country', watchers.registry_country);
+        $scope.$watch('item.number_country', watchers.number_country);
+        $scope.$watch('item.number_region', watchers.number_region);
     }
 
-    Billing.countries().then(function(data){
+    Billing.countries().then(function (data) {
         $scope.countries = data;
     });
 
-    Billing.regions().then(function(data){
+    Billing.regions().then(function (data) {
         $scope.regions = data;
         $scope.regionList = data;
     });
 
-    Billing.networkTypes().then(function(data){
+    Billing.networkTypes().then(function (data) {
         $scope.networkTypes = data;
     });
 
@@ -279,6 +331,14 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         $scope.sourceList = data;
     });
 
+    Nnp.numberSourceList().then(function (data) {
+        $scope.numberSourceList = data;
+    });
+
+    Nnp.numberStatusList().then(function (data) {
+        $scope.numberStatusList = data;
+    });
+
     Nnp.geoCityList().then(function (data) {
         $scope.geoCityList = data;
     });
@@ -291,7 +351,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         $scope.serverList = data;
     });
 
-    $scope.setType = function(type_id) {
+    $scope.setType = function (type_id) {
         $scope.item.type_id = type_id;
 
         if (typeWithBuffer.indexOf($scope.item.type_id) != -1) {
@@ -301,20 +361,20 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         }
     };
 
-    $scope.setNnpMode = function(nnpMode) {
+    $scope.setNnpMode = function (nnpMode) {
         $scope.nnpMode = nnpMode;
     };
 
     $scope.addPrefix = function () {
-        $scope.item.manual_list.unshift({prefix:''});
+        $scope.item.manual_list.unshift({prefix: ''});
     };
 
     $scope.removePrefix = function (index) {
         $scope.item.manual_list.splice(index, 1);
     };
 
-    $scope.addSmezhnost= function () {
-        $scope.item.smezhnost_list.unshift({network_type_id:''});
+    $scope.addSmezhnost = function () {
+        $scope.item.smezhnost_list.unshift({network_type_id: ''});
     };
 
     $scope.removeSmezhnost = function (index) {
@@ -357,7 +417,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
     };
 
-    $scope.addServer = function() {
+    $scope.addServer = function () {
         if (!$scope.item.servers) {
             $scope.item.servers = [];
         }
@@ -365,7 +425,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         $scope.item.servers.push({id: null});
     };
 
-    $scope.removeServer = function(index) {
+    $scope.removeServer = function (index) {
         if (!$scope.item.servers) {
             $scope.item.servers = [];
         } else {
@@ -377,24 +437,24 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
     };
 
-    $scope.serverSelected = function() {
+    $scope.serverSelected = function () {
         Pbx.read($scope.item.servers).then(function (data) {
             $scope.pbxList = data;
         });
 
         List.trunkRoaming($scope.item.servers).then(function (data) {
-          $scope.trunkRoamingList = data;
+            $scope.trunkRoamingList = data;
         });
     };
 
-    $scope.addPbx = function() {
+    $scope.addPbx = function () {
         if (!$scope.item.pbx_list) {
             $scope.item.pbx_list = [];
         }
         $scope.item.pbx_list.push({id: null});
     };
 
-    $scope.removePbx = function(index) {
+    $scope.removePbx = function (index) {
         if (!$scope.item.pbx_list) {
             $scope.item.pbx_list = [];
         } else {
@@ -402,20 +462,20 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         }
     };
 
-  $scope.addTrunkRoaming = function() {
-    if (!$scope.item.trunk_roaming_list) {
-      $scope.item.trunk_roaming_list = [];
-    }
-    $scope.item.trunk_roaming_list.push({id: null, type: 'any'});
-  };
+    $scope.addTrunkRoaming = function () {
+        if (!$scope.item.trunk_roaming_list) {
+            $scope.item.trunk_roaming_list = [];
+        }
+        $scope.item.trunk_roaming_list.push({id: null, type: 'any'});
+    };
 
-  $scope.removeTrunkRoaming = function(index) {
-    if (!$scope.item.trunk_roaming_list) {
-      $scope.item.trunk_roaming_list = [];
-    } else {
-      $scope.item.trunk_roaming_list.splice(index, 1);
-    }
-  };
+    $scope.removeTrunkRoaming = function (index) {
+        if (!$scope.item.trunk_roaming_list) {
+            $scope.item.trunk_roaming_list = [];
+        } else {
+            $scope.item.trunk_roaming_list.splice(index, 1);
+        }
+    };
 
     $scope.save = function () {
         var data = angular.copy($scope.item);
@@ -460,7 +520,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
             //         $modalInstance.close();
             //     });
             // } else {
-                $modalInstance.close();
+            $modalInstance.close();
             // }
         });
     };
@@ -541,7 +601,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
     };
 
-    $scope.setNnpFields = function(data) {
+    $scope.setNnpFields = function (data) {
         if ($scope.item.type_id == $scope.TYPE_ID_NNP) {
             try {
                 var filterData = $.parseJSON($scope.item.nnp_filter_json);
@@ -571,7 +631,10 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
 
                         if ($scope.item.nnp_region) {
                             $scope.item.nnp_city = filterData.city_id;
-                            Nnp.cityList({country_code: $scope.item.nnp_country, region: $scope.item.nnp_region}).then(function (data) {
+                            Nnp.cityList({
+                                country_code: $scope.item.nnp_country,
+                                region: $scope.item.nnp_region
+                            }).then(function (data) {
                                 $scope.cityList = data;
                                 $scope.cities = data;
 
@@ -591,8 +654,8 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         }
     };
 
-    $scope.setNumberRegistryFields = function(data) {
-        if ($scope.item.type_id == $scope.TYPE_ID_NUMBER_REGISTRY) {
+    $scope.setVoipRegistryFields = function (data) {
+        if ($scope.item.type_id == $scope.TYPE_ID_VOIP_REGISTRY) {
             try {
                 var filterData = $.parseJSON($scope.item.nnp_filter_json);
 
@@ -605,13 +668,45 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
                         $scope.cityList = data;
                         $scope.cities = data;
                         $scope.item.registry_city = filterData.city_id;
-                        console.log($scope.item.registry_city);
                     });
                 }
             } catch (error) {
                 $scope.nnpDataParseError = true;
             }
+        }
+    };
 
+    $scope.setVoipNumberFields = function (data) {
+        if ($scope.item.type_id == $scope.TYPE_ID_VOIP_NUMBER) {
+            try {
+                var filterData = $.parseJSON($scope.item.nnp_filter_json);
+
+                $scope.item.number_country = filterData.country_code;
+                $scope.item.number_ndc_type = filterData.ndc_type_id;
+                $scope.item.number_source = filterData.source;
+                $scope.item.number_status = filterData.status;
+
+                if ($scope.item.number_country) {
+                    Nnp.regionList({country_code: $scope.item.number_country}).then(function (data) {
+                        regionLoadComplete = true;
+                        $scope.regionList = data;
+                        $scope.item.number_region = filterData.region_id;
+
+                        if ($scope.item.number_region) {
+                            $scope.item.number_city = filterData.city_id;
+                            Nnp.cityList({
+                                country_code: $scope.item.number_country,
+                                region: $scope.item.number_region
+                            }).then(function (data) {
+                                $scope.cityList = data;
+                                $scope.cities = data;
+                            });
+                        }
+                    });
+                }
+            } catch (error) {
+                $scope.nnpDataParseError = true;
+            }
         }
     };
 
@@ -619,7 +714,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         $modalInstance.close();
     };
 
-    $scope.clickNumberItem = function(item) {
+    $scope.clickNumberItem = function (item) {
         if (window.getSelection().type == 'Range') return;
 
         Redirect.numberEdit(item.id).then(function () {
@@ -627,7 +722,7 @@ var PrefixlistEditCtrl = function($scope, $rootScope, Prefixlist, Billing, Nnp, 
         });
     };
 
-    $scope.clickTrunkItem = function(item) {
+    $scope.clickTrunkItem = function (item) {
         if (window.getSelection().type == 'Range') return;
 
         Redirect.trunkEdit(item.id).then(function () {

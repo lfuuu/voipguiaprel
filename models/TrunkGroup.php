@@ -40,7 +40,7 @@ class TrunkGroup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'string', 'max' => 50],
+            [['name'], 'string', 'max' => 32],
             [['sw_shared'], 'boolean'],
             [['server_id',], 'integer'],
         ];
