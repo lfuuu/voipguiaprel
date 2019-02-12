@@ -347,6 +347,7 @@ class TestAuthController extends JsonController
         
         $result = [];
         $trace = [];
+        $headers = [];
         
         foreach ($resultArray as $text) {
             $m = explode('|', $text);
@@ -355,7 +356,20 @@ class TestAuthController extends JsonController
             $params = isset($m[2]) ? $m[2] : '';
             
             if (in_array($type, $this->_oldTestResultTypes)) {
-                if ($type == 'RESULT' && $ttl > 1) {
+                if ($type == 'HEADER') {
+                    $actionArray = explode(': ', $action, 2);
+                    $headers[$actionArray[0]] = $actionArray[1];
+    
+                    $result[] = [
+                        'type' => $type,
+                        'action' => $action,
+                        'params' => $params,
+                        'is_not_empty_params' => false,
+                        'is_params_array' => false
+                    ];
+                } elseif ($type == 'RESULT' && $ttl > 1) {
+                    $headersJson = json_encode($headers);
+                    
                     $paramsArray = explode(',', $params);
                     
                     --$ttl;
@@ -430,7 +444,8 @@ class TestAuthController extends JsonController
                     
                     if (!empty($traceTrunk)) {
                         $trace[$params] = $this->trace($traceTrunk->back_trunk, $traceTrunk->trace_to_regions, $apiParams,
-                            $direction, $traceTrunk->trunk_name, $traceTrunk->server_id, $ttl, $redirectNumber, $srcNumber);
+                            $direction, $traceTrunk->trunk_name, $traceTrunk->server_id, $ttl, $redirectNumber, $srcNumber,
+                            $headersJson);
                     }
                 } else {
                     $result[] = [
@@ -447,7 +462,7 @@ class TestAuthController extends JsonController
         return array($result, $trace);
     }
     
-    private function trace($trunkName, $traceToRegions, $apiParams, $direction, $origTrunk, $origServerId, $ttl, $redirectNumber = null, $srcNumber = null)
+    private function trace($trunkName, $traceToRegions, $apiParams, $direction, $origTrunk, $origServerId, $ttl, $redirectNumber = null, $srcNumber = null, $headers = '')
     {
         if (empty($traceToRegions)) {
             return [];
@@ -501,6 +516,10 @@ class TestAuthController extends JsonController
             if ($srcNumber) {
                 $apiParams['src_number'] = $srcNumber;
             }
+    
+            if ($headers) {
+                $apiParams['headers'] = $headers;
+            }
             
             $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
     
@@ -527,7 +546,9 @@ class TestAuthController extends JsonController
                 'key' => $key,
                 'result' => $result,
                 'trace' => $trace,
-                'ttl' => $ttl
+                'ttl' => $ttl,
+                'url' => $request,
+                'headers' => $headers
             ];
         } else {
             return [];

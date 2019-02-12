@@ -28,10 +28,13 @@
                         <td nowrap width="5%"><span style="font-weight: bold;">{{level}}</span></td>
                         <td nowrap width="35%">
                             <span>Ушел в регион {{full_item.server_id}}.</span><br />
-                            <span>{{full_item.orig_server_name}} [{{full_item.orig_name}}] : {{full_item.server_name}} [{{full_item.name}}] : TTL {{full_item.ttl}}</span>
+                            <span>{{full_item.orig_server_name}} [{{full_item.orig_name}}] : {{full_item.server_name}} [{{full_item.name}}] : TTL {{full_item.ttl}}</span><br />
                         </td>
                         <td nowrap width="15%"><button class="btn btn-warning" ng-click="isCollapsed = !isCollapsed">Результаты теста</button></td>
                         <td nowrap><button class="btn btn-info" ng-click="createTest(full_item)">Создать тест</button></td>
+                        <td nowrap width="5%">
+                            <span><a href="{{full_item.url}}">Ссылка</a></span>
+                        </td>
                     </tr>
                 </table>
             </div>

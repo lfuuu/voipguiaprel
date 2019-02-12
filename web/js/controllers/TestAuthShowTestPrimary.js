@@ -48,7 +48,8 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
             trunk_name: item.name,
             dst_number: $scope.item.dst_number,
             src_number: $scope.item.src_number,
-            testgroup_id: $scope.item.testgroup_id
+            testgroup_id: $scope.item.testgroup_id,
+            headers: item.headers
         };
 
         Redirect.testAuthCreateAndFill(params).then(function () {

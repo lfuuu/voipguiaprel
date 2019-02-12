@@ -53,7 +53,8 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect
                 src_number: params.default_params.src_number,
                 testgroup_id: params.default_params.testgroup_id,
                 with_debug_info: false,
-                router_version: 1
+                router_version: 1,
+                headers: params.default_params.headers
             };
 
             $scope.server_id = params.default_params.server_id;
