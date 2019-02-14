@@ -93,6 +93,10 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect
     });
 
     $scope.save = function () {
+        if ($scope.item.headers === '') {
+            $scope.item.headers = null;
+        }
+
         TestAuth.save($scope.item).then(function (response) {
             $modalInstance.close();
         });
