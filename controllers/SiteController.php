@@ -11,7 +11,7 @@ use yii\filters\AccessControl;
 use app\classes\BaseController;
 use app\forms\LoginForm;
 use app\models\Server;
-use app\models\Hub;
+use app\models\auth\Hub;
 
 class SiteController extends BaseController
 {

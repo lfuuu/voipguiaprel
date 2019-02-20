@@ -42,6 +42,8 @@ use yii\db\Query;
  * @property bool $mgmn2_term
  * @property bool $transparent_header
  * @property bool $pbx
+ * @property bool $uplink_trunk
+ * @property bool $internal_trunk
  *
  * @property \yii\db\ActiveQuery rulesSourceOrig
  * @property \yii\db\ActiveQuery rulesDestinationOrig
@@ -76,7 +78,7 @@ class Trunk extends \yii\db\ActiveRecord
                 'orig_afilter_default_allowed', 'orig_bfilter_default_allowed',
                 'term_afilter_default_allowed', 'term_bfilter_default_allowed',
                 'roaming_orig', 'roaming_term', 'mgmn2_orig', 'mgmn2_term',
-                'transparent_header', 'pbx'
+                'transparent_header', 'pbx', 'uplink_trunk', 'internal_trunk'
             ], 'boolean'],
             [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id'], 'integer'],
             [['back_trunk'], 'string', 'max' => 50],

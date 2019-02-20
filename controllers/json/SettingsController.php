@@ -6,6 +6,7 @@ use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use yii\web\ForbiddenHttpException;
+use app\models\auth\Hub;
 
 class SettingsController extends JsonController
 {
@@ -16,6 +17,16 @@ class SettingsController extends JsonController
         }
         
         $server = $this->getServerOr404($this->request['server_id']);
+        $hub = Hub::findOne($server->hub_id);
+        
+        $hubNumberCapacityFormatted = [];
+        
+        if (isset($hub) && $hub->number_capacity && $hub->number_capacity !== '{}') {
+            $hubNumberCapacity = explode(',', str_replace(['{', '}'], '', $hub->number_capacity));
+            foreach ($hubNumberCapacity as $hubNumberCapacityItem) {
+                $hubNumberCapacityFormatted[] = ['id' => $hubNumberCapacityItem];
+            }
+        }
 
         return [
             'server_id' => $server->id,
@@ -58,7 +69,9 @@ class SettingsController extends JsonController
             'cpc_id' => $server->cpc_id,
             'is_autotest_error_enabled' => $server->is_autotest_error_enabled,
             'is_open_numeric_plan_enabled' => $server->is_open_numeric_plan_enabled,
-            'loop_detected_outcome_id' => $server->loop_detected_outcome_id
+            'loop_detected_outcome_id' => $server->loop_detected_outcome_id,
+            'hub_id' => $server->hub_id,
+            'hub_number_capacity' => $hubNumberCapacityFormatted
         ];
     }
 
@@ -69,6 +82,7 @@ class SettingsController extends JsonController
         }
         
         $server = $this->getServerOr404($this->request['server_id']);
+        $hub = Hub::findOne($server->hub_id);
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -77,8 +91,16 @@ class SettingsController extends JsonController
             if ($server->isAttributeChanged('min_price_for_autorouting')) {
                 $server->need_recalc_routing_report = true;
             }
+            
+            if (isset($hub) && isset($this->request['hub_number_capacity'])) {
+                $hubNumberCapacityArray = [];
+                foreach ($this->request['hub_number_capacity'] as $numberCapacity) {
+                    $hubNumberCapacityArray[] = $numberCapacity['id'];
+                }
+                $hub->number_capacity = '{' . implode(',', $hubNumberCapacityArray) . '}';
+            }
     
-            if (!$server->save()) {
+            if (!$server->save() || (isset($hub) && !$hub->save())) {
                 throw new FormValidationException($server);
             }
 

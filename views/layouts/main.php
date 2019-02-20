@@ -29,21 +29,12 @@ AppAsset::register($this);
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <?php if (!Yii::$app->user->isGuest): ?>
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="<?= Url::toRoute('site/index'); ?>" style="padding-top: 10px; padding-bottom: 10px">
-                                <div style="font-size: 12px; line-height: 14px">Сервер:</div>
-                                <?php if ($this->server) :?>
-                                    <div style="font-size: 14px; line-height: 18px"><?= $this->server->name . ' (' . $this->server->id .')' ?></div>
-                                <?php else: ?>
-                                    <div style="font-size: 14px; line-height: 18px">Выберите...</div>
-                                <?php endif; ?>
-                            </a>
-                        </li>
+                    <ul class="nav navbar-nav navbar-left">
+                        <li<?php if ($_SERVER['REQUEST_URI'] == '/' || preg_match("/^[\/][sS][\d]{1,3}$/", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['site/index'])?>">Маршрутизация</a></li>
+                        <li<?php if ($_SERVER['REQUEST_URI'] == '/billing') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/billing'])?>">Билингация</a></li>
+                        <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace'])?>">Биржа</a></li>
+                        <li><a href="<?=Url::to(['/health/health.html'])?>" target="_blank">Здоровье биллеров</a></li>
                     </ul>
-                    <div id="synchronization_in_progress_id" style="display: none;" class="div-warning">
-                        <div style="font-size: 16px; line-height: 20px;">Идет синхронизация</div>
-                    </div>
                     <ul class="nav navbar-nav navbar-right">
                         <?php if (\Yii::$app->user->can('acl_list')) { ?>
                         <li><a href="<?=Url::to(['acl/list'])?>">Права доступа</a></li>

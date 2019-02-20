@@ -1,7 +1,14 @@
 var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modalInstance, STAT_HOST, $window) {
+    var serverId;
+
+    if (params.server_id) {
+        serverId = params.server_id;
+    } else {
+        serverId =  $rootScope.server.id;
+    }
 
     if (params.id) {
-        Trunk.get({id: params.id, region_id: $rootScope.server.id}).then(function (data) {
+        Trunk.get({id: params.id, region_id: serverId}).then(function (data) {
             $scope.item = data;
 
             Trunk.serviceTrunks(params.id).then(function (serviceTrunks) {
@@ -59,7 +66,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
         });
     } else {
         $scope.item = {
-            server_id: $scope.server.id,
+            server_id: serverId,
             default_priority: 0,
             source_rule_default_allowed: false,
             source_trunk_rule_default_allowed: false,
@@ -192,7 +199,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
             if (!$window.confirm('Произойдет синхронизация прайс-листов. Вы уверены?')) return;
         }
 
-        $scope.item.region_id = $rootScope.server.id;
+        $scope.item.region_id = serverId;
 
         Trunk.save($scope.item).then(function () {
             $modalInstance.close();

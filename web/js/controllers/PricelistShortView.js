@@ -237,11 +237,11 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     };
 
     $scope.printToExcelExpanded = function () {
-        window.open('/pricelist/excel?id=' + $scope.item.id + '&server_id=' + $scope.server.id + '&factor=1&expanded=1','_blank');
+        window.open('/pricelist/excel?id=' + $scope.item.id, '_blank');
     };
 
     $scope.printToExcel = function () {
-        window.open('/pricelist/excel?id=' + $scope.item.id + '&server_id=' + $scope.server.id + '&factor=1&expanded=0','_blank');
+        window.open('/pricelist/excel?id=' + $scope.item.id,'_blank');
     };
 
     $scope.displayEmptyAlert = function () {

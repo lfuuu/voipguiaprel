@@ -38,7 +38,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         attributeList: function () {
-            $cookies.selectedPage = 'attributeList';
+            $cookies.routing_selected_page = 'attributeList';
             return openTab(AttributeListCtrl, '/templates/attribute_list.html');
         },
         attributeEdit: function (id) {
@@ -48,7 +48,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(AttributeEditCtrl, '/templates/attribute_edit.html', {id: null});
         },
         attributeGroupList: function () {
-            $cookies.selectedPage = 'attributeGroupList';
+            $cookies.routing_selected_page = 'attributeGroupList';
             return openTab(AttributeGroupListCtrl, '/templates/attribute_group_list.html');
         },
         attributeGroupEdit: function (id) {
@@ -59,17 +59,20 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         trunkList: function() {
-            $cookies.selectedPage = 'trunkList';
+            $cookies.routing_selected_page = 'trunkList';
             return openTab(TrunkListCtrl, '/templates/trunk_list.html');
         },
         trunkEdit: function(id) {
             return openModal(TrunkEditCtrl, '/templates/trunk_edit.html', {id: id});
         },
+        trunkEditByServer: function(id, server_id) {
+            return openModal(TrunkEditCtrl, '/templates/trunk_edit.html', {id: id, server_id: server_id});
+        },
         trunkCreate: function() {
             return openModal(TrunkEditCtrl, '/templates/trunk_edit.html', {id: null});
         },
         trunkGroupList: function() {
-            $cookies.selectedPage = 'trunkGroupList';
+            $cookies.routing_selected_page = 'trunkGroupList';
             return openTab(TrunkGroupListCtrl, '/templates/trunk_group_list.html');
         },
         trunkGroupEdit: function(id) {
@@ -80,7 +83,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         prefixlistList: function() {
-            $cookies.selectedPage = 'prefixlistList';
+            $cookies.routing_selected_page = 'prefixlistList';
             return openTab(PrefixlistListCtrl, '/templates/prefixlist_list.html');
         },
         prefixlistEdit: function(id) {
@@ -91,7 +94,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         routeCaseList: function() {
-            $cookies.selectedPage = 'routeCaseList';
+            $cookies.routing_selected_page = 'routeCaseList';
             return openTab(RouteCaseListCtrl, '/templates/route_case_list.html');
         },
         routeCaseEdit: function(id) {
@@ -102,7 +105,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         outcomeList: function() {
-            $cookies.selectedPage = 'outcomeList';
+            $cookies.routing_selected_page = 'outcomeList';
             return openTab(OutcomeListCtrl, '/templates/outcome_list.html');
         },
         outcomeEdit: function(id) {
@@ -113,7 +116,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         numberList: function() {
-            $cookies.selectedPage = 'numberList';
+            $cookies.routing_selected_page = 'numberList';
             return openTab(NumberListCtrl, '/templates/number_list.html');
         },
         numberEdit: function(id) {
@@ -146,7 +149,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         airpList: function() {
-            $cookies.selectedPage = 'airpList';
+            $cookies.routing_selected_page = 'airpList';
             return openTab(AirpListCtrl, '/templates/airp_list.html');
         },
         airpEdit: function(id) {
@@ -157,7 +160,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         cpcList: function() {
-            $cookies.selectedPage = 'cpcList';
+            $cookies.routing_selected_page = 'cpcList';
             return openTab(CpcListCtrl, '/templates/cpc_list.html');
         },
         cpcEdit: function(id) {
@@ -168,7 +171,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         releaseReasonList: function() {
-            $cookies.selectedPage = 'releaseReasonList';
+            $cookies.routing_selected_page = 'releaseReasonList';
             return openTab(ReleaseReasonListCtrl, '/templates/release_reason_list.html');
         },
         releaseReasonEdit: function(id) {
@@ -179,7 +182,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         routeTableList: function() {
-            $cookies.selectedPage = 'routeTableList';
+            $cookies.routing_selected_page = 'routeTableList';
             return openTab(RouteTableListCtrl, '/templates/route_table_list.html');
         },
         routeTableEdit: function(id) {
@@ -197,7 +200,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         testAuthList: function() {
-            $cookies.selectedPage = 'testAuthList';
+            $cookies.routing_selected_page = 'testAuthList';
             return openTab(TestAuthListCtrl, '/templates/test_auth_list.html');
         },
         testAuthEdit: function(id) {
@@ -229,7 +232,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         testCallList: function() {
-            $cookies.selectedPage = 'testCallList';
+            $cookies.routing_selected_page = 'testCallList';
             return openTab(TestCallListCtrl, '/templates/test_call_list.html');
         },
         testCallEdit: function(id) {
@@ -258,7 +261,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
         testGroupList: function() {
-            $cookies.selectedPage = 'testGroupList';
+            $cookies.routing_selected_page = 'testGroupList';
             return openTab(TestGroupListCtrl, '/templates/test_group_list.html');
         },
         testGroupEdit: function(id) {
@@ -268,14 +271,14 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(TestGroupEditCtrl, '/templates/test_group_edit.html', {id: null});
         },
         statisticsTree: function() {
-            $cookies.selectedPage = 'statisticsTree';
+            $cookies.routing_selected_page = 'statisticsTree';
             return openTab(StatisticsTreeCtrl, '/templates/statistics_tree.html');
         },
         testGenerateLog: function() {
             return openModal(TestGenerateLogCtrl, '/templates/test_generate_log.html');
         },
         uplinkList: function() {
-            $cookies.selectedPage = 'uplinkList';
+            $cookies.routing_selected_page = 'uplinkList';
             return openTab(UplinkListCtrl, '/templates/uplink_list.html');
         },
         uplinkEdit: function(id) {
@@ -285,7 +288,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(UplinkEditCtrl, '/templates/uplink_edit.html', data);
         },
         imsiPartnerList: function() {
-            $cookies.selectedPage = 'imsiPartnerList';
+            $cookies.routing_selected_page = 'imsiPartnerList';
             return openTab(ImsiPartnerListCtrl, '/templates/imsi_partner_list.html');
         },
         imsiPartnerEdit: function(id) {
@@ -295,7 +298,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(ImsiPartnerEditCtrl, '/templates/imsi_partner_edit.html', {id: null});
         },
         ocaBwList: function() {
-            $cookies.selectedPage = 'ocaBwList';
+            $cookies.routing_selected_page = 'ocaBwList';
             return openTab(OcaBwListCtrl, '/templates/oca_bw_list.html');
         },
         ocaBwEdit: function(id) {
@@ -308,7 +311,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(RouteReplaceEditCtrl, '/templates/route_replace_edit.html');
         },
         pricelistList: function() {
-            $cookies.selectedPage = 'pricelistList';
+            $cookies.billing_selected_page = 'pricelistList';
             return openTab(PricelistListCtrl, '/templates/pricelist_list.html', {}, 'billing');
         },
         pricelistView: function(id) {
@@ -379,7 +382,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             });
         },
         pricelistGroupList: function() {
-            $cookies.selectedPage = 'pricelistGroupList';
+            $cookies.billing_selected_page = 'pricelistGroupList';
             return openTab(PricelistGroupListCtrl, '/templates/pricelist_group_list.html', {}, 'billing');
         },
         pricelistGroupCreate: function() {
@@ -389,7 +392,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(PricelistGroupEditCtrl, '/templates/pricelist_group_edit.html', {id: id});
         },
         mccList: function() {
-            $cookies.selectedPage = 'mccList';
+            $cookies.billing_selected_page = 'mccList';
             return openTab(MccListCtrl, '/templates/mcc_list.html', {}, 'billing');
         },
         mccCreate: function() {
@@ -399,7 +402,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(MccEditCtrl, '/templates/mcc_edit.html', {mcc: mcc});
         },
         mncList: function() {
-            $cookies.selectedPage = 'mncList';
+            $cookies.billing_selected_page = 'mncList';
             return openTab(MncListCtrl, '/templates/mnc_list.html', {}, 'billing');
         },
         mncCreate: function() {
@@ -409,7 +412,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(MncEditCtrl, '/templates/mnc_edit.html', {mnc: mnc, mcc: mcc});
         },
         testPricelistList: function() {
-            $cookies.selectedPage = 'testPricelistList';
+            $cookies.billing_selected_page = 'testPricelistList';
             return openTab(TestPricelistListCtrl, '/templates/test_pricelist_list.html', {}, 'billing');
         },
         testPricelistEdit: function(id) {
@@ -425,7 +428,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(TestPricelistEditCtrl, '/templates/test_pricelist_edit.html', {id: id, clone: true});
         },
         testPricelistGroupList: function() {
-            $cookies.selectedPage = 'testPricelistGroupList';
+            $cookies.billing_selected_page = 'testPricelistGroupList';
             return openTab(TestPricelistGroupListCtrl, '/templates/test_pricelist_group_list.html', {}, 'billing');
         },
         testPricelistGroupEdit: function(id) {
@@ -438,7 +441,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(TestNumberEditCtrl, '/templates/test_number_edit.html', {});
         },
         headerList: function() {
-            $cookies.selectedPage = 'headerList';
+            $cookies.routing_selected_page = 'headerList';
             return openTab(HeaderListCtrl, '/templates/header_list.html');
         },
         headerEdit: function(id) {
@@ -448,7 +451,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(HeaderEditCtrl, '/templates/header_edit.html', {id: null});
         },
         majorList: function() {
-            $cookies.selectedPage = 'majorList';
+            $cookies.billing_selected_page = 'majorList';
             return openTab(MajorListCtrl, '/templates/major_list.html', {}, 'billing');
         },
         majorEdit: function(id) {
@@ -461,7 +464,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(MajorTestCtrl, '/templates/major_test.html', {id: id, factor: factor});
         },
         majorGroupList: function() {
-            $cookies.selectedPage = 'majorGroupList';
+            $cookies.billing_selected_page = 'majorGroupList';
             return openTab(MajorGroupListCtrl, '/templates/major_group_list.html', {}, 'billing');
         },
         majorGroupCreate: function() {
@@ -471,7 +474,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(MajorGroupEditCtrl, '/templates/major_group_edit.html', {id: id});
         },
         headerRuleList: function() {
-            $cookies.selectedPage = 'headerRuleList';
+            $cookies.routing_selected_page = 'headerRuleList';
             return openTab(HeaderRuleListCtrl, '/templates/header_rule_list.html');
         },
         headerRuleEdit: function(id) {

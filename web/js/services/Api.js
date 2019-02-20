@@ -96,6 +96,9 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
         read: function(data) {
             return ApiLoader.post(url + 'read', data);
         },
+        readMarketplace: function(data) {
+          return ApiLoader.post(url + 'read-marketplace', data);
+        },
         get: function(data) {
             return ApiLoader.post(url + 'get', data);
         },
@@ -202,6 +205,18 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
             return ApiLoader.post(url + 'delete', {id: id});
         }
     };
+});
+
+
+app.factory('ServiceTrunkRouting', function ($q, ApiLoader, $rootScope) {
+  var
+    url = '/json/service-trunk-routing/';
+
+  return {
+    save: function(data) {
+      return ApiLoader.post(url + 'save', data);
+    }
+  };
 });
 
 app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
@@ -1242,7 +1257,7 @@ app.factory('TestPricelistGroup', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = {};
                 ApiLoader.post(url + 'list', data)
                     .then(function(data){
                         list = data;
@@ -1399,7 +1414,7 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = {};
                 ApiLoader.post(url + 'list', data)
                     .then(function(data){
                         list = data;
@@ -1444,7 +1459,7 @@ app.factory('PricelistGroup', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = {};
                 ApiLoader.post(url + 'list', data)
                     .then(function(data){
                         list = data;
@@ -1486,7 +1501,7 @@ app.factory('MajorGroup', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = {};
                 ApiLoader.post(url + 'list', data)
                     .then(function(data){
                         list = data;
@@ -1608,7 +1623,7 @@ app.factory('Major', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = {};
                 ApiLoader.post(url + 'list', data)
                     .then(function(data){
                         list = data;

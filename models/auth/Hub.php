@@ -1,7 +1,9 @@
 <?php
 
-namespace app\models;
+namespace app\models\auth;
 
+use app\models\InstanceSettings;
+use app\models\Server;
 use Yii;
 
 /**
@@ -9,6 +11,7 @@ use Yii;
  * @property string $dt
  * @property string $name
  * @property string $note
+ * @property string $number_capacity
  *
  * @property Server $servers
  * @property InstanceSettings $instanceSettings
@@ -32,7 +35,7 @@ class Hub extends \yii\db\ActiveRecord
         return [
             [['dt'], 'safe'],
             [['name'], 'required'],
-            [['note'], 'string'],
+            [['note', 'number_capacity'], 'string'],
             [['name'], 'string', 'max' => 50]
         ];
     }

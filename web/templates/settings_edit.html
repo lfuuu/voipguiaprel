@@ -9,6 +9,7 @@
             <li class="active"><a href="#mainsettings" data-toggle="tab">Основные</a></li>
             <li><a href="#healthsettings" data-toggle="tab">Здоровье</a></li>
             <li><a href="#routingclass5" data-toggle="tab">Маршрутизация класс 5</a></li>
+            <li ng-if="item.hub_id"><a href="#hubnumbercapacity" data-toggle="tab">Номерная емкость хаба</a></li>
         </ul>
 
         <br/>
@@ -347,6 +348,33 @@
                     <div class="col-sm-8">
                         <select-box list="outcome" model="item.ast_outcome_id" placeholder="Выберите"
                                     required="false" default="Не установлено"></select-box>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="hubnumbercapacity">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Списки префиксов</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.hub_number_capacity">
+                            <tr ng-repeat="line in item.hub_number_capacity">
+                                <td width="90%">
+                                    <select-box list="prefixlist" model="line.id" placeholder="Выберите"></select-box>
+                                </td>
+                                <td width="10%">
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePrefixlist($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="7">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addPrefixlist()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,35 @@
+<div class="wrap">
+    <div style="position: fixed; left: 15px; bottom: 0; top: 60px; width: 230px; overflow-y: auto">
+        <div ng-if="userPermissions['pricelist_list'] || userPermissions['pricelist_group_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['pricelist_list']" ng-click="Redirect.pricelistList()" ng-class="{active:tabs.isController('PricelistListCtrl')}">Прайслисты</a>
+            <a class="list-group-item" ng-if="userPermissions['pricelist_group_list']" ng-click="Redirect.pricelistGroupList()" ng-class="{active:tabs.isController('PricelistGroupListCtrl')}">Группы прайслистов</a>
+        </div>
+        <div ng-if="userPermissions['major_list'] || userPermissions['major_group_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['major_list']" ng-click="Redirect.majorList()" ng-class="{active:tabs.isController('MajorListCtrl')}">NNP-фильтры</a>
+            <a class="list-group-item" ng-if="userPermissions['major_group_list']" ng-click="Redirect.majorGroupList()" ng-class="{active:tabs.isController('MajorGroupListCtrl')}">Группы NNP-фильтров</a>
+        </div>
+        <div ng-if="userPermissions['test_pricelist_list'] || userPermissions['test_number_edit'] || userPermissions['test_pricelist_group_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['test_pricelist_list']" ng-click="Redirect.testPricelistList()" ng-class="{active:tabs.isController('TestPricelistListCtrl')}">Тесты прайслистов</a>
+            <a class="list-group-item" ng-if="userPermissions['test_number_edit']" ng-click="Redirect.testNumberEdit()">Тест номера</a>
+            <a class="list-group-item" ng-if="userPermissions['test_pricelist_group_list']" ng-click="Redirect.testPricelistGroupList()" ng-class="{active:tabs.isController('TestPricelistGroupListCtrl')}">Группы тестов прайслистов</a>
+        </div>
+        <div ng-if="userPermissions['mcc_list'] || userPermissions['mnc_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['mcc_list']" ng-click="Redirect.mccList()" ng-class="{active:tabs.isController('MccListCtrl')}">MCC</a>
+            <a class="list-group-item" ng-if="userPermissions['mnc_list']" ng-click="Redirect.mncList()" ng-class="{active:tabs.isController('MncListCtrl')}">MNC</a>
+        </div>
+    </div>
+
+    <div style="position: fixed; overflow: auto; bottom: 0; right: 0; top: 60px; padding-left: 20px; padding-right: 20px; left: 250px;':'left: 0;">
+        <tabset class="main-tabs" ng-show="tabs.length > 0" vertical="true" type="'pills'">
+            <tab ng-repeat="tab in tabs" active="tab.active" ng-controller="tab.controller">
+                <ng-include src="tab.template" onload="init(tab)"></ng-include>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<div id="popup-alert" class="alert alert-danger" style="cursor: pointer; position: absolute; left: 20%; right: 20%; top: 45px; z-index: 5000;" ng-if="popupErrors"  ng-click="closeErrorsPopup()">
+    <button type="button" class="close" ng-click="closeErrorsPopup()"><span aria-hidden="true">×</span></button>
+    <h4 ng-if="popupErrors.header">{{popupErrors.header}}</h4>
+    <p ng-repeat="error in popupErrors.errors">{{error}}</p>
+</div>

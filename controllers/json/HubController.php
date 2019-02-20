@@ -2,7 +2,7 @@
 
 namespace app\controllers\json;
 
-use app\models\Hub;
+use app\models\auth\Hub;
 use app\classes\JsonController;
 use yii\web\ForbiddenHttpException;
 

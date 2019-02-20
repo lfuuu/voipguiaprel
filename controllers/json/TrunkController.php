@@ -24,6 +24,9 @@ use yii\db\Expression;
 
 class TrunkController extends JsonController
 {
+    
+    const TYPE_ORIGINATION = 1;
+    const TYPE_TERMINATION = 2;
 
     /**
      * @return \app\models\Trunk[]
@@ -537,5 +540,61 @@ class TrunkController extends JsonController
         
         $trunk = $this->getTrunkOr404($this->request['id']);
         $trunk->delete();
+    }
+    
+    /**
+     * @return \app\models\Trunk[]
+     * @throws HttpException
+     */
+    public function actionReadMarketplace()
+    {
+        if (!\Yii::$app->user->can('marketplace_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $items = Trunk::find()
+            ->alias('t')
+            ->select([
+                't.id p_trunk_id',
+                new Expression('concat(s.id, \': \', s.name) as server_name'),
+                new Expression('case when h.id is not null then concat(h.id, \': \', h.name) else \'Без хаба\' end as hub_name'),
+                new Expression('concat(t.id, \': \', t.trunk_name) as p_trunk_name'),
+                'h.id as hub_id',
+                's.id as server_id',
+                'st.client_account_id',
+                'sts.id l_trunk_id',
+                'sts.id price_name_basic',
+                's.name as server_name_basic',
+                new Expression('case when h.id is not null then h.name else \'Без хаба\' end as hub_name_basic'),
+                't.trunk_name as p_trunk_name_basic',
+                'st.id as l_trunk_name_basic',
+                'bo.id as organization_name',
+                'str.uplink_enabled',
+                'str.trunk_groups'
+            ])
+            ->innerJoin('public.server s', 's.id = t.server_id')
+            ->innerJoin('billing.service_trunk st', 't.id = st.trunk_id')
+            ->innerJoin('billing.service_trunk_settings sts', 'sts.trunk_id = st.id')
+            ->leftJoin('auth.hub h', 'h.id = s.hub_id')
+            ->leftJoin('auth.service_trunk_routing str', 'str.id = sts.id')
+            ->leftJoin('billing.clients bc', 'bc.id = st.client_account_id')
+            ->leftJoin('billing.organization bo', 'bo.id = bc.organization_id')
+            ->where('sts.type = ' . self::TYPE_TERMINATION)
+            ->andWhere('t.uplink_trunk = true')
+            ->orderBy('t.server_id, sts.id')
+            ->indexBy('price_name_basic')
+            ->asArray()
+            ->all();
+
+        $result = [];
+        
+        foreach ($items as $item) {
+            $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['items'][$item['p_trunk_name_basic']]['items'][] = $item;
+            $result[$item['hub_name_basic']]['id'] = $item['hub_id'];
+            $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['id'] = $item['server_id'];
+            $result[$item['hub_name_basic']]['items'][$item['server_name_basic']]['items'][$item['p_trunk_name_basic']]['id'] = $item['p_trunk_id'];
+        }
+        
+        return $result;
     }
 }

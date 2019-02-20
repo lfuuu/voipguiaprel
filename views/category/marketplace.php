@@ -23,21 +23,20 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 <script>
-    var dataServer = <?= json_encode($this->server->toArray(), JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
     var userName = <?= json_encode(Yii::$app->user->identity->name, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
     var userId = <?= json_encode(Yii::$app->user->identity->getId(), JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
     <?php
         $userPermissions = Yii::$app->authManager->getPermissionsByUser(Yii::$app->user->identity->getId());
-        $routingPermissions = RbacController::getRoutingPermissions();
+        $billingPermissions = RbacController::getBillingPermissions();
         $shortUserPermissions = [];
         foreach ($userPermissions as $permissionKey => $permission) {
             $shortUserPermissions[$permissionKey] = true;
         }
     ?>
     var userPermissions = <?= json_encode($shortUserPermissions, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
-    var routingPermissions = <?= json_encode($routingPermissions, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
+    var billingPermissions = <?= json_encode($billingPermissions, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
 </script>
-<div ng-controller="MainRoutingCtrl" ng-include="'/templates/main_routing.html'">
+<div ng-controller="MainMarketplaceCtrl" ng-include="'/templates/main_marketplace.html'">
 </div>
 <?php $this->endBody() ?>
 </body>

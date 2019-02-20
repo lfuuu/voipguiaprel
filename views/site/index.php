@@ -1,5 +1,5 @@
 <?php
-use app\models\Hub;
+use app\models\auth\Hub;
 use app\models\Server;
 use yii\helpers\Url;
 

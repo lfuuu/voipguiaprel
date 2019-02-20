@@ -1,0 +1,47 @@
+<div id="table-tab">
+    <table align="center" class="table table-condensed" style="width: 1000px;">
+        <tbody>
+        <tr ng-repeat="item in list">
+            <td ng-if="item.is_hub" style="text-align: center; background-color: darkgrey;" colspan="5">
+                <b>{{item.name}} (#{{item.hub_id}})</b>
+            </td>
+            <!---------------------------------------------------->
+            <td style="background-color: lightgrey" ng-if="item.is_header"><b>Физический транк</b></td>
+            <td style="background-color: lightgrey" ng-if="item.is_header"><b>Лицевой номер</b></td>
+            <td style="background-color: lightgrey" ng-if="item.is_header"><b>Контрагент</b></td>
+            <td style="background-color: lightgrey" ng-if="item.is_header"><b>Включено</b></td>
+            <td style="background-color: lightgrey" ng-if="item.is_header"><b>Группы транков</b></td>
+            <!---------------------------------------------------->
+            <td ng-if="item.is_region" style="text-align: center;" colspan="5">
+                <b>{{item.name}} (#{{item.region_id}})</b>
+            </td>
+            <!---------------------------------------------------->
+            <td ng-if="item.is_l_trunk">
+                <a href="#" ng-if="item.p_trunk_name != ' '" class="btn btn-info btn-xs" ng-click="trunkInfo(item.p_trunk_id)">
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                </a>
+                <a href="#" ng-click="clickTrunk(item.p_trunk_id, item.region_id)">{{item.p_trunk_name}}</a>
+            </td>
+            <td ng-if="item.is_l_trunk">
+                <a target="_blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{item.client_account_id}}&trunkId={{item.p_trunk_id}}">{{item.price_name_basic}}</a>: <a target="_blank" href="https://stat.mcn.ru/client/view?id={{item.client_account_id}}">{{item.client_account_id}}</a>
+            </td>
+            <td ng-if="item.is_l_trunk">{{item.organization_name}}</td>
+            <td ng-if="item.is_l_trunk">
+                <div class="btn-group" ng-click="toggleUplinkEnabled(item.l_trunk_id, item.uplink_enabled)">
+                    <button type="button" class="btn btn-sm {{item.uplink_enabled ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.uplink_enabled ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </td>
+            <td ng-if="item.is_l_trunk">
+                <input class="form-control" ng-blur="changeTrunkGroups(item.l_trunk_id, item.trunk_groups)" placeholder="Группы транков" ng-model="item.trunk_groups" />
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="popup-alert" class="alert alert-danger" style="cursor: pointer; position: absolute; left: 20%; right: 20%; top: 45px; z-index: 5000;" ng-if="popupErrors"  ng-click="closeErrorsPopup()">
+    <button type="button" class="close" ng-click="closeErrorsPopup()"><span aria-hidden="true">×</span></button>
+    <h4 ng-if="popupErrors.header">{{popupErrors.header}}</h4>
+    <p ng-repeat="error in popupErrors.errors">{{error}}</p>
+</div>
