@@ -19,7 +19,7 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
       });
 
       for (var regionKey in data[hubKey].items) {
-        List.trunkGroup(data[hubKey].items[regionKey].id).then(function (callResult) {
+        // List.trunkGroup(data[hubKey].items[regionKey].id).then(function (callResult) {
           $scope.list.push({
             is_region: true,
             hub_id: data[hubKey].id,
@@ -46,13 +46,13 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
                 price_name_basic: item.price_name_basic,
                 uplink_enabled: item.uplink_enabled,
                 trunk_groups: (item.trunk_groups == null) ? '' : item.trunk_groups.replace('{', '').replace('}', '').split(','),
-                trunk_group_list: callResult
+                // trunk_group_list: callResult
               });
 
               pTrunkFlag = false;
             }
           }
-        });
+        // });
       }
     }
   };

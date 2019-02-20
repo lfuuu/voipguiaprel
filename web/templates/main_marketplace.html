@@ -33,12 +33,12 @@
                 </div>
             </td>
             <td ng-if="item.is_l_trunk">
-                <select ui-select2 ng-change="changeTrunkGroups(item.l_trunk_id, item.trunk_groups)" ng-model="item.trunk_groups" multiple="multiple" style="width: 100%">
-                    <option ng-repeat="trunkGroup in item.trunk_group_list" value="{{trunkGroup.id}}">
-                        {{trunkGroup.name}}
-                    </option>
-                </select>
-                <!--<input class="form-control" ng-blur="changeTrunkGroups(item.l_trunk_id, item.trunk_groups)" placeholder="Группы транков" ng-model="item.trunk_groups" />-->
+                <!--<select ui-select2 ng-change="changeTrunkGroups(item.l_trunk_id, item.trunk_groups)" ng-model="item.trunk_groups" multiple="multiple" style="width: 100%">-->
+                    <!--<option ng-repeat="trunkGroup in item.trunk_group_list" value="{{trunkGroup.id}}">-->
+                        <!--{{trunkGroup.name}}-->
+                    <!--</option>-->
+                <!--</select>-->
+                <input class="form-control" ng-blur="changeTrunkGroups(item.l_trunk_id, item.trunk_groups)" placeholder="Группы транков" ng-model="item.trunk_groups" />
             </td>
         </tr>
         </tbody>
