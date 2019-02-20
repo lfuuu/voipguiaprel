@@ -1,8 +1,14 @@
-var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance) {
+var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance, params) {
   $scope.title = 'Общие настройки';
   $scope.name_changed = false;
 
-  Settings.get({server_id: $scope.server.id}).then(function (data) {
+  if (params && params.server_id) {
+    $scope.server_id = params.server_id;
+  } else {
+    $scope.server_id = $scope.server.id;
+  }
+
+  Settings.get({server_id: $scope.server_id}).then(function (data) {
     $scope.item = data;
 
     if ($scope.item.ast_trunk_group_id || $scope.item.ast_outcome_id) {
@@ -34,7 +40,7 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     });
   };
 
-  List.number(2).then(function (data) {
+  List.number(2, $scope.server_id).then(function (data) {
     $scope.numbers = data;
   });
 

@@ -20,7 +20,7 @@ class PricelistController extends BaseController
         3 => 'Международный регион'
     ];
     
-    public function actionExcel($id, $server_id)
+    public function actionExcel($id)
     {
         if (!\Yii::$app->user->can('pricelist_edit')) {
             throw new ForbiddenHttpException('Access denied');
@@ -32,7 +32,7 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
         
-        $this->createExcelDocument($data, $server_id);
+        $this->createExcelDocument($data);
     }
     
     public function actionExcelPrefixes($id)
@@ -66,12 +66,12 @@ class PricelistController extends BaseController
         $this->createExcelLocationsDocument($data);
     }
     
-    private function createExcelDocument($pricelist, $serverId)
+    private function createExcelDocument($pricelist)
     {
         $spreadsheet = new Spreadsheet();
         
-        $countryNames = $this->createPricelistSheet($spreadsheet, $pricelist, $serverId);
-        $this->createSingleLineSheet($spreadsheet, $pricelist, $serverId);
+        $countryNames = $this->createPricelistSheet($spreadsheet, $pricelist);
+        $this->createSingleLineSheet($spreadsheet, $pricelist);
         $this->createCountriesSheet($spreadsheet, $countryNames);
         
         $spreadsheet->setActiveSheetIndex(0);
@@ -223,7 +223,7 @@ class PricelistController extends BaseController
         return $countryNames;
     }
     
-    private function createSingleLineSheet(&$spreadsheet, $pricelist, $serverId)
+    private function createSingleLineSheet(&$spreadsheet, $pricelist)
     {
         $spreadsheet->createSheet();
         
@@ -250,8 +250,7 @@ class PricelistController extends BaseController
         
         $currentRowNumber += 1;
         
-        $server = Server::findOne($serverId);
-        $apiUrl = $server->apiUrl;
+        $apiUrl = 'http://reg10.mcntelecom.ru:8032/';
         
         $apiParams = [
             'cmd' => 'getPricelistv2Prefix',

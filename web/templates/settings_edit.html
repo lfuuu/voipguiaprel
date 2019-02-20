@@ -38,8 +38,6 @@
                     </div>
                 </div>
 
-
-
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Резервный сервер</label>
                     <div class="col-sm-8">
@@ -65,7 +63,7 @@
                     <label class="col-sm-4 control-label">Действие:<br/>пришел звонок MGMN-транка
                         вызова</label>
                     <div class="col-sm-7">
-                        <select-box list="outcome" model="item.rc_mgmn_outcome_id"
+                        <select-box list="outcome" param="{{server_id}}" model="item.rc_mgmn_outcome_id"
                                     default="Выберите Outcome"></select-box>
                     </div>
                       <div class="btn-group" ng-click="item.rc_mgmn_action_disable = !item.rc_mgmn_action_disable">
@@ -79,7 +77,7 @@
                     <label class="col-sm-4 control-label">Действие:<br/>rc_mgmnНе достаточно денег для совершения
                         вызова</label>
                     <div class="col-sm-8">
-                        <select-box list="outcome" model="item.low_balance_outcome_id"
+                        <select-box list="outcome" param="{{server_id}}" model="item.low_balance_outcome_id"
                                     default="Выберите Outcome"></select-box>
                     </div>
                 </div>
@@ -88,7 +86,7 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Действие:<br/>Телефония заблокирована</label>
                     <div class="col-sm-8">
-                        <select-box list="outcome" model="item.blocked_outcome_id"
+                        <select-box list="outcome" param="{{server_id}}" model="item.blocked_outcome_id"
                                     default="Выберите Outcome"></select-box>
                     </div>
                 </div>
@@ -96,7 +94,7 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Действие:<br/>Обнаружена закольцовка</label>
                     <div class="col-sm-8">
-                        <select-box list="outcome" model="item.loop_detected_outcome_id"
+                        <select-box list="outcome" param="{{server_id}}" model="item.loop_detected_outcome_id"
                                     default="Выберите Outcome"></select-box>
                     </div>
                 </div>

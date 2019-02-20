@@ -139,6 +139,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         settings: function() {
             return openModal(SettingsEditCtrl, '/templates/settings_edit.html');
         },
+        settingsById: function(serverId) {
+            return openModal(SettingsEditCtrl, '/templates/settings_edit.html', {server_id: serverId});
+        },
 
         instanceSettings: function() {
             return openModal(InstanceSettingsEditCtrl, '/templates/instance_settings_edit.html');

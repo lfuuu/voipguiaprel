@@ -33,7 +33,7 @@
             function loadList() {
                 var listFunction = List[attrs.list];
                 if (listFunction  !== undefined) {
-                    listFunction (scope.param).then(function(data){
+                    listFunction(scope.param).then(function(data){
                         scope.list = data;
                     })
                 }

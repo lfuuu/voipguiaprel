@@ -12,7 +12,6 @@ class AssetBundle extends \yii\web\AssetBundle
 
     public $templates = [];
 
-
     public function publish($am)
     {
 //        return parent::publish($am);
