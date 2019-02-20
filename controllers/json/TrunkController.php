@@ -562,7 +562,7 @@ class TrunkController extends JsonController
                 'h.id as hub_id',
                 's.id as server_id',
                 'st.client_account_id',
-                'sts.id l_trunk_id',
+                'st.id l_trunk_id',
                 'st.id price_name_basic',
                 's.name as server_name_basic',
                 new Expression('case when h.id is not null then h.name else \'Без хаба\' end as hub_name_basic'),
