@@ -169,17 +169,16 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
             return ApiLoader.post(url + 'get', data);
         },
         list: function(serverId) {
-            if (promise !== undefined) return promise;
-
-            if (!serverId) {
-              serverId = $rootScope.server.id;
-            }
+            if (!serverId && promise !== undefined) return promise;
 
             var deferred = $q.defer();
             if (list !== undefined) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
+                if (!serverId) {
+                  serverId = $rootScope.server.id;
+                }
                 var data = {server_id: serverId};
                 ApiLoader.post(url + 'list', data)
                     .then(function(data){

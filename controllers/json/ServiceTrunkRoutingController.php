@@ -47,8 +47,7 @@ class ServiceTrunkRoutingController extends JsonController
         }
     
         if (isset($this->request['trunk_groups'])) {
-//            $item->trunk_groups = '{' . implode(',', $this->request['trunk_groups']) . '}';
-            $item->trunk_groups = '{' . $this->request['trunk_groups'] . '}';
+            $item->trunk_groups = '{' . implode(',', $this->request['trunk_groups']) . '}';
         }
 
         $transaction = ServiceTrunkRouting::getDb()->beginTransaction();

@@ -1,16 +1,16 @@
 <div id="table-tab">
-    <table align="center" class="table table-condensed" style="width: 1000px;">
+    <table align="center" class="table table-condensed">
         <tbody>
         <tr ng-repeat="item in list">
             <td ng-if="item.is_hub" style="text-align: center; background-color: darkgrey;" colspan="5">
                 <b>{{item.name}} (#{{item.hub_id}})</b>
             </td>
             <!---------------------------------------------------->
-            <td width="20%" style="background-color: lightgrey" ng-if="item.is_header"><b>Физический транк</b></td>
+            <td width="25%" style="background-color: lightgrey" ng-if="item.is_header"><b>Физический транк</b></td>
             <td width="15%" style="background-color: lightgrey" ng-if="item.is_header"><b>Логический транк/ЛС</b></td>
-            <td width="15%" style="background-color: lightgrey" ng-if="item.is_header"><b>Контрагент</b></td>
-            <td width="15%" style="background-color: lightgrey" ng-if="item.is_header"><b>Включено</b></td>
-            <td width="35%" style="background-color: lightgrey" ng-if="item.is_header"><b>Группы транков</b></td>
+            <td width="25%" style="background-color: lightgrey" ng-if="item.is_header"><b>Контрагент</b></td>
+            <td width="10%" style="background-color: lightgrey" ng-if="item.is_header"><b>Включено</b></td>
+            <td width="30%" style="background-color: lightgrey" ng-if="item.is_header"><b>Группы транков</b></td>
             <!---------------------------------------------------->
             <td ng-if="item.is_region" style="text-align: center;" colspan="5">
                 <b>{{item.name}} (#{{item.region_id}})</b>
@@ -27,18 +27,17 @@
             </td>
             <td ng-if="item.is_l_trunk">{{item.organization_name}}</td>
             <td ng-if="item.is_l_trunk">
-                <div class="btn-group" ng-click="toggleUplinkEnabled(item.l_trunk_id, item.uplink_enabled)">
+                <div class="btn-group" ng-click="toggleUplinkEnabled(item)">
                     <button type="button" class="btn btn-sm {{item.uplink_enabled ? 'btn-success active' : 'btn-default'}}">Да</button>
                     <button type="button" class="btn btn-sm {{!item.uplink_enabled ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                 </div>
             </td>
             <td ng-if="item.is_l_trunk">
-                <!--<select ui-select2 ng-change="changeTrunkGroups(item.l_trunk_id, item.trunk_groups)" ng-model="item.trunk_groups" multiple="multiple" style="width: 100%">-->
-                    <!--<option ng-repeat="trunkGroup in item.trunk_group_list" value="{{trunkGroup.id}}">-->
-                        <!--{{trunkGroup.name}}-->
-                    <!--</option>-->
-                <!--</select>-->
-                <input class="form-control" ng-blur="changeTrunkGroups(item.l_trunk_id, item.trunk_groups)" placeholder="Группы транков" ng-model="item.trunk_groups" />
+                <select ui-select2 ng-change="changeTrunkGroups(item.l_trunk_id, item.trunk_groups)" ng-model="item.trunk_groups" multiple="multiple" style="width: 100%">
+                    <option ng-repeat="trunkGroup in item.trunk_group_list" value="{{trunkGroup.id}}">
+                        {{trunkGroup.name}}
+                    </option>
+                </select>
             </td>
         </tr>
         </tbody>
