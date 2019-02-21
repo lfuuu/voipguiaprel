@@ -7,32 +7,15 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
   };
 
   $scope.drawTable = function (data) {
-    var findHubInList = function (element, index, array) {
+    var findRegionInList = function (element) {
       if (element.name == this.name) {
         return true;
       }
     };
 
-    var encapsulateAsyncRegion = function (data, hubKey, regionKey, hubItem, headerItem) {
+    var encapsulateAsyncRegion = function (data, hubKey, regionKey, regionItem) {
       List.trunkGroup(data[hubKey].items[regionKey].id).then(function (callResult) {
-        var index = $scope.list.findIndex(findHubInList, hubItem);
-        if (index === -1) {
-          $scope.list.push(hubItem);
-          $scope.list.push(headerItem);
-        }
-
-        var regionItem = {
-          is_region: true,
-          hub_id: data[hubKey].id,
-          region_id: data[hubKey].items[regionKey].id,
-          name: regionKey
-        };
-
-        if (index !== -1) {
-          $scope.list.splice(index + 2, 0, regionItem);
-        } else {
-          $scope.list.push(regionItem);
-        }
+        var index = $scope.list.findIndex(findRegionInList, regionItem);
 
         var count = 0;
         for (var pTrunkKey in data[hubKey].items[regionKey].items) {
@@ -58,7 +41,7 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
             };
 
             if (index !== -1) {
-              $scope.list.splice(index + 3 + count, 0, trunkItem);
+              $scope.list.splice(index + 1 + count, 0, trunkItem);
             } else {
               $scope.list.push(trunkItem);
             }
@@ -82,8 +65,20 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
         is_header: true
       };
 
+      $scope.list.push(hubItem);
+      $scope.list.push(headerItem);
+
       for (var regionKey in data[hubKey].items) {
-        encapsulateAsyncRegion(data, hubKey, regionKey, hubItem, headerItem);
+        var regionItem = {
+          is_region: true,
+          hub_id: data[hubKey].id,
+          region_id: data[hubKey].items[regionKey].id,
+          name: regionKey
+        };
+
+        $scope.list.push(regionItem);
+
+        encapsulateAsyncRegion(data, hubKey, regionKey, regionItem);
       }
     }
   };
