@@ -42,7 +42,7 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     });
   };
 
-  List.trunkGroupForMarketplace($scope.server_id).then(function (data) {
+  List.trunkGroup().then(function (data) {
     $scope.trunk_group_list = data;
   });
 
