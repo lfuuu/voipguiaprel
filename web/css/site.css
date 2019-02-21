@@ -232,3 +232,7 @@ td > div > .select2-container > .select2-choice {
 	vertical-align: baseline;
 	border-radius: .25em;
 }
+
+.select2-container {
+	min-width:140px;
+}

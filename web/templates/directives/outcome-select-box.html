@@ -1,12 +1,12 @@
 <div class="input-group input-group-sm">
-    <select ui-select2 data-placeholder="Выберите..." ng-model="value" ng-disabled="{{disabled}}" style="width: 100%">
-        <option value=""></option>
+    <select ui-select2 data-placeholder="Выберите..." ng-model="value" ng-disabled="{{disabled}}" style="width: 99%;">
+        <option value="">-- Любой Outcome --</option>
         <option value="newOutcome">-- Создать Outcome --</option>
         <option value="newRouteTable">-- Создать Таблицу маршрутизации --</option>
         <option ng-repeat="item in listOutcome" value="{{'oc_' + item.id}}">{{item.name}}</option>
         <option ng-repeat="item in listRouteTable" value="{{'rt_' + item.id}}">Таблица: {{item.name}}</option>
     </select>
-    <span style="height: 20px;display: table-cell;">
+    <span style="height: 20px;display: table-cell;width: 1%;">
         <button class="btn btn-default glyphicon glyphicon-search" ng-disabled="{{disabled}}" type="button" ng-click="open(value)"></button>
     </span>
 </div>

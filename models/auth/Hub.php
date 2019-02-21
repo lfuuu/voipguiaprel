@@ -12,6 +12,7 @@ use Yii;
  * @property string $name
  * @property string $note
  * @property string $number_capacity
+ * @property string $trunk_groups
  *
  * @property Server $servers
  * @property InstanceSettings $instanceSettings
@@ -35,7 +36,7 @@ class Hub extends \yii\db\ActiveRecord
         return [
             [['dt'], 'safe'],
             [['name'], 'required'],
-            [['note', 'number_capacity'], 'string'],
+            [['note', 'number_capacity', 'trunk_groups'], 'string'],
             [['name'], 'string', 'max' => 50]
         ];
     }

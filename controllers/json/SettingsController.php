@@ -71,7 +71,8 @@ class SettingsController extends JsonController
             'is_open_numeric_plan_enabled' => $server->is_open_numeric_plan_enabled,
             'loop_detected_outcome_id' => $server->loop_detected_outcome_id,
             'hub_id' => $server->hub_id,
-            'hub_number_capacity' => $hubNumberCapacityFormatted
+            'hub_number_capacity' => $hubNumberCapacityFormatted,
+            'trunk_groups' => $hub->trunk_groups
         ];
     }
 
@@ -92,12 +93,18 @@ class SettingsController extends JsonController
                 $server->need_recalc_routing_report = true;
             }
             
-            if (isset($hub) && isset($this->request['hub_number_capacity'])) {
-                $hubNumberCapacityArray = [];
-                foreach ($this->request['hub_number_capacity'] as $numberCapacity) {
-                    $hubNumberCapacityArray[] = $numberCapacity['id'];
+            if (isset($hub)) {
+                if (isset($this->request['hub_number_capacity'])) {
+                    $hubNumberCapacityArray = [];
+                    foreach ($this->request['hub_number_capacity'] as $numberCapacity) {
+                        $hubNumberCapacityArray[] = $numberCapacity['id'];
+                    }
+                    $hub->number_capacity = '{' . implode(',', $hubNumberCapacityArray) . '}';
                 }
-                $hub->number_capacity = '{' . implode(',', $hubNumberCapacityArray) . '}';
+    
+                if (isset($this->request['trunk_groups'])) {
+                    $hub->trunk_groups = '{' . implode(',', $this->request['trunk_groups']) . '}';
+                }
             }
     
             if (!$server->save() || (isset($hub) && !$hub->save())) {

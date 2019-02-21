@@ -11,6 +11,8 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
   Settings.get({server_id: $scope.server_id}).then(function (data) {
     $scope.item = data;
 
+    $scope.item.trunk_groups = (data.trunk_groups == null) ? [] : data.trunk_groups.replace('{', '').replace('}', '').split(',');
+
     if ($scope.item.ast_trunk_group_id || $scope.item.ast_outcome_id) {
       $scope.vpbx_type_id = 2;
     } else {
@@ -39,6 +41,10 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
       }
     });
   };
+
+  List.trunkGroupForMarketplace($scope.server_id).then(function (data) {
+    $scope.trunk_group_list = data;
+  });
 
   List.number(2, $scope.server_id).then(function (data) {
     $scope.numbers = data;
