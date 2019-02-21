@@ -168,18 +168,15 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
         get: function(data) {
             return ApiLoader.post(url + 'get', data);
         },
-        list: function(serverId) {
-            if (!serverId && promise !== undefined) return promise;
+        list: function() {
+            if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
             if (list !== undefined) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                if (!serverId) {
-                  serverId = $rootScope.server.id;
-                }
-                var data = {server_id: serverId};
+                var data = {server_id: $rootScope.server.id};
                 ApiLoader.post(url + 'list', data)
                     .then(function(data){
                         list = data;
@@ -192,6 +189,31 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
                 promise = deferred.promise;
             }
             return deferred.promise;
+        },
+        listForMarketplace: function(serverId) {
+          if (!serverId && promise !== undefined) return promise;
+
+          var deferred = $q.defer();
+          if (list !== undefined) {
+            deferred.resolve(list);
+            return deferred.promise;
+          } else {
+            if (!serverId) {
+              serverId = $rootScope.server.id;
+            }
+            var data = {server_id: serverId};
+            ApiLoader.post(url + 'list-for-marketplace', data)
+              .then(function(data){
+                list = data;
+                promise = undefined;
+                deferred.resolve(data);
+              }, function(data){
+                promise = undefined;
+                deferred.reject(data);
+              });
+            promise = deferred.promise;
+          }
+          return deferred.promise;
         },
         findIntoRules: function(data) {
             return ApiLoader.post(url + 'get-trunks-with-group-into-rules', data);
@@ -1710,8 +1732,11 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     trunkByServer: function (serverId) {
       return Trunk.listByServer(serverId);
     },
-    trunkGroup: function (serverId) {
-      return TrunkGroup.list(serverId);
+    trunkGroup: function () {
+      return TrunkGroup.list();
+    },
+    trunkGroupForMarketplace: function (serverId) {
+      return TrunkGroup.listForMarketplace(serverId);
     },
     trunkRoaming: function (servers) {
       return Trunk.listRoaming(servers)

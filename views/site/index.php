@@ -62,7 +62,7 @@ use yii\helpers\Url;
 </table>
 
 <?php foreach ($hubs as $item): ?>
-    <?php if (count($item->servers) == 0) {continue;} ?>
+    <?php if (count($item->servers) == 0 || empty($item->name)) {continue;} ?>
     <h4><?= $item->name; ?></h4>
     <table class="table table-striped table-hover table-condensed" >
         <thead>

@@ -8,6 +8,8 @@ use yii\db\Query;
  * @property int $id
  * @property int $server_id
  * @property string $name
+ * @property bool $sw_shared
+ * @property bool $uplink_trunk_group
  * @property
  */
 class TrunkGroup extends \yii\db\ActiveRecord
@@ -41,7 +43,7 @@ class TrunkGroup extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string', 'max' => 32],
-            [['sw_shared'], 'boolean'],
+            [['sw_shared', 'uplink_trunk_group'], 'boolean'],
             [['server_id',], 'integer'],
         ];
     }

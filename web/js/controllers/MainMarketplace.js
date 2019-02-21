@@ -14,7 +14,7 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
     };
 
     var encapsulateAsyncRegion = function (data, hubKey, regionKey, regionItem) {
-      List.trunkGroup(data[hubKey].items[regionKey].id).then(function (callResult) {
+      List.trunkGroupForMarketplace(data[hubKey].items[regionKey].id).then(function (callResult) {
         var index = $scope.list.findIndex(findRegionInList, regionItem);
 
         var count = 0;
@@ -136,6 +136,23 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
     ServiceTrunkRouting.save({id: id, trunk_groups: trunk_groups}).then(function () {
       // $scope.init();
     });
+  };
+
+  $scope.toggleHubVisibility = function (item) {
+    var findHubInList = function (element) {
+      if (element.name == this.name) {
+        return true;
+      }
+    };
+
+    var index = $scope.list.findIndex(findHubInList, item);
+
+    for (var i = index; i < $scope.list.length; i++) {
+      if ($scope.list[i]['is_hub'] == true && $scope.list[i]['hub_id'] != item.hub_id) {
+        break;
+      }
+      $scope.list[i]['hidden'] = !$scope.list[i]['hidden'];
+    }
   };
 
   $scope.trunkInfo = function (id) {

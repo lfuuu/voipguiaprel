@@ -34,6 +34,29 @@ class TrunkGroupController extends JsonController
                 ->asArray()
                 ->all();
     }
+    
+    /**
+     * @return TrunkGroup
+     * @throws HttpException
+     */
+    public function actionListForMarketplace() {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $server = $this->getServerOr404($this->request['server_id']);
+        
+        $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+        
+        return
+            TrunkGroup::find()
+                ->select(['id', 'name'])
+                ->where("(server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or server_id = ".$server->id)
+                ->andWhere('uplink_trunk_group = true')
+                ->orderBy('name')
+                ->asArray()
+                ->all();
+    }
 
     /**
      * @return TrunkGroup
