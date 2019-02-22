@@ -2,11 +2,13 @@
 
 namespace app\controllers\json;
 
+use app\models\auth\ServiceTrunkRouting;
 use app\models\TrunkGroup;
 use app\models\TrunkGroupItem;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -29,8 +31,9 @@ class TrunkGroupController extends JsonController
         return
             TrunkGroup::find()
                 ->select(['id', 'name'])
-                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
+                ->where("(server_id in (select id from public.server where hub_id = :hub_id) and sw_shared) or server_id = :server_id")
                 ->orderBy('name')
+                ->addParams([':hub_id' => $hub_id, ':server_id' => $server->id])
                 ->asArray()
                 ->all();
     }
@@ -51,9 +54,10 @@ class TrunkGroupController extends JsonController
         return
             TrunkGroup::find()
                 ->select(['id', 'name'])
-                ->where("(server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or server_id = ".$server->id)
+                ->where("(server_id in (select id from public.server where hub_id = :hub_id) and sw_shared) or server_id = :server_id")
                 ->andWhere('uplink_trunk_group = true')
                 ->orderBy('name')
+                ->addParams([':hub_id' => $hub_id, ':server_id' => $server->id])
                 ->asArray()
                 ->all();
     }
@@ -74,8 +78,9 @@ class TrunkGroupController extends JsonController
         return
             TrunkGroup::find()
                 ->select(['id', 'name', 'sw_shared','server_id'])
-                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
+                ->where("(server_id in (select id from public.server where hub_id = :hub_id) and sw_shared) or server_id = :server_id")
                 ->orderBy('name')
+                ->addParams([':hub_id' => $hub_id, ':server_id' => $server->id])
                 ->asArray()
                 ->all();
     }
@@ -92,8 +97,11 @@ class TrunkGroupController extends JsonController
         
         $item =
             TrunkGroup::find()
+                ->alias('tg')
+                ->select(['tg.*', new Expression('case when str.id is null then false else true end as used_in_marketplace')])
                 ->with(['trunks', 'trunk_groups'])
-                ->where(['id' => $this->request['id']])
+                ->leftJoin(['str' => ServiceTrunkRouting::tableName()], 'tg.id = ANY(str.trunk_groups)')
+                ->where(['tg.id' => $this->request['id']])
                 ->asArray()
                 ->one();
         if ($item === null) {

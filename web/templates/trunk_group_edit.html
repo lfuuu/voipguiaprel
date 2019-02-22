@@ -178,9 +178,9 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Доступна на бирже</label>
             <div class="col-sm-10">
-                <div class="btn-group" ng-click="item.uplink_trunk_group = !item.uplink_trunk_group">
-                    <button type="button" class="btn btn-sm {{item.uplink_trunk_group ? 'btn-success active' : 'btn-default'}}">Да</button>
-                    <button type="button" class="btn btn-sm {{!item.uplink_trunk_group ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                <div popover="Группа транков используется на бирже" data-popover-trigger="{{hasPopover()}}" popover-placement="bottom" ng-disabled="item.used_in_marketplace" class="btn-group" ng-click="!item.used_in_marketplace ? item.uplink_trunk_group = !item.uplink_trunk_group : ''">
+                    <button ng-disabled="item.used_in_marketplace" type="button" class="btn btn-sm {{item.uplink_trunk_group ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button ng-disabled="item.used_in_marketplace" type="button" class="btn btn-sm {{!item.uplink_trunk_group ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                 </div>
             </div>
         </div>

@@ -61,6 +61,9 @@ var TrunkGroupEditCtrl = function($scope, TrunkGroup, params, $modalInstance, Re
 
     $scope.back = function() {
         $modalInstance.dismiss();
-    }
+    };
 
+    $scope.hasPopover = function () {
+        return $scope.item.used_in_marketplace ? 'mouseenter' : 'none';
+    };
 };

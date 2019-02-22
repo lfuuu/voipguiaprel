@@ -63,6 +63,15 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                     items: []
                 };
             }
+
+            if (data.usagesInMarketplace.length == 0 ||
+                (data.usagesInMarketplace[0]['uplink_enabled'] == false &&
+                (data.usagesInMarketplace[0]['trunk_groups'] == '{}' || data.usagesInMarketplace[0]['trunk_groups'] == null))
+            ) {
+                $scope.item.used_in_marketplace = false;
+            } else {
+                $scope.item.used_in_marketplace = true;
+            }
         });
     } else {
         $scope.item = {
@@ -267,5 +276,9 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
         Redirect.trunkGroupEdit(item.id).then(function () {
             $scope.init();
         });
-    }
+    };
+
+    $scope.hasPopover = function () {
+        return $scope.item.used_in_marketplace ? 'mouseenter' : 'none';
+    };
 };

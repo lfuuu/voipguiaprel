@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use app\models\auth\ServiceTrunkRouting;
+use app\models\billing\ServiceTrunk;
 use app\queries\TrunkQuery;
 use \app\models\sorm\Trunk as TrunkSorm;
 use yii\db\Query;
@@ -174,6 +176,15 @@ class Trunk extends \yii\db\ActiveRecord
             ->hasMany(TrunkABfiltersRule::className(), ['trunk_id' => 'id'])
             ->orderBy('order');
         return (!is_null($where) ? $link->andWhere($where) : $link);
+    }
+    
+    /**
+     * @return array
+     */
+    public function getUsagesInMarketplace()
+    {
+        return $this->hasMany(ServiceTrunkRouting::className(), ['id' => 'id'])
+            ->viaTable(ServiceTrunk::tableName(), ['trunk_id' => 'id']);
     }
 
     /**

@@ -174,10 +174,7 @@ class TrunkController extends JsonController
         
         $item =
             Trunk::find()
-                ->with('priorities')
-                ->with('trunkRules')
-                ->with('numberPreprocessing')
-                ->with('numbersRules')
+                ->with(['priorities', 'trunkRules', 'numberPreprocessing', 'numbersRules', 'usagesInMarketplace'])
                 ->with([
                     'trunkSorm' => function($query) use ($regionId) {
                         $query->where(['region_id' => $regionId]);
