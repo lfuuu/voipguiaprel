@@ -3,60 +3,60 @@
         <h3>Правила с атрибутами</h3>
     </div>
     <div class="modal-body">
-        <table class="table table-striped">
+        <table class="table table-striped" style="font-size: smaller; font-weight: bold;">
             <thead>
             <tr>
                 <th width="1%">&nbsp;</th>
-                <th>Группа оригинации</th>
-                <th>Номер А</th>
-                <th>Атрибут ориг.</th>
-                <th>Группа терминации</th>
-                <th>Номер B</th>
-                <th>Атрибут терм.</th>
-                <th>Действие</th>
-                <th>Значение</th>
+                <th width="10%">Группа ориг.</th>
+                <th width="10%">Номер А</th>
+                <th width="1%">Атрибут ориг.</th>
+                <th width="10%">Группа терм.</th>
+                <th width="10%">Номер B</th>
+                <th width="1%">Атрибут терм.</th>
+                <th width="10%">Действие</th>
+                <th width="46%">Значение</th>
                 <th width="1%">&nbsp;</th>
             </tr>
             </thead>
             <tbody ui-sortable="sortableOptions" ng-model="items">
             <tr ng-repeat="line in items">
-                <td style="cursor: ns-resize">
+                <td style="cursor: ns-resize; padding-right: 1px;padding-left: 1px;">
                     <span class="badge">{{$index + 1}}</span>
                 </td>
-                <td width="15%">
+                <td style="padding-right: 1px;padding-left: 1px;">
                     <select-box list="trunkGroup" model="line.orig_trunk_group_id" default="Любая группа"></select-box>
                 </td>
-                <td width="15%">
+                <td style="padding-right: 1px;padding-left: 1px;">
                     <select-box list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
                 </td>
-                <td width="5%">
-                    <select ui-select2 ng-model="line.orig_attr" placeholder="Любой" style="width: 100%">
+                <td style="padding-right: 1px;padding-left: 1px;">
+                    <select ui-select2 ng-model="line.orig_attr" placeholder="Любой" style="min-width: 90px;width: 90px;max-width: 90px;">
                         <option value="">-- Любой --</option>
                         <option ng-repeat="attr in origAttrList" value="{{attr.id}}">{{attr.name}}</option>
                     </select>
                 </td>
-                <td width="15%">
+                <td style="padding-right: 1px;padding-left: 1px;">
                     <select-box list="trunkGroup" model="line.term_trunk_group_id" default="Любая группа"></select-box>
                 </td>
-                <td width="15%">
+                <td style="padding-right: 1px;padding-left: 1px;">
                     <select-box list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box>
                 </td>
-                <td width="5%">
-                    <select ui-select2 ng-model="line.term_attr" placeholder="Любой" style="width: 100%">
+                <td style="padding-right: 1px;padding-left: 1px;">
+                    <select ui-select2 ng-model="line.term_attr" placeholder="Любой" style="min-width: 90px;width: 90px;max-width: 90px;">
                         <option value="">-- Любой --</option>
                         <option ng-repeat="attr in termAttrList" value="{{attr.id}}">{{attr.name}}</option>
                     </select>
                 </td>
-                <td width="15%">
-                    <select ui-select2 ng-model="line.action_type" placeholder="Любой" style="width: 100%">
+                <td style="padding-right: 1px;padding-left: 1px;">
+                    <select ui-select2 ng-model="line.action_type" placeholder="Любой" style="min-width: 120px;width: 120px;max-width: 120px;">
                         <option value="accept">Пропустить</option>
                         <option value="replace">Заменить транк терм.</option>
                     </select>
                 </td>
-                <td width="15%">
+                <td style="padding-right: 1px;padding-left: 1px;">
                     <select-box ng-if="line.action_type != 'accept'" list="trunk" model="line.replace_trunk_id" default="Любой транк"></select-box>
                 </td>
-                <td>
+                <td style="padding-right: 1px;padding-left: 1px;">
                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="remove($index)"></button>
                 </td>
             </tr>
