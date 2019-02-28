@@ -578,6 +578,7 @@ class TrunkController extends JsonController
             ->leftJoin('billing.organization bo', 'bo.id = bc.organization_id')
             ->where('sts.type = ' . self::TYPE_TERMINATION)
             ->andWhere('t.uplink_trunk = true')
+            ->andWhere('st.expire_dt > now()')
             ->orderBy('t.server_id, sts.id')
             ->indexBy('price_name_basic')
             ->asArray()

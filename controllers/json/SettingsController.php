@@ -20,12 +20,17 @@ class SettingsController extends JsonController
         $hub = Hub::findOne($server->hub_id);
         
         $hubNumberCapacityFormatted = [];
+        $trunkGroups = '';
         
-        if (isset($hub) && $hub->number_capacity && $hub->number_capacity !== '{}') {
-            $hubNumberCapacity = explode(',', str_replace(['{', '}'], '', $hub->number_capacity));
-            foreach ($hubNumberCapacity as $hubNumberCapacityItem) {
-                $hubNumberCapacityFormatted[] = ['id' => $hubNumberCapacityItem];
+        if (isset($hub)) {
+            if ($hub->number_capacity && $hub->number_capacity !== '{}') {
+                $hubNumberCapacity = explode(',', str_replace(['{', '}'], '', $hub->number_capacity));
+                foreach ($hubNumberCapacity as $hubNumberCapacityItem) {
+                    $hubNumberCapacityFormatted[] = ['id' => $hubNumberCapacityItem];
+                }
             }
+            
+            $trunkGroups = $hub->trunk_groups;
         }
 
         return [
@@ -70,9 +75,10 @@ class SettingsController extends JsonController
             'is_autotest_error_enabled' => $server->is_autotest_error_enabled,
             'is_open_numeric_plan_enabled' => $server->is_open_numeric_plan_enabled,
             'loop_detected_outcome_id' => $server->loop_detected_outcome_id,
+            'phase1_allow_trunkgroup_id' => $server->phase1_allow_trunkgroup_id,
             'hub_id' => $server->hub_id,
             'hub_number_capacity' => $hubNumberCapacityFormatted,
-            'trunk_groups' => $hub->trunk_groups
+            'trunk_groups' => $trunkGroups
         ];
     }
 
