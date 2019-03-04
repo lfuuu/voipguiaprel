@@ -4,7 +4,7 @@ var TestNumberEditCtrl = function($scope, TestPricelist, Redirect, params, $moda
     };
 
     $scope.processNumber = function () {
-        TestPricelist.numberResult({number: $scope.params.number, server_id: $scope.server.id}).then(function (data) {
+        TestPricelist.numberResult({number: $scope.params.number}).then(function (data) {
             $scope.item = data;
         });
     };

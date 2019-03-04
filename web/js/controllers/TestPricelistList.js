@@ -31,7 +31,6 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
         }
 
         TestPricelist.read({
-            server_id: $scope.server.id,
             test_group_id: $scope.testGroupId,
             test_result: $scope.testResult,
             offset: $scope.offset,

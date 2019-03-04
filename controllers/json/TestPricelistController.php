@@ -12,6 +12,8 @@ use Yii;
 
 class TestPricelistController extends JsonController
 {
+    const API_URL = 'http://reg10.mcntelecom.ru:8032/';
+    
     /**
      * @return array|\yii\db\ActiveRecord[]
      * @throws HttpException
@@ -40,7 +42,6 @@ class TestPricelistController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
     
-        $server = $this->getServerOr404($this->request['server_id']);
         $testGroupId = $this->request['test_group_id'];
         $testResult = $this->request['test_result'];
         $limit = $this->request['limit'];
@@ -75,7 +76,6 @@ class TestPricelistController extends JsonController
             ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = tp.mcc::text')
             ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = tp.mnc::text and mnc.mcc = tp.mcc::text')
             ->leftJoin('billing_uu.pricelist as p', 'p.id = tp.pricelist_id')
-            ->where(['tp.server_id' => $server->id])
             ->andWhere($resultWhere)
             ->orderBy('name')
             ->limit($limit)
@@ -86,7 +86,6 @@ class TestPricelistController extends JsonController
             ->alias('tp')
             ->select(['tp.id'])
             ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = tp.id')
-            ->where(['tp.server_id' => $server->id])
             ->andWhere($resultWhere);
     
         if ($testGroupId != 'all' && $testGroupId != 'undefined') {
@@ -194,9 +193,7 @@ class TestPricelistController extends JsonController
         
         $item = $this->getTestPricelistOr404($this->request['id']);
         
-        $server = $this->getServerOr404($this->request['server_id']);
-        
-        $apiUrl = $server->apiUrl;
+        $apiUrl = self::API_URL;
     
         $apiParams = [
             'cmd' => 'priceV2Calc',
@@ -245,9 +242,7 @@ class TestPricelistController extends JsonController
         
         $number = preg_replace('~\D~', '', $this->request['number']);
         
-        $server = $this->getServerOr404($this->request['server_id']);
-        
-        $apiUrl = $server->apiUrl;
+        $apiUrl = self::API_URL;
         
         return [
             'number' => $number,
