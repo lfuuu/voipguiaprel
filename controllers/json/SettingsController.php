@@ -20,6 +20,7 @@ class SettingsController extends JsonController
         $hub = Hub::findOne($server->hub_id);
         
         $hubNumberCapacityFormatted = [];
+        $prefixlistBlock = [];
         $trunkGroups = '';
         
         if (isset($hub)) {
@@ -31,6 +32,10 @@ class SettingsController extends JsonController
             }
             
             $trunkGroups = $hub->trunk_groups;
+        }
+    
+        if ($server->prefixlist_block && $server->prefixlist_block !== '{}') {
+            $prefixlistBlock = explode(',', str_replace(['{', '}'], '', $server->prefixlist_block));
         }
 
         return [
@@ -77,6 +82,8 @@ class SettingsController extends JsonController
             'loop_detected_outcome_id' => $server->loop_detected_outcome_id,
             'phase1_allow_trunkgroup_id' => $server->phase1_allow_trunkgroup_id,
             'hub_id' => $server->hub_id,
+            'hub_id' => $server->hub_id,
+            'prefixlist_block' => $prefixlistBlock,
             'hub_number_capacity' => $hubNumberCapacityFormatted,
             'trunk_groups' => $trunkGroups
         ];
@@ -92,8 +99,18 @@ class SettingsController extends JsonController
         $hub = Hub::findOne($server->hub_id);
 
         $transaction = Yii::$app->db->beginTransaction();
+        
         try {
+            if (isset($this->request['prefixlist_block'])) {
+                $prefixlistBlock = $this->request['prefixlist_block'];
+                unset($this->request['prefixlist_block']);
+            }
+            
             $server->load($this->request, '');
+            
+            if ($prefixlistBlock) {
+                $server->prefixlist_block = '{' . implode(',', $prefixlistBlock) . '}';
+            }
             
             if ($server->isAttributeChanged('min_price_for_autorouting')) {
                 $server->need_recalc_routing_report = true;

@@ -1,4 +1,4 @@
-var BlacklistSettingsEditCtrl = function($scope, BlacklistSettings, $modalInstance) {
+var BlacklistSettingsEditCtrl = function($scope, BlacklistSettings, Prefixlist, $modalInstance) {
     $scope.title = 'Настройки фильтра по номеру А';
 
     $scope.resultNotExists = 0;
@@ -15,9 +15,13 @@ var BlacklistSettingsEditCtrl = function($scope, BlacklistSettings, $modalInstan
         4: 'Не добавлено: недостаточная длина префикса'
     };
 
-    BlacklistSettings.get({server_id: $scope.server.id}).then(function(data){
+    BlacklistSettings.get({server_id: $scope.server.id}).then(function(data) {
         $scope.itemA = data['a'];
         $scope.itemB = data['b'];
+    });
+
+    Prefixlist.listBlocked({server_id: $scope.server.id}).then(function(data) {
+        $scope.prefixlist_block = data;
     });
 
 
@@ -53,6 +57,24 @@ var BlacklistSettingsEditCtrl = function($scope, BlacklistSettings, $modalInstan
 
     $scope.checkB = function() {
         BlacklistSettings.check({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes, shared_prefix: $scope.itemB.shared_prefix ? $scope.itemB.shared_prefix : ''}).then(function(response) {
+            $scope.processResponse(response);
+        });
+    };
+
+    $scope.add = function(prefixlist) {
+        BlacklistSettings.add({id: prefixlist.id, prefixes: prefixlist.prefixes, shared_prefix: prefixlist.shared_prefix ? prefixlist.shared_prefix : ''}).then(function(response) {
+            $scope.processResponse(response);
+        });
+    };
+
+    $scope.delete = function(prefixlist) {
+        BlacklistSettings.delete({id: prefixlist.id, prefixes: prefixlist.prefixes, shared_prefix: prefixlist.shared_prefix ? prefixlist.shared_prefix : ''}).then(function(response) {
+            $scope.processResponse(response);
+        });
+    };
+
+    $scope.check = function(prefixlist) {
+        BlacklistSettings.check({id: prefixlist.id, prefixes: prefixlist.prefixes, shared_prefix: prefixlist.shared_prefix ? prefixlist.shared_prefix : ''}).then(function(response) {
             $scope.processResponse(response);
         });
     };

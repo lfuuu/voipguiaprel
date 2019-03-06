@@ -13,6 +13,7 @@ use app\models\billing\GeoRegion;
 use app\models\NetworkConfig;
 use app\models\Prefixlist;
 use app\models\PrefixlistPrefix;
+use app\models\Server;
 use Yii;
 use yii\helpers\Json;
 use yii\web\ForbiddenHttpException;
@@ -42,6 +43,31 @@ class PrefixlistController extends JsonController
                 ->select(['id', 'name'])
                 ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id . "or is_global = true")
                 ->orderBy('name')
+                ->asArray()
+                ->all();
+    }
+    
+    /**
+     * @return \app\models\Prefixlist[]
+     * @throws HttpException
+     */
+    public function actionListBlocked()
+    {
+        if (!\Yii::$app->user->can('prefixlist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $server = $this->getServerOr404($this->request['server_id']);
+        $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+        
+        return
+            Prefixlist::find()
+                ->alias('p')
+                ->select(['p.id', 'p.name'])
+                ->innerJoin(Server::tableName() . ' s', 'p.id = ANY(s.prefixlist_block)')
+                ->where("(s.hub_id = :hub_id and sw_shared) or s.id = :server_id or p.is_global = true")
+                ->orderBy('name')
+                ->addParams([':hub_id' => $hub_id, ':server_id' => $server->id])
                 ->asArray()
                 ->all();
     }

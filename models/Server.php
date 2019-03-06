@@ -45,6 +45,7 @@ use app\models\event\Queue;
  * @property bool $is_open_numeric_plan_enabled
  * @property int $loop_detected_outcome_id
  * @property int $phase1_allow_trunkgroup_id
+ * @property string $prefixlist_block
  *
  * @property InstanceSettings $instanceSettings
  * @property string $apiUrl
@@ -96,7 +97,8 @@ class Server extends \yii\db\ActiveRecord
                 'h_call_save_wait_count', 'h_thread_error_count', 'h_radius_request_delay',
                 'h_event_management', 'h_local_events'], 'string', 'max' => 100],
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
-            [['service_numbers', 'hostname_reserve', 'hostname_reserve_2', 'hostname_dev', 'nas_ip_address', 'name_short'], 'string'],
+            [['service_numbers', 'hostname_reserve', 'hostname_reserve_2', 'hostname_dev',
+                'nas_ip_address', 'name_short', 'prefixlist_block'], 'string'],
             [['hostname', 'name_short', 'name'], 'string', 'max' => 30],
         ];
     }

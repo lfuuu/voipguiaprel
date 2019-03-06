@@ -20,6 +20,10 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     }
   });
 
+  List.prefixlist().then(function (data) {
+    $scope.prefixlist_list = data;
+  });
+
   $scope.save = function () {
     switch ($scope.vpbx_type_id) {
       case 1:

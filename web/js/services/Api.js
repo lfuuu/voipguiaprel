@@ -255,6 +255,9 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
         get: function(data) {
             return ApiLoader.post(url + 'get', data);
         },
+        listBlocked: function(data) {
+          return ApiLoader.post(url + 'list-blocked', data);
+        },
         list: function() {
             if (promise !== undefined) return promise;
 
