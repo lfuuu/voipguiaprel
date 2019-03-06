@@ -26,7 +26,7 @@ var BlacklistSettingsEditCtrl = function($scope, BlacklistSettings, Prefixlist, 
 
 
     $scope.addA = function() {
-        BlacklistSettings.add({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes, shared_prefix: $scope.itemA.shared_prefix ? $scope.itemA.shared_prefix : ''}).then(function(response) {
+        BlacklistSettings.add({id: $scope.itemA.id, prefixes: $scope.itemA.prefixes, shared_prefix: $scope.itemA.shared_prefix ? $scope.itemA.shared_prefix : '', has_min_limit: true}).then(function(response) {
             $scope.processResponse(response);
         });
     };
@@ -44,7 +44,7 @@ var BlacklistSettingsEditCtrl = function($scope, BlacklistSettings, Prefixlist, 
     };
 
     $scope.addB = function() {
-        BlacklistSettings.add({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes, shared_prefix: $scope.itemB.shared_prefix ? $scope.itemB.shared_prefix : ''}).then(function(response) {
+        BlacklistSettings.add({id: $scope.itemB.id, prefixes: $scope.itemB.prefixes, shared_prefix: $scope.itemB.shared_prefix ? $scope.itemB.shared_prefix : '', has_min_limit: true}).then(function(response) {
             $scope.processResponse(response);
         });
     };
@@ -62,7 +62,7 @@ var BlacklistSettingsEditCtrl = function($scope, BlacklistSettings, Prefixlist, 
     };
 
     $scope.add = function(prefixlist) {
-        BlacklistSettings.add({id: prefixlist.id, prefixes: prefixlist.prefixes, shared_prefix: prefixlist.shared_prefix ? prefixlist.shared_prefix : ''}).then(function(response) {
+        BlacklistSettings.add({id: prefixlist.id, prefixes: prefixlist.prefixes, shared_prefix: prefixlist.shared_prefix ? prefixlist.shared_prefix : '', has_min_limit: false}).then(function(response) {
             $scope.processResponse(response);
         });
     };

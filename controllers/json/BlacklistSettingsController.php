@@ -62,6 +62,7 @@ class BlacklistSettingsController extends JsonController
         $id = $this->request['id'];
         $prefixesText = $this->request['prefixes'];
         $sharedPrefix = $this->request['shared_prefix'];
+        $hasMinLimit = $this->request['has_min_limit'];
         
         $data = $this->getData($id, $prefixesText, $sharedPrefix);
         
@@ -71,7 +72,7 @@ class BlacklistSettingsController extends JsonController
             
             if (count($data) > 0) {
                 foreach ($data as $item) {
-                    if (strlen($item['prefix']) < self::PREFIX_MIN_LENGTH) {
+                    if ($hasMinLimit && strlen($item['prefix']) < self::PREFIX_MIN_LENGTH) {
                         $result[$item['prefix']] = self::RESULT_LENGTH_TOO_SHORT;
                     } else if (!PrefixlistPrefix::find()->where($item)->exists()) {
                         PrefixlistPrefix::getDb()->createCommand()->insert(
