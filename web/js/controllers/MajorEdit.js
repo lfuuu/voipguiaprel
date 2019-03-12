@@ -1,4 +1,7 @@
-var MajorEditCtrl = function($scope, Redirect, Nnp, Major, List, params, $modalInstance, $window) {
+var MajorEditCtrl = function($scope, $q, Redirect, Nnp, Major, List, params, $modalInstance, $window) {
+
+    $scope.saveEnabled = false;
+
     var countryLoadComplete = false;
     var regionLoadComplete = false;
     var cityLoadComplete = false;
@@ -99,6 +102,8 @@ var MajorEditCtrl = function($scope, Redirect, Nnp, Major, List, params, $modalI
             $scope.item.order = params.count + 1;
         }
 
+        $scope.saveEnabled = true;
+
         $scope.$watch('item.nnp_country', watchers.nnp_country);
         $scope.$watch('item.nnp_region', watchers.nnp_region);
 
@@ -135,7 +140,7 @@ var MajorEditCtrl = function($scope, Redirect, Nnp, Major, List, params, $modalI
             $scope.item.nnp_country = filterData.country_code;
 
             if ($scope.item.nnp_country) {
-                Nnp.regionList({country_code: $scope.item.nnp_country}).then(function (data) {
+                var regionList = Nnp.regionList({country_code: $scope.item.nnp_country}).then(function (data) {
                     regionLoadComplete = true;
                     $scope.regionList = data;
                     $scope.item.nnp_region = filterData.region_id;
@@ -150,10 +155,16 @@ var MajorEditCtrl = function($scope, Redirect, Nnp, Major, List, params, $modalI
                     }
                 });
 
-                Nnp.operatorList({country_code: $scope.item.nnp_country}).then(function (data) {
+                var operatorList = Nnp.operatorList({country_code: $scope.item.nnp_country}).then(function (data) {
                     $scope.operatorList = data;
                     $scope.item.nnp_operator = filterData.operator_id;
                 });
+
+                $q.all([regionList, operatorList]).then(function () {
+                    $scope.saveEnabled = true;
+                });
+            } else {
+                $scope.saveEnabled = true;
             }
         } catch (error) {
             $scope.nnpDataParseError = true;

@@ -1,7 +1,9 @@
-var PricelistFilterBEditCtrl = function($scope, $rootScope, Major, PricelistFilterB, Nnp, List, params, $modalInstance, $window, Redirect) {
+var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterB, Nnp, List, params, $modalInstance, $window, Redirect) {
 
     $scope.NNP_MODE_FILTER = 1;
     $scope.NNP_MODE_PARAMETERS = 2;
+
+    $scope.saveEnabled = false;
 
     var countryLoadComplete = false;
     var regionLoadComplete = false;
@@ -129,6 +131,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, Major, PricelistFilt
             rating: 1
         };
 
+        $scope.saveEnabled = true;
+
         $scope.$watch('item.nnp_country', watchers.nnp_country);
         $scope.$watch('item.nnp_region', watchers.nnp_region);
         $scope.$watch('item.filter_country', watchers.filter_country);
@@ -150,6 +154,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, Major, PricelistFilt
             filter_country: 643,
             rating: 1
         };
+
+        $scope.saveEnabled = true;
 
         $scope.$watch('item.nnp_country', watchers.nnp_country);
         $scope.$watch('item.nnp_region', watchers.nnp_region);
@@ -211,7 +217,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, Major, PricelistFilt
                 $scope.item.nnp_country = $scope.parseNnpData($scope.item.nnp_country);
 
                 if ($scope.item.nnp_country) {
-                    Nnp.regionList({country_code: $scope.item.nnp_country}).then(function (data) {
+                    var regionList = Nnp.regionList({country_code: $scope.item.nnp_country}).then(function (data) {
                         regionLoadComplete = true;
                         $scope.regionList = data;
                         $scope.item.nnp_region = $scope.parseNnpData($scope.item.nnp_region);
@@ -227,10 +233,16 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, Major, PricelistFilt
                         }
                     });
 
-                    Nnp.operatorList({country_code: $scope.item.nnp_country}).then(function (data) {
+                    var operatorList = Nnp.operatorList({country_code: $scope.item.nnp_country}).then(function (data) {
                         $scope.operatorList = data;
                         $scope.item.nnp_operator = $scope.parseNnpData($scope.item.nnp_operator);
                     });
+
+                    $q.all([regionList, operatorList]).then(function () {
+                        $scope.saveEnabled = true;
+                    });
+                } else {
+                    $scope.saveEnabled = true;
                 }
             }
         } catch (error) {

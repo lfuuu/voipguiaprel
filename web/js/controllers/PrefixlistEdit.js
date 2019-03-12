@@ -1,4 +1,4 @@
-var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp, Pbx, List, Server, params, $modalInstance, $window, Redirect) {
+var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, Nnp, Pbx, List, Server, params, $modalInstance, $window, Redirect) {
 
     var STATUS_SUCCESS = 'SUCCESS';
     var STATUS_ERROR = 'ERROR';
@@ -19,6 +19,8 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp,
 
     $scope.NNP_MODE_DIRECTION = 1;
     $scope.NNP_MODE_FILTER = 2;
+
+    $scope.saveEnabled = false;
 
     $scope.nnpMode = $scope.NNP_MODE_DIRECTION;
 
@@ -206,6 +208,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp,
                     manual_list.push({prefix: $scope.item.manual_list[i]})
                 }
                 $scope.item.manual_list = manual_list;
+                $scope.saveEnabled = true;
             }
 
             if ($scope.item.type_id == $scope.TYPE_ID_LOCAL) {
@@ -214,6 +217,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp,
                     smezhnost_list.push({network_type_id: $scope.item.smezhnost_list[i]})
                 }
                 $scope.item.smezhnost_list = smezhnost_list;
+                $scope.saveEnabled = true;
             }
 
             if ($scope.item.type_id == $scope.TYPE_ID_ROSSVYAZ) {
@@ -221,8 +225,20 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp,
                     Billing.cities($scope.item).then(function (data) {
                         $scope.cities = data;
                         $scope.cityList = data;
+                        $scope.saveEnabled = true;
                     });
+                } else {
+                    $scope.saveEnabled = true;
                 }
+            }
+
+            if ($scope.item.type_id == $scope.TYPE_ID_EXPENSIVE
+                || $scope.item.type_id == $scope.TYPE_ID_7800
+                || $scope.item.type_id == $scope.TYPE_ID_DID_ON_VPBX
+                || $scope.item.type_id == $scope.TYPE_ID_FMC
+                || $scope.item.type_id == $scope.TYPE_ID_PARTED_NUM
+                || $scope.item.type_id == $scope.TYPE_ID_ROAMING) {
+                $scope.saveEnabled = true;
             }
 
             $scope.setNnpFields(data);
@@ -248,6 +264,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp,
                         }
                     });
                 }, 200);
+                $scope.saveEnabled = true;
             }
 
             $scope.$watch('item.rossvyaz_country_id', watchers.rossvyaz_country_id);
@@ -290,6 +307,8 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp,
             nnp_exclude_ndc_type: false,
             count: 0
         };
+
+        $scope.saveEnabled = true;
 
         $scope.$watch('item.rossvyaz_country_id', watchers.rossvyaz_country_id);
         $scope.$watch('item.rossvyaz_region_id', watchers.rossvyaz_region_id);
@@ -624,7 +643,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp,
                 $scope.item.nnp_country = filterData.country_code;
 
                 if ($scope.item.nnp_country) {
-                    Nnp.regionList({country_code: $scope.item.nnp_country}).then(function (data) {
+                    var regionList = Nnp.regionList({country_code: $scope.item.nnp_country}).then(function (data) {
                         regionLoadComplete = true;
                         $scope.regionList = data;
                         $scope.item.nnp_region = filterData.region_id;
@@ -637,15 +656,20 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp,
                             }).then(function (data) {
                                 $scope.cityList = data;
                                 $scope.cities = data;
-
                             });
                         }
                     });
 
-                    Nnp.operatorList({country_code: $scope.item.nnp_country}).then(function (data) {
+                    var operatorList = Nnp.operatorList({country_code: $scope.item.nnp_country}).then(function (data) {
                         $scope.operatorList = data;
                         $scope.item.nnp_operator = filterData.operator_id;
                     });
+
+                    $q.all([regionList, operatorList]).then(function () {
+                        $scope.saveEnabled = true;
+                    });
+                } else {
+                    $scope.saveEnabled = true;
                 }
             } catch (error) {
                 $scope.nnpDataParseError = true;
@@ -668,7 +692,10 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp,
                         $scope.cityList = data;
                         $scope.cities = data;
                         $scope.item.registry_city = filterData.city_id;
+                        $scope.saveEnabled = true;
                     });
+                } else {
+                    $scope.saveEnabled = true;
                 }
             } catch (error) {
                 $scope.nnpDataParseError = true;
@@ -700,9 +727,14 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, Prefixlist, Billing, Nnp,
                             }).then(function (data) {
                                 $scope.cityList = data;
                                 $scope.cities = data;
+                                $scope.saveEnabled = true;
                             });
+                        } else {
+                            $scope.saveEnabled = true;
                         }
                     });
+                } else {
+                    $scope.saveEnabled = true;
                 }
             } catch (error) {
                 $scope.nnpDataParseError = true;

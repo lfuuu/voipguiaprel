@@ -149,8 +149,8 @@
     </div>
     <div class="modal-footer">
         <div class="pull-left">
-            <button type="submit" class="btn btn-success" ng-if="(item.id && userPermissions['major_edit']) || (!item.id && userPermissions['major_create'])" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
-            <button type="submit" class="btn btn-warning" ng-if="item.id && userPermissions['major_edit']" ng-disabled="form.$invalid" ng-click="saveAndUpdate()">Сохранить и применить</button>
+            <button type="submit" class="btn btn-success" ng-if="(item.id && userPermissions['major_edit']) || (!item.id && userPermissions['major_create'])" ng-disabled="form.$invalid || !saveEnabled" ng-click="save()">Сохранить</button>
+            <button type="submit" class="btn btn-warning" ng-if="item.id && userPermissions['major_edit']" ng-disabled="form.$invalid || !saveEnabled" ng-click="saveAndUpdate()">Сохранить и применить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
         </div>
     </div>
