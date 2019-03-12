@@ -28,6 +28,10 @@
                 request: null,
                 $monitor: null,
                 $lastUpdate: null,
+		
+                errors: [],
+                warnings: [],
+                criticalErrors: [],
 
                 getTimeFormat: function (initSeconds) {
                     initSeconds = parseInt(initSeconds, 10);
@@ -223,8 +227,29 @@
                         // Billing resources
                         views.billing(this, $block, params);
                     }
+                    
+                    if ($block.className == 'block status-4') {
+                        health.errors.push($block);
+                    } else if ($block.className == 'block status-3') {
+                        health.warnings.push($block);
+                    } else if ($content.className == 'info error') {
+                        health.criticalErrors.push($block);
+                    }
+
+                },
+                sortBlocks: function() {
+                    for (var index in health.warnings) {
+                        health.$monitor.insertBefore(health.warnings[index], health.$monitor.firstChild);
+                    }
+                    for (var index in health.errors) {
+                        health.$monitor.insertBefore(health.errors[index], health.$monitor.firstChild);
+                    }
+                    for (var index in health.criticalErrors) {
+                        health.$monitor.insertBefore(health.criticalErrors[index], health.$monitor.firstChild);
+                    }
                 }
             },
+
             views = {
                 billing: function ($health, $block, params) {
                     var
@@ -287,6 +312,7 @@
 
             document.addEventListener('DOMContentLoaded', function () {
                 health.init();
+		health.sortBlocks();
                 setInterval(function () {
                     health.load();
                 }, health.requestTimeout);
