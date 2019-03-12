@@ -238,15 +238,15 @@
 
                 },
                 sortBlocks: function() {
-                    for (var index in health.warnings) {
-                        health.$monitor.insertBefore(health.warnings[index], health.$monitor.firstChild);
-                    }
-                    for (var index in health.errors) {
-                        health.$monitor.insertBefore(health.errors[index], health.$monitor.firstChild);
-                    }
-                    for (var index in health.criticalErrors) {
-                        health.$monitor.insertBefore(health.criticalErrors[index], health.$monitor.firstChild);
-                    }
+		    health.warnings.forEach(function(warning) {
+                        health.$monitor.insertBefore(warning, health.$monitor.firstChild);
+                    });
+                    health.errors.forEach(function(error) {
+                        health.$monitor.insertBefore(error, health.$monitor.firstChild);
+                    });
+                    health.criticalErrors.forEach(function(criticalError) {
+                        health.$monitor.insertBefore(criticalError, health.$monitor.firstChild);
+                    });
                 }
             },
 
