@@ -315,6 +315,7 @@
 		health.sortBlocks();
                 setInterval(function () {
                     health.load();
+		    health.sortBlocks();
                 }, health.requestTimeout);
             });
         })();
