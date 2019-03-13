@@ -246,6 +246,9 @@
                     health.criticalErrors.forEach(function(criticalError) {
                         health.$monitor.insertBefore(criticalError, health.$monitor.firstChild);
                     });
+		    health.warnings = [];
+		    health.errors = [];
+		    health.criticalErrors = [];
                 }
             },
 
