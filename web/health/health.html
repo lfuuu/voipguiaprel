@@ -216,6 +216,7 @@
                     );
 
                     if ($content.className == 'info error') {
+			health.criticalErrors.push($block);
                         return false;
                     }
 
@@ -232,8 +233,6 @@
                         health.errors.push($block);
                     } else if ($block.className == 'block status-3') {
                         health.warnings.push($block);
-                    } else if ($content.className == 'info error') {
-                        health.criticalErrors.push($block);
                     }
 
                 },
