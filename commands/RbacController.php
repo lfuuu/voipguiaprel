@@ -144,6 +144,7 @@ class RbacController extends Controller {
         ['name' => 'header_rule_edit', 'description' => 'Редактирование Header Rule'],
         ['name' => 'header_rule_delete', 'description' => 'Удаление Header Rule'],
         ['name' => 'marketplace_list', 'description' => 'Просмотр биржи'],
+        ['name' => 'marketplace_edit', 'description' => 'Редактирование биржи'],
     ];
     
     private static $_roles = [
@@ -187,7 +188,7 @@ class RbacController extends Controller {
             'major_list', 'major_create', 'major_edit', 'major_delete',
             'major_group_list', 'major_group_create', 'major_group_edit', 'major_group_delete',
             'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
-            'marketplace_list'
+            'marketplace_list', 'marketplace_edit'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'test_number_edit',

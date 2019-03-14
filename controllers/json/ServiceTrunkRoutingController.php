@@ -17,24 +17,17 @@ class ServiceTrunkRoutingController extends JsonController
      */
     public function actionSave()
     {
-        if (!\Yii::$app->user->can('trunk_edit') && !\Yii::$app->user->can('trunk_create')) {
+        if (!\Yii::$app->user->can('marketplace_edit')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
         if (isset($this->request['id'])) {
-            if (!\Yii::$app->user->can('trunk_edit')) {
-                throw new ForbiddenHttpException('Access denied');
-            }
-            
             $item = ServiceTrunkRouting::findOne($this->request['id']);
             
             if (empty($item)) {
                 $item = ServiceTrunkRouting::create();
             }
         } else {
-            if (!\Yii::$app->user->can('trunk_create')) {
-                throw new ForbiddenHttpException('Access denied');
-            }
             $item = ServiceTrunkRouting::create();
         }
     

@@ -545,7 +545,7 @@ class TrunkController extends JsonController
      */
     public function actionReadMarketplace()
     {
-        if (!\Yii::$app->user->can('marketplace_list')) {
+        if (!\Yii::$app->user->can('marketplace_list') && !\Yii::$app->user->can('marketplace_edit')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -567,7 +567,8 @@ class TrunkController extends JsonController
                 'st.id as l_trunk_name_basic',
                 'st.description as organization_name',
                 'str.uplink_enabled',
-                'str.trunk_groups'
+                'str.trunk_groups',
+                'tg.trunk_group_name'
             ])
             ->innerJoin('public.server s', 's.id = t.server_id')
             ->innerJoin('billing.service_trunk st', 't.id = st.trunk_id')
@@ -576,6 +577,7 @@ class TrunkController extends JsonController
             ->leftJoin('auth.service_trunk_routing str', 'str.id = st.id')
             ->leftJoin('billing.clients bc', 'bc.id = st.client_account_id')
             ->leftJoin('billing.organization bo', 'bo.id = bc.organization_id')
+            ->leftJoin('(select str.id, string_agg(name, \', \') as trunk_group_name from auth.trunk_group tg join auth.service_trunk_routing str on tg.id = any(str.trunk_groups) group by str.id) as tg', 'tg.id = str.id')
             ->where('sts.type = ' . self::TYPE_TERMINATION)
             ->andWhere('t.uplink_trunk = true')
             ->andWhere('st.expire_dt > now()')

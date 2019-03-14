@@ -2,6 +2,8 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
   $rootScope.userName = userName;
   $rootScope.userId = userId;
 
+  $scope.isEditable = false;
+
   $scope.closeErrorsPopup = function () {
     $rootScope.popupErrors = false;
   };
@@ -83,15 +85,84 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
     }
   };
 
+  $scope.drawViewTable = function (data) {
+    for (var hubKey in data) {
+      var hubItem = {
+        is_hub: true,
+        hub_id: data[hubKey].id,
+        name: hubKey
+      };
+
+      var headerItem = {
+        is_header: true
+      };
+
+      $scope.list.push(hubItem);
+      $scope.list.push(headerItem);
+
+      for (var regionKey in data[hubKey].items) {
+        var regionItem = {
+          is_region: true,
+          hub_id: data[hubKey].id,
+          region_id: data[hubKey].items[regionKey].id,
+          name: regionKey
+        };
+
+        $scope.list.push(regionItem);
+
+        for (var pTrunkKey in data[hubKey].items[regionKey].items) {
+          var pTrunkFlag = true;
+
+          for (var lTrunkKey in data[hubKey].items[regionKey].items[pTrunkKey].items) {
+            var item = data[hubKey].items[regionKey].items[pTrunkKey].items[lTrunkKey];
+
+            var trunkItem = {
+              l_trunk_id: item.l_trunk_id,
+              p_trunk_id: item.p_trunk_id,
+              is_l_trunk: true,
+              p_trunk_name: (pTrunkFlag ? item.p_trunk_name_basic : " "),
+              l_trunk_name: item.l_trunk_name_basic,
+              client_account_id: item.client_account_id,
+              hub_id: item.hub_id,
+              region_id: item.server_id,
+              organization_name: item.organization_name,
+              price_name_basic: item.price_name_basic,
+              uplink_enabled: item.uplink_enabled,
+              trunk_group_name: item.trunk_group_name,
+            };
+
+            $scope.list.push(trunkItem);
+
+            pTrunkFlag = false;
+          }
+        }
+      }
+    }
+  };
+
   $scope.initTable = function () {
     Trunk.readMarketplace().then(function (data) {
       $scope.list = [];
+      $scope.isEditable = true;
       $scope.drawTable(data);
     });
   };
 
+  $scope.initViewTable = function () {
+    Trunk.readMarketplace().then(function (data) {
+      $scope.list = [];
+      $scope.drawViewTable(data);
+    });
+  };
+
   $scope.init = function () {
-    $scope.initTable();
+    if (userPermissions['marketplace_edit']) {
+      $scope.initTable();
+    } else if (userPermissions['marketplace_list']) {
+      $scope.initViewTable();
+    } else {
+      return null;
+    }
   };
 
   $scope.clickTrunk = function (id, regionId) {

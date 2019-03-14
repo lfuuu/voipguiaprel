@@ -27,17 +27,22 @@
                 <a target="_blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{item.client_account_id}}&trunkId={{item.p_trunk_id}}">{{item.price_name_basic}}</a>: <a target="_blank" href="https://stat.mcn.ru/client/view?id={{item.client_account_id}}">{{item.client_account_id}}</a>
             </td>
             <td ng-if="item.is_l_trunk" ng-hide="item.hidden">
-                <div class="btn-group" ng-click="toggleUplinkEnabled(item)">
+                <div class="btn-group" ng-if="isEditable" ng-click="toggleUplinkEnabled(item)">
                     <button type="button" class="btn btn-sm {{item.uplink_enabled ? 'btn-success active' : 'btn-default'}}">Да</button>
                     <button type="button" class="btn btn-sm {{!item.uplink_enabled ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                 </div>
+                <div class="btn-group" ng-if="!isEditable">
+                    <span ng-if="item.uplink_enabled">Да</span>
+                    <span ng-if="!item.uplink_enabled">Нет</span>
+                </div>
             </td>
             <td ng-if="item.is_l_trunk" ng-hide="item.hidden">
-                <select ui-select2 ng-change="changeTrunkGroups(item.l_trunk_id, item.trunk_groups)" ng-model="item.trunk_groups" multiple="multiple" style="width: 100%">
+                <select ng-if="isEditable" ui-select2 ng-change="changeTrunkGroups(item.l_trunk_id, item.trunk_groups)" ng-model="item.trunk_groups" multiple="multiple" style="width: 100%">
                     <option ng-repeat="trunkGroup in item.trunk_group_list" value="{{trunkGroup.id}}">
                         {{trunkGroup.name}}
                     </option>
                 </select>
+                <span ng-if="!isEditable">{{item.trunk_group_name}}</span>
             </td>
             <td ng-if="item.is_l_trunk" ng-hide="item.hidden">{{item.organization_name}}</td>
         </tr>
