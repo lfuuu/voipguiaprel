@@ -34,7 +34,6 @@
 <table class="table table-striped table-hover table-condensed" >
     <thead>
         <tr>
-            <th width="1%"> </th>
             <th width="5%">
                 <a href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
                     ID
@@ -42,6 +41,7 @@
                     <span ng-show="sortType == 'id' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
+            <th width="1%"> </th>
             <th width="15%">
                 <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                     Название
@@ -100,10 +100,10 @@
     <tbody>
 
         <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
+            <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
                 <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">
             </td>
-            <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
             <td><button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">MAIN</button></td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.pricelist_name}}</td>
