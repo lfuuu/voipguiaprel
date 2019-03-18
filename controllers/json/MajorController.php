@@ -18,6 +18,8 @@ use yii\web\HttpException;
 
 class MajorController extends JsonController
 {
+    const API_URL = 'http://reg10.mcntelecom.ru:8032/';
+    
     public function actionList()
     {
         if (!\Yii::$app->user->can('major_list')) {
@@ -214,9 +216,8 @@ class MajorController extends JsonController
         }
         
         $item = $this->getMajorOr404($this->request['id']);
-        $server = $this->getServerOr404($this->request['server_id']);
-        
-        $apiUrl = $server->apiUrl;
+    
+        $apiUrl = self::API_URL;
         
         $filter = json_decode($item->nnp_filter_json, true);
         
