@@ -50,6 +50,13 @@
                 </a>
             </th>
             <th width="5%"></th>
+            <th width="15%">
+                <a href="#" ng-click="sortType = 'server_name'; sortReverse = !sortReverse">
+                    Сервер
+                    <span ng-show="sortType == 'server_name' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'server_name' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
             <th width="10%">
                 <a href="#" ng-click="sortType = 'pricelist_name'; sortReverse = !sortReverse">
                     Прайслист
@@ -106,6 +113,7 @@
             </td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
             <td><button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">MAIN</button></td>
+            <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.server_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.pricelist_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">
                 <span class="label label-success" ng-if="item.is_orig">ORIG</span>

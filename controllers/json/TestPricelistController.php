@@ -5,6 +5,7 @@ namespace app\controllers\json;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use app\models\auth\TestPricelist;
+use app\models\Server;
 use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
@@ -70,12 +71,14 @@ class TestPricelistController extends JsonController
                     when tp.location_id = 2 then \'Гостевой регион\' 
                     when tp.location_id = 3 then \'Международный регион\' 
                     end as location_name'),
-                new Expression('CASE WHEN tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result')
+                new Expression('CASE WHEN tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result'),
+                new Expression('\'#\' || s.id || \': \' || s.name as server_name')
             ])
             ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = tp.id')
             ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = tp.mcc::text')
             ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = tp.mnc::text and mnc.mcc = tp.mcc::text')
             ->leftJoin('billing_uu.pricelist as p', 'p.id = tp.pricelist_id')
+            ->innerJoin('public.server as s', 's.id = tp.server_id')
             ->andWhere($resultWhere)
             ->orderBy('name')
             ->limit($limit)
@@ -192,8 +195,9 @@ class TestPricelistController extends JsonController
         }
         
         $item = $this->getTestPricelistOr404($this->request['id']);
+        $server = Server::findOne($item['server_id']);
         
-        $apiUrl = self::API_URL;
+        $apiUrl = $server->apiUrl;
     
         $apiParams = [
             'cmd' => 'priceV2Calc',
