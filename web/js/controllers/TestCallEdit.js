@@ -83,4 +83,8 @@ var TestCallEditCtrl = function($scope, TestCall, TestAuth, List, Redirect, para
     {
         $modalInstance.dismiss();
     };
+
+    $scope.hasPopover = function () {
+        return $scope.item.is_autotest ? 'mouseenter' : 'none';
+    };
 };

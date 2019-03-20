@@ -58,4 +58,8 @@ var TestPricelistEditCtrl = function($scope, $rootScope, TestPricelist, Mcc, Mnc
     $scope.back = function () {
         $modalInstance.dismiss();
     };
+
+    $scope.hasPopover = function () {
+        return $scope.item.is_autotest ? 'mouseenter' : 'none';
+    };
 };

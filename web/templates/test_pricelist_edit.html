@@ -30,7 +30,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Время (UTC)</label>
             <div class="col-sm-6">
-                <input class="form-control" placeholder="Время (UTC)" ng-model="item.mock_current_date" required>
+                <input popover="Используется текущее время" data-popover-trigger="{{hasPopover()}}" popover-placement="right" class="form-control" placeholder="{{item.is_autotest ? 'Используется текущее время' : 'Время (UTC)'}}" ng-model="item.mock_current_date" ng-required="!item.is_autotest" ng-disabled="item.is_autotest">
             </div>
         </div>
 
