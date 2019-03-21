@@ -1,6 +1,7 @@
 var TestAuthShowTestReserveCtrl = function($scope, TestAuth, params, $modalInstance) {
 
     $scope.details = 1;
+    $scope.type = 'Reserve';
 
     if (params.id) {
         TestAuth.result({id: params.id, isReserve: true, displayTreeView: true}).then(function (data) {

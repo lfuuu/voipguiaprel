@@ -36,6 +36,8 @@ AppAsset::register($this);
     ?>
     var userPermissions = <?= json_encode($shortUserPermissions, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
     var routingPermissions = <?= json_encode($routingPermissions, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
+    var query = <?= json_encode($_SERVER['QUERY_STRING'], JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
+    var host = <?= json_encode($_SERVER['HTTP_HOST'], JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
 </script>
 <div ng-controller="MainRoutingCtrl" ng-include="'/templates/main_routing.html'">
 </div>

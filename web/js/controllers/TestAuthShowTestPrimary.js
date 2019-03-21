@@ -1,6 +1,7 @@
 var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $modalInstance) {
 
     $scope.details = 1;
+    $scope.type = 'Primary';
 
     if (params.id) {
         TestAuth.result({id: params.id, displayTreeView: true}).then(function (data) {

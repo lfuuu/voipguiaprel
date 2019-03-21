@@ -22,14 +22,21 @@ app.controller('MainBillingCtrl', function ($rootScope, $scope, $cookies, $timeo
   };
 
   var funcName = false;
+  var id = false;
+  var type = false;
 
-  if ($cookies.billing_selected_page !== undefined) {
+  if (query) {
+    var params = query.split('&');
+    funcName = params[0];
+    id = params[1];
+    type = params[2];
+  } else if ($cookies.billing_selected_page !== undefined) {
     funcName = $cookies.billing_selected_page;
   } else {
     for (var permissionName in $rootScope.userPermissions) {
       if ($rootScope.billingPermissions.indexOf(permissionName) !== -1 &&
-          permissionName.includes('list') && permissionName !== 'user_list' &&
-          permissionName !== 'role_list' && permissionName !== 'acl_list') {
+        permissionName.includes('list') && permissionName !== 'user_list' &&
+        permissionName !== 'role_list' && permissionName !== 'acl_list') {
         funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
           return w.toUpperCase();
         });
@@ -38,7 +45,11 @@ app.controller('MainBillingCtrl', function ($rootScope, $scope, $cookies, $timeo
     }
   }
 
-  if (funcName) {
+  if (funcName && id && type) {
+    Redirect[funcName](id, type);
+  } else if (funcName && id) {
+    Redirect[funcName](id);
+  } else if (funcName) {
     Redirect[funcName]();
   } else {
     Redirect.pricelistList();

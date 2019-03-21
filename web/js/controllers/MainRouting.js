@@ -23,8 +23,15 @@ app.controller('MainRoutingCtrl', function ($rootScope, $scope, $cookies, $timeo
   };
 
   var funcName = false;
+  var id = false;
+  var type = false;
 
-  if ($cookies.routing_selected_page !== undefined) {
+  if (query) {
+    var params = query.split('&');
+    funcName = params[0];
+    id = params[1];
+    type = params[2];
+  } else if ($cookies.routing_selected_page !== undefined) {
     funcName = $cookies.routing_selected_page;
   } else {
     for (var permissionName in $rootScope.userPermissions) {
@@ -39,7 +46,11 @@ app.controller('MainRoutingCtrl', function ($rootScope, $scope, $cookies, $timeo
     }
   }
 
-  if (funcName) {
+  if (funcName && id && type) {
+    Redirect[funcName](id, type);
+  } else if (funcName && id) {
+    Redirect[funcName](id);
+  } else if (funcName) {
     Redirect[funcName]();
   } else {
     Redirect.trunkList();

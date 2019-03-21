@@ -221,17 +221,17 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         testAuthCreateAndFill: function(default_params) {
             return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {default_params: default_params});
         },
-        testAuthShowTestPrimary: function(id, ttl) {
-            return openModal(TestAuthShowTestPrimaryCtrl, '/templates/test_auth_show_test.html', {id: id, ttl: ttl});
+        testAuthShowTestPrimary: function(id) {
+            return openModal(TestAuthShowTestPrimaryCtrl, '/templates/test_auth_show_test.html', {id: id});
         },
-        testAuthShowTestReserve: function(id, ttl) {
-            return openModal(TestAuthShowTestReserveCtrl, '/templates/test_auth_show_test.html', {id: id, ttl: ttl});
+        testAuthShowTestReserve: function(id) {
+            return openModal(TestAuthShowTestReserveCtrl, '/templates/test_auth_show_test.html', {id: id});
         },
-        testAuthShowTestReserve2: function(id, ttl) {
-            return openModal(TestAuthShowTestReserve2Ctrl, '/templates/test_auth_show_test.html', {id: id, ttl: ttl});
+        testAuthShowTestReserve2: function(id) {
+            return openModal(TestAuthShowTestReserve2Ctrl, '/templates/test_auth_show_test.html', {id: id});
         },
-        testAuthShowTestDev: function(id, ttl) {
-            return openModal(TestAuthShowTestDevCtrl, '/templates/test_auth_show_test.html', {id: id, ttl: ttl});
+        testAuthShowTestDev: function(id) {
+            return openModal(TestAuthShowTestDevCtrl, '/templates/test_auth_show_test.html', {id: id});
         },
 
         testCallList: function() {
