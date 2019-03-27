@@ -132,6 +132,10 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
           var data = {server_id: server_id};
           return ApiLoader.post(url + 'list-with-contract', data);
         },
+        listNameAndAlias: function(server_id) {
+            var data = {server_id: server_id};
+            return ApiLoader.post(url + 'list-name-and-alias', data);
+        },
         save: function(data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
@@ -821,6 +825,18 @@ app.factory('Cpc', function ($q, ApiLoader, $rootScope) {
         delete: function(id) {
             list = undefined;
             return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
+});
+
+app.factory('Cdr', function ($q, ApiLoader) {
+    var url = '/json/cdr/';
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
         }
     };
 });

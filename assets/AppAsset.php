@@ -105,6 +105,8 @@ class AppAsset extends AssetBundle
         'js/controllers/MajorGroupList.js',
         'js/controllers/HeaderRuleEdit.js',
         'js/controllers/HeaderRuleList.js',
+        'js/controllers/CdrReportRead.js',
+        'js/controllers/CdrReportView.js',
     ];
 
     public $templates = [
@@ -191,5 +193,7 @@ class AppAsset extends AssetBundle
         'templates/major_group_list.html',
         'templates/header_rule_edit.html',
         'templates/header_rule_list.html',
+        'templates/cdr_report_read.html',
+        'templates/cdr_report_view.html',
     ];
 }

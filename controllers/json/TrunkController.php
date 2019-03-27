@@ -112,6 +112,40 @@ class TrunkController extends JsonController
                 ->asArray()
                 ->all();
     }
+    
+    /**
+     * @return \app\models\Trunk[]
+     * @throws HttpException
+     */
+    public function actionListNameAndAlias()
+    {
+        if (!\Yii::$app->user->can('trunk_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $server = $this->getServerOr404($this->request['server_id']);
+        
+        $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+        
+        $query1 = Trunk::find()
+                ->select(['id' => 'trunk_name', 'name' => 'trunk_name'])
+                ->where("(server_id in (select id from public.server where hub_id = :hub_id) and sw_shared) or server_id = :server_id")
+                ->andWhere("trunk_name is not null")
+                ->andWhere("trunk_name <> ''");
+        
+        $query2 = Trunk::find()
+            ->select(['id' => 'trunk_name_alias', 'name' => 'trunk_name_alias'])
+            ->where("(server_id in (select id from public.server where hub_id = :hub_id) and sw_shared) or server_id = :server_id")
+            ->andWhere("trunk_name_alias is not null")
+            ->andWhere("trunk_name_alias <> ''");
+        
+        return $query1
+            ->union($query2)
+            ->orderBy('name')
+            ->addParams([':hub_id' => $hub_id, 'server_id' => $server->id])
+            ->asArray()
+            ->all();
+    }
 
     /**
      * @return \app\models\Trunk[]

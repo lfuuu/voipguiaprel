@@ -145,6 +145,7 @@ class RbacController extends Controller {
         ['name' => 'header_rule_delete', 'description' => 'Удаление Header Rule'],
         ['name' => 'marketplace_list', 'description' => 'Просмотр биржи'],
         ['name' => 'marketplace_edit', 'description' => 'Редактирование биржи'],
+        ['name' => 'cdr_report_read', 'description' => 'Просмотр отчета по CDR'],
     ];
     
     private static $_roles = [
@@ -188,7 +189,7 @@ class RbacController extends Controller {
             'major_list', 'major_create', 'major_edit', 'major_delete',
             'major_group_list', 'major_group_create', 'major_group_edit', 'major_group_delete',
             'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
-            'marketplace_list', 'marketplace_edit'
+            'marketplace_list', 'marketplace_edit', 'cdr_report_read'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'test_number_edit',
@@ -197,7 +198,7 @@ class RbacController extends Controller {
             'test_pricelist_list', 'test_pricelist_create', 'test_pricelist_edit', 'test_pricelist_delete',
             'test_pricelist_group_list', 'test_pricelist_group_create', 'test_pricelist_group_edit', 'test_pricelist_group_delete',
             'major_list', 'major_create', 'major_edit', 'major_delete',
-            'major_group_list', 'major_group_create', 'major_group_edit', 'major_group_delete'
+            'major_group_list', 'major_group_create', 'major_group_edit', 'major_group_delete', 'cdr_report_read'
         ]],
         ['role' => 'admin_routing', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view', 'user_list',
