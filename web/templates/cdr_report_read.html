@@ -53,9 +53,9 @@
         </div>
         <div class="row">
             <div class="form-group col-sm-4 search-form-item first-form-item">
-                <label class="col-sm-2 search-field-label">Server</label>
+                <label class="col-sm-2 search-field-label">Hub</label>
                 <div class="col-sm-10 search-input">
-                    <select-box list="server" default="Выберите сервер" model="item.server_id" placeholder="Выберите сервер"></select-box>
+                    <select-box list="hub" default="Выберите хаб" model="item.hub_id" placeholder="Выберите сервер"></select-box>
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
@@ -160,7 +160,7 @@
 
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.connect_time.slice(0, 19)}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.src_route}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.dst_route}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.src_number}}</td>
@@ -168,7 +168,7 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.redirect_number}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.dst_replace}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.session_time}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.disconnect_cause}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)"><span popover="{{item.disconnect_cause_description}}" data-popover-trigger="mouseenter" popover-placement="bottom">{{item.disconnect_cause}}</span></td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.mcn_callid}}</td>
     </tr>
 

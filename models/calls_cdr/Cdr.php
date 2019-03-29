@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models\calls_cdr;
+use app\models\calls_raw\CallsRaw;
 use app\queries\calls_cdr\CdrQuery;
 
 /**
@@ -49,6 +50,11 @@ class Cdr extends \yii\db\ActiveRecord
         $item = new self();
         $item->load($data, '');
         return $item;
+    }
+    
+    public function getCallsRaw()
+    {
+        return $this->hasMany(CallsRaw::className(), ['server_id' => 'server_id', 'cdr_id' => 'id']);
     }
 
     public function rules()

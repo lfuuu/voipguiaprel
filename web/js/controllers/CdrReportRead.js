@@ -11,7 +11,7 @@ var CdrReportReadCtrl = function($scope, Cdr, Trunk, Redirect, $window) {
     $scope.trunkNameList = [];
 
     var watchers = {
-        server_id: function (newValue, oldValue) {
+        hub_id: function (newValue, oldValue) {
             if (newValue != oldValue && newValue !== '') {
                 Trunk.listNameAndAlias(newValue).then(function (data) {
                     $scope.trunkNameList = data;
@@ -41,11 +41,11 @@ var CdrReportReadCtrl = function($scope, Cdr, Trunk, Redirect, $window) {
             time_from: dateFrom,
             time_to: dateTo,
             limit: 100,
-            server_id: '',
+            hub_id: '',
             mcn_callid: ''
         };
 
-        $scope.$watch('item.server_id', watchers.server_id);
+        $scope.$watch('item.hub_id', watchers.hub_id);
     };
 
     $scope.clickSearch = function() {

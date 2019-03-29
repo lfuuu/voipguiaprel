@@ -5,6 +5,7 @@ namespace app\controllers\json;
 use app\classes\JsonController;
 use app\models\calls_cdr\Cdr;
 use yii\base\Request;
+use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -23,33 +24,33 @@ class CdrController extends JsonController
         $timeFrom = $this->request['time_from'];
         $timeTo = $this->request['time_to'];
         $limit = $this->request['limit'];
-        $serverId = $this->request['server_id'];
+        $hubId = $this->request['hub_id'];
         $mcnCallid = $this->request['mcn_callid'];
         
         $where = [];
         
         if ($srcNumber) {
-            $where['src_number'] = $srcNumber;
+            $where['c.src_number'] = $srcNumber;
         }
         
         if ($dstNumber) {
-            $where['dst_number'] = $dstNumber;
+            $where['c.dst_number'] = $dstNumber;
         }
     
-        if ($serverId) {
-            $where['server_id'] = $serverId;
+        if ($hubId) {
+            $where['s.hub_id'] = $hubId;
         }
         
         if ($mcnCallid) {
-            $where['mcn_callid'] = $mcnCallid;
+            $where['c.mcn_callid'] = $mcnCallid;
         }
     
         if ($srcRoute) {
-            $where['src_route'] = $srcRoute;
+            $where['c.src_route'] = $srcRoute;
         }
     
         if ($dstRoute) {
-            $where['dst_route'] = $dstRoute;
+            $where['c.dst_route'] = $dstRoute;
         }
         
         if (empty($where) && (empty($timeFrom) || empty($timeTo))) {
@@ -64,21 +65,28 @@ class CdrController extends JsonController
         $params = [];
         
         if (empty($timeFrom) && !empty($timeTo)) {
-            $andWhere = 'setup_time <= :time_to';
+            $andWhere = 'c.setup_time <= :time_to';
             $params = [':time_to' => $timeTo];
         } elseif (!empty($timeFrom) && empty($timeTo)) {
-            $andWhere = 'setup_time >= :time_from';
+            $andWhere = 'c.setup_time >= :time_from';
             $params = [':time_from' => $timeFrom];
         } elseif (!empty($timeFrom) && !empty($timeTo)) {
-            $andWhere = 'setup_time >= :time_from and setup_time <= :time_to';
+            $andWhere = 'c.setup_time >= :time_from and c.setup_time <= :time_to';
             $params = [':time_from' => $timeFrom, ':time_to' => $timeTo];
         }
         
         $query = Cdr::find()
-                    ->select(['*'])
-                    ->where($where)
-                    ->limit($limit)
-                    ->orderBy('id');
+            ->alias('c')
+            ->select([
+                'c.*',
+                'server_name' => new Expression("s.id || ': ' || s.name"),
+                'disconnect_cause_description' => 'dc.description'
+            ])
+            ->innerJoin('public.server s', 's.id = c.server_id')
+            ->innerJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
+            ->where($where)
+            ->limit($limit)
+            ->orderBy('c.connect_time');
         
         if ($andWhere && $params) {
             $query->andWhere($andWhere)->addParams($params);
@@ -93,12 +101,21 @@ class CdrController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
-        return
-            Cdr::find()
-                ->select(['*'])
-                ->where(['mcn_callid' => $this->request['mcn_callid']])
-                ->orderBy('id')
+        $items = Cdr::find()
+                ->alias('c')
+                ->select([
+                    'c.*',
+                    'server_name' => new Expression("s.id || ': ' || s.name"),
+                    'disconnect_cause_description' => 'dc.description',
+                ])
+                ->with('callsRaw')
+                ->innerJoin('public.server s', 's.id = c.server_id')
+                ->innerJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
+                ->where(['c.mcn_callid' => $this->request['mcn_callid']])
+                ->orderBy('c.connect_time')
                 ->asArray()
                 ->all();
+        
+        return $items;
     }
 }

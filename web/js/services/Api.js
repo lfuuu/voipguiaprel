@@ -132,8 +132,8 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
           var data = {server_id: server_id};
           return ApiLoader.post(url + 'list-with-contract', data);
         },
-        listNameAndAlias: function(server_id) {
-            var data = {server_id: server_id};
+        listNameAndAlias: function(hub_id) {
+            var data = {hub_id: hub_id};
             return ApiLoader.post(url + 'list-name-and-alias', data);
         },
         save: function(data) {

@@ -15,6 +15,7 @@ use app\models\TrunkABfiltersRule;
 use app\models\TrunkNumberPreprocessing;
 use app\models\TrunkPriority;
 use app\models\TrunkTrunkRule;
+use yii\base\Exception;
 use Yii;
 use yii\db\Query;
 use yii\db\StaleObjectException;
@@ -122,27 +123,25 @@ class TrunkController extends JsonController
         if (!\Yii::$app->user->can('trunk_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
-        $server = $this->getServerOr404($this->request['server_id']);
-        
-        $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+    
+        $hub_id = $this->request['hub_id'];
         
         $query1 = Trunk::find()
                 ->select(['id' => 'trunk_name', 'name' => 'trunk_name'])
-                ->where("(server_id in (select id from public.server where hub_id = :hub_id) and sw_shared) or server_id = :server_id")
+                ->where("server_id in (select id from public.server where hub_id = :hub_id)")
                 ->andWhere("trunk_name is not null")
                 ->andWhere("trunk_name <> ''");
         
         $query2 = Trunk::find()
             ->select(['id' => 'trunk_name_alias', 'name' => 'trunk_name_alias'])
-            ->where("(server_id in (select id from public.server where hub_id = :hub_id) and sw_shared) or server_id = :server_id")
+            ->where("server_id in (select id from public.server where hub_id = :hub_id)")
             ->andWhere("trunk_name_alias is not null")
             ->andWhere("trunk_name_alias <> ''");
         
         return $query1
             ->union($query2)
             ->orderBy('name')
-            ->addParams([':hub_id' => $hub_id, 'server_id' => $server->id])
+            ->addParams([':hub_id' => $hub_id])
             ->asArray()
             ->all();
     }
@@ -327,6 +326,10 @@ class TrunkController extends JsonController
         if (!$data['enabled']) {
             TrunkSorm::deleteAll(['code_trunk' => $trunk->id, 'region_id' => $regionId]);
         } else {
+            if ($data['ip_addr'] && !filter_var($data['ip_addr'], FILTER_VALIDATE_IP)) {
+                throw new Exception('IP address is incorrect');
+            }
+            
             $idsToStay = [];
     
             foreach ($data['items'] as $item) {
@@ -338,13 +341,13 @@ class TrunkController extends JsonController
             TrunkSorm::deleteAll(['AND', 'code_trunk = :code_trunk AND region_id = :region_id', ['NOT IN', 'id', $idsToStay]], [':code_trunk' => $trunk->id, ':region_id' => $regionId]);
     
             foreach ($data['items'] as $item) {
-                $this->processSormData($trunk, $item['old_name'], $data['name'], $item['is_show'], $data['groups'],
+                $this->processSormData($trunk, $item['old_name'], $data['name'], $data['ip_addr'], $item['is_show'], $data['groups'],
                     $data['sorm_operator_id'], $data['source_type_id'], $regionId, isset($item['id']) ? $item['id'] : null);
             }
         }
     }
     
-    private function processSormData($trunk, $oldName, $name, $isShow, $groups, $sormOperatorId, $sourceTypeId, $regionId, $id = null)
+    private function processSormData($trunk, $oldName, $name, $ipAddr, $isShow, $groups, $sormOperatorId, $sourceTypeId, $regionId, $id = null)
     {
         if (!is_null($id)) {
             $trunkSorm = TrunkSorm::find()
@@ -357,6 +360,7 @@ class TrunkController extends JsonController
         if ($trunkSorm) {
             //edit
             $trunkSorm->name = $name;
+            $trunkSorm->ip_addr = $ipAddr ? $ipAddr : null;
             $trunkSorm->is_show = isset($isShow) ? $isShow : false;
             $trunkSorm->groups = $groups ? '{' . implode(',', $groups) . '}' : '{}';
             $trunkSorm->old_name = $oldName;
@@ -381,6 +385,7 @@ class TrunkController extends JsonController
                 'type' => 2,
                 'start_date' => date('Y-m-d H:i:s'),
                 'name' => $name,
+                'ip_addr' => $ipAddr ? $ipAddr : null,
                 'old_name' => $oldName,
                 'is_show' => isset($isShow) ? $isShow : false,
                 'groups' => $groups ? '{' . implode(',', $groups) . '}' : '{}',

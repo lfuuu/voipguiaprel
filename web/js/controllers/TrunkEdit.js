@@ -42,6 +42,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                 $scope.item.sorm = {
                     enabled: true,
                     name: data.trunkSorm[0].name,
+                    ip_addr: data.trunkSorm[0].ip_addr,
                     groups: data.trunkSorm[0].groups.replace('{', '').replace('}', '').split(','),
                     sorm_operator_id: data.trunkSorm[0].sorm_operator_id,
                     source_type_id: data.trunkSorm[0].source_type_id,
@@ -58,7 +59,9 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
             } else {
                 $scope.item.sorm = {
                     enabled: false,
+                    source_type_id: '',
                     name: '',
+                    ip_addr: '',
                     groups: {},
                     items: []
                 };
@@ -92,7 +95,9 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
             location_id: 1,
             sorm: {
                 enabled: false,
+                source_type_id: '',
                 name: '',
+                ip_addr: '',
                 is_show: false,
                 groups: {},
                 sorm_operator_id: 1
@@ -203,9 +208,23 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
         $scope.item.numberPreprocessing.splice(index, 1);
     };
 
+    $scope.validateIPAddress= function (ip) {
+        if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip))
+        {
+            alert("Некорректный IP-адрес");
+            return false;
+        } else {
+            return true;
+        }
+    };
+
     $scope.save = function () {
         if ($scope.item.do_sync && $scope.item.auto_routing != $scope.item.default_auto_routing) {
             if (!$window.confirm('Произойдет синхронизация прайс-листов. Вы уверены?')) return;
+        }
+
+        if ($scope.item.sorm.enabled && $scope.item.sorm.ip_addr != '' && !$scope.validateIPAddress($scope.item.sorm.ip_addr)) {
+            return;
         }
 
         $scope.item.region_id = serverId;

@@ -37,6 +37,13 @@
 </div>
 
 <div ng-hide="!item.sorm.enabled" class="form-group">
+    <label class="col-sm-2 control-label">IP-адрес</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="IP-адрес" ng-model="item.sorm.ip_addr" ng-disabled="!item.sorm.enabled"/>
+    </div>
+</div>
+
+<div ng-hide="!item.sorm.enabled" class="form-group">
     <label class="col-sm-2 control-label">Группы</label>
     <div class="col-sm-10">
         <select ui-select2 ng-disabled="!item.sorm.enabled" ng-model="item.sorm.groups" multiple="multiple" style="width: 100%" >
