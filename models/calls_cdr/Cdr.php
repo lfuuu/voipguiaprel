@@ -54,7 +54,7 @@ class Cdr extends \yii\db\ActiveRecord
     
     public function getCallsRaw()
     {
-        return $this->hasMany(CallsRaw::className(), ['server_id' => 'server_id', 'cdr_id' => 'id']);
+        return $this->hasMany(CallsRaw::className(), ['mcn_callid' => 'mcn_callid', 'cdr_id' => 'id']);
     }
 
     public function rules()

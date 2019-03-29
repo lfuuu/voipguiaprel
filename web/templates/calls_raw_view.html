@@ -1,4 +1,4 @@
-<div class="modal-header">
+<div class="modal-header calls_raw_modal">
     <h3>Calls Raw {{item.id}}</h3>
 </div>
 <div class="modal-body">
@@ -34,9 +34,17 @@
         <tbody>
 
         <tr>
-            <td>{{item.account_id}}</td>
-            <td>{{item.trunk_service_id}}</td>
-            <td>{{item.number_service_id}}</td>
+            <td>
+                <a target="_blank" href="https://stat.mcn.ru/client/view?id={{item.account_id}}">{{item.account_id}}</a>
+            </td>
+            <td>
+                <a ng-if="item.trunk_service_id < 100000" target="_blank" href="https://stat.mcn.ru/usage/trunk/edit?id={{item.trunk_service_id}}">{{item.trunk_service_id}}</a>
+                <a ng-if="item.trunk_service_id >= 100000" target="_blank" href="https://stat.mcn.ru/uu/account-tariff/edit?id={{item.trunk_service_id}}">{{item.trunk_service_id}}</a>
+            </td>
+            <td>
+                <a ng-if="item.number_service_id < 100000" target="_blank" href="https://stat.mcn.ru/usage/voip/edit?id={{item.number_service_id}}">{{item.number_service_id}}</a>
+                <a ng-if="item.number_service_id >= 100000" target="_blank" href="https://stat.mcn.ru/uu/account-tariff/edit?id={{item.number_service_id}}">{{item.number_service_id}}</a>
+            </td>
             <td>{{item.src_number}}</td>
             <td>{{item.dst_number}}</td>
             <td>{{item.billed_time}}</td>

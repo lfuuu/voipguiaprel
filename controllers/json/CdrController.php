@@ -112,9 +112,12 @@ class CdrController extends JsonController
                 ->innerJoin('public.server s', 's.id = c.server_id')
                 ->innerJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
                 ->where(['c.mcn_callid' => $this->request['mcn_callid']])
-                ->orderBy('c.connect_time')
                 ->asArray()
                 ->all();
+        
+        usort($items, function($a, $b) {
+            return $a['connect_time'] < $b['connect_time'] ? 1 : -1;
+        });
         
         return $items;
     }

@@ -1,12 +1,13 @@
 app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
 
-    var openModal = function(controller, template, params) {
+    var openModal = function(controller, template, params, windowClass) {
         var modal = $modal.open({
             templateUrl: template + '?rnd=' + Math.random(),
             controller: controller,
             resolve: {
                 params: function() { return params; }
-            }
+            },
+            windowClass: windowClass
         });
         return modal.result;
     };
@@ -494,7 +495,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(CdrReportViewCtrl, '/templates/cdr_report_view.html', {mcn_callid: mcn_callid});
         },
         callsRawView: function(item) {
-            return openModal(CallsRawViewCtrl, '/templates/calls_raw_view.html', {item: item});
+            return openModal(CallsRawViewCtrl, '/templates/calls_raw_view.html', {item: item}, 'calls-raw-modal');
         }
     };
 });
