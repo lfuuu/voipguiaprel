@@ -251,7 +251,7 @@ td > div > .select2-container > .select2-choice {
 }
 
 .search-form-item {
-	width: 33%;
+	/*width: 33%;*/
 	padding-right: 5px;
 	padding-left: 5px;
 }
@@ -260,6 +260,7 @@ td > div > .select2-container > .select2-choice {
 	vertical-align: top;
 	float: right;
 	line-height: 1.2;
+	margin-left: 15px;
 }
 
 .first-form-item {

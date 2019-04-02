@@ -831,13 +831,37 @@ app.factory('Cpc', function ($q, ApiLoader, $rootScope) {
 
 app.factory('Cdr', function ($q, ApiLoader) {
     var url = '/json/cdr/';
+    var list = undefined;
+    var promise = undefined;
     return {
         read: function(data) {
             return ApiLoader.post(url + 'read', data);
         },
         get: function(data) {
             return ApiLoader.post(url + 'get', data);
-        }
+        },
+        disconnectCauseList: function() {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {};
+                ApiLoader.post(url + 'disconnect-cause-list', data)
+                    .then(function(data){
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function(data){
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
     };
 });
 
@@ -1743,7 +1767,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               Airp, ReleaseReason, RouteTable, Network,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
                               PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
-                              MajorGroup, Header, HeaderRule) {
+                              MajorGroup, Header, HeaderRule, Cdr) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -1823,6 +1847,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     headerRule: function () {
       return HeaderRule.list();
     },
+    disconnectCause: function () {
+      return Cdr.disconnectCauseList();
+    },
     testResult: function () {
       return [
         {'id': 'not_executed', 'name': 'Не выполнен'},
@@ -1871,6 +1898,24 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         {'id': '3', 'name': 'Присутствует'},
         {'id': '4', 'name': 'Отсутствует'},
         {'id': '5', 'name': 'Regexp'}
+      ];
+    },
+    timeInterval: function () {
+      return [
+        {'id': '60', 'name': 'Искать за последнюю минуту'},
+        {'id': '300', 'name': 'Искать за последние 5 минут'},
+        {'id': '900', 'name': 'Искать за последние 15 минут'},
+        {'id': '1800', 'name': 'Искать за последние 30 минут'},
+        {'id': '3600', 'name': 'Искать за последний час'},
+        {'id': '7200', 'name': 'Искать за последние 2 часа'},
+        {'id': '28800', 'name': 'Искать за последние 8 часов'},
+        {'id': '86400', 'name': 'Искать за последний день'},
+        {'id': '172800', 'name': 'Искать за последние 2 дня'},
+        {'id': '432000', 'name': 'Искать за последние 5 дней'},
+        {'id': '604800', 'name': 'Искать за последние 7 дней'},
+        {'id': '1209600', 'name': 'Искать за последние 14 дней'},
+        {'id': '2592000', 'name': 'Искать за последние 30 дней'},
+        {'id': '0', 'name': 'Искать за все время'}
       ];
     },
     hub: function () {

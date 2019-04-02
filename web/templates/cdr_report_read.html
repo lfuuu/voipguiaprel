@@ -1,10 +1,35 @@
 <h4>
     Отчет по CDR
     <button type="submit" class="btn btn-success search-form-button" ng-click="clickSearch()">Поиск</button>
+    <button type="submit" ng-hide="hideFilter" class="btn btn-warning search-form-button" ng-click="hideFilter = true">Скрыть фильтр</button>
+    <button type="submit" ng-hide="!hideFilter" class="btn btn-info search-form-button" ng-click="hideFilter = false">Показать фильтр</button>
 </h4>
 
-<form>
+<form ng-hide="hideFilter">
     <div class="form-group">
+        <div class="row">
+            <div class="form-group col-sm-4 search-form-item first-form-item">
+                <label class="col-sm-2 search-field-label">MCN Callid</label>
+                <div class="col-sm-10 search-input">
+                    <input class="form-control" placeholder="b697b8cd-9d52-44db-b1ad-0150f8955c54" ng-model="item.mcn_callid">
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Hub</label>
+                <div class="col-sm-10 search-input">
+                    <select ui-select2 style="width: 100%" tags="true" ng-model="item.hub_id" default="Выберите хаб" model="item.hub_id" placeholder="Выберите хаб">
+                        <option value="">-- Выберите --</option>
+                        <option ng-repeat="hub in hubList" value="{{hub.id}}">{{hub.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Limit</label>
+                <div class="col-sm-10 search-input">
+                    <input class="form-control" placeholder="100" ng-model="item.limit">
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="form-group col-sm-4 search-form-item first-form-item">
                 <label class="col-sm-2 search-field-label">SRC number</label>
@@ -13,61 +38,85 @@
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">SRC route</label>
+                <div class="col-sm-10 search-input">
+                    <select ui-select2 style="width: 100%" tags="true" placeholder="SRC route" ng-model="item.src_route">
+                        <option value="">-- Выберите --</option>
+                        <option ng-repeat="trunkName in trunkNameList" value="{{trunkName.id}}">{{trunkName.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label" popover="Disconnect Cause" data-popover-trigger="mouseenter" popover-placement="left">DC</label>
+                <div class="col-sm-10 search-input">
+                    <select ui-select2 style="width: 100%" tags="true" ng-model="item.disconnect_cause_id" default="Выберите причину" model="item.disconnect_cause_id" placeholder="Причина">
+                        <option value="">-- Выберите --</option>
+                        <option ng-repeat="disconnectCause in disconnectCauseList" value="{{disconnectCause.id}}">{{disconnectCause.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-4 search-form-item first-form-item">
                 <label class="col-sm-2 search-field-label">DST number</label>
                 <div class="col-sm-10 search-input">
                     <input class="form-control" placeholder="79581234567" ng-model="item.dst_number">
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
-                <label class="col-sm-2 search-field-label">Time from</label>
-                <div class="col-sm-10 search-input">
-                    <input class="form-control" ng-model="item.time_from">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-sm-4 search-form-item first-form-item">
-                <label class="col-sm-2 search-field-label">SRC route</label>
-                <div class="col-sm-10 search-input">
-                    <select ui-select2 style="width: 100%" tags="true" placeholder="SRC route" ng-model="item.src_route" required>
-                        <option value="">-- Выберите --</option>
-                        <option ng-repeat="trunkName in trunkNameList" value="{{trunkName.id}}">{{trunkName.name}}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group col-sm-4 search-form-item">
                 <label class="col-sm-2 search-field-label">DST route</label>
                 <div class="col-sm-10 search-input">
-                    <select ui-select2 style="width: 100%" tags="true" placeholder="DST route" ng-model="item.dst_route" required>
+                    <select ui-select2 style="width: 100%" tags="true" placeholder="DST route" ng-model="item.dst_route">
                         <option value="">-- Выберите --</option>
                         <option ng-repeat="trunkName in trunkNameList" value="{{trunkName.id}}">{{trunkName.name}}</option>
                     </select>
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
-                <label class="col-sm-2 search-field-label">Time to</label>
-                <div class="col-sm-10 search-input">
-                    <input class="form-control" ng-model="item.time_to">
+                <label class="col-sm-1 search-field-label">Звонки</label>
+                <div class="col-sm-5 search-input">
+                    <div class="btn-group">
+                        <button type="button" class="btn {{!item.show_all ? 'btn-primary active' : 'btn-default'}}" ng-click="item.show_all = false">Состоявшиеся</button>
+                        <button type="button" class="btn {{item.show_all ? 'btn-danger active' : 'btn-default'}}" ng-click="item.show_all = true">Все</button>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-sm-4 search-form-item first-form-item">
-                <label class="col-sm-2 search-field-label">Hub</label>
-                <div class="col-sm-10 search-input">
-                    <select-box list="hub" default="Выберите хаб" model="item.hub_id" placeholder="Выберите сервер"></select-box>
+            <div class="form-group col-sm-8" style="padding-right: 5px;">
+                <div class="form-group col-sm-1" style="width: 50px; padding-left: 0px;">
+                    <button class="dropdown-toggle btn btn-info" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-time"></span>
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" ng-click="item.is_time_absolute = true">Absolute</a></li>
+                        <li><a href="#" ng-click="item.is_time_absolute = false">Relative</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-1 search-input" ng-hide="!item.is_time_absolute" style="width: 160px; padding-right: 5px; padding-left: 5px;">
+                    <input class="form-control" ng-model="item.time_from">
+                </div>
+                <div class="col-sm-1 search-input" ng-hide="!item.is_time_absolute" style="width: 50px; padding-left: 0px; padding-right: 0px; text-align: center; line-height: 34px;">
+                    <span>-- по --</span>
+                </div>
+                <div class="col-sm-1 search-input" ng-hide="!item.is_time_absolute" style="width: 160px; padding-right: 5px; padding-left: 5px;">
+                    <input class="form-control" ng-model="item.time_to">
+                </div>
+                <div class="col-sm-1 search-input" ng-hide="item.is_time_absolute" style="width: 370px; padding-right: 5px; padding-left: 5px;">
+                    <select ui-select2 style="width: 100%" tags="true" ng-model="item.time_relative">
+                        <option value="">-- Выберите --</option>
+                        <option ng-repeat="timeInterval in timeIntervals" value="{{timeInterval.id}}">{{timeInterval.name}}</option>
+                    </select>
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
-                <label class="col-sm-2 search-field-label">MCN Callid</label>
-                <div class="col-sm-10 search-input">
-                    <input class="form-control" placeholder="b697b8cd-9d52-44db-b1ad-0150f8955c54" ng-model="item.mcn_callid">
-                </div>
-            </div>
-            <div class="form-group col-sm-4 search-form-item">
-                <label class="col-sm-2 search-field-label">Limit</label>
-                <div class="col-sm-10 search-input">
-                    <input class="form-control" placeholder="100" ng-model="item.limit">
+                <label class="col-sm-1 search-field-label">Порядок</label>
+                <div class="col-sm-5 search-input">
+                    <div class="btn-group">
+                        <button type="button" class="btn {{item.sort_asc ? 'btn-primary active' : 'btn-default'}}" ng-click="item.sort_asc = true">С начала</button>
+                        <button type="button" class="btn {{!item.sort_asc ? 'btn-danger active' : 'btn-default'}}" ng-click="item.sort_asc = false">С конца</button>
+                    </div>
                 </div>
             </div>
         </div>

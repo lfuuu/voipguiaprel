@@ -1,12 +1,16 @@
-var CdrReportReadCtrl = function($scope, Cdr, Trunk, Redirect, $window) {
+var CdrReportReadCtrl = function($scope, Cdr, Trunk, List, Redirect, $window) {
 
     $scope.sortType = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
+    $scope.hideFilter = false;
+
     $scope.filterFields = [
         'name', 'server_id'
     ];
+
+    $scope.timeIntervals = List.timeInterval();
 
     $scope.trunkNameList = [];
 
@@ -40,9 +44,14 @@ var CdrReportReadCtrl = function($scope, Cdr, Trunk, Redirect, $window) {
             dst_route: '',
             time_from: dateFrom,
             time_to: dateTo,
+            time_relative: '',
             limit: 100,
             hub_id: '',
-            mcn_callid: ''
+            mcn_callid: '',
+            sort_asc: true,
+            show_all: false,
+            is_time_absolute: true,
+            disconnect_cause_id: ''
         };
 
         $scope.$watch('item.hub_id', watchers.hub_id);
@@ -53,6 +62,14 @@ var CdrReportReadCtrl = function($scope, Cdr, Trunk, Redirect, $window) {
             $scope.list = data;
         });
     };
+
+    List.disconnectCause().then(function (data) {
+        $scope.disconnectCauseList = data;
+    });
+
+    List.hub().then(function (data) {
+        $scope.hubList = data;
+    });
 
     $scope.clickItem = function(item) {
         if (!userPermissions['cdr_report_read']) {

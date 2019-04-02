@@ -3,6 +3,7 @@
 namespace app\controllers\json;
 
 use app\classes\JsonController;
+use app\models\billing\DisconnectCause;
 use app\models\calls_cdr\Cdr;
 use yii\base\Request;
 use yii\db\Expression;
@@ -21,11 +22,16 @@ class CdrController extends JsonController
         $dstNumber = $this->request['dst_number'];
         $srcRoute = isset($this->request['src_route']) ? $this->request['src_route'] : null;
         $dstRoute = isset($this->request['dst_route']) ? $this->request['dst_route'] : null;
+        $isTimeAbsolute = $this->request['is_time_absolute'];
         $timeFrom = $this->request['time_from'];
         $timeTo = $this->request['time_to'];
+        $timeRelative = $this->request['time_relative'];
         $limit = $this->request['limit'];
         $hubId = $this->request['hub_id'];
         $mcnCallid = $this->request['mcn_callid'];
+        $sortAsc = $this->request['sort_asc'];
+        $disconnectCauseId = $this->request['disconnect_cause_id'];
+        $showAll = $this->request['show_all'];
         
         $where = [];
         
@@ -52,6 +58,10 @@ class CdrController extends JsonController
         if ($dstRoute) {
             $where['c.dst_route'] = $dstRoute;
         }
+    
+        if ($disconnectCauseId) {
+            $where['c.disconnect_cause'] = $disconnectCauseId;
+        }
         
         if (empty($where) && (empty($timeFrom) || empty($timeTo))) {
             return [];
@@ -63,16 +73,21 @@ class CdrController extends JsonController
         
         $andWhere = '';
         $params = [];
-        
-        if (empty($timeFrom) && !empty($timeTo)) {
-            $andWhere = 'c.setup_time <= :time_to';
-            $params = [':time_to' => $timeTo];
-        } elseif (!empty($timeFrom) && empty($timeTo)) {
-            $andWhere = 'c.setup_time >= :time_from';
-            $params = [':time_from' => $timeFrom];
-        } elseif (!empty($timeFrom) && !empty($timeTo)) {
-            $andWhere = 'c.setup_time >= :time_from and c.setup_time <= :time_to';
-            $params = [':time_from' => $timeFrom, ':time_to' => $timeTo];
+        if ($isTimeAbsolute) {
+            if (empty($timeFrom) && !empty($timeTo)) {
+                $andWhere = 'c.setup_time <= :time_to';
+                $params = [':time_to' => $timeTo];
+            } elseif (!empty($timeFrom) && empty($timeTo)) {
+                $andWhere = 'c.setup_time >= :time_from';
+                $params = [':time_from' => $timeFrom];
+            } elseif (!empty($timeFrom) && !empty($timeTo)) {
+                $andWhere = 'c.setup_time >= :time_from and c.setup_time <= :time_to';
+                $params = [':time_from' => $timeFrom, ':time_to' => $timeTo];
+            }
+        } else {
+            if (!empty($timeRelative)) {
+                $andWhere = 'c.setup_time >= (now() - INTERVAL \'' . (int)$timeRelative . ' seconds\') at time zone \'utc\'';
+            }
         }
         
         $query = Cdr::find()
@@ -86,10 +101,16 @@ class CdrController extends JsonController
             ->innerJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
             ->where($where)
             ->limit($limit)
-            ->orderBy('c.connect_time');
+            ->orderBy('c.connect_time ' . ($sortAsc ? 'ASC' : 'DESC'));
         
         if ($andWhere && $params) {
             $query->andWhere($andWhere)->addParams($params);
+        } elseif ($andWhere) {
+            $query->andWhere($andWhere);
+        }
+        
+        if (!$showAll) {
+            $query->andWhere('c.session_time > 0');
         }
         
         return $query->asArray()->all();
@@ -120,5 +141,19 @@ class CdrController extends JsonController
         });
         
         return $items;
+    }
+    
+    public function actionDisconnectCauseList()
+    {
+        if (!\Yii::$app->user->can('cdr_report_read')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
+        return
+            DisconnectCause::find()
+                ->select(['id' => 'cause_id', 'name' => new Expression('cause_id || \': \' || value')])
+                ->orderBy('cause_id')
+                ->asArray()
+                ->all();
     }
 }
