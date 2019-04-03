@@ -1,4 +1,4 @@
-app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, List, Trunk, ServiceTrunkRouting, $cookies, $timeout, $modal, Redirect) {
+app.controller('MainMarketplaceEuCtrl', function ($rootScope, $scope, $window, List, Trunk, ServiceTrunkRouting, $cookies, $timeout, $modal, Redirect) {
   $rootScope.userName = userName;
   $rootScope.userId = userId;
 
@@ -141,7 +141,7 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
   };
 
   $scope.initTable = function () {
-    Trunk.readMarketplace({market_place_id: 1}).then(function (data) {
+    Trunk.readMarketplace({market_place_id: 2}).then(function (data) {
       $scope.list = [];
       $scope.isEditable = true;
       $scope.drawTable(data);
@@ -149,7 +149,7 @@ app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, Lis
   };
 
   $scope.initViewTable = function () {
-    Trunk.readMarketplace({market_place_id: 1}).then(function (data) {
+    Trunk.readMarketplace({market_place_id: 2}).then(function (data) {
       $scope.list = [];
       $scope.drawViewTable(data);
     });

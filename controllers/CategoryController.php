@@ -24,4 +24,9 @@ class CategoryController extends BaseController
     {
         return $this->render('marketplace', []);
     }
+    
+    public function actionMarketplaceEu()
+    {
+        return $this->render('marketplace-eu', []);
+    }
 }

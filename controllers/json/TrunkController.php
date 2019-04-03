@@ -588,6 +588,8 @@ class TrunkController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
+        $marketPlaceId = $this->request['market_place_id'];
+        
         $items = Trunk::find()
             ->alias('t')
             ->select([
@@ -612,16 +614,18 @@ class TrunkController extends JsonController
             ->innerJoin('public.server s', 's.id = t.server_id')
             ->innerJoin('billing.service_trunk st', 't.id = st.trunk_id')
             ->innerJoin('billing.service_trunk_settings sts', 'sts.trunk_id = st.id')
-            ->leftJoin('auth.hub h', 'h.id = s.hub_id')
+            ->innerJoin('auth.hub h', 'h.id = s.hub_id')
             ->leftJoin('auth.service_trunk_routing str', 'str.id = st.id')
             ->leftJoin('billing.clients bc', 'bc.id = st.client_account_id')
             ->leftJoin('billing.organization bo', 'bo.id = bc.organization_id')
             ->leftJoin('(select str.id, string_agg(name, \', \') as trunk_group_name from auth.trunk_group tg join auth.service_trunk_routing str on tg.id = any(str.trunk_groups) group by str.id) as tg', 'tg.id = str.id')
             ->where('sts.type = ' . self::TYPE_TERMINATION)
+            ->andWhere('h.market_place_id = :market_place_id')
             ->andWhere('t.uplink_trunk = true')
             ->andWhere('st.expire_dt > now()')
             ->orderBy('t.server_id, sts.id')
             ->indexBy('price_name_basic')
+            ->addParams([':market_place_id' => $marketPlaceId])
             ->asArray()
             ->all();
 

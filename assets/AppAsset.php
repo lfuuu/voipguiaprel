@@ -20,6 +20,7 @@ class AppAsset extends AssetBundle
         'js/controllers/MainRouting.js',
         'js/controllers/MainBilling.js',
         'js/controllers/MainMarketplace.js',
+        'js/controllers/MainMarketplaceEu.js',
         'js/controllers/RoutingReport.js',
         'js/controllers/RouteTableEdit.js',
         'js/controllers/RouteTableList.js',

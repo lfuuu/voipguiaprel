@@ -60,6 +60,7 @@ $config = [
                 'routing' => 'category/routing',
                 'billing' => 'category/billing',
                 'marketplace' => 'category/marketplace',
+                'marketplace-eu' => 'category/marketplace-eu',
                 'login' => 'site/login',
                 'logout' => 'site/logout',
                 'gen-passwd' => 'site/gen-passwd',

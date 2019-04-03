@@ -13,6 +13,7 @@ use Yii;
  * @property string $note
  * @property string $number_capacity
  * @property string $trunk_groups
+ * @property integer $market_place_id
  *
  * @property Server $servers
  * @property InstanceSettings $instanceSettings
@@ -37,7 +38,8 @@ class Hub extends \yii\db\ActiveRecord
             [['dt'], 'safe'],
             [['name'], 'required'],
             [['note', 'number_capacity', 'trunk_groups'], 'string'],
-            [['name'], 'string', 'max' => 50]
+            [['name'], 'string', 'max' => 50],
+            [['market_place_id'], 'integer']
         ];
     }
 
@@ -69,7 +71,4 @@ class Hub extends \yii\db\ActiveRecord
     {
         return $this->hasOne(InstanceSettings::className(), ['id' => 'id']);
     }
-
-
-
 }
