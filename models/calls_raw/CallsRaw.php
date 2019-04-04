@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models\calls_raw;
+use app\models\billing\Client;
 use app\queries\calls_raw\CallsRawQuery;
 
 /**
@@ -30,5 +31,10 @@ class CallsRaw extends \yii\db\ActiveRecord
         return [
             
         ];
+    }
+    
+    public function getCurrency()
+    {
+        return $this->hasOne(Client::className(), ['id' => 'account_id'])->select(['id', 'currency']);
     }
 }

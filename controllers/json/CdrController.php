@@ -129,7 +129,7 @@ class CdrController extends JsonController
                     'server_name' => new Expression("s.id || ': ' || s.name"),
                     'disconnect_cause_description' => 'dc.description',
                 ])
-                ->with('callsRaw')
+                ->with('callsRaw.currency')
                 ->innerJoin('public.server s', 's.id = c.server_id')
                 ->innerJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
                 ->where(['c.mcn_callid' => $this->request['mcn_callid']])
