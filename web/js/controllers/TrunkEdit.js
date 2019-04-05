@@ -223,7 +223,13 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
             if (!$window.confirm('Произойдет синхронизация прайс-листов. Вы уверены?')) return;
         }
 
-        if ($scope.item.sorm.enabled && $scope.item.sorm.ip_addr != '' && !$scope.validateIPAddress($scope.item.sorm.ip_addr)) {
+        if (
+            $scope.item.sorm.enabled &&
+            $scope.item.sorm.ip_addr != '' &&
+            $scope.item.sorm.ip_addr != null &&
+            (typeof $scope.item.sorm.ip_addr != 'undefined') &&
+            !$scope.validateIPAddress($scope.item.sorm.ip_addr)
+        ) {
             return;
         }
 
