@@ -256,6 +256,10 @@ td > div > .select2-container > .select2-choice {
 	padding-left: 5px;
 }
 
+.search-form-select {
+	margin-top: 4px;
+}
+
 .search-form-button {
 	vertical-align: top;
 	float: right;

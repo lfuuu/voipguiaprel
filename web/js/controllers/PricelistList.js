@@ -4,6 +4,13 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
+    $scope.hideFilter = false;
+    $scope.searchArray = {
+        group_id: '',
+        query: '',
+        service_type_id: ''
+    };
+
     $scope.filterFields = [
         'id', 'name', 'currency_id', 'group_name', 'date_created'
     ];
@@ -22,12 +29,8 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
     };
 
     $scope.refreshList = function() {
-        if ($scope.groupId == 'undefined') {
-            return;
-        }
-
         Pricelist.read({
-            group_id: $scope.groupId,
+            search_array: $scope.searchArray,
             offset: $scope.offset,
             limit: $scope.limit
         }).then(function (data) {
@@ -40,9 +43,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         $scope.groupList = data;
     });
 
-    $scope.groupChanged = function(groupId) {
-        $scope.groupId = groupId;
-
+    $scope.clickSearch = function(groupId) {
         $scope.refreshList();
     };
 

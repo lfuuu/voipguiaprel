@@ -37,7 +37,7 @@ class PricelistController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
     
-        $groupId = $this->request['group_id'];
+        $searchArray = $this->request['search_array'];
         $limit = $this->request['limit'];
         $offset = $this->request['offset'];
         
@@ -60,9 +60,21 @@ class PricelistController extends JsonController
             ->select(['id'])
             ->distinct();
         
-        if ($groupId != 'all') {
-            $query->where(['billing_uu.pricelist.pricelist_group_id' => $groupId]);
-            $countQuery->where(['pricelist_group_id' => $groupId]);
+        if (isset($searchArray['group_id']) && $searchArray['group_id'] && $searchArray['group_id'] != 'all') {
+            $query->where(['billing_uu.pricelist.pricelist_group_id' => $searchArray['group_id']]);
+            $countQuery->where(['pricelist_group_id' => $searchArray['group_id']]);
+        }
+        
+        if (isset($searchArray['service_type_id']) && $searchArray['service_type_id']) {
+            $query->andWhere(['billing_uu.pricelist.service_type_id' => $searchArray['service_type_id']]);
+            $countQuery->andWhere(['service_type_id' => $searchArray['service_type_id']]);
+        }
+    
+        if (isset($searchArray['query']) && $searchArray['query']) {
+            $query->andWhere('billing_uu.pricelist.name like :name');
+            $query->addParams([':name' => '%' . $searchArray['query'] . '%']);
+            $countQuery->andWhere('name like :name');
+            $countQuery->addParams([':name' => '%' . $searchArray['query'] . '%']);
         }
         
         $data = $query->all();

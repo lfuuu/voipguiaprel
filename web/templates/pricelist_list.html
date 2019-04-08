@@ -1,19 +1,38 @@
-<div ng-if="userPermissions['pricelist_create']">
-    <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
-</div>
-<h4>Прайслисты</h4>
+<h4>
+    Прайслисты
+    <button ng-if="userPermissions['pricelist_create']" type="submit" class="btn btn-primary search-form-button" ng-click="clickCreate()">Создать</button>
+    <button type="submit" class="btn btn-success search-form-button" ng-click="clickSearch()">Поиск</button>
+    <button type="submit" ng-hide="hideFilter" class="btn btn-warning search-form-button" ng-click="hideFilter = true">Скрыть фильтр</button>
+    <button type="submit" ng-hide="!hideFilter" class="btn btn-info search-form-button" ng-click="hideFilter = false">Показать фильтр</button>
+</h4>
 
-<form>
+<form ng-hide="hideFilter">
     <div class="form-group">
-        <div class="input-group">
-            <div class="input-group-addon"><i class="fa-search"></i></div>
-            <input type="text" class="form-control" placeholder="Поиск" ng-model="searchQuery">
-            <div class="row">
-                <div class="form-group col-sm-6">
-                    <select ui-select2 style="width: 100%" tags="true" ng-change="groupChanged(groupId)" placeholder="Группа" ng-model="groupId" required>
-                        <option value="undefined">-- Выберите группу --</option>
+        <div class="row">
+            <div class="form-group col-sm-4 search-form-item first-form-item">
+                <label class="col-sm-2 search-field-label">Название</label>
+                <div class="col-sm-10 search-input">
+                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.query">
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Группа</label>
+                <div class="col-sm-10 search-input">
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Группа" ng-model="searchArray.group_id" required>
+                        <option value="">-- Выберите группу --</option>
                         <option value="all">Все группы</option>
                         <option ng-repeat="group in groupList" value="{{group.id}}">{{group.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Тип</label>
+                <div class="col-sm-10 search-input">
+                    <select class="search-form-select" ui-select2 style="width: 100%" placeholder="Тип" ng-model="searchArray.service_type_id" required>
+                        <option value="">-- Выберите группу --</option>
+                        <option value="1">Голос</option>
+                        <option value="2">СМС</option>
+                        <option value="3">Data</option>
                     </select>
                 </div>
             </div>
@@ -86,7 +105,7 @@
     </thead>
     <tbody>
 
-    <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
+    <tr ng-repeat="item in list | orderBy:sortType:sortReverse">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.currency_id}}</td>
