@@ -4,6 +4,7 @@ namespace app\controllers\json;
 
 use app\models\billing_uu\Major;
 use app\models\billing_uu\PricelistFilterB;
+use app\models\billing_uu\PricelistPrefixPrice;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
@@ -60,6 +61,34 @@ class PricelistFilterBController extends JsonController
         try {
             if (!$item->save()) {
                 throw new FormValidationException($item);
+            }
+            
+            if (isset($this->request['prefixes'])) {
+                $prefixesToSave = [];
+                $prefixesArray = explode("\n", $this->request['prefixes']);
+                
+                foreach ($prefixesArray as $prefixItem) {
+                    list($prefixBString, $prefixPrice) = preg_split("/[\t]/", $prefixItem);
+                    
+                    $prefixBArray = explode(',', $prefixBString);
+                    
+                    foreach ($prefixBArray as $prefixB) {
+                        $prefixesToSave[] = [
+                            'pricelist_filter_b_id' => $item->id,
+                            'prefix_b' => trim($prefixB),
+                            'b_number_price' => $prefixPrice,
+                            'date_from' => date('Y-m-d'),
+                            'date_to' => '3000-01-01'
+                        ];
+                    }
+                }
+                
+                foreach ($prefixesToSave as $prefixToSave) {
+                    $prefixCreatedItem = PricelistPrefixPrice::create($prefixToSave);
+                    if (!$prefixCreatedItem->save()) {
+                        throw new FormValidationException($item);
+                    }
+                }
             }
             
             $transaction->commit();

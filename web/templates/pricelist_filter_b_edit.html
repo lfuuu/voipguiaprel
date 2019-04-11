@@ -99,6 +99,9 @@
                 <li class="{{(nnpMode == NNP_MODE_PARAMETERS) ? 'active' : '' }}">
                     <a href="#nnp-parameters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_PARAMETERS)">ННП-Параметры</a>
                 </li>
+                <li ng-if="!item.id">
+                    <a href="#prefix-import" data-toggle="tab">Импорт префиксов</a>
+                </li>
             </ul>
             <br/>
 
@@ -239,7 +242,15 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
+                <div class="tab-pane" id="prefix-import">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Список префиксов</label>
+                        <div class="col-sm-6">
+                            <textarea class="form-control" placeholder="Префиксы" ng-model="item.prefixes"></textarea>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
