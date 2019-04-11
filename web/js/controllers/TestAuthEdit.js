@@ -15,6 +15,7 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect
                     dst_number: data.dst_number,
                     src_noa: data.src_noa,
                     dst_noa: data.dst_noa,
+                    redirect_noa: data.redirect_noa,
                     redirect_number: '',
                     with_debug_info: data.with_debug_info,
                     router_version: 1
@@ -37,6 +38,7 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect
                 server_id: $scope.server.id,
                 src_noa: 3,
                 dst_noa: 3,
+                redirect_noa: 3,
                 redirect_number: '',
                 testgroup_id: params.testGroupId,
                 with_debug_info: false,
@@ -46,6 +48,7 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect
             $scope.item = {
                 src_noa: 3,
                 dst_noa: 3,
+                redirect_noa: 3,
                 redirect_number: '',
                 server_id: params.default_params.server_id,
                 trunk_name: params.default_params.trunk_name,
@@ -63,6 +66,7 @@ var TestAuthEditCtrl = function($scope, $rootScope, TestAuth, TestCall, Redirect
                 server_id: $scope.server.id,
                 src_noa: 3,
                 dst_noa: 3,
+                redirect_noa: 3,
                 redirect_number: '',
                 with_debug_info: false,
                 router_version: 1
