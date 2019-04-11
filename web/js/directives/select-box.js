@@ -1,4 +1,4 @@
-(function(){
+(function () {
     app.directive('selectBox', selectBox);
 
     selectBox.$inject = ['List', 'Redirect'];
@@ -23,7 +23,7 @@
             scope.open = openItem;
             loadList();
 
-            scope.$watch('model', function(newVal, oldVal){
+            scope.$watch('model', function (newVal, oldVal) {
                 if (newVal == 'new') {
                     scope.model = oldVal;
                     openItem(null);
@@ -32,8 +32,8 @@
 
             function loadList() {
                 var listFunction = List[attrs.list];
-                if (listFunction  !== undefined) {
-                    listFunction(scope.param).then(function(data){
+                if (listFunction !== undefined) {
+                    listFunction(scope.param).then(function (data) {
                         scope.list = data;
                     })
                 }
@@ -42,7 +42,7 @@
             function openItem(itemId) {
                 var editFunction = Redirect[attrs.list + 'Edit'];
                 if (editFunction !== undefined) {
-                    editFunction(itemId).then(function(){
+                    editFunction(itemId).then(function () {
                         loadList();
                     })
                 }

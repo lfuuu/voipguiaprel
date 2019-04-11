@@ -524,8 +524,10 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
 	var url = '/json/number/';
 	var listA = undefined;
 	var listB = undefined;
+	var listC = undefined;
 	var promiseA = undefined;
 	var promiseB = undefined;
+	var promiseC = undefined;
 	return {
 		read: function(data) {
 			return ApiLoader.post(url + 'read', data);
@@ -533,65 +535,90 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
 		get: function(data) {
 			return ApiLoader.post(url + 'get', data);
 		},
-		list: function(type, serverId) {
-		  if (!serverId) {
-        serverId = $rootScope.server.id;
-      }
-			if (type == 1) {
-				if (promiseA !== undefined) return promiseA;
+        list: function (type, serverId) {
+            if (!serverId) {
+                serverId = $rootScope.server.id;
+            }
+            if (type == 1) {
+                if (promiseA !== undefined) return promiseA;
 
-				var deferred = $q.defer();
-				if (listA !== undefined) {
-					deferred.resolve(listA);
-					return deferred.promise;
-				} else {
-					var data = {server_id: serverId};
-					ApiLoader.post(url + 'list', data)
-						.then(function(data){
-							listA = [];
-							for(var i in data) {
-								if (data[i].type_id == 1) {
-									listA.push(data[i]);
-								}
-							}
-							promiseA = undefined;
-							deferred.resolve(listA);
-						}, function(data){
-							promiseA = undefined;
-							deferred.reject(data);
-						});
-					promiseA = deferred.promise;
-				}
-				return deferred.promise;
-			} else
-			if (type == 2) {
-				if (promiseB !== undefined) return promiseB;
+                var deferred = $q.defer();
+                if (listA !== undefined) {
+                    deferred.resolve(listA);
+                    return deferred.promise;
+                } else {
+                    var data = {server_id: serverId};
+                    ApiLoader.post(url + 'list', data)
+                        .then(function (data) {
+                            listA = [];
+                            for (var i in data) {
+                                if (data[i].type_id == 1) {
+                                    listA.push(data[i]);
+                                }
+                            }
+                            promiseA = undefined;
+                            deferred.resolve(listA);
+                        }, function (data) {
+                            promiseA = undefined;
+                            deferred.reject(data);
+                        });
+                    promiseA = deferred.promise;
+                }
+                return deferred.promise;
+            } else if (type == 2) {
+                if (promiseB !== undefined) return promiseB;
 
-				var deferred = $q.defer();
-				if (listB !== undefined) {
-					deferred.resolve(listB);
-					return deferred.promise;
-				} else {
-					var data = {server_id: serverId};
-					ApiLoader.post(url + 'list', data)
-						.then(function(data){
-							listB = [];
-							for(var i in data) {
-								if (data[i].type_id == 2) {
-									listB.push(data[i]);
-								}
-							}
-							promiseB = undefined;
-							deferred.resolve(listB);
-						}, function(data){
-							promiseB = undefined;
-							deferred.reject(data);
-						});
-					promiseB = deferred.promise;
-				}
-				return deferred.promise;
-			}
-		},
+                var deferred = $q.defer();
+                if (listB !== undefined) {
+                    deferred.resolve(listB);
+                    return deferred.promise;
+                } else {
+                    var data = {server_id: serverId};
+                    ApiLoader.post(url + 'list', data)
+                        .then(function (data) {
+                            listB = [];
+                            for (var i in data) {
+                                if (data[i].type_id == 2) {
+                                    listB.push(data[i]);
+                                }
+                            }
+                            promiseB = undefined;
+                            deferred.resolve(listB);
+                        }, function (data) {
+                            promiseB = undefined;
+                            deferred.reject(data);
+                        });
+                    promiseB = deferred.promise;
+                }
+                return deferred.promise;
+            } else if (type == 3) {
+                if (promiseC !== undefined) return promiseC;
+
+                var deferred = $q.defer();
+                if (listC !== undefined) {
+                    deferred.resolve(listC);
+                    return deferred.promise;
+                } else {
+                    var data = {server_id: serverId};
+                    ApiLoader.post(url + 'list', data)
+                        .then(function (data) {
+                            listC = [];
+                            for (var i in data) {
+                                if (data[i].type_id == 3) {
+                                    listC.push(data[i]);
+                                }
+                            }
+                            promiseC = undefined;
+                            deferred.resolve(listC);
+                        }, function (data) {
+                            promiseC = undefined;
+                            deferred.reject(data);
+                        });
+                    promiseC = deferred.promise;
+                }
+                return deferred.promise;
+            }
+        },
 		save: function(data) {
 			listA = listB = undefined;
 			return ApiLoader.post(url + 'save', data);

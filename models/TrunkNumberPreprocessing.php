@@ -10,6 +10,7 @@ use app\queries\TrunkNumberPreprocessingQuery;
  * @property int $noa
  * @property int $length
  * @property string $prefix
+ * @property string $abc_mode
  * @property
  */
 class TrunkNumberPreprocessing extends \yii\db\ActiveRecord
@@ -44,6 +45,7 @@ class TrunkNumberPreprocessing extends \yii\db\ActiveRecord
             [['noa'], 'integer', 'min' => 0, 'max' => 3],
             [['length'], 'integer', 'min' => 1, 'max' => 20],
             [['prefix'], 'string', 'min' => 1,  'max' => 10],
+            [['abc_mode'], 'integer']
         ];
     }
 }

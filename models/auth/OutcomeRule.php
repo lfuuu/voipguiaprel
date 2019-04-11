@@ -13,6 +13,7 @@ use app\models\TrunkGroup;
  * @property int $trunk_group_id
  * @property int $number_id_filter_a
  * @property int $number_id_filter_b
+ * @property int $number_id_filter_c
  * @property bool $allow
  */
 class OutcomeRule extends \yii\db\ActiveRecord
@@ -32,7 +33,7 @@ class OutcomeRule extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['trunk_group_id', 'number_id_filter_a', 'number_id_filter_b', 'server_id'], 'integer'],
+            [['trunk_group_id', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'server_id'], 'integer'],
             [['allow'], 'boolean'],
         ];
     }

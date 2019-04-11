@@ -1,12 +1,12 @@
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
-        <h3 ng-if="item.id">A/B номер {{item.name}}</h3>
+        <h3 ng-if="item.id">A/B/C номер {{item.name}}</h3>
         <h3 ng-if="!item.id">Создание номера</h3>
     </div>
     <div class="modal-body">
 
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#number-tab" data-toggle="tab">A/B номер</a></li>
+            <li class="active"><a href="#number-tab" data-toggle="tab">A/B/C номер</a></li>
             <li ng-if="item.id"><a href="#number-route-table-usages-tab" data-toggle="tab">Таблицы маршрутизации</a></li>
             <li ng-if="item.id"><a href="#number-trunk-priority-usages-tab" data-toggle="tab">Приоритеты транков</a></li>
             <li ng-if="item.id"><a href="#number-trunk-rules-usages-tab" data-toggle="tab">Правила транков</a></li>
@@ -31,6 +31,7 @@
                         <div class="btn-group" ng-click="item.auto_routing = !item.auto_routing">
                             <button type="button" class="btn {{item.type_id == 1 ? 'btn-primary active' : 'btn-default'}}" ng-click="item.type_id = 1">A - номер</button>
                             <button type="button" class="btn {{item.type_id == 2 ? 'btn-primary active' : 'btn-default'}}" ng-click="item.type_id = 2">B - номер</button>
+                            <button type="button" class="btn {{item.type_id == 3 ? 'btn-primary active' : 'btn-default'}}" ng-click="item.type_id = 3">C - номер</button>
                         </div>
                     </div>
                 </div>

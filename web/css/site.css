@@ -274,3 +274,7 @@ td > div > .select2-container > .select2-choice {
 .calls-raw-modal {
 	margin-top: 300px;
 }
+
+.trunk-header {
+	font-size: smaller;
+}

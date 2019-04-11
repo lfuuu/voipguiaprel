@@ -31,56 +31,6 @@
                     </div>
                 </div>
 
-
-                <!--<table class="table table-striped" style="font-size: smaller;display: none">
-                    <tbody ui-sortable="sortableOptions" ng-model="item.routes">
-                    <tr style="border-bottom: lightgrey solid 2px;border-top: lightgrey solid 2px;" ng-repeat="line in item.routes">
-                        <td width="1%" style="cursor: ns-resize">
-                            <span class="badge">{{$index + 1}}</span>
-                        </td>
-                        <td style="padding-bottom: 0px;padding-top: 0px;" width="22%">
-                            <label style="margin-bottom: 0px;">A - Номер</label>
-                            <select-box disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
-                            <span style="height: 5px;"></span>
-                            <label style="margin-bottom: 0px;">CPC</label>
-                            <select-box disabled="{{line.is_locked}}" list="cpc" model="line.cpc_id" default="Любой CPC"></select-box>
-                        </td>
-                        <td style="padding-bottom: 0px;padding-top: 0px;" width="22%">
-                            <label style="margin-bottom: 0px;">B - Номер</label>
-                            <select-box disabled="{{line.is_locked}}" list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box>
-                            <span style="height: 5px;"></span>
-                            <label style="margin-bottom: 0px;">Headers rules</label>
-                            <select-box disabled="{{line.is_locked}}" list="headerRule" model="line.header_rule_id" default="Любой HeaderRule"></select-box>
-                        </td>
-                        <td style="padding-bottom: 0px;padding-top: 0px;" width="22%">
-                            <label style="margin-bottom: 0px;">C - Номер</label>
-                            <select-box disabled="true" list="number" model="line.c_number_id" param="2" default="Любой номер"></select-box>
-                        </td>
-                        <td style="padding-bottom: 0px;padding-top: 0px;vertical-align: middle; border-right: lightgrey solid 2px; border-left: lightgrey solid 2px;" width="22%">
-                            <label style="margin-bottom: 0px;">Outcome</label>
-                            <outcome-select-box disabled="{{line.is_locked}}" outcome-model="line.outcome_id" route-table-model="line.outcome_route_table_id"></outcome-select-box>
-                        </td>
-                        <td style="padding-bottom: 0px;padding-top: 0px;" width="11%" ng-if="userPermissions['route_table_route_lock']">
-                            <label style="margin-bottom: 0px;">Заблокировано</label>
-                            <br/>
-                            <div class="btn-group" ng-click="line.is_locked = !line.is_locked">
-                                <button type="button" class="btn btn-sm {{line.is_locked ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!line.is_locked ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                            </div>
-                            <br/>
-                            <label style="margin-bottom: 0px;">Удалить</label>
-                            <br/>
-                            <button ng-if="!line.is_locked" type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRoute($index)"></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="6">
-                            <button type="button" class="btn btn-success btn-xs" ng-click="addRoute()"><i class="glyphicon glyphicon-plus"></i> Добавить роут</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>-->
-
                 <table class="table table-striped" style="font-size: smaller; font-weight: bold;">
                     <thead>
                         <tr>
@@ -107,7 +57,7 @@
                                 <select-box disabled="{{line.is_locked}}" list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box>
                             </td>
                             <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
-                                <select-box disabled="true" list="number" model="line.c_number_id" param="2" default="Любой номер"></select-box>
+                                <select-box disabled="{{line.is_locked}}" list="number" model="line.c_number_id" param="3" default="Любой номер"></select-box>
                             </td>
                             <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
                                 <select-box disabled="{{line.is_locked}}" list="cpc" model="line.cpc_id" default="Любой CPC"></select-box>
@@ -178,6 +128,13 @@
                                     <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
                                 </td>
 
+                                <td width="3%" style="cursor: ns-resize">
+                                    <span ng-if="line.number_id_filter_c !== null">C:</span>
+                                </td>
+                                <td>
+                                    <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
+                                </td>
+
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRouteRule($index)"></button>
                                 </td>
@@ -185,7 +142,7 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="6">
+                                <td colspan="8">
                                     <button type="button" class="btn btn-success btn-xs" ng-click="addRouteRule()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
                                 </td>
                             </tr>

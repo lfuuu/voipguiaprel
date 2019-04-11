@@ -21,7 +21,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
 
             var numbersRules = {};
             $.each(data.numbersRules, function () {
-                var mode = (this.orig ? 'orig' : 'term') + '-' + (!this.outgoing ? 'a' : 'b');
+                var mode = (this.orig ? 'orig' : 'term') + '-' + ((this.abc_mode == 1) ? 'a' : ((this.abc_mode == 2) ? 'b' : 'c'));
 
                 if (!numbersRules[mode]) {
                     numbersRules[mode] = [];
@@ -30,7 +30,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                 numbersRules[mode].push({
                     allow: this.allow,
                     orig: this.orig,
-                    outgoing: this.outgoing,
+                    abc_mode: this.abc_mode,
+                    outgoing: false,
                     prefixlist_id: this.prefixlist_id,
                     test_redirect_num: this.test_redirect_num,
                 });
@@ -90,8 +91,10 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
             numbersRules: {},
             orig_afilter_default_allowed: true,
             orig_bfilter_default_allowed: true,
+            orig_cfilter_default_allowed: true,
             term_afilter_default_allowed: true,
             term_bfilter_default_allowed: true,
+            term_cfilter_default_allowed: true,
             location_id: 1,
             sorm: {
                 enabled: false,
@@ -120,7 +123,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                     key: mode,
                     init: 'orig_afilter_default_allowed',
                     orig: true,
-                    outgoing: false,
+                    abc_mode: 1,
                     is_test_redirect_num: true
                 };
             case 'orig-b':
@@ -128,14 +131,21 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                     key: mode,
                     init: 'orig_bfilter_default_allowed',
                     orig: true,
-                    outgoing: true
+                    abc_mode: 2
+                };
+            case 'orig-c':
+                return {
+                    key: mode,
+                    init: 'orig_cfilter_default_allowed',
+                    orig: true,
+                    abc_mode: 3
                 };
             case 'term-a':
                 return {
                     key: mode,
                     init: 'term_afilter_default_allowed',
                     orig: false,
-                    outgoing: false,
+                    abc_mode: 1,
                     is_test_redirect_num: true
                 };
             case 'term-b':
@@ -143,7 +153,14 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                     key: mode,
                     init: 'term_bfilter_default_allowed',
                     orig: false,
-                    outgoing: true
+                    abc_mode: 2
+                };
+            case 'term-c':
+                return {
+                    key: mode,
+                    init: 'term_cfilter_default_allowed',
+                    orig: false,
+                    abc_mode: 3
                 };
         }
     };
@@ -172,7 +189,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
             prefixlist_id: '',
             allow: $scope.item[mode.init],
             orig: mode.orig,
-            outgoing: mode.outgoing,
+            abc_mode: mode.abc_mode,
+            outgoing: false,
             test_redirect_num: mode.test_redirect_num
         });
     };
@@ -200,8 +218,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
         $scope.numbersRulesOrig = !$scope.numbersRulesOrig;
     };
 
-    $scope.addNumberPreprocessing = function (src) {
-        $scope.item.numberPreprocessing.push({src: src, noa: '', length: '', prefix: ''});
+    $scope.addNumberPreprocessing = function (abc_mode) {
+        $scope.item.numberPreprocessing.push({src: false, abc_mode: abc_mode, noa: '', length: '', prefix: ''});
     };
 
     $scope.removeNumberPreprocessing = function (index) {

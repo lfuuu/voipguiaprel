@@ -10,6 +10,7 @@ namespace app\models;
  * @property int $limit_ratio
  * @property int $number_id_filter_a
  * @property int $number_id_filter_b
+ * @property int $number_id_filter_c
  * @property bool $is_orig
  */
 class TrunkLoadLimit extends \yii\db\ActiveRecord
@@ -32,7 +33,7 @@ class TrunkLoadLimit extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['limit_absolute', 'limit_relative', 'number_id_filter_a', 'number_id_filter_b', 'mode'], 'integer'],
+            [['limit_absolute', 'limit_relative', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'mode'], 'integer'],
             [['limit_ratio'], 'string'],
             [['is_orig'], 'boolean'],
         ];
@@ -75,5 +76,12 @@ class TrunkLoadLimit extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Number::className(), ['id' => 'number_id_filter_b']);
     }
-
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNumberC()
+    {
+        return $this->hasOne(Number::className(), ['id' => 'number_id_filter_c']);
+    }
 }

@@ -5,8 +5,9 @@
             <tbody ui-sortable="{axis: 'y'}" ng-model="item.numberPreprocessing">
             <tr ng-repeat="line in item.numberPreprocessing">
                 <td width="20%" style="cursor: ns-resize">
-                    <span ng-if="line.src" class="label label-default">A-номер</span>
-                    <span ng-if="!line.src" class="label label-default">B-номер</span>
+                    <span ng-if="line.abc_mode == 1" class="label label-default">A-номер</span>
+                    <span ng-if="line.abc_mode == 2" class="label label-default">B-номер</span>
+                    <span ng-if="line.abc_mode == 3" class="label label-default">C-номер</span>
                 </td>
                 <td width="5%" style="cursor: ns-resize">
                     NOA:
@@ -34,8 +35,9 @@
             <tfoot>
             <tr>
                 <td colspan="6">
-                    <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(true)"><i class="glyphicon glyphicon-plus"></i> А-номер</button>
-                    <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(false)"><i class="glyphicon glyphicon-plus"></i> B-номер</button>
+                    <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(1)"><i class="glyphicon glyphicon-plus"></i> А-номер</button>
+                    <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(2)"><i class="glyphicon glyphicon-plus"></i> B-номер</button>
+                    <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(3)"><i class="glyphicon glyphicon-plus"></i> C-номер</button>
                 </td>
             </tr>
             </tfoot>

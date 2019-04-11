@@ -8,20 +8,22 @@
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#trunk" data-toggle="tab">Транк</a></li>
-            <li><a href="#trunk_extra" data-toggle="tab">Дополнительно</a></li>
-            <li><a href="#priority" data-toggle="tab">Приоритеты</a></li>
+            <li class="active"><a class="trunk-header" href="#trunk" data-toggle="tab">Транк</a></li>
+            <li><a class="trunk-header" href="#trunk_extra" data-toggle="tab">Доп.</a></li>
+            <li><a class="trunk-header" href="#priority" data-toggle="tab">Приоритеты</a></li>
 
-            <li><a href="#numbers_rules_orig_a" data-toggle="tab">Пр. Orig A</a></li>
-            <li><a href="#numbers_rules_orig_b" data-toggle="tab">Пр. Orig B</a></li>
-            <li><a href="#numbers_rules_term_a" data-toggle="tab">Пр. Term A</a></li>
-            <li><a href="#numbers_rules_term_b" data-toggle="tab">Пр. Term B</a></li>
+            <li><a class="trunk-header" href="#numbers_rules_orig_a" data-toggle="tab">Пр. Orig A</a></li>
+            <li><a class="trunk-header" href="#numbers_rules_orig_b" data-toggle="tab">Пр. Orig B</a></li>
+            <li><a class="trunk-header" href="#numbers_rules_orig_c" data-toggle="tab">Пр. Orig C</a></li>
+            <li><a class="trunk-header" href="#numbers_rules_term_a" data-toggle="tab">Пр. Term A</a></li>
+            <li><a class="trunk-header" href="#numbers_rules_term_b" data-toggle="tab">Пр. Term B</a></li>
+            <li><a class="trunk-header" href="#numbers_rules_term_c" data-toggle="tab">Пр. Term C</a></li>
 
-            <li><a href="#trunk_rules" data-toggle="tab">Правила</a></li>
-            <li><a href="#number_preprocessing" data-toggle="tab">Препроцессинг</a></li>
-            <li><a href="#sorm_edit" data-toggle="tab">ПП-538</a></li>
-            <li><a href="#load_limit" data-toggle="tab">Ограничение загрузки</a></li>
-            <li><a href="#usage_in_trunk_groups" data-toggle="tab">Задействован в группах</a></li>
+            <li><a class="trunk-header" href="#trunk_rules" data-toggle="tab">Правила</a></li>
+            <li><a class="trunk-header" href="#number_preprocessing" data-toggle="tab">Препроцессинг</a></li>
+            <li><a class="trunk-header" href="#sorm_edit" data-toggle="tab">ПП-538</a></li>
+            <li><a class="trunk-header" href="#load_limit" data-toggle="tab">Огр. загрузки</a></li>
+            <li><a class="trunk-header" href="#usage_in_trunk_groups" data-toggle="tab">Задействован в группах</a></li>
         </ul>
 
         <br />
@@ -35,8 +37,10 @@
 
             <div class="tab-pane" id="numbers_rules_orig_a" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('orig-a')"></div>
             <div class="tab-pane" id="numbers_rules_orig_b" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('orig-b')"></div>
+            <div class="tab-pane" id="numbers_rules_orig_c" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('orig-c')"></div>
             <div class="tab-pane" id="numbers_rules_term_a" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('term-a')"></div>
             <div class="tab-pane" id="numbers_rules_term_b" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('term-b')"></div>
+            <div class="tab-pane" id="numbers_rules_term_c" ng-include="'/templates/tabs/trunk_edit/numbers_rules.html'" ng-if="true" onload="mode = transcriptMode('term-c')"></div>
 
             <div class="tab-pane" id="trunk_rules" ng-include="'/templates/tabs/trunk_edit/trunk_rules.html'"></div>
 

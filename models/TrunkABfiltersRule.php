@@ -11,6 +11,7 @@ namespace app\models;
  * @property int $order
  * @property int $prefixlist_id
  * @property bool $test_redirect_num
+ * @property int $abc_mode
  */
 class TrunkABfiltersRule extends \yii\db\ActiveRecord
 {
@@ -30,7 +31,7 @@ class TrunkABfiltersRule extends \yii\db\ActiveRecord
     {
         return [
             [['outgoing', 'allow', 'orig',], 'boolean'],
-            [['prefixlist_id', 'order', 'trunk_id',], 'integer'],
+            [['prefixlist_id', 'order', 'trunk_id', 'abc_mode'], 'integer'],
             ['trunk_id', 'required'],
         ];
     }

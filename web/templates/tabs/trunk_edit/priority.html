@@ -1,12 +1,12 @@
 <div class="form-group">
-    <label class="col-sm-2 control-label">По умолчанию</label>
-    <div class="col-sm-10">
+    <label class="col-sm-1 control-label">По умолчанию</label>
+    <div class="col-sm-11">
         <input class="form-control" ng-model="item.default_priority" required />
     </div>
 </div>
 <div class="form-group">
-    <label class="col-sm-2 control-label">Приоритеты</label>
-    <div class="col-sm-10">
+    <label class="col-sm-1 control-label">Приоритеты</label>
+    <div class="col-sm-11">
         <table class="table table-striped">
             <tbody ui-sortable="{axis: 'y'}" ng-model="item.priorities">
             <tr ng-repeat="line in item.priorities">
@@ -14,7 +14,7 @@
                     <span class="badge">{{$index + 1}}</span>
                 </td>
                 <td width="10%">
-                    <input type="number" style="width:60px;" class="form-control input-sm" ng-model="line.priority" min="-99" max="99" required />
+                    <input type="number" style="width:55px;" class="form-control input-sm" ng-model="line.priority" min="-99" max="99" required />
                 </td>
 
                 <td width="5%" style="cursor: ns-resize">
@@ -40,6 +40,14 @@
                 <td>
                     <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
                 </td>
+
+                <td width="3%" style="cursor: ns-resize">
+                    <span ng-if="line.number_id_filter_c !== null">C:</span>
+                </td>
+                <td>
+                    <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
+                </td>
+
                 <td>
                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePriority($index)"></button>
                 </td>

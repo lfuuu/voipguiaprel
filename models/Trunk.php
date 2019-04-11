@@ -33,8 +33,10 @@ use yii\db\Query;
  * @property bool $mgmn_trunk
  * @property bool $orig_afilter_default_allowed
  * @property bool $orig_bfilter_default_allowed
+ * @property bool $orig_cfilter_default_allowed
  * @property bool $term_afilter_default_allowed
  * @property bool $term_bfilter_default_allowed
+ * @property bool $term_cfilter_default_allowed
  * @property bool $roaming_orig
  * @property bool $roaming_term
  * @property int $id_pbx
@@ -77,8 +79,8 @@ class Trunk extends \yii\db\ActiveRecord
                 'source_trunk_rule_default_allowed', 'our_trunk', 'auth_by_number', 'orig_redirect_number_7800',
                 'orig_redirect_number', 'term_redirect_number', 'show_in_stat', 'sw_minimalki', 'sw_shared',
                 'tech_trunk', 'pstn_trunk', 'mgmn_trunk','mgmn_orig_trunk','le8accept',
-                'orig_afilter_default_allowed', 'orig_bfilter_default_allowed',
-                'term_afilter_default_allowed', 'term_bfilter_default_allowed',
+                'orig_afilter_default_allowed', 'orig_bfilter_default_allowed', 'orig_cfilter_default_allowed',
+                'term_afilter_default_allowed', 'term_bfilter_default_allowed', 'term_cfilter_default_allowed',
                 'roaming_orig', 'roaming_term', 'mgmn2_orig', 'mgmn2_term',
                 'transparent_header', 'pbx', 'uplink_trunk', 'internal_trunk'
             ], 'boolean'],

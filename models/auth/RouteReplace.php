@@ -18,6 +18,7 @@ use app\queries\auth\RouteReplaceQuery;
  * @property int $replace_trunk_id
  * @property int $a_number_id
  * @property int $b_number_id
+ * @property int $c_number_id
  */
 class RouteReplace extends \yii\db\ActiveRecord
 {
@@ -44,7 +45,7 @@ class RouteReplace extends \yii\db\ActiveRecord
         return [
             [['server_id', 'order', 'orig_trunk_id', 'orig_trunk_group_id',
                 'term_trunk_id', 'term_trunk_group_id', 'replace_trunk_id',
-                'a_number_id', 'b_number_id'], 'integer'],
+                'a_number_id', 'b_number_id', 'c_number_id'], 'integer'],
             [['orig_attr', 'term_attr', 'action_type'], 'string'],
         ];
     }
