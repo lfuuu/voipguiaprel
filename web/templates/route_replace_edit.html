@@ -8,11 +8,12 @@
             <tr>
                 <th width="1%">&nbsp;</th>
                 <th width="10%">Группа ориг.</th>
-                <th width="10%">Номер А</th>
+                <th width="7%">Номер А</th>
                 <th width="1%">Атрибут ориг.</th>
                 <th width="10%">Группа терм.</th>
-                <th width="10%">Номер B</th>
+                <th width="7%">Номер B</th>
                 <th width="1%">Атрибут терм.</th>
+                <th width="7%">Номер C</th>
                 <th width="10%">Действие</th>
                 <th width="46%">Значение</th>
                 <th width="1%">&nbsp;</th>
@@ -46,6 +47,9 @@
                         <option value="">-- Любой --</option>
                         <option ng-repeat="attr in termAttrList" value="{{attr.id}}">{{attr.name}}</option>
                     </select>
+                </td>
+                <td style="padding-right: 1px;padding-left: 1px;">
+                    <select-box list="number" model="line.c_number_id" param="3" default="Любой номер"></select-box>
                 </td>
                 <td style="padding-right: 1px;padding-left: 1px;">
                     <select ui-select2 ng-model="line.action_type" placeholder="Любой" style="min-width: 120px;width: 120px;max-width: 120px;">
