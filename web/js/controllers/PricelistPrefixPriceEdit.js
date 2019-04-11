@@ -10,7 +10,7 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
         b_number_price: function (newValue, oldValue) {
             if ($scope.pricelistIsActive && $scope.item) {
                 if (newValue > $scope.base_price) {
-                    $scope.item.date_from = $scope.date_one_week.toISOString().slice(0, 10);
+                    $scope.item.date_from = $scope.date_now.toISOString().slice(0, 10);
                 } else if (newValue < $scope.base_price) {
                     $scope.item.date_from = $scope.date_now.toISOString().slice(0, 10);
                 } else {

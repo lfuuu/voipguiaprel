@@ -20,11 +20,11 @@ var RouteCaseEditCtrl = function($scope, Redirect, RouteCase, params, $modalInst
 
 	$scope.addTrunk = function() {
 		$scope.item.trunks.push({trunk_id: null, priority: 1, weight: 100});
-	}
+	};
 
 	$scope.removeTrunk = function(index) {
 		$scope.item.trunks.splice(index, 1);
-	}
+	};
 
 
 	$scope.save = function()
@@ -32,12 +32,12 @@ var RouteCaseEditCtrl = function($scope, Redirect, RouteCase, params, $modalInst
 		RouteCase.save($scope.item).then(function(response) {
 			$modalInstance.close();
 		});
-	}
+	};
 
 	$scope.back = function()
 	{
 		$modalInstance.dismiss();
-	}
+	};
 
   $scope.clickOutcomeItem = function(item) {
     if (window.getSelection().type == 'Range') return;

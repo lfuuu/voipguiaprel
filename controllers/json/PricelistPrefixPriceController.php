@@ -111,15 +111,14 @@ class PricelistPrefixPriceController extends JsonController
             
             $dateFromNew = strtotime($dateFromRequest);
             $dateNow = strtotime(date('Y-m-d'));
-            $dateInAWeek = strtotime(date('Y-m-d', strtotime('+7 days')));
             $dateFromPricelist = strtotime($pricelist->date_start);
             
             if ($priceRequest > $item->b_number_price) {
-                $dateToCompare = ($dateInAWeek > $dateFromPricelist) ? $dateInAWeek : $dateFromPricelist;
+                $dateToCompare = ($dateNow > $dateFromPricelist) ? $dateNow : $dateFromPricelist;
                 
                 if ($dateFromNew < $dateToCompare) {
                     return [
-                        'error' => 'Дата активации прайса префикса должна быть не раньше, чем через неделю, и не раньше даты активации прайслиста!',
+                        'error' => 'Дата активации прайса префикса должна быть не раньше, чем сегодня, и не раньше даты активации прайслиста!',
                         'field' => 'date_from'
                     ];
                 }
