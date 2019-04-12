@@ -70,13 +70,13 @@ class PricelistFilterBController extends JsonController
                 foreach ($prefixesArray as $prefixItem) {
                     list($prefixBString, $prefixPrice) = preg_split("/[\t]/", $prefixItem);
                     
-                    $prefixBArray = explode(',', $prefixBString);
+                    $prefixBArray = explode(',', str_replace(['-'], ',', $prefixBString));
                     
                     foreach ($prefixBArray as $prefixB) {
                         $prefixesToSave[] = [
                             'pricelist_filter_b_id' => $item->id,
                             'prefix_b' => trim($prefixB),
-                            'b_number_price' => $prefixPrice,
+                            'b_number_price' => str_replace(',', '.', $prefixPrice),
                             'date_from' => date('Y-m-d'),
                             'date_to' => '3000-01-01'
                         ];
