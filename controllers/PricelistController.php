@@ -149,7 +149,6 @@ class PricelistController extends BaseController
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $filterB['rating']);
                     }
                     $filterBStartRowNumber = $currentRowNumber;
-                    $interconnectPrice = $filterB['interconnect_price'];
                     
                     $simplifiedPrefixList = [];
                     
@@ -164,14 +163,14 @@ class PricelistController extends BaseController
                     
                     foreach ($simplifiedPrefixList as $prefixPrice) {
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber,
-                            $prefixPrice[0]['b_number_price'] + $interconnectPrice);
+                            $prefixPrice[0]['b_number_price']);
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber,
                             $pricelist['currency_id']);
                         
                         if (isset($prefixPrice[1])) {
                             $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Increase' : 'Decrease';
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber,
-                                $prefixPrice[1]['b_number_price'] + $interconnectPrice);
+                                $prefixPrice[1]['b_number_price']);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 6, $currentRowNumber,
                                 $prefixPrice[1]['date_from']);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber, $direction);
@@ -283,7 +282,6 @@ class PricelistController extends BaseController
                     }
                     
                     $filterBStartRowNumber = $currentRowNumber;
-                    $interconnectPrice = $filterB['interconnect_price'];
                     
                     $prefixListFromResponse = isset($response[$filterB['id']]) ? $response[$filterB['id']] : [];
                     $simplifiedPrefixPriceList = [];
@@ -313,14 +311,14 @@ class PricelistController extends BaseController
                     foreach ($simplifiedPrefixPriceList as $prefixPriceKey => $prefixPrice) {
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $prefixPriceKey);
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber,
-                            $prefixPrice[0]['b_number_price'] + $interconnectPrice);
+                            $prefixPrice[0]['b_number_price']);
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber,
                             $pricelist['currency_id']);
                         
                         if (isset($prefixPrice[1])) {
                             $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Increase' : 'Decrease';
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber,
-                                $prefixPrice[1]['b_number_price'] + $interconnectPrice);
+                                $prefixPrice[1]['b_number_price']);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber,
                                 $prefixPrice[1]['date_from']);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 6, $currentRowNumber, $direction);

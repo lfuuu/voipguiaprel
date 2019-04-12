@@ -84,7 +84,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
                     for (var prefixPriceKey in data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit) {
                         var prefixItem = data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit[prefixPriceKey];
-                        var bNumberPrice = ((parseFloat(prefixItem.b_number_price) * 1000000 + interconnectPrice * 1000000) / 1000000).toFixed(4);
+                        var bNumberPrice = (parseFloat(prefixItem.b_number_price)).toFixed(4);
 
                         if (simplifiedPrefixList[prefixItem.prefix_b]) {
                             var previousItem = simplifiedPrefixList[prefixItem.prefix_b][(simplifiedPrefixList[prefixItem.prefix_b].length - 1)];
