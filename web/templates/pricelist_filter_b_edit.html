@@ -42,6 +42,20 @@
             </div>
 
             <div class="form-group">
+                <label class="col-sm-2 control-label">Цена оператора</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="1.234" ng-model="item.operator_price" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Цена транзита</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="1.234" ng-model="item.transit_price" required>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="col-sm-2 control-label">Бесплатно, секунд</label>
                 <div class="col-sm-10">
                     <input class="form-control" placeholder="1" ng-model="item.tarification_free_seconds" required>
