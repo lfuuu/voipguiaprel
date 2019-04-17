@@ -98,7 +98,7 @@ class CdrController extends JsonController
                 'disconnect_cause_description' => 'dc.description'
             ])
             ->innerJoin('public.server s', 's.id = c.server_id')
-            ->innerJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
+            ->leftJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
             ->where($where)
             ->limit($limit)
             ->orderBy('c.connect_time ' . ($sortAsc ? 'ASC' : 'DESC'));
@@ -131,7 +131,7 @@ class CdrController extends JsonController
                 ])
                 ->with('callsRaw.currency')
                 ->innerJoin('public.server s', 's.id = c.server_id')
-                ->innerJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
+                ->leftJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
                 ->where(['c.mcn_callid' => $this->request['mcn_callid']])
                 ->asArray()
                 ->all();
