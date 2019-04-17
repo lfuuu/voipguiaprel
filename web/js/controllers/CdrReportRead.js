@@ -5,6 +5,8 @@ var CdrReportReadCtrl = function($scope, Cdr, Trunk, List, Redirect, $window) {
     $scope.searchQuery = '';
 
     $scope.hideFilter = false;
+    $scope.isLoading = false;
+    $scope.noData = false;
 
     $scope.filterFields = [
         'name', 'server_id'
@@ -58,8 +60,16 @@ var CdrReportReadCtrl = function($scope, Cdr, Trunk, List, Redirect, $window) {
     };
 
     $scope.clickSearch = function() {
+        $scope.isLoading = true;
+        $scope.noData = false;
         Cdr.read($scope.item).then(function (data) {
+            if (data.length == 0) {
+                $scope.noData = true;
+            }
+
             $scope.list = data;
+
+            $scope.isLoading = false;
         });
     };
 
