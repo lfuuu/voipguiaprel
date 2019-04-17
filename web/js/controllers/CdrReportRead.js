@@ -51,7 +51,7 @@ var CdrReportReadCtrl = function($scope, Cdr, Trunk, List, Redirect, $window) {
             hub_id: '',
             mcn_callid: '',
             sort_asc: true,
-            show_all: false,
+            show_all: true,
             is_time_absolute: true,
             disconnect_cause_id: ''
         };
