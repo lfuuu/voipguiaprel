@@ -146,6 +146,7 @@ class RbacController extends Controller {
         ['name' => 'marketplace_list', 'description' => 'Просмотр биржи'],
         ['name' => 'marketplace_edit', 'description' => 'Редактирование биржи'],
         ['name' => 'cdr_report_read', 'description' => 'Просмотр отчета по CDR'],
+        ['name' => 'money_tree', 'description' => 'Денежное дерево'],
     ];
     
     private static $_roles = [
@@ -189,7 +190,7 @@ class RbacController extends Controller {
             'major_list', 'major_create', 'major_edit', 'major_delete',
             'major_group_list', 'major_group_create', 'major_group_edit', 'major_group_delete',
             'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
-            'marketplace_list', 'marketplace_edit', 'cdr_report_read'
+            'marketplace_list', 'marketplace_edit', 'cdr_report_read', 'money_tree'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'test_number_edit',
@@ -225,6 +226,7 @@ class RbacController extends Controller {
             'oca_bw_list', 'oca_bw_create', 'oca_bw_edit', 'oca_bw_delete',
             'route_replace_edit', 'header_list', 'header_create', 'header_edit', 'header_delete',
             'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
+            'money_tree'
         ]],
         ['role' => 'engineer', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view',

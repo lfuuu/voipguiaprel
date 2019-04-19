@@ -496,6 +496,10 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
         callsRawView: function(item) {
             return openModal(CallsRawViewCtrl, '/templates/calls_raw_view.html', {item: item}, 'calls-raw-modal');
-        }
+        },
+        moneyTree: function() {
+            $cookies.routing_selected_page = 'moneyTree';
+            return openTab(MoneyTreeCtrl, '/templates/routing/money_tree.html');
+        },
     };
 });

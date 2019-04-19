@@ -80,7 +80,7 @@ class StatisticsTreeController extends JsonController
         }
         
         $newItem = $item;
-        $newItem['money'] = $this->getMoneyText($item);
+        $newItem['money'] = '';
         $newItem['asr'] = [];
         $newItem['acd'] = [];
     
@@ -137,62 +137,4 @@ class StatisticsTreeController extends JsonController
         
         return $newItem;
     }
-
-    private function getMoneyText($item)
-    {
-        if (empty($item['money'])) {
-            return '';
-        }
-    
-        $newMoney = [];
-        $newMoneyText = "";
-    
-        foreach ($item['money'] as $money) {
-            if (!empty($money)) {
-                foreach ($money as $moneyName => $moneyArray) {
-                    $newMoney[$moneyName]['cost'][] = $moneyArray['cost'] ? $moneyArray['cost'] : '---';
-                    $newMoney[$moneyName]['rate'][] = $moneyArray['rate'] ? $moneyArray['rate'] : '---';
-                }
-            }
-        }
-    
-        foreach ($newMoney as $currency => $money) {
-            $cost = implode(', ', array_reverse($money['cost']));
-            $rate = implode(', ', array_reverse($money['rate']));
-            $newMoneyText .= $currency . ': cost: [' . $cost . '], rate: [' . $rate . "]\n";
-        }
-        
-        if (!empty($item['all_money'])) {
-            $currentMoney = [];
-            $previousMoney = [];
-            
-            foreach ($item['all_money']['current']['sum'] as $currency => $sum) {
-                if ($sum && $sum > 0) {
-                    $currentMoney[] = $currency . ': ' . $sum;
-                }
-            }
-    
-            foreach ($item['all_money']['previous']['sum'] as $currency => $sum) {
-                if ($sum && $sum > 0) {
-                    $previousMoney[] = $currency . ': ' . $sum;
-                }
-            }
-            
-            if (count($currentMoney) > 0) {
-                $currentMoneyText = implode(', ', $currentMoney);
-                
-                $newMoneyText .= 'Сумма c ' . $item['all_money']['current']['start'] . ': ' . $currentMoneyText . "\n";
-            }
-    
-            if (count($previousMoney) > 0) {
-                $previousMoneyText = implode(', ', $previousMoney);
-        
-                $newMoneyText .= 'Сумма c ' . $item['all_money']['previous']['start'] . ': ' . $previousMoneyText . "\n";
-            }
-        }
-        
-        
-        return $newMoneyText;
-    }
-    
 }

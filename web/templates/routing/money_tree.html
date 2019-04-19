@@ -1,0 +1,43 @@
+<div>
+    <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
+    <h4>Денежное дерево</h4>
+</div>
+
+<br />
+
+<script type="text/ng-template" id="nodes_renderer.html">
+    <br />
+    <div class="tree-container-bordered">
+        <div ng-if="subitem.name" ui-tree-handle class="tree-node tree-node-content">
+            <a class="btn btn-success btn-xs"  data-nodrag ng-click="toggle(this); descend(subitem, collapsed, true)">
+                <span class="glyphicon" ng-class="{
+                  'glyphicon-chevron-right': collapsed,
+                  'glyphicon-chevron-down': !collapsed
+                }"></span>
+            </a>
+            <span><span ng-if="subitem.name == 'master' || !subitem.real_name">[{{subitem.name}}]:</span><span ng-if="subitem.name !== 'master' && subitem.real_name">[{{subitem.name}}: {{subitem.real_name}}]:</span>
+                <br ng-if="subitem.month"/><span ng-if="subitem.month">[Месяц&nbsp;&nbsp;&nbsp;&nbsp;<span ng-repeat="(key, value) in subitem.month">| {{key}}: {{value.duration}}/{{value.money}}</span>]</span>
+                <br ng-if="subitem.week"/><span ng-if="subitem.week">[Неделя&nbsp;&nbsp;<span ng-repeat="(key, value) in subitem.week">| {{key}}: {{value.duration}}/{{value.money}}</span>]</span>
+                <br ng-if="subitem.yesterday"/><span ng-if="subitem.yesterday">[Вчера&nbsp;&nbsp;&nbsp;&nbsp;<span ng-repeat="(key, value) in subitem.yesterday">| {{key}}: {{value.duration}}/{{value.money}}</span>]</span>
+                <br ng-if="subitem.month"/><span ng-if="subitem.today">[Сегодня&nbsp;<span ng-repeat="(key, value) in subitem.today">| {{key}}: {{value.duration}}/{{value.money}}</span>]</span>
+            </span>
+        </div>
+
+        <ol ui-tree-nodes="" ng-model="subitem.sub" ng-class="{hidden: collapsed}">
+            <li ng-repeat="subitem in subitem.sub" ui-tree-node collapsed="true" class="stripe" ng-include="'nodes_renderer.html'">
+            </li>
+        </ol>
+
+    </div>
+</script>
+
+<div>
+    Формат отображения данных: [Валюта: Длительность/Сумма]
+    <br />
+    <button ng-click="collapseAll()">Свернуть все<div></div></button>
+    <div ui-tree="treeOptions" data-drag-enabled="false" id="tree-root">
+        <ol ui-tree-nodes ng-model="result">
+            <li ng-repeat="subitem in result.sub" collapsed="false" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+        </ol>
+    </div>
+</div>

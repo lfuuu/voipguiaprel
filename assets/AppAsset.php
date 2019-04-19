@@ -109,6 +109,7 @@ class AppAsset extends AssetBundle
         'js/controllers/CdrReportRead.js',
         'js/controllers/CdrReportView.js',
         'js/controllers/CallsRawView.js',
+        'js/controllers/routing/MoneyTree.js',
     ];
 
     public $templates = [
@@ -198,5 +199,6 @@ class AppAsset extends AssetBundle
         'templates/cdr_report_read.html',
         'templates/cdr_report_view.html',
         'templates/calls_raw_view.html',
+        'templates/routing/money_tree.html',
     ];
 }

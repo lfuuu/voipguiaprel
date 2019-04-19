@@ -2008,6 +2008,15 @@ app.factory('StatisticsTree', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('MoneyTree', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/money-tree/';
+    return {
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        }
+    };
+});
+
 app.factory('Scripts', function ($q, ApiLoader, $rootScope) {
     var url = '/json/scripts/';
     return {

@@ -46,9 +46,9 @@
             <a class="list-group-item" ng-if="userPermissions['test_group_list']" ng-click="Redirect.testGroupList()" ng-class="{active:tabs.isController('TestGroupListCtrl')}">Группы тестов</a>
             <a class="list-group-item" ng-if="userPermissions['blacklist_edit']" ng-click="Redirect.blacklistSettings()">Блокировка по номеру</a>
         </div>
-        <div ng-if="userPermissions['statistics_tree']" class="list-group">
-            <a class="list-group-item" ng-if="userPermissions['statistics_tree']" ng-click="Redirect.statisticsTree()"
-               ng-class="{active:tabs.isController('StatisticsTreeCtrl')}">Дерево ASR-ACD</a>
+        <div ng-if="userPermissions['statistics_tree'] || userPermissions['money_tree']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['statistics_tree']" ng-click="Redirect.statisticsTree()" ng-class="{active:tabs.isController('StatisticsTreeCtrl')}">Дерево ASR-ACD</a>
+            <a class="list-group-item" ng-if="userPermissions['money_tree']" ng-click="Redirect.moneyTree()" ng-class="{active:tabs.isController('MoneyTreeCtrl')}">Денежное дерево</a>
         </div>
     </div>
 
