@@ -16,10 +16,10 @@
                 }"></span>
             </a>
             <span><span ng-if="subitem.name == 'master' || !subitem.real_name">[{{subitem.name}}]:</span><span ng-if="subitem.name !== 'master' && subitem.real_name">[{{subitem.name}}: {{subitem.real_name}}]:</span>
-                <br ng-if="subitem.month"/><span ng-if="subitem.month">[Месяц&nbsp;&nbsp;&nbsp;&nbsp;<span ng-repeat="(key, value) in subitem.month">| {{key}}: {{value.duration}}/{{value.money}}</span>]</span>
-                <br ng-if="subitem.week"/><span ng-if="subitem.week">[Неделя&nbsp;&nbsp;<span ng-repeat="(key, value) in subitem.week">| {{key}}: {{value.duration}}/{{value.money}}</span>]</span>
-                <br ng-if="subitem.yesterday"/><span ng-if="subitem.yesterday">[Вчера&nbsp;&nbsp;&nbsp;&nbsp;<span ng-repeat="(key, value) in subitem.yesterday">| {{key}}: {{value.duration}}/{{value.money}}</span>]</span>
-                <br ng-if="subitem.month"/><span ng-if="subitem.today">[Сегодня&nbsp;<span ng-repeat="(key, value) in subitem.today">| {{key}}: {{value.duration}}/{{value.money}}</span>]</span>
+                <br ng-if="subitem.month"/><span ng-if="subitem.month">[Месяц&nbsp;&nbsp;&nbsp;&nbsp;<span ng-repeat="(key, value) in subitem.month">| {{value.duration}} сек; {{value.money}} {{key}}; {{(value.money/value.duration*60).toPrecision(4)}} {{key}}/мин</span>]</span>
+                <br ng-if="subitem.week"/><span ng-if="subitem.week">[Неделя&nbsp;&nbsp;<span ng-repeat="(key, value) in subitem.week">| {{value.duration}} сек; {{value.money}} {{key}}; {{(value.money/value.duration*60).toPrecision(4)}} {{key}}/мин</span>]</span>
+                <br ng-if="subitem.yesterday"/><span ng-if="subitem.yesterday">[Вчера&nbsp;&nbsp;&nbsp;&nbsp;<span ng-repeat="(key, value) in subitem.yesterday">| {{value.duration}} сек; {{value.money}} {{key}}; {{(value.money/value.duration*60).toPrecision(4)}} {{key}}/мин</span>]</span>
+                <br ng-if="subitem.month"/><span ng-if="subitem.today">[Сегодня&nbsp;<span ng-repeat="(key, value) in subitem.today">| {{value.duration}} сек; {{value.money}} {{key}}; {{(value.money/value.duration*60).toPrecision(4)}} {{key}}/мин</span>]</span>
             </span>
         </div>
 
@@ -32,7 +32,6 @@
 </script>
 
 <div>
-    Формат отображения данных: [Валюта: Длительность, сек/Сумма]
     <br />
     <button ng-click="collapseAll()">Свернуть все<div></div></button>
     <div ui-tree="treeOptions" data-drag-enabled="false" id="tree-root">

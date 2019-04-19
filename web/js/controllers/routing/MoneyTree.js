@@ -23,6 +23,10 @@ var MoneyTreeCtrl = function($scope, MoneyTree, $window) {
     };
 
     $scope.descend = function (subitem, collapsed) {
+        if (subitem.name == 'master') {
+            return;
+        }
+        
         var coreKey = $scope.coreKey;
 
         if (!collapsed) {
