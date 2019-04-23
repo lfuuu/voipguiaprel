@@ -48,6 +48,7 @@ use yii\db\Query;
  * @property bool $pbx
  * @property bool $uplink_trunk
  * @property bool $internal_trunk
+ * @property string $object_comment
  *
  * @property \yii\db\ActiveQuery rulesSourceOrig
  * @property \yii\db\ActiveQuery rulesDestinationOrig
@@ -87,6 +88,7 @@ class Trunk extends \yii\db\ActiveRecord
             [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id'], 'integer'],
             [['back_trunk'], 'string', 'max' => 50],
             [['road_to_regions', 'trace_to_regions'], 'string', 'max' => 100],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

@@ -28,13 +28,16 @@
                     <input class="form-control input-sm" ng-model="line.prefix" required />
                 </td>
                 <td>
+                    <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_preprocessing" comment="line.object_comment"></comment-icon>
+                </td>
+                <td>
                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeNumberPreprocessing($index)"></button>
                 </td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="6">
+                <td colspan="9">
                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(1)"><i class="glyphicon glyphicon-plus"></i> А-номер</button>
                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(2)"><i class="glyphicon glyphicon-plus"></i> B-номер</button>
                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(3)"><i class="glyphicon glyphicon-plus"></i> C-номер</button>

@@ -28,6 +28,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                 }
 
                 numbersRules[mode].push({
+                    id: this.id,
                     allow: this.allow,
                     orig: this.orig,
                     abc_mode: this.abc_mode,

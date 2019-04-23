@@ -12,6 +12,7 @@ namespace app\models;
  * @property int $number_id_filter_b
  * @property int $number_id_filter_c
  * @property bool $is_orig
+ * @property string $object_comment
  */
 class TrunkLoadLimit extends \yii\db\ActiveRecord
 {
@@ -36,6 +37,7 @@ class TrunkLoadLimit extends \yii\db\ActiveRecord
             [['limit_absolute', 'limit_relative', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'mode'], 'integer'],
             [['limit_ratio'], 'string'],
             [['is_orig'], 'boolean'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

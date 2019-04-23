@@ -13,6 +13,7 @@ use app\queries\TrunkPriorityQuery;
  * @property int $number_id_filter_b
  * @property int $number_id_filter_c
  * @property int $trunk_group_id
+ * @property string $object_comment
  */
 class TrunkPriority extends \yii\db\ActiveRecord
 {
@@ -33,6 +34,7 @@ class TrunkPriority extends \yii\db\ActiveRecord
         return [
             [['priority'], 'integer', 'min'=> -10, 'max' => 10],
             [['number_id_filter_a','number_id_filter_b','number_id_filter_c','trunk_group_id'], 'integer'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

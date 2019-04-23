@@ -59,6 +59,9 @@
                         <option value="2">Приоритет</option>
                     </select>
                 </td>
+                <td>
+                    <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_load_limit" comment="line.object_comment"></comment-icon>
+                </td>
                 <td width="3%">
                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeLoadLimit($index)"></button>
                 </td>
@@ -66,7 +69,7 @@
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="14">
+                <td colspan="17">
                     <button type="button" class="btn btn-success btn-xs" ng-click="addLoadLimit()"><i class="glyphicon glyphicon-plus"></i> Ограничение</button>
                 </td>
             </tr>

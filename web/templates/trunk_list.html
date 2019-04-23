@@ -111,6 +111,9 @@
             </td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.road_to_regions}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
+            <td>
+                <comment-icon ng-if="item.id" key="{{item.id}}" type="trunk" comment="item.object_comment"></comment-icon>
+            </td>
             <td ng-if="userPermissions['trunk_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-disabled="item.server_id != server.id" ng-click="deleteItem(item)"></button></td>
         </tr>
     </tbody>

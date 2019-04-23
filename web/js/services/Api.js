@@ -1960,6 +1960,15 @@ app.factory('Hub', function ($q, ApiLoader, $rootScope) {
   };
 });
 
+app.factory('Comment', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/comment/';
+    return {
+        save: function(data) {
+            return ApiLoader.post(url + 'save', data);
+        }
+    };
+});
+
 app.factory('Nnp', function (ApiLoader) {
     var url = '/json/nnp/';
     return {

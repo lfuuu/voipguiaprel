@@ -501,5 +501,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             $cookies.routing_selected_page = 'moneyTree';
             return openTab(MoneyTreeCtrl, '/templates/routing/money_tree.html');
         },
+        commentEdit: function(objectId, objectType, objectComment) {
+            return openModal(CommentEditCtrl, '/templates/comment_edit.html', {object_id: objectId, object_type: objectType, object_comment: objectComment});
+        },
     };
 });

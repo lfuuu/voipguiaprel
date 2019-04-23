@@ -30,6 +30,9 @@
                             &nbsp;
                         </td>
                         <td>
+                            <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_numbers_rules" comment="line.object_comment"></comment-icon>
+                        </td>
+                        <td>
                             <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeNumbersRule(mode.key, $index)"></button>
                         </td>
                     </tr>

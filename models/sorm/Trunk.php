@@ -23,6 +23,7 @@ use app\queries\sorm\TrunkQuery;
  * @property string $border_ats_code
  * @property integer $source_type_id
  * @property string $ip_addr
+ * @property string $object_comment
  * @property
  */
 class Trunk extends \yii\db\ActiveRecord
@@ -42,7 +43,8 @@ class Trunk extends \yii\db\ActiveRecord
         return [
             [['ats_mnemo_code', 'start_date', 'stop_date', 'name', 'old_name', 'trunk_ip', 'groups', 'ip_addr'], 'string'],
             [['operator_id', 'code_trunk', 'type', 'region_id', 'sorm_operator_id', 'source_type_id'], 'integer'],
-            [['is_ip', 'is_show'], 'boolean']
+            [['is_ip', 'is_show'], 'boolean'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
     

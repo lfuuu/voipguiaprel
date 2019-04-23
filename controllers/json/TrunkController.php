@@ -168,7 +168,7 @@ class TrunkController extends JsonController
                     'auto_routing', 'our_trunk', 'auth_by_number', 'orig_redirect_number_7800', 'orig_redirect_number',
                     'term_redirect_number', 'show_in_stat', 'route_table_id', 'auth.trunk.server_id', 'capacity','sw_shared',
                     'road_to_regions', 'load_warning', 'orig_enabled', 'term_enabled', 'tech_trunk', 'pstn_trunk',
-                    'mgmn_trunk', 'mgmn_orig_trunk', 'le8accept', 'mgmn2_orig', 'mgmn2_term',
+                    'mgmn_trunk', 'mgmn_orig_trunk', 'le8accept', 'mgmn2_orig', 'mgmn2_term', 'object_comment',
                     new Expression('CASE WHEN bb.id is null THEN false ELSE true END as is_blacklisted')
                 ])
                 ->with('routeTable')
@@ -449,10 +449,6 @@ class TrunkController extends JsonController
                     throw new FormValidationException($server);
                 }
             }
-    
-//            if ($trunk->isAttributeChanged('auto_routing')) {
-//                $this->toggleAutorouting($trunk->auto_routing, $trunk->id);
-//            }
     
             if (isset($this->request['sorm'])) {
                 $this->toggleSorm($trunk, $this->request['sorm'], $this->request['region_id']);

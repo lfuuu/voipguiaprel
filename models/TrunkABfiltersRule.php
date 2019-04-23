@@ -12,6 +12,7 @@ namespace app\models;
  * @property int $prefixlist_id
  * @property bool $test_redirect_num
  * @property int $abc_mode
+ * @property string $object_comment
  */
 class TrunkABfiltersRule extends \yii\db\ActiveRecord
 {
@@ -33,6 +34,7 @@ class TrunkABfiltersRule extends \yii\db\ActiveRecord
             [['outgoing', 'allow', 'orig',], 'boolean'],
             [['prefixlist_id', 'order', 'trunk_id', 'abc_mode'], 'integer'],
             ['trunk_id', 'required'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

@@ -17,6 +17,7 @@ class AppAsset extends AssetBundle
         'js/services/Redirect.js',
         'js/directives/select-box.js',
         'js/directives/outcome-select-box.js',
+        'js/directives/comment-icon.js',
         'js/controllers/MainRouting.js',
         'js/controllers/MainBilling.js',
         'js/controllers/MainMarketplace.js',
@@ -110,9 +111,13 @@ class AppAsset extends AssetBundle
         'js/controllers/CdrReportView.js',
         'js/controllers/CallsRawView.js',
         'js/controllers/routing/MoneyTree.js',
+        'js/controllers/CommentEdit.js',
     ];
 
     public $templates = [
+        'templates/directives/select-box.html',
+        'templates/directives/comment-icon.html',
+        'templates/directives/outcome-select-box.html',
         'templates/airp_edit.html',
         'templates/airp_list.html',
         'templates/cpc_edit.html',
@@ -157,8 +162,6 @@ class AppAsset extends AssetBundle
         'templates/test_group_list.html',
         'templates/test_generate_log.html',
         'templates/statistics_tree.html',
-        'templates/directives/select-box.html',
-        'templates/directives/outcome-select-box.html',
         'templates/uplink_list.html',
         'templates/uplink_edit.html',
         'templates/imsi_partner_list.html',
@@ -200,5 +203,6 @@ class AppAsset extends AssetBundle
         'templates/cdr_report_view.html',
         'templates/calls_raw_view.html',
         'templates/routing/money_tree.html',
+        'templates/comment_edit.html',
     ];
 }

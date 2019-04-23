@@ -47,7 +47,9 @@
                 <td>
                     <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
                 </td>
-
+                <td>
+                    <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_priority" comment="line.object_comment"></comment-icon>
+                </td>
                 <td>
                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePriority($index)"></button>
                 </td>
@@ -55,7 +57,7 @@
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="7">
+                <td colspan="12">
                     <button type="button" class="btn btn-success btn-xs" ng-click="addPriority()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
                 </td>
             </tr>
