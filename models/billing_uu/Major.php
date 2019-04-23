@@ -11,8 +11,6 @@ use yii\helpers\Json;
  * @property int $country_code
  * @property string $nnp_filter_json
  * @property int $major_group_id
- * @property bool $use_for_a
- * @property bool $use_for_b
  */
 class Major extends \yii\db\ActiveRecord
 {
@@ -28,8 +26,7 @@ class Major extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'nnp_filter_json'], 'string'],
-            [['order', 'country_code', 'major_group_id'], 'integer'],
-            [['use_for_a', 'use_for_b'], 'boolean']
+            [['order', 'country_code', 'major_group_id'], 'integer']
         ];
     }
 
