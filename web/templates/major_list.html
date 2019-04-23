@@ -35,13 +35,16 @@
         <th width="10%">
             Позиция
         </th>
-        <th width="30%">
+        <th width="25%">
             Название
         </th>
-        <th width="25%">
+        <th width="10%">
+
+        </th>
+        <th width="23%">
             Страна
         </th>
-        <th width="25%">
+        <th width="22%">
             Группа
         </th>
         <th ng-if="userPermissions['major_edit']">&nbsp;</th>
@@ -59,6 +62,10 @@
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.order}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">
+            <span class="label label-success" ng-if="item.use_for_a">Для А</span>
+            <span class="label label-danger" ng-if="item.use_for_b">Для B</span>
+        </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.country_name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.group_name}}</td>
         <td ng-if="userPermissions['major_edit']">
