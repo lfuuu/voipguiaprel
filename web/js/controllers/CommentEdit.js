@@ -9,14 +9,16 @@ var CommentEditCtrl = function ($scope, Comment, params, $modalInstance, $window
         trunk_load_limit: 'Ограничение загрузки'
     };
 
-    $scope.objectId = params.object_id;
-    $scope.objectType = params.object_type;
-    $scope.objectTypeName = $scope.itemTypes[params.object_type];
-    $scope.objectComment = params.object_comment;
+    $scope.item = {
+        object_id: params.object_id,
+        object_type: params.object_type,
+        object_type_name: $scope.itemTypes[params.object_type],
+        object_comment: params.object_comment
+    };
 
     $scope.save = function () {
-        Comment.save({object_id: $scope.objectId, object_type: $scope.objectType, object_comment: $scope.objectComment}).then(function () {
-            $modalInstance.close($scope.objectComment);
+        Comment.save({object_id: $scope.item.object_id, object_type: $scope.item.object_type, object_comment: $scope.item.object_comment}).then(function () {
+            $modalInstance.close($scope.item.object_comment);
         });
     };
 

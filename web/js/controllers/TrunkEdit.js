@@ -35,6 +35,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                     outgoing: false,
                     prefixlist_id: this.prefixlist_id,
                     test_redirect_num: this.test_redirect_num,
+                    object_comment: this.object_comment
                 });
             });
 
@@ -55,7 +56,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                     $scope.item.sorm.items.push({
                         id: data.trunkSorm[id].id,
                         old_name: data.trunkSorm[id].old_name,
-                        is_show: data.trunkSorm[id].is_show
+                        is_show: data.trunkSorm[id].is_show,
+                        object_comment: data.trunkSorm[id].object_comment
                     });
                 }
             } else {
