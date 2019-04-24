@@ -17,9 +17,17 @@ var CommentEditCtrl = function ($scope, Comment, params, $modalInstance, $window
     };
 
     $scope.save = function () {
-        Comment.save({object_id: $scope.item.object_id, object_type: $scope.item.object_type, object_comment: $scope.item.object_comment}).then(function () {
+        if ($scope.item.object_id) {
+            Comment.save({
+                object_id: $scope.item.object_id,
+                object_type: $scope.item.object_type,
+                object_comment: $scope.item.object_comment
+            }).then(function () {
+                $modalInstance.close($scope.item.object_comment);
+            });
+        } else {
             $modalInstance.close($scope.item.object_comment);
-        });
+        }
     };
 
     $scope.back = function () {

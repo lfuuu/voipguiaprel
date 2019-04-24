@@ -268,59 +268,6 @@ class TrunkController extends JsonController
         return $item;
     }
     
-    /**
-     * @return array
-     * @throws HttpException
-     */
-    private function toggleAutorouting($on, $trunkId)
-    {
-        $doSync = false;
-        
-        if ($on) {
-            $items = Pricelist::find()
-                ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
-                ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
-                ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
-                ->where('st.term_enabled is true')
-                ->andWhere('voip.pricelist.is_global is false')
-                ->andWhere(['st.trunk_id' => $trunkId])
-                ->all();
-    
-            foreach ($items as $item) {
-                if ($item->backup_is_global && !$item->is_global) {
-                    $doSync = true;
-                }
-                
-                $item->is_global = is_null($item->backup_is_global) ? false : $item->backup_is_global;
-                $item->save();
-            }
-        } else {
-            $items = Pricelist::find()
-                ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
-                ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
-                ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
-                ->where('st.term_enabled is true')
-                ->andWhere('voip.pricelist.is_global is true')
-                ->andWhere(['st.trunk_id' => $trunkId])
-                ->all();
-    
-            foreach ($items as $item) {
-                if ($item->is_global) {
-                    $doSync = true;
-                }
-                
-                $item->backup_is_global = $item->is_global;
-                $item->is_global = false;
-                $item->save();
-            }
-        }
-
-        if ($doSync) {
-            (new Query())->select(new Expression('event.notify(\'defs-manual\',0)'))->all();
-            (new Query())->select(new Expression('event.notify(\'pricelist-manual\',0)'))->all();
-        }
-    }
-    
     private function toggleSorm($trunk, $data, $regionId)
     {
         if (!$data['enabled']) {
@@ -342,12 +289,12 @@ class TrunkController extends JsonController
     
             foreach ($data['items'] as $item) {
                 $this->processSormData($trunk, $item['old_name'], $data['name'], $data['ip_addr'], $item['is_show'], $data['groups'],
-                    $data['sorm_operator_id'], $data['source_type_id'], $regionId, isset($item['id']) ? $item['id'] : null);
+                    $data['sorm_operator_id'], $data['source_type_id'], $regionId, isset($item['object_comment']) ? $item['object_comment'] : null, isset($item['id']) ? $item['id'] : null);
             }
         }
     }
     
-    private function processSormData($trunk, $oldName, $name, $ipAddr, $isShow, $groups, $sormOperatorId, $sourceTypeId, $regionId, $id = null)
+    private function processSormData($trunk, $oldName, $name, $ipAddr, $isShow, $groups, $sormOperatorId, $sourceTypeId, $regionId, $objectComment = null, $id = null)
     {
         if (!is_null($id)) {
             $trunkSorm = TrunkSorm::find()
@@ -365,6 +312,7 @@ class TrunkController extends JsonController
             $trunkSorm->groups = $groups ? '{' . implode(',', $groups) . '}' : '{}';
             $trunkSorm->old_name = $oldName;
             $trunkSorm->source_type_id = $sourceTypeId;
+            $trunkSorm->object_comment = $objectComment;
     
             $trunkSorm->save();
         } else {
@@ -391,7 +339,8 @@ class TrunkController extends JsonController
                 'groups' => $groups ? '{' . implode(',', $groups) . '}' : '{}',
                 'region_id' => $regionId,
                 'sorm_operator_id' => $sormOperatorId,
-                'source_type_id' => $sourceTypeId
+                'source_type_id' => $sourceTypeId,
+                'object_comment' => $objectComment
             ];
     
             $trunkSorm = TrunkSorm::create($dataToCreate);

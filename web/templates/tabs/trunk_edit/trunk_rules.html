@@ -45,7 +45,7 @@
                     <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
                 </td>
                 <td>
-                    <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
+                    <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
                 </td>
                 <td>
                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkRule($index)"></button>
