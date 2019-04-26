@@ -276,6 +276,13 @@
     </div>
 
     <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Не копировать С в А</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.no_copy_numc_to_numa = !item.no_copy_numc_to_numa">
+                <button type="button" class="btn btn-sm {{item.no_copy_numc_to_numa ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.no_copy_numc_to_numa ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
     </div>
 
     <div class="col-sm-4">
