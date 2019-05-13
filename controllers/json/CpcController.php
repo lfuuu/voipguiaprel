@@ -33,7 +33,7 @@ class CpcController extends JsonController
         
         return
             Cpc::find()
-                ->select(['id', 'name', 'description'])
+                ->select(['id', 'name', 'description', 'object_comment'])
                 ->orderBy('name')
                 ->asArray()
                 ->all();

@@ -36,8 +36,9 @@ app.controller('MainRoutingCtrl', function ($rootScope, $scope, $cookies, $timeo
   } else {
     for (var permissionName in $rootScope.userPermissions) {
       if ($rootScope.routingPermissions.indexOf(permissionName) !== -1 &&
-        permissionName.includes('list') && permissionName !== 'user_list' &&
-        permissionName !== 'role_list' && permissionName !== 'acl_list') {
+        permissionName.includes('_list') && permissionName !== 'user_list' &&
+        permissionName !== 'role_list' && permissionName !== 'acl_list' &&
+        permissionName !== 'hub_list') {
         funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
           return w.toUpperCase();
         });

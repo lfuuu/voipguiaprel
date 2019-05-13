@@ -39,7 +39,7 @@ class HeaderRuleController extends JsonController
         return
             HeaderRule::find()
                 ->alias('h')
-                ->select(['id', 'name', 'description', 'sw_shared'])
+                ->select(['id', 'name', 'description', 'sw_shared', 'object_comment'])
                 ->orderBy('name')
                 ->where("(h.server_id in (select id from public.server where hub_id = :hub_id) and sw_shared) or h.server_id = :server_id")
                 ->addParams([':hub_id' => $hub_id, ':server_id' => $server->id])

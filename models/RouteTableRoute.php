@@ -14,7 +14,7 @@ use app\queries\RouteTableRouteQuery;
  * @property int $cpc_id
  * @property bool $is_locked
  * @property integer $header_rule_id
- * @property
+ * @property string $object_comment
  */
 class RouteTableRoute extends \yii\db\ActiveRecord
 {
@@ -45,7 +45,8 @@ class RouteTableRoute extends \yii\db\ActiveRecord
     {
         return [
             [['a_number_id', 'b_number_id', 'c_number_id', 'outcome_id', 'outcome_route_table_id', 'cpc_id', 'header_rule_id'], 'integer'],
-            [['is_locked'], 'boolean']
+            [['is_locked'], 'boolean'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

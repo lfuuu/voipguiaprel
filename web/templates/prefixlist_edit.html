@@ -727,6 +727,7 @@
                     <th>Название</th>
                     <th>&nbsp;</th>
                     <th width="10%">Сервер</th>
+                    <th width="1%">Сервер</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -742,6 +743,9 @@
                         <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
                     </td>
                     <td style="cursor: pointer" ng-click="clickNumberItem(item)">{{item.server_id}}</td>
+                    <td>
+                        <comment-icon ng-if="item.id" key="{{item.id}}" type="number" comment="item.object_comment"></comment-icon>
+                    </td>
                 </tr>
 
                 </tbody>
@@ -754,6 +758,7 @@
                     <th>Ид</th>
                     <th>Имя транка</th>
                     <th width="10%">Сервер</th>
+                    <th width="1%"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -762,6 +767,9 @@
                     <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.id}}</td>
                     <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.trunk_name}}</td>
                     <td style="cursor: pointer" ng-click="clickTrunkItem(item)">{{item.server_id}}</td>
+                    <td>
+                        <comment-icon ng-if="item.id" key="{{item.id}}" type="trunk" comment="item.object_comment"></comment-icon>
+                    </td>
                 </tr>
 
                 </tbody>

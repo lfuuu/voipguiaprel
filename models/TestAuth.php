@@ -22,6 +22,7 @@ use app\queries\NumberQuery;
  * @property int    $router_version
  * @property string $headers
  * @property int    $redirect_noa
+ * @property string $object_comment
 
  * @property Server $server
  * @property
@@ -52,6 +53,7 @@ class TestAuth extends \yii\db\ActiveRecord
             [['correct_answer'], 'string', 'max' => 128],
             [['testgroup_id'], 'integer'],
             [['note', 'cpc', 'headers'], 'string'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

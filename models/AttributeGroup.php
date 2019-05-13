@@ -5,6 +5,13 @@ namespace app\models;
 use app\classes\ArrayToCsv;
 use app\queries\AttributeGroupQuery;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $note
+ * @property string $attributeslist_ids
+ * @property string $object_comment
+ */
 class AttributeGroup extends \yii\db\ActiveRecord
 {
 
@@ -18,7 +25,8 @@ class AttributeGroup extends \yii\db\ActiveRecord
         return [
             [['name'], 'required'],
             [['note'], 'string'],
-            [['name'], 'string', 'max' => 50]
+            [['name'], 'string', 'max' => 50],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

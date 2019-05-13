@@ -34,6 +34,9 @@
                                     <select-box list="trunk" model="line.trunk_id" placeholder="Выберите транк" required="true"></select-box>
                                 </td>
                                 <td>
+                                    <comment-icon key="{{line.id}}" type="trunk_group_item" comment="line.object_comment"></comment-icon>
+                                </td>
+                                <td>
                                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkGroup($index)"></button>
                                 </td>
                             </tr>
@@ -57,6 +60,9 @@
                             <tr ng-repeat="line in item.trunk_groups">
                                 <td width="100%">
                                     <select-box list="trunkGroup" model="line.child_trunk_group_id" placeholder="Выберите группу транков" required="true"></select-box>
+                                </td>
+                                <td>
+                                    <comment-icon key="{{line.id}}" type="trunk_group_item" comment="line.object_comment"></comment-icon>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkGroupGroup($index)"></button>
@@ -104,6 +110,7 @@
                         <col width="15%" />
                         <col width="15%" />
                         <col width="15%" />
+                        <col width="1%" />
                     </colgroup>
                     <thead>
                         <tr>
@@ -113,6 +120,7 @@
                             <th>Номер-А</th>
                             <th>Номер-B</th>
                             <th>Номер-C</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody ng-model="item.findIntoRules">
@@ -142,6 +150,9 @@
                                     {{line.number_c_name}}
                                 </span>
                             </td>
+                            <td>
+                                <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -156,6 +167,7 @@
                         <col width="15%" />
                         <col width="15%" />
                         <col width="15%" />
+                        <col width="1%" />
                     </colgroup>
                     <thead>
                         <tr>
@@ -165,6 +177,7 @@
                             <th>Номер-А</th>
                             <th>Номер-B</th>
                             <th>Номер-C</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody ng-model="item.findIntoPriorities">
@@ -192,6 +205,9 @@
                                 <span ng-if="line.number_c_id">
                                     {{line.number_c_name}}
                                 </span>
+                            </td>
+                            <td>
+                                <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_priority" comment="line.object_comment"></comment-icon>
                             </td>
                         </tr>
                     </tbody>

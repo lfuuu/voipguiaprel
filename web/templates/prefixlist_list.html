@@ -52,6 +52,7 @@
                 <span ng-show="sortType == 'server_id' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
+        <th width="1%">&nbsp;</th>
         <th ng-if="userPermissions['prefixlist_delete']" width="1%">&nbsp;</th>
     </tr>
     </thead>
@@ -85,6 +86,9 @@
             <span class="label label-danger" ng-if="item.is_auto_update">Автообновление</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
+        <td>
+            <comment-icon ng-if="item.id" key="{{item.id}}" type="prefixlist" comment="item.object_comment"></comment-icon>
+        </td>
         <td ng-if="userPermissions['prefixlist_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-disabled="item.server_id != server.id" ng-click="deleteItem(item)"></button></td>
     </tr>
 

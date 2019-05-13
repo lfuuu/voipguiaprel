@@ -42,6 +42,7 @@
                             <th>Header Rule</th>
                             <th>Outcome</th>
                             <th>Блок</th>
+                            <th></th>
                             <th>Удалить</th>
                         </tr>
                     </thead>
@@ -77,9 +78,12 @@
                             <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="5%" ng-if="userPermissions['route_table_route_lock']">
                                 <button ng-if="!line.is_locked" type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRoute($index)"></button>
                             </td>
+                            <td width="1%">
+                                <comment-icon key="{{line.id}}" type="route_table_route" comment="line.object_comment"></comment-icon>
+                            </td>
                         </tr>
                         <tr>
-                            <td colspan="6">
+                            <td colspan="7">
                                 <button type="button" class="btn btn-success btn-xs" ng-click="addRoute()"><i class="glyphicon glyphicon-plus"></i> Добавить роут</button>
                             </td>
                         </tr>
@@ -134,15 +138,17 @@
                                 <td>
                                     <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
                                 </td>
-
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRouteRule($index)"></button>
+                                </td>
+                                <td width="1%">
+                                    <comment-icon key="{{line.id}}" type="route_table_rule" comment="line.object_comment"></comment-icon>
                                 </td>
                             </tr>
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="8">
+                                <td colspan="11">
                                     <button type="button" class="btn btn-success btn-xs" ng-click="addRouteRule()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
                                 </td>
                             </tr>

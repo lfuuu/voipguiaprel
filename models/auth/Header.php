@@ -8,6 +8,7 @@ use app\queries\auth\HeaderQuery;
  * @property string $name
  * @property string $description
  * @property string $value
+ * @property string $object_comment
  */
 class Header extends \yii\db\ActiveRecord
 {
@@ -32,6 +33,7 @@ class Header extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'description', 'value'], 'string'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 }

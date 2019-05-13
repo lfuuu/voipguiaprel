@@ -8,6 +8,7 @@ use yii\db\Query;
  * @property int $id
  * @property int $server_id
  * @property string $name
+ * @property string $object_comment
  * @property
  */
 class RouteCase extends \yii\db\ActiveRecord
@@ -36,6 +37,7 @@ class RouteCase extends \yii\db\ActiveRecord
             [['sw_shared'], 'boolean'],
             [['name'], 'string', 'min' => 4, 'max' => 50],
             [['name'], 'match', 'pattern' => '/^\w+$/'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

@@ -33,7 +33,7 @@ class AttributeGroupController extends JsonController
         
         return
             AttributeGroup::find()
-                ->select(['id', 'name', 'attributeslist_ids','note'])
+                ->select(['id', 'name', 'attributeslist_ids', 'note', 'object_comment'])
                 ->orderBy('name')
                 ->asArray()
                 ->all();

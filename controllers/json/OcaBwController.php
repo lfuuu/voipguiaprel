@@ -38,7 +38,7 @@ class OcaBwController extends JsonController
     
         return
             OcaBw::find()
-                ->select(['id', 'name'])
+                ->select(['id', 'name', 'object_comment'])
                 ->where("is_global or server_id = ".$server->id)
                 ->orderBy('name')
                 ->asArray()

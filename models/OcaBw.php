@@ -11,6 +11,7 @@ use app\queries\OcaBwQuery;
  * @property string $read_method_name
  * @property string $prefixlist
  * @property integer $server_id
+ * @property string $object_comment
  * @property
  */
 class OcaBw extends \yii\db\ActiveRecord
@@ -38,6 +39,7 @@ class OcaBw extends \yii\db\ActiveRecord
             [['name', 'add_method_name', 'delete_method_name', 'read_method_name', 'prefixlist'], 'string'],
             [['server_id'], 'integer'],
             [['is_global'], 'boolean'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 }

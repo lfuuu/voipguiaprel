@@ -10,7 +10,7 @@ use yii\db\Query;
  * @property string $name
  * @property bool $sw_shared
  * @property bool $uplink_trunk_group
- * @property
+ * @property string $object_comment
  */
 class TrunkGroup extends \yii\db\ActiveRecord
 {
@@ -45,6 +45,7 @@ class TrunkGroup extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 32],
             [['sw_shared', 'uplink_trunk_group'], 'boolean'],
             [['server_id',], 'integer'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 
@@ -77,6 +78,7 @@ class TrunkGroup extends \yii\db\ActiveRecord
         return
             (new Query)
                 ->select([
+                    'id' => 'trunk_rules.id',
                     'trunk_id' => 'trunk.id',
                     'trunk_name' => 'trunk.name',
                     'trunk_source_trunk_rule_default_allowed' => 'trunk.source_trunk_rule_default_allowed',
@@ -86,6 +88,7 @@ class TrunkGroup extends \yii\db\ActiveRecord
                     'number_a_name' => 'number_a.name',
                     'number_b_name' => 'number_b.name',
                     'number_c_name' => 'number_c.name',
+                    'object_comment' => 'trunk_rules.object_comment'
                 ])
                 ->from(['trunk_rules' => TrunkTrunkRule::tableName()])
                 ->innerJoin(['trunk' => Trunk::tableName()], 'trunk.id = trunk_rules.trunk_id')
@@ -104,6 +107,7 @@ class TrunkGroup extends \yii\db\ActiveRecord
         return
             (new Query)
                 ->select([
+                    'id' => 'trunk_priority.id',
                     'trunk_id' => 'trunk.id',
                     'trunk_name' => 'trunk.name',
                     'priority' => 'trunk_priority.priority',
@@ -113,6 +117,7 @@ class TrunkGroup extends \yii\db\ActiveRecord
                     'number_a_name' => 'number_a.name',
                     'number_b_name' => 'number_b.name',
                     'number_c_name' => 'number_c.name',
+                    'object_comment' => 'trunk_priority.object_comment'
                 ])
                 ->from(['trunk_priority' => TrunkPriority::tableName()])
                 ->innerJoin(['trunk' => Trunk::tableName()], 'trunk.id = trunk_priority.trunk_id')

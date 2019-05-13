@@ -21,6 +21,7 @@ use yii\db\Query;
  * @property int $called_station_id
  * @property string $header
  * @property boolean $outcome_rule_default_allowed
+ * @property string $object_comment
  * @property
  */
 class Outcome extends \yii\db\ActiveRecord
@@ -57,6 +58,7 @@ class Outcome extends \yii\db\ActiveRecord
             [['sw_shared', 'outcome_rule_default_allowed'], 'boolean'],
             [['route_case_id', 'release_reason_id', 'airp_id','route_case_1_id','route_case_2_id'], 'integer'],
             [['calling_station_id', 'called_station_id'], 'match', 'pattern' => '/^\d{1,20}$/'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

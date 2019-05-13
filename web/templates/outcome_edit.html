@@ -237,6 +237,7 @@
                         <th width="100%">Название</th>
                         <th>&nbsp;</th>
                         <th width="10%">Сервер</th>
+                        <th width="1%"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -247,6 +248,9 @@
                             <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
                         </td>
                         <td style="cursor: pointer" ng-click="clickRouteTableItem(item)">{{item.server_id}}</td>
+                        <td>
+                            <comment-icon ng-if="item.id" key="{{item.id}}" type="route_table" comment="item.object_comment"></comment-icon>
+                        </td>
                     </tr>
 
                     </tbody>

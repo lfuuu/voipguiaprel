@@ -38,7 +38,7 @@ class AirpController extends JsonController
 
         return
             Airp::find()
-                ->select(['id', 'name'])
+                ->select(['id', 'name', 'object_comment'])
                 ->where(['server_id' => $server->id])
                 ->orderBy('name')
                 ->asArray()

@@ -29,6 +29,7 @@
                     <span ng-show="sortType == 'name' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
+            <th>&nbsp;</th>
             <th ng-if="userPermissions['test_group_delete']">&nbsp;</th>
         </tr>
     </thead>
@@ -37,6 +38,9 @@
         <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
+            <td>
+                <comment-icon ng-if="item.id" key="{{item.id}}" type="test_group" comment="item.object_comment"></comment-icon>
+            </td>
             <td ng-if="userPermissions['test_group_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
         </tr>
 

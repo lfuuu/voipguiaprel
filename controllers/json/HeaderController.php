@@ -33,7 +33,7 @@ class HeaderController extends JsonController
         
         return
             Header::find()
-                ->select(['id', 'name', 'description', 'value'])
+                ->select(['id', 'name', 'description', 'value', 'object_comment'])
                 ->orderBy('name')
                 ->asArray()
                 ->all();

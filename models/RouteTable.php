@@ -7,6 +7,7 @@ use app\queries\RouteTableQuery;
  * @property int $id
  * @property string $name
  * @property int $server_id
+ * @property string $object_comment
  * @property
  */
 class RouteTable extends \yii\db\ActiveRecord
@@ -34,6 +35,7 @@ class RouteTable extends \yii\db\ActiveRecord
         return [
             [['sw_shared'], 'boolean'],
             [['name'], 'string', 'max' => 50],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
     

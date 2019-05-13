@@ -5,6 +5,7 @@ namespace app\models;
 /**
  * @property int $id
  * @property string $name
+ * @property string $object_comment
  */
 class TestGroup extends \yii\db\ActiveRecord
 {
@@ -23,7 +24,8 @@ class TestGroup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'string']
+            [['name'], 'string'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 }

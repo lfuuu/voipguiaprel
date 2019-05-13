@@ -33,7 +33,7 @@ class AttributeController extends JsonController
 
         return
             Attribute::find()
-                ->select(['id', 'name','note'])
+                ->select(['id', 'name', 'note', 'object_comment'])
                 ->orderBy('name')
                 ->asArray()
                 ->all();

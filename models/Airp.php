@@ -7,6 +7,7 @@ use app\queries\AirpQuery;
  * @property int $id
  * @property int $server_id
  * @property string $name
+ * @property string $object_comment
  * @property
  */
 class Airp extends \yii\db\ActiveRecord
@@ -33,6 +34,7 @@ class Airp extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string', 'max' => 50],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 }

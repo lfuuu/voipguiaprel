@@ -10,6 +10,7 @@ namespace app\models;
  * @property int $number_id_filter_b
  * @property int $number_id_filter_c
  * @property bool $allow
+ * @property string $object_comment
  */
 class RouteRouteRule extends \yii\db\ActiveRecord
 {
@@ -30,6 +31,7 @@ class RouteRouteRule extends \yii\db\ActiveRecord
         return [
             [['trunk_group_id', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c'], 'integer'],
             [['allow',], 'boolean'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

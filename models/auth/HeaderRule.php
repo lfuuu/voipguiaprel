@@ -9,6 +9,7 @@ use app\queries\auth\HeaderRuleQuery;
  * @property string $name
  * @property string $description
  * @property boolean $sw_shared
+ * @property string $object_comment
  */
 class HeaderRule extends \yii\db\ActiveRecord
 {
@@ -35,6 +36,7 @@ class HeaderRule extends \yii\db\ActiveRecord
             [['name', 'description'], 'string'],
             [['server_id'], 'integer'],
             [['sw_shared'], 'boolean'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
     

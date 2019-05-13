@@ -4,7 +4,7 @@ namespace app\models;
 /**
  * @property int $trunk_group_id
  * @property int $trunk_id
- * @property
+ * @property string $object_comment
  */
 class TrunkGroupItem extends \yii\db\ActiveRecord
 {
@@ -25,7 +25,8 @@ class TrunkGroupItem extends \yii\db\ActiveRecord
     {
         return [
             [['trunk_id'], 'integer'],
-            [['child_trunk_group_id'], 'integer']
+            [['child_trunk_group_id'], 'integer'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

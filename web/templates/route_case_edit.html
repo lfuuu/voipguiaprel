@@ -50,6 +50,9 @@
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunk($index)"></button>
                                 </td>
+                                <td width="1%">
+                                    <comment-icon key="{{line.id}}" type="route_case_trunk" comment="line.object_comment"></comment-icon>
+                                </td>
                             </tr>
                             </tbody>
                             <tfoot>
@@ -73,6 +76,7 @@
                         <th>Параметры</th>
                         <th>&nbsp;</th>
                         <th width="10%">Сервер</th>
+                        <th width="1%"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -109,6 +113,9 @@
                             <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
                         </td>
                         <td style="cursor: pointer" ng-click="clickOutcomeItem(item)">{{item.server_id}}</td>
+                        <td>
+                            <comment-icon ng-if="item.id" key="{{item.id}}" type="outcome" comment="item.object_comment"></comment-icon>
+                        </td>
                     </tr>
 
                     </tbody>

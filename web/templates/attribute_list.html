@@ -36,6 +36,7 @@
                 <span ng-show="sortType == 'note' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
+        <th>&nbsp;</th>
         <th ng-if="userPermissions['attribute_delete']">&nbsp;</th>
     </tr>
     </thead>
@@ -45,6 +46,9 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.note}}</td>
+        <td>
+            <comment-icon ng-if="item.id" key="{{item.id}}" type="attribute" comment="item.object_comment"></comment-icon>
+        </td>
         <td ng-if="userPermissions['attribute_delete']">
             <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus"
                     ng-click="deleteItem(item)"></button>

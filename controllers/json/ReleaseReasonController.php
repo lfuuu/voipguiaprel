@@ -40,7 +40,7 @@ class ReleaseReasonController extends JsonController
 
         return
             ReleaseReason::find()
-                ->select(['id', 'name','server_id','sw_shared'])
+                ->select(['id', 'name', 'server_id', 'sw_shared', 'object_comment'])
                 ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
                 ->orderBy('name')
                 ->asArray()

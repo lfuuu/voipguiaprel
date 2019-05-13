@@ -7,6 +7,7 @@ use app\queries\CpcQuery;
  * @property int $id
  * @property string $name
  * @property string $description
+ * @property string $object_comment
  * @property
  */
 class Cpc extends \yii\db\ActiveRecord
@@ -32,6 +33,7 @@ class Cpc extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'description'], 'string'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 }

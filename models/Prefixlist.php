@@ -30,6 +30,7 @@ use yii\db\Query;
  * @property string $nnp_filter_json
  * @property bool $invert
  * @property bool $normalization_disabled
+ * @property string $object_comment
  *
  * @property PrefixlistPrefix $prefixlistPrefix
  */
@@ -75,6 +76,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             [['is_global'], 'boolean'],
             [['is_auto_update'], 'boolean'],
             [['invert'], 'boolean'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 
@@ -495,7 +497,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             (new Query)
                 ->select([
                     'n.id', 'n.server_id', 'n.name',
-                    'n.type_id', 'n.show_in_stat', 'n.sw_shared'
+                    'n.type_id', 'n.show_in_stat', 'n.sw_shared', 'n.object_comment'
                 ])
                 ->from(Number::tableName() . ' as n')
                 ->innerJoin(Prefixlist::tableName() . ' as p', 'p.id = ANY (n.prefixlist_ids)')
@@ -511,7 +513,7 @@ class Prefixlist extends \yii\db\ActiveRecord
         return
             (new Query)
                 ->select([
-                    't.id', 't.trunk_name', 't.server_id'
+                    't.id', 't.trunk_name', 't.server_id', 't.object_comment'
                 ])
                 ->from(TrunkABfiltersRule::tableName() . ' as tab')
                 ->innerJoin(Trunk::tableName() . ' as t', 't.id = tab.trunk_id')

@@ -8,7 +8,7 @@ use app\queries\RouteCaseOperatorQuery;
  * @property int $trunk_id
  * @property int $priority
  * @property int $weight
- * @property
+ * @property string $object_comment
  */
 class RouteCaseTrunk extends \yii\db\ActiveRecord
 {
@@ -42,6 +42,7 @@ class RouteCaseTrunk extends \yii\db\ActiveRecord
             [['priority'], 'integer', 'min'=> 1, 'max' => 10],
             [['weight'], 'integer', 'min'=> 1, 'max' => 100],
             [['trunk_id'], 'integer'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

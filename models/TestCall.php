@@ -22,6 +22,7 @@ use app\queries\NumberQuery;
  * @property string $note
  * @property bool   $with_debug_info
  * @property int    $redirect_noa
+ * @property string $object_comment
 
  * @property Server $server
  * @property
@@ -57,6 +58,7 @@ class TestCall extends \yii\db\ActiveRecord
             [['is_autotest', 'with_debug_info'], 'boolean'],
             [['correct_answer'], 'string', 'max' => 128],
             [['testgroup_id'], 'integer'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

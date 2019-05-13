@@ -80,6 +80,9 @@
             <span class="label label-success" ng-if="item.is_active">Да</span>
             <span class="label label-danger" ng-if="!item.is_active">Нет</span>
         </td>
+        <td>
+            <comment-icon ng-if="item.id" key="{{item.id}}" type="imsi_partner" comment="item.object_comment"></comment-icon>
+        </td>
         <td ng-if="userPermissions['imsi_partner_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
     </tr>
 
