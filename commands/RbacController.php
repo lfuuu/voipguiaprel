@@ -147,6 +147,7 @@ class RbacController extends Controller {
         ['name' => 'marketplace_edit', 'description' => 'Редактирование биржи'],
         ['name' => 'cdr_report_read', 'description' => 'Просмотр отчета по CDR'],
         ['name' => 'money_tree', 'description' => 'Денежное дерево'],
+        ['name' => 'pricelist_super_edit', 'description' => 'Редактирование активного прайслиста'],
     ];
     
     private static $_roles = [
