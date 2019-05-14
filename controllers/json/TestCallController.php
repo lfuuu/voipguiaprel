@@ -192,7 +192,8 @@ class TestCallController extends JsonController
             'dst_number' => $item->dst_number,
             'redirect_number' => $item->redirect_number,
             'src_noa' => $item->src_noa,
-            'dst_noa' => $item->dst_noa
+            'dst_noa' => $item->dst_noa,
+            'dst_replace' => $item->dst_replace
         ];
     
         if ($item->with_debug_info) {
