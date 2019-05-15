@@ -7,25 +7,25 @@
 
         <div class="form-group">
             <label class="col-sm-2 control-label">Префикс номера B</label>
-            <div class="col-sm-10">
+            <div class="col-sm-4">
                 <input class="form-control" placeholder="1234" ng-model="item.prefix_b">
             </div>
-            <label class="col-sm-4 control-label" style="color: red;" ng-if="errors.prefix_b_error">{{ errors.prefix_b_error }}</label>
+            <label class="col-sm-6" style="color: red;" ng-if="errors.prefix_b_error">{{ errors.prefix_b_error }}</label>
         </div>
 
         <div class="form-group">
             <label class="col-sm-2 control-label">Цена номера B</label>
-            <div class="col-sm-10">
+            <div class="col-sm-4">
                 <input class="form-control" placeholder="12.34" ng-model="item.b_number_price" required>
             </div>
         </div>
 
         <div class="form-group">
             <label class="col-sm-2 control-label">Дата начала действия</label>
-            <div class="col-sm-10">
+            <div class="col-sm-4">
                 <input class="form-control" placeholder="Время (UTC)" ng-model="item.date_from" required>
             </div>
-            <label class="col-sm-4 control-label" style="color: red;" ng-if="errors.date_from_error">{{ errors.date_from_error }}</label>
+            <label class="col-sm-6" style="color: red;" ng-if="errors.date_from_error">{{ errors.date_from_error }}</label>
         </div>
     </div>
     <div class="modal-footer">

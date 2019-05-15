@@ -4,6 +4,9 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     $scope.NNP_MODE_PARAMETERS = 2;
 
     $scope.saveEnabled = false;
+    $scope.errors = {
+        error: false
+    };
 
     var countryLoadComplete = false;
     var regionLoadComplete = false;
@@ -196,6 +199,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     };
 
     $scope.save = function () {
+        $scope.errors.error = false;
         var data = angular.copy($scope.item);
 
         data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
@@ -204,8 +208,12 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
 
-        PricelistFilterB.save(data).then(function () {
-            $modalInstance.close();
+        PricelistFilterB.save(data).then(function (result) {
+            if (result.error) {
+                $scope.errors.error = true;
+            } else {
+                $modalInstance.close();
+            }
         });
     };
 

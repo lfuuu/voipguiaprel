@@ -63,6 +63,7 @@ var PricelistPrefixPriceEditCtrl = function($scope, List, PricelistPrefixPrice, 
 
     $scope.save = function()
     {
+        $scope.errors = [];
         PricelistPrefixPrice.save($scope.item).then(function(response) {
             if (response.error) {
                 $scope.displayError(response);

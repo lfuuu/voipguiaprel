@@ -6,7 +6,6 @@ use app\models\billing_uu\PricelistPrefixPrice;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
-use yii\base\Exception;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -52,6 +51,14 @@ class PricelistPrefixPriceController extends JsonController
         }
         
         $prefixB = $this->request['prefix_b'];
+    
+        if (preg_match("/[^\d,\s]/", $prefixB)) {
+            return [
+                'error' => 'Некорректный формат префикса! Допустимы только цифры и запятая.',
+                'field' => 'prefix_b'
+            ];
+        }
+        
         $filterBId = $this->request['pricelist_filter_b_id'];
         $id = isset($this->request['id']) ? $this->request['id'] : null;
         $dateFrom = $this->request['date_from'];

@@ -264,6 +264,9 @@
                         <div class="col-sm-6">
                             <textarea class="form-control" placeholder="Префиксы" ng-model="item.prefixes"></textarea>
                         </div>
+                        <div ng-hide="!errors.error" class="col-sm-4">
+                            <span style="color: red;">Некорректный формат префиксов!<br/>Допустимы только цифры, тире, точка, запятая, пробел и табуляция.</span>
+                        </div>
                     </div>
                 </div>
             </div>

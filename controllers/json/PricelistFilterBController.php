@@ -54,6 +54,12 @@ class PricelistFilterBController extends JsonController
             
             $item = PricelistFilterB::create();
         }
+    
+        if (isset($this->request['prefixes'])) {
+            if (preg_match("/[^\d,.\-\s]/", $this->request['prefixes'])) {
+                return ['error' => 'Некорректный формат префиксов!'];
+            }
+        }
         
         $item->load($this->request, '');
         
