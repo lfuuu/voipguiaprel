@@ -43,10 +43,12 @@ class TestPricelistController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
     
-        $testGroupId = $this->request['test_group_id'];
-        $testResult = $this->request['test_result'];
+        $searchArray = $this->request['search_array'];
         $limit = $this->request['limit'];
         $offset = $this->request['offset'];
+    
+        $testGroupId = isset($searchArray['group_id']) ? $searchArray['group_id'] : '';
+        $testResult = isset($searchArray['result']) ? $searchArray['result'] : false;
     
         switch ($testResult) {
             case 'not_executed':
@@ -91,9 +93,37 @@ class TestPricelistController extends JsonController
             ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = tp.id')
             ->andWhere($resultWhere);
     
-        if ($testGroupId != 'all' && $testGroupId != 'undefined') {
+        if ($testGroupId != '') {
             $query->andWhere(['tp.test_pricelist_group_id' => $testGroupId]);
             $countQuery->andWhere(['tp.test_pricelist_group_id' => $testGroupId]);
+        }
+    
+        if (isset($searchArray['name']) && $searchArray['name']) {
+            $query->andWhere('tp.name like :name');
+            $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
+            $countQuery->andWhere('tp.name like :name');
+            $countQuery->addParams([':name' => '%' . $searchArray['name'] . '%']);
+        }
+    
+        if (isset($searchArray['server_id']) && $searchArray['server_id']) {
+            $query->andWhere('tp.server_id = :server_id');
+            $query->addParams([':server_id' => $searchArray['server_id']]);
+            $countQuery->andWhere('tp.server_id = :server_id');
+            $countQuery->addParams([':server_id' => $searchArray['server_id']]);
+        }
+    
+        if (isset($searchArray['pricelist_id']) && $searchArray['pricelist_id']) {
+            $query->andWhere('tp.pricelist_id = :pricelist_id');
+            $query->addParams([':pricelist_id' => $searchArray['pricelist_id']]);
+            $countQuery->andWhere('tp.pricelist_id = :pricelist_id');
+            $countQuery->addParams([':pricelist_id' => $searchArray['pricelist_id']]);
+        }
+    
+        if (isset($searchArray['id']) && $searchArray['id']) {
+            $query->andWhere('tp.id = :id');
+            $query->addParams([':id' => $searchArray['id']]);
+            $countQuery->andWhere('tp.id = :id');
+            $countQuery->addParams([':id' => $searchArray['id']]);
         }
     
         $data = $query->all();

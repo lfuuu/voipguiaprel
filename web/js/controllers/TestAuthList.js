@@ -6,14 +6,21 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
+    $scope.hideFilter = false;
     $scope.filterFields = [
         'name', 'trunk_name', 'src_number',
         'dst_number', 'redirect_number', 'cpc',
         'result_online'
     ];
 
-    $scope.testGroupId = 'undefined';
-    $scope.testResult = 'undefined';
+    $scope.searchArray = {
+        id: '',
+        name: '',
+        group_id: '',
+        result: '',
+        trunk_name: ''
+    };
+
     $scope.displayOnlineResult = false;
 
     $scope.currentPage = 1;
@@ -28,16 +35,11 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
     };
 
     $scope.refreshList = function() {
-        if ($scope.testGroupId == 'undefined' && $scope.testResult == 'undefined') {
-            return;
-        }
-
         $scope.displayOnlineResult = false;
 
         TestAuth.read({
                 server_id: $scope.server.id,
-                test_group_id: $scope.testGroupId,
-                test_result: $scope.testResult,
+                search_array: $scope.searchArray,
                 offset: $scope.offset,
                 limit: $scope.limit
             }).then(function (data) {
@@ -50,7 +52,15 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
         $scope.testGroupList = data;
     });
 
+    List.trunkByServer($scope.server.id).then(function (data) {
+        $scope.trunkList = data;
+    });
+
     $scope.testResultList = List.testResult();
+
+    $scope.clickSearch = function() {
+        $scope.refreshList();
+    };
 
     $scope.clickCreate = function () {
         Redirect.testAuthCreate($scope.testGroupId).then(function () {

@@ -3,19 +3,26 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
-    $scope.testGroupId = 'all';
-    $scope.testResult = 'undefined';
-
     $scope.currentPage = 1;
     $scope.limit = 15;
     $scope.offset = (($scope.currentPage - 1) * $scope.limit);
     $scope.totalItems = 0;
 
+    $scope.hideFilter = false;
     $scope.filterFields = [
         'id', 'name', 'pricelist_name', 'a_number',
         'b_number', 'location_name', 'mcc',
         'mnc'
     ];
+
+    $scope.searchArray = {
+        id: '',
+        name: '',
+        group_id: '',
+        result: '',
+        server_id: '',
+        pricelist_id: ''
+    };
 
     $scope.init = function (tab) {
         if (tab) tab.title = 'Test pricelist';
@@ -26,13 +33,8 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     $scope.locationList = List.location();
 
     $scope.refreshList = function() {
-        if ($scope.testGroupId == 'undefined' && $scope.testResult == 'all') {
-            return;
-        }
-
         TestPricelist.read({
-            test_group_id: $scope.testGroupId,
-            test_result: $scope.testResult,
+            search_array: $scope.searchArray,
             offset: $scope.offset,
             limit: $scope.limit
         }).then(function (data) {
@@ -45,7 +47,19 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
         $scope.testGroupList = data;
     });
 
+    List.server().then(function (data) {
+        $scope.serverList = data;
+    });
+
+    List.pricelist().then(function (data) {
+        $scope.pricelistList = data;
+    });
+
     $scope.testResultList = List.testResult();
+
+    $scope.clickSearch = function() {
+        $scope.refreshList();
+    };
 
     $scope.clickCreate = function () {
         Redirect.testPricelistCreate().then(function () {

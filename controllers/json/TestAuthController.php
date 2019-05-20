@@ -58,14 +58,16 @@ class TestAuthController extends JsonController
         if (!\Yii::$app->user->can('test_auth_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
+    
         $server = $this->getServerOr404($this->request['server_id']);
-        $testGroupId = $this->request['test_group_id'];
-        $testResult = $this->request['test_result'];
+        $searchArray = $this->request['search_array'];
         $limit = $this->request['limit'];
         $offset = $this->request['offset'];
         
-        if ($testGroupId == 'undefined') {
+        $testGroupId = isset($searchArray['group_id']) ? $searchArray['group_id'] : '';
+        $testResult = isset($searchArray['result']) ? $searchArray['result'] : false;
+        
+        if ($testGroupId == '') {
             $groupWhere = 'true';
         } else {
             $groupWhere = ['auth.test_auth.testgroup_id' => $testGroupId];
@@ -86,7 +88,7 @@ class TestAuthController extends JsonController
                 break;
         }
 
-        $data = TestAuth::find()
+        $query = TestAuth::find()
                 ->select(
                     [
                         'test_auth.*',
@@ -101,16 +103,38 @@ class TestAuthController extends JsonController
                 ->orderBy('name')
                 ->limit($limit)
                 ->offset($offset)
-                ->asArray()
-                ->all();
+                ->asArray();
     
-        $count = TestAuth::find()
+        $countQuery = TestAuth::find()
             ->select(['id'])
             ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
             ->where(['auth.test_auth.server_id' => $server->id])
             ->andWhere($groupWhere)
-            ->andWhere($resultWhere)
-            ->count();
+            ->andWhere($resultWhere);
+    
+        if (isset($searchArray['trunk_name']) && $searchArray['trunk_name']) {
+            $query->andWhere('test_auth.trunk_name = :trunk_name');
+            $query->addParams([':trunk_name' => $searchArray['trunk_name']]);
+            $countQuery->andWhere('trunk_name = :trunk_name');
+            $countQuery->addParams([':trunk_name' => $searchArray['trunk_name']]);
+        }
+    
+        if (isset($searchArray['name']) && $searchArray['name']) {
+            $query->andWhere('test_auth.name like :name');
+            $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
+            $countQuery->andWhere('name like :name');
+            $countQuery->addParams([':name' => '%' . $searchArray['name'] . '%']);
+        }
+    
+        if (isset($searchArray['id']) && $searchArray['id']) {
+            $query->andWhere('test_auth.id = :id');
+            $query->addParams([':id' => $searchArray['id']]);
+            $countQuery->andWhere('test_auth.id = :id');
+            $countQuery->addParams([':id' => $searchArray['id']]);
+        }
+        
+        $data = $query->all();
+        $count = $countQuery->count();
         
         return [
             'totalCount' => $count,

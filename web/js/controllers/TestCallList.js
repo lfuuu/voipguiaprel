@@ -4,14 +4,22 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
+    $scope.hideFilter = false;
     $scope.filterFields = [
         'name', 'src_trunk_name', 'dst_trunk_name',
         'src_number', 'dst_number', 'redirect_number',
         'cpc', 'connect_time', 'session_time', 'result_online'
     ];
 
-    $scope.testGroupId = 'undefined';
-    $scope.testResult = 'undefined';
+    $scope.searchArray = {
+        id: '',
+        name: '',
+        group_id: '',
+        result: '',
+        orig_trunk_name: '',
+        term_trunk_name: ''
+    };
+
     $scope.displayOnlineResult = false;
 
     $scope.currentPage = 1;
@@ -26,16 +34,11 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
     };
 
     $scope.refreshList = function() {
-        if ($scope.testGroupId == 'undefined' && $scope.testResult == 'undefined') {
-            return;
-        }
-
         $scope.displayOnlineResult = false;
 
         TestCall.read({
             server_id: $scope.server.id,
-            test_group_id: $scope.testGroupId,
-            test_result: $scope.testResult,
+            search_array: $scope.searchArray,
             offset: $scope.offset,
             limit: $scope.limit
         }).then(function (data) {
@@ -48,7 +51,15 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
         $scope.testGroupList = data;
     });
 
+    List.trunkByServer($scope.server.id).then(function (data) {
+        $scope.trunkList = data;
+    });
+
     $scope.testResultList = List.testResult();
+
+    $scope.clickSearch = function() {
+        $scope.refreshList();
+    };
 
     $scope.clickCreate = function () {
         Redirect.testCallCreate($scope.testGroupId).then(function () {

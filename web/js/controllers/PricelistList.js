@@ -43,7 +43,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         $scope.groupList = data;
     });
 
-    $scope.clickSearch = function(groupId) {
+    $scope.clickSearch = function() {
         $scope.refreshList();
     };
 

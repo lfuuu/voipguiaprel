@@ -44,12 +44,14 @@ class TestCallController extends JsonController
         }
         
         $server = $this->getServerOr404($this->request['server_id']);
-        $testGroupId = $this->request['test_group_id'];
-        $testResult = $this->request['test_result'];
+        $searchArray = $this->request['search_array'];
         $limit = $this->request['limit'];
         $offset = $this->request['offset'];
+        
+        $testGroupId = isset($searchArray['group_id']) ? $searchArray['group_id'] : '';
+        $testResult = isset($searchArray['result']) ? $searchArray['result'] : false;
     
-        if ($testGroupId == 'undefined') {
+        if ($testGroupId == '') {
             $groupWhere = 'true';
         } else {
             $groupWhere = ['testgroup_id' => $testGroupId];
@@ -70,7 +72,7 @@ class TestCallController extends JsonController
                 break;
         }
     
-        $data = TestCall::find()
+        $query = TestCall::find()
                 ->select(
                     [
                         'test_call.*',
@@ -85,16 +87,46 @@ class TestCallController extends JsonController
                 ->orderBy('name')
                 ->limit($limit)
                 ->offset($offset)
-                ->asArray()
-                ->all();
+                ->asArray();
     
-        $count = TestCall::find()
+        $countQuery = TestCall::find()
             ->select(['id'])
             ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
             ->where(['auth.test_call.server_id' => $server->id])
             ->andWhere($groupWhere)
-            ->andWhere($resultWhere)
-            ->count();
+            ->andWhere($resultWhere);
+    
+    
+        if (isset($searchArray['orig_trunk_name']) && $searchArray['orig_trunk_name']) {
+            $query->andWhere('test_call.src_trunk_name = :trunk_name');
+            $query->addParams([':trunk_name' => $searchArray['orig_trunk_name']]);
+            $countQuery->andWhere('src_trunk_name = :trunk_name');
+            $countQuery->addParams([':trunk_name' => $searchArray['orig_trunk_name']]);
+        }
+    
+        if (isset($searchArray['term_trunk_name']) && $searchArray['term_trunk_name']) {
+            $query->andWhere('test_call.dst_trunk_name = :trunk_name');
+            $query->addParams([':trunk_name' => $searchArray['term_trunk_name']]);
+            $countQuery->andWhere('dst_trunk_name = :trunk_name');
+            $countQuery->addParams([':trunk_name' => $searchArray['term_trunk_name']]);
+        }
+    
+        if (isset($searchArray['name']) && $searchArray['name']) {
+            $query->andWhere('test_call.name like :name');
+            $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
+            $countQuery->andWhere('name like :name');
+            $countQuery->addParams([':name' => '%' . $searchArray['name'] . '%']);
+        }
+    
+        if (isset($searchArray['id']) && $searchArray['id']) {
+            $query->andWhere('test_call.id = :id');
+            $query->addParams([':id' => $searchArray['id']]);
+            $countQuery->andWhere('test_call.id = :id');
+            $countQuery->addParams([':id' => $searchArray['id']]);
+        }
+    
+        $data = $query->all();
+        $count = $countQuery->count();
     
         return [
             'totalCount' => $count,

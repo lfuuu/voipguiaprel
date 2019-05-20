@@ -1,26 +1,57 @@
 <div>
-    <a ng-if="userPermissions['test_auth_create']" class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
+    <a ng-if="userPermissions['test_auth_create']" class="btn btn-primary search-form-button" ng-click="clickCreate()">Создать</a>
+    <button type="submit" class="btn btn-success search-form-button" ng-click="clickSearch()">Поиск</button>
+    <button type="submit" ng-hide="hideFilter" class="btn btn-warning search-form-button" ng-click="hideFilter = true">Скрыть фильтр</button>
+    <button type="submit" ng-hide="!hideFilter" class="btn btn-info search-form-button" ng-click="hideFilter = false">Показать фильтр</button>
 </div>
 <h4>Тестирование маршрутизации</h4>
 
-<form>
+<form ng-hide="hideFilter">
     <div class="form-group">
-        <div class="input-group">
-            <div class="input-group-addon"><i class="fa-search"></i></div>
-            <input type="text" class="form-control" placeholder="Поиск" ng-model="searchQuery">
-            <div class="row">
-                <div class="form-group col-sm-6">
-                    <select ui-select2 style="width: 100%" tags="true" ng-change="testGroupChanged(testGroupId)" placeholder="Группа" ng-model="testGroupId" required>
-                        <option value="undefined">-- Выберите группу теста --</option>
+        <div class="row">
+            <div class="form-group col-sm-4 search-form-item first-form-item">
+                <label class="col-sm-2 search-field-label">ID</label>
+                <div class="col-sm-10 search-input">
+                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.id">
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Группа</label>
+                <div class="col-sm-10 search-input">
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Группа" ng-model="searchArray.group_id" required>
+                        <option value="">-- Выберите группу --</option>
                         <option ng-repeat="group in testGroupList" value="{{group.id}}">{{group.name}}</option>
                     </select>
                 </div>
-                <div class="form-group col-sm-6">
-                    <select ui-select2 style="width: 100%" tags="true" ng-change="testResultChanged(testResult)" placeholder="Результат" ng-model="testResult" required>
-                        <option value="undefined">Все тесты</option>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Результат</label>
+                <div class="col-sm-10 search-input">
+                    <select class="search-form-select" ui-select2 style="width: 100%" placeholder="Результат" ng-model="searchArray.result" required>
+                        <option value="">Все тесты</option>
                         <option ng-repeat="result in testResultList" value="{{result.id}}">{{result.name}}</option>
                     </select>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-4 search-form-item first-form-item">
+                <label class="col-sm-2 search-field-label">Название</label>
+                <div class="col-sm-10 search-input">
+                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.name">
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Транк</label>
+                <div class="col-sm-10 search-input">
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Транк" ng-model="searchArray.trunk_name" required>
+                        <option value="">-- Выберите транк --</option>
+                        <option ng-repeat="trunk in trunkList" value="{{trunk.trunk_name}}">{{trunk.trunk_name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+
             </div>
         </div>
     </div>
