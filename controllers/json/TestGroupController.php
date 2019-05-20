@@ -22,7 +22,7 @@ class TestGroupController extends JsonController
         return
             TestGroup::find()
                 ->select(['id', 'name'])
-                ->orderBy('id')
+                ->orderBy('name')
                 ->asArray()
                 ->all();
     }
