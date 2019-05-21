@@ -236,34 +236,6 @@ class TrunkController extends JsonController
                 $limit['limit_value'] = '';
             }
         }
-        
-        if ($item['auto_routing']) {
-            $count = Pricelist::find()
-                ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
-                ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
-                ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
-                ->where('st.term_enabled is true')
-                ->andWhere('voip.pricelist.is_global is true')
-                ->andWhere(['st.trunk_id' => $this->request['id']])
-                ->count();
-            
-            if ($count > 0) {
-                $item['do_sync'] = true;
-            }
-        } else {
-            $count = Pricelist::find()
-                ->leftJoin('billing.service_trunk_settings sts', 'voip.pricelist.id = sts.pricelist_id')
-                ->leftJoin('billing.service_trunk st', 'sts.trunk_id = st.id')
-                ->leftJoin('auth.trunk t', 'st.trunk_id = t.id')
-                ->where('st.term_enabled is true')
-                ->andWhere('voip.pricelist.backup_is_global is true and voip.pricelist.is_global is false')
-                ->andWhere(['st.trunk_id' => $this->request['id']])
-                ->count();
-    
-            if ($count > 0) {
-                $item['do_sync'] = true;
-            }
-        }
 
         return $item;
     }
