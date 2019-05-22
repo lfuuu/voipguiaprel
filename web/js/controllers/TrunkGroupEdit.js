@@ -1,14 +1,27 @@
-var TrunkGroupEditCtrl = function($scope, TrunkGroup, params, $modalInstance, Redirect, $window) {
+var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstance, Redirect, $window) {
 
     if (params.id) {
         TrunkGroup.get({id: params.id}).then(function(data){
             $scope.item = data;
+            var trunks = [];
+            var trunk_groups = [];
+
             if ($scope.item.trunks === undefined) {
                 $scope.item.trunks = [];
+            } else {
+                for (var i in data.trunks) {
+                    trunks.push(data.trunks[i].trunk_id);
+                }
+                $scope.item.trunks = trunks;
             }
 
             if ($scope.item.trunk_groups === undefined) {
                 $scope.item.trunk_groups = [];
+            } else {
+                for (var i in data.trunk_groups) {
+                    trunk_groups.push(data.trunk_groups[i].child_trunk_group_id);
+                }
+                $scope.item.trunk_groups = trunk_groups;
             }
 
             TrunkGroup.findIntoRules({id: params.id}).then(function(data) {
@@ -27,6 +40,14 @@ var TrunkGroupEditCtrl = function($scope, TrunkGroup, params, $modalInstance, Re
         };
     }
 
+    List.trunkGroup().then(function (data) {
+        $scope.trunkGroupList = data;
+    });
+
+    List.trunkByServer($scope.server.id).then(function (data) {
+        $scope.trunkList = data;
+    });
+
     $scope.clickTrunkItem = function(trunkId) {
         if (window.getSelection().type == 'Range') {
             return;
@@ -37,23 +58,10 @@ var TrunkGroupEditCtrl = function($scope, TrunkGroup, params, $modalInstance, Re
         });
     };
 
-    $scope.addTrunkGroup = function() {
-        $scope.item.trunks.push({trunk_id: null});
-    };
-
-    $scope.removeTrunkGroup = function(index) {
-        $scope.item.trunks.splice(index, 1);
-    };
-
-    $scope.addTrunkGroupGroup = function() {
-        $scope.item.trunk_groups.push({child_trunk_group_id: null});
-    };
-
-    $scope.removeTrunkGroupGroup = function(index) {
-        $scope.item.trunk_groups.splice(index, 1);
-    };
-
     $scope.save = function() {
+        delete $scope.item.findIntoRules;
+        delete $scope.item.findIntoPriorities;
+
         TrunkGroup.save($scope.item).then(function(response) {
             $modalInstance.close();
         });

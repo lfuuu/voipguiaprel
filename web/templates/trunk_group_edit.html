@@ -27,56 +27,18 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Транки</label>
                     <div class="col-sm-10">
-                        <table class="table table-striped">
-                            <tbody>
-                            <tr ng-repeat="line in item.trunks">
-                                <td width="100%">
-                                    <select-box list="trunk" model="line.trunk_id" placeholder="Выберите транк" required="true"></select-box>
-                                </td>
-                                <td>
-                                    <comment-icon key="{{line.id}}" type="trunk_group_item" comment="line.object_comment"></comment-icon>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkGroup($index)"></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="3">
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkGroup()"><i class="glyphicon glyphicon-plus"></i> Транк</button>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
+                        <select ui-select2 ng-model="item.trunks" multiple="multiple" style="width: 100%" >
+                            <option ng-repeat="trunk in trunkList" value="{{::trunk.id}}">{{::trunk.name}}</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Группы транков</label>
                     <div class="col-sm-10">
-                        <table class="table table-striped">
-                            <tbody>
-                            <tr ng-repeat="line in item.trunk_groups">
-                                <td width="100%">
-                                    <select-box list="trunkGroup" model="line.child_trunk_group_id" placeholder="Выберите группу транков" required="true"></select-box>
-                                </td>
-                                <td>
-                                    <comment-icon key="{{line.id}}" type="trunk_group_item" comment="line.object_comment"></comment-icon>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkGroupGroup($index)"></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="3">
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkGroupGroup()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
+                        <select ui-select2 ng-model="item.trunk_groups" multiple="multiple" style="width: 100%" >
+                            <option ng-repeat="trunkGroup in trunkGroupList" value="{{::trunkGroup.id}}">{{::trunkGroup.name}}</option>
+                        </select>
                     </div>
                 </div>
 

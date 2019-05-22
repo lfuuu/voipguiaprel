@@ -175,17 +175,17 @@ class TrunkGroupController extends JsonController
             if (!$trunkGroup->save()) {
                 throw new FormValidationException($trunkGroup);
             }
-
+            
             TrunkGroupItem::deleteByTrunkGroup($trunkGroup);
-            foreach ($this->request['trunks'] as $itemData) {
-                $item = TrunkGroupItem::create($trunkGroup, $itemData);
+            foreach ($this->request['trunks'] as $trunkId) {
+                $item = TrunkGroupItem::create($trunkGroup, ['trunk_id' => $trunkId]);
                 if (!$item->save()) {
                     throw new FormValidationException($trunkGroup);
                 }
             }
 
-            foreach ($this->request['trunk_groups'] as $itemData) {
-                $item = TrunkGroupItem::create($trunkGroup, $itemData);
+            foreach ($this->request['trunk_groups'] as $childTrunkGroupId) {
+                $item = TrunkGroupItem::create($trunkGroup, ['child_trunk_group_id' => $childTrunkGroupId]);
                 if (!$item->save()) {
                     throw new FormValidationException($trunkGroup);
                 }
