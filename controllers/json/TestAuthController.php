@@ -120,9 +120,9 @@ class TestAuthController extends JsonController
         }
     
         if (isset($searchArray['name']) && $searchArray['name']) {
-            $query->andWhere('test_auth.name like :name');
+            $query->andWhere('test_auth.name ilike :name');
             $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
-            $countQuery->andWhere('name like :name');
+            $countQuery->andWhere('name ilike :name');
             $countQuery->addParams([':name' => '%' . $searchArray['name'] . '%']);
         }
     

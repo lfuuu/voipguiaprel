@@ -8,7 +8,10 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
     $scope.searchArray = {
         group_id: '',
         query: '',
-        service_type_id: ''
+        service_type_id: '',
+        id: '',
+        is_active: '',
+        is_orig: ''
     };
 
     $scope.filterFields = [

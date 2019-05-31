@@ -112,9 +112,9 @@ class TestCallController extends JsonController
         }
     
         if (isset($searchArray['name']) && $searchArray['name']) {
-            $query->andWhere('test_call.name like :name');
+            $query->andWhere('test_call.name ilike :name');
             $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
-            $countQuery->andWhere('name like :name');
+            $countQuery->andWhere('name ilike :name');
             $countQuery->addParams([':name' => '%' . $searchArray['name'] . '%']);
         }
     

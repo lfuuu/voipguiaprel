@@ -99,9 +99,9 @@ class TestPricelistController extends JsonController
         }
     
         if (isset($searchArray['name']) && $searchArray['name']) {
-            $query->andWhere('tp.name like :name');
+            $query->andWhere('tp.name ilike :name');
             $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
-            $countQuery->andWhere('tp.name like :name');
+            $countQuery->andWhere('tp.name ilike :name');
             $countQuery->addParams([':name' => '%' . $searchArray['name'] . '%']);
         }
     

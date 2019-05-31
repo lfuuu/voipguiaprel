@@ -70,10 +70,25 @@ class PricelistController extends JsonController
             $countQuery->andWhere(['service_type_id' => $searchArray['service_type_id']]);
         }
     
+        if (isset($searchArray['is_active']) && is_bool($searchArray['is_active'])) {
+            $query->andWhere(['billing_uu.pricelist.is_active' => $searchArray['is_active']]);
+            $countQuery->andWhere(['is_active' => $searchArray['is_active']]);
+        }
+    
+        if (isset($searchArray['is_orig']) && is_bool($searchArray['is_orig'])) {
+            $query->andWhere(['billing_uu.pricelist.orig' => $searchArray['is_orig']]);
+            $countQuery->andWhere(['orig' => $searchArray['is_orig']]);
+        }
+        
+        if (isset($searchArray['id']) && $searchArray['id']) {
+            $query->andWhere(['billing_uu.pricelist.id' => $searchArray['id']]);
+            $countQuery->andWhere(['id' => $searchArray['id']]);
+        }
+    
         if (isset($searchArray['query']) && $searchArray['query']) {
-            $query->andWhere('billing_uu.pricelist.name like :name');
+            $query->andWhere('billing_uu.pricelist.name ilike :name');
             $query->addParams([':name' => '%' . $searchArray['query'] . '%']);
-            $countQuery->andWhere('name like :name');
+            $countQuery->andWhere('name ilike :name');
             $countQuery->addParams([':name' => '%' . $searchArray['query'] . '%']);
         }
         

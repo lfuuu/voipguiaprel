@@ -12,13 +12,13 @@
             <div class="form-group col-sm-4 search-form-item first-form-item">
                 <label class="col-sm-2 search-field-label">ID</label>
                 <div class="col-sm-10 search-input">
-                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.id">
+                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.id" ng-keydown="$event.keyCode === 13 && refreshList()">
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
                 <label class="col-sm-2 search-field-label">Группа</label>
                 <div class="col-sm-10 search-input">
-                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Группа" ng-model="searchArray.group_id" required>
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Группа" ng-model="searchArray.group_id" ng-change="refreshList()" required>
                         <option value="">-- Выберите группу --</option>
                         <option ng-repeat="group in testGroupList" value="{{group.id}}">{{group.name}}</option>
                     </select>
@@ -27,7 +27,7 @@
             <div class="form-group col-sm-4 search-form-item">
                 <label class="col-sm-2 search-field-label">Результат</label>
                 <div class="col-sm-10 search-input">
-                    <select class="search-form-select" ui-select2 style="width: 100%" placeholder="Результат" ng-model="searchArray.result" required>
+                    <select class="search-form-select" ui-select2 style="width: 100%" placeholder="Результат" ng-model="searchArray.result" ng-change="refreshList()" required>
                         <option value="">Все тесты</option>
                         <option ng-repeat="result in testResultList" value="{{result.id}}">{{result.name}}</option>
                     </select>
@@ -38,13 +38,13 @@
             <div class="form-group col-sm-4 search-form-item first-form-item">
                 <label class="col-sm-2 search-field-label">Название</label>
                 <div class="col-sm-10 search-input">
-                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.name">
+                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.name" ng-keydown="$event.keyCode === 13 && refreshList()">
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
                 <label class="col-sm-2 search-field-label">Транк orig</label>
                 <div class="col-sm-10 search-input">
-                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Транк" ng-model="searchArray.orig_trunk_name" required>
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Транк" ng-model="searchArray.orig_trunk_name" ng-change="refreshList()" required>
                         <option value="">-- Выберите транк --</option>
                         <option ng-repeat="trunk in trunkList" value="{{trunk.trunk_name}}">{{trunk.trunk_name}}</option>
                     </select>
@@ -53,7 +53,7 @@
             <div class="form-group col-sm-4 search-form-item">
                 <label class="col-sm-2 search-field-label">Транк term</label>
                 <div class="col-sm-10 search-input">
-                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Транк" ng-model="searchArray.term_trunk_name" required>
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Транк" ng-model="searchArray.term_trunk_name" ng-change="refreshList()" required>
                         <option value="">-- Выберите транк --</option>
                         <option ng-repeat="trunk in trunkList" value="{{trunk.trunk_name}}">{{trunk.trunk_name}}</option>
                     </select>
@@ -64,7 +64,7 @@
 </form>
 
 <div>
-    <pagination style="display: inline;" total-items="totalItems" items-per-page="limit" page="currentPage" on-select-page="setPagingData(page)"></pagination>
+    <pagination style="display: inline;" total-items="totalItems" max-size="10" previous-text="Предыдущие" next-text="Следующие" first-text="В начало" last-text="В конец" boundary-links="true" items-per-page="limit" page="currentPage" on-select-page="setPagingData(page)"></pagination>
     <button style="display: inline; margin-left: 10px;" class="btn btn-info" ng-click="runAll()">Запустить все</button>
     <button ng-if="userPermissions['test_call_edit']" style="display: inline; margin-left: 10px;" class="btn btn-info" ng-click="clearCache()">Очистить кэш</button>
 </div>

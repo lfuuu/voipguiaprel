@@ -12,13 +12,13 @@
             <div class="form-group col-sm-4 search-form-item first-form-item">
                 <label class="col-sm-2 search-field-label">Название</label>
                 <div class="col-sm-10 search-input">
-                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.query">
+                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.query" ng-keydown="$event.keyCode === 13 && refreshList()">
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
                 <label class="col-sm-2 search-field-label">Группа</label>
                 <div class="col-sm-10 search-input">
-                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Группа" ng-model="searchArray.group_id" required>
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Группа" ng-model="searchArray.group_id" ng-change="refreshList()" required>
                         <option value="">-- Выберите группу --</option>
                         <option value="all">Все группы</option>
                         <option ng-repeat="group in groupList" value="{{group.id}}">{{group.name}}</option>
@@ -28,7 +28,7 @@
             <div class="form-group col-sm-4 search-form-item">
                 <label class="col-sm-2 search-field-label">Тип</label>
                 <div class="col-sm-10 search-input">
-                    <select class="search-form-select" ui-select2 style="width: 100%" placeholder="Тип услуги" ng-model="searchArray.service_type_id" required>
+                    <select class="search-form-select" ui-select2 style="width: 100%" placeholder="Тип услуги" ng-model="searchArray.service_type_id" ng-change="refreshList()" required>
                         <option value="">-- Выберите тип услуги --</option>
                         <option value="1">Голос</option>
                         <option value="2">СМС</option>
@@ -37,11 +37,39 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="form-group col-sm-4 search-form-item first-form-item">
+                <label class="col-sm-2 search-field-label">ID</label>
+                <div class="col-sm-10 search-input">
+                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.id" ng-keydown="$event.keyCode === 13 && refreshList()">
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-1 search-field-label">Направление</label>
+                <div class="col-sm-5 search-input">
+                    <div class="btn-group">
+                        <button type="button" class="btn {{searchArray.is_orig === true ? 'btn-primary active' : 'btn-default'}}" ng-click="searchArray.is_orig = true; refreshList()">Orig</button>
+                        <button type="button" class="btn {{searchArray.is_orig === false ? 'btn-danger active' : 'btn-default'}}" ng-click="searchArray.is_orig = false; refreshList()">Term</button>
+                        <button type="button" class="btn {{searchArray.is_orig === '' ? 'btn-info active' : 'btn-default'}}" ng-click="searchArray.is_orig = ''; refreshList()">Не важно</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-1 search-field-label">Активный</label>
+                <div class="col-sm-5 search-input">
+                    <div class="btn-group">
+                        <button type="button" class="btn {{searchArray.is_active === true ? 'btn-primary active' : 'btn-default'}}" ng-click="searchArray.is_active = true; refreshList()">Да</button>
+                        <button type="button" class="btn {{searchArray.is_active === false ? 'btn-danger active' : 'btn-default'}}" ng-click="searchArray.is_active = false; refreshList()">Нет</button>
+                        <button type="button" class="btn {{searchArray.is_active === '' ? 'btn-info active' : 'btn-default'}}" ng-click="searchArray.is_active = ''; refreshList()">Не важно</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </form>
 
 <div>
-    <pagination style="display: inline;" total-items="totalItems" items-per-page="limit" page="currentPage" on-select-page="setPagingData(page)"></pagination>
+    <pagination style="display: inline;" total-items="totalItems" max-size="10" previous-text="Предыдущие" next-text="Следующие" first-text="В начало" last-text="В конец" boundary-links="true" items-per-page="limit" page="currentPage" on-select-page="setPagingData(page)"></pagination>
 </div>
 
 <table class="table table-striped table-hover table-condensed">
