@@ -9,6 +9,7 @@ use app\models\nnp\City;
 use app\models\nnp\Country;
 use app\models\nnp\Destination;
 use app\models\nnp\NdcType;
+use app\models\nnp\NumberRange;
 use app\models\nnp\Operator;
 use app\models\nnp\Region;
 use app\models\geo\Country as GeoCountry;
@@ -107,10 +108,13 @@ class NnpController extends JsonController
         }
         
         $query = Operator::find()
-            ->select(['id', new Expression('case when country_code = ' . self::COUNTRY_CODE_RUSSIA . ' then name else name_translit end as name')])
-            ->where(['country_code' => $countryCode])
-            ->asArray()
-            ->orderBy('name');
+            ->alias('o')
+            ->select(['o.id', new Expression('case when o.country_code = ' . self::COUNTRY_CODE_RUSSIA . ' then o.name else o.name_translit end as name')])
+            ->innerJoin(NumberRange::tableName() . ' as nr', 'nr.operator_id = o.id')
+            ->where(['o.country_code' => $countryCode, 'nr.is_active' => true])
+            ->groupBy('o.id')
+            ->orderBy('name')
+            ->asArray();
 
         return $query->all();
     }
