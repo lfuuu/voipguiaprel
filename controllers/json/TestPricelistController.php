@@ -320,11 +320,13 @@ class TestPricelistController extends JsonController
                 if (array_key_exists($key, $fields)) {
                     $newItem = $fields[$key]::findOne(['id' => $value]);
                     if ($newItem) {
-                        $result[$key] = $newItem->name;
+                        $result[$key.'_name'] = $newItem->name;
                     }
                 }
             }
         }
+        
+        ksort($result);
         
         return $result;
     }

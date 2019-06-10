@@ -19,7 +19,7 @@
             <span class="label label-success">Номер: {{item.number}}</span>
             <br />
             <br />
-            {{item.number_range}}
+            {{displayNumberRange()}}
             <br />
             <br />
             <table class="table table-condensed">
@@ -34,13 +34,13 @@
                     <th>Слабое соответствие</th>
                 </tr>
                 <tr>
-                    <td>{{item.number_range.nnp_city_id}}</td>
+                    <td>{{item.number_range.nnp_city_id_name}}</td>
                     <td>{{item.number_range.ndc}}</td>
-                    <td>{{item.number_range.nnp_operator_id}}</td>
+                    <td>{{item.number_range.nnp_operator_id_name}}</td>
                     <td>{{item.number_range.is_number_ported ? 'Да' : 'Нет'}}</td>
-                    <td>{{item.number_range.ndc_type_id}}</td>
-                    <td>{{item.number_range.nnp_region_id}}</td>
-                    <td>{{item.number_range.ported_operator_id}}</td>
+                    <td>{{item.number_range.ndc_type_id_name}}</td>
+                    <td>{{item.number_range.nnp_region_id_name}}</td>
+                    <td>{{item.number_range.ported_operator_id_name}}</td>
                     <td>{{item.number_range.weak_matching ? 'Да' : 'Нет'}}</td>
                 </tr>
             </table>

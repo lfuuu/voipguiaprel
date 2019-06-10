@@ -9,6 +9,20 @@ var TestNumberEditCtrl = function($scope, TestPricelist, Redirect, params, $moda
         });
     };
 
+    $scope.displayNumberRange = function () {
+        if (!$scope.item || $scope.item.number_range.length == 0) {
+            return '';
+        }
+
+        var result = '';
+
+        for (var i in $scope.item.number_range) {
+            result += (i + ': ' + $scope.item.number_range[i] + ', ');
+        }
+
+        return result;
+    };
+
     $scope.back = function () {
         $modalInstance.dismiss();
     };
