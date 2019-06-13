@@ -326,7 +326,9 @@ class TestPricelistController extends JsonController
             }
         }
         
-        ksort($result);
+        if (isset($result) && is_array($result)) {
+            ksort($result);
+        }
         
         return $result;
     }
