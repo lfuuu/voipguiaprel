@@ -71,8 +71,8 @@ var PricelistLocationEditCtrl = function($scope, List, SimImsi, PricelistLocatio
 
         data.mcc = (typeof data.mcc == 'undefined') ? '{}' : '{' + data.mcc.join(',') + '}';
         data.mnc = (typeof data.mnc == 'undefined') ? '{}' : '{' + data.mnc.join(',') + '}';
-        data.sim_partner = (typeof data.sim_partner == 'undefined') ? '{}' : '{' + data.sim_partner.join(',') + '}';
-        data.sim_profile = (typeof data.sim_profile == 'undefined') ? '{}' : '{' + data.sim_profile.join(',') + '}';
+        data.sim_partner = (typeof data.sim_partner == 'undefined' && data.sim_partner) ? '{}' : '{' + data.sim_partner.join(',') + '}';
+        data.sim_profile = (typeof data.sim_profile == 'undefined' && data.sim_profile) ? '{}' : '{' + data.sim_profile.join(',') + '}';
 
         PricelistLocation.save(data).then(function(response) {
             $modalInstance.close();
