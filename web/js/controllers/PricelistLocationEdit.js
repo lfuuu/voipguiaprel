@@ -16,9 +16,18 @@ var PricelistLocationEditCtrl = function($scope, List, SimImsi, PricelistLocatio
     if (params.id) {
         PricelistLocation.get({id: params.id}).then(function(data){
             $scope.item = data;
-            $scope.item.mcc = $scope.item.mcc.replace('{', '').replace('}', '').split(',');
-            $scope.item.sim_partner = $scope.item.sim_partner.replace('{', '').replace('}', '').split(',');
-            $scope.item.sim_profile = $scope.item.sim_profile.replace('{', '').replace('}', '').split(',');
+
+            if ($scope.item.mcc) {
+                $scope.item.mcc = $scope.item.mcc.replace('{', '').replace('}', '').split(',');
+            }
+
+            if ($scope.item.sim_partner) {
+                $scope.item.sim_partner = $scope.item.sim_partner.replace('{', '').replace('}', '').split(',');
+            }
+
+            if ($scope.item.sim_profile) {
+                $scope.item.sim_profile = $scope.item.sim_profile.replace('{', '').replace('}', '').split(',');
+            }
 
             Mnc.listByMcc({mcc: $scope.item.mcc}).then(function (data) {
                 $scope.mncList = data;

@@ -19,6 +19,8 @@ use app\queries\auth\TestPricelistQuery;
  * @property string $mock_current_date
  * @property bool $with_debug_info
  * @property bool $is_autotest
+ * @property int $sim_partner_id
+ * @property int $sim_profile_id
  */
 class TestPricelist extends \yii\db\ActiveRecord
 {
@@ -42,7 +44,8 @@ class TestPricelist extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['server_id', 'location_id', 'pricelist_id', 'mcc', 'mnc', 'test_pricelist_group_id'], 'integer'],
+            [['server_id', 'location_id', 'pricelist_id', 'mcc', 'mnc', 'test_pricelist_group_id',
+                'sim_partner_id', 'sim_profile_id'], 'integer'],
             [['name', 'a_number', 'b_number', 'expected_price', 'mock_current_date'], 'string'],
             [['is_orig', 'with_debug_info', 'is_autotest'], 'boolean']
         ];

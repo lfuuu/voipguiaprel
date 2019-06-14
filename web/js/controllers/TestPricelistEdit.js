@@ -1,4 +1,4 @@
-var TestPricelistEditCtrl = function($scope, $rootScope, TestPricelist, Mcc, Mnc, Redirect, List, params, $modalInstance, $window) {
+var TestPricelistEditCtrl = function($scope, $rootScope, SimImsi, TestPricelist, Mcc, Mnc, Redirect, List, params, $modalInstance, $window) {
 
     var watchers = {
         mcc: function (newValue, oldValue) {
@@ -40,6 +40,14 @@ var TestPricelistEditCtrl = function($scope, $rootScope, TestPricelist, Mcc, Mnc
 
     Mnc.list().then(function (result) {
         $scope.mncList = result;
+    });
+
+    SimImsi.partner().then(function (result) {
+        $scope.partnerList = result;
+    });
+
+    SimImsi.profile().then(function (result) {
+        $scope.profileList = result;
     });
 
     $scope.locationList = List.location();
