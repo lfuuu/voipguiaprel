@@ -10,6 +10,8 @@ use app\queries\billing_uu\PricelistLocationQuery;
  * @property int $location_id
  * @property string $mcc
  * @property string $mnc
+ * @property string $sim_partner
+ * @property string $sim_profile
  * @property string $description
  * @property int $rounding_threshold
  */
@@ -26,7 +28,7 @@ class PricelistLocation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['mcc', 'mnc', 'delta_price', 'description'], 'string'],
+            [['mcc', 'mnc', 'delta_price', 'description', 'sim_partner', 'sim_profile'], 'string'],
             [['pricelist_id','location_id', 'rounding_threshold'], 'integer'],
         ];
     }

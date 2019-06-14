@@ -1789,6 +1789,18 @@ app.factory('Network', function ($q, ApiLoader, $rootScope) {
 	};
 });
 
+app.factory('SimImsi', function ($q, ApiLoader, $rootScope) {
+  var url = '/json/sim-imsi/';
+  return {
+    partner: function(data) {
+      return ApiLoader.post(url + 'partner', data);
+    },
+    profile: function(data) {
+      return ApiLoader.post(url + 'profile', data);
+    }
+  };
+});
+
 app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               RouteCase, Outcome, Number, Destination,
                               Airp, ReleaseReason, RouteTable, Network,
