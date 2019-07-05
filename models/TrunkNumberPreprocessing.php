@@ -44,9 +44,14 @@ class TrunkNumberPreprocessing extends \yii\db\ActiveRecord
         return [
             [['src'], 'boolean'],
             [['noa'], 'integer', 'min' => 0, 'max' => 3],
-            [['length'], 'integer', 'min' => 1, 'max' => 20],
+            [['length'], 'integer', 'min' => 0, 'max' => 20],
             [['prefix'], 'string', 'min' => 1,  'max' => 10],
             [['abc_mode'], 'integer'],
+            [['mod_type'], 'integer'],
+            [['start_pos'], 'integer'],
+            [['end_pos'], 'integer'],
+            [['mod_value'], 'string'],
+            [['regex'], 'string'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }

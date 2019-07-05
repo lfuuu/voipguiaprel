@@ -181,6 +181,14 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
         {id: 4, name: 'Специальная'}
     ];
 
+    $scope.trunkNumberPreprocessingType = [
+        {'id': 0, 'name': 'Старый способ'},
+        {'id': 1, 'name': 'Вставка'},
+        {'id': 2, 'name': 'Добавление в конец'},
+        {'id': 3, 'name': 'Удаление'},
+        {'id': 4, 'name': 'Замена'}
+    ];
+
     $scope.addNumbersRule = function (key) {
         var mode = $scope.transcriptMode(key);
 
@@ -222,7 +230,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
     };
 
     $scope.addNumberPreprocessing = function (abc_mode) {
-        $scope.item.numberPreprocessing.push({src: false, abc_mode: abc_mode, noa: '', length: '', prefix: ''});
+        $scope.item.numberPreprocessing.push({src: false, abc_mode: abc_mode, noa: '', length: '', prefix: '', 
+                                              mod_type: 0, start_pos: 0, end_pos: 0, mod_value: '', regex: ''});
     };
 
     $scope.removeNumberPreprocessing = function (index) {
