@@ -42,6 +42,7 @@ var CdrReportReadCtrl = function($scope, Cdr, Trunk, List, Redirect, $window) {
         $scope.item = {
             src_number: '',
             dst_number: '',
+            redirect_number: '',
             src_route: '',
             dst_route: '',
             time_from: dateFrom,

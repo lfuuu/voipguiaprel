@@ -20,6 +20,7 @@ class CdrController extends JsonController
         
         $srcNumber = $this->request['src_number'];
         $dstNumber = $this->request['dst_number'];
+        $redirectNumber = $this->request['redirect_number'];
         $srcRoute = isset($this->request['src_route']) ? $this->request['src_route'] : null;
         $dstRoute = isset($this->request['dst_route']) ? $this->request['dst_route'] : null;
         $isTimeAbsolute = $this->request['is_time_absolute'];
@@ -41,6 +42,10 @@ class CdrController extends JsonController
         
         if ($dstNumber) {
             $where['c.dst_number'] = $dstNumber;
+        }
+    
+        if ($redirectNumber) {
+            $where['c.redirect_number'] = $redirectNumber;
         }
     
         if ($hubId) {
