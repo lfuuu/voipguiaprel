@@ -52,19 +52,18 @@
                     <input class="form-control input-sm" ng-model="line.end_pos" required />
                 </td>
 
+                <td ng-if="line.mod_type && line.mod_type != 0" width="5%" style="cursor: ns-resize">
+                    Regex:
+                </td>
+                <td ng-if="line.mod_type && line.mod_type != 0" width="10%">
+                    <input class="form-control input-sm" ng-model="line.regex" />
+                </td>
 
                 <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
                     Значение:
                 </td>
                 <td ng-if="preprocValue(line)" width="10%">
                     <input class="form-control input-sm" ng-model="line.mod_value" required />
-                </td>
-
-                <td ng-if="line.mod_type && line.mod_type != 0" width="5%" style="cursor: ns-resize">
-                    Regex:
-                </td>
-                <td ng-if="line.mod_type && line.mod_type != 0" width="10%">
-                    <input class="form-control input-sm" ng-model="line.regex" />
                 </td>
 
                 <td ng-if="!preprocPosRange(line)" width="5%" style="cursor: ns-resize"> </td>
