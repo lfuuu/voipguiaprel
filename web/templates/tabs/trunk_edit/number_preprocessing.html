@@ -18,38 +18,45 @@
                     NOA:
                 </td>
                 <td width="5%">
-                    <input class="form-control input-sm" ng-model="line.noa" required />
+                    <input class="form-control input-sm" ng-model="line.noa"/>
                 </td>
-                <td ng-if="!line.mod_type || line.mod_type == 0" width="5%" style="cursor: ns-resize">
+
+                <!--Старый способ с префиксом-->
+                <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
                     Длина&nbsp;номера:
                 </td>
-                <td ng-if="!line.mod_type || line.mod_type == 0" width="10%">
+                <td ng-if="preprocPrefix(line)" width="10%">
                     <input class="form-control input-sm" ng-model="line.length" required />
                 </td>
-                <td ng-if="!line.mod_type || line.mod_type == 0" width="5%" style="cursor: ns-resize">
+                <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
                     Префикс:
                 </td>
-                <td ng-if="!line.mod_type || line.mod_type == 0" width="10%">
+                <td ng-if="preprocPrefix(line)" width="10%">
                     <input class="form-control input-sm" ng-model="line.prefix" required />
                 </td>
 
-                <td ng-if="line.mod_type && line.mod_type != 2 && line.mod_type != 0" width="5%" style="cursor: ns-resize">
+                <!-- Начало/Конец -->
+                <td ng-if="preprocPosRange(line)" width="5%" style="cursor: ns-resize">
                     Начало:
                 </td>
-                <td ng-if="line.mod_type && line.mod_type != 2 && line.mod_type != 0" width="10%">
+                <td ng-if="line.mod_type == 1" width="5%" style="cursor: ns-resize">
+                    Позиция:
+                </td>
+                <td ng-if="preprocPosRange(line) || line.mod_type == 1" width="10%">
                     <input class="form-control input-sm" ng-model="line.start_pos" required />
                 </td>
-                <td ng-if="line.mod_type && line.mod_type != 2 && line.mod_type != 0" width="10%" style="cursor: ns-resize">
+                <td ng-if="preprocPosRange(line)" width="10%" style="cursor: ns-resize">
                     Конец:
                 </td>
-                <td ng-if="line.mod_type && line.mod_type != 2 && line.mod_type != 0" width="10%">
+                <td ng-if="preprocPosRange(line)" width="10%">
                     <input class="form-control input-sm" ng-model="line.end_pos" required />
                 </td>
 
-                <td ng-if="line.mod_type && line.mod_type != 0 && line.mod_type != 3" width="5%" style="cursor: ns-resize">
+
+                <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
                     Значение:
                 </td>
-                <td ng-if="line.mod_type && line.mod_type != 0 && line.mod_type != 3" width="10%">
+                <td ng-if="preprocValue(line)" width="10%">
                     <input class="form-control input-sm" ng-model="line.mod_value" required />
                 </td>
 
@@ -60,10 +67,10 @@
                     <input class="form-control input-sm" ng-model="line.regex" />
                 </td>
 
-                <td ng-if="!line.mod_type || line.mod_type == 2 || line.mod_type == 0" width="5%" style="cursor: ns-resize"> </td>
-                <td ng-if="!line.mod_type || line.mod_type == 2 || line.mod_type == 0" width="10%"> </td>
-                <td ng-if="!line.mod_type || line.mod_type == 2 || line.mod_type == 0" width="5%" style="cursor: ns-resize"> </td>
-                <td ng-if="!line.mod_type || line.mod_type == 2 || line.mod_type == 0" width="10%"> </td>
+                <td ng-if="!preprocPosRange(line)" width="5%" style="cursor: ns-resize"> </td>
+                <td ng-if="!preprocPosRange(line)" width="10%"> </td>
+                <td ng-if="!preprocPosRange(line) && line.mod_type != 1" width="5%" style="cursor: ns-resize"> </td>
+                <td ng-if="!preprocPosRange(line) && line.mod_type != 1" width="10%"> </td>
                 <td ng-if="line.mod_type == 3" width="5%" style="cursor: ns-resize"> </td>
                 <td ng-if="line.mod_type == 3" width="10%"> </td>
                 
