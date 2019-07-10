@@ -21,6 +21,14 @@
                     <input class="form-control input-sm" ng-model="line.noa"/>
                 </td>
 
+                <td>
+                    <input type="checkbox" class="col-sm-8"  ng-checked="line.auth" ng-click="line.auth=!line.auth">Auth</input>
+                </td>
+
+                <td>
+                    <input type="checkbox" class="col-sm-8"  ng-checked="line.acc" ng-click="line.acc=!line.acc">Acc</input>
+                </td>
+
                 <!--Старый способ с префиксом-->
                 <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
                     Длина&nbsp;номера:

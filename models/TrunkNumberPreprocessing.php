@@ -17,6 +17,8 @@ use app\queries\TrunkNumberPreprocessingQuery;
  * @property int end_pos
  * @property string mod_value
  * @property string regex
+ * @property bool auth
+ * @property bool acc
  */
 class TrunkNumberPreprocessing extends \yii\db\ActiveRecord
 {
@@ -56,6 +58,7 @@ class TrunkNumberPreprocessing extends \yii\db\ActiveRecord
             [['end_pos'], 'integer', 'min' => 1, 'max' => 40],
             [['mod_value'], 'string'],
             [['regex'], 'string'],
+            [['auth', 'acc'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
