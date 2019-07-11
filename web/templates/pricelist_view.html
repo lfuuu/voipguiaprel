@@ -182,7 +182,8 @@
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Регион</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Город</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Тип NDC</td>
-                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns" colspan="6"></td>
+                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Минималки</td>
+                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns" colspan="5"></td>
                 <!---------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_b"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_b"></td>
@@ -199,7 +200,8 @@
                 <td ng-if="item.is_filter_b">{{item.nnp_region}}</td>
                 <td ng-if="item.is_filter_b">{{item.nnp_city}}</td>
                 <td ng-if="item.is_filter_b">{{item.nnp_ndc_type}}</td>
-                <td ng-if="item.is_filter_b" colspan="2"></td>
+                <td ng-if="item.is_filter_b">{{item.use_for_minimum}}</td>
+                <td ng-if="item.is_filter_b" colspan="1"></td>
                 <td ng-if="item.is_filter_b">
                     <a popover="Добавить фильтр В" data-popover-trigger="mouseenter" popover-placement="bottom" class="btn btn-success btn-xs" ng-click="addFilterB(item.parent_id)">
                         <span class="glyphicon glyphicon-repeat"></span>

@@ -146,6 +146,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                         tarification_type: item.tarification_type,
                         time_start: item.time_start,
                         time_end: item.time_end,
+                        use_for_minimum: item.use_for_minimum ? 'Да' : 'Нет',
                         has_children: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPrice.length > 0
                     };
 

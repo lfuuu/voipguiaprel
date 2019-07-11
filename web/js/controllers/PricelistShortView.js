@@ -73,6 +73,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     var item = data.location[locationKey].filterA[filterAKey].filterB[filterBKey];
                     var filterBName = $scope.formFilterText(item);
                     var filterBRating = (item.rating == 1) ? '' : item.rating;
+                    var filterBUseForMinimum = item.use_for_minimum;
                     var filterBId = item.id;
 
                     var interconnectPrice = isNaN(parseFloat(item.interconnect_price)) ? 0 : parseFloat(item.interconnect_price);
@@ -118,6 +119,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                                 filter_a_name: filterAName,
                                 filter_b_name: filterBName,
                                 filter_b_rating: filterBRating,
+                                filter_b_use_for_minimum: filterBUseForMinimum,
                                 filter_a_id: filterAId,
                                 filter_b_id: filterBId,
                                 is_prefix_price: true,

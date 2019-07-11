@@ -32,7 +32,7 @@
                     {{item.filter_a_name}} <span style="color: grey; cursor: pointer" ng-click="editFilterA(item.filter_a_id)">(#{{item.filter_a_id}})</span>
                 </td>
                 <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
-                    {{item.filter_b_name}} <span style="color: grey; cursor: pointer" ng-click="editFilterB(item.filter_b_id)">(#{{item.filter_b_id}})</span>
+                    {{item.filter_b_name}}<span style="color: red;" ng-if="item.filter_b_use_for_minimum" popover="Используется для минималок" data-popover-trigger="mouseenter" popover-placement="bottom"> (MIN)</span> <span style="color: grey; cursor: pointer" ng-click="editFilterB(item.filter_b_id)">(#{{item.filter_b_id}})</span>
                 </td>
                 <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
                     <span ng-if="item.filter_b_rating !== ''">Рейтинг:&nbsp;{{item.filter_b_rating}}</span>

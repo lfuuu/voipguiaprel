@@ -15,6 +15,7 @@ use app\models\TrunkABfiltersRule;
 use app\models\TrunkNumberPreprocessing;
 use app\models\TrunkPriority;
 use app\models\TrunkTrunkRule;
+use yii\base\ErrorException;
 use yii\base\Exception;
 use Yii;
 use yii\db\Query;
@@ -296,6 +297,10 @@ class TrunkController extends JsonController
                     ->one();
             } else {
                 $operator = null;
+            }
+            
+            if (!empty($operator) && empty($operator->commutator)) {
+                throw new ErrorException('У оператора #' . $operator->id . ' ' . $operator->note . ' отсутствует коммутатор.');
             }
     
             $dataToCreate = [

@@ -27,7 +27,9 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
             date_end: '3000-01-01',
             currency_id: 'RUB',
             is_active: false,
-            default_tarification_type: 2
+            default_tarification_type: 2,
+            minimal_minutes: 0,
+            minimal_cost: 0
         };
 
         if (params.group_id) {
