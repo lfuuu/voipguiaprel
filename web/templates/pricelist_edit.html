@@ -161,14 +161,14 @@
         <div ng-hide="item.service_type_id != 1" class="form-group">
             <label class="col-sm-2 control-label">Минималки, минуты</label>
             <div class="col-sm-10">
-                <input class="form-control" placeholder="0" ng-model="item.minimum_minutes" ng-disabled="item.is_active">
+                <input class="form-control" placeholder="0" ng-model="item.minimum_minutes" ng-disabled="!userPermissions['pricelist_super_edit'] && item.is_active">
             </div>
         </div>
 
         <div ng-hide="item.service_type_id != 1" class="form-group">
             <label class="col-sm-2 control-label">Минималки, стоимость</label>
             <div class="col-sm-10">
-                <input class="form-control" placeholder="0" ng-model="item.minimum_cost" ng-disabled="item.is_active">
+                <input class="form-control" placeholder="0" ng-model="item.minimum_cost" ng-disabled="!userPermissions['pricelist_super_edit'] && item.is_active">
             </div>
         </div>
 
