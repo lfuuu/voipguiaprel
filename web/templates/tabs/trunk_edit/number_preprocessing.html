@@ -9,6 +9,8 @@
                     <span ng-if="line.abc_mode == 2" class="label label-default">B-номер</span>
                     <span ng-if="line.abc_mode == 3" class="label label-default">C-номер</span>
                 </td>
+                <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.auth" ng-click="line.auth=!line.auth">Auth</input> </td>
+                <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.acc" ng-click="line.acc=!line.acc">Acc</input> </td>
                 <td width="15%">
                     <select ui-select2 ng-model="line.mod_type" placeholder="round" style="width: 100%" >
                         <option ng-repeat="numPreproc in trunkNumberPreprocessingType" value="{{numPreproc.id}}">{{numPreproc.name}}</option>
@@ -20,15 +22,6 @@
                 <td width="5%">
                     <input class="form-control input-sm" ng-model="line.noa"/>
                 </td>
-
-                <td>
-                    <input type="checkbox" class="col-sm-8"  ng-checked="line.auth" ng-click="line.auth=!line.auth">Auth</input>
-                </td>
-
-                <td>
-                    <input type="checkbox" class="col-sm-8"  ng-checked="line.acc" ng-click="line.acc=!line.acc">Acc</input>
-                </td>
-
                 <!--Старый способ с префиксом-->
                 <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
                     Длина&nbsp;номера:
