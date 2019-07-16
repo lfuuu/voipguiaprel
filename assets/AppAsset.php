@@ -112,6 +112,7 @@ class AppAsset extends AssetBundle
         'js/controllers/CallsRawView.js',
         'js/controllers/routing/MoneyTree.js',
         'js/controllers/CommentEdit.js',
+        'js/controllers/billing/PricelistSearch.js',
     ];
 
     public $templates = [
@@ -204,5 +205,6 @@ class AppAsset extends AssetBundle
         'templates/calls_raw_view.html',
         'templates/routing/money_tree.html',
         'templates/comment_edit.html',
+        'templates/billing/pricelist_search.html',
     ];
 }

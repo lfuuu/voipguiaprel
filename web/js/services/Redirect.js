@@ -336,6 +336,10 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
                 //дата (трафик)
                 templatePath = '/templates/pricelist_short_view_internet.html';
                 controller = PricelistShortViewInternetCtrl;
+            } else {
+                //по умолчанию голос
+                templatePath = '/templates/pricelist_short_view.html';
+                controller = PricelistShortViewCtrl;
             }
             return openModal(controller, templatePath, {id: id});
         },
@@ -503,6 +507,10 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
         commentEdit: function(objectId, objectType, objectComment) {
             return openModal(CommentEditCtrl, '/templates/comment_edit.html', {object_id: objectId, object_type: objectType, object_comment: objectComment});
+        },
+        pricelistSearch: function() {
+            $cookies.billing_selected_page = 'pricelistSearch';
+            return openTab(PricelistSearchCtrl, '/templates/billing/pricelist_search.html', {});
         },
     };
 });

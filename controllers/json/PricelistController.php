@@ -17,6 +17,8 @@ use yii\web\HttpException;
 
 class PricelistController extends JsonController
 {
+    const SEARCH_LIMIT_PER_PRICELIST = 5;
+    
     public function actionList()
     {
         if (!\Yii::$app->user->can('pricelist_list')) {
@@ -347,5 +349,81 @@ class PricelistController extends JsonController
         } catch (IntegrityException $e) {
             return ['errors' => [['code' => $e->getCode(), 'message' => $e->getMessage()]]];
         }
+    }
+    
+    
+    public function actionSearch()
+    {
+        if (!\Yii::$app->user->can('pricelist_search')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $fields = [
+            "a_country_id","b_country_id","a_region_id","b_region_id","a_city_id","b_city_id","a_operator_id",
+            "b_operator_id","a_ndc_id","b_ndc_id","timestamp","number_a","number_b","mcc","mnc","location_id"
+        ];
+        
+        $apiUrl = 'http://10.252.0.66:8099/';
+        
+        $apiParams = [
+            'cmd' => 'findPricelist'
+        ];
+        
+        foreach ($fields as $fieldName) {
+            if (isset($this->request[$fieldName]) && !empty($this->request[$fieldName])) {
+                $apiParams[$fieldName] = $this->request[$fieldName];
+            }
+        }
+        
+        $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
+        
+        $response = file_get_contents($request);
+        
+        $response = json_decode($response, true);
+        
+        $result = self::processSearchResult($response['paths']);
+        
+        return [
+            'params' => $response['params'],
+            'paths' => $result,
+            'size' => $response['size'],
+            'url' => $request
+        ];
+    }
+    
+    private function processSearchResult($data)
+    {
+        $result = [];
+        
+        foreach ($data as $item) {
+            $pricelistId = $item['pricelist_id'];
+            
+            if (!isset($result[$pricelistId])) {
+                $result[$pricelistId] = [];
+            }
+            
+            if (count($result[$pricelistId]) >= self::SEARCH_LIMIT_PER_PRICELIST) {
+                if (!isset($result[$pricelistId]['extra_count'])) {
+                    $result[$pricelistId]['extra_count'] = 0;
+                }
+                
+                $result[$pricelistId]['extra_count']++;
+                continue;
+            }
+            
+            if (count($result[$pricelistId]) == 0) {
+                $pricelist = Pricelist::findOne(['id' => $pricelistId]);
+                if ($pricelist) {
+                    $item['pricelist_name'] = $pricelist->name;
+                }
+                
+                $result[$item['pricelist_id']][] = $item;
+            } else {
+                unset($item['pricelist_id']);
+                $result[$pricelistId][] = $item;
+            }
+        }
+        
+        return $result;
     }
 }

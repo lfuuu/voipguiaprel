@@ -1537,6 +1537,9 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         },
         delete: function(id) {
             return ApiLoader.post(url + 'delete', {id: id});
+        },
+        search: function (data) {
+            return ApiLoader.post(url + 'search', data);
         }
     };
 });
