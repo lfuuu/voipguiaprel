@@ -14,6 +14,7 @@ var OcaBwEditCtrl = function ($scope, OcaBw, params, $modalInstance, $window) {
     {id: 97, name: 'Краснодар'},
     {id: 11, name: 'MSK_HUB'},
     {id: 81, name: 'Будапешт'},
+    {id: 61, name: 'Австрия'},
     {id: 20, name: 'EU_HUB'}
   ];
 
