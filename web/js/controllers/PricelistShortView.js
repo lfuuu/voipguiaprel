@@ -37,9 +37,12 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string) +
                 ((item.delta_price == '' || item.delta_price == null) ? '' : ', Наценка: ' + item.delta_price));
 
+            var hasLocationMark = $scope.elementType === 'location' && $scope.elementId == item.id;
+
             $scope.list.push({
                 is_location: true,
                 id: item.id,
+                has_location_mark: hasLocationMark,
                 location_text: locationText,
                 has_children: data.location[locationKey].filterA.length > 0,
                 is_basic: isBasic
@@ -49,6 +52,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 var item = data.location[locationKey].filterA[filterAKey];
                 var filterAName = $scope.formFilterText(item);
                 var filterAId = item.id;
+                var hasFilterAMark = $scope.elementType === 'filterA' && $scope.elementId == item.id;
 
                 var hasFilterAHeader = false;
                 var totalPrefixCount = 0;
@@ -75,6 +79,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     var filterBRating = (item.rating == 1) ? '' : item.rating;
                     var filterBUseForMinimum = item.use_for_minimum;
                     var filterBId = item.id;
+                    var hasFilterBMark = $scope.elementType === 'filterB' && $scope.elementId == item.id;
 
                     var interconnectPrice = isNaN(parseFloat(item.interconnect_price)) ? 0 : parseFloat(item.interconnect_price);
 
@@ -86,6 +91,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     for (var prefixPriceKey in data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit) {
                         var prefixItem = data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit[prefixPriceKey];
                         var bNumberPrice = (parseFloat(prefixItem.b_number_price)).toFixed(4);
+                        var hasPrefixMark = $scope.elementType === 'prefix' && $scope.elementId == prefixItem.id;
 
                         if (simplifiedPrefixList[prefixItem.prefix_b]) {
                             var previousItem = simplifiedPrefixList[prefixItem.prefix_b][(simplifiedPrefixList[prefixItem.prefix_b].length - 1)];
@@ -93,6 +99,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
                             simplifiedPrefixList[prefixItem.prefix_b].push({
                                 prefix_price_id: prefixItem.id,
+                                has_prefix_mark: hasPrefixMark,
                                 b_number_price: bNumberPrice,
                                 date_from: prefixItem.date_from,
                                 price_change: previousPrice > bNumberPrice ? 'decrease' : 'increase'
@@ -100,6 +107,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                         } else {
                             simplifiedPrefixList[prefixItem.prefix_b] = [{
                                 prefix_price_id: prefixItem.id,
+                                has_prefix_mark: hasPrefixMark,
                                 b_number_price: bNumberPrice,
                                 date_from: prefixItem.date_from,
                                 price_change: 'none'
@@ -116,6 +124,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                             $scope.list.push({
                                 is_filter_b_header: true,
                                 is_filter_a_header: !hasFilterAHeader,
+                                has_filter_a_mark: hasFilterAMark,
+                                has_filter_b_mark: hasFilterBMark,
                                 filter_a_name: filterAName,
                                 filter_b_name: filterBName,
                                 filter_b_rating: filterBRating,
@@ -145,6 +155,14 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     }
                 }
             }
+        }
+
+        setTimeout($scope.focusOnMark, 0);
+    };
+
+    $scope.focusOnMark = function () {
+        if ($('[data-has-mark="true"]')[0]) {
+            $('[data-has-mark="true"]')[0].scrollIntoView(true);
         }
     };
 
@@ -189,7 +207,13 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     };
 
     if (params.id) {
+        if (params.element_type && params.element_id) {
+            $scope.elementType = params.element_type;
+            $scope.elementId = params.element_id;
+        }
+
         $scope.initData(params.id);
+
     } else {
         $scope.item = {};
     }

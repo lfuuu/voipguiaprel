@@ -359,11 +359,11 @@ class PricelistController extends JsonController
         }
         
         $fields = [
-            "a_country_id","b_country_id","a_region_id","b_region_id","a_city_id","b_city_id","a_operator_id",
-            "b_operator_id","a_ndc_id","b_ndc_id","timestamp","number_a","number_b","mcc","mnc","location_id"
+            'a_country_id','b_country_id','a_region_id','b_region_id','a_city_id','b_city_id','a_operator_id',
+            'b_operator_id','a_ndc_id','b_ndc_id','timestamp','number_a','number_b','mcc','mnc','location_id'
         ];
         
-        $apiUrl = 'http://10.252.0.66:8099/';
+        $apiUrl = 'http://reg10.mcntelecom.ru:8032/';
         
         $apiParams = [
             'cmd' => 'findPricelist'
@@ -373,6 +373,10 @@ class PricelistController extends JsonController
             if (isset($this->request[$fieldName]) && !empty($this->request[$fieldName])) {
                 $apiParams[$fieldName] = $this->request[$fieldName];
             }
+        }
+    
+        if (isset($this->request['is_orig'])) {
+            $apiParams['is_orig'] = $this->request['is_orig'];
         }
         
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);

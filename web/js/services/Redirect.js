@@ -343,6 +343,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             }
             return openModal(controller, templatePath, {id: id});
         },
+        pricelistSearchView: function(id, elementType, elementId) {
+            return openModal(PricelistShortViewCtrl, '/templates/pricelist_short_view.html', {id: id, element_type: elementType, element_id: elementId});
+        },
         pricelistEdit: function(id) {
             return openModal(PricelistEditCtrl, '/templates/pricelist_edit.html', {id: id});
         },

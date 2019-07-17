@@ -104,7 +104,13 @@
         </div>
         <div class="row">
             <div class="form-group col-sm-4 search-form-item first-form-item">
-
+                <label class="col-sm-1 search-field-label">Направление</label>
+                <div class="col-sm-5 search-input">
+                    <div class="btn-group">
+                        <button type="button" class="btn {{item.is_orig ? 'btn-primary active' : 'btn-default'}}" ng-click="item.is_orig = true">Оригинация</button>
+                        <button type="button" class="btn {{!item.is_orig ? 'btn-danger active' : 'btn-default'}}" ng-click="item.is_orig = false">Терминация</button>
+                    </div>
+                </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
                 <label class="col-sm-2 search-field-label">Оператор A</label>
@@ -205,7 +211,7 @@
         <td style="cursor: pointer" ng-click="clickPricelist(item)">{{item.pricelist_id}}{{item.pricelist_name ? ': ' + item.pricelist_name : ''}}</td>
         <td style="cursor: pointer" ng-click="clickLocation(item)">{{item.location_id}}</td>
         <td style="cursor: pointer" ng-click="clickFilterA(item)">{{item.filter_a}}</td>
-        <td style="cursor: pointer" ng-click="clickFilterA(item)">{{item.filter_b}}</td>
+        <td style="cursor: pointer" ng-click="clickFilterB(item)">{{item.filter_b}}</td>
         <td style="cursor: pointer" ng-click="clickPrefixPrice(item)">{{item.prefix}}</td>
     </tr>
 

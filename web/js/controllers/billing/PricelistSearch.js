@@ -172,7 +172,8 @@ var PricelistSearchCtrl = function ($scope, Pricelist, Nnp, List, Redirect, $win
             number_b: '',
             mcc: '',
             mnc: '',
-            location_id: ''
+            location_id: '',
+            is_orig: false
         };
 
         $scope.$watch('item.a_country_id', watchers.a_country_id);
@@ -197,6 +198,7 @@ var PricelistSearchCtrl = function ($scope, Pricelist, Nnp, List, Redirect, $win
         $scope.noData = false;
         Pricelist.search($scope.item).then(function (data) {
             $scope.isLoading = false;
+            $scope.list = [];
             $scope.processData(data);
         });
     };
@@ -222,6 +224,30 @@ var PricelistSearchCtrl = function ($scope, Pricelist, Nnp, List, Redirect, $win
     $scope.clickPricelist = function (item) {
         if (item.pricelist_id + 0 === item.pricelist_id) {
             Redirect.pricelistShortView(item.pricelist_id);
+        }
+    };
+
+    $scope.clickLocation = function (item) {
+        if (item.pricelist_id + 0 === item.pricelist_id) {
+            Redirect.pricelistSearchView(item.pricelist_id, 'location', item.location_id);
+        }
+    };
+
+    $scope.clickFilterA = function (item) {
+        if (item.pricelist_id + 0 === item.pricelist_id) {
+            Redirect.pricelistSearchView(item.pricelist_id, 'filterA', item.filter_a);
+        }
+    };
+
+    $scope.clickFilterB = function (item) {
+        if (item.pricelist_id + 0 === item.pricelist_id) {
+            Redirect.pricelistSearchView(item.pricelist_id, 'filterB', item.filter_b);
+        }
+    };
+
+    $scope.clickPrefixPrice = function (item) {
+        if (item.pricelist_id + 0 === item.pricelist_id) {
+            Redirect.pricelistSearchView(item.pricelist_id, 'prefix', item.prefix);
         }
     };
 };

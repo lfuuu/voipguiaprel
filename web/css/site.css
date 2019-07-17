@@ -278,3 +278,7 @@ td > div > .select2-container > .select2-choice {
 .trunk-header {
 	font-size: smaller;
 }
+
+[data-has-mark='true'] {
+	background-color: lightgreen;
+}
