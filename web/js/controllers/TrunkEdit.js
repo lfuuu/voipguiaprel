@@ -231,7 +231,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
 
     $scope.addNumberPreprocessing = function (abc_mode) {
         $scope.item.numberPreprocessing.push({src: false, abc_mode: abc_mode, noa: '', length: '', prefix: '', 
-                                              mod_type: 0, start_pos: 0, end_pos: 0, mod_value: '', regex: '', acc: true, auth: true});
+                                              mod_type: 0, start_pos: 1, end_pos: 1, mod_value: '', regex: '', acc: true, auth: true});
     };
 
     $scope.preprocPrefix = function (item) {
