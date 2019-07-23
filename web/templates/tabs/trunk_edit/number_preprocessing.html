@@ -74,6 +74,7 @@
                 <td ng-if="line.mod_type == 3" width="5%" style="cursor: ns-resize"> </td>
                 <td ng-if="line.mod_type == 3" width="10%"> </td>
                 
+                <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.avoid_mod" ng-click="line.avoid_mod=!line.avoid_mod">Без модификаторов</input> </td>
                 <td>
                     <comment-icon key="{{line.id}}" type="trunk_preprocessing" comment="line.object_comment"></comment-icon>
                 </td>

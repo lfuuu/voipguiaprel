@@ -58,7 +58,7 @@ class TrunkNumberPreprocessing extends \yii\db\ActiveRecord
             [['end_pos'], 'integer', 'min' => 1, 'max' => 40],
             [['mod_value'], 'string'],
             [['regex'], 'string'],
-            [['auth', 'acc'], 'boolean'],
+            [['auth', 'acc', 'avoid_mod'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
