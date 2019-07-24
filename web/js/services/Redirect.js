@@ -515,5 +515,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             $cookies.billing_selected_page = 'pricelistSearch';
             return openTab(PricelistSearchCtrl, '/templates/billing/pricelist_search.html', {});
         },
+        oldPricelistSearch: function() {
+            $cookies.billing_selected_page = 'oldPricelistSearch';
+            return openTab(OldPricelistSearchCtrl, '/templates/billing/old_pricelist_search.html', {});
+        },
     };
 });

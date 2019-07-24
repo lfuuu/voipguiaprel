@@ -113,6 +113,7 @@ class AppAsset extends AssetBundle
         'js/controllers/routing/MoneyTree.js',
         'js/controllers/CommentEdit.js',
         'js/controllers/billing/PricelistSearch.js',
+        'js/controllers/billing/OldPricelistSearch.js',
     ];
 
     public $templates = [
@@ -206,5 +207,6 @@ class AppAsset extends AssetBundle
         'templates/routing/money_tree.html',
         'templates/comment_edit.html',
         'templates/billing/pricelist_search.html',
+        'templates/billing/old_pricelist_search.html',
     ];
 }

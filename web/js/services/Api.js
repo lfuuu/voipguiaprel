@@ -1540,6 +1540,9 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         },
         search: function (data) {
             return ApiLoader.post(url + 'search', data);
+        },
+        oldSearch: function (data) {
+            return ApiLoader.post(url + 'old-search', data);
         }
     };
 });

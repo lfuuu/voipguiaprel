@@ -430,4 +430,37 @@ class PricelistController extends JsonController
         
         return $result;
     }
+    
+    public function actionOldSearch()
+    {
+        if (!\Yii::$app->user->can('old_pricelist_search')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $fields = [
+            'country_code','prefix','pricelist_ids'
+        ];
+        
+        $apiUrl = 'http://reg10.mcntelecom.ru:8032/';
+        
+        $apiParams = [
+            'cmd' => 'findDefs'
+        ];
+        
+        foreach ($fields as $fieldName) {
+            if (isset($this->request[$fieldName]) && !empty($this->request[$fieldName])) {
+                $apiParams[$fieldName] = $this->request[$fieldName];
+            }
+        }
+        
+        if (isset($this->request['exact_match'])) {
+            $apiParams['exact_match'] = $this->request['exact_match'];
+        }
+        
+        $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
+        
+        $response = file_get_contents($request);
+        
+        return json_decode($response, true);
+    }
 }
