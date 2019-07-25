@@ -134,7 +134,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             tarification_min_paid_seconds: params.pricelist_default_tarification_min_paid_seconds,
             filter_country: 643,
             rating: 1,
-            use_for_minimum: false
+            use_for_minimum: false,
+            use_cutoff_for_minimum: false
         };
 
         $scope.saveEnabled = true;
@@ -161,7 +162,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             tarification_min_paid_seconds: 0,
             filter_country: 643,
             rating: 1,
-            use_for_minimum: false
+            use_for_minimum: false,
+            use_cutoff_for_minimum: false
         };
 
         $scope.saveEnabled = true;
