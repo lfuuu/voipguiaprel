@@ -155,7 +155,7 @@ var PricelistSearchCtrl = function ($scope, Pricelist, Nnp, List, Redirect, $win
         var date = new Date();
 
         var dateText = date.toISOString().slice(0, 19).replace('T', ' ');
-        
+
         $scope.item = {
             a_country_id: '',
             b_country_id: '',
@@ -173,7 +173,8 @@ var PricelistSearchCtrl = function ($scope, Pricelist, Nnp, List, Redirect, $win
             mcc: '',
             mnc: '',
             location_id: '',
-            is_orig: false
+            is_orig: false,
+            service_type_id: ''
         };
 
         $scope.$watch('item.a_country_id', watchers.a_country_id);

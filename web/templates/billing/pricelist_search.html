@@ -131,7 +131,15 @@
         </div>
         <div class="row">
             <div class="form-group col-sm-4 search-form-item first-form-item">
-
+                <label class="col-sm-2 search-field-label">Тип прайса</label>
+                <div class="col-sm-10 search-input">
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" ng-model="item.service_type_id" placeholder="Тип прайслиста">
+                        <option value="">-- Выберите --</option>
+                        <option value="1">Голос</option>
+                        <option value="2">СМС</option>
+                        <option value="3">Data</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
                 <label class="col-sm-2 search-field-label">Тип NDC A</label>
@@ -169,39 +177,31 @@
     <thead>
     <tr>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'connect_time'; sortReverse = !sortReverse">
-                Прайслист
-                <span ng-show="sortType == 'connect_time' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'connect_time' && !sortReverse" class="caret-up"></span>
-            </a>
+            Прайслист
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'server_id'; sortReverse = !sortReverse">
-                Местоположение
-                <span ng-show="sortType == 'server_id' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'server_id' && !sortReverse" class="caret-up"></span>
-            </a>
+            Цена
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'src_route'; sortReverse = !sortReverse">
-                Фильтр А
-                <span ng-show="sortType == 'src_route' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'src_route' && !sortReverse" class="caret-up"></span>
-            </a>
+            Валюта
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'dst_route'; sortReverse = !sortReverse">
-                Фильтр В
-                <span ng-show="sortType == 'dst_route' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'dst_route' && !sortReverse" class="caret-up"></span>
-            </a>
+            Дата создания
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'src_number'; sortReverse = !sortReverse">
-                Префикс прайса
-                <span ng-show="sortType == 'src_number' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'src_number' && !sortReverse" class="caret-up"></span>
-            </a>
+            Дата активации
+        </th>
+        <th width="5%">
+            Местоположение
+        </th>
+        <th width="5%">
+            Фильтр А
+        </th>
+        <th width="5%">
+            Фильтр В
+        </th>
+        <th width="5%">
+            Префикс прайса
         </th>
     </tr>
     </thead>
@@ -209,6 +209,10 @@
 
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse">
         <td style="cursor: pointer" ng-click="clickPricelist(item)">{{item.pricelist_id}}{{item.pricelist_name ? ': ' + item.pricelist_name : ''}}</td>
+        <td style="cursor: pointer" ng-click="clickPricelist(item)">{{item.price}}</td>
+        <td style="cursor: pointer" ng-click="clickPricelist(item)">{{item.currency}}</td>
+        <td style="cursor: pointer" ng-click="clickPricelist(item)">{{item.date_created}}</td>
+        <td style="cursor: pointer" ng-click="clickPricelist(item)">{{item.date_start}}</td>
         <td style="cursor: pointer" ng-click="clickLocation(item)">{{item.location_id}}</td>
         <td style="cursor: pointer" ng-click="clickFilterA(item)">{{item.filter_a}}</td>
         <td style="cursor: pointer" ng-click="clickFilterB(item)">{{item.filter_b}}</td>

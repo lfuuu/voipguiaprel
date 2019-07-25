@@ -360,7 +360,8 @@ class PricelistController extends JsonController
         
         $fields = [
             'a_country_id','b_country_id','a_region_id','b_region_id','a_city_id','b_city_id','a_operator_id',
-            'b_operator_id','a_ndc_id','b_ndc_id','timestamp','number_a','number_b','mcc','mnc','location_id'
+            'b_operator_id','a_ndc_id','b_ndc_id','timestamp','number_a','number_b','mcc','mnc','location_id',
+            'service_type_id'
         ];
         
         $apiUrl = 'http://reg10.mcntelecom.ru:8032/';
@@ -417,8 +418,11 @@ class PricelistController extends JsonController
             
             if (count($result[$pricelistId]) == 0) {
                 $pricelist = Pricelist::findOne(['id' => $pricelistId]);
+                
                 if ($pricelist) {
                     $item['pricelist_name'] = $pricelist->name;
+                    $item['date_created'] = $pricelist->date_created;
+                    $item['date_start'] = $pricelist->date_start;
                 }
                 
                 $result[$item['pricelist_id']][] = $item;
