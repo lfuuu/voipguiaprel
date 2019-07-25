@@ -189,7 +189,9 @@ class Trunk extends \yii\db\ActiveRecord
     public function getUsagesInMarketplace()
     {
         return $this->hasMany(ServiceTrunkRouting::className(), ['id' => 'id'])
-            ->viaTable(ServiceTrunk::tableName(), ['trunk_id' => 'id']);
+            ->viaTable(ServiceTrunk::tableName(), ['trunk_id' => 'id'], function ($query) {
+                $query->andWhere('expire_dt > now()');
+            });
     }
 
     /**
