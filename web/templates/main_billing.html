@@ -12,8 +12,8 @@
             <a class="list-group-item" ng-if="userPermissions['test_pricelist_list']" ng-click="Redirect.testPricelistList()" ng-class="{active:tabs.isController('TestPricelistListCtrl')}">Тесты прайслистов</a>
             <a class="list-group-item" ng-if="userPermissions['test_number_edit']" ng-click="Redirect.testNumberEdit()">Тест номера</a>
             <a class="list-group-item" ng-if="userPermissions['test_pricelist_group_list']" ng-click="Redirect.testPricelistGroupList()" ng-class="{active:tabs.isController('TestPricelistGroupListCtrl')}">Группы тестов прайслистов</a>
-            <a class="list-group-item" ng-if="userPermissions['pricelist_search']" ng-click="Redirect.pricelistSearch()" ng-class="{active:tabs.isController('PricelistSearchCtrl')}">Поиск в прайслистах</a>
-            <a class="list-group-item" ng-if="userPermissions['old_pricelist_search']" ng-click="Redirect.oldPricelistSearch()" ng-class="{active:tabs.isController('OldPricelistSearchCtrl')}">Поиск в старых прайслистах</a>
+            <a class="list-group-item" ng-if="userPermissions['old_pricelist_search']" ng-click="Redirect.oldPricelistSearch()" ng-class="{active:tabs.isController('OldPricelistSearchCtrl')}">Поиск в прайслистах v1</a>
+            <a class="list-group-item" ng-if="userPermissions['pricelist_search']" ng-click="Redirect.pricelistSearch()" ng-class="{active:tabs.isController('PricelistSearchCtrl')}">Поиск в прайслистах v2</a>
         </div>
         <div ng-if="userPermissions['mcc_list'] || userPermissions['mnc_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['mcc_list']" ng-click="Redirect.mccList()" ng-class="{active:tabs.isController('MccListCtrl')}">MCC</a>
