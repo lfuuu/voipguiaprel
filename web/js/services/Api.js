@@ -1547,6 +1547,36 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('OldPricelist', function ($q, ApiLoader, $rootScope) {
+  var url = '/json/old-pricelist/';
+  var list = undefined;
+  var promise = undefined;
+  return {
+    list: function() {
+      if (promise !== undefined) return promise;
+
+      var deferred = $q.defer();
+      if (list !== undefined) {
+        deferred.resolve(list);
+        return deferred.promise;
+      } else {
+        var data = {};
+        ApiLoader.post(url + 'list', data)
+          .then(function(data){
+            list = data;
+            promise = undefined;
+            deferred.resolve(data);
+          }, function(data){
+            promise = undefined;
+            deferred.reject(data);
+          });
+        promise = deferred.promise;
+      }
+      return deferred.promise;
+    }
+  };
+});
+
 app.factory('PricelistGroup', function ($q, ApiLoader, $rootScope) {
     var url = '/json/pricelist-group/';
     var list = undefined;
@@ -1812,7 +1842,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               Airp, ReleaseReason, RouteTable, Network,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
                               PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
-                              MajorGroup, Header, HeaderRule, Cdr) {
+                              MajorGroup, Header, HeaderRule, Cdr, OldPricelist) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -1882,6 +1912,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     pricelist: function () {
       return Pricelist.list();
+    },
+    oldPricelist: function () {
+      return OldPricelist.list();
     },
     mcc: function () {
       return Mcc.list();

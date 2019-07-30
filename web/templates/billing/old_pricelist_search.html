@@ -28,7 +28,7 @@
                 <div class="col-sm-10 search-input">
                     <select ui-select2 ng-model="item.pricelist_ids" style="width: 100%" >
                         <option value="">-- Выберите --</option>
-                        <option ng-repeat="pricelist in pricelistList" value="{{::pricelist.id}}">{{::pricelist.name}}</option>
+                        <option ng-repeat="pricelist in pricelistList" value="{{::pricelist.id}}">{{::pricelist.id}}: {{::pricelist.name}}</option>
                     </select>
                 </div>
             </div>
@@ -69,38 +69,38 @@
     <thead>
     <tr>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'connect_time'; sortReverse = !sortReverse">
+            <a href="#" ng-click="sortType = 'account_id'; sortReverse = !sortReverse">
                 Оператор
-                <span ng-show="sortType == 'connect_time' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'connect_time' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'account_id' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'account_id' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'server_id'; sortReverse = !sortReverse">
+            <a href="#" ng-click="sortType = 'currency'; sortReverse = !sortReverse">
                 Валюта
-                <span ng-show="sortType == 'server_id' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'server_id' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'currency' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'currency' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'src_route'; sortReverse = !sortReverse">
+            <a href="#" ng-click="sortType = 'prefix'; sortReverse = !sortReverse">
                 Префикс
-                <span ng-show="sortType == 'src_route' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'src_route' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'prefix' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'prefix' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'dst_route'; sortReverse = !sortReverse">
+            <a href="#" ng-click="sortType = 'price'; sortReverse = !sortReverse">
                 Цена
-                <span ng-show="sortType == 'dst_route' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'dst_route' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'price' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'price' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'src_number'; sortReverse = !sortReverse">
+            <a href="#" ng-click="sortType = 'pricelist_id'; sortReverse = !sortReverse">
                 Прайслист
-                <span ng-show="sortType == 'src_number' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'src_number' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'pricelist_id' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'pricelist_id' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
     </tr>

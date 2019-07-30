@@ -29,7 +29,7 @@ var OldPricelistSearchCtrl = function ($scope, Pricelist, Nnp, List, Redirect, $
         $scope.countryList = data;
     });
 
-    List.pricelist().then(function (data) {
+    List.oldPricelist().then(function (data) {
         $scope.pricelistList = data;
     });
 

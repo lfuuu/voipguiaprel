@@ -177,31 +177,67 @@
     <thead>
     <tr>
         <th width="5%">
-            Прайслист
+            <a href="#" ng-click="sortType = 'pricelist_id'; sortReverse = !sortReverse">
+                Прайслист
+                <span ng-show="sortType == 'pricelist_id' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'pricelist_id' && !sortReverse" class="caret-up"></span>
+            </a>
         </th>
         <th width="5%">
-            Цена
+            <a href="#" ng-click="sortType = 'price'; sortReverse = !sortReverse">
+                Цена
+                <span ng-show="sortType == 'price' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'price' && !sortReverse" class="caret-up"></span>
+            </a>
         </th>
         <th width="5%">
-            Валюта
+            <a href="#" ng-click="sortType = 'currency'; sortReverse = !sortReverse">
+                Валюта
+                <span ng-show="sortType == 'currency' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'currency' && !sortReverse" class="caret-up"></span>
+            </a>
         </th>
         <th width="5%">
-            Дата создания
+            <a href="#" ng-click="sortType = 'date_created'; sortReverse = !sortReverse">
+                Дата создания
+                <span ng-show="sortType == 'date_created' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'date_created' && !sortReverse" class="caret-up"></span>
+            </a>
         </th>
         <th width="5%">
-            Дата активации
+            <a href="#" ng-click="sortType = 'date_start'; sortReverse = !sortReverse">
+                Дата активации
+                <span ng-show="sortType == 'date_start' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'date_start' && !sortReverse" class="caret-up"></span>
+            </a>
         </th>
         <th width="5%">
-            Местоположение
+            <a href="#" ng-click="sortType = 'location_id'; sortReverse = !sortReverse">
+                Местоположение
+                <span ng-show="sortType == 'location_id' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'location_id' && !sortReverse" class="caret-up"></span>
+            </a>
         </th>
         <th width="5%">
-            Фильтр А
+            <a href="#" ng-click="sortType = 'filter_a'; sortReverse = !sortReverse">
+                Фильтр А
+                <span ng-show="sortType == 'filter_a' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'filter_a' && !sortReverse" class="caret-up"></span>
+            </a>
         </th>
         <th width="5%">
-            Фильтр В
+            <a href="#" ng-click="sortType = 'filter_b'; sortReverse = !sortReverse">
+                Фильтр В
+                <span ng-show="sortType == 'filter_b' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'filter_b' && !sortReverse" class="caret-up"></span>
+            </a>
         </th>
         <th width="5%">
+            <a href="#" ng-click="sortType = 'prefix'; sortReverse = !sortReverse">
             Префикс прайса
+                <span ng-show="sortType == 'prefix' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'prefix' && !sortReverse" class="caret-up"></span>
+            </a>
         </th>
     </tr>
     </thead>
