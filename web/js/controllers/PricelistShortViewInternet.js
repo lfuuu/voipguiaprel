@@ -31,7 +31,10 @@ var PricelistShortViewInternetCtrl = function ($scope, Redirect, List, Pricelist
             var locationText = item.description ? item.description : ((isBasic ? 'Базовое местоположение: ' : 'Местоположение: ') +
                 $scope.locationIds.find(function(element) {return element.id == item.location_id;}).name +
                 ((item.mcc_string == '' || item.mcc_string == null) ? '' : ', MCC: ' + item.mcc_string) +
-                ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string));
+                ((item.mnc_string == '' || item.mnc_string == null) ? '' : ', MNC: ' + item.mnc_string)) +
+                ((item.delta_price == '' || item.delta_price == null) ? '' : ', Наценка: ' + item.delta_price) +
+                ((item.sim_partner == '' || item.sim_partner == null) ? '' : ', Sim Партнер: ' + item.sim_partner) +
+                ((item.sim_profile == '' || item.sim_profile == null) ? '' : ', Sim Профиль: ' + item.sim_profile);
 
             $scope.list.push({
                 is_location: true,

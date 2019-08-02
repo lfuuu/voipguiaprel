@@ -97,7 +97,9 @@ class Pricelist extends \yii\db\ActiveRecord
                 'mcc_string' => new Expression('(select string_agg(country, \', \') from nnp.mcc where nnp.mcc.mcc = ANY (billing_uu.pricelist_location.mcc::text[]))'),
                 'mnc_string' => new Expression('array_to_string(mnc, \', \')'),
                 'mnc_name_string' => new Expression('(select string_agg(network, \', \') from nnp.mnc where nnp.mnc.mnc = ANY (billing_uu.pricelist_location.mnc::text[]) and nnp.mnc.mcc = ANY (billing_uu.pricelist_location.mcc::text[]))'),
-                'delta_price' => new Expression('round(billing_uu.pricelist_location.delta_price, 4)')
+                'delta_price' => new Expression('round(billing_uu.pricelist_location.delta_price, 4)'),
+                'sim_partner' => new Expression('(select string_agg(name, \', \') from billing_uu.sim_imsi_partner where billing_uu.sim_imsi_partner.id = ANY (billing_uu.pricelist_location.sim_partner))'),
+                'sim_profile' => new Expression('(select string_agg(name, \', \') from billing_uu.sim_imsi_profile where billing_uu.sim_imsi_profile.id = ANY (billing_uu.pricelist_location.sim_profile))'),
             ])
             ->orderBy('id');
     }

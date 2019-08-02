@@ -1954,7 +1954,8 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
       return [
         {'id': '1', 'name': 'Домашний регион'},
         {'id': '2', 'name': 'Гостевой регион'},
-        {'id': '3', 'name': 'Международный регион'}
+        {'id': '3', 'name': 'Международный регион'},
+        {'id': '4', 'name': 'MVNO'}
       ];
     },
     origAttribute: function () {
