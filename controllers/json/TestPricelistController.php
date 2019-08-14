@@ -245,6 +245,14 @@ class TestPricelistController extends JsonController
         if ($item->with_debug_info) {
             $apiParams['with_debug_info'] = 1;
         }
+    
+        if ($item->sim_partner_id) {
+            $apiParams['sim_partner_id'] = $item->sim_partner_id;
+        }
+    
+        if ($item->sim_profile_id) {
+            $apiParams['sim_profile_id'] = $item->sim_profile_id;
+        }
         
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
         
