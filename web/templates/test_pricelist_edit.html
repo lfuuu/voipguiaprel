@@ -123,7 +123,7 @@
             </div>
         </div>
 
-        <div ng-hide="item.location_id != 3" class="form-group">
+        <div ng-hide="item.location_id != 3 && item.location_id != 4" class="form-group">
             <label class="col-sm-2 control-label">MCC</label>
             <div class="col-sm-6">
                 <select ui-select2 ng-model="item.mcc" style="width: 100%">
@@ -133,7 +133,7 @@
             </div>
         </div>
 
-        <div ng-hide="item.location_id != 3 || !item.mcc" class="form-group">
+        <div ng-hide="(item.location_id != 3 && item.location_id != 4) || !item.mcc" class="form-group">
             <label class="col-sm-2 control-label">MNC</label>
             <div class="col-sm-6">
                 <select ui-select2 ng-model="item.mnc" style="width: 100%">

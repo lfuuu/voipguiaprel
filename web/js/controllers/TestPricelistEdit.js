@@ -1,4 +1,4 @@
-var TestPricelistEditCtrl = function($scope, $rootScope, SimImsi, TestPricelist, Mcc, Mnc, Redirect, List, params, $modalInstance, $window) {
+var TestPricelistEditCtrl = function ($scope, $rootScope, SimImsi, TestPricelist, Mcc, Mnc, Redirect, List, params, $modalInstance, $window) {
 
     var watchers = {
         mcc: function (newValue, oldValue) {
@@ -21,6 +21,11 @@ var TestPricelistEditCtrl = function($scope, $rootScope, SimImsi, TestPricelist,
             }
 
             $scope.$watch('item.mcc', watchers.mcc);
+
+            Mnc.listByMcc({mcc: data.mcc}).then(function (result) {
+                $scope.mncList = result;
+                $scope.item.mnc = data.mnc;
+            });
         });
     } else {
         $scope.item = {
@@ -38,10 +43,6 @@ var TestPricelistEditCtrl = function($scope, $rootScope, SimImsi, TestPricelist,
         $scope.mccList = result;
     });
 
-    Mnc.list().then(function (result) {
-        $scope.mncList = result;
-    });
-
     SimImsi.partner().then(function (result) {
         $scope.partnerList = result;
     });
@@ -53,7 +54,7 @@ var TestPricelistEditCtrl = function($scope, $rootScope, SimImsi, TestPricelist,
     $scope.locationList = List.location();
 
     $scope.save = function () {
-        if ($scope.item.location_id != 3) {
+        if ($scope.item.location_id != 3 && $scope.item.location_id != 4) {
             $scope.item.mcc = '';
             $scope.item.mnc = '';
         }
