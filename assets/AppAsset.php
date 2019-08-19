@@ -16,6 +16,7 @@ class AppAsset extends AssetBundle
         'js/services/Filter.js',
         'js/services/Redirect.js',
         'js/directives/select-box.js',
+        'js/directives/select-box-old.js',
         'js/directives/outcome-select-box.js',
         'js/directives/comment-icon.js',
         'js/controllers/MainRouting.js',
@@ -118,6 +119,7 @@ class AppAsset extends AssetBundle
 
     public $templates = [
         'templates/directives/select-box.html',
+        'templates/directives/select-box-old.html',
         'templates/directives/comment-icon.html',
         'templates/directives/outcome-select-box.html',
         'templates/airp_edit.html',
