@@ -52,19 +52,19 @@
                                 <span class="badge">{{$index + 1}}</span>
                             </td>
                             <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
-                                <select-box-old disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box-old>
+                                <select-box disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
                             </td>
                             <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
-                                <select-box-old disabled="{{line.is_locked}}" list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box-old>
+                                <select-box disabled="{{line.is_locked}}" list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box>
                             </td>
                             <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
-                                <select-box-old disabled="{{line.is_locked}}" list="number" model="line.c_number_id" param="3" default="Любой номер"></select-box-old>
+                                <select-box disabled="{{line.is_locked}}" list="number" model="line.c_number_id" param="3" default="Любой номер"></select-box>
                             </td>
                             <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
-                                <select-box-old disabled="{{line.is_locked}}" list="cpc" model="line.cpc_id" default="Любой CPC"></select-box-old>
+                                <select-box disabled="{{line.is_locked}}" list="cpc" model="line.cpc_id" default="Любой CPC"></select-box>
                             </td>
                             <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
-                                <select-box-old disabled="{{line.is_locked}}" list="headerRule" model="line.header_rule_id" default="Любой HeaderRule"></select-box-old>
+                                <select-box disabled="{{line.is_locked}}" list="headerRule" model="line.header_rule_id" default="Любой HeaderRule"></select-box>
                             </td>
                             <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
                                 <outcome-select-box disabled="{{line.is_locked}}" outcome-model="line.outcome_id" route-table-model="line.outcome_route_table_id"></outcome-select-box>

@@ -1,12 +1,12 @@
 (function () {
-    app.directive('selectBoxOld', selectBoxOld);
+    app.directive('selectBoxNew', selectBoxNew);
 
-    selectBoxOld.$inject = ['List', 'Redirect'];
+    selectBoxNew.$inject = ['List', 'Redirect'];
 
-    function selectBoxOld(List, Redirect) {
+    function selectBoxNew(List, Redirect) {
         var directive = {
             link: link,
-            templateUrl: '/templates/directives/select-box-old.html',
+            templateUrl: '/templates/directives/select-box-new.html',
             restrict: 'E',
             scope: {
                 model: '=',
