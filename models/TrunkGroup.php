@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\models\auth\OutcomeRule;
 use yii\db\Query;
 
 /**
@@ -127,6 +128,39 @@ class TrunkGroup extends \yii\db\ActiveRecord
                 ->where(['trunk_priority.trunk_group_id' => $this->id])
                 ->all();
     }
-
+    
+    public function getRouteTablesWithGroup()
+    {
+        return
+            (new Query)
+                ->select([
+                    'id' => 'rt.id',
+                    'name' => 'rt.name',
+                    'server_id' =>'rt.server_id',
+                    'object_comment' => 'rt.object_comment'
+                ])
+                ->distinct()
+                ->from(['rt' => RouteTable::tableName()])
+                ->innerJoin(['rrr' => RouteRouteRule::tableName()], 'rrr.route_table_id = rt.id')
+                ->where(['rrr.trunk_group_id' => $this->id])
+                ->all();
+    }
+    
+    public function getOutcomesWithGroup()
+    {
+        return
+            (new Query)
+                ->select([
+                    'id' => 'o.id',
+                    'name' => 'o.name',
+                    'server_id' =>'o.server_id',
+                    'object_comment' => 'o.object_comment'
+                ])
+                ->distinct()
+                ->from(['o' => Outcome::tableName()])
+                ->innerJoin(['oru' => OutcomeRule::tableName()], 'oru.outcome_id = o.id')
+                ->where(['oru.trunk_group_id' => $this->id])
+                ->all();
+    }
 }
 

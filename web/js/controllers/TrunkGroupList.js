@@ -5,7 +5,7 @@ var TrunkGroupListCtrl = function($scope, TrunkGroup, Redirect, $window) {
     $scope.searchQuery = '';
 
     $scope.filterFields = [
-        'name', 'server_id'
+        'id', 'name', 'server_id'
     ];
 
     $scope.init = function(tab) {

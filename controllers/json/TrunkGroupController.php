@@ -140,6 +140,36 @@ class TrunkGroupController extends JsonController
 
         return $group->getTrunksWithGroupIntoPriorities();
     }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionGetRouteTablesWithGroup()
+    {
+        if (!\Yii::$app->user->can('trunk_group_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $group = $this->getTrunkGroupOr404($this->request['id']);
+        
+        return $group->getRouteTablesWithGroup();
+    }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionGetOutcomesWithGroup()
+    {
+        if (!\Yii::$app->user->can('trunk_group_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $group = $this->getTrunkGroupOr404($this->request['id']);
+        
+        return $group->getOutcomesWithGroup();
+    }
 
     /**
      * @throws FormValidationException

@@ -10,6 +10,8 @@
             <li class="active"><a href="#trunk-group-tab" data-toggle="tab">Группа транков</a></li>
             <li><a href="#rules-with-group" data-toggle="tab">Правила с группой</a></li>
             <li><a href="#priority-with-group" data-toggle="tab">Приоритеты с группой</a></li>
+            <li><a href="#route-table-with-group" data-toggle="tab">Таблицы маршрутизации с группой</a></li>
+            <li><a href="#outcome-with-group" data-toggle="tab">Outcome с группой</a></li>
         </ul>
 
         <br/>
@@ -172,6 +174,76 @@
                                 <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_priority" comment="line.object_comment"></comment-icon>
                             </td>
                         </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane" id="route-table-with-group">
+                <table class="table table-striped">
+                    <colgroup>
+                        <col width="10%" />
+                        <col width="79%" />
+                        <col width="10%" />
+                        <col width="1%" />
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Сервер</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody ng-model="item.findRouteTables">
+                    <tr ng-repeat="line in item.findRouteTables">
+                        <td style="cursor: pointer" ng-click="clickRouteTableItem(line.id)">
+                            {{line.id}}
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickRouteTableItem(line.id)">
+                            {{line.name}}
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickRouteTableItem(line.id)">
+                            {{line.server_id}}
+                        </td>
+                        <td>
+                            <comment-icon ng-if="line.id" key="{{line.id}}" type="route_table" comment="line.object_comment"></comment-icon>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane" id="outcome-with-group">
+                <table class="table table-striped">
+                    <colgroup>
+                        <col width="10%" />
+                        <col width="79%" />
+                        <col width="10%" />
+                        <col width="1%" />
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Сервер</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody ng-model="item.findOutcomes">
+                    <tr ng-repeat="line in item.findOutcomes">
+                        <td style="cursor: pointer" ng-click="clickOutcomeItem(line.id)">
+                            {{line.id}}
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickOutcomeItem(line.id)">
+                            {{line.name}}
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickOutcomeItem(line.id)">
+                            {{line.server_id}}
+                        </td>
+                        <td>
+                            <comment-icon ng-if="line.id" key="{{line.id}}" type="outcome" comment="line.object_comment"></comment-icon>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>

@@ -225,6 +225,12 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
         findIntoPriorities: function(data) {
             return ApiLoader.post(url + 'get-trunks-with-group-into-priorities', data);
         },
+        findRouteTablesWithGroup: function(data) {
+            return ApiLoader.post(url + 'get-route-tables-with-group', data);
+        },
+        findOutcomesWithGroup: function(data) {
+            return ApiLoader.post(url + 'get-outcomes-with-group', data);
+        },
         save: function(data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);

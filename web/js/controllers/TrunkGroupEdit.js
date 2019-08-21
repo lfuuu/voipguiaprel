@@ -31,6 +31,14 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
             TrunkGroup.findIntoPriorities({id: params.id}).then(function(data) {
                 $scope.item.findIntoPriorities = data;
             });
+
+            TrunkGroup.findRouteTablesWithGroup({id: params.id}).then(function(data) {
+                $scope.item.findRouteTables = data;
+            });
+
+            TrunkGroup.findOutcomesWithGroup({id: params.id}).then(function(data) {
+                $scope.item.findOutcomes = data;
+            });
         });
     } else {
         $scope.item = {
@@ -54,6 +62,26 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
         }
 
         Redirect.trunkEdit(trunkId).then(function () {
+            $scope.init();
+        });
+    };
+
+    $scope.clickRouteTableItem = function(routeTableId) {
+        if (window.getSelection().type == 'Range') {
+            return;
+        }
+
+        Redirect.routeTableEdit(routeTableId).then(function () {
+            $scope.init();
+        });
+    };
+
+    $scope.clickOutcomeItem = function(outcomeId) {
+        if (window.getSelection().type == 'Range') {
+            return;
+        }
+
+        Redirect.outcomeEdit(outcomeId).then(function () {
             $scope.init();
         });
     };
