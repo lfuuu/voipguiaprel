@@ -7,17 +7,18 @@
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#trunk-group-tab" data-toggle="tab">Группа транков</a></li>
-            <li><a href="#rules-with-group" data-toggle="tab">Правила с группой</a></li>
-            <li><a href="#priority-with-group" data-toggle="tab">Приоритеты с группой</a></li>
-            <li><a href="#route-table-with-group" data-toggle="tab">Таблицы маршрутизации с группой</a></li>
-            <li><a href="#outcome-with-group" data-toggle="tab">Outcome с группой</a></li>
+            <li class="active"><a href="#trunk-group-tab-{{pageIdSuffix}}" data-toggle="tab">Группа транков</a></li>
+            <li><a href="#rules-with-group-{{pageIdSuffix}}" data-toggle="tab">Правила с группой</a></li>
+            <li><a href="#priority-with-group-{{pageIdSuffix}}" data-toggle="tab">Приоритеты с группой</a></li>
+            <li><a href="#route-table-with-group-{{pageIdSuffix}}" data-toggle="tab">Таблицы маршрутизации с группой</a></li>
+            <li><a href="#outcome-with-group-{{pageIdSuffix}}" data-toggle="tab">Outcome с группой</a></li>
+            <li><a href="#group-with-group-{{pageIdSuffix}}" data-toggle="tab">Группы транков с группой</a></li>
         </ul>
 
         <br/>
 
         <div class="tab-content">
-            <div class="tab-pane active" id="trunk-group-tab">
+            <div class="tab-pane active" id="trunk-group-tab-{{pageIdSuffix}}">
 
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Название</label>
@@ -65,7 +66,7 @@
                 </div>
             </div>
 
-            <div class="tab-pane" id="rules-with-group">
+            <div class="tab-pane" id="rules-with-group-{{pageIdSuffix}}">
                 <table class="table table-striped">
                     <colgroup>
                         <col width="10%" />
@@ -122,7 +123,7 @@
                 </table>
             </div>
 
-            <div class="tab-pane" id="priority-with-group">
+            <div class="tab-pane" id="priority-with-group-{{pageIdSuffix}}">
                 <table class="table table-striped">
                     <colgroup>
                         <col width="10%" />
@@ -178,7 +179,7 @@
                 </table>
             </div>
 
-            <div class="tab-pane" id="route-table-with-group">
+            <div class="tab-pane" id="route-table-with-group-{{pageIdSuffix}}">
                 <table class="table table-striped">
                     <colgroup>
                         <col width="10%" />
@@ -213,7 +214,7 @@
                 </table>
             </div>
 
-            <div class="tab-pane" id="outcome-with-group">
+            <div class="tab-pane" id="outcome-with-group-{{pageIdSuffix}}">
                 <table class="table table-striped">
                     <colgroup>
                         <col width="10%" />
@@ -242,6 +243,41 @@
                         </td>
                         <td>
                             <comment-icon ng-if="line.id" key="{{line.id}}" type="outcome" comment="line.object_comment"></comment-icon>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane" id="group-with-group-{{pageIdSuffix}}">
+                <table class="table table-striped">
+                    <colgroup>
+                        <col width="10%" />
+                        <col width="79%" />
+                        <col width="10%" />
+                        <col width="1%" />
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Сервер</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody ng-model="item.findGroups">
+                    <tr ng-repeat="line in item.findGroups">
+                        <td style="cursor: pointer" ng-click="clickGroupItem(line.id)">
+                            {{line.id}}
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickGroupItem(line.id)">
+                            {{line.name}}
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickGroupItem(line.id)">
+                            {{line.server_id}}
+                        </td>
+                        <td>
+                            <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_group" comment="line.object_comment"></comment-icon>
                         </td>
                     </tr>
                     </tbody>

@@ -1,7 +1,9 @@
 var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstance, Redirect, $window) {
+    $scope.pageIdSuffix = 'new';
 
     if (params.id) {
         TrunkGroup.get({id: params.id}).then(function(data){
+            $scope.pageIdSuffix = params.id;
             $scope.item = data;
             var trunks = [];
             var trunk_groups = [];
@@ -38,6 +40,10 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
 
             TrunkGroup.findOutcomesWithGroup({id: params.id}).then(function(data) {
                 $scope.item.findOutcomes = data;
+            });
+
+            TrunkGroup.findGroupsWithGroup({id: params.id}).then(function(data) {
+                $scope.item.findGroups = data;
             });
         });
     } else {
@@ -82,6 +88,16 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
         }
 
         Redirect.outcomeEdit(outcomeId).then(function () {
+            $scope.init();
+        });
+    };
+
+    $scope.clickGroupItem = function(trunkGroupId) {
+        if (window.getSelection().type == 'Range') {
+            return;
+        }
+
+        Redirect.trunkGroupEdit(trunkGroupId).then(function () {
             $scope.init();
         });
     };

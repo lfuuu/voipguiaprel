@@ -162,5 +162,22 @@ class TrunkGroup extends \yii\db\ActiveRecord
                 ->where(['oru.trunk_group_id' => $this->id])
                 ->all();
     }
+    
+    public function getGroupsWithGroup()
+    {
+        return
+            (new Query)
+                ->select([
+                    'id' => 'tg.id',
+                    'name' => 'tg.name',
+                    'server_id' =>'tg.server_id',
+                    'object_comment' => 'tg.object_comment'
+                ])
+                ->distinct()
+                ->from(['tg' => self::tableName()])
+                ->innerJoin(['tgi' => TrunkGroupItem::tableName()], 'tgi.trunk_group_id = tg.id')
+                ->where(['tgi.child_trunk_group_id' => $this->id])
+                ->all();
+    }
 }
 

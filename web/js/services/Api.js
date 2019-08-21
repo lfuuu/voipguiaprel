@@ -231,6 +231,9 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
         findOutcomesWithGroup: function(data) {
             return ApiLoader.post(url + 'get-outcomes-with-group', data);
         },
+        findGroupsWithGroup: function(data) {
+            return ApiLoader.post(url + 'get-groups-with-group', data);
+        },
         save: function(data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
