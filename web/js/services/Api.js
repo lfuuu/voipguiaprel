@@ -319,6 +319,15 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('ActionLog', function ($q, ApiLoader, $rootScope) {
+  var url = '/json/action-log/';
+  return {
+    get: function(data) {
+      return ApiLoader.post(url + 'get', data);
+    }
+  };
+});
+
 app.factory('OcaBw', function ($q, ApiLoader, $rootScope) {
   var
     url = '/json/oca-bw/',

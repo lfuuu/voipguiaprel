@@ -19,6 +19,7 @@ class AppAsset extends AssetBundle
         'js/directives/select-box-new.js',
         'js/directives/outcome-select-box.js',
         'js/directives/comment-icon.js',
+        'js/directives/action-log-view-button.js',
         'js/controllers/MainRouting.js',
         'js/controllers/MainBilling.js',
         'js/controllers/MainMarketplace.js',
@@ -115,12 +116,14 @@ class AppAsset extends AssetBundle
         'js/controllers/CommentEdit.js',
         'js/controllers/billing/PricelistSearch.js',
         'js/controllers/billing/OldPricelistSearch.js',
+        'js/controllers/ActionLogView.js',
     ];
 
     public $templates = [
         'templates/directives/select-box.html',
         'templates/directives/select-box-new.html',
         'templates/directives/comment-icon.html',
+        'templates/directives/action-log-view-button.html',
         'templates/directives/outcome-select-box.html',
         'templates/airp_edit.html',
         'templates/airp_list.html',
@@ -210,5 +213,6 @@ class AppAsset extends AssetBundle
         'templates/comment_edit.html',
         'templates/billing/pricelist_search.html',
         'templates/billing/old_pricelist_search.html',
+        'templates/action_log_view.html',
     ];
 }

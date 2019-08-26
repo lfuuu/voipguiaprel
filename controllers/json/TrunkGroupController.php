@@ -197,6 +197,8 @@ class TrunkGroupController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
+        $result = [];
+        
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
@@ -205,12 +207,14 @@ class TrunkGroupController extends JsonController
             }
             
             $trunkGroup = $this->getTrunkGroupOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($trunkGroup)];
         } else {
-    
             if (!\Yii::$app->user->can('trunk_group_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
+            
             $trunkGroup = TrunkGroup::create($server);
+            $result['log'] = ['data_before' => []];
         }
 
         $trunkGroup->load($this->request, '');
@@ -242,6 +246,22 @@ class TrunkGroupController extends JsonController
                 $transaction->rollBack();
             }
         }
+        
+        $result['log']['data_after'] = $this->getDataForLog($trunkGroup);
+        
+        return $result;
+    }
+    
+    protected function getDataForLog($trunkGroup)
+    {
+        $trunkGroupTrunks = $trunkGroup->getTrunks()->asArray()->all();
+        $trunkGroupTrunkGroups = $trunkGroup->gettrunk_groups()->asArray()->all();
+        
+        $data = $trunkGroup->getAttributes();
+        $data['trunks'] = $trunkGroupTrunks;
+        $data['trunk_groups'] = $trunkGroupTrunkGroups;
+        
+        return $data;
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 namespace app\classes;
 
+use app\models\ActionLog;
 use Yii;
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
@@ -12,6 +13,10 @@ class JsonController extends BaseController
     public $enableCsrfValidation = false;
 
     protected $request;
+    
+    protected $doNotLog = false;
+    
+    private $saveMethods = ['save', 'saveAndUpdate', 'toggleActive', 'inherit', 'copy', 'delete'];
 
     public function behaviors()
     {
@@ -55,7 +60,50 @@ class JsonController extends BaseController
     public function afterAction($action, $result)
     {
         $result = parent::afterAction($action, $result);
+    
+        // Логируем только если включено логирование в конфиге
+        // и если у контроллера _doNotLog установлена в ложь
+        if (\Yii::$app->params['loggingEnabled'] && !$action->controller->doNotLog) {
+            $actionName = $action->id;
+            
+            if (\Yii::$app->params['logReadMethods'] || in_array($actionName, $this->saveMethods)) {
+                if (isset($result['log'])) {
+                    $dataBefore = $result['log']['data_before'];
+                    $dataAfter = $result['log']['data_after'];
+                    
+                    if (isset($result['result'])) {
+                        $result = $result['result'];
+                    } else {
+                        $result = null;
+                    }
+                } else {
+                    $dataBefore = [];
+                    $dataAfter = [];
+                }
+                
+                $data = [
+                    'user_id' => \Yii::$app->user->id,
+                    'controller' => $action->controller->id,
+                    'action' => $action->id,
+                    'object_id' => isset($this->request['id']) ? $this->request['id'] : (isset($dataAfter['id']) ? $dataAfter['id'] : ''),
+                    'request_date' => 'now()',
+                    'data_before' => json_encode($dataBefore, JSON_FORCE_OBJECT),
+                    'data_after' => json_encode($dataAfter, JSON_FORCE_OBJECT)
+                ];
+                
+                $logItem = ActionLog::create($data);
+                $logItem->save();
+            }
+        }
+        
         return $this->serializeData($result);
+    }
+    
+    protected function getDataForLog($item)
+    {
+        $data = $item->getAttributes();
+        
+        return $data;
     }
 
     protected function serializeData($data)

@@ -9,6 +9,7 @@ use yii\web\HttpException;
 
 class CommentController extends JsonController
 {
+    protected $doNotLog = true;
     
     private $_objectTypes = [
         'trunk' => ['model_name' => '\app\models\Trunk', 'permissions' => ['trunk_edit']],

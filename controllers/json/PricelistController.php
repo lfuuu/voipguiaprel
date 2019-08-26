@@ -153,18 +153,22 @@ class PricelistController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
+        $result = [];
+        
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('pricelist_edit')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = $this->getPricelistOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('pricelist_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = Pricelist::create();
+            $result['log'] = ['data_before' => []];
         }
         
         $item->load($this->request, '');
@@ -184,6 +188,10 @@ class PricelistController extends JsonController
         if (isset($this->request['old_pricelist_id'])) {
             $item->importFromOldVersion($this->request['old_pricelist_id']);
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
     
     public function actionSaveAndUpdate()

@@ -64,6 +64,8 @@ class AirpController extends JsonController
         if (!\Yii::$app->user->can('airp_edit') && !\Yii::$app->user->can('airp_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -73,12 +75,14 @@ class AirpController extends JsonController
             }
             
             $item = $this->getAirpOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('airp_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = Airp::create($server);
+            $result['log'] = ['data_before' => []];
         }
 
         $item->load($this->request, '');
@@ -94,6 +98,10 @@ class AirpController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 
     public function actionDelete()
