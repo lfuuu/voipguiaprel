@@ -18,6 +18,14 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
             is_pricelist_header_columns: true
         });
 
+        var minimumMarginTypeName = 'Нет';
+
+        if (data.minimum_margin_type == 1) {
+            minimumMarginTypeName = 'Деньги';
+        } else if (data.minimum_margin_type == 2) {
+          minimumMarginTypeName = 'Процент';
+        }
+
         $scope.list.push({
             id: data.id,
             is_pricelist: true,
@@ -28,7 +36,9 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
             orig: data.orig ? 'Оригинация' : 'Терминация',
             is_global: data.is_global ? 'Да' : 'Нет',
             is_active: data.is_active ? 'Да' : 'Нет',
-            version: data.pricelist_version
+            version: data.pricelist_version,
+            minimum_margin: data.minimum_margin,
+            minimum_margin_type: minimumMarginTypeName
         });
 
         $scope.pricelistIsActive = data.is_active;

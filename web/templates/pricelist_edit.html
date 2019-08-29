@@ -172,6 +172,20 @@
             </div>
         </div>
 
+        <div ng-hide="item.service_type_id != 1" class="form-group">
+            <label class="col-sm-2 control-label">Ограничение по минимальной цене</label>
+            <div class="col-sm-2">
+                <input class="form-control" placeholder="0" ng-model="item.minimum_margin">
+            </div>
+            <div class="col-sm-2">
+                <select ui-select2 ng-model="item.minimum_margin_type" placeholder="Тип" style="width: 100%">
+                    <option value="0">Нет</option>
+                    <option value="1">Деньги</option>
+                    <option value="2">Процент</option>
+                </select>
+            </div>
+        </div>
+
         <div ng-if="!item.id" class="form-group">
             <label class="col-sm-2 control-label">Импортировать из прайслиста</label>
             <div class="col-sm-10">

@@ -11,7 +11,7 @@
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header" colspan="12"></td>
                 <!--------------------------------------------------->
                 <td style="background-color: #BBAAAA;border-left: 1px solid grey;" ng-if="item.is_pricelist_header_columns"></td>
-                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="5"></td>
+                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="4"></td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Валюта</td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Дата начала</td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Дата окончания</td>
@@ -20,10 +20,12 @@
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Глобальный</td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Активный</td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Версия</td>
-                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="7"></td>
+                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Огр. по мин. цене</td>
+                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Тип ограничения</td>
+                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="6"></td>
                 <!---------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_pricelist"></td>
-                <td ng-if="item.is_pricelist" colspan="5"></td>
+                <td ng-if="item.is_pricelist" colspan="4"></td>
                 <td ng-if="item.is_pricelist">{{item.currency_id}}</td>
                 <td ng-if="item.is_pricelist">{{item.date_start}}</td>
                 <td ng-if="item.is_pricelist">{{item.date_end}}</td>
@@ -32,7 +34,9 @@
                 <td ng-if="item.is_pricelist">{{item.is_global}}</td>
                 <td ng-if="item.is_pricelist">{{item.is_active}}</td>
                 <td ng-if="item.is_pricelist">{{item.version}}</td>
-                <td ng-if="item.is_pricelist" colspan="3"></td>
+                <td ng-if="item.is_pricelist">{{item.minimum_margin}}</td>
+                <td ng-if="item.is_pricelist">{{item.minimum_margin_type}}</td>
+                <td ng-if="item.is_pricelist" colspan="2"></td>
                 <td ng-if="item.is_pricelist">
                     <a popover="Выгрузить в Excel" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcel()" href="#" class="btn btn-success btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>

@@ -25,6 +25,8 @@ use yii\db\Query;
  * @property int $default_tarification_type
  * @property int $minimum_minutes
  * @property int $minimum_cost
+ * @property string $minimum_margin
+ * @property int $minimum_margin_type
  */
 class Pricelist extends \yii\db\ActiveRecord
 {
@@ -43,8 +45,9 @@ class Pricelist extends \yii\db\ActiveRecord
             [['pricelist_version', 'pricelist_group_id', 'type_id', 'basic_pricelist_location_id',
                 'default_tarification_free_seconds', 'default_tarification_interval_seconds',
                 'default_tarification_min_paid_seconds', 'service_type_id', 'default_tarification_type',
-                'minimum_minutes', 'minimum_cost'], 'integer'],
-            [['orig', 'is_global', 'is_active'], 'boolean']
+                'minimum_minutes', 'minimum_cost', 'minimum_margin_type'], 'integer'],
+            [['orig', 'is_global', 'is_active'], 'boolean'],
+            [['minimum_margin'], 'string']
         ];
     }
 
