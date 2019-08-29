@@ -18,7 +18,8 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
         name: '',
         group_id: '',
         result: '',
-        trunk_name: ''
+        trunk_name: '',
+        ignore_region: false
     };
 
     $scope.displayOnlineResult = false;

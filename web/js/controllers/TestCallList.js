@@ -17,7 +17,8 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
         group_id: '',
         result: '',
         orig_trunk_name: '',
-        term_trunk_name: ''
+        term_trunk_name: '',
+        ignore_region: false
     };
 
     $scope.displayOnlineResult = false;

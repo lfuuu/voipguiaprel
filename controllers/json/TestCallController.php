@@ -81,8 +81,7 @@ class TestCallController extends JsonController
                     ])
                 ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
                 ->leftJoin('auth.test_group tg', 'tg.id = auth.test_call.testgroup_id')
-                ->where(['test_call.server_id' => $server->id])
-                ->andWhere($groupWhere)
+                ->where($groupWhere)
                 ->andWhere($resultWhere)
                 ->orderBy('name')
                 ->limit($limit)
@@ -92,10 +91,15 @@ class TestCallController extends JsonController
         $countQuery = TestCall::find()
             ->select(['id'])
             ->leftJoin('auth.test_result tr', 'tr.type = \'call\' and tr.id_call = auth.test_call.id')
-            ->where(['auth.test_call.server_id' => $server->id])
-            ->andWhere($groupWhere)
+            ->where($groupWhere)
             ->andWhere($resultWhere);
     
+        if (isset($searchArray['ignore_region']) && $searchArray['ignore_region'] === false) {
+            $query->andWhere('test_call.server_id = :server_id');
+            $query->addParams([':server_id' => $server->id]);
+            $countQuery->andWhere('test_call.server_id = :server_id');
+            $countQuery->addParams([':server_id' => $server->id]);
+        }
     
         if (isset($searchArray['orig_trunk_name']) && $searchArray['orig_trunk_name']) {
             $query->andWhere('test_call.src_trunk_name = :trunk_name');

@@ -97,8 +97,7 @@ class TestAuthController extends JsonController
                     ])
                 ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
                 ->leftJoin('auth.test_group tg', 'tg.id = auth.test_auth.testgroup_id')
-                ->where(['test_auth.server_id' => $server->id])
-                ->andWhere($groupWhere)
+                ->where($groupWhere)
                 ->andWhere($resultWhere)
                 ->orderBy('name')
                 ->limit($limit)
@@ -108,9 +107,15 @@ class TestAuthController extends JsonController
         $countQuery = TestAuth::find()
             ->select(['id'])
             ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
-            ->where(['auth.test_auth.server_id' => $server->id])
-            ->andWhere($groupWhere)
+            ->where($groupWhere)
             ->andWhere($resultWhere);
+        
+        if (isset($searchArray['ignore_region']) && $searchArray['ignore_region'] === false) {
+            $query->andWhere('test_auth.server_id = :server_id');
+            $query->addParams([':server_id' => $server->id]);
+            $countQuery->andWhere('test_auth.server_id = :server_id');
+            $countQuery->addParams([':server_id' => $server->id]);
+        }
     
         if (isset($searchArray['trunk_name']) && $searchArray['trunk_name']) {
             $query->andWhere('test_auth.trunk_name = :trunk_name');

@@ -51,7 +51,13 @@
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
-
+                <label class="col-sm-1 search-field-label">Регион</label>
+                <div class="col-sm-5 search-input">
+                    <div class="btn-group">
+                        <button type="button" class="btn {{searchArray.ignore_region ? 'btn-primary active' : 'btn-default'}}" ng-click="searchArray.ignore_region = true">Все</button>
+                        <button type="button" class="btn {{!searchArray.ignore_region ? 'btn-danger active' : 'btn-default'}}" ng-click="searchArray.ignore_region = false">Выбранный</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
