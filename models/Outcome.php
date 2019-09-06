@@ -53,7 +53,7 @@ class Outcome extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name','rn','ocpn', 'header'], 'string', 'max' => 50],
+            [['name','rn', 'gn','ocpn', 'header'], 'string', 'max' => 50],
             [['type_id'], 'integer'],
             [['sw_shared', 'outcome_rule_default_allowed'], 'boolean'],
             [['route_case_id', 'release_reason_id', 'airp_id','route_case_1_id','route_case_2_id'], 'integer'],
