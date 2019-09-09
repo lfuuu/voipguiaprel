@@ -74,6 +74,8 @@ class OutcomeController extends JsonController
         if (!\Yii::$app->user->can('outcome_edit') && !\Yii::$app->user->can('outcome_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -83,12 +85,14 @@ class OutcomeController extends JsonController
             }
             
             $outcome = $this->getOutcomeOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($outcome)];
         } else {
             if (!\Yii::$app->user->can('outcome_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $outcome = Outcome::create($server);
+            $result['log'] = ['data_before' => []];
         }
 
         $outcome->load($this->request, '');
@@ -117,6 +121,10 @@ class OutcomeController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($outcome);
+    
+        return $result;
     }
 
     public function actionDelete()

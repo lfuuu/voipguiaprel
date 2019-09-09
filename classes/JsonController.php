@@ -103,6 +103,13 @@ class JsonController extends BaseController
     {
         $data = $item->getAttributes();
         
+        $subitems = isset($item->_subitems) ? $item->_subitems : [];
+        
+        foreach ($subitems as $subitemName => $subitemMethod) {
+            $subitemData = $item->$subitemMethod()->asArray()->all();
+            $data[$subitemName] = $subitemData;
+        }
+        
         return $data;
     }
 

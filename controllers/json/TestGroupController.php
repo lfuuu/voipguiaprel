@@ -74,6 +74,8 @@ class TestGroupController extends JsonController
         if (!\Yii::$app->user->can('test_group_edit') && !\Yii::$app->user->can('test_group_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('test_group_edit')) {
@@ -81,12 +83,14 @@ class TestGroupController extends JsonController
             }
             
             $item = $this->getTestGroupOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('test_group_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = TestGroup::create();
+            $result['log'] = ['data_before' => []];
         }
 
         $item->load($this->request, '');
@@ -103,6 +107,10 @@ class TestGroupController extends JsonController
                 $transaction->rollBack();
             }
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 
     /**

@@ -12,6 +12,11 @@ use app\queries\RouteTableQuery;
  */
 class RouteTable extends \yii\db\ActiveRecord
 {
+    public $_subitems = [
+        'routes' => 'getRoutes',
+        'routeRules' => 'getRouteRules'
+    ];
+    
     public static function tableName()
     {
         return 'auth.route_table';

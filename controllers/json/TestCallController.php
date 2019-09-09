@@ -163,6 +163,8 @@ class TestCallController extends JsonController
         if (!\Yii::$app->user->can('test_call_edit') && !\Yii::$app->user->can('test_call_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -172,12 +174,14 @@ class TestCallController extends JsonController
             }
             
             $item = $this->getTestCallOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('test_call_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = TestCall::create($server);
+            $result['log'] = ['data_before' => []];
         }
 
         $item->load($this->request, '');
@@ -193,6 +197,10 @@ class TestCallController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 
     public function actionDelete()

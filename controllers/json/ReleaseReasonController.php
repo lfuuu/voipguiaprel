@@ -66,6 +66,8 @@ class ReleaseReasonController extends JsonController
         if (!\Yii::$app->user->can('release_reason_edit') && !\Yii::$app->user->can('release_reason_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -75,12 +77,14 @@ class ReleaseReasonController extends JsonController
             }
             
             $releaseReason = $this->getReleaseReasonOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($releaseReason)];
         } else {
             if (!\Yii::$app->user->can('release_reason_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $releaseReason = ReleaseReason::create($server);
+            $result['log'] = ['data_before' => []];
         }
 
         $releaseReason->load($this->request, '');
@@ -96,6 +100,10 @@ class ReleaseReasonController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($releaseReason);
+    
+        return $result;
     }
 
     public function actionDelete()

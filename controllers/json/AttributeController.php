@@ -55,18 +55,26 @@ class AttributeController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('attribute_edit') && !\Yii::$app->user->can('attribute_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $result = [];
+        
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('attribute_edit')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = $this->getAttributeOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('attribute_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = Attribute::create();
+            $result['log'] = ['data_before' => []];
         }
 
         $item->load($this->request, '');
@@ -82,6 +90,10 @@ class AttributeController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 
     public function actionDelete()

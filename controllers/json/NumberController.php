@@ -67,6 +67,8 @@ class NumberController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
     
+        $result = [];
+    
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {
@@ -75,12 +77,14 @@ class NumberController extends JsonController
             }
             
             $number = $this->getNumberOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($number)];
         } else {
             if (!\Yii::$app->user->can('number_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $number = Number::create($server);
+            $result['log'] = ['data_before' => []];
         }
 
         $number->load($this->request, '');
@@ -97,6 +101,10 @@ class NumberController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($number);
+        
+        return $result;
     }
 
     public function actionDelete()

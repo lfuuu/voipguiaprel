@@ -60,6 +60,8 @@ class MccController extends JsonController
         if (!\Yii::$app->user->can('mcc_edit') && !\Yii::$app->user->can('mcc_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         if (isset($this->request['mcc'])) {
             $item = Mcc::findOne(['mcc' => $this->request['mcc']]);
@@ -70,10 +72,13 @@ class MccController extends JsonController
                 }
     
                 $item = Mcc::create();
+                $result['log'] = ['data_before' => []];
             } else {
                 if (!\Yii::$app->user->can('mcc_edit')) {
                     throw new ForbiddenHttpException('Access denied');
                 }
+    
+                $result['log'] = ['data_before' => $this->getDataForLog($item)];
             }
         } else {
             if (!\Yii::$app->user->can('mcc_create')) {
@@ -81,6 +86,7 @@ class MccController extends JsonController
             }
             
             $item = Mcc::create();
+            $result['log'] = ['data_before' => []];
         }
 
         $item->load($this->request, '');
@@ -96,6 +102,10 @@ class MccController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 
     public function actionDelete()

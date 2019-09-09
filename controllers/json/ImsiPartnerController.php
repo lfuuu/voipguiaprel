@@ -85,6 +85,8 @@ class ImsiPartnerController extends JsonController
         if (!\Yii::$app->user->can('imsi_partner_edit') && !\Yii::$app->user->can('imsi_partner_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('imsi_partner_edit')) {
@@ -92,11 +94,13 @@ class ImsiPartnerController extends JsonController
             }
     
             $item = $this->getImsiPartnerOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('imsi_partner_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             $item = ImsiPartner::create();
+            $result['log'] = ['data_before' => []];
         }
     
         $item->load($this->request, '');
@@ -113,6 +117,10 @@ class ImsiPartnerController extends JsonController
                 $transaction->rollBack();
             }
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 
     /**

@@ -251,18 +251,6 @@ class TrunkGroupController extends JsonController
         
         return $result;
     }
-    
-    protected function getDataForLog($trunkGroup)
-    {
-        $trunkGroupTrunks = $trunkGroup->getTrunks()->asArray()->all();
-        $trunkGroupTrunkGroups = $trunkGroup->gettrunk_groups()->asArray()->all();
-        
-        $data = $trunkGroup->getAttributes();
-        $data['trunks'] = $trunkGroupTrunks;
-        $data['trunk_groups'] = $trunkGroupTrunkGroups;
-        
-        return $data;
-    }
 
     /**
      * @inheritdoc

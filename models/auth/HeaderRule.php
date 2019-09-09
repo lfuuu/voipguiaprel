@@ -13,6 +13,10 @@ use app\queries\auth\HeaderRuleQuery;
  */
 class HeaderRule extends \yii\db\ActiveRecord
 {
+    public $_subitems = [
+        'items' => 'getItems',
+    ];
+    
     public static function tableName()
     {
         return 'auth.header_rule';

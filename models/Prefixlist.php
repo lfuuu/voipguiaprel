@@ -50,7 +50,12 @@ class Prefixlist extends \yii\db\ActiveRecord
     const PREFIXLIST_TYPE_ROAMING = 11; // Роуминг
     const PREFIXLIST_TYPE_VOIP_REGISTRY = 12; // Реестр номеров
     const PREFIXLIST_TYPE_VOIP_NUMBER = 13; // Номера
-
+    
+    public $_subitems = [
+        'prefixlistPrefix' => 'getPrefixlistPrefix',
+        'prefixlistPrefixPrepare' => 'getPrefixlistPrefixPrepare'
+    ];
+    
     /**
      * @return string
      */

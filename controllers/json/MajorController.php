@@ -83,6 +83,8 @@ class MajorController extends JsonController
         if (!\Yii::$app->user->can('major_edit') && !\Yii::$app->user->can('major_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('major_edit')) {
@@ -90,12 +92,14 @@ class MajorController extends JsonController
             }
             
             $item = $this->getMajorOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('major_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = Major::create();
+            $result['log'] = ['data_before' => []];
         }
         
         $item->load($this->request, '');
@@ -113,6 +117,10 @@ class MajorController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
     
     public function actionSaveAndUpdate()

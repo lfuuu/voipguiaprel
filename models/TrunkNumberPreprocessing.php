@@ -12,13 +12,14 @@ use app\queries\TrunkNumberPreprocessingQuery;
  * @property string $prefix
  * @property string $abc_mode
  * @property string $object_comment
- * @property int mod_type
- * @property int start_pos
- * @property int end_pos
- * @property string mod_value
- * @property string regex
- * @property bool auth
- * @property bool acc
+ * @property int $mod_type
+ * @property int $start_pos
+ * @property int $end_pos
+ * @property string $mod_value
+ * @property string $regex
+ * @property bool $auth
+ * @property bool $acc
+ * @property bool $avoid_mod
  */
 class TrunkNumberPreprocessing extends \yii\db\ActiveRecord
 {

@@ -71,6 +71,8 @@ class HeaderRuleController extends JsonController
         if (!\Yii::$app->user->can('header_rule_edit') && !\Yii::$app->user->can('header_rule_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('header_rule_edit')) {
@@ -78,12 +80,14 @@ class HeaderRuleController extends JsonController
             }
             
             $item = $this->getHeaderRuleOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('header_rule_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = HeaderRule::create();
+            $result['log'] = ['data_before' => []];
         }
 
         $item->load($this->request, '');
@@ -110,6 +114,10 @@ class HeaderRuleController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 
     public function actionDelete()

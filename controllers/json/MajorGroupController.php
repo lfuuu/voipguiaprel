@@ -56,6 +56,8 @@ class MajorGroupController extends JsonController
         if (!\Yii::$app->user->can('major_group_edit') && !\Yii::$app->user->can('major_group_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('major_group_edit')) {
@@ -63,12 +65,14 @@ class MajorGroupController extends JsonController
             }
             
             $item = $this->getMajorGroupOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('major_group_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = MajorGroup::create();
+            $result['log'] = ['data_before' => []];
         }
         
         $item->load($this->request, '');
@@ -84,6 +88,10 @@ class MajorGroupController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
     
     /**

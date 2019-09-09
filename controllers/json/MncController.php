@@ -83,6 +83,8 @@ class MncController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
     
+        $result = [];
+    
         if (isset($this->request['mnc'])) {
             $item = Mnc::findOne($this->request['mnc']);
         
@@ -92,10 +94,13 @@ class MncController extends JsonController
                 }
             
                 $item = Mnc::create();
+                $result['log'] = ['data_before' => []];
             } else {
                 if (!\Yii::$app->user->can('mnc_edit')) {
                     throw new ForbiddenHttpException('Access denied');
                 }
+                
+                $result['log'] = ['data_before' => $this->getDataForLog($item)];
             }
         } else {
             if (!\Yii::$app->user->can('mnc_create')) {
@@ -103,6 +108,7 @@ class MncController extends JsonController
             }
         
             $item = Mnc::create();
+            $result['log'] = ['data_before' => []];
         }
 
         $item->load($this->request, '');
@@ -118,6 +124,10 @@ class MncController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 
     public function actionDelete()

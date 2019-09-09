@@ -75,6 +75,8 @@ class RouteCaseController extends JsonController
         if (!\Yii::$app->user->can('route_case_edit') && !\Yii::$app->user->can('route_case_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -84,12 +86,14 @@ class RouteCaseController extends JsonController
             }
             
             $routeCase = $this->getRouteCaseOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($routeCase)];
         } else {
             if (!\Yii::$app->user->can('route_case_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $routeCase = RouteCase::create($server);
+            $result['log'] = ['data_before' => []];
         }
 
         $routeCase->load($this->request, '');
@@ -113,6 +117,10 @@ class RouteCaseController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($routeCase);
+    
+        return $result;
     }
 
     public function actionDelete()

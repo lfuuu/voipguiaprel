@@ -301,6 +301,7 @@
             </button>
             <button type="submit" class="btn btn-warning" ng-hide="!item.id || !userPermissions['pricelist_edit'] || pricelistIsActive || !item.nnp_filter" ng-disabled="form.$invalid || !saveEnabled" ng-click="saveAndUpdate()">Сохранить и применить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/pricelist-filter-b"></action-log-view-button>
         </div>
     </div>
 

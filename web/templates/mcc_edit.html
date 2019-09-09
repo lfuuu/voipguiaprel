@@ -38,6 +38,7 @@
         <div class="pull-left">
             <button type="submit" class="btn btn-success" ng-if="(edit && userPermissions['mcc_edit']) || (!edit && userPermissions['mcc_create'])" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+            <action-log-view-button ng-if="item.mcc && userPermissions['action_log_view']" key="{{item.mcc}}" type="json/mcc"></action-log-view-button>
         </div>
     </div>
 

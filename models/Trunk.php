@@ -58,7 +58,16 @@ use yii\db\Query;
  */
 class Trunk extends \yii\db\ActiveRecord
 {
-
+    public $_subitems = [
+        'priorities' => 'getPriorities',
+        'trunkRules' => 'getTrunkRules',
+        'numberPreprocessing' => 'getnumberPreprocessing',
+        'numbersRules' => 'getNumbersRules',
+        'usagesInMarketplace' => 'getUsagesInMarketplace',
+        'trunkSorm' => 'getTrunkSorm',
+        'loadLimit' => 'getLoadLimit'
+    ];
+    
     /**
      * @return string
      */

@@ -55,18 +55,26 @@ class AttributeGroupController extends JsonController
 
     public function actionSave()
     {
+        if (!\Yii::$app->user->can('attribute_group_edit') && !\Yii::$app->user->can('attribute_group_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
+        $result = [];
+    
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('attribute_group_edit')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = $this->getAttributeGroupOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('attribute_group_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = AttributeGroup::create();
+            $result['log'] = ['data_before' => []];
         }
 
         $item->load($this->request, '');
@@ -84,6 +92,10 @@ class AttributeGroupController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 
     public function actionDelete()

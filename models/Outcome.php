@@ -22,6 +22,8 @@ use yii\db\Query;
  * @property string $header
  * @property boolean $outcome_rule_default_allowed
  * @property string $object_comment
+ * @property string $gn
+ * @property string $ocpn
  * @property
  */
 class Outcome extends \yii\db\ActiveRecord
@@ -31,6 +33,10 @@ class Outcome extends \yii\db\ActiveRecord
     const TYPE_RELEASE_REASON = 3;
     const TYPE_AIRP = 4;
     const TYPE_ACCEPT = 4;
+    
+    public $_subitems = [
+        'outcomeRules' => 'getOutcomeRules'
+    ];
 
     public static function tableName()
     {

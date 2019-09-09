@@ -15,7 +15,11 @@ use yii\db\Query;
  */
 class TrunkGroup extends \yii\db\ActiveRecord
 {
-
+    public $_subitems = [
+        'trunks' => 'getTrunks',
+        'trunk_groups' => 'gettrunk_groups'
+    ];
+    
     /**
      * @return string
      */

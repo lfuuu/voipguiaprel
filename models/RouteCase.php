@@ -13,6 +13,10 @@ use yii\db\Query;
  */
 class RouteCase extends \yii\db\ActiveRecord
 {
+    public $_subitems = [
+        'trunks' => 'getTrunks'
+    ];
+    
     public static function tableName()
     {
         return 'auth.route_case';

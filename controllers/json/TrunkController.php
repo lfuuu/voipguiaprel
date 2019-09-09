@@ -349,6 +349,8 @@ class TrunkController extends JsonController
         if (!\Yii::$app->user->can('trunk_edit') && !\Yii::$app->user->can('trunk_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -358,11 +360,14 @@ class TrunkController extends JsonController
             }
             
             $trunk = $this->getTrunkOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($trunk)];
         } else {
             if (!\Yii::$app->user->can('trunk_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
+            
             $trunk = Trunk::create($server);
+            $result['log'] = ['data_before' => []];
         }
 
         $trunk->load($this->request, '');
@@ -468,6 +473,10 @@ class TrunkController extends JsonController
                 $transaction->rollBack();
             }
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($trunk);
+    
+        return $result;
     }
     
     /**

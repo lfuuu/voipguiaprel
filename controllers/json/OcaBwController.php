@@ -71,6 +71,8 @@ class OcaBwController extends JsonController
         if (!\Yii::$app->user->can('oca_bw_edit') && !\Yii::$app->user->can('oca_bw_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('oca_bw_edit')) {
@@ -78,12 +80,14 @@ class OcaBwController extends JsonController
             }
             
             $item = $this->getOcaBwOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can('oca_bw_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = OcaBw::create();
+            $result['log'] = ['data_before' => []];
         }
         
         $prefixlistArray = $this->request['prefixlist'];
@@ -103,6 +107,10 @@ class OcaBwController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 
     public function actionDelete()

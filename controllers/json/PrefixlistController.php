@@ -123,6 +123,8 @@ class PrefixlistController extends JsonController
         if (!\Yii::$app->user->can('prefixlist_edit') && !\Yii::$app->user->can('prefixlist_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
+    
+        $result = [];
         
         $server = $this->getServerOr404($this->request['server_id']);
 
@@ -132,12 +134,14 @@ class PrefixlistController extends JsonController
             }
             
             $prefixlist = $this->getPrefixlistOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($prefixlist)];
         } else {
             if (!\Yii::$app->user->can('prefixlist_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $prefixlist = Prefixlist::create($server);
+            $result['log'] = ['data_before' => []];
         }
 
         $prefixlist->load($this->request, '');
@@ -355,14 +359,15 @@ SQL;
             }
 
             $transaction->commit();
-
-            return [
-                'id' => $prefixlist->id,
-            ];
         } finally {
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    
+        $result['log']['data_after'] = $this->getDataForLog($prefixlist);
+        $result['result'] = ['id' => $prefixlist->id];
+    
+        return $result;
     }
 
     /**
