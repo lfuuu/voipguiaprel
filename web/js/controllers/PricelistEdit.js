@@ -30,7 +30,7 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
             default_tarification_type: 2,
             minimal_minutes: 0,
             minimal_cost: 0,
-            minimum_margin: 0,
+            minimum_margin: '0',
             minimum_margin_type: 1
         };
 
