@@ -114,29 +114,90 @@ class PricelistFilterBController extends JsonController
     
     public function actionSaveAndUpdate()
     {
-        if (!\Yii::$app->user->can('pricelist_edit')) {
+        if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
-        $item = $this->getPricelistFilterBOr404($this->request['id']);
+
+        $result = [];
+
+        if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('pricelist_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+
+            $item = $this->getPricelistFilterBOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
+        } else {
+            if (!\Yii::$app->user->can('pricelist_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+
+            $item = PricelistFilterB::create();
+            $result['log'] = ['data_before' => []];
+        }
+
+        if (isset($this->request['prefixes'])) {
+            if (preg_match("/[^\d,.\-\s]/", $this->request['prefixes'])) {
+                return ['error' => 'Некорректный формат префиксов!'];
+            }
+        }
+
         $item->load($this->request, '');
-        
+
         $transaction = PricelistFilterB::getDb()->beginTransaction();
         try {
             if (!$item->save()) {
                 throw new FormValidationException($item);
             }
-            
+
+            if (isset($this->request['prefixes'])) {
+                $prefixesToSave = [];
+                $prefixesArray = explode("\n", $this->request['prefixes']);
+
+                foreach ($prefixesArray as $prefixItem) {
+                    list($prefixBString, $prefixPrice) = preg_split("/[\t]/", $prefixItem);
+
+                    $prefixBArray = explode(',', str_replace(['-'], ',', $prefixBString));
+
+                    foreach ($prefixBArray as $prefixB) {
+                        $prefixesToSave[] = [
+                            'pricelist_filter_b_id' => $item->id,
+                            'prefix_b' => trim($prefixB),
+                            'b_number_price' => str_replace(',', '.', $prefixPrice),
+                            'date_from' => date('Y-m-d'),
+                            'date_to' => '3000-01-01'
+                        ];
+                    }
+                }
+
+                foreach ($prefixesToSave as $prefixToSave) {
+                    $prefixCreatedItem = PricelistPrefixPrice::create($prefixToSave);
+                    if (!$prefixCreatedItem->save()) {
+                        throw new FormValidationException($item);
+                    }
+                }
+            }
+
+            $id = $item->id;
+
             (new Query())->select(new Expression('billing_uu.copy_b_nnp_filter(:filter_b_id)'))
                 ->addParams([
-                    ':filter_b_id' => $this->request['id']
+                    ':filter_b_id' => $id
                 ])->one();
-            
+
             $transaction->commit();
         } finally {
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+
+        if ($id) {
+            $item = $this->getPricelistFilterBOr404($id);
+        }
+
+        $result['log']['data_after'] = $this->getDataForLog($item);
+
+        return $result;
     }
     
     /**

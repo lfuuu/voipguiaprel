@@ -79,29 +79,56 @@ class PricelistFilterAController extends JsonController
     
     public function actionSaveAndUpdate()
     {
-        if (!\Yii::$app->user->can('pricelist_edit')) {
+        if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
-    
-        $item = $this->getPricelistFilterAOr404($this->request['id']);
+
+        $result = [];
+
+        if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('pricelist_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+
+            $item = $this->getPricelistFilterAOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
+        } else {
+            if (!\Yii::$app->user->can('pricelist_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+
+            $item = PricelistFilterA::create();
+            $result['log'] = ['data_before' => []];
+        }
+
         $item->load($this->request, '');
-    
+
         $transaction = PricelistFilterA::getDb()->beginTransaction();
         try {
             if (!$item->save()) {
                 throw new FormValidationException($item);
             }
-    
+
+            $id = $item->id;
+
             (new Query())->select(new Expression('billing_uu.copy_a_nnp_filter(:filter_a_id)'))
                 ->addParams([
-                    ':filter_a_id' => $this->request['id']
+                    ':filter_a_id' => $item->id
                 ])->one();
-        
+
             $transaction->commit();
         } finally {
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+
+        if ($id) {
+            $item = $this->getPricelistFilterAOr404($id);
+        }
+
+        $result['log']['data_after'] = $this->getDataForLog($item);
+
+        return $result;
     }
     
     /**
