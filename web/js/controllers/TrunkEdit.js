@@ -112,7 +112,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
     }
 
     $scope.addPriority = function () {
-        $scope.item.priorities.push({prefixlist_id: '', priority: 0});
+        $scope.item.priorities.push({prefixlist_id: '', priority: 0, priority_with_equal_price: 0});
     };
 
     $scope.removePriority = function (index) {

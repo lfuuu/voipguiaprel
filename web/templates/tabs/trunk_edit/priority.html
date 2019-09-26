@@ -5,7 +5,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label class="col-sm-1 control-label">Приоритеты</label>
+    <label class="col-sm-1 control-label">Приоритеты1</label>
     <div class="col-sm-11">
         <table class="table table-striped">
             <tbody ui-sortable="{axis: 'y'}" ng-model="item.priorities">
@@ -13,9 +13,23 @@
                 <td width="1%" style="cursor: ns-resize">
                     <span class="badge">{{$index + 1}}</span>
                 </td>
+
+                 <td width="3%" style="cursor: ns-resize">
+                    <span ng-if="line.trunk_group_id !== null">Pre:</span>
+                </td>
+
                 <td width="10%">
                     <input type="number" style="width:55px;" class="form-control input-sm" ng-model="line.priority" min="-99" max="99" required />
                 </td>
+
+                 <td width="3%" style="cursor: ns-resize">
+                    <span ng-if="line.trunk_group_id !== null">Post:</span>
+                </td>
+
+                <td width="10%">
+                    <input type="number" style="width:55px;"  class="form-control input-sm" ng-model="line.priority_with_equal_price" min="-99" max="99" required />
+                </td>
+
 
                 <td width="5%" style="cursor: ns-resize">
                     <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
