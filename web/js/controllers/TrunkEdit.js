@@ -47,7 +47,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                     name: data.trunkSorm[0].name,
                     ip_addr: data.trunkSorm[0].ip_addr,
                     groups: data.trunkSorm[0].groups.replace('{', '').replace('}', '').split(','),
-                    sorm_operator_id: data.trunkSorm[0].sorm_operator_id,
+                    sorm_operator_id: data.trunkSorm[0].sorm_operator_id.replace('{', '').replace('}', '').split(','),
                     source_type_id: data.trunkSorm[0].source_type_id,
                     items: []
                 };
@@ -175,7 +175,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
     ];
 
     $scope.groupTypes = [
-        {id: 1, name: 'Транзит'},
+        {id: 1, name: 'МГМН'},
         {id: 2, name: 'Местный узел'},
         {id: 3, name: 'Точка подключения'},
         {id: 4, name: 'Специальная'}

@@ -246,8 +246,16 @@ class TrunkController extends JsonController
         if (!$data['enabled']) {
             TrunkSorm::deleteAll(['code_trunk' => $trunk->id, 'region_id' => $regionId]);
         } else {
+            if (empty($data['sorm_operator_id'])) {
+                throw new ErrorException('Sorm operator id must not be empty');
+            }
+
+            if (empty($data['groups']) || (count($data['groups']) == 1 && $data['groups'][0] == '')) {
+                throw new ErrorException('Hosts must not be empty');
+            }
+
             if ($data['ip_addr'] && !filter_var($data['ip_addr'], FILTER_VALIDATE_IP)) {
-                throw new Exception('IP address is incorrect');
+                throw new ErrorException('IP address is incorrect');
             }
             
             $idsToStay = [];
@@ -276,33 +284,36 @@ class TrunkController extends JsonController
         } else {
             $trunkSorm = false;
         }
+
+        if (in_array("1", $sormOperatorId)) {
+            $operator = Operator::find()
+                ->with('commutator')
+                ->where(['server_id' => $trunk->server_id])
+                ->one();
+        } else {
+            $operator = null;
+        }
+
+        if (!empty($operator) && empty($operator->commutator)) {
+            throw new ErrorException('У оператора #' . $operator->id . ' ' . $operator->note . ' отсутствует коммутатор.');
+        }
     
         if ($trunkSorm) {
             //edit
+            $trunkSorm->operator_id = $operator ? $operator->id : '';
+            $trunkSorm->ats_mnemo_code = $operator ? $operator->commutator->comutator_str_id : 'reg' . $regionId;
             $trunkSorm->name = $name;
             $trunkSorm->ip_addr = $ipAddr ? $ipAddr : null;
             $trunkSorm->is_show = isset($isShow) ? $isShow : false;
             $trunkSorm->groups = $groups ? '{' . implode(',', $groups) . '}' : '{}';
             $trunkSorm->old_name = $oldName;
+            $trunkSorm->sorm_operator_id = $sormOperatorId ? '{' . implode(',', $sormOperatorId) . '}' : '{}';
             $trunkSorm->source_type_id = $sourceTypeId;
             $trunkSorm->object_comment = $objectComment;
-    
+
             $trunkSorm->save();
         } else {
             //create
-            if ($sormOperatorId == 1) {
-                $operator = Operator::find()
-                    ->with('commutator')
-                    ->where(['server_id' => $trunk->server_id])
-                    ->one();
-            } else {
-                $operator = null;
-            }
-            
-            if (!empty($operator) && empty($operator->commutator)) {
-                throw new ErrorException('У оператора #' . $operator->id . ' ' . $operator->note . ' отсутствует коммутатор.');
-            }
-    
             $dataToCreate = [
                 'operator_id' => $operator ? $operator->id : '',
                 'code_trunk' => $trunk->id,
@@ -315,7 +326,7 @@ class TrunkController extends JsonController
                 'is_show' => isset($isShow) ? $isShow : false,
                 'groups' => $groups ? '{' . implode(',', $groups) . '}' : '{}',
                 'region_id' => $regionId,
-                'sorm_operator_id' => $sormOperatorId,
+                'sorm_operator_id' => $sormOperatorId ? '{' . implode(',', $sormOperatorId) . '}' : '{}',
                 'source_type_id' => $sourceTypeId,
                 'object_comment' => $objectComment
             ];

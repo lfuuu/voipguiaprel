@@ -41,8 +41,8 @@ class Trunk extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ats_mnemo_code', 'start_date', 'stop_date', 'name', 'old_name', 'trunk_ip', 'groups', 'ip_addr'], 'string'],
-            [['operator_id', 'code_trunk', 'type', 'region_id', 'sorm_operator_id', 'source_type_id'], 'integer'],
+            [['ats_mnemo_code', 'start_date', 'stop_date', 'name', 'old_name', 'trunk_ip', 'groups', 'ip_addr', 'sorm_operator_id'], 'string'],
+            [['operator_id', 'code_trunk', 'type', 'region_id', 'source_type_id'], 'integer'],
             [['is_ip', 'is_show'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
