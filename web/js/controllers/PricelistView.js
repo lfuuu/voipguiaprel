@@ -150,7 +150,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                         nnp_region: (item.nnp_region == '{}' && item.f_inv_nnp_region) ? 'Запрещено все!' : (item.f_inv_nnp_region ? ('Кроме: ' + item.nnp_region_name) : item.nnp_region_name),
                         nnp_city: (item.nnp_city == '{}' && item.f_inv_nnp_city) ? 'Запрещено все!' : (item.f_inv_nnp_city ? ('Кроме: ' + item.nnp_city_name) : item.nnp_city_name),
                         nnp_ndc_type: (item.nnp_ndc_type == '{}' && item.f_inv_nnp_ndc_type) ? 'Запрещено все!' : (item.f_inv_nnp_ndc_type ? ('Кроме: ' + item.nnp_ndc_type_name) : item.nnp_ndc_type_name),
-                        nnp_ndc: item.nnp_ndc.replace('{', '').replace('}', '').replace(',', ', '),
+                        nnp_ndc: (item.nnp_ndc) ? item.nnp_ndc.replace('{', '').replace('}', '').replace(',', ', ') : '',
                         interconnect_price: item.interconnect_price,
                         ported_num_price: item.ported_num_price,
                         tarification_free_seconds: item.tarification_free_seconds,
