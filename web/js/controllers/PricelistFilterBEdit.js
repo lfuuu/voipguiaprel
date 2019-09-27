@@ -12,6 +12,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     var regionLoadComplete = false;
     var cityLoadComplete = false;
     var operatorLoadComplete = false;
+    var ndcLoadComplete = false;
 
     $scope.round_type = [
         {id: 1, name: 'round'},
@@ -29,21 +30,25 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         nnp_country: function (newValue, oldValue) {
             regionLoadComplete = false;
             operatorLoadComplete = false;
+            ndcLoadComplete = false;
             if (!newValue || newValue.length == 0) {
                 $scope.item.nnp_region = null;
                 $scope.item.nnp_city = null;
                 $scope.item.nnp_operator = null;
                 $scope.item.nnp_ndc_type = null;
+                $scope.item.nnp_ndc = null;
             }
 
             if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
                 $scope.regionList = null;
                 $scope.operatorList = null;
+                $scope.ndcList = null;
 
                 if (countryLoadComplete) {
                     var region = $scope.item.nnp_region;
                     var city = $scope.item.nnp_city;
                     var operator = $scope.item.nnp_operator;
+                    var ndc = $scope.item.nnp_ndc;
                 }
 
                 Nnp.regionList({country_code: newValue}).then(function (data) {
@@ -62,6 +67,15 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
                     if (countryLoadComplete) {
                         $scope.item.nnp_operator = operator;
                         operatorLoadComplete = true;
+                    }
+                });
+
+                Nnp.ndcList({country_code: newValue}).then(function (data) {
+                    $scope.ndcList = data;
+
+                    if (countryLoadComplete) {
+                        $scope.item.nnp_ndc = ndc;
+                        ndcLoadComplete = true;
                     }
                 });
             }
@@ -125,6 +139,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             nnp_region: null,
             nnp_operator: null,
             nnp_ndc_type: null,
+            nnp_ndc: null,
             mode_selected: true,
             interconnect_price: 0,
             ported_num_price: 0,
@@ -153,6 +168,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             nnp_region: null,
             nnp_operator: null,
             nnp_ndc_type: null,
+            nnp_ndc: null,
             mode_selected: true,
             interconnect_price: 0,
             ported_num_price: 0,
@@ -213,6 +229,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         data.nnp_city = $scope.stringifyNnpData(data.nnp_city);
         data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
+        data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
 
         PricelistFilterB.save(data).then(function (result) {
             if (result.error) {
@@ -256,7 +273,12 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
                         $scope.item.nnp_operator = $scope.parseNnpData($scope.item.nnp_operator);
                     });
 
-                    $q.all([regionList, operatorList]).then(function () {
+                    var ndcList = Nnp.ndcList({country_code: $scope.item.nnp_country}).then(function (data) {
+                        $scope.ndcList = data;
+                        $scope.item.nnp_ndc = $scope.parseNnpData($scope.item.nnp_ndc);
+                    });
+
+                    $q.all([regionList, operatorList, ndcList]).then(function () {
                         $scope.saveEnabled = true;
                     });
                 } else {
@@ -277,6 +299,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         data.nnp_city = $scope.stringifyNnpData(data.nnp_city);
         data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
+        data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
 
         PricelistFilterB.saveAndUpdate(data).then(function(response) {
             $modalInstance.close();

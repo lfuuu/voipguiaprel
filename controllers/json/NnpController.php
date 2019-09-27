@@ -52,16 +52,38 @@ class NnpController extends JsonController
     public function actionRegion()
     {
         $countryCode = $this->request['country_code'];
-        
+
         if (empty($countryCode)) {
             return [];
         }
-        
+
         $query = Region::find()
             ->select(['id', new Expression('case when country_code = ' . self::COUNTRY_CODE_RUSSIA . ' then name else name_translit end as name')])
             ->where(['country_code' => $countryCode])
             ->asArray()
             ->orderBy('name');
+
+        return $query->all();
+    }
+
+    /**
+     * @return array
+     */
+    public function actionNdc()
+    {
+        $countryCode = $this->request['country_code'];
+
+        if (empty($countryCode)) {
+            return [];
+        }
+
+        $query = NumberRange::find()
+            ->select(['id' => 'ndc', 'name' => 'ndc'])
+            ->distinct()
+            ->where(['country_code' => $countryCode])
+            ->andWhere('ndc is not null')
+            ->asArray()
+            ->orderBy('ndc');
 
         return $query->all();
     }

@@ -80,6 +80,12 @@ class Major extends \yii\db\ActiveRecord
             $filters['exclude_ndc_type'] = (array_key_exists('nnp_exclude_ndc_type', $input) && $input['nnp_exclude_ndc_type'] !== '') ?
                 $input['nnp_exclude_ndc_type'] : false;
         }
+
+        if (isset($input['nnp_ndc']) && count($input['nnp_ndc'])) {
+            $filters['ndc'] = $input['nnp_ndc'];
+            $filters['exclude_ndc'] = (array_key_exists('nnp_exclude_ndc', $input) && $input['nnp_exclude_ndc'] !== '') ?
+                $input['nnp_exclude_ndc'] : false;
+        }
         
         if (isset($input['nnp_destination']) && count($input['nnp_destination'])) {
             $filters['nnp_destination_id'] = $input['nnp_destination'];

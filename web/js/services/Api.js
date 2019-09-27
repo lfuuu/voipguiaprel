@@ -2074,6 +2074,9 @@ app.factory('Nnp', function (ApiLoader) {
         },
         geoCityList: function (data) {
             return ApiLoader.post(url + 'geo-city', data);
+        },
+        ndcList: function (data) {
+            return ApiLoader.post(url + 'ndc', data);
         }
     };
 });

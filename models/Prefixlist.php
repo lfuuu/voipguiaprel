@@ -301,6 +301,13 @@ class Prefixlist extends \yii\db\ActiveRecord
                 $input['nnp_is_exclude_ndc_type'] :
                 '';
         }
+
+        if (isset($input['nnp_ndc']) && count($input['nnp_ndc'])) {
+            $filters['ndc'] = $input['nnp_ndc'];
+            $filters['exclude_ndc'] = array_key_exists('nnp_is_exclude_ndc', $input) ?
+                $input['nnp_is_exclude_ndc'] :
+                '';
+        }
     
         if (isset($input['nnp_destination']) && count($input['nnp_destination'])) {
             $filters['nnp_destination_id'] = $input['nnp_destination'];

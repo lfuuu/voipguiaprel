@@ -31,6 +31,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     var regionLoadComplete = false;
     var cityLoadComplete = false;
     var operatorLoadComplete = false;
+    var ndcLoadComplete = false;
 
     var watchers = {
         rossvyaz_country_id: function (newValue, oldValue) {
@@ -55,21 +56,25 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
         nnp_country: function (newValue, oldValue) {
             regionLoadComplete = false;
             operatorLoadComplete = false;
+            ndcLoadComplete = false;
             if (!newValue || newValue.length == 0) {
                 $scope.item.nnp_region = null;
                 $scope.item.nnp_city = null;
                 $scope.item.nnp_operator = null;
                 $scope.item.nnp_ndc_type = null;
+                $scope.item.nnp_ndc = null;
             }
 
             if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
                 $scope.regionList = null;
                 $scope.operatorList = null;
+                $scope.ndcList = null;
 
                 if (countryLoadComplete) {
                     var region = $scope.item.nnp_region;
                     var city = $scope.item.nnp_city;
                     var operator = $scope.item.nnp_operator;
+                    var ndc = $scope.item.nnp_ndc;
                 }
 
                 Nnp.regionList({country_code: newValue}).then(function (data) {
@@ -88,6 +93,15 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                     if (countryLoadComplete) {
                         $scope.item.nnp_operator = operator;
                         operatorLoadComplete = true;
+                    }
+                });
+
+                Nnp.ndcList({country_code: newValue}).then(function (data) {
+                    $scope.ndcList = data;
+
+                    if (countryLoadComplete) {
+                        $scope.item.nnp_ndc = ndc;
+                        ndcLoadComplete = true;
                     }
                 });
             }
@@ -298,13 +312,15 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             nnp_operator: null,
             nnp_is_exclude_operators: false,
             nnp_ndc_type: null,
+            nnp_ndc: null,
             nnp_is_default: true,
             nnp_use_nnp_ported: false,
-            nnp_exclude_destination: false,
-            nnp_exclude_country: false,
-            nnp_exclude_city: false,
-            nnp_exclude_region: false,
-            nnp_exclude_ndc_type: false,
+            nnp_is_exclude_destination: false,
+            nnp_is_exclude_country: false,
+            nnp_is_exclude_city: false,
+            nnp_is_exclude_region: false,
+            nnp_is_exclude_ndc_type: false,
+            nnp_is_exclude_ndc: false,
             count: 0
         };
 
@@ -520,6 +536,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 delete data.nnp_city;
                 delete data.nnp_operator;
                 delete data.nnp_ndc_type;
+                delete data.nnp_ndc;
                 delete data.nnp_is_default;
                 delete data.nnp_use_nnp_ported;
                 delete data.nnp_is_exclude_operators;
@@ -527,6 +544,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 delete data.nnp_is_exclude_city;
                 delete data.nnp_is_exclude_region;
                 delete data.nnp_is_exclude_ndc_type;
+                delete data.nnp_is_exclude_ndc;
             } else {
                 delete data.nnp_destination;
                 delete data.nnp_is_exclude_destination;
@@ -569,6 +587,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                     $scope.item.nnp_is_default = filterData.is_default;
                     $scope.item.nnp_use_nnp_ported = filterData.use_nnp_ported;
                     $scope.item.nnp_ndc_type = filterData.ndc_type_id;
+                    $scope.item.nnp_ndc = filterData.ndc;
                     $scope.item.nnp_country = filterData.country_code;
                     $scope.item.nnp_region = filterData.region_id;
                     $scope.item.nnp_operator = filterData.operator_id;
@@ -578,6 +597,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                     $scope.item.nnp_is_exclude_city = filterData.exclude_city;
                     $scope.item.nnp_is_exclude_region = filterData.exclude_region;
                     $scope.item.nnp_is_exclude_ndc_type = filterData.exclude_ndc_type;
+                    $scope.item.nnp_is_exclude_ndc = filterData.exclude_ndc;
                 });
             }
         });
@@ -606,6 +626,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                     $scope.item.nnp_is_default = filterData.is_default;
                     $scope.item.nnp_use_nnp_ported = filterData.use_nnp_ported;
                     $scope.item.nnp_ndc_type = filterData.ndc_type_id;
+                    $scope.item.nnp_ndc = filterData.ndc;
                     $scope.item.nnp_country = filterData.country_code;
                     $scope.item.nnp_region = filterData.region_id;
                     $scope.item.nnp_operator = filterData.operator_id;
@@ -615,6 +636,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                     $scope.item.nnp_is_exclude_city = filterData.exclude_city;
                     $scope.item.nnp_is_exclude_region = filterData.exclude_region;
                     $scope.item.nnp_is_exclude_ndc_type = filterData.exclude_ndc_type;
+                    $scope.item.nnp_is_exclude_ndc = filterData.exclude_ndc;
                 });
             }
         });
@@ -632,6 +654,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 $scope.item.nnp_is_exclude_city = filterData.exclude_city;
                 $scope.item.nnp_is_exclude_region = filterData.exclude_region;
                 $scope.item.nnp_is_exclude_ndc_type = filterData.exclude_ndc_type;
+                $scope.item.nnp_is_exclude_ndc = filterData.exclude_ndc_type;
                 $scope.item.nnp_ndc_type = filterData.ndc_type_id;
                 $scope.item.nnp_is_default = filterData.is_default;
                 $scope.item.nnp_use_nnp_ported = filterData.use_nnp_ported;
@@ -665,7 +688,12 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                         $scope.item.nnp_operator = filterData.operator_id;
                     });
 
-                    $q.all([regionList, operatorList]).then(function () {
+                    var ndcList = Nnp.ndcList({country_code: $scope.item.nnp_country}).then(function (data) {
+                        $scope.ndcList = data;
+                        $scope.item.nnp_ndc = filterData.ndc;
+                    });
+
+                    $q.all([regionList, operatorList, ndcList]).then(function () {
                         $scope.saveEnabled = true;
                     });
                 } else {
