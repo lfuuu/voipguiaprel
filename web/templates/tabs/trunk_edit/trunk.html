@@ -216,6 +216,13 @@
 
 <div class="form-group">
     <div class="col-sm-4">
+        <label class="col-sm-8 control-label">RN прайс-лист</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.rn_pricelist = !item.rn_pricelist">
+                <button type="button" class="btn btn-sm {{item.rn_pricelist ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.rn_pricelist ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
     </div>
 
     <div class="col-sm-4">

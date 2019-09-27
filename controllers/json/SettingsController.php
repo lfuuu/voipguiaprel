@@ -85,7 +85,8 @@ class SettingsController extends JsonController
             'hub_id' => $server->hub_id,
             'prefixlist_block' => $prefixlistBlock,
             'hub_number_capacity' => $hubNumberCapacityFormatted,
-            'trunk_groups' => $trunkGroups
+            'trunk_groups' => $trunkGroups,
+            'rn_replace_prefixlist_id' => $server->rn_replace_prefixlist_id
         ];
     }
 

@@ -125,7 +125,8 @@
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Город</td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Тип NDC</td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">NDC</td>
-                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns" colspan="5"></td>
+                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Подмена RN, %</td>
+                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns" colspan="4"></td>
                 <!---------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_a"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_a"></td>
@@ -141,7 +142,7 @@
                 <td ng-if="item.is_filter_a">{{item.nnp_city}}</td>
                 <td ng-if="item.is_filter_a">{{item.nnp_ndc_type}}</td>
                 <td ng-if="item.is_filter_a">{{item.nnp_ndc}}</td>
-                <td ng-if="item.is_filter_a" colspan="1"></td>
+                <td ng-if="item.is_filter_a">{{item.rn_replacement_probability}}</td>
                 <td ng-if="item.is_filter_a">
                     <a popover="Добавить фильтр А" data-popover-trigger="mouseenter" popover-placement="bottom" class="btn btn-success btn-xs" ng-click="addFilterA(item.parent_id)">
                         <span class="glyphicon glyphicon-repeat"></span>

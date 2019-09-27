@@ -69,7 +69,7 @@ class PricelistController extends BaseController
     private function createExcelDocument($pricelist)
     {
         $spreadsheet = new Spreadsheet();
-        
+
         $countryNames = $this->createPricelistSheet($spreadsheet, $pricelist);
         $this->createSingleLineSheet($spreadsheet, $pricelist);
         $this->createCountriesSheet($spreadsheet, $countryNames);
@@ -259,7 +259,7 @@ class PricelistController extends BaseController
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
         
         $response = json_decode(file_get_contents($request), true);
-        
+
         foreach ($pricelist['location'] as $location) {
             if (empty($location['filterA'])) {
                 continue;
