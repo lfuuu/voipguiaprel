@@ -147,6 +147,7 @@ var MajorEditCtrl = function($scope, $q, Redirect, Nnp, Major, List, params, $mo
             $scope.item.nnp_exclude_city = filterData.exclude_city;
             $scope.item.nnp_exclude_region = filterData.exclude_region;
             $scope.item.nnp_exclude_ndc_type = filterData.exclude_ndc_type;
+            $scope.item.nnp_exclude_ndc = filterData.exclude_ndc;
             $scope.item.nnp_ndc_type = filterData.ndc_type_id;
 
             if (filterData.country_code) {

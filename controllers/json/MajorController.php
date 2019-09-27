@@ -250,6 +250,10 @@ class MajorController extends JsonController
         if (isset($filter['city_id'])) {
             $apiParams['city_id'] = implode(',', $filter['city_id']);
         }
+
+        if (isset($filter['ndc'])) {
+            $apiParams['ndc'] = implode(',', $filter['ndc']);
+        }
         
         if (isset($filter['ndc_type_id'])) {
             $apiParams['ndc_type_id'] = implode(',', $filter['ndc_type_id']);
@@ -259,8 +263,9 @@ class MajorController extends JsonController
         $exclude_oper = isset($filter['exclude_operators']) ? ($filter['exclude_operators'] ? true : false) : false;
         $exclude_region = isset($filter['exclude_region']) ? ($filter['exclude_region'] ? true : false) : false;
         $exclude_city = isset($filter['exclude_city']) ? ($filter['exclude_city'] ? true : false) : false;
-        $exclude_ndc = isset($filter['exclude_ndc_type']) ? ($filter['exclude_ndc_type'] ? true : false) : false;
-        
+        $exclude_ndc_type = isset($filter['exclude_ndc_type']) ? ($filter['exclude_ndc_type'] ? true : false) : false;
+        $exclude_ndc = isset($filter['exclude_ndc']) ? ($filter['exclude_ndc'] ? true : false) : false;
+
         if ($exclude_country) {
             $apiParams['exclude_country'] = 'true';
         }
@@ -275,6 +280,10 @@ class MajorController extends JsonController
     
         if ($exclude_city) {
             $apiParams['exclude_city'] = 'true';
+        }
+
+        if ($exclude_ndc_type) {
+            $apiParams['exclude_ndc_type'] = 'true';
         }
     
         if ($exclude_ndc) {
