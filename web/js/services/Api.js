@@ -324,8 +324,20 @@ app.factory('ActionLog', function ($q, ApiLoader, $rootScope) {
   return {
     get: function(data) {
       return ApiLoader.post(url + 'get', data);
-    }
+    },
+    read: function(data) {
+      return ApiLoader.post(url + 'read', data);
+    },
   };
+});
+
+app.factory('User', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/user/';
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+    };
 });
 
 app.factory('OcaBw', function ($q, ApiLoader, $rootScope) {
@@ -1860,7 +1872,8 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               Airp, ReleaseReason, RouteTable, Network,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
                               PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
-                              MajorGroup, Header, HeaderRule, Cdr, OldPricelist) {
+                              MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
+                              User) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -1945,6 +1958,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     disconnectCause: function () {
       return Cdr.disconnectCauseList();
+    },
+    user: function () {
+      return User.read();
     },
     testResult: function () {
       return [

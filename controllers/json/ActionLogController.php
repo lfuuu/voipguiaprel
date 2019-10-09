@@ -26,4 +26,39 @@ class ActionLogController extends JsonController
                 ->asArray()
                 ->all();
     }
+
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('action_log_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $searchArray = $this->request['search_array'];
+        $limit = $this->request['limit'];
+        $offset = $this->request['offset'];
+
+        $query = ActionLog::find()
+            ->alias('a')
+            ->limit($limit)
+            ->offset($offset)
+            ->asArray();
+
+        $countQuery = ActionLog::find()
+            ->select(['id'])
+            ->distinct();
+
+        if (isset($searchArray['user_id']) && $searchArray['user_id'] && $searchArray['user_id'] != 'all') {
+            $query->where(['a.user_id' => $searchArray['user_id']]);
+            $countQuery->where(['user_id' => $searchArray['user_id']]);
+        }
+
+        $data = $query->all();
+
+        $count = $countQuery->count();
+
+        return [
+            'totalCount' => $count,
+            'data' => $data
+        ];
+    }
 }

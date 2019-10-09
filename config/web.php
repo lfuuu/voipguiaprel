@@ -61,6 +61,7 @@ $config = [
                 'billing' => 'category/billing',
                 'marketplace' => 'category/marketplace',
                 'marketplace-eu' => 'category/marketplace-eu',
+                'action-log' => 'category/action-log',
                 'login' => 'site/login',
                 'logout' => 'site/logout',
                 'gen-passwd' => 'site/gen-passwd',
