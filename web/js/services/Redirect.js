@@ -525,5 +525,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         actionLogList: function() {
             return openTab(ActionLogListCtrl, '/templates/actionlog/action_log_list.html', {});
         },
+        actionLogItemView: function(id) {
+            return openModal(ActionLogItemViewCtrl, '/templates/actionlog/action_log_item_view.html', {id: id});
+        },
     };
 });

@@ -257,7 +257,7 @@ class TrunkController extends JsonController
             if ($data['ip_addr'] && !filter_var($data['ip_addr'], FILTER_VALIDATE_IP)) {
                 throw new ErrorException('IP address is incorrect');
             }
-            
+
             $idsToStay = [];
     
             foreach ($data['items'] as $item) {
@@ -265,9 +265,9 @@ class TrunkController extends JsonController
                     $idsToStay[] = $item['id'];
                 }
             }
-    
+
             TrunkSorm::deleteAll(['AND', 'code_trunk = :code_trunk AND region_id = :region_id', ['NOT IN', 'id', $idsToStay]], [':code_trunk' => $trunk->id, ':region_id' => $regionId]);
-    
+
             foreach ($data['items'] as $item) {
                 $this->processSormData($trunk, $item['old_name'], $data['name'], $data['ip_addr'], $item['is_show'], $data['groups'],
                     $data['sorm_operator_id'], $data['source_type_id'], $regionId, isset($item['object_comment']) ? $item['object_comment'] : null, isset($item['id']) ? $item['id'] : null);

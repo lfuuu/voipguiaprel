@@ -325,8 +325,17 @@ app.factory('ActionLog', function ($q, ApiLoader, $rootScope) {
     get: function(data) {
       return ApiLoader.post(url + 'get', data);
     },
+    getOne: function(data) {
+      return ApiLoader.post(url + 'get-one', data);
+    },
     read: function(data) {
       return ApiLoader.post(url + 'read', data);
+    },
+    getControllerList: function(data) {
+      return ApiLoader.post(url + 'get-controller-list', data);
+    },
+    getActionList: function(data) {
+      return ApiLoader.post(url + 'get-action-list', data);
     },
   };
 });

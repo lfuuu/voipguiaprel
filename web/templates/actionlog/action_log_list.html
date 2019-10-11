@@ -18,16 +18,60 @@
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Сущность</label>
+                <div class="col-sm-10 search-input">
+                    <select ui-select2 ng-model="searchArray.controller" style="width: 100%" >
+                        <option value="all">Все</option>
+                        <option ng-repeat="controller in controllerList" value="{{::controller.id}}">{{::controller.name}}</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Действие</label>
+                <div class="col-sm-10 search-input">
+                    <select ui-select2 ng-model="searchArray.action" style="width: 100%" >
+                        <option value="all">Все</option>
+                        <option ng-repeat="action in actionList" value="{{::action.id}}">{{::action.name}}</option>
+                    </select>
+                </div>
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-sm-4 search-form-item first-form-item">
+            <div class="form-group col-sm-8" style="padding-right: 5px;">
+                <div class="form-group col-sm-1" style="width: 50px; padding-left: 0px;">
+                    <button class="dropdown-toggle btn btn-info" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-time"></span>
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" ng-click="searchArray.is_time_absolute = true">Absolute</a></li>
+                        <li><a href="#" ng-click="searchArray.is_time_absolute = false">Relative</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-1 search-input" ng-hide="!searchArray.is_time_absolute" style="width: 160px; padding-right: 5px; padding-left: 5px;">
+                    <input class="form-control" ng-model="searchArray.time_from">
+                </div>
+                <div class="col-sm-1 search-input" ng-hide="!searchArray.is_time_absolute" style="width: 50px; padding-left: 0px; padding-right: 0px; text-align: center; line-height: 34px;">
+                    <span>-- по --</span>
+                </div>
+                <div class="col-sm-1 search-input" ng-hide="!searchArray.is_time_absolute" style="width: 160px; padding-right: 5px; padding-left: 5px;">
+                    <input class="form-control" ng-model="searchArray.time_to">
+                </div>
+                <div class="col-sm-1 search-input" ng-hide="searchArray.is_time_absolute" style="width: 370px; padding-right: 5px; padding-left: 5px;">
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" ng-model="searchArray.time_relative">
+                        <option value="">-- Выберите --</option>
+                        <option ng-repeat="timeInterval in timeIntervals" value="{{timeInterval.id}}">{{timeInterval.name}}</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
-            </div>
-            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-1 search-field-label">Порядок</label>
+                <div class="col-sm-5 search-input">
+                    <div class="btn-group">
+                        <button type="button" class="btn {{searchArray.sort_asc ? 'btn-primary active' : 'btn-default'}}" ng-click="searchArray.sort_asc = true">С начала</button>
+                        <button type="button" class="btn {{!searchArray.sort_asc ? 'btn-danger active' : 'btn-default'}}" ng-click="searchArray.sort_asc = false">С конца</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -53,38 +97,38 @@
     <thead>
     <tr>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'pricelist_id'; sortReverse = !sortReverse">
+            <a href="#" ng-click="sortType = 'request_date'; sortReverse = !sortReverse">
                 Дата
-                <span ng-show="sortType == 'pricelist_id' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'pricelist_id' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'request_date' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'request_date' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'price'; sortReverse = !sortReverse">
+            <a href="#" ng-click="sortType = 'user_name'; sortReverse = !sortReverse">
                 Пользователь
-                <span ng-show="sortType == 'price' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'price' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'user_name' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'user_name' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'currency'; sortReverse = !sortReverse">
+            <a href="#" ng-click="sortType = 'controller'; sortReverse = !sortReverse">
                 Сущность
-                <span ng-show="sortType == 'currency' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'currency' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'controller' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'controller' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'date_created'; sortReverse = !sortReverse">
+            <a href="#" ng-click="sortType = 'action'; sortReverse = !sortReverse">
                 Действие
-                <span ng-show="sortType == 'date_created' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'date_created' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'action' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'action' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th width="5%">
-            <a href="#" ng-click="sortType = 'date_start'; sortReverse = !sortReverse">
+            <a href="#" ng-click="sortType = 'object_id'; sortReverse = !sortReverse">
                 ID сущности
-                <span ng-show="sortType == 'date_start' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'date_start' && !sortReverse" class="caret-up"></span>
+                <span ng-show="sortType == 'object_id' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'object_id' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
     </tr>
@@ -92,11 +136,11 @@
     <tbody>
 
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse">
-        <td style="cursor: pointer" >{{item.request_date}}</td>
-        <td style="cursor: pointer" >{{item.user_id}}</td>
-        <td style="cursor: pointer" >{{item.controller}}</td>
-        <td style="cursor: pointer" >{{item.action}}</td>
-        <td style="cursor: pointer" >{{item.object_id}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.request_date}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.user_name}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.controller}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.action}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.object_id}}</td>
     </tr>
 
     </tbody>
