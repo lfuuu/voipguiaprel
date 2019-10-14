@@ -54,7 +54,8 @@ var CdrReportReadCtrl = function($scope, Cdr, Trunk, List, Redirect, $window) {
             sort_asc: true,
             show_all: true,
             is_time_absolute: true,
-            disconnect_cause_id: ''
+            disconnect_cause_id: '',
+            out_redirect_number: ''
         };
 
         $scope.$watch('item.hub_id', watchers.hub_id);
