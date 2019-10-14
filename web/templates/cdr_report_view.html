@@ -57,13 +57,6 @@
                 </a>
             </th>
             <th width="5%">
-                <a href="#" ng-click="sortType = 'dst_replace'; sortReverse = !sortReverse">
-                    Dst replace
-                    <span ng-show="sortType == 'dst_replace' && sortReverse" class="caret-down"></span>
-                    <span ng-show="sortType == 'dst_replace' && !sortReverse" class="caret-up"></span>
-                </a>
-            </th>
-            <th width="5%">
                 <a href="#" ng-click="sortType = 'session_time'; sortReverse = !sortReverse">
                     Session time
                     <span ng-show="sortType == 'session_time' && sortReverse" class="caret-down"></span>
@@ -98,8 +91,7 @@
             <td>{{item.dst_route}}</td>
             <td>{{item.src_number}}</td>
             <td>{{item.dst_number}}</td>
-            <td>{{item.redirect_number}}</td>
-            <td>{{item.dst_replace}}</td>
+            <td>in: {{item.redirect_number}}<br/>out: {{item.out_redirect_number}}</td>
             <td>{{item.session_time}}</td>
             <td>{{item.disconnect_cause}}</td>
         </tr>
