@@ -125,7 +125,8 @@ class PricelistController extends BaseController
             "Pending date",
             "Status",
             "Effective date",
-            "Info"
+            "Price",
+            "Prefix"
         ];
         
         $currentRowNumber = 1;
@@ -165,7 +166,7 @@ class PricelistController extends BaseController
                     continue;
                 }
 
-                $processedResponse = $this->processAnnotateResponse($response);
+                list($processedPriceResponse, $processedPrefixResponse) = $this->processAnnotateResponse($response);
                 
                 if (isset($filterA['nnp_country_name_eng'])) {
                     $countryNames = array_merge($countryNames, explode(', ', $filterA['nnp_country_name_eng']));
@@ -268,8 +269,14 @@ class PricelistController extends BaseController
 
                 $sheet->mergeCellsByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $minColumnNumber + 10,
                     $filterAEndRowNumber);
-                $sheet->setCellValueByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $processedResponse);
+                $sheet->setCellValueByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $processedPriceResponse);
                 $sheet->getStyleByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $minColumnNumber + 10,
+                    $filterAEndRowNumber)->getAlignment()->setVertical(Alignment::VERTICAL_TOP);
+                
+                $sheet->mergeCellsByColumnAndRow($minColumnNumber + 11, $filterAStartRowNumber, $minColumnNumber + 11,
+                    $filterAEndRowNumber);
+                $sheet->setCellValueByColumnAndRow($minColumnNumber + 11, $filterAStartRowNumber, $processedPrefixResponse);
+                $sheet->getStyleByColumnAndRow($minColumnNumber + 11, $filterAStartRowNumber, $minColumnNumber + 11,
                     $filterAEndRowNumber)->getAlignment()->setVertical(Alignment::VERTICAL_TOP);
             }
         }
@@ -282,7 +289,8 @@ class PricelistController extends BaseController
         $responseArray = explode("\n", $response);
 
         $tempResult = [];
-        $processedResponse = [];
+        $processedPriceResponse = [];
+        $processedPrefixResponse = [];
 
         foreach ($responseArray as $item) {
             if ($item == '') {
@@ -301,12 +309,14 @@ class PricelistController extends BaseController
         }
 
         foreach ($tempResult as $tempKey => $tempItem) {
-            $processedResponse[] = sprintf("%01.6f", $tempKey) . ': ' . implode(', ', $tempItem);
+            $processedPriceResponse[] = sprintf("%01.6f", $tempKey);
+            $processedPrefixResponse[] = implode(', ', $tempItem);
         }
 
-        $processedResponse = implode("\n", $processedResponse);
+        $processedPriceResponse = implode("\n", $processedPriceResponse);
+        $processedPrefixResponse = implode("\n", $processedPrefixResponse);
 
-        return $processedResponse;
+        return [$processedPriceResponse, $processedPrefixResponse];
     }
     
     private function createSingleLineSheet(&$spreadsheet, $pricelist)
