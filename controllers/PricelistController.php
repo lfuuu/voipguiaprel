@@ -66,13 +66,27 @@ class PricelistController extends BaseController
         
         $this->createExcelLocationsDocument($data);
     }
+
+    public function actionExcelSingleLine($id)
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $data = Pricelist::find()
+            ->with('location.filterA.filterB.prefixPriceNoLimit')
+            ->where(['id' => $id])
+            ->asArray()
+            ->one();
+
+        $this->createExcelSingleLineDocument($data);
+    }
     
     private function createExcelDocument($pricelist)
     {
         $spreadsheet = new Spreadsheet();
 
         $countryNames = $this->createPricelistSheet($spreadsheet, $pricelist);
-        $this->createSingleLineSheet($spreadsheet, $pricelist);
         $this->createCountriesSheet($spreadsheet, $countryNames);
         
         $spreadsheet->setActiveSheetIndex(0);
@@ -82,19 +96,36 @@ class PricelistController extends BaseController
         header('Content-Disposition: attachment; filename="file.xlsx"');
         $writer->save('php://output');
     }
+
+    private function createExcelSingleLineDocument($pricelist)
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $this->createSingleLineSheet($spreadsheet, $pricelist);
+
+        $spreadsheet->setActiveSheetIndex(0);
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="single_line.xlsx"');
+        $writer->save('php://output');
+    }
     
     private function createPricelistSheet(&$spreadsheet, $pricelist)
     {
+        $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
         $names = [
             "Source country filter",
             "Destination",
             "Rating",
+            "Prefix",
             "Price",
             "Сurrency",
             "Pending price",
             "Pending date",
             "Status",
-            "Effective date"
+            "Effective date",
+            "Info"
         ];
         
         $currentRowNumber = 1;
@@ -120,6 +151,21 @@ class PricelistController extends BaseController
                 if (empty($filterA['filterB'])) {
                     continue;
                 }
+
+                $apiParams = [
+                    'cmd' => 'annotatePricelistv2',
+                    'id' => $filterA['id']
+                ];
+
+                $request = $apiUrl . http_build_query($apiParams);
+
+                $response = file_get_contents($request);
+
+                if (empty($response)) {
+                    continue;
+                }
+
+                $processedResponse = $this->processAnnotateResponse($response);
                 
                 if (isset($filterA['nnp_country_name_eng'])) {
                     $countryNames = array_merge($countryNames, explode(', ', $filterA['nnp_country_name_eng']));
@@ -164,20 +210,22 @@ class PricelistController extends BaseController
                     
                     foreach ($simplifiedPrefixList as $prefixPrice) {
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber,
-                            $prefixPrice[0]['b_number_price']);
+                            $prefixPrice[0]['prefix_b']);
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber,
+                            $prefixPrice[0]['b_number_price']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber,
                             $pricelist['currency_id']);
                         
                         if (isset($prefixPrice[1])) {
                             $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Increase' : 'Decrease';
-                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber,
-                                $prefixPrice[1]['b_number_price']);
                             $sheet->setCellValueByColumnAndRow($minColumnNumber + 6, $currentRowNumber,
+                                $prefixPrice[1]['b_number_price']);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber,
                                 $prefixPrice[1]['date_from']);
-                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber, $direction);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 8, $currentRowNumber, $direction);
                         }
                         
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 8, $currentRowNumber,
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 9, $currentRowNumber,
                             $prefixPrice[0]['date_from']);
                         
                         $currentRowNumber++;
@@ -217,17 +265,55 @@ class PricelistController extends BaseController
                 $sheet->getStyleByColumnAndRow($minColumnNumber, $filterAStartRowNumber, $minColumnNumber,
                     $filterAEndRowNumber)
                     ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+                $sheet->mergeCellsByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $minColumnNumber + 10,
+                    $filterAEndRowNumber);
+                $sheet->setCellValueByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $processedResponse);
+                $sheet->getStyleByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $minColumnNumber + 10,
+                    $filterAEndRowNumber)->getAlignment()->setVertical(Alignment::VERTICAL_TOP);
             }
         }
-        
+
         return $countryNames;
+    }
+
+    private function processAnnotateResponse($response)
+    {
+        $responseArray = explode("\n", $response);
+
+        $tempResult = [];
+        $processedResponse = [];
+
+        foreach ($responseArray as $item) {
+            if ($item == '') {
+                continue;
+            }
+
+            $itemArray = explode(',', $item);
+
+            $name = trim(strip_tags($itemArray[1]));
+            $value = trim(strip_tags($itemArray[0]));
+            if (array_key_exists($name, $tempResult)) {
+                $tempResult[$name][] = $value;
+            } else {
+                $tempResult[$name] = [$value];
+            }
+        }
+
+        foreach ($tempResult as $tempKey => $tempItem) {
+            $processedResponse[] = sprintf("%01.6f", $tempKey) . ': ' . implode(', ', $tempItem);
+        }
+
+        $processedResponse = implode("\n", $processedResponse);
+
+        return $processedResponse;
     }
     
     private function createSingleLineSheet(&$spreadsheet, $pricelist)
     {
         $spreadsheet->createSheet();
         
-        $sheet = $spreadsheet->getSheet(1);
+        $sheet = $spreadsheet->getSheet(0);
         $sheet->setTitle('Single line');
         
         $names = [
@@ -249,7 +335,7 @@ class PricelistController extends BaseController
             $currentRowNumber);
         
         $currentRowNumber += 1;
-        
+
         $apiUrl = 'http://reg10.mcntelecom.ru:8032/';
         
         $apiParams = [
@@ -362,6 +448,8 @@ class PricelistController extends BaseController
         $sheet->getRowDimension($currentRowNumber)->setRowHeight(30);
         $sheet->getStyleByColumnAndRow($minColumnNumber, $currentRowNumber, $minColumnNumber, $currentRowNumber)
             ->getFont()->setSize(22);
+        $sheet->mergeCellsByColumnAndRow($minColumnNumber, $currentRowNumber, $maxColumnNumber,
+            $currentRowNumber);
         $currentRowNumber += 2;
         
         $pricelistDate = $pricelist['date_created'];
@@ -457,7 +545,7 @@ class PricelistController extends BaseController
     {
         $spreadsheet->createSheet();
         
-        $sheet = $spreadsheet->getSheet(2);
+        $sheet = $spreadsheet->getSheet(1);
         $sheet->setTitle('Countries EU');
         $currentRowNumber = 1;
         
@@ -497,7 +585,7 @@ class PricelistController extends BaseController
                 if (empty($response)) {
                     continue;
                 }
-                
+
                 $processedResponse = explode("\n", $response);
                 
                 if (!$firstSheetFilled) {
@@ -528,10 +616,10 @@ class PricelistController extends BaseController
                 $sheet->setTitle($filterAHeader);
                 
                 $row = 1;
-                
+
                 foreach ($processedResponse as $item) {
                     $itemArray = explode(',', $item);
-                    
+
                     for ($i = 0; $i < $maxColumnNumber; $i++) {
                         if (isset($itemArray[$i])) {
                             $sheet->setCellValueByColumnAndRow($i + 1, $row, trim(strip_tags($itemArray[$i])));

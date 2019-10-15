@@ -272,6 +272,10 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         window.open('/pricelist/excel?id=' + $scope.item.id,'_blank');
     };
 
+    $scope.printToExcelSingleLine = function () {
+        window.open('/pricelist/excel-single-line?id=' + $scope.item.id,'_blank');
+    };
+
     $scope.displayEmptyAlert = function () {
         alert('Это пустая строка.');
     };
