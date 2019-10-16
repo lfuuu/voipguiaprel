@@ -218,9 +218,8 @@ class RbacController extends Controller {
             'pricelist_search', 'old_pricelist_search', 'action_log_view'
         ]],
         ['role' => 'admin_routing', 'permissions' => [
-            'general_settings_edit', 'instance_settings_edit', 'health_view', 'user_list',
-            'user_create', 'user_edit', 'user_delete', 'acl_list', 'role_list', 'role_create',
-            'role_edit', 'role_delete', 'trunk_list', 'trunk_create', 'trunk_edit',
+            'general_settings_edit', 'instance_settings_edit', 'health_view',
+            'trunk_list', 'trunk_create', 'trunk_edit',
             'trunk_delete', 'trunk_group_list', 'trunk_group_create', 'trunk_group_edit',
             'trunk_group_delete', 'route_table_list', 'route_table_create',
             'route_table_edit', 'route_table_delete', 'route_table_route_lock', 'number_list', 'number_create',
@@ -247,6 +246,9 @@ class RbacController extends Controller {
         ['role' => 'admin_camel', 'permissions' => [
             'camel_trunk_list', 'camel_trunk_create', 'camel_trunk_edit', 'camel_trunk_delete',
             'camel_gt_list', 'camel_gt_create', 'camel_gt_edit', 'camel_gt_delete'
+        ]],
+        ['role' => 'admin_settings', 'permissions' => [
+            'action_log_list'
         ]],
         ['role' => 'engineer', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view',
@@ -302,7 +304,12 @@ class RbacController extends Controller {
     {
         return self::getPermissions('admin_camel');
     }
-    
+
+    public static function getSettingsPermissions()
+    {
+        return self::getPermissions('admin_settings');
+    }
+
     public function actionInit() {
         $auth = Yii::$app->authManager;
         

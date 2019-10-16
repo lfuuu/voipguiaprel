@@ -5,6 +5,7 @@ use app\assets\AppAsset;
 use app\assets\AppSettingsAsset;
 use app\assets\AppCamelAsset;
 use app\assets\AppLibAsset;
+use app\commands\RbacController;
 
 /**
  * @var \app\components\View $this
@@ -30,6 +31,42 @@ switch ($_SERVER['REQUEST_URI']) {
         break;
 }
 
+if (Yii::$app->user->identity) {
+    $userPermissions = Yii::$app->authManager->getPermissionsByUser(Yii::$app->user->identity->getId());
+
+    $routingPermissions = RbacController::getRoutingPermissions();
+    $billingPermissions = RbacController::getBillingPermissions();
+    $camelPermissions = RbacController::getCamelPermissions();
+    $settingsPermissions = RbacController::getSettingsPermissions();
+
+    $userRoutingPermissions = [];
+    $userBillingPermissions = [];
+    $userCamelPermissions = [];
+    $userSettingsPermissions = [];
+
+    foreach ($userPermissions as $permissionKey => $permission) {
+        if (in_array($permission->name, $routingPermissions)) {
+            $userRoutingPermissions[$permissionKey] = true;
+        } else if (in_array($permission->name, $billingPermissions)) {
+            $userBillingPermissions[$permissionKey] = true;
+        } else if (in_array($permission->name, $camelPermissions)) {
+            $userCamelPermissions[$permissionKey] = true;
+        } else if (in_array($permission->name, $settingsPermissions)) {
+            $userSettingsPermissions[$permissionKey] = true;
+        }
+    }
+
+    $userHasRouting = count($userRoutingPermissions) > 0 ? true : false;
+    $userHasBilling = count($userBillingPermissions) > 0 ? true : false;
+    $userHasCamel = count($userCamelPermissions) > 0 ? true : false;
+    $userHasSettings = count($userSettingsPermissions) > 0 ? true : false;
+} else {
+    $userHasRouting = false;
+    $userHasBilling = false;
+    $userHasCamel = false;
+    $userHasSettings = false;
+}
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -50,9 +87,15 @@ switch ($_SERVER['REQUEST_URI']) {
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <?php if (!Yii::$app->user->isGuest): ?>
                     <ul class="nav navbar-nav navbar-left">
+                        <?php if ($userHasRouting) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/' || preg_match("/^[\/][sS][\d]{1,3}$/", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['site/index'])?>">Маршрутизация</a></li>
+                        <?php } ?>
+                        <?php if ($userHasBilling) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/billing') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/billing'])?>">Билингация</a></li>
+                        <?php } ?>
+                        <?php if ($userHasCamel) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/camel') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/camel'])?>">Camel</a></li>
+                        <?php } ?>
                         <?php if (\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')): ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace'])?>">Биржа РФ</a></li>
                         <?php endif; ?>
@@ -71,7 +114,7 @@ switch ($_SERVER['REQUEST_URI']) {
                         <?php if (\Yii::$app->user->can('user_list')) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/user/list') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['user/list'])?>">Пользователи</a></li>
                         <?php } ?>
-                        <?php if (\Yii::$app->user->can('action_log_list')) { ?>
+                        <?php if ($userHasSettings) { ?>
                             <li<?php if ($_SERVER['REQUEST_URI'] == '/settings') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/settings'])?>">История</a></li>
                         <?php } ?>
                         <li><a><?= Yii::$app->user->identity->name ?></a></li>

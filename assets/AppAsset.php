@@ -117,9 +117,9 @@ class AppAsset extends AssetBundle
         'js/controllers/billing/PricelistSearch.js',
         'js/controllers/billing/OldPricelistSearch.js',
         'js/controllers/ActionLogView.js',
-        'js/controllers/MainActionLog.js',
-        'js/controllers/actionlog/ActionLogList.js',
-        'js/controllers/actionlog/ActionLogItemView.js'
+        'js/controllers/MainSettings.js',
+        'js/controllers/settings/ActionLogList.js',
+        'js/controllers/settings/ActionLogItemView.js'
     ];
 
     public $templates = [
@@ -217,8 +217,8 @@ class AppAsset extends AssetBundle
         'templates/billing/pricelist_search.html',
         'templates/billing/old_pricelist_search.html',
         'templates/action_log_view.html',
-        'templates/main_action_log.html',
-        'templates/actionlog/action_log_list.html',
-        'templates/actionlog/action_log_item_view.html',
+        'templates/main_settings.html',
+        'templates/settings/action_log_list.html',
+        'templates/settings/action_log_item_view.html',
     ];
 }
