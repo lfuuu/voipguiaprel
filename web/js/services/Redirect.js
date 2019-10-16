@@ -523,10 +523,31 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(ActionLogViewCtrl, '/templates/action_log_view.html', {id: id, type: type});
         },
         actionLogList: function() {
-            return openTab(ActionLogListCtrl, '/templates/actionlog/action_log_list.html', {});
+            $cookies.settings_selected_page = 'actionLogList';
+            return openTab(ActionLogListCtrl, '/templates/settings/action_log_list.html', {});
         },
         actionLogItemView: function(id) {
-            return openModal(ActionLogItemViewCtrl, '/templates/actionlog/action_log_item_view.html', {id: id});
+            return openModal(ActionLogItemViewCtrl, '/templates/settings/action_log_item_view.html', {id: id});
+        },
+        camelTrunkList: function() {
+            $cookies.camel_selected_page = 'camelTrunkList';
+            return openTab(CamelTrunkListCtrl, '/templates/camel/trunk_list.html', {});
+        },
+        camelTrunkCreate: function() {
+            return openModal(CamelTrunkEditCtrl, '/templates/camel/trunk_edit.html', {id: null});
+        },
+        camelTrunkEdit: function(id) {
+            return openModal(CamelTrunkEditCtrl, '/templates/camel/trunk_edit.html', {id: id});
+        },
+        camelGtList: function() {
+            $cookies.camel_selected_page = 'camelGtList';
+            return openTab(CamelGtListCtrl, '/templates/camel/gt_list.html', {});
+        },
+        camelGtCreate: function() {
+            return openModal(CamelGtEditCtrl, '/templates/camel/gt_edit.html', {id: null});
+        },
+        camelGtEdit: function(id) {
+            return openModal(CamelGtEditCtrl, '/templates/camel/gt_edit.html', {id: id});
         },
     };
 });

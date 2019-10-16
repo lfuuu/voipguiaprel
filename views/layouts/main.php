@@ -2,6 +2,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\assets\AppAsset;
+use app\assets\AppSettingsAsset;
+use app\assets\AppCamelAsset;
 use app\assets\AppLibAsset;
 
 /**
@@ -9,7 +11,25 @@ use app\assets\AppLibAsset;
  * @var string $content
  */
 AppLibAsset::register($this);
-AppAsset::register($this);
+
+switch ($_SERVER['REQUEST_URI']) {
+    case '/routing':
+        AppAsset::register($this);
+        break;
+    case '/billing':
+        AppAsset::register($this);
+        break;
+    case '/camel':
+        AppCamelAsset::register($this);
+        break;
+    case '/settings':
+        AppSettingsAsset::register($this);
+        break;
+    default:
+        AppAsset::register($this);
+        break;
+}
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -32,6 +52,7 @@ AppAsset::register($this);
                     <ul class="nav navbar-nav navbar-left">
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/' || preg_match("/^[\/][sS][\d]{1,3}$/", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['site/index'])?>">Маршрутизация</a></li>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/billing') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/billing'])?>">Билингация</a></li>
+                        <li<?php if ($_SERVER['REQUEST_URI'] == '/camel') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/camel'])?>">Camel</a></li>
                         <?php if (\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')): ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace'])?>">Биржа РФ</a></li>
                         <?php endif; ?>
@@ -51,7 +72,7 @@ AppAsset::register($this);
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/user/list') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['user/list'])?>">Пользователи</a></li>
                         <?php } ?>
                         <?php if (\Yii::$app->user->can('action_log_list')) { ?>
-                            <li<?php if ($_SERVER['REQUEST_URI'] == '/action-log') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/action-log'])?>">История</a></li>
+                            <li<?php if ($_SERVER['REQUEST_URI'] == '/settings') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/settings'])?>">История</a></li>
                         <?php } ?>
                         <li><a><?= Yii::$app->user->identity->name ?></a></li>
                         <li><a href="<?=Url::to(['site/logout'])?>">Выход</a></li>

@@ -1,9 +1,12 @@
 <?php
 namespace app\classes;
 
+use app\exceptions\FormValidationException;
 use app\models\ActionLog;
 use Yii;
 use yii\filters\ContentNegotiator;
+use yii\web\ForbiddenHttpException;
+use yii\web\HttpException;
 use yii\web\Response;
 
 class JsonController extends BaseController
@@ -17,6 +20,14 @@ class JsonController extends BaseController
     protected $doNotLog = false;
     
     private $saveMethods = ['save', 'saveAndUpdate', 'toggleActive', 'inherit', 'copy', 'delete'];
+
+    protected $modelName = '';
+    protected $idParamName = '';
+    protected $nameParamName = '';
+    protected $createPermission = '';
+    protected $listPermission = '';
+    protected $editPermission = '';
+    protected $deletePermission = '';
 
     public function behaviors()
     {
@@ -60,17 +71,17 @@ class JsonController extends BaseController
     public function afterAction($action, $result)
     {
         $result = parent::afterAction($action, $result);
-    
+
         // Логируем только если включено логирование в конфиге
         // и если у контроллера _doNotLog установлена в ложь
         if (\Yii::$app->params['loggingEnabled'] && !$action->controller->doNotLog) {
             $actionName = $action->id;
-            
+
             if (\Yii::$app->params['logReadMethods'] || in_array($actionName, $this->saveMethods)) {
                 if (isset($result['log'])) {
                     $dataBefore = $result['log']['data_before'];
                     $dataAfter = $result['log']['data_after'];
-                    
+
                     if (isset($result['result'])) {
                         $result = $result['result'];
                     } else {
@@ -80,7 +91,7 @@ class JsonController extends BaseController
                     $dataBefore = [];
                     $dataAfter = [];
                 }
-                
+
                 $data = [
                     'user_id' => \Yii::$app->user->id,
                     'controller' => $action->controller->id,
@@ -90,27 +101,138 @@ class JsonController extends BaseController
                     'data_before' => json_encode($dataBefore, JSON_FORCE_OBJECT),
                     'data_after' => json_encode($dataAfter, JSON_FORCE_OBJECT)
                 ];
-                
+
                 $logItem = ActionLog::create($data);
                 $logItem->save();
             }
         }
-        
+
         return $this->serializeData($result);
     }
-    
+
     protected function getDataForLog($item)
     {
         $data = $item->getAttributes();
-        
+
         $subitems = isset($item->_subitems) ? $item->_subitems : [];
-        
+
         foreach ($subitems as $subitemName => $subitemMethod) {
             $subitemData = $item->$subitemMethod()->asArray()->all();
             $data[$subitemName] = $subitemData;
         }
-        
+
         return $data;
+    }
+
+    public function actionList()
+    {
+        if (!\Yii::$app->user->can($this->listPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+
+        return
+            $modelName::find()
+                ->select(['id' => $this->idParamName, 'name' => $this->nameParamName])
+                ->orderBy($this->nameParamName)
+                ->asArray()
+                ->all();
+    }
+
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can($this->listPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+
+        return
+            $modelName::find()
+                ->select('*')
+                ->orderBy($this->nameParamName)
+                ->asArray()
+                ->all();
+    }
+
+    public function actionGet()
+    {
+        if (!\Yii::$app->user->can($this->editPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+
+        $item = $modelName::findOne($this->request[$this->idParamName]);
+
+        if ($item === null) {
+            throw new HttpException(404, $modelName . ' не найден');
+        }
+
+        return $item->toArray();
+    }
+
+    public function actionSave()
+    {
+        if (!\Yii::$app->user->can($this->editPermission) && !\Yii::$app->user->can($this->createPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+
+        $result = [];
+
+        if (isset($this->request[$this->idParamName])) {
+            if (!\Yii::$app->user->can($this->editPermission)) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+
+            $item = $modelName::findOne($this->request[$this->idParamName]);
+
+            if ($item === null) {
+                throw new HttpException(404, $this->modelName . ' не найден');
+            }
+
+            $result['log'] = ['data_before' => self::getDataForLog($item)];
+        } else {
+            if (!\Yii::$app->user->can($this->createPermission)) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+
+            $item = $modelName::create();
+            $result['log'] = ['data_before' => []];
+        }
+
+        $item->load($this->request, '');
+
+        $transaction = $modelName::getDb()->beginTransaction();
+        try {
+            if (!$item->save()) {
+                throw new FormValidationException($item);
+            }
+
+            $transaction->commit();
+        } finally {
+            if ($transaction->getIsActive())
+                $transaction->rollBack();
+        }
+
+        $result['log']['data_after'] = self::getDataForLog($item);
+
+        return $result;
+    }
+
+    public function actionDelete()
+    {
+        if (!\Yii::$app->user->can($this->deletePermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+
+        $item = $modelName::findOne($this->request[$this->idParamName]);
+        $item->delete();
     }
 
     protected function serializeData($data)

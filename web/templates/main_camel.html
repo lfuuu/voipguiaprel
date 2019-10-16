@@ -1,0 +1,24 @@
+<div class="wrap">
+    <div style="position: fixed; left: 15px; bottom: 0; top: 60px; width: 230px; overflow-y: auto">
+        <div ng-if="userPermissions['camel_gt_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['camel_gt_list']" ng-click="Redirect.camelGtList()" ng-class="{active:tabs.isController('CamelGtListCtrl')}">Справочник GT</a>
+        </div>
+        <div ng-if="userPermissions['camel_trunk_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['camel_trunk_list']" ng-click="Redirect.camelTrunkList()" ng-class="{active:tabs.isController('CamelTrunkListCtrl')}">Транки</a>
+        </div>
+    </div>
+
+    <div style="position: fixed; overflow: auto; bottom: 0; right: 0; top: 60px; padding-left: 20px; padding-right: 20px; left: 250px;':'left: 0;">
+        <tabset class="main-tabs" ng-show="tabs.length > 0" vertical="true" type="'pills'">
+            <tab ng-repeat="tab in tabs" active="tab.active" ng-controller="tab.controller">
+                <ng-include src="tab.template" onload="init(tab)"></ng-include>
+            </tab>
+        </tabset>
+    </div>
+</div>
+
+<div id="popup-alert" class="alert alert-danger" style="cursor: pointer; position: absolute; left: 20%; right: 20%; top: 45px; z-index: 5000;" ng-if="popupErrors"  ng-click="closeErrorsPopup()">
+    <button type="button" class="close" ng-click="closeErrorsPopup()"><span aria-hidden="true">×</span></button>
+    <h4 ng-if="popupErrors.header">{{popupErrors.header}}</h4>
+    <p ng-repeat="error in popupErrors.errors">{{error}}</p>
+</div>

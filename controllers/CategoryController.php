@@ -30,8 +30,13 @@ class CategoryController extends BaseController
         return $this->render('marketplace-eu', []);
     }
 
-    public function actionActionLog()
+    public function actionSettings()
     {
-        return $this->render('action-log', []);
+        return $this->render('settings', []);
+    }
+
+    public function actionCamel()
+    {
+        return $this->render('camel', []);
     }
 }

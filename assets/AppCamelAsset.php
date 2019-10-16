@@ -1,0 +1,45 @@
+<?php
+namespace app\assets;
+
+use app\classes\AssetBundle;
+
+class AppCamelAsset extends AssetBundle
+{
+    public $css = [
+        '/css/site.css',
+    ];
+
+    public $js = [
+        'js/app.js',
+        'js/services/ApiLoader.js',
+        'js/services/Api.js',
+        'js/services/CamelApi.js',
+        'js/services/Filter.js',
+        'js/services/Redirect.js',
+        'js/directives/select-box.js',
+        'js/directives/select-box-new.js',
+        'js/directives/outcome-select-box.js',
+        'js/directives/comment-icon.js',
+        'js/directives/action-log-view-button.js',
+        'js/controllers/MainCamel.js',
+        'js/controllers/ActionLogView.js',
+        'js/controllers/camel/TrunkEdit.js',
+        'js/controllers/camel/TrunkList.js',
+        'js/controllers/camel/GtEdit.js',
+        'js/controllers/camel/GtList.js',
+    ];
+
+    public $templates = [
+        'templates/directives/select-box.html',
+        'templates/directives/select-box-new.html',
+        'templates/directives/comment-icon.html',
+        'templates/directives/action-log-view-button.html',
+        'templates/directives/outcome-select-box.html',
+        'templates/main_camel.html',
+        'templates/action_log_view.html',
+        'templates/camel/trunk_edit.html',
+        'templates/camel/trunk_list.html',
+        'templates/camel/gt_edit.html',
+        'templates/camel/gt_list.html',
+    ];
+}

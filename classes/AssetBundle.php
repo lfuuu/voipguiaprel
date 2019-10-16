@@ -14,7 +14,7 @@ class AssetBundle extends \yii\web\AssetBundle
 
     public function publish($am)
     {
-//        return parent::publish($am);
+        return parent::publish($am);
 
         if ($this->sourcePath !== null && !isset($this->basePath, $this->baseUrl)) {
             list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);

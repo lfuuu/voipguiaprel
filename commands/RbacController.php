@@ -152,11 +152,20 @@ class RbacController extends Controller {
         ['name' => 'old_pricelist_search', 'description' => 'Поиск в старых прайслистах'],
         ['name' => 'action_log_view', 'description' => 'Просмотр истории изменений'],
         ['name' => 'action_log_list', 'description' => 'Просмотр полной истории изменений'],
+        ['name' => 'camel_trunk_list', 'description' => 'Просмотр списка Camel транков'],
+        ['name' => 'camel_trunk_create', 'description' => 'Создание Camel транка'],
+        ['name' => 'camel_trunk_edit', 'description' => 'Редактирование Camel транка'],
+        ['name' => 'camel_trunk_delete', 'description' => 'Удаление Camel транка'],
+        ['name' => 'camel_gt_list', 'description' => 'Просмотр справочника GT'],
+        ['name' => 'camel_gt_create', 'description' => 'Создание GT'],
+        ['name' => 'camel_gt_edit', 'description' => 'Редактирование GT'],
+        ['name' => 'camel_gt_delete', 'description' => 'Удаление GT'],
     ];
     
     private static $_roles = [
         ['name' => 'admin_routing', 'description' => 'Администратор роутинга'],
         ['name' => 'admin_billing', 'description' => 'Администратор биллинга'],
+        ['name' => 'admin_camel', 'description' => 'Администратор Camel'],
         ['name' => 'superadmin', 'description' => 'Супер администратор'],
         ['name' => 'engineer', 'description' => 'Инженер'],
         ['name' => 'manager', 'description' => 'Менеджер'],
@@ -235,6 +244,10 @@ class RbacController extends Controller {
             'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
             'money_tree', 'action_log_view'
         ]],
+        ['role' => 'admin_camel', 'permissions' => [
+            'camel_trunk_list', 'camel_trunk_create', 'camel_trunk_edit', 'camel_trunk_delete',
+            'camel_gt_list', 'camel_gt_create', 'camel_gt_edit', 'camel_gt_delete'
+        ]],
         ['role' => 'engineer', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view',
             'trunk_list', 'trunk_create', 'trunk_edit',
@@ -283,6 +296,11 @@ class RbacController extends Controller {
     public static function getRoutingPermissions()
     {
         return self::getPermissions('admin_routing');
+    }
+
+    public static function getCamelPermissions()
+    {
+        return self::getPermissions('admin_camel');
     }
     
     public function actionInit() {

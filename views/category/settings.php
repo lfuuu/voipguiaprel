@@ -1,14 +1,10 @@
 <?php
 use yii\helpers\Html;
-use app\assets\AppAsset;
+use app\assets\AppSettingsAsset;
 use app\assets\AppLibAsset;
 
-/**
- * @var \app\components\View $this
- * @var string $content
- */
 AppLibAsset::register($this);
-AppAsset::register($this);
+AppSettingsAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -33,7 +29,7 @@ AppAsset::register($this);
     ?>
     var userPermissions = <?= json_encode($shortUserPermissions, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
 </script>
-<div ng-controller="MainActionLogCtrl" ng-include="'/templates/main_action_log.html'">
+<div ng-controller="MainSettingsCtrl" ng-include="'/templates/main_settings.html'">
 </div>
 <?php $this->endBody() ?>
 </body>

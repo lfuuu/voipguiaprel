@@ -1,4 +1,4 @@
-app.controller('MainActionLogCtrl', function ($rootScope, $scope, $cookies, $timeout, $modal, Redirect) {
+app.controller('MainSettingsCtrl', function ($rootScope, $scope, $cookies, $timeout, $modal, Redirect) {
   $rootScope.userName = userName;
   $rootScope.userId = userId;
   $rootScope.userPermissions = userPermissions;
