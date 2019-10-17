@@ -2,6 +2,7 @@ app.controller('MainSettingsCtrl', function ($rootScope, $scope, $cookies, $time
     $rootScope.userName = userName;
     $rootScope.userId = userId;
     $rootScope.userPermissions = userPermissions;
+    $rootScope.settingsPermissions = settingsPermissions;
 
     $rootScope.Redirect = Redirect;
 
