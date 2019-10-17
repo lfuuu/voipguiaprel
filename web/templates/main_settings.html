@@ -1,5 +1,8 @@
 <div class="wrap">
     <div style="position: fixed; left: 15px; bottom: 0; top: 60px; width: 230px; overflow-y: auto">
+        <div ng-if="userPermissions['acl_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['acl_list']" ng-click="Redirect.aclList()" ng-class="{active:tabs.isController('AclListCtrl')}">Права доступа</a>
+        </div>
         <div ng-if="userPermissions['action_log_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['action_log_list']" ng-click="Redirect.actionLogList()" ng-class="{active:tabs.isController('ActionLogListCtrl')}">История</a>
         </div>

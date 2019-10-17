@@ -105,9 +105,6 @@ if (Yii::$app->user->identity) {
                         <li><a href="<?=Url::to(['/health/health.html'])?>" target="_blank">Здоровье биллеров</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <?php if (\Yii::$app->user->can('acl_list')) { ?>
-                        <li<?php if ($_SERVER['REQUEST_URI'] == '/acl/list') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['acl/list'])?>">Права доступа</a></li>
-                        <?php } ?>
                         <?php if (\Yii::$app->user->can('role_list')) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/role/list') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['role/list'])?>">Роли</a></li>
                         <?php } ?>
@@ -115,7 +112,7 @@ if (Yii::$app->user->identity) {
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/user/list') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['user/list'])?>">Пользователи</a></li>
                         <?php } ?>
                         <?php if ($userHasSettings) { ?>
-                            <li<?php if ($_SERVER['REQUEST_URI'] == '/settings') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/settings'])?>">История</a></li>
+                            <li<?php if ($_SERVER['REQUEST_URI'] == '/settings') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/settings'])?>">Настройки</a></li>
                         <?php } ?>
                         <li><a><?= Yii::$app->user->identity->name ?></a></li>
                         <li><a href="<?=Url::to(['site/logout'])?>">Выход</a></li>

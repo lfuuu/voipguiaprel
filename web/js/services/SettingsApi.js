@@ -39,37 +39,17 @@ function basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise) {
     };
 };
 
-app.factory('CamelTrunk', function ($q, ApiLoader, $rootScope) {
-    var url = '/json/camel/trunk/';
+app.factory('Acl', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/settings/acl/';
     var list = undefined;
     var promise = undefined;
     return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
 });
 
-app.factory('CamelGt', function ($q, ApiLoader, $rootScope) {
-    var url = '/json/camel/gt/';
-    var list = undefined;
-    var promise = undefined;
-    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
-});
-
-app.factory('CamelRouteTable', function ($q, ApiLoader, $rootScope) {
-    var url = '/json/camel/route-table/';
-    var list = undefined;
-    var promise = undefined;
-    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
-});
-
-app.factory('CamelList', function (CamelTrunk, CamelGt, CamelRouteTable) {
+app.factory('SettingsList', function (Acl) {
     return {
-        trunk: function () {
-            return CamelTrunk.list();
-        },
-        gt: function () {
-            return CamelGt.list();
-        },
-        routeTable: function () {
-            return CamelRouteTable.list();
+        acl: function () {
+            return Acl.list();
         }
     };
 });

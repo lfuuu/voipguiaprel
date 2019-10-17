@@ -549,5 +549,19 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         camelGtEdit: function(id) {
             return openModal(CamelGtEditCtrl, '/templates/camel/gt_edit.html', {id: id});
         },
+        camelRouteTableList: function() {
+            $cookies.camel_selected_page = 'camelRouteTableList';
+            return openTab(CamelRouteTableListCtrl, '/templates/camel/route_table_list.html', {});
+        },
+        camelRouteTableCreate: function() {
+            return openModal(CamelRouteTableEditCtrl, '/templates/camel/route_table_edit.html', {id: null});
+        },
+        camelRouteTableEdit: function(id) {
+            return openModal(CamelRouteTableEditCtrl, '/templates/camel/route_table_edit.html', {id: id});
+        },
+        aclList: function() {
+            $cookies.settings_selected_page = 'aclList';
+            return openTab(AclListCtrl, '/templates/settings/acl_list.html', {});
+        },
     };
 });

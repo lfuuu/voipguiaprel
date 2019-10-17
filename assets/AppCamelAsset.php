@@ -27,6 +27,8 @@ class AppCamelAsset extends AssetBundle
         'js/controllers/camel/TrunkList.js',
         'js/controllers/camel/GtEdit.js',
         'js/controllers/camel/GtList.js',
+        'js/controllers/camel/RouteTableEdit.js',
+        'js/controllers/camel/RouteTableList.js',
     ];
 
     public $templates = [
@@ -41,5 +43,7 @@ class AppCamelAsset extends AssetBundle
         'templates/camel/trunk_list.html',
         'templates/camel/gt_edit.html',
         'templates/camel/gt_list.html',
+        'templates/camel/route_table_edit.html',
+        'templates/camel/route_table_list.html',
     ];
 }

@@ -81,6 +81,21 @@ class PricelistController extends BaseController
 
         $this->createExcelSingleLineDocument($data);
     }
+
+    public function actionExcelFilterB($id)
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $data = Pricelist::find()
+            ->with('location.filterA.filterB.prefixPriceNoLimit')
+            ->where(['id' => $id])
+            ->asArray()
+            ->one();
+
+        $this->createExcelFilterBDocument($data);
+    }
     
     private function createExcelDocument($pricelist)
     {
@@ -91,6 +106,21 @@ class PricelistController extends BaseController
         
         $spreadsheet->setActiveSheetIndex(0);
         
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="file.xlsx"');
+        $writer->save('php://output');
+    }
+
+    private function createExcelFilterBDocument($pricelist)
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $countryNames = $this->createPricelistFilterBSheet($spreadsheet, $pricelist);
+        $this->createCountriesSheet($spreadsheet, $countryNames);
+
+        $spreadsheet->setActiveSheetIndex(0);
+
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="file.xlsx"');
@@ -277,6 +307,167 @@ class PricelistController extends BaseController
         return $countryNames;
     }
 
+    private function createPricelistFilterBSheet(&$spreadsheet, $pricelist)
+    {
+        $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
+        $names = [
+            "Source country filter",
+            "Destination",
+            "Rating",
+            "Prefix",
+            "Price",
+            "Сurrency",
+            "Pending price",
+            "Pending date",
+            "Status",
+            "Effective date",
+            "Info"
+        ];
+
+        $currentRowNumber = 1;
+        $minColumnNumber = 1;
+        $maxColumnNumber = count($names);
+
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('General');
+
+        $currentRowNumber = $this->setHeader($sheet, $names, $pricelist, $minColumnNumber, $maxColumnNumber,
+            $currentRowNumber);
+
+        $currentRowNumber += 1;
+
+        $countryNames = [];
+
+        foreach ($pricelist['location'] as $location) {
+            if (empty($location['filterA'])) {
+                continue;
+            }
+
+            foreach ($location['filterA'] as $filterA) {
+                if (empty($filterA['filterB'])) {
+                    continue;
+                }
+
+                if (isset($filterA['nnp_country_name_eng'])) {
+                    $countryNames = array_merge($countryNames, explode(', ', $filterA['nnp_country_name_eng']));
+                }
+
+                list($filterAHeader, $filterACount) = $this->getFilterName($filterA);
+
+                if (empty($filterAHeader)) {
+                    $filterAHeader = 'Empty filter';
+                }
+
+                $sheet->setCellValueByColumnAndRow($minColumnNumber, $currentRowNumber, $filterAHeader);
+                $filterAStartRowNumber = $currentRowNumber;
+
+                foreach ($filterA['filterB'] as $filterB) {
+                    if (empty($filterB['prefixPriceNoLimit'])) {
+                        continue;
+                    }
+
+                    $apiParams = [
+                        'cmd' => 'getPricelistFilterBPrefix',
+                        'id' => $filterB['id'],
+                        'minimize' => 1
+                    ];
+
+                    $request = $apiUrl . http_build_query($apiParams);
+
+                    $response = file_get_contents($request);
+
+                    if (empty($response)) {
+                        continue;
+                    }
+
+                    $processedResponse = $this->processFilterBResponse($response);
+
+                    list($filterBText, $filterBCount) = $this->getFilterName($filterB);
+
+                    if (empty($filterBText)) {
+                        $filterBText = 'Empty filter';
+                    }
+
+                    $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $filterBText);
+                    if ($filterB['rating'] != 1) {
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $filterB['rating']);
+                    }
+                    $filterBStartRowNumber = $currentRowNumber;
+
+                    $simplifiedPrefixList = [];
+
+                    foreach ($filterB['prefixPriceNoLimit'] as $prefixPrice) {
+                        if (array_key_exists($prefixPrice['prefix_b'], $simplifiedPrefixList)) {
+                            $simplifiedPrefixList[$prefixPrice['prefix_b']][] = $prefixPrice;
+                        } else {
+                            $simplifiedPrefixList[$prefixPrice['prefix_b']] = [];
+                            $simplifiedPrefixList[$prefixPrice['prefix_b']][] = $prefixPrice;
+                        }
+                    }
+
+                    foreach ($simplifiedPrefixList as $prefixPrice) {
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 3, $currentRowNumber,
+                            $prefixPrice[0]['prefix_b']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 4, $currentRowNumber,
+                            $prefixPrice[0]['b_number_price']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 5, $currentRowNumber,
+                            $pricelist['currency_id']);
+
+                        if (isset($prefixPrice[1])) {
+                            $direction = $prefixPrice[1]['b_number_price'] > $prefixPrice[0]['b_number_price'] ? 'Increase' : 'Decrease';
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 6, $currentRowNumber,
+                                $prefixPrice[1]['b_number_price']);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 7, $currentRowNumber,
+                                $prefixPrice[1]['date_from']);
+                            $sheet->setCellValueByColumnAndRow($minColumnNumber + 8, $currentRowNumber, $direction);
+                        }
+
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 9, $currentRowNumber,
+                            $prefixPrice[0]['date_from']);
+
+                        $currentRowNumber++;
+                    }
+
+                    $filterBEndRowNumber = $currentRowNumber - 1;
+                    $sheet->mergeCellsByColumnAndRow($minColumnNumber + 1, $filterBStartRowNumber, $minColumnNumber + 1,
+                        $filterBEndRowNumber);
+                    $sheet->mergeCellsByColumnAndRow($minColumnNumber + 2, $filterBStartRowNumber, $minColumnNumber + 2,
+                        $filterBEndRowNumber);
+
+                    if (($filterBEndRowNumber - $filterBStartRowNumber) < $filterBCount) {
+                        $sheet->getRowDimension($filterBStartRowNumber)->setRowHeight(15 * ($filterBCount - $filterBEndRowNumber + $filterBStartRowNumber + 1));
+                    }
+
+                    $sheet->getStyleByColumnAndRow($minColumnNumber + 1, $filterBStartRowNumber, $minColumnNumber + 1,
+                        $filterBEndRowNumber)
+                        ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                    $sheet->getStyleByColumnAndRow($minColumnNumber + 2, $filterBStartRowNumber, $minColumnNumber + 2,
+                        $filterBEndRowNumber)
+                        ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                }
+
+                if ($filterAStartRowNumber == $currentRowNumber) {
+                    $filterAEndRowNumber = $currentRowNumber;
+                } else {
+                    $filterAEndRowNumber = $currentRowNumber - 1;
+                }
+
+                $sheet->mergeCellsByColumnAndRow($minColumnNumber, $filterAStartRowNumber, $minColumnNumber,
+                    $filterAEndRowNumber);
+
+                if (($filterAEndRowNumber - $filterAStartRowNumber) < $filterACount) {
+                    $sheet->getRowDimension($filterAStartRowNumber)->setRowHeight(15 * ($filterACount - $filterAEndRowNumber + $filterAStartRowNumber + 1));
+                }
+
+                $sheet->getStyleByColumnAndRow($minColumnNumber, $filterAStartRowNumber, $minColumnNumber,
+                    $filterAEndRowNumber)
+                    ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            }
+        }
+
+        return $countryNames;
+    }
+
     private function processAnnotateResponse($response)
     {
         $responseArray = explode("\n", $response);
@@ -307,6 +498,11 @@ class PricelistController extends BaseController
         $processedResponse = implode("\n", $processedResponse);
 
         return $processedResponse;
+    }
+
+    private function processFilterBResponse($response)
+    {
+        return 'test filter b response';
     }
     
     private function createSingleLineSheet(&$spreadsheet, $pricelist)

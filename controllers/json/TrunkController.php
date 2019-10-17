@@ -287,21 +287,16 @@ class TrunkController extends JsonController
 
         if (in_array("1", $sormOperatorId)) {
             $operator = Operator::find()
-                ->with('commutator')
                 ->where(['server_id' => $trunk->server_id])
                 ->one();
         } else {
             $operator = null;
         }
-
-        if (!empty($operator) && empty($operator->commutator)) {
-            throw new ErrorException('У оператора #' . $operator->id . ' ' . $operator->note . ' отсутствует коммутатор.');
-        }
     
         if ($trunkSorm) {
             //edit
-            $trunkSorm->operator_id = $operator ? $operator->id : '';
-            $trunkSorm->ats_mnemo_code = $operator ? $operator->commutator->comutator_str_id : 'reg' . $regionId;
+            $trunkSorm->operator_id = $operator ? ($operator->id != 35 ? $operator->id : 3) : '';
+            $trunkSorm->ats_mnemo_code = 'reg' . $regionId;
             $trunkSorm->name = $name;
             $trunkSorm->ip_addr = $ipAddr ? $ipAddr : null;
             $trunkSorm->is_show = isset($isShow) ? $isShow : false;
@@ -317,7 +312,7 @@ class TrunkController extends JsonController
             $dataToCreate = [
                 'operator_id' => $operator ? $operator->id : '',
                 'code_trunk' => $trunk->id,
-                'ats_mnemo_code' => $operator ? $operator->commutator->comutator_str_id : 'reg' . $regionId,
+                'ats_mnemo_code' => 'reg' . $regionId,
                 'type' => 2,
                 'start_date' => date('Y-m-d H:i:s'),
                 'name' => $name,

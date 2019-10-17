@@ -71,6 +71,7 @@ $config = [
                 'c<versionId>' => 'config/index',
                 'c<versionId>/<action>' => 'config/<action>',
                 'json/camel/<controller>/<action>' => 'json/camel/<controller>/<action>',
+                'json/settings/<controller>/<action>' => 'json/settings/<controller>/<action>',
                 'json/<controller>/<action>' => 'json/<controller>/<action>',
                 '<controller>/<action>' => '<controller>/<action>',
             ],

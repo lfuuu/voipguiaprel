@@ -160,12 +160,17 @@ class RbacController extends Controller {
         ['name' => 'camel_gt_create', 'description' => 'Создание GT'],
         ['name' => 'camel_gt_edit', 'description' => 'Редактирование GT'],
         ['name' => 'camel_gt_delete', 'description' => 'Удаление GT'],
+        ['name' => 'camel_route_table_list', 'description' => 'Просмотр списка Camel таблиц маршрутизации'],
+        ['name' => 'camel_route_table_create', 'description' => 'Создание Camel таблицы маршрутизации'],
+        ['name' => 'camel_route_table_edit', 'description' => 'Редактирование Camel таблицы маршрутизации'],
+        ['name' => 'camel_route_table_delete', 'description' => 'Удаление Camel таблицы маршрутизации'],
     ];
     
     private static $_roles = [
         ['name' => 'admin_routing', 'description' => 'Администратор роутинга'],
         ['name' => 'admin_billing', 'description' => 'Администратор биллинга'],
         ['name' => 'admin_camel', 'description' => 'Администратор Camel'],
+        ['name' => 'admin_settings', 'description' => 'Администратор настроек системы'],
         ['name' => 'superadmin', 'description' => 'Супер администратор'],
         ['name' => 'engineer', 'description' => 'Инженер'],
         ['name' => 'manager', 'description' => 'Менеджер'],
@@ -205,7 +210,8 @@ class RbacController extends Controller {
             'major_group_list', 'major_group_create', 'major_group_edit', 'major_group_delete',
             'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
             'marketplace_list', 'marketplace_edit', 'cdr_report_read', 'money_tree',
-            'pricelist_search', 'old_pricelist_search', 'action_log_view', 'action_log_list'
+            'pricelist_search', 'old_pricelist_search', 'action_log_view', 'action_log_list',
+            'camel_route_table_list', 'camel_route_table_create', 'camel_route_table_edit', 'camel_route_table_delete'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'test_number_edit',
@@ -245,10 +251,11 @@ class RbacController extends Controller {
         ]],
         ['role' => 'admin_camel', 'permissions' => [
             'camel_trunk_list', 'camel_trunk_create', 'camel_trunk_edit', 'camel_trunk_delete',
-            'camel_gt_list', 'camel_gt_create', 'camel_gt_edit', 'camel_gt_delete'
+            'camel_gt_list', 'camel_gt_create', 'camel_gt_edit', 'camel_gt_delete',
+            'camel_route_table_list', 'camel_route_table_create', 'camel_route_table_edit', 'camel_route_table_delete'
         ]],
         ['role' => 'admin_settings', 'permissions' => [
-            'action_log_list'
+            'acl_list', 'action_log_list'
         ]],
         ['role' => 'engineer', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view',
