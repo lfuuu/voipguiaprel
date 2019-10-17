@@ -33,7 +33,7 @@ app.controller('MainSettingsCtrl', function ($rootScope, $scope, $cookies, $time
         funcName = $cookies.settings_selected_page;
     } else {
         for (var permissionName in $rootScope.userPermissions) {
-            if ($rootScope.camelPermissions.indexOf(permissionName) !== -1 &&
+            if ($rootScope.settingsPermissions.indexOf(permissionName) !== -1 &&
                 permissionName.includes('list') && permissionName !== 'user_list' &&
                 permissionName !== 'role_list' && permissionName !== 'acl_list') {
                 funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
