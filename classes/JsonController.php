@@ -24,6 +24,8 @@ class JsonController extends BaseController
     protected $modelName = '';
     protected $idParamName = '';
     protected $nameParamName = '';
+    protected $withDependencies = [];
+    protected $throwExceptionOnEmptyItemInSave = true;
     protected $createPermission = '';
     protected $listPermission = '';
     protected $editPermission = '';
@@ -163,14 +165,24 @@ class JsonController extends BaseController
         }
 
         $modelName = $this->modelName;
-
-        $item = $modelName::findOne($this->request[$this->idParamName]);
+        $item = $modelName::find()
+            ->with($this->withDependencies)
+            ->where([$this->idParamName => $this->request[$this->idParamName]])
+            ->asArray()
+            ->one();
 
         if ($item === null) {
             throw new HttpException(404, $modelName . ' не найден');
         }
 
-        return $item->toArray();
+        $item = $this->performAfterGetActions($item);
+
+        return $item;
+    }
+
+    protected function performAfterGetActions($item)
+    {
+        return $item;
     }
 
     public function actionSave()
@@ -191,10 +203,20 @@ class JsonController extends BaseController
             $item = $modelName::findOne($this->request[$this->idParamName]);
 
             if ($item === null) {
-                throw new HttpException(404, $this->modelName . ' не найден');
+                if ($this->throwExceptionOnEmptyItemInSave) {
+                    throw new HttpException(404, $this->modelName . ' не найден');
+                } else {
+                    if (!\Yii::$app->user->can($this->createPermission)) {
+                        throw new ForbiddenHttpException('Access denied');
+                    }
+
+                    $item = $modelName::create();
+                    $result['log'] = ['data_before' => []];
+                }
+            } else {
+                $result['log'] = ['data_before' => self::getDataForLog($item)];
             }
 
-            $result['log'] = ['data_before' => self::getDataForLog($item)];
         } else {
             if (!\Yii::$app->user->can($this->createPermission)) {
                 throw new ForbiddenHttpException('Access denied');
@@ -212,6 +234,8 @@ class JsonController extends BaseController
                 throw new FormValidationException($item);
             }
 
+            $this->performAfterSaveActions($item, $this->request);
+
             $transaction->commit();
         } finally {
             if ($transaction->getIsActive())
@@ -221,6 +245,11 @@ class JsonController extends BaseController
         $result['log']['data_after'] = self::getDataForLog($item);
 
         return $result;
+    }
+
+    protected function performAfterSaveActions($item, $request)
+    {
+        // do_nothing
     }
 
     public function actionDelete()

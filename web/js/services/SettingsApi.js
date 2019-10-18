@@ -32,9 +32,9 @@ function basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function (id) {
+        delete: function (data) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', data);
         }
     };
 };
@@ -46,10 +46,20 @@ app.factory('Acl', function ($q, ApiLoader, $rootScope) {
     return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
 });
 
-app.factory('SettingsList', function (Acl) {
+app.factory('Role', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/settings/role/';
+    var list = undefined;
+    var promise = undefined;
+    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+});
+
+app.factory('SettingsList', function (Acl, Role) {
     return {
         acl: function () {
             return Acl.list();
+        },
+        role: function () {
+            return Role.list();
         }
     };
 });

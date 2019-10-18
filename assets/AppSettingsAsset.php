@@ -20,6 +20,8 @@ class AppSettingsAsset extends AssetBundle
         'js/controllers/settings/ActionLogList.js',
         'js/controllers/settings/ActionLogItemView.js',
         'js/controllers/settings/AclList.js',
+        'js/controllers/settings/RoleEdit.js',
+        'js/controllers/settings/RoleList.js',
     ];
 
     public $templates = [
@@ -27,5 +29,7 @@ class AppSettingsAsset extends AssetBundle
         'templates/settings/action_log_list.html',
         'templates/settings/action_log_item_view.html',
         'templates/settings/acl_list.html',
+        'templates/settings/role_edit.html',
+        'templates/settings/role_list.html',
     ];
 }

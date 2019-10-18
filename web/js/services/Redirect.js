@@ -563,5 +563,15 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             $cookies.settings_selected_page = 'aclList';
             return openTab(AclListCtrl, '/templates/settings/acl_list.html', {});
         },
+        roleList: function() {
+            $cookies.settings_selected_page = 'roleList';
+            return openTab(RoleListCtrl, '/templates/settings/role_list.html', {});
+        },
+        roleCreate: function() {
+            return openModal(RoleEditCtrl, '/templates/settings/role_edit.html', {name: null});
+        },
+        roleEdit: function(name) {
+            return openModal(RoleEditCtrl, '/templates/settings/role_edit.html', {name: name});
+        },
     };
 });

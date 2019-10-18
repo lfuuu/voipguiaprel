@@ -5,6 +5,10 @@ namespace app\models;
 class Role extends \yii\db\ActiveRecord
 {
     const ITEM_TYPE_ROLE = 1;
+
+    public $_subitems = [
+        'role_acl' => 'getRoleAcl',
+    ];
     
     public function __construct(array $config = [])
     {
@@ -49,4 +53,11 @@ class Role extends \yii\db\ActiveRecord
         return parent::find()->where('type = ' . self::ITEM_TYPE_ROLE);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoleAcl()
+    {
+        return $this->hasMany(RoleAcl::className(), ['parent' => 'name'])->orderBy('child');
+    }
 }
