@@ -30,7 +30,7 @@
             <div class="col-sm-6">
                 <select ui-select2 style="width: 100%" tags="true" placeholder="Транк" ng-model="item.src_trunk_name" required>
                     <option value="">-- Выберите --</option>
-                    <option ng-repeat="trunk in trunkList" value="{{trunk.trunk_name}}">{{trunk.trunk_name}}</option>
+                    <option ng-repeat="trunk in trunkList" value="{{trunk.trunk_name}}">{{trunk.name}}</option>
                 </select>
             </div>
             <div class="col-sm-4">
@@ -46,7 +46,7 @@
             <div class="col-sm-6">
                 <select ui-select2 style="width: 100%" tags="true" placeholder="Транк" ng-model="item.dst_trunk_name">
                     <option value="">-- Выберите --</option>
-                    <option ng-repeat="trunk in trunkList" value="{{trunk.trunk_name}}">{{trunk.trunk_name}}</option>
+                    <option ng-repeat="trunk in trunkList" value="{{trunk.trunk_name}}">{{trunk.name}}</option>
                 </select>
             </div>
         </div>
