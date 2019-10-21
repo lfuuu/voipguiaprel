@@ -60,7 +60,28 @@ app.factory('CamelRouteTable', function ($q, ApiLoader, $rootScope) {
     return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
 });
 
-app.factory('CamelList', function (CamelTrunk, CamelGt, CamelRouteTable) {
+app.factory('CamelTestGroup', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/camel/test-group/';
+    var list = undefined;
+    var promise = undefined;
+    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+});
+
+app.factory('CamelTestAuth', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/camel/test-auth/';
+    var list = undefined;
+    var promise = undefined;
+    var functions = basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+
+    functions.result = function (id) {
+        list = undefined;
+        return ApiLoader.post(url + 'result', {id: id});
+    };
+
+    return functions;
+});
+
+app.factory('CamelList', function (CamelTrunk, CamelGt, CamelRouteTable, CamelTestGroup) {
     return {
         trunk: function () {
             return CamelTrunk.list();
@@ -70,6 +91,12 @@ app.factory('CamelList', function (CamelTrunk, CamelGt, CamelRouteTable) {
         },
         routeTable: function () {
             return CamelRouteTable.list();
+        },
+        testGroup: function () {
+            return CamelTestGroup.list();
+        },
+        testAuth: function () {
+            return CamelTestAuth.list();
         }
     };
 });

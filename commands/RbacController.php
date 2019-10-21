@@ -164,6 +164,15 @@ class RbacController extends Controller {
         ['name' => 'camel_route_table_create', 'description' => 'Создание Camel таблицы маршрутизации'],
         ['name' => 'camel_route_table_edit', 'description' => 'Редактирование Camel таблицы маршрутизации'],
         ['name' => 'camel_route_table_delete', 'description' => 'Удаление Camel таблицы маршрутизации'],
+        ['name' => 'camel_test_group_list', 'description' => 'Просмотр списка Camel групп тестов'],
+        ['name' => 'camel_test_group_create', 'description' => 'Создание Camel группы тестов'],
+        ['name' => 'camel_test_group_edit', 'description' => 'Редактирование Camel группы тестов'],
+        ['name' => 'camel_test_group_delete', 'description' => 'Удаление Camel группы тестов'],
+        ['name' => 'camel_test_auth_list', 'description' => 'Просмотр списка Camel тестов маршрутизации'],
+        ['name' => 'camel_test_auth_create', 'description' => 'Создание Camel теста маршрутизации'],
+        ['name' => 'camel_test_auth_edit', 'description' => 'Редактирование Camel теста маршрутизации'],
+        ['name' => 'camel_test_auth_delete', 'description' => 'Удаление Camel теста маршрутизации'],
+        ['name' => 'server_ocs_list', 'description' => 'Просмотр списка серверов OCS'],
     ];
     
     private static $_roles = [
@@ -252,7 +261,9 @@ class RbacController extends Controller {
         ['role' => 'admin_camel', 'permissions' => [
             'camel_trunk_list', 'camel_trunk_create', 'camel_trunk_edit', 'camel_trunk_delete',
             'camel_gt_list', 'camel_gt_create', 'camel_gt_edit', 'camel_gt_delete',
-            'camel_route_table_list', 'camel_route_table_create', 'camel_route_table_edit', 'camel_route_table_delete'
+            'camel_route_table_list', 'camel_route_table_create', 'camel_route_table_edit', 'camel_route_table_delete',
+            'camel_test_group_list', 'camel_test_group_create', 'camel_test_group_edit', 'camel_test_group_delete',
+            'camel_test_auth_list', 'camel_test_auth_create', 'camel_test_auth_edit', 'camel_test_auth_delete',
         ]],
         ['role' => 'admin_settings', 'permissions' => [
             'acl_list', 'action_log_list'

@@ -29,6 +29,11 @@ class AppCamelAsset extends AssetBundle
         'js/controllers/camel/GtList.js',
         'js/controllers/camel/RouteTableEdit.js',
         'js/controllers/camel/RouteTableList.js',
+        'js/controllers/camel/TestGroupEdit.js',
+        'js/controllers/camel/TestGroupList.js',
+        'js/controllers/camel/TestAuthEdit.js',
+        'js/controllers/camel/TestAuthList.js',
+        'js/controllers/camel/TestAuthShowTest.js',
     ];
 
     public $templates = [
@@ -45,5 +50,10 @@ class AppCamelAsset extends AssetBundle
         'templates/camel/gt_list.html',
         'templates/camel/route_table_edit.html',
         'templates/camel/route_table_list.html',
+        'templates/camel/test_group_edit.html',
+        'templates/camel/test_group_list.html',
+        'templates/camel/test_auth_edit.html',
+        'templates/camel/test_auth_list.html',
+        'templates/camel/test_auth_show_test.html',
     ];
 }

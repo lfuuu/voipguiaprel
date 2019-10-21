@@ -573,5 +573,28 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         roleEdit: function(name) {
             return openModal(RoleEditCtrl, '/templates/settings/role_edit.html', {name: name});
         },
+        camelTestGroupList: function() {
+            $cookies.camel_selected_page = 'camelTestGroupList';
+            return openTab(CamelTestGroupListCtrl, '/templates/camel/test_group_list.html', {});
+        },
+        camelTestGroupCreate: function() {
+            return openModal(CamelTestGroupEditCtrl, '/templates/camel/test_group_edit.html', {id: null});
+        },
+        camelTestGroupEdit: function(id) {
+            return openModal(CamelTestGroupEditCtrl, '/templates/camel/test_group_edit.html', {id: id});
+        },
+        camelTestAuthList: function() {
+            $cookies.camel_selected_page = 'camelTestAuthList';
+            return openTab(CamelTestAuthListCtrl, '/templates/camel/test_auth_list.html', {});
+        },
+        camelTestAuthCreate: function() {
+            return openModal(CamelTestAuthEditCtrl, '/templates/camel/test_auth_edit.html', {id: null});
+        },
+        camelTestAuthEdit: function(id) {
+            return openModal(CamelTestAuthEditCtrl, '/templates/camel/test_auth_edit.html', {id: id});
+        },
+        camelTestAuthShowTest: function(id) {
+            return openModal(CamelTestAuthShowTestCtrl, '/templates/camel/test_auth_show_test.html', {id: id});
+        },
     };
 });

@@ -757,6 +757,16 @@ app.factory('Server', function ($q, ApiLoader) {
     };
 });
 
+app.factory('ServerOcs', function ($q, ApiLoader) {
+    var url = '/json/server-ocs/';
+
+    return {
+        list: function(data) {
+            return ApiLoader.post(url + 'list', data);
+        }
+    };
+});
+
 app.factory('FmcTrunk', function ($q, ApiLoader) {
     var url = '/json/fmc-trunk/';
 
@@ -1882,7 +1892,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
                               PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
                               MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-                              User) {
+                              User, ServerOcs) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -1937,6 +1947,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     server: function () {
       return Server.list();
+    },
+    serverOcs: function () {
+      return ServerOcs.list();
     },
     fmcTrunk: function () {
       return FmcTrunk.list();

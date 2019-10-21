@@ -420,7 +420,7 @@ class TestCallController extends JsonController
     
     public function actionDescend()
     {
-        if (!\Yii::$app->user->can('test_auth_list')) {
+        if (!\Yii::$app->user->can('test_call_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -438,7 +438,7 @@ class TestCallController extends JsonController
     
     public function actionClearCache()
     {
-        if (!\Yii::$app->user->can('test_auth_list')) {
+        if (!\Yii::$app->user->can('test_call_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
