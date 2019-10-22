@@ -155,7 +155,7 @@ class PricelistController extends BaseController
             "Pending date",
             "Status",
             "Effective date",
-            "Info"
+//            "Info"
         ];
         
         $currentRowNumber = 1;
@@ -182,21 +182,21 @@ class PricelistController extends BaseController
                     continue;
                 }
 
-                $apiParams = [
-                    'cmd' => 'annotatePricelistv2',
-                    'id' => $filterA['id']
-                ];
+//                $apiParams = [
+//                    'cmd' => 'annotatePricelistv2',
+//                    'id' => $filterA['id']
+//                ];
+//
+//                $request = $apiUrl . http_build_query($apiParams);
+//
+//                $response = file_get_contents($request);
+//
+//                if (empty($response)) {
+//                    continue;
+//                }
+//
+//                $processedResponse = $this->processAnnotateResponse($response);
 
-                $request = $apiUrl . http_build_query($apiParams);
-
-                $response = file_get_contents($request);
-
-                if (empty($response)) {
-                    continue;
-                }
-
-                $processedResponse = $this->processAnnotateResponse($response);
-                
                 if (isset($filterA['nnp_country_name_eng'])) {
                     $countryNames = array_merge($countryNames, explode(', ', $filterA['nnp_country_name_eng']));
                 }
@@ -296,11 +296,11 @@ class PricelistController extends BaseController
                     $filterAEndRowNumber)
                     ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
-                $sheet->mergeCellsByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $minColumnNumber + 10,
-                    $filterAEndRowNumber);
-                $sheet->setCellValueByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $processedResponse);
-                $sheet->getStyleByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $minColumnNumber + 10,
-                    $filterAEndRowNumber)->getAlignment()->setVertical(Alignment::VERTICAL_TOP);
+//                $sheet->mergeCellsByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $minColumnNumber + 10,
+//                    $filterAEndRowNumber);
+//                $sheet->setCellValueByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $processedResponse);
+//                $sheet->getStyleByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $minColumnNumber + 10,
+//                    $filterAEndRowNumber)->getAlignment()->setVertical(Alignment::VERTICAL_TOP);
             }
         }
 

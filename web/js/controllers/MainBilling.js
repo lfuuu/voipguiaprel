@@ -35,6 +35,7 @@ app.controller('MainBillingCtrl', function ($rootScope, $scope, $cookies, $timeo
     } else {
         for (var permissionName in $rootScope.userPermissions) {
             if ($rootScope.billingPermissions.indexOf(permissionName) !== -1 &&
+                !permissionName.includes('create') && !permissionName.includes('edit') &&
                 permissionName.includes('list') && permissionName !== 'user_list' &&
                 permissionName !== 'role_list' && permissionName !== 'acl_list') {
                 funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
