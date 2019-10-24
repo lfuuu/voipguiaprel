@@ -3,6 +3,9 @@
         <h4>{{server.name}} ({{server.id}})</h4>
     </div>
     <div style="position: fixed; left: 15px; bottom: 0; top: 100px; width: 230px; overflow-y: auto">
+        <div ng-if="userPermissions['camel_server_edit']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['camel_server_edit']" ng-click="Redirect.camelSettingsEdit()" ng-class="{active:tabs.isController('CamelSettingsEditCtrl')}">Общие настройки</a>
+        </div>
         <div ng-if="userPermissions['camel_gt_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['camel_gt_list']" ng-click="Redirect.camelGtList()" ng-class="{active:tabs.isController('CamelGtListCtrl')}">Справочник GT</a>
         </div>

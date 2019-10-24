@@ -178,6 +178,8 @@ class RbacController extends Controller {
         ['name' => 'camel_outcome_create', 'description' => 'Создание Camel Outcome'],
         ['name' => 'camel_outcome_edit', 'description' => 'Редактирование Camel Outcome'],
         ['name' => 'camel_outcome_delete', 'description' => 'Удаление Camel Outcome'],
+        ['name' => 'camel_server_list', 'description' => 'Просмотр списка Camel серверов'],
+        ['name' => 'camel_server_edit', 'description' => 'Редактирование Camel сервера'],
     ];
 
     private static $_roles = [
@@ -270,6 +272,7 @@ class RbacController extends Controller {
             'camel_test_group_list', 'camel_test_group_create', 'camel_test_group_edit', 'camel_test_group_delete',
             'camel_test_auth_list', 'camel_test_auth_create', 'camel_test_auth_edit', 'camel_test_auth_delete',
             'camel_outcome_list', 'camel_outcome_create', 'camel_outcome_edit', 'camel_outcome_delete',
+            'camel_server_list', 'camel_server_edit'
         ]],
         ['role' => 'admin_settings', 'permissions' => [
             'acl_list', 'action_log_list'

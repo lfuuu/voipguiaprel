@@ -36,6 +36,7 @@ class AppCamelAsset extends AssetBundle
         'js/controllers/camel/TestAuthShowTest.js',
         'js/controllers/camel/OutcomeEdit.js',
         'js/controllers/camel/OutcomeList.js',
+        'js/controllers/camel/SettingsEdit.js',
     ];
 
     public $templates = [
@@ -59,5 +60,6 @@ class AppCamelAsset extends AssetBundle
         'templates/camel/test_auth_show_test.html',
         'templates/camel/outcome_edit.html',
         'templates/camel/outcome_list.html',
+        'templates/camel/settings_edit.html',
     ];
 }

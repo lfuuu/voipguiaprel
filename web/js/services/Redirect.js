@@ -616,5 +616,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         camelOutcomeEdit: function(id) {
             return openModal(CamelOutcomeEditCtrl, '/templates/camel/outcome_edit.html', {id: id});
         },
+        camelSettingsEdit: function() {
+            return openModal(CamelSettingsEditCtrl, '/templates/camel/settings_edit.html', {});
+        },
     };
 });

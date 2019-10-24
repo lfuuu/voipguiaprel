@@ -4,10 +4,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     var STATUS_ERROR = 'ERROR';
 
     $scope.TYPE_ID_MANUAL = 1;
-    $scope.TYPE_ID_LOCAL = 2;
-    $scope.TYPE_ID_ROSSVYAZ = 3;
     $scope.TYPE_ID_CSV = 4;
-    $scope.TYPE_ID_EXPENSIVE = 5;
     $scope.TYPE_ID_NNP = 6;
     $scope.TYPE_ID_7800 = 7;
     $scope.TYPE_ID_DID_ON_VPBX = 8;
@@ -16,6 +13,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     $scope.TYPE_ID_ROAMING = 11;
     $scope.TYPE_ID_VOIP_REGISTRY = 12;
     $scope.TYPE_ID_VOIP_NUMBER = 13;
+    $scope.TYPE_ID_GT = 14;
 
     $scope.NNP_MODE_DIRECTION = 1;
     $scope.NNP_MODE_FILTER = 2;
@@ -32,27 +30,10 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     var cityLoadComplete = false;
     var operatorLoadComplete = false;
     var ndcLoadComplete = false;
+    var gtRegionLoadComplete = false;
+    var gtOperatorLoadComplete = false;
 
     var watchers = {
-        rossvyaz_country_id: function (newValue, oldValue) {
-            if (newValue != oldValue) {
-                $scope.item.rossvyaz_operator_id = null;
-                $scope.item.rossvyaz_region_id = null;
-                $scope.item.rossvyaz_city_id = null;
-
-                $scope.cities = null;
-            }
-        },
-        rossvyaz_region_id: function (newValue, oldValue) {
-            if (newValue != oldValue) {
-                $scope.item.rossvyaz_city_id = null;
-                $scope.cities = null;
-                Billing.cities($scope.item).then(function (data) {
-                    $scope.cities = data;
-                    $scope.cityList = data;
-                });
-            }
-        },
         nnp_country: function (newValue, oldValue) {
             regionLoadComplete = false;
             operatorLoadComplete = false;
@@ -102,6 +83,41 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                     if (countryLoadComplete) {
                         $scope.item.nnp_ndc = ndc;
                         ndcLoadComplete = true;
+                    }
+                });
+            }
+        },
+        gt_country: function (newValue, oldValue) {
+            gtRegionLoadComplete = false;
+            gtOperatorLoadComplete = false;
+            if (!newValue || newValue.length == 0) {
+                $scope.item.gt_region = null;
+                $scope.item.gt_operator = null;
+            }
+
+            if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
+                $scope.gtRegionList = null;
+
+                if (countryLoadComplete) {
+                    var region = $scope.item.gt_region;
+                    var operator = $scope.item.gt_operator;
+                }
+
+                Nnp.regionList({country_code: newValue}).then(function (data) {
+                    $scope.gtRegionList = data;
+
+                    if (countryLoadComplete) {
+                        $scope.item.gt_region = region;
+                        gtRegionLoadComplete = true;
+                    }
+                });
+
+                Nnp.operatorList({country_code: newValue}).then(function (data) {
+                    $scope.gtOperatorList = data;
+
+                    if (countryLoadComplete) {
+                        $scope.item.gt_operator = operator;
+                        gtOperatorLoadComplete = true;
                     }
                 });
             }
@@ -225,29 +241,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 $scope.saveEnabled = true;
             }
 
-            if ($scope.item.type_id == $scope.TYPE_ID_LOCAL) {
-                var smezhnost_list = [];
-                for (var i in $scope.item.smezhnost_list) {
-                    smezhnost_list.push({network_type_id: $scope.item.smezhnost_list[i]})
-                }
-                $scope.item.smezhnost_list = smezhnost_list;
-                $scope.saveEnabled = true;
-            }
-
-            if ($scope.item.type_id == $scope.TYPE_ID_ROSSVYAZ) {
-                if ($scope.item.rossvyaz_region_id) {
-                    Billing.cities($scope.item).then(function (data) {
-                        $scope.cities = data;
-                        $scope.cityList = data;
-                        $scope.saveEnabled = true;
-                    });
-                } else {
-                    $scope.saveEnabled = true;
-                }
-            }
-
-            if ($scope.item.type_id == $scope.TYPE_ID_EXPENSIVE
-                || $scope.item.type_id == $scope.TYPE_ID_7800
+            if ($scope.item.type_id == $scope.TYPE_ID_7800
                 || $scope.item.type_id == $scope.TYPE_ID_DID_ON_VPBX
                 || $scope.item.type_id == $scope.TYPE_ID_FMC
                 || $scope.item.type_id == $scope.TYPE_ID_PARTED_NUM
@@ -258,6 +252,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             $scope.setNnpFields(data);
             $scope.setVoipRegistryFields(data);
             $scope.setVoipNumberFields(data);
+            $scope.setGtFields(data);
 
             if ($scope.item.type_id == $scope.TYPE_ID_CSV) {
                 setTimeout(function () {
@@ -281,14 +276,12 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 $scope.saveEnabled = true;
             }
 
-            $scope.$watch('item.rossvyaz_country_id', watchers.rossvyaz_country_id);
-            $scope.$watch('item.rossvyaz_region_id', watchers.rossvyaz_region_id);
-
             $scope.$watch('item.nnp_country', watchers.nnp_country);
             $scope.$watch('item.nnp_region', watchers.nnp_region);
             $scope.$watch('item.registry_country', watchers.registry_country);
             $scope.$watch('item.number_country', watchers.number_country);
             $scope.$watch('item.number_region', watchers.number_region);
+            $scope.$watch('item.gt_country', watchers.gt_country);
         });
 
         Prefixlist.findUsagesInNumbers({id: params.id}).then(function (data) {
@@ -303,7 +296,6 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             server_id: $scope.server.id,
             manual_list: [],
             smezhnost_list: [],
-            rossvyaz_operators: [],
             exclude_operators: false,
             nnp_destination: null,
             nnp_country: null,
@@ -326,14 +318,12 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
 
         $scope.saveEnabled = true;
 
-        $scope.$watch('item.rossvyaz_country_id', watchers.rossvyaz_country_id);
-        $scope.$watch('item.rossvyaz_region_id', watchers.rossvyaz_region_id);
-
         $scope.$watch('item.nnp_country', watchers.nnp_country);
         $scope.$watch('item.nnp_region', watchers.nnp_region);
         $scope.$watch('item.registry_country', watchers.registry_country);
         $scope.$watch('item.number_country', watchers.number_country);
         $scope.$watch('item.number_region', watchers.number_region);
+        $scope.$watch('item.gt_country', watchers.gt_country);
     }
 
     Billing.countries().then(function (data) {
@@ -414,19 +404,6 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
 
     $scope.removeSmezhnost = function (index) {
         $scope.item.smezhnost_list.splice(index, 1);
-    };
-
-    $scope.addOperator = function () {
-        Redirect.selectRossvyazOperator().then(function (item) {
-            $scope.item.rossvyaz_operators.push({
-                id: item.id,
-                name: item.name
-            });
-        });
-    };
-
-    $scope.removeOperator = function (index) {
-        $scope.item.rossvyaz_operators.splice(index, 1);
     };
 
     $scope.prefixlistNnpCalculate = function (id) {
@@ -523,12 +500,6 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             }
         }
 
-        if ($scope.item.type_id == $scope.TYPE_ID_LOCAL) {
-            for (var i in $scope.item.smezhnost_list) {
-                data.smezhnost_list.push($scope.item.smezhnost_list[i].network_type_id)
-            }
-        }
-
         if ($scope.item.type_id == $scope.TYPE_ID_NNP) {
             if ($scope.nnpMode == $scope.NNP_MODE_DIRECTION) {
                 delete data.nnp_country;
@@ -552,13 +523,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
         }
 
         Prefixlist.save(data).then(function (result) {
-            // if (result && result.id && $scope.item.id && ($scope.item.type_id == 6 || $scope.item.type_id == 7 || $scope.item.type_id == 8)) {
-            //     Prefixlist.generatePrefixlist($scope.item.id, $scope.item.type_id).then(function (data) {
-            //         $modalInstance.close();
-            //     });
-            // } else {
             $modalInstance.close();
-            // }
         });
     };
 
@@ -760,6 +725,40 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                         } else {
                             $scope.saveEnabled = true;
                         }
+                    });
+                } else {
+                    $scope.saveEnabled = true;
+                }
+            } catch (error) {
+                $scope.nnpDataParseError = true;
+            }
+        }
+    };
+
+    $scope.setGtFields = function (data) {
+        if ($scope.item.type_id == $scope.TYPE_ID_GT) {
+            try {
+                var filterData = $.parseJSON($scope.item.nnp_filter_json);
+
+                $scope.item.gt_country = filterData.country_code;
+                $scope.item.gt_is_exclude_country = filterData.exclude_country;
+                $scope.item.gt_is_exclude_region = filterData.exclude_region;
+                $scope.item.gt_is_exclude_operators = filterData.exclude_operators;
+
+                if ($scope.item.gt_country) {
+                    var regionList = Nnp.regionList({country_code: $scope.item.gt_country}).then(function (data) {
+                        gtRegionLoadComplete = true;
+                        $scope.gtRegionList = data;
+                        $scope.item.gt_region = filterData.region_id;
+                    });
+
+                    var operatorList = Nnp.operatorList({country_code: $scope.item.gt_country}).then(function (data) {
+                        $scope.gtOperatorList = data;
+                        $scope.item.gt_operator = filterData.operator_id;
+                    });
+
+                    $q.all([regionList, operatorList]).then(function () {
+                        $scope.saveEnabled = true;
                     });
                 } else {
                     $scope.saveEnabled = true;

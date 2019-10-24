@@ -32,6 +32,7 @@ use yii\db\Query;
  * @property bool $normalization_disabled
  * @property string $object_comment
  * @property bool $sw_share_with_camel
+ * @property bool $strong_matching
  *
  * @property PrefixlistPrefix $prefixlistPrefix
  */
@@ -51,7 +52,8 @@ class Prefixlist extends \yii\db\ActiveRecord
     const PREFIXLIST_TYPE_ROAMING = 11; // Роуминг
     const PREFIXLIST_TYPE_VOIP_REGISTRY = 12; // Реестр номеров
     const PREFIXLIST_TYPE_VOIP_NUMBER = 13; // Номера
-    
+    const PREFIXLIST_TYPE_GT = 14; // GT
+
     public $_subitems = [
         'prefixlistPrefix' => 'getPrefixlistPrefix',
         'prefixlistPrefixPrepare' => 'getPrefixlistPrefixPrepare'
@@ -72,7 +74,7 @@ class Prefixlist extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string', 'max' => 50],
-            [['sw_shared', 'sw_share_with_camel'], 'boolean'],
+            [['sw_shared', 'sw_share_with_camel', 'strong_matching'], 'boolean'],
             [['type_id'], 'integer'],
             [['rossvyaz_country', 'rossvyaz_region', 'rossvyaz_city'], 'string', 'max' => 100],
             [['rossvyaz_country_id', 'rossvyaz_region_id', 'rossvyaz_city_id', 'network_config_id'], 'integer'],
@@ -448,6 +450,52 @@ class Prefixlist extends \yii\db\ActiveRecord
             'fmc_trunk' => isset($input['fmc_trunk']) ? $input['fmc_trunk'] : ''
         ];
         
+        $this->nnp_filter_json = Json::encode($filters);
+        return $this;
+    }
+
+    /**
+     * @param array $input
+     * @return $this
+     */
+    public function setGtFilters(array $input)
+    {
+        $token = null;
+
+        if (!empty($this->nnp_filter_json)) {
+            $nnpFilter = json_decode($this->nnp_filter_json, true);
+
+            if (!empty($nnpFilter['token'])) {
+                $token = $nnpFilter['token'];
+            }
+        }
+
+        $filters = [
+            'country_code' => isset($input['gt_country']) ? $input['gt_country'] : '',
+            'region_id' => isset($input['gt_region']) ? $input['gt_region'] : '',
+            'operator_id' => isset($input['gt_operator']) ? $input['gt_operator'] : '',
+            'status' => isset($input['number_status']) ? $input['number_status'] : '',
+            'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
+        ];
+
+        if (isset($input['gt_country']) && count($input['gt_country'])) {
+            $filters['country_code'] = $input['gt_country'];
+            $filters['exclude_country'] = array_key_exists('gt_is_exclude_country', $input) ?
+                $input['gt_is_exclude_country'] : '';
+        }
+
+        if (isset($input['gt_region']) && count($input['gt_region'])) {
+            $filters['region_id'] = $input['gt_region'];
+            $filters['exclude_region'] = array_key_exists('gt_is_exclude_region', $input) ?
+                $input['gt_is_exclude_region'] : '';
+        }
+
+        if (isset($input['gt_operator']) && count($input['gt_operator'])) {
+            $filters['operator_id'] = $input['gt_operator'];
+            $filters['exclude_operators'] = array_key_exists('gt_is_exclude_operators', $input) ?
+                $input['gt_is_exclude_operators'] : '';
+        }
+
         $this->nnp_filter_json = Json::encode($filters);
         return $this;
     }

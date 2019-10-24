@@ -27,10 +27,7 @@
                 <div class="col-sm-10">
                     <div class="btn-group">
                         <button type="button" class="btn {{item.type_id == TYPE_ID_MANUAL ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_MANUAL)">Вручную</button>
-                        <button type="button" class="btn {{item.type_id == TYPE_ID_LOCAL ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_LOCAL)">Местные префиксы</button>
-                        <button type="button" class="btn {{item.type_id == TYPE_ID_ROSSVYAZ ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_ROSSVYAZ)">РосСвязь</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_CSV ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_CSV)">CSV</button>
-                        <button type="button" class="btn {{item.type_id == TYPE_ID_EXPENSIVE ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_EXPENSIVE)">Дорогие коды</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_NNP ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_NNP)">ННП</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_7800 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_7800)">7800</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_DID_ON_VPBX ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_DID_ON_VPBX)">Did на ВАТС</button>
@@ -39,38 +36,57 @@
                         <button type="button" class="btn {{item.type_id == TYPE_ID_ROAMING ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_ROAMING)">Роуминг</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_VOIP_REGISTRY ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_VOIP_REGISTRY)">Реестр номеров</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_VOIP_NUMBER ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_VOIP_NUMBER)">Номера</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_GT ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_GT)">GT</button>
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="col-sm-2 control-label">Доступен на хабе</label>
-                <div class="col-sm-10">
-                    <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
-                        <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
-                        <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                <div class="col-sm-4">
+                    <label class="col-sm-6 control-label">Доступен на хабе</label>
+                    <div class="col-sm-6">
+                        <div class="btn-group" ng-click="item.sw_shared = !item.sw_shared">
+                            <button type="button" class="btn btn-sm {{item.sw_shared ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.sw_shared ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
                     </div>
                 </div>
+
+                <div class="col-sm-4">
+                    <label class="col-sm-6 control-label">Доступен на Camel</label>
+                    <div class="col-sm-6">
+                        <div class="btn-group" ng-click="item.sw_share_with_camel = !item.sw_share_with_camel">
+                            <button type="button" class="btn btn-sm {{item.sw_share_with_camel ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.sw_share_with_camel ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4"></div>
             </div>
 
             <div class="form-group">
-                <label class="col-sm-2 control-label">Доступен на Camel</label>
-                <div class="col-sm-10">
-                    <div class="btn-group" ng-click="item.sw_share_with_camel = !item.sw_share_with_camel">
-                        <button type="button" class="btn btn-sm {{item.sw_share_with_camel ? 'btn-success active' : 'btn-default'}}">Да</button>
-                        <button type="button" class="btn btn-sm {{!item.sw_share_with_camel ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                <div class="col-sm-4">
+                    <label class="col-sm-6 control-label">Глобальный</label>
+                    <div class="col-sm-6">
+                        <div class="btn-group" ng-click="item.is_global = !item.is_global">
+                            <button type="button" class="btn btn-sm {{item.is_global ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.is_global ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Глобальный</label>
-                <div class="col-sm-10">
-                    <div class="btn-group" ng-click="item.is_global = !item.is_global">
-                        <button type="button" class="btn btn-sm {{item.is_global ? 'btn-success active' : 'btn-default'}}">Да</button>
-                        <button type="button" class="btn btn-sm {{!item.is_global ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                <div class="col-sm-4">
+                    <label class="col-sm-6 control-label">Точное совпадение</label>
+                    <div class="col-sm-6">
+                        <div class="btn-group" ng-click="item.strong_matching = !item.strong_matching">
+                            <button type="button" class="btn btn-sm {{item.strong_matching ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.strong_matching ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
                     </div>
                 </div>
+
+                <div class="col-sm-4"></div>
             </div>
 
             <div class="form-group" ng-if="item.id">
@@ -114,125 +130,13 @@
                             </tr>
                             <tr ng-repeat="line in item.manual_list">
                                 <td width="100%">
-                                    <input class="form-control input-sm" ng-model="line.prefix" ng-pattern="/^\d*(\[\d+\]|)+$/" required>
+                                    <input class="form-control input-sm" ng-model="line.prefix" ng-pattern="/^[\dABCDEF]*(\[[\dABCDEF]+\]|)+$/" required>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePrefix($index)"></button>
                                 </td>
                             </tr>
                         </table>
-                    </div>
-                </div>
-            </div>
-
-            <div ng-if="item.type_id == TYPE_ID_LOCAL">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Местные сети</label>
-                    <div class="col-sm-10">
-                        <select-box list="network" model="item.network_config_id" placeholder="Выберите местную сеть" required="true"></select-box>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Настройки смежности</label>
-                    <div class="col-sm-10">
-                        <table class="table table-striped">
-                            <tr>
-                                <td colspan="2">
-                                    <button type="button" class="btn btn-success btn-sm" ng-click="addSmezhnost()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
-                                </td>
-                            </tr>
-                            <tr ng-repeat="line in item.smezhnost_list">
-                                <td width="100%">
-                                    <select ui-select2 ng-model="line.network_type_id" ng-required="true" style="width: 100%" >
-                                        <option value="">-- Выберите... --</option>
-                                        <option ng-repeat="networkType in networkTypes" value="{{networkType.id}}">{{networkType.name}}</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeSmezhnost($index)"></button>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div ng-if="item.type_id == TYPE_ID_ROSSVYAZ">
-                <div class="form-group">
-                    <span class="col-sm-2 control-label"></span>
-                    <div class="col-sm-10">
-                        <div class="btn-group">
-                            <button type="button" class="btn {{item.rossvyaz_mob !== true && item.rossvyaz_mob !== false ? 'btn-primary active' : 'btn-default'}}" ng-click="item.rossvyaz_mob = null">Любой</button>
-                            <button type="button" class="btn {{item.rossvyaz_mob === true ? 'btn-primary active' : 'btn-default'}}" ng-click="item.rossvyaz_mob = true">Мобильный</button>
-                            <button type="button" class="btn {{item.rossvyaz_mob === false ? 'btn-primary active' : 'btn-default'}}" ng-click="item.rossvyaz_mob = false">Стационарный</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Страна</label>
-                    <div class="col-sm-10">
-                        <select ui-select2 ng-model="item.rossvyaz_country_id" style="width: 100%" >
-                            <option value="">-- Выберите страну --</option>
-                            <option ng-repeat="country in countries" value="{{country.id}}">{{country.name}}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group" ng-if="item.rossvyaz_country_id == 7">
-                    <label class="col-sm-2 control-label">Регион</label>
-                    <div class="col-sm-10">
-                        <select ui-select2 ng-model="item.rossvyaz_region_id" style="width: 100%" >
-                            <option value="">-- Выберите регион --</option>
-                            <option ng-repeat="region in regions" value="{{region.id}}">{{region.name}}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group" ng-if="item.rossvyaz_region_id">
-                    <label class="col-sm-2 control-label">Город</label>
-                    <div class="col-sm-10">
-                        <select ui-select2 ng-model="item.rossvyaz_city_id" style="width: 100%" >
-                            <option value="">-- Выберите город --</option>
-                            <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Оператор</label>
-                    <div class="col-sm-10">
-                        <div class="form-group">
-                            <span class="col-sm-2 control-label"></span>
-                            <div class="col-sm-10">
-                                <div class="btn-group">
-                                    <button type="button" class="btn {{item.exclude_operators === false ? 'btn-primary active' : 'btn-default'}}" ng-click="item.exclude_operators = false">Только выбранные</button>
-                                    <button type="button" class="btn {{item.exclude_operators === true ? 'btn-danger active' : 'btn-default'}}" ng-click="item.exclude_operators = true">Все кроме выбранных</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <table class="table table-striped">
-                            <tbody>
-                            <tr ng-repeat="line in item.rossvyaz_operators">
-                                <td width="100%">
-                                    {{line.name}}
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeOperator($index)"></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="2">
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="addOperator()"><i class="glyphicon glyphicon-plus"></i> Оператор</button>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
-
                     </div>
                 </div>
             </div>
@@ -738,6 +642,53 @@
                     <div class="col-sm-10">
                         <select-box list="fmcTrunk" model="item.fmc_trunk" placeholder="Выберите"
                                     required="false" default="Не установлено"></select-box>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="item.type_id == TYPE_ID_GT">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Страна</label>
+                    <div class="col-sm-6">
+                        <select ui-select2 ng-model="item.gt_country" multiple="multiple" style="width: 100%" >
+                            <option ng-repeat="country in countryList" value="{{::country.code}}">{{::country.name_rus}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="btn-group">
+                            <button type="button" class="btn {{!item.gt_is_exclude_country ? 'btn-primary active' : 'btn-default'}}" ng-click="item.gt_is_exclude_country = false">Выбранные</button>
+                            <button type="button" class="btn {{item.gt_is_exclude_country ? 'btn-danger active' : 'btn-default'}}" ng-click="item.gt_is_exclude_country = true">Кроме выбранных</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.gt_country">
+                    <label class="col-sm-2 control-label">Регион</label>
+                    <div class="col-sm-6">
+                        <select ui-select2 ng-model="item.gt_region" multiple="multiple" style="width: 100%" >
+                            <option ng-repeat="region in gtRegionList" value="{{::region.id}}">{{::region.name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="btn-group">
+                            <button type="button" class="btn {{!item.gt_is_exclude_region ? 'btn-primary active' : 'btn-default'}}" ng-click="item.gt_is_exclude_region = false">Выбранные</button>
+                            <button type="button" class="btn {{item.gt_is_exclude_region ? 'btn-danger active' : 'btn-default'}}" ng-click="item.gt_is_exclude_region = true">Кроме выбранных</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="item.gt_country">
+                    <label class="col-sm-2 control-label">Оператор</label>
+                    <div class="col-sm-6">
+                        <select ui-select2 ng-model="item.gt_operator" multiple="multiple" style="width: 100%" >
+                            <option ng-repeat="operator in gtOperatorList" value="{{::operator.id}}">{{::operator.name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="btn-group">
+                            <button type="button" class="btn {{!item.gt_is_exclude_operators ? 'btn-primary active' : 'btn-default'}}" ng-click="item.gt_is_exclude_operators = false">Выбранные</button>
+                            <button type="button" class="btn {{item.gt_is_exclude_operators ? 'btn-danger active' : 'btn-default'}}" ng-click="item.gt_is_exclude_operators = true">Кроме выбранных</button>
+                        </div>
                     </div>
                 </div>
             </div>

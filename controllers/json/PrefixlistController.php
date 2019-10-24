@@ -192,6 +192,10 @@ class PrefixlistController extends JsonController
             $prefixlist->setVoipNumberFilters($this->request);
         }
 
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_GT) {
+            $prefixlist->setGtFilters($this->request);
+        }
+
         $transaction = Prefixlist::getDb()->beginTransaction();
         try {
 

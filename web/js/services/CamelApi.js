@@ -88,7 +88,15 @@ app.factory('CamelOutcome', function ($q, ApiLoader, $rootScope) {
     return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
 });
 
-app.factory('CamelList', function (CamelTrunk, CamelGt, CamelRouteTable, CamelTestGroup, CamelTestAuth, CamelOutcome) {
+app.factory('CamelSettings', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/camel/settings/';
+    var list = undefined;
+    var promise = undefined;
+    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+});
+
+app.factory('CamelList', function (CamelTrunk, CamelGt, CamelRouteTable, CamelTestGroup, CamelTestAuth, CamelOutcome,
+                                   CamelSettings) {
     return {
         trunk: function (data) {
             return CamelTrunk.list(data);
@@ -107,6 +115,9 @@ app.factory('CamelList', function (CamelTrunk, CamelGt, CamelRouteTable, CamelTe
         },
         outcome: function (data) {
             return CamelOutcome.list(data);
+        },
+        settings: function (data) {
+            return CamelSettings.list(data);
         }
     };
 });
