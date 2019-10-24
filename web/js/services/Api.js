@@ -501,9 +501,9 @@ app.factory('RouteCase', function ($q, ApiLoader, $rootScope) {
 			list = undefined;
 			return ApiLoader.post(url + 'delete', {id: id});
 		},
-    findUsagesInOutcomes: function(id) {
-      return ApiLoader.post(url + 'find-usages-in-outcomes', {id: id});
-    }
+        findUsagesInOutcomes: function (id) {
+            return ApiLoader.post(url + 'find-usages-in-outcomes', {id: id});
+        }
 	};
 });
 
@@ -521,9 +521,10 @@ app.factory('Outcome', function ($q, ApiLoader, $rootScope) {
 		},
 		list: function(serverId) {
 			if (promise !== undefined) return promise;
-      if (!serverId) {
-        serverId = $rootScope.server.id;
-      }
+
+            if (!serverId) {
+                serverId = $rootScope.server.id;
+            }
 
 			var deferred = $q.defer();
 			if (list !== undefined) {
@@ -586,15 +587,10 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                     deferred.resolve(listA);
                     return deferred.promise;
                 } else {
-                    var data = {server_id: serverId};
+                    var data = {server_id: serverId, type_id: type};
                     ApiLoader.post(url + 'list', data)
                         .then(function (data) {
-                            listA = [];
-                            for (var i in data) {
-                                if (data[i].type_id == 1) {
-                                    listA.push(data[i]);
-                                }
-                            }
+                            listA = data;
                             promiseA = undefined;
                             deferred.resolve(listA);
                         }, function (data) {
@@ -612,15 +608,10 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                     deferred.resolve(listB);
                     return deferred.promise;
                 } else {
-                    var data = {server_id: serverId};
+                    var data = {server_id: serverId, type_id: type};
                     ApiLoader.post(url + 'list', data)
                         .then(function (data) {
-                            listB = [];
-                            for (var i in data) {
-                                if (data[i].type_id == 2) {
-                                    listB.push(data[i]);
-                                }
-                            }
+                            listB = data;
                             promiseB = undefined;
                             deferred.resolve(listB);
                         }, function (data) {
@@ -638,15 +629,10 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                     deferred.resolve(listC);
                     return deferred.promise;
                 } else {
-                    var data = {server_id: serverId};
+                    var data = {server_id: serverId, type_id: type};
                     ApiLoader.post(url + 'list', data)
                         .then(function (data) {
-                            listC = [];
-                            for (var i in data) {
-                                if (data[i].type_id == 3) {
-                                    listC.push(data[i]);
-                                }
-                            }
+                            listC = data;
                             promiseC = undefined;
                             deferred.resolve(listC);
                         }, function (data) {
@@ -1925,7 +1911,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
       return RouteCase.list();
     },
     outcome: function (serverId) {
-      return Outcome.list();
+      return Outcome.list(serverId);
     },
     number: function (type, serverId) {
       return Number.list(type, serverId);

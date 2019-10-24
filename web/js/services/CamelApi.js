@@ -6,7 +6,7 @@ function basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise) {
         get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        list: function () {
+        list: function (data) {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -14,7 +14,7 @@ function basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {};
+                data = data || {};
                 ApiLoader.post(url + 'list', data)
                     .then(function (data) {
                         list = data;
@@ -81,22 +81,32 @@ app.factory('CamelTestAuth', function ($q, ApiLoader, $rootScope) {
     return functions;
 });
 
-app.factory('CamelList', function (CamelTrunk, CamelGt, CamelRouteTable, CamelTestGroup) {
+app.factory('CamelOutcome', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/camel/outcome/';
+    var list = undefined;
+    var promise = undefined;
+    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+});
+
+app.factory('CamelList', function (CamelTrunk, CamelGt, CamelRouteTable, CamelTestGroup, CamelTestAuth, CamelOutcome) {
     return {
-        trunk: function () {
-            return CamelTrunk.list();
+        trunk: function (data) {
+            return CamelTrunk.list(data);
         },
-        gt: function () {
-            return CamelGt.list();
+        gt: function (data) {
+            return CamelGt.list(data);
         },
-        routeTable: function () {
-            return CamelRouteTable.list();
+        routeTable: function (data) {
+            return CamelRouteTable.list(data);
         },
-        testGroup: function () {
-            return CamelTestGroup.list();
+        testGroup: function (data) {
+            return CamelTestGroup.list(data);
         },
-        testAuth: function () {
-            return CamelTestAuth.list();
+        testAuth: function (data) {
+            return CamelTestAuth.list(data);
+        },
+        outcome: function (data) {
+            return CamelOutcome.list(data);
         }
     };
 });

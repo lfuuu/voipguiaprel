@@ -11,7 +11,7 @@ var CamelRouteTableListCtrl = function($scope, CamelRouteTable, Redirect, $windo
     $scope.init = function(tab) {
         if (tab) tab.title = 'Таблицы маршрутизации';
 
-        CamelRouteTable.read().then(function(data){
+        CamelRouteTable.read({server_id: $scope.server.id}).then(function(data){
             $scope.list = data;
         });
     };

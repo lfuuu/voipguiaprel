@@ -16,14 +16,21 @@ class NumberController extends JsonController
         if (!\Yii::$app->user->can('number_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
-        $server = $this->getServerOr404($this->request['server_id']);
-        $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+
+        try {
+            $server = $this->getServerOr404($this->request['server_id']);
+            $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+            $where = "( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id;
+        } catch (HttpException $e) {
+            $server = $this->getServerOcsOr404($this->request['server_id']);
+            $where = "server_id = ".$server->id." or sw_share_with_camel";
+        }
 
         return
             Number::find()
                 ->select(['id', 'name', 'type_id'])
-                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
+                ->where($where)
+                ->andWhere(['type_id' => $this->request['type_id']])
                 ->orderBy('name')
                 ->asArray()
                 ->all();

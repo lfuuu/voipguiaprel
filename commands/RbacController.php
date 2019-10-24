@@ -173,8 +173,13 @@ class RbacController extends Controller {
         ['name' => 'camel_test_auth_edit', 'description' => 'Редактирование Camel теста маршрутизации'],
         ['name' => 'camel_test_auth_delete', 'description' => 'Удаление Camel теста маршрутизации'],
         ['name' => 'server_ocs_list', 'description' => 'Просмотр списка серверов OCS'],
+        ['name' => 'camel_route_table_route_lock', 'description' => 'Блокирование роута в Camel таблице маршрутизации'],
+        ['name' => 'camel_outcome_list', 'description' => 'Просмотр списка Camel Outcomes'],
+        ['name' => 'camel_outcome_create', 'description' => 'Создание Camel Outcome'],
+        ['name' => 'camel_outcome_edit', 'description' => 'Редактирование Camel Outcome'],
+        ['name' => 'camel_outcome_delete', 'description' => 'Удаление Camel Outcome'],
     ];
-    
+
     private static $_roles = [
         ['name' => 'admin_routing', 'description' => 'Администратор роутинга'],
         ['name' => 'admin_billing', 'description' => 'Администратор биллинга'],
@@ -184,7 +189,7 @@ class RbacController extends Controller {
         ['name' => 'engineer', 'description' => 'Инженер'],
         ['name' => 'manager', 'description' => 'Менеджер'],
     ];
-    
+
     private static $_rolePermissions = [
         ['role' => 'superadmin', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view', 'user_list',
@@ -264,6 +269,7 @@ class RbacController extends Controller {
             'camel_route_table_list', 'camel_route_table_create', 'camel_route_table_edit', 'camel_route_table_delete',
             'camel_test_group_list', 'camel_test_group_create', 'camel_test_group_edit', 'camel_test_group_delete',
             'camel_test_auth_list', 'camel_test_auth_create', 'camel_test_auth_edit', 'camel_test_auth_delete',
+            'camel_outcome_list', 'camel_outcome_create', 'camel_outcome_edit', 'camel_outcome_delete',
         ]],
         ['role' => 'admin_settings', 'permissions' => [
             'acl_list', 'action_log_list'

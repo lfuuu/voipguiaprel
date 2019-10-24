@@ -1,7 +1,7 @@
 <div ng-if="userPermissions['number_create']">
     <a class="btn btn-primary btn-sm pull-right" ng-click="clickCreate()">Создать</a>
 </div>
-<h4>A/B номера</h4>
+<h4>A/B/C/GT номера</h4>
 
 <form>
     <div class="form-group">
@@ -56,6 +56,7 @@
             <span class="label label-default" ng-if="item.type_id == 1">A - номер</span>
             <span class="label label-default" ng-if="item.type_id == 2">B - номер</span>
             <span class="label label-default" ng-if="item.type_id == 3">C - номер</span>
+            <span class="label label-default" ng-if="item.type_id == 4">GT - номер</span>
             <span class="label label-success" ng-if="item.show_in_stat">СТАТ</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>

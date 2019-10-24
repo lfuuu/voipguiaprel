@@ -1,46 +1,26 @@
 <?php
-use yii\helpers\Html;
-use app\assets\AppCamelAsset;
-use app\assets\AppLibAsset;
-use app\commands\RbacController;
+use app\models\ServerOcs;
+use yii\helpers\Url;
 
 /**
- * @var \app\components\View $this
- * @var string $content
+ * @var app\components\View $this
+ * @var ServerOcs[] $servers
  */
-AppLibAsset::register($this);
-AppCamelAsset::register($this);
 ?>
-<?php $this->beginPage() ?>
-<!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" ng-app="app">
-<head>
-    <meta charset="<?= Yii::$app->charset ?>"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= Html::encode($this->title) ?></title>
-    <?php $this->head() ?>
-</head>
-<body>
-<?php $this->beginBody() ?>
-<script>
-    var userName = <?= json_encode(Yii::$app->user->identity->name, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
-    var userId = <?= json_encode(Yii::$app->user->identity->getId(), JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
-    <?php
-        $userPermissions = Yii::$app->authManager->getPermissionsByUser(Yii::$app->user->identity->getId());
-        $camelPermissions = RbacController::getCamelPermissions();
-        $shortUserPermissions = [];
-        foreach ($userPermissions as $permissionKey => $permission) {
-            $shortUserPermissions[$permissionKey] = true;
-        }
-    ?>
-    var userPermissions = <?= json_encode($shortUserPermissions, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
-    var camelPermissions = <?= json_encode($camelPermissions, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
-    var query = <?= json_encode($_SERVER['QUERY_STRING'], JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
-    var host = <?= json_encode($_SERVER['HTTP_HOST'], JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES); ?>;
-</script>
-<div ng-controller="MainCamelCtrl" ng-include="'/templates/main_camel.html'">
-</div>
-<?php $this->endBody() ?>
-</body>
-</html>
-<?php $this->endPage() ?>
+
+            <table class="table table-striped table-hover table-condensed" >
+                <thead>
+                <tr>
+                    <th style="width:20%">Код</th>
+                    <th style="width:20%">Название</th>
+                </tr>
+                </thead>
+                <tbody>
+<?php foreach ($servers as $item): ?>
+                    <tr>
+                        <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['camel/index', 'serverId' => $item->id]); ?>'"><?= $item->id ?></td>
+                        <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['camel/index', 'serverId' => $item->id]); ?>'"><?= $item->name ?></td>
+                    </tr>
+<?php endforeach; ?>
+                </tbody>
+            </table>

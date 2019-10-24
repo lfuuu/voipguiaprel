@@ -1,25 +1,24 @@
 <?php
 
 namespace app\models\auth;
-use app\queries\auth\CamelTrunkQuery;
+use app\queries\auth\CamelOutcomeQuery;
 
 /**
  * @property int $id
  * @property string $name
- * @property int $gt_id
- * @property int $camel_route_table_id
+ * @property int $type_id
  * @property int $server_id
  */
-class CamelTrunk extends \yii\db\ActiveRecord
+class CamelOutcome extends \yii\db\ActiveRecord
 {
     public static function tableName()
     {
-        return 'auth.camel_trunk';
+        return 'auth.camel_outcome';
     }
 
     public static function find()
     {
-        return new CamelTrunkQuery(get_called_class());
+        return new CamelOutcomeQuery(get_called_class());
     }
 
     public static function create(array $data = null)
@@ -33,7 +32,7 @@ class CamelTrunk extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string'],
-            [['gt_id', 'camel_route_table_id', 'server_id'], 'integer']
+            [['type_id', 'server_id'], 'integer']
         ];
     }
 }

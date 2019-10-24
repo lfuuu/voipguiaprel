@@ -5,7 +5,8 @@ var CamelTestAuthEditCtrl = function($rootScope, $scope, Redirect, CamelTestAuth
         });
     } else {
         $scope.item = {
-            name: ''
+            name: '',
+            server_id: $scope.server.id
         };
     }
 
@@ -13,7 +14,7 @@ var CamelTestAuthEditCtrl = function($rootScope, $scope, Redirect, CamelTestAuth
         $scope.testGroupList = data;
     });
 
-    CamelList.trunk().then(function (data) {
+    CamelList.trunk({server_id: $scope.server.id}).then(function (data) {
         $scope.trunkList = data;
     });
 

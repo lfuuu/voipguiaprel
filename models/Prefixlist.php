@@ -31,6 +31,7 @@ use yii\db\Query;
  * @property bool $invert
  * @property bool $normalization_disabled
  * @property string $object_comment
+ * @property bool $sw_share_with_camel
  *
  * @property PrefixlistPrefix $prefixlistPrefix
  */
@@ -71,7 +72,7 @@ class Prefixlist extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string', 'max' => 50],
-            [['sw_shared'], 'boolean'],
+            [['sw_shared', 'sw_share_with_camel'], 'boolean'],
             [['type_id'], 'integer'],
             [['rossvyaz_country', 'rossvyaz_region', 'rossvyaz_city'], 'string', 'max' => 100],
             [['rossvyaz_country_id', 'rossvyaz_region_id', 'rossvyaz_city_id', 'network_config_id'], 'integer'],

@@ -9,7 +9,7 @@ var NumberListCtrl = function($scope, Number, Redirect, $window) {
   ];
 
 	$scope.init = function(tab) {
-		if (tab) tab.title = 'A/B номера';
+		if (tab) tab.title = 'A/B/C/GT номера';
 
 		Number.read({server_id: $scope.server.id}).then(function(data){
 			$scope.list = data;

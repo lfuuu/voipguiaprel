@@ -15,7 +15,7 @@ use yii\db\Query;
  * @property int $type_id
  * @property array $prefixlist_ids
  * @property string $object_comment
- * @property
+ * @property bool $sw_share_with_camel
  */
 class Number extends \yii\db\ActiveRecord
 {
@@ -45,7 +45,7 @@ class Number extends \yii\db\ActiveRecord
         return [
             [['name'], 'string', 'max' => 50],
             [['type_id'], 'integer'],
-            [['show_in_stat','sw_shared'], 'boolean'],
+            [['show_in_stat','sw_shared', 'sw_share_with_camel'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }

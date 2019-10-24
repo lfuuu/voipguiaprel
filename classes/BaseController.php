@@ -27,6 +27,7 @@ use app\models\nnp\Mnc;
 use app\models\Number;
 use app\models\OcaBw;
 use app\models\PrefixlistPrefix;
+use app\models\ServerOcs;
 use app\models\TestAuth;
 use app\models\TestCall;
 use app\models\TestGroup;
@@ -79,6 +80,22 @@ class BaseController extends \yii\web\Controller
     protected function getServerOr404($serverId)
     {
         if (($server = Server::findOne($serverId)) === null) {
+            throw new HttpException(404);
+        }
+
+        $this->getView()->server = $server;
+
+        return $server;
+    }
+
+    /**
+     * @param int $serverId
+     * @return ServerOcs
+     * @throws HttpException
+     */
+    protected function getServerOcsOr404($serverId)
+    {
+        if (($server = ServerOcs::findOne($serverId)) === null) {
             throw new HttpException(404);
         }
 

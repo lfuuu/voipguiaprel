@@ -11,7 +11,7 @@ var CamelTestAuthListCtrl = function($scope, CamelTestAuth, Redirect, $window) {
     $scope.init = function(tab) {
         if (tab) tab.title = 'Тесты маршрутизации';
 
-        CamelTestAuth.read().then(function(data){
+        CamelTestAuth.read({server_id: $scope.server.id}).then(function(data){
             $scope.list = data;
         });
     };

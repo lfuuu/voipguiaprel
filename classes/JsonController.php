@@ -26,6 +26,7 @@ class JsonController extends BaseController
     protected $nameParamName = '';
     protected $withDependencies = [];
     protected $throwExceptionOnEmptyItemInSave = true;
+    protected $readWhere = [];
     protected $createPermission = '';
     protected $listPermission = '';
     protected $editPermission = '';
@@ -134,10 +135,17 @@ class JsonController extends BaseController
 
         $modelName = $this->modelName;
 
+        $where = [];
+
+        foreach ($this->readWhere as $param) {
+            $where[$param] = $this->request[$param];
+        }
+
         return
             $modelName::find()
                 ->select(['id' => $this->idParamName, 'name' => $this->nameParamName])
                 ->orderBy($this->nameParamName)
+                ->andWhere($where)
                 ->asArray()
                 ->all();
     }
@@ -150,12 +158,28 @@ class JsonController extends BaseController
 
         $modelName = $this->modelName;
 
-        return
+        $where = [];
+
+        foreach ($this->readWhere as $param) {
+            $where[$param] = $this->request[$param];
+        }
+
+        $items =
             $modelName::find()
                 ->select('*')
                 ->orderBy($this->nameParamName)
+                ->andWhere($where)
                 ->asArray()
                 ->all();
+
+        $items = $this->performAfterReadActions($items);
+
+        return $items;
+    }
+
+    protected function performAfterReadActions($items)
+    {
+        return $items;
     }
 
     public function actionGet()
@@ -228,6 +252,8 @@ class JsonController extends BaseController
 
         $item->load($this->request, '');
 
+        $this->performBeforeSaveActions($item, $this->request);
+
         $transaction = $modelName::getDb()->beginTransaction();
         try {
             if (!$item->save()) {
@@ -245,6 +271,11 @@ class JsonController extends BaseController
         $result['log']['data_after'] = self::getDataForLog($item);
 
         return $result;
+    }
+
+    protected function performBeforeSaveActions($item, $request)
+    {
+        // do_nothing
     }
 
     protected function performAfterSaveActions($item, $request)

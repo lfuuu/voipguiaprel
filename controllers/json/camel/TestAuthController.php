@@ -9,6 +9,7 @@ class TestAuthController extends JsonController
     protected $modelName = 'app\models\auth\CamelTestAuth';
     protected $idParamName = 'id';
     protected $nameParamName = 'name';
+    protected $readWhere = ['server_id'];
     protected $createPermission = 'camel_test_auth_create';
     protected $listPermission = 'camel_test_auth_list';
     protected $editPermission = 'camel_test_auth_edit';

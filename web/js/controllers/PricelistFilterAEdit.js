@@ -116,6 +116,8 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
                 });
             }
 
+            $scope.saveEnabled = !$scope.pricelistIsActive;
+
             $scope.$watch('item.nnp_country', watchers.nnp_country);
             $scope.$watch('item.nnp_region', watchers.nnp_region);
             $scope.$watch('item.filter_country', watchers.filter_country);

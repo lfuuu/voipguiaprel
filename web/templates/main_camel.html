@@ -1,13 +1,18 @@
 <div class="wrap">
-    <div style="position: fixed; left: 15px; bottom: 0; top: 60px; width: 230px; overflow-y: auto">
+    <div style="position: fixed; left: 15px; bottom: 0; top: 60px; width: 230px; overflow-y: auto;text-align: center">
+        <h4>{{server.name}} ({{server.id}})</h4>
+    </div>
+    <div style="position: fixed; left: 15px; bottom: 0; top: 100px; width: 230px; overflow-y: auto">
         <div ng-if="userPermissions['camel_gt_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['camel_gt_list']" ng-click="Redirect.camelGtList()" ng-class="{active:tabs.isController('CamelGtListCtrl')}">Справочник GT</a>
         </div>
-        <div ng-if="userPermissions['camel_trunk_list']" class="list-group">
+        <div ng-if="userPermissions['camel_trunk_list'] || userPermissions['camel_route_table_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['camel_trunk_list']" ng-click="Redirect.camelTrunkList()" ng-class="{active:tabs.isController('CamelTrunkListCtrl')}">Транки</a>
-        </div>
-        <div ng-if="userPermissions['camel_route_table_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['camel_route_table_list']" ng-click="Redirect.camelRouteTableList()" ng-class="{active:tabs.isController('CamelRouteTableListCtrl')}">Таблицы маршрутизации</a>
+        </div>
+        <div ng-if="userPermissions['camel_number_list'] || userPermissions['camel_outcome_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['camel_number_list']" ng-click="Redirect.camelNumberList()" ng-class="{active:tabs.isController('CamelNumberListCtrl')}">A/B/C/GT Номера</a>
+            <a class="list-group-item" ng-if="userPermissions['camel_outcome_list']" ng-click="Redirect.camelOutcomeList()" ng-class="{active:tabs.isController('CamelOutcomeListCtrl')}">Outcomes</a>
         </div>
         <div ng-if="userPermissions['camel_test_auth_list'] || userPermissions['camel_test_group_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['camel_test_auth_list']" ng-click="Redirect.camelTestAuthList()" ng-class="{active:tabs.isController('CamelTestAuthListCtrl')}">Тесты маршрутизации</a>

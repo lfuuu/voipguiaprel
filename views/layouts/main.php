@@ -13,22 +13,16 @@ use app\commands\RbacController;
  */
 AppLibAsset::register($this);
 
-switch ($_SERVER['REQUEST_URI']) {
-    case '/routing':
-        AppAsset::register($this);
-        break;
-    case '/billing':
-        AppAsset::register($this);
-        break;
-    case '/camel':
-        AppCamelAsset::register($this);
-        break;
-    case '/settings':
-        AppSettingsAsset::register($this);
-        break;
-    default:
-        AppAsset::register($this);
-        break;
+if ($_SERVER['REQUEST_URI'] == '/routing') {
+    AppAsset::register($this);
+} elseif ($_SERVER['REQUEST_URI'] == '/billing') {
+    AppAsset::register($this);
+} elseif ($_SERVER['REQUEST_URI'] == '/camel'|| preg_match("/^\/cs/i", $_SERVER['REQUEST_URI'])) {
+    AppCamelAsset::register($this);
+} elseif ($_SERVER['REQUEST_URI'] == '/settings') {
+    AppSettingsAsset::register($this);
+} else {
+    AppAsset::register($this);
 }
 
 if (Yii::$app->user->identity) {
@@ -76,70 +70,63 @@ if (Yii::$app->user->identity) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+
 </head>
 <body>
-
 <?php $this->beginBody() ?>
     <div class="wrap">
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container-fluid">
-                <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <?php if (!Yii::$app->user->isGuest): ?>
+<?php if (!Yii::$app->user->isGuest): ?>
                     <ul class="nav navbar-nav navbar-left">
-                        <?php if ($userHasRouting) { ?>
+<?php if ($userHasRouting) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/' || preg_match("/^[\/][sS][\d]{1,3}$/", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['site/index'])?>">Маршрутизация</a></li>
-                        <?php } ?>
-                        <?php if ($userHasBilling) { ?>
+<?php } ?>
+<?php if ($userHasBilling) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/billing') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/billing'])?>">Билингация</a></li>
-                        <?php } ?>
-                        <?php if ($userHasCamel) { ?>
-                        <li<?php if ($_SERVER['REQUEST_URI'] == '/camel') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/camel'])?>">Camel</a></li>
-                        <?php } ?>
-                        <?php if (\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')): ?>
+<?php } ?>
+<?php if ($userHasCamel) { ?>
+                        <li<?php if ($_SERVER['REQUEST_URI'] == '/camel'|| preg_match("/^\/cs/i", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/camel'])?>">Camel</a></li>
+<?php } ?>
+<?php if (\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')): ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace'])?>">Биржа РФ</a></li>
-                        <?php endif; ?>
-                        <?php if (\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')): ?>
-                            <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace-eu') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace-eu'])?>">Биржа EU</a></li>
-                        <?php endif; ?>
+<?php endif; ?>
+<?php if (\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')): ?>
+                        <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace-eu') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace-eu'])?>">Биржа EU</a></li>
+<?php endif; ?>
                         <li><a href="<?=Url::to(['/health/health.html'])?>" target="_blank">Здоровье биллеров</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <?php if (\Yii::$app->user->can('user_list')) { ?>
-                        <li<?php if ($_SERVER['REQUEST_URI'] == '/user/list') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['user/list'])?>">Пользователи</a></li>
-                        <?php } ?>
-                        <?php if ($userHasSettings) { ?>
-                            <li<?php if ($_SERVER['REQUEST_URI'] == '/settings') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/settings'])?>">Настройки</a></li>
-                        <?php } ?>
+<?php if ($userHasSettings) { ?>
+                        <li<?php if ($_SERVER['REQUEST_URI'] == '/settings') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/settings'])?>">Настройки</a></li>
+<?php } ?>
                         <li><a><?= Yii::$app->user->identity->name ?></a></li>
                         <li><a href="<?=Url::to(['site/logout'])?>">Выход</a></li>
                     </ul>
-                    <?php endif; ?>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
+<?php endif; ?>
+                </div>
+            </div>
         </nav>
-
         <div style="position: fixed; overflow: auto; bottom: 0; right: 0; top: 60px; padding-left: 20px; padding-right: 20px; left: 0;">
             <div class="alert alert-danger" ng-cloak ng-repeat="error in errors">
                 <p ng-repeat="err in error">{{err}}</p>
             </div>
-
-            <?php if (Yii::$app->session->hasFlash('success')): ?>
+<?php if (Yii::$app->session->hasFlash('success')): ?>
                 <div class="alert alert-success">
                     <?php echo Yii::$app->session->getFlash('success', null, true); ?>
                 </div>
-            <?php endif ?>
-            <?php if (Yii::$app->session->hasFlash('error')): ?>
+<?php endif ?>
+<?php if (Yii::$app->session->hasFlash('error')): ?>
                 <div class="alert alert-danger">
                     <?php echo Yii::$app->session->getFlash('error'); ?>
                 </div>
-            <?php endif; ?>
-
+<?php endif; ?>
             <?= $content ?>
         </div>
     </div>
-
 <?php $this->endBody() ?>
+
 </body>
 </html>
 <?php $this->endPage() ?>

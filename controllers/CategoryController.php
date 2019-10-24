@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\exceptions\XxxException;
 use app\classes\BaseController;
+use app\models\ServerOcs;
 
 class CategoryController extends BaseController
 {
@@ -37,6 +38,8 @@ class CategoryController extends BaseController
 
     public function actionCamel()
     {
-        return $this->render('camel', []);
+        return $this->render('camel', [
+            'servers' => ServerOcs::find()->where(['type' => 'ocslte'])->orderBy('id')->all(),
+        ]);
     }
 }

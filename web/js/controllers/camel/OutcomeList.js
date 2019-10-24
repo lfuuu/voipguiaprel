@@ -1,35 +1,35 @@
-var CamelTrunkListCtrl = function($scope, CamelTrunk, Redirect, $window) {
+var CamelOutcomeListCtrl = function($scope, CamelOutcome, Redirect, $window) {
 
-    $scope.sortType = 'trunk_name';
+    $scope.sortType = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
     $scope.filterFields = [
-        'id', 'name', 'gt_id', 'camel_route_table_id'
+        'id', 'name', 'type_id'
     ];
 
     $scope.init = function(tab) {
-        if (tab) tab.title = 'Транки';
+        if (tab) tab.title = 'Outcomes';
 
-        CamelTrunk.read({server_id: $scope.server.id}).then(function(data){
+        CamelOutcome.read({server_id: $scope.server.id}).then(function(data){
             $scope.list = data;
         });
     };
 
     $scope.clickCreate = function() {
-        Redirect.camelTrunkCreate().then(function () {
+        Redirect.camelOutcomeCreate().then(function () {
             $scope.init();
         });
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['camel_trunk_edit']) {
+        if (!userPermissions['camel_outcome_edit']) {
             return;
         }
 
         if (window.getSelection().type == 'Range') return;
 
-        Redirect.camelTrunkEdit(item.id).then(function () {
+        Redirect.camelOutcomeEdit(item.id).then(function () {
             $scope.init();
         });
     };
@@ -37,7 +37,7 @@ var CamelTrunkListCtrl = function($scope, CamelTrunk, Redirect, $window) {
     $scope.deleteItem = function(item) {
         if (!$window.confirm('Удалить?')) return;
 
-        CamelTrunk.delete(item.id).then(function(response) {
+        CamelOutcome.delete(item.id).then(function(response) {
             $scope.init()
         });
     };

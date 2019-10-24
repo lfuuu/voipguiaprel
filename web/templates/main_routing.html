@@ -16,7 +16,7 @@
             <a class="list-group-item" ng-if="userPermissions['route_table_list']" ng-click="Redirect.routeTableList()" ng-class="{active:tabs.isController('RouteTableListCtrl')}">Таблицы маршрутизации</a>
         </div>
         <div ng-if="userPermissions['number_list'] || userPermissions['outcome_list']" class="list-group">
-            <a class="list-group-item" ng-if="userPermissions['number_list']" ng-click="Redirect.numberList()" ng-class="{active:tabs.isController('NumberListCtrl')}">A/B/C номера</a>
+            <a class="list-group-item" ng-if="userPermissions['number_list']" ng-click="Redirect.numberList()" ng-class="{active:tabs.isController('NumberListCtrl')}">A/B/C/GT номера</a>
             <a class="list-group-item" ng-if="userPermissions['outcome_list']" ng-click="Redirect.outcomeList()" ng-class="{active:tabs.isController('OutcomeListCtrl')}">Outcomes</a>
         </div>
         <div ng-if="userPermissions['route_case_list'] || userPermissions['prefixlist_list']" class="list-group">

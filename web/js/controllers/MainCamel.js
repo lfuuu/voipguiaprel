@@ -1,4 +1,5 @@
 app.controller('MainCamelCtrl', function ($rootScope, $scope, $cookies, $timeout, $modal, Redirect) {
+    $rootScope.server = dataServer;
     $rootScope.userName = userName;
     $rootScope.userId = userId;
     $rootScope.userPermissions = userPermissions;

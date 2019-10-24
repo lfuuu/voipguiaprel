@@ -5,12 +5,17 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
         });
     } else {
         $scope.item = {
-            name: ''
+            name: '',
+            server_id: $scope.server.id
         };
     }
 
     CamelList.gt().then(function (data) {
         $scope.gtList = data;
+    });
+
+    CamelList.routeTable().then(function (data) {
+        $scope.routeTableList = data;
     });
 
     $scope.save = function () {

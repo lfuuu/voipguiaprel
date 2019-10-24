@@ -53,6 +53,13 @@ app.factory('Role', function ($q, ApiLoader, $rootScope) {
     return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
 });
 
+app.factory('User', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/settings/user/';
+    var list = undefined;
+    var promise = undefined;
+    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+});
+
 app.factory('SettingsList', function (Acl, Role) {
     return {
         acl: function () {
@@ -60,6 +67,9 @@ app.factory('SettingsList', function (Acl, Role) {
         },
         role: function () {
             return Role.list();
+        },
+        user: function () {
+            return User.list();
         }
     };
 });

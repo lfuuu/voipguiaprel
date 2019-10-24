@@ -49,10 +49,6 @@ class SiteController extends BaseController
 
     public function actionIndex()
     {
-        Yii::error('index');
-        Yii::info('index');
-        Yii::info('index');
-        Yii::info('index');
         return $this->render('index', [
             'hubs' => Hub::find()->orderBy('rating')->with('servers', 'servers.preparedPrefixlists','instanceSettings')->all(),
             'servers' => Server::find()->where('hub_id is null')->with('instanceSettings', 'preparedPrefixlists')->orderBy('name')->all(),

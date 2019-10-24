@@ -54,6 +54,16 @@
             </div>
 
             <div class="form-group">
+                <label class="col-sm-2 control-label">Доступен на Camel</label>
+                <div class="col-sm-10">
+                    <div class="btn-group" ng-click="item.sw_share_with_camel = !item.sw_share_with_camel">
+                        <button type="button" class="btn btn-sm {{item.sw_share_with_camel ? 'btn-success active' : 'btn-default'}}">Да</button>
+                        <button type="button" class="btn btn-sm {{!item.sw_share_with_camel ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="col-sm-2 control-label">Глобальный</label>
                 <div class="col-sm-10">
                     <div class="btn-group" ng-click="item.is_global = !item.is_global">

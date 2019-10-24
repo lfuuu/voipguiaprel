@@ -596,5 +596,25 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         camelTestAuthShowTest: function(id) {
             return openModal(CamelTestAuthShowTestCtrl, '/templates/camel/test_auth_show_test.html', {id: id});
         },
+        userList: function() {
+            $cookies.settings_selected_page = 'userList';
+            return openTab(UserListCtrl, '/templates/settings/user_list.html', {});
+        },
+        userCreate: function() {
+            return openModal(UserEditCtrl, '/templates/settings/user_edit.html', {name: null});
+        },
+        userEdit: function(id) {
+            return openModal(UserEditCtrl, '/templates/settings/user_edit.html', {id: id});
+        },
+        camelOutcomeList: function() {
+            $cookies.camel_selected_page = 'camelOutcomeList';
+            return openTab(CamelOutcomeListCtrl, '/templates/camel/outcome_list.html', {});
+        },
+        camelOutcomeCreate: function() {
+            return openModal(CamelOutcomeEditCtrl, '/templates/camel/outcome_edit.html', {id: null});
+        },
+        camelOutcomeEdit: function(id) {
+            return openModal(CamelOutcomeEditCtrl, '/templates/camel/outcome_edit.html', {id: id});
+        },
     };
 });

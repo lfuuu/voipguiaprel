@@ -26,11 +26,17 @@ class CamelRouteTableRoute extends \yii\db\ActiveRecord
         return new CamelRouteTableRouteQuery(get_called_class());
     }
 
-    public static function create(array $data = null)
+    public static function create(CamelRouteTable $routeTable, array $data = null)
     {
         $item = new self();
         $item->load($data, '');
+        $item->camel_route_table_id = $routeTable->id;
         return $item;
+    }
+
+    public static function deleteByRouteTable(CamelRouteTable $routeTable)
+    {
+        return self::deleteAll(['camel_route_table_id' => $routeTable->id]);
     }
 
     public function rules()

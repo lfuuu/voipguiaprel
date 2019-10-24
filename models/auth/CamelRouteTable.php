@@ -7,6 +7,7 @@ use app\queries\auth\CamelRouteTableQuery;
  * @property int $id
  * @property string $name
  * @property string $object_comment
+ * @property int $server_id
  */
 class CamelRouteTable extends \yii\db\ActiveRecord
 {
@@ -31,6 +32,15 @@ class CamelRouteTable extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'object_comment'], 'string'],
+            [['server_id'], 'integer']
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoutes()
+    {
+        return $this->hasMany(CamelRouteTableRoute::className(), ['camel_route_table_id' => 'id'])->orderBy('order');
     }
 }
