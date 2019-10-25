@@ -619,5 +619,13 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         camelSettingsEdit: function() {
             return openModal(CamelSettingsEditCtrl, '/templates/camel/settings_edit.html', {});
         },
+        camelNumberList: function() {
+            $cookies.camel_selected_page = 'camelNumberList';
+            return openTab(NumberListCtrl, '/templates/number_list.html');
+        },
+        camelPrefixlistList: function() {
+            $cookies.camel_selected_page = 'camelPrefixlistList';
+            return openTab(PrefixlistListCtrl, '/templates/prefixlist_list.html');
+        },
     };
 });

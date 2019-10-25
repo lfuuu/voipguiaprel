@@ -96,7 +96,7 @@ class NumberController extends JsonController
         }
     
         $result = [];
-    
+
         $server = $this->getServerOr404($this->request['server_id']);
 
         if (isset($this->request['id'])) {

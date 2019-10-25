@@ -4,6 +4,7 @@ app.controller('MainCamelCtrl', function ($rootScope, $scope, $cookies, $timeout
     $rootScope.userId = userId;
     $rootScope.userPermissions = userPermissions;
     $rootScope.camelPermissions = camelPermissions;
+    $rootScope.isCamel = true;
 
     $rootScope.Redirect = Redirect;
 
