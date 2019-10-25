@@ -1,4 +1,4 @@
-var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, CamelList, params, $modalInstance) {
+var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, CamelList, Prefixlist, params, $modalInstance) {
     if (params.id) {
         CamelTrunk.get({id: params.id}).then(function (data) {
             $scope.item = data;
@@ -10,11 +10,11 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
         };
     }
 
-    CamelList.gt().then(function (data) {
-        $scope.gtList = data;
+    Prefixlist.listByType({type_id: 14}).then(function (data) {
+        $scope.prefixlistList = data;
     });
 
-    CamelList.routeTable().then(function (data) {
+    CamelList.routeTable({server_id: $scope.server.id}).then(function (data) {
         $scope.routeTableList = data;
     });
 

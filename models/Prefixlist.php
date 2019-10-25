@@ -471,9 +471,6 @@ class Prefixlist extends \yii\db\ActiveRecord
         }
 
         $filters = [
-            'country_code' => isset($input['gt_country']) ? $input['gt_country'] : '',
-            'region_id' => isset($input['gt_region']) ? $input['gt_region'] : '',
-            'operator_id' => isset($input['gt_operator']) ? $input['gt_operator'] : '',
             'status' => isset($input['number_status']) ? $input['number_status'] : '',
             'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
         ];

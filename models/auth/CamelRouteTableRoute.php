@@ -6,7 +6,7 @@ use app\queries\auth\CamelRouteTableRouteQuery;
 /**
  * @property int $camel_route_table_id
  * @property int $order
- * @property int $gt_id
+ * @property int $gt_number_id
  * @property int $a_number_id
  * @property string $b_number_regexp
  * @property int $outcome_id
@@ -43,7 +43,7 @@ class CamelRouteTableRoute extends \yii\db\ActiveRecord
     {
         return [
             [['b_number_regexp', 'object_comment', 'outcome_args', 'object_comment'], 'string'],
-            [['order', 'gt_id', 'a_number_id', 'outcome_id'], 'integer'],
+            [['order', 'gt_number_id', 'a_number_id', 'outcome_id'], 'integer'],
             [['is_locked'], 'boolean'],
         ];
     }

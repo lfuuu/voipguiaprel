@@ -293,6 +293,9 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
+        listByType: function(data) {
+            return ApiLoader.post(url + 'list-by-type', data);
+        },
         save: function(data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
@@ -643,6 +646,9 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                 }
                 return deferred.promise;
             }
+        },
+        listByType: function(data) {
+            return ApiLoader.post(url + 'list-by-type', data);
         },
 		save: function(data) {
 			listA = listB = undefined;

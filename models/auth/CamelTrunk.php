@@ -6,9 +6,9 @@ use app\queries\auth\CamelTrunkQuery;
 /**
  * @property int $id
  * @property string $name
- * @property int $gt_id
  * @property int $camel_route_table_id
  * @property int $server_id
+ * @property int $prefixlist_id
  */
 class CamelTrunk extends \yii\db\ActiveRecord
 {
@@ -33,7 +33,7 @@ class CamelTrunk extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string'],
-            [['gt_id', 'camel_route_table_id', 'server_id'], 'integer']
+            [['prefixlist_id', 'camel_route_table_id', 'server_id'], 'integer']
         ];
     }
 }

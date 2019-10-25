@@ -22,35 +22,35 @@
                     <span ng-show="sortType == 'id' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th>
+            <th width="10%">
                 <a href="#" ng-click="sortType = 'gt'; sortReverse = !sortReverse">
                     GT
                     <span ng-show="sortType == 'gt' && sortReverse" class="caret-down"></span>
                     <span ng-show="sortType == 'gt' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="10%">
+            <th width="30%">
                 <a href="#" ng-click="sortType = 'oper'; sortReverse = !sortReverse">
-                    Oper
+                    Оператор
                     <span ng-show="sortType == 'oper' && sortReverse" class="caret-down"></span>
                     <span ng-show="sortType == 'oper' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="10%">
+            <th width="20%">
                 <a href="#" ng-click="sortType = 'country'; sortReverse = !sortReverse">
-                    Country
+                    Страна
                     <span ng-show="sortType == 'country' && sortReverse" class="caret-down"></span>
                     <span ng-show="sortType == 'country' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="10%">
+            <th width="20%">
                 <a href="#" ng-click="sortType = 'area'; sortReverse = !sortReverse">
-                    Area
+                    Регион
                     <span ng-show="sortType == 'area' && sortReverse" class="caret-down"></span>
                     <span ng-show="sortType == 'area' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="10%">
+            <th width="15%">
                 <a href="#" ng-click="sortType = 'loc'; sortReverse = !sortReverse">
                     Loc
                     <span ng-show="sortType == 'loc' && sortReverse" class="caret-down"></span>
@@ -65,9 +65,9 @@
         <tr ng-repeat="item in list | orderBy:sortType:sortReverse | trunkFilter:searchQuery:filterFields">
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.gt}}</td>
-            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.oper}}</td>
-            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.country}}</td>
-            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.area}}</td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.operator_name}}</td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.country_name}}</td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.region_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.loc}}</td>
             <td>
                 <comment-icon ng-if="item.id" key="{{item.id}}" type="camelGt" comment="item.object_comment"></comment-icon>

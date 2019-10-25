@@ -35,6 +35,21 @@ class NumberController extends JsonController
                 ->asArray()
                 ->all();
     }
+
+    public function actionListByType()
+    {
+        if (!\Yii::$app->user->can('number_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        return
+            Number::find()
+                ->select(['id', 'name', 'type_id'])
+                ->where(['type_id' => $this->request['type_id']])
+                ->orderBy('name')
+                ->asArray()
+                ->all();
+    }
     
     public function actionRead()
     {

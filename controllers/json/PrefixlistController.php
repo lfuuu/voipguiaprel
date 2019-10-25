@@ -46,6 +46,25 @@ class PrefixlistController extends JsonController
                 ->asArray()
                 ->all();
     }
+
+    /**
+     * @return \app\models\Prefixlist[]
+     * @throws HttpException
+     */
+    public function actionListByType()
+    {
+        if (!\Yii::$app->user->can('prefixlist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        return
+            Prefixlist::find()
+                ->select(['id', 'name'])
+                ->where(['type_id' => $this->request['type_id']])
+                ->orderBy('name')
+                ->asArray()
+                ->all();
+    }
     
     /**
      * @return \app\models\Prefixlist[]

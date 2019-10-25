@@ -10,6 +10,9 @@ use app\queries\auth\CamelGtQuery;
  * @property string $country
  * @property string $area
  * @property bool $loc
+ * @property int $country_code
+ * @property int $region_id
+ * @property int $operator_id
  */
 class CamelGt extends \yii\db\ActiveRecord
 {
@@ -34,7 +37,8 @@ class CamelGt extends \yii\db\ActiveRecord
     {
         return [
             [['gt', 'oper', 'country', 'area'], 'string'],
-            [['loc'], 'boolean']
+            [['loc'], 'boolean'],
+            [['country_code', 'region_id', 'operator_id'], 'integer']
         ];
     }
 }

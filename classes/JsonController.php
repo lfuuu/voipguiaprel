@@ -27,6 +27,7 @@ class JsonController extends BaseController
     protected $withDependencies = [];
     protected $throwExceptionOnEmptyItemInSave = true;
     protected $readWhere = [];
+    protected $readSelect = ['*'];
     protected $createPermission = '';
     protected $listPermission = '';
     protected $editPermission = '';
@@ -166,7 +167,7 @@ class JsonController extends BaseController
 
         $items =
             $modelName::find()
-                ->select('*')
+                ->select($this->readSelect)
                 ->orderBy($this->nameParamName)
                 ->andWhere($where)
                 ->asArray()

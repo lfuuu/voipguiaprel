@@ -16,9 +16,9 @@
             <thead>
             <tr>
                 <th></th>
+                <th>GT-номер</th>
                 <th>А-номер</th>
                 <th>B-номер regexp</th>
-                <th>GT</th>
                 <th>Outcome</th>
                 <th>Блок</th>
                 <th></th>
@@ -32,16 +32,16 @@
                     <span class="badge">{{$index + 1}}</span>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
-                    <select-box-new disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box-new>
+                    <select ui-select2 style="width: 100%" tags="true" placeholder="GT number" ng-model="line.gt_number_id" required>
+                        <option value="">-- Выберите --</option>
+                        <option ng-repeat="number in gtNumberList" value="{{number.id}}">{{number.name}}</option>
+                    </select>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
+                    <select-box disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
                     <input class="form-control" placeholder="Regexp" ng-model="line.b_number_regexp" required>
-                </td>
-                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
-                    <select ui-select2 style="width: 100%" tags="true" placeholder="GT" ng-model="line.gt_id" required>
-                        <option value="">-- Выберите --</option>
-                        <option ng-repeat="gt in gtList" value="{{gt.id}}">{{gt.name}}</option>
-                    </select>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
                     <select ui-select2 style="width: 100%" tags="true" placeholder="Outcome" ng-model="line.outcome_id" required>

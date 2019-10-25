@@ -1,4 +1,4 @@
-var CamelRouteTableEditCtrl = function($rootScope, $scope, Redirect, CamelRouteTable, CamelList, params, $modalInstance) {
+var CamelRouteTableEditCtrl = function($rootScope, $scope, Redirect, CamelRouteTable, CamelList, Number, params, $modalInstance) {
     if (params.id) {
         CamelRouteTable.get({id: params.id}).then(function (data) {
             $scope.item = data;
@@ -11,8 +11,8 @@ var CamelRouteTableEditCtrl = function($rootScope, $scope, Redirect, CamelRouteT
         };
     }
 
-    CamelList.gt().then(function (data) {
-        $scope.gtList = data;
+    Number.listByType({type_id: 4}).then(function (data) {
+        $scope.gtNumberList = data;
     });
 
     CamelList.outcome({server_id: $scope.server.id}).then(function (data) {
