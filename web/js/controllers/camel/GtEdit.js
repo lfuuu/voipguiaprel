@@ -43,20 +43,25 @@ var CamelGtEditCtrl = function($rootScope, $scope, Redirect, CamelGt, Nnp, param
 
     if (params.id) {
         CamelGt.get({id: params.id}).then(function (data) {
-            $scope.item = data;
             $scope.$watch('item.country_code', watchers.country_code);
+            Nnp.countryList().then(function (dataCountry) {
+                $scope.countryList = dataCountry;
+                countryLoadComplete = true;
+                $scope.item = data;
+            });
         });
     } else {
         $scope.item = {
             name: ''
         };
         $scope.$watch('item.country_code', watchers.country_code);
+
+        Nnp.countryList().then(function (data) {
+            $scope.countryList = data;
+            countryLoadComplete = true;
+        });
     }
 
-    Nnp.countryList().then(function (data) {
-        $scope.countryList = data;
-        countryLoadComplete = true;
-    });
 
     $scope.save = function () {
         CamelGt.save($scope.item).then(function () {
