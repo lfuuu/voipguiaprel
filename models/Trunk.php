@@ -62,7 +62,7 @@ class Trunk extends \yii\db\ActiveRecord
     public $_subitems = [
         'priorities' => 'getPriorities',
         'trunkRules' => 'getTrunkRules',
-        'numberPreprocessing' => 'getnumberPreprocessing',
+        'numberPreprocessing' => 'getNumberPreprocessing',
         'numbersRules' => 'getNumbersRules',
         'usagesInMarketplace' => 'getUsagesInMarketplace',
         'trunkSorm' => 'getTrunkSorm',

@@ -4,31 +4,142 @@
         <h3 ng-if="!item.id">Создание транка</h3>
     </div>
     <div class="modal-body">
+        <ul class="nav nav-tabs">
+            <li class="active"><a class="trunk-header" href="#trunk" data-toggle="tab">Транк</a></li>
+            <li><a class="trunk-header" href="#number_preprocessing" data-toggle="tab">Препроцессинг</a></li>
+        </ul>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Название</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="Название" ng-model="item.name" required>
+        <br />
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="trunk">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Название</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Название" ng-model="item.name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Префикслист GT</label>
+                    <div class="col-sm-10">
+                        <select ui-select2 style="width: 100%" tags="true" placeholder="GT" ng-model="item.prefixlist_id" required>
+                            <option value="">-- Выберите --</option>
+                            <option ng-repeat="prefixlist in prefixlistList" value="{{prefixlist.id}}">{{prefixlist.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Таблица маршрутизации</label>
+                    <div class="col-sm-10">
+                        <select ui-select2 style="width: 100%" tags="true" placeholder="Route Table" ng-model="item.camel_route_table_id" required>
+                            <option value="">-- Выберите --</option>
+                            <option ng-repeat="routeTable in routeTableList" value="{{routeTable.id}}">{{routeTable.name}}</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Префикслист GT</label>
-            <div class="col-sm-10">
-                <select ui-select2 style="width: 100%" tags="true" placeholder="GT" ng-model="item.prefixlist_id" required>
-                    <option value="">-- Выберите --</option>
-                    <option ng-repeat="prefixlist in prefixlistList" value="{{prefixlist.id}}">{{prefixlist.name}}</option>
-                </select>
-            </div>
-        </div>
+            <div class="tab-pane" id="number_preprocessing">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Препроцессинг номеров</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped">
+                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.numberPreprocessing">
+                            <tr ng-repeat="line in item.numberPreprocessing">
+                                <td width="7%" style="cursor: ns-resize">
+                                    <span ng-if="line.abc_mode == 1" class="label label-default">A-номер</span>
+                                    <span ng-if="line.abc_mode == 2" class="label label-default">B-номер</span>
+                                    <span ng-if="line.abc_mode == 4" class="label label-default">GT-номер</span>
+                                </td>
+                                <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.auth" ng-click="line.auth=!line.auth">Auth</input> </td>
+                                <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.acc" ng-click="line.acc=!line.acc">Acc</input> </td>
+                                <td width="15%">
+                                    <select ui-select2 ng-model="line.mod_type" placeholder="round" style="width: 100%" >
+                                        <option ng-repeat="numPreproc in trunkNumberPreprocessingType" value="{{numPreproc.id}}">{{numPreproc.name}}</option>
+                                    </select>
+                                </td>
+                                <td width="5%" style="cursor: ns-resize">
+                                    NOA:
+                                </td>
+                                <td width="5%">
+                                    <input class="form-control input-sm" ng-model="line.noa"/>
+                                </td>
+                                <!--Старый способ с префиксом-->
+                                <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
+                                    Длина&nbsp;номера:
+                                </td>
+                                <td ng-if="preprocPrefix(line)" width="10%">
+                                    <input class="form-control input-sm" ng-model="line.length" required />
+                                </td>
+                                <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
+                                    Префикс:
+                                </td>
+                                <td ng-if="preprocPrefix(line)" width="10%">
+                                    <input class="form-control input-sm" ng-model="line.prefix" required />
+                                </td>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Таблица маршрутизации</label>
-            <div class="col-sm-10">
-                <select ui-select2 style="width: 100%" tags="true" placeholder="Route Table" ng-model="item.camel_route_table_id" required>
-                    <option value="">-- Выберите --</option>
-                    <option ng-repeat="routeTable in routeTableList" value="{{routeTable.id}}">{{routeTable.name}}</option>
-                </select>
+                                <!-- Начало/Конец -->
+                                <td ng-if="preprocPosRange(line)" width="5%" style="cursor: ns-resize">
+                                    Начало:
+                                </td>
+                                <td ng-if="line.mod_type == 1" width="5%" style="cursor: ns-resize">
+                                    Позиция:
+                                </td>
+                                <td ng-if="preprocPosRange(line) || line.mod_type == 1" width="10%">
+                                    <input class="form-control input-sm" ng-model="line.start_pos" required />
+                                </td>
+                                <td ng-if="preprocPosRange(line)" width="10%" style="cursor: ns-resize">
+                                    Конец:
+                                </td>
+                                <td ng-if="preprocPosRange(line)" width="10%">
+                                    <input class="form-control input-sm" ng-model="line.end_pos" required />
+                                </td>
+
+                                <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
+                                    Regex:
+                                </td>
+                                <td ng-if="preprocValue(line)" width="10%">
+                                    <input class="form-control input-sm" ng-model="line.regex" />
+                                </td>
+
+                                <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
+                                    Значение:
+                                </td>
+                                <td ng-if="preprocValue(line)" width="10%">
+                                    <input class="form-control input-sm" ng-model="line.mod_value" required />
+                                </td>
+
+                                <td ng-if="!preprocPosRange(line) || line.mod_type == 3" width="5%" style="cursor: ns-resize"> </td>
+                                <td ng-if="!preprocPosRange(line) || line.mod_type == 3" width="10%"> </td>
+                                <td ng-if="!preprocPosRange(line) && line.mod_type != 1" width="5%" style="cursor: ns-resize"> </td>
+                                <td ng-if="!preprocPosRange(line) && line.mod_type != 1" width="10%"> </td>
+                                <td ng-if="line.mod_type == 3" width="5%" style="cursor: ns-resize"> </td>
+                                <td ng-if="line.mod_type == 3" width="10%"> </td>
+
+                                <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.avoid_mod" ng-click="line.avoid_mod=!line.avoid_mod">Без модификаторов</input> </td>
+                                <td>
+                                    <comment-icon key="{{line.id}}" type="trunk_preprocessing" comment="line.object_comment"></comment-icon>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeNumberPreprocessing($index)"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="17">
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(1)"><i class="glyphicon glyphicon-plus"></i> А-номер</button>
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(2)"><i class="glyphicon glyphicon-plus"></i> B-номер</button>
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(4)"><i class="glyphicon glyphicon-plus"></i> GT-номер</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 

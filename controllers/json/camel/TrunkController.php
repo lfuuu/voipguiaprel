@@ -3,6 +3,8 @@
 namespace app\controllers\json\camel;
 
 use app\classes\JsonController;
+use app\exceptions\FormValidationException;
+use app\models\auth\CamelTrunkNumberPreprocessing;
 
 class TrunkController extends JsonController
 {
@@ -10,6 +12,7 @@ class TrunkController extends JsonController
     protected $idParamName = 'id';
     protected $nameParamName = 'name';
     protected $readWhere = ['server_id'];
+    protected $withDependencies = ['numberPreprocessing'];
     protected $createPermission = 'camel_trunk_create';
     protected $listPermission = 'camel_trunk_list';
     protected $editPermission = 'camel_trunk_edit';
@@ -34,5 +37,21 @@ class TrunkController extends JsonController
                 ->all();
 
         return $items;
+    }
+
+    protected function performAfterSaveActions($item, $request)
+    {
+        CamelTrunkNumberPreprocessing::deleteByTrunk($item);
+        if (isset($request['numberPreprocessing'])) {
+            $order = 1;
+            foreach ($request['numberPreprocessing'] as $ruleData) {
+                $rule = CamelTrunkNumberPreprocessing::create($item, $ruleData);
+                $rule->order = $order;
+                if (!$rule->save()) {
+                    throw new FormValidationException($rule);
+                }
+                $order++;
+            }
+        }
     }
 }

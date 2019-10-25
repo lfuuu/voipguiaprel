@@ -12,6 +12,10 @@ use app\queries\auth\CamelTrunkQuery;
  */
 class CamelTrunk extends \yii\db\ActiveRecord
 {
+    public $_subitems = [
+        'numberPreprocessing' => 'getNumberPreprocessing'
+    ];
+
     public static function tableName()
     {
         return 'auth.camel_trunk';
@@ -35,5 +39,13 @@ class CamelTrunk extends \yii\db\ActiveRecord
             [['name'], 'string'],
             [['prefixlist_id', 'camel_route_table_id', 'server_id'], 'integer']
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNumberPreprocessing()
+    {
+        return $this->hasMany(CamelTrunkNumberPreprocessing::className(), ['camel_trunk_id' => 'id'])->orderBy('order');
     }
 }
