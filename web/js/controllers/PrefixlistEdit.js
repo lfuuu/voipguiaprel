@@ -23,7 +23,8 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     $scope.nnpMode = $scope.NNP_MODE_DIRECTION;
 
     var typeWithBuffer = [$scope.TYPE_ID_NNP, $scope.TYPE_ID_7800, $scope.TYPE_ID_DID_ON_VPBX, $scope.TYPE_ID_FMC,
-        $scope.TYPE_ID_PARTED_NUM, $scope.TYPE_ID_ROAMING, $scope.TYPE_ID_VOIP_REGISTRY, $scope.TYPE_ID_VOIP_NUMBER];
+        $scope.TYPE_ID_PARTED_NUM, $scope.TYPE_ID_ROAMING, $scope.TYPE_ID_VOIP_REGISTRY, $scope.TYPE_ID_VOIP_NUMBER,
+        $scope.TYPE_ID_GT];
 
     var countryLoadComplete = false;
     var regionLoadComplete = false;
