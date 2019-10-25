@@ -37,12 +37,17 @@ class TestAuthController extends JsonController
             'with_debug_info' => $item->with_debug_info ? 1 : 0,
             'camel_trunk_name' => $item->camel_trunk_name,
             'server_id' => $item->server_id,
+            'type' => 'acc'
         ];
 
         $request = $apiUrl . 'api/camel?' . http_build_query($apiParams);
 
-        $response = file_get_contents($request);
+        $response = json_decode(file_get_contents($request), true);
 
-        return 1;
+        return [
+            'item' => $item->toArray(),
+            'result' => ['nodes' => [$response]],
+            'url' => $request
+        ];
     }
 }

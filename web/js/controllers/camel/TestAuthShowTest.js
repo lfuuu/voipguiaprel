@@ -5,9 +5,6 @@ var CamelTestAuthShowTestCtrl = function($scope, CamelTestAuth, params, $modalIn
     if (params.id) {
         CamelTestAuth.result({id: params.id}).then(function(data){
             $scope.item = data.item;
-            $scope.isStageRowType = function (row) {
-                return row.type == 'STAGE';
-            };
             $scope.result = data.result;
             $scope.result_new = data.result_new;
             $scope.key = data.key;
