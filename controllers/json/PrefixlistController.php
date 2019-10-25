@@ -34,14 +34,20 @@ class PrefixlistController extends JsonController
         if (!\Yii::$app->user->can('prefixlist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
-        $server = $this->getServerOr404($this->request['server_id']);
-        $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+
+        try {
+            $server = $this->getServerOr404($this->request['server_id']);
+            $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+            $where = "( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id;
+        } catch (HttpException $e) {
+            $server = $this->getServerOcsOr404($this->request['server_id']);
+            $where = "server_id = ".$server->id." or sw_share_with_camel";
+        }
 
         return
             Prefixlist::find()
                 ->select(['id', 'name'])
-                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id . "or is_global = true")
+                ->where($where)
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -100,9 +106,15 @@ class PrefixlistController extends JsonController
         if (!\Yii::$app->user->can('prefixlist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
-        $server = $this->getServerOr404($this->request['server_id']);
-        $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+
+        try {
+            $server = $this->getServerOr404($this->request['server_id']);
+            $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+            $where = "( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id;
+        } catch (HttpException $e) {
+            $server = $this->getServerOcsOr404($this->request['server_id']);
+            $where = "server_id = ".$server->id." or sw_share_with_camel";
+        }
 
         return
             Prefixlist::find()
@@ -111,7 +123,7 @@ class PrefixlistController extends JsonController
                     'to_char(dt_update, \'YYYY-MM-DD HH24:MI:SS\') as dt_update',
                     'to_char(dt_prepare, \'YYYY-MM-DD HH24:MI:SS\') as dt_prepare', 'is_auto_update', 'object_comment'
                 ])
-                ->where("(server_id in (select id from public.server where hub_id = ".$hub_id.") and sw_shared) or server_id = ".$server->id . "or is_global = true")
+                ->where($where)
                 ->orderBy('name')
                 ->asArray()
                 ->all();

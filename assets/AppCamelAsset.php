@@ -37,6 +37,10 @@ class AppCamelAsset extends AssetBundle
         'js/controllers/camel/OutcomeEdit.js',
         'js/controllers/camel/OutcomeList.js',
         'js/controllers/camel/SettingsEdit.js',
+        'js/controllers/PrefixlistEdit.js',
+        'js/controllers/PrefixlistList.js',
+        'js/controllers/NumberEdit.js',
+        'js/controllers/NumberList.js',
     ];
 
     public $templates = [
@@ -61,5 +65,9 @@ class AppCamelAsset extends AssetBundle
         'templates/camel/outcome_edit.html',
         'templates/camel/outcome_list.html',
         'templates/camel/settings_edit.html',
+        'templates/prefixlist_edit.html',
+        'templates/prefixlist_list.html',
+        'templates/number_edit.html',
+        'templates/number_list.html',
     ];
 }

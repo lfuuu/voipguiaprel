@@ -21,6 +21,10 @@
             <a class="list-group-item" ng-if="userPermissions['camel_test_auth_list']" ng-click="Redirect.camelTestAuthList()" ng-class="{active:tabs.isController('CamelTestAuthListCtrl')}">Тесты маршрутизации</a>
             <a class="list-group-item" ng-if="userPermissions['camel_test_group_list']" ng-click="Redirect.camelTestGroupList()" ng-class="{active:tabs.isController('CamelTestGroupListCtrl')}">Группы тестов</a>
         </div>
+        <div ng-if="userPermissions['number_list'] || userPermissions['prefixlist_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['number_list']" ng-click="Redirect.numberList()" ng-class="{active:tabs.isController('NumberListCtrl')}">A/B/C/GT номера</a>
+            <a class="list-group-item" ng-if="userPermissions['prefixlist_list']" ng-click="Redirect.prefixlistList()" ng-class="{active:tabs.isController('PrefixlistListCtrl')}">Списки префиксов</a>
+        </div>
     </div>
 
     <div style="position: fixed; overflow: auto; bottom: 0; right: 0; top: 60px; padding-left: 20px; padding-right: 20px; left: 250px;':'left: 0;">
