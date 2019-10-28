@@ -32,10 +32,7 @@
                     <span class="badge">{{$index + 1}}</span>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
-                    <select ui-select2 style="width: 100%" tags="true" placeholder="GT number" ng-model="line.gt_number_id" required>
-                        <option value="">-- Выберите --</option>
-                        <option ng-repeat="number in gtNumberList" value="{{number.id}}">{{number.name}}</option>
-                    </select>
+                    <select-box disabled="{{line.is_locked}}" list="number" model="line.gt_number_id" param="4" default="Любой номер"></select-box>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
                     <select-box disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
@@ -44,10 +41,7 @@
                     <input class="form-control" placeholder="Regexp" ng-model="line.b_number_regexp" required>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
-                    <select ui-select2 style="width: 100%" tags="true" placeholder="Outcome" ng-model="line.outcome_id" required>
-                        <option value="">-- Выберите --</option>
-                        <option ng-repeat="outcome in outcomeList" value="{{outcome.id}}">{{outcome.name}}</option>
-                    </select>
+                    <camel-select-box list="outcome" model="line.outcome_id" required></camel-select-box>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%" ng-if="userPermissions['camel_route_table_route_lock']">
                     <div class="btn-group" ng-click="line.is_locked = !line.is_locked">

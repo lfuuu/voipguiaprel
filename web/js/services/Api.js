@@ -568,9 +568,11 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
 	var listA = undefined;
 	var listB = undefined;
 	var listC = undefined;
+	var listGT = undefined;
 	var promiseA = undefined;
 	var promiseB = undefined;
 	var promiseC = undefined;
+	var promiseGT = undefined;
 	return {
 		read: function(data) {
 			return ApiLoader.post(url + 'read', data);
@@ -643,6 +645,27 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                             deferred.reject(data);
                         });
                     promiseC = deferred.promise;
+                }
+                return deferred.promise;
+            } else if (type == 4) {
+                if (promiseGT !== undefined) return promiseGT;
+
+                var deferred = $q.defer();
+                if (listGT !== undefined) {
+                    deferred.resolve(listGT);
+                    return deferred.promise;
+                } else {
+                    var data = {server_id: serverId, type_id: type};
+                    ApiLoader.post(url + 'list', data)
+                        .then(function (data) {
+                            listGT = data;
+                            promiseGT = undefined;
+                            deferred.resolve(listGT);
+                        }, function (data) {
+                            promiseGT = undefined;
+                            deferred.reject(data);
+                        });
+                    promiseGT = deferred.promise;
                 }
                 return deferred.promise;
             }

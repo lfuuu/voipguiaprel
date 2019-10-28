@@ -11,14 +11,6 @@ var CamelRouteTableEditCtrl = function($rootScope, $scope, Redirect, CamelRouteT
         };
     }
 
-    Number.listByType({type_id: 4}).then(function (data) {
-        $scope.gtNumberList = data;
-    });
-
-    CamelList.outcome({server_id: $scope.server.id}).then(function (data) {
-        $scope.outcomeList = data;
-    });
-
     $scope.sortableOptions = {
         update: function (e, ui) {
             var sortBlocked = false;

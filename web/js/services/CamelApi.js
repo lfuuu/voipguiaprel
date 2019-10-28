@@ -9,6 +9,10 @@ function basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise) {
         list: function (data) {
             if (promise !== undefined) return promise;
 
+            if (!data.server_id) {
+                data.server_id = $rootScope.server.id;
+            }
+
             var deferred = $q.defer();
             if (list !== undefined) {
                 deferred.resolve(list);
