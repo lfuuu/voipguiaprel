@@ -8,6 +8,10 @@ use app\queries\auth\CamelOutcomeQuery;
  * @property string $name
  * @property int $type_id
  * @property int $server_id
+ * @property bool $f_use_arguments
+ * @property string $arguments
+ * @property bool $f_set_cregit_limit
+ * @property bool $f_check_b_number
  */
 class CamelOutcome extends \yii\db\ActiveRecord
 {
@@ -31,8 +35,9 @@ class CamelOutcome extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'string'],
-            [['type_id', 'server_id'], 'integer']
+            [['name', 'arguments'], 'string'],
+            [['type_id', 'server_id'], 'integer'],
+            [['f_use_arguments', 'f_set_cregit_limit', 'f_check_b_number'], 'boolean'],
         ];
     }
 }

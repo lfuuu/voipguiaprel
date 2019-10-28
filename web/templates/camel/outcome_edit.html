@@ -19,6 +19,39 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Аргументы Outcome</label>
+            <div class="col-sm-1" style="width:100px;">
+                <div class="btn-group" ng-click="item.f_use_arguments = !item.f_use_arguments">
+                    <button type="button" class="btn btn-sm {{item.f_use_arguments ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.f_use_arguments ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <input class="form-control" ng-hide="!item.f_use_arguments" ng-model="item.arguments">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Установить лимит кредита</label>
+            <div class="col-sm-6" style="width:100px;">
+                <div class="btn-group" ng-click="item.f_set_cregit_limit = !item.f_set_cregit_limit">
+                    <button type="button" class="btn btn-sm {{item.f_set_cregit_limit ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.f_set_cregit_limit ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Проверять B-номер</label>
+            <div class="col-sm-6" style="width:100px;">
+                <div class="btn-group" ng-click="item.f_check_b_number = !item.f_check_b_number">
+                    <button type="button" class="btn btn-sm {{item.f_check_b_number ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.f_check_b_number ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+        </div>
+
     </div>
     <div class="modal-footer">
         <div class="pull-left">
