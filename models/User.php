@@ -17,6 +17,26 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return 'auth.user';
     }
 
+    public static function create(array $data = null)
+    {
+        $password = $data['password'];
+        unset($data['password']);
+
+        $item = new self();
+
+        $item->load($data, '');
+        $item->setPassword($password);
+        return $item;
+    }
+
+    public function rules()
+    {
+        return [
+            [['name', 'login'], 'required'],
+            [['name', 'login'], 'string', 'max' => 100],
+        ];
+    }
+
     /**
      * @inheritdoc
      */
