@@ -294,7 +294,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
         });
     } else {
         $scope.item = {
-            server_id: $scope.server.id,
+            server_id: ($scope.isCamel ? $scope.server.default_routing_server_id : $scope.server.id),
             manual_list: [],
             smezhnost_list: [],
             exclude_operators: false,
@@ -314,7 +314,8 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             nnp_is_exclude_region: false,
             nnp_is_exclude_ndc_type: false,
             nnp_is_exclude_ndc: false,
-            count: 0
+            count: 0,
+            sw_share_with_camel: ($scope.isCamel ? true : false)
         };
 
         $scope.saveEnabled = true;

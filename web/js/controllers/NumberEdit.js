@@ -25,12 +25,13 @@ var NumberEditCtrl = function($scope, Number, Redirect, Prefixlist, params, $mod
         Number.findUsagesInStatRules({id: params.id}).then(function(data){
             $scope.usagesInStatRules = data;
         });
-	} else {
-		$scope.item = {
-            server_id: $scope.server.id,
-			prefixlist_ids: []
-		};
-	}
+    } else {
+        $scope.item = {
+            server_id: ($scope.isCamel ? $scope.server.default_routing_server_id : $scope.server.id),
+            prefixlist_ids: [],
+            sw_share_with_camel: ($scope.isCamel ? true : false)
+        };
+    }
 
 	Prefixlist.list().then(function(data){
 		$scope.prefixlistList = data;

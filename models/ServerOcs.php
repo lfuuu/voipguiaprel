@@ -9,6 +9,7 @@ use app\queries\ServerOcsQuery;
  * @property bool $active
  * @property string $type
  * @property string $camel_gw
+ * @property int $default_routing_server_id
  */
 class ServerOcs extends \yii\db\ActiveRecord
 {
@@ -33,6 +34,7 @@ class ServerOcs extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'type', 'camel_gw'], 'string'],
+            [['default_routing_server_id'], 'integer'],
             [['active'], 'boolean']
         ];
     }
