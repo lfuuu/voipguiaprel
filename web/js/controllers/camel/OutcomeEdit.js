@@ -1,4 +1,4 @@
-var CamelOutcomeEditCtrl = function($rootScope, $scope, Redirect, CamelOutcome, params, $modalInstance) {
+var CamelOutcomeEditCtrl = function($rootScope, $scope, Redirect, CamelOutcome, CamelList, params, $modalInstance) {
     if (params.id) {
         CamelOutcome.get({id: params.id}).then(function (data) {
             $scope.item = data;
@@ -9,6 +9,8 @@ var CamelOutcomeEditCtrl = function($rootScope, $scope, Redirect, CamelOutcome, 
             server_id: $scope.server.id
         };
     }
+
+    $scope.outcomeTypeList = CamelList.outcomeType();
 
     $scope.save = function () {
         CamelOutcome.save($scope.item).then(function () {

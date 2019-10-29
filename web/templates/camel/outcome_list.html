@@ -44,7 +44,7 @@
         <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
-            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.type_id}}</td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">{{getTypeName(item.type_id)}}</td>
             <td>
                 <comment-icon ng-if="item.id" key="{{item.id}}" type="camelTestAuth" comment="item.object_comment"></comment-icon>
             </td>

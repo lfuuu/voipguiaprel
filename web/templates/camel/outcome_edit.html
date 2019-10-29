@@ -15,7 +15,10 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Тип</label>
             <div class="col-sm-6">
-                <input class="form-control" placeholder="1" ng-model="item.type_id" required>
+                <select ui-select2 style="width: 100%" tags="true" placeholder="Группа" ng-model="item.type_id" required>
+                    <option value="">-- Выберите --</option>
+                    <option ng-repeat="type in outcomeTypeList" value="{{type.id}}">{{type.name}}</option>
+                </select>
             </div>
         </div>
 
@@ -35,9 +38,9 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Установить лимит кредита</label>
             <div class="col-sm-6" style="width:100px;">
-                <div class="btn-group" ng-click="item.f_set_cregit_limit = !item.f_set_cregit_limit">
-                    <button type="button" class="btn btn-sm {{item.f_set_cregit_limit ? 'btn-success active' : 'btn-default'}}">Да</button>
-                    <button type="button" class="btn btn-sm {{!item.f_set_cregit_limit ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                <div class="btn-group" ng-click="item.f_set_credit_limit = !item.f_set_credit_limit">
+                    <button type="button" class="btn btn-sm {{item.f_set_credit_limit ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.f_set_credit_limit ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                 </div>
             </div>
         </div>

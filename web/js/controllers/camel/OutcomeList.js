@@ -1,4 +1,4 @@
-var CamelOutcomeListCtrl = function($scope, CamelOutcome, Redirect, $window) {
+var CamelOutcomeListCtrl = function($scope, CamelOutcome, CamelList, Redirect, $window) {
 
     $scope.sortType = 'name';
     $scope.sortReverse = false;
@@ -14,6 +14,16 @@ var CamelOutcomeListCtrl = function($scope, CamelOutcome, Redirect, $window) {
         CamelOutcome.read({server_id: $scope.server.id}).then(function(data){
             $scope.list = data;
         });
+    };
+
+    $scope.outcomeTypeList = CamelList.outcomeType();
+
+    $scope.getTypeName = function (typeId) {
+        for (var i in $scope.outcomeTypeList) {
+            if ($scope.outcomeTypeList[i]['id'] == typeId) {
+                return $scope.outcomeTypeList[i]['name'];
+            }
+        }
     };
 
     $scope.clickCreate = function() {

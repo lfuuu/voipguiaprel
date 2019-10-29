@@ -122,6 +122,13 @@ app.factory('CamelList', function (CamelTrunk, CamelGt, CamelRouteTable, CamelTe
         },
         settings: function (data) {
             return CamelSettings.list(data);
+        },
+        outcomeType : function () {
+            return [
+                {id: 1, name: 'ACCEPT'},
+                {id: 2, name: 'REJECT'},
+                {id: 3, name: 'TEMP NAME'},
+            ];
         }
     };
 });
