@@ -34,6 +34,14 @@ var CamelTrunkListCtrl = function($scope, CamelTrunk, Redirect, $window) {
         });
     };
 
+    $scope.openRouteTable = function(routeTableId) {
+        if (window.getSelection().type == 'Range') return;
+
+        Redirect.camelRouteTableEdit(routeTableId).then(function () {
+            $scope.init();
+        });
+    };
+
     $scope.deleteItem = function(item) {
         if (!$window.confirm('Удалить?')) return;
 

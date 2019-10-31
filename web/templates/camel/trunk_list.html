@@ -52,7 +52,10 @@
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.prefixlist_name}}</td>
-            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.route_table_name}}</td>
+            <td style="cursor: pointer">
+                <a ng-if="item.route_table_id && userPermissions['camel_route_table_edit']" href="#" ng-click="openRouteTable(item.route_table_id);">{{item.route_table_name}}</a>
+                <span ng-if="item.route_table_id && !userPermissions['camel_route_table_edit']">{{item.route_table_name}}</span>
+            </td>
             <td>
                 <comment-icon ng-if="item.id" key="{{item.id}}" type="camelTrunk" comment="item.object_comment"></comment-icon>
             </td>
