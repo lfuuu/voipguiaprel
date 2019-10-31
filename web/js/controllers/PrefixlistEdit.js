@@ -318,6 +318,10 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             sw_share_with_camel: ($scope.isCamel ? true : false)
         };
 
+        if ($scope.isCamel) {
+            $scope.item.type_id = $scope.TYPE_ID_GT;
+        }
+
         $scope.saveEnabled = true;
 
         $scope.$watch('item.nnp_country', watchers.nnp_country);

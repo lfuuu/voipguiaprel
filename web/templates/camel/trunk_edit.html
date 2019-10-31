@@ -24,10 +24,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Префикслист GT</label>
                     <div class="col-sm-10">
-                        <select ui-select2 style="width: 100%" tags="true" placeholder="GT" ng-model="item.prefixlist_id" required>
-                            <option value="">-- Выберите --</option>
-                            <option ng-repeat="prefixlist in prefixlistList" value="{{prefixlist.id}}">{{prefixlist.name}}</option>
-                        </select>
+                        <select-box list="prefixlistByType" param="14" model="item.prefixlist_id"></select-box>
                     </div>
                 </div>
 
@@ -41,8 +38,8 @@
 
             <div class="tab-pane" id="number_preprocessing">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Препроцессинг номеров</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-1 control-label">Препроцессинг номеров</label>
+                    <div class="col-sm-11">
                         <table class="table table-striped">
                             <tbody ui-sortable="{axis: 'y'}" ng-model="item.numberPreprocessing">
                             <tr ng-repeat="line in item.numberPreprocessing">
@@ -57,12 +54,6 @@
                                     <select ui-select2 ng-model="line.mod_type" placeholder="round" style="width: 100%" >
                                         <option ng-repeat="numPreproc in trunkNumberPreprocessingType" value="{{numPreproc.id}}">{{numPreproc.name}}</option>
                                     </select>
-                                </td>
-                                <td width="5%" style="cursor: ns-resize">
-                                    NOA:
-                                </td>
-                                <td width="5%">
-                                    <input class="form-control input-sm" ng-model="line.noa"/>
                                 </td>
                                 <!--Старый способ с префиксом-->
                                 <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
@@ -98,15 +89,15 @@
                                 <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
                                     Regex:
                                 </td>
-                                <td ng-if="preprocValue(line)" width="10%">
+                                <td ng-if="preprocValue(line)" width="20%">
                                     <input class="form-control input-sm" ng-model="line.regex" />
                                 </td>
 
                                 <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
                                     Значение:
                                 </td>
-                                <td ng-if="preprocValue(line)" width="10%">
-                                    <input class="form-control input-sm" ng-model="line.mod_value" required />
+                                <td ng-if="preprocValue(line)" width="5%">
+                                    <input class="form-control input-sm" style="width: 50px;" ng-model="line.mod_value" required />
                                 </td>
 
                                 <td ng-if="!preprocPosRange(line) || line.mod_type == 3" width="5%" style="cursor: ns-resize"> </td>
@@ -127,7 +118,7 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="17">
+                                <td colspan="15">
                                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(1)"><i class="glyphicon glyphicon-plus"></i> А-номер</button>
                                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(2)"><i class="glyphicon glyphicon-plus"></i> B-номер</button>
                                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(4)"><i class="glyphicon glyphicon-plus"></i> GT-номер</button>

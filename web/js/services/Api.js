@@ -574,6 +574,28 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
 	var promiseC = undefined;
 	var promiseGT = undefined;
 	return {
+	    clearList: function(type) {
+	        switch (type) {
+                case '1':
+                    listA = undefined;
+                    promiseA = undefined;
+                    break;
+                case '2':
+                    listB = undefined;
+                    promiseB = undefined;
+                    break;
+                case '3':
+                    listC = undefined;
+                    promiseC = undefined;
+                    break;
+                case '4':
+                    listGT = undefined;
+                    promiseGT = undefined;
+                    break;
+                default:
+                    break;
+            }
+        },
 		read: function(data) {
 			return ApiLoader.post(url + 'read', data);
 		},
@@ -1933,6 +1955,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     prefixlist: function () {
       return Prefixlist.list();
     },
+    prefixlistByType: function (type) {
+      return Prefixlist.listByType({type_id: type});
+    },
     attribute: function () {
       return Attribute.list();
     },
@@ -1944,6 +1969,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     number: function (type, serverId) {
       return Number.list(type, serverId);
+    },
+    numberClearList: function (type) {
+      Number.clearList(type);
     },
     destination: function () {
       return Destination.list();

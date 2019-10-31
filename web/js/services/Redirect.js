@@ -120,8 +120,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             $cookies.routing_selected_page = 'numberList';
             return openTab(NumberListCtrl, '/templates/number_list.html');
         },
-        numberEdit: function(id) {
-            return openModal(NumberEditCtrl, '/templates/number_edit.html', {id: id});
+        numberEdit: function(id, type) {
+            return openModal(NumberEditCtrl, '/templates/number_edit.html', {id: id, type_id: type});
         },
         numberCreate: function() {
             return openModal(NumberEditCtrl, '/templates/number_edit.html', {id: null});
@@ -626,6 +626,12 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         camelPrefixlistList: function() {
             $cookies.camel_selected_page = 'camelPrefixlistList';
             return openTab(PrefixlistListCtrl, '/templates/prefixlist_list.html');
+        },
+        prefixlistByTypeEdit: function(id) {
+            return openModal(PrefixlistEditCtrl, '/templates/prefixlist_edit.html', {id: id});
+        },
+        prefixlistByTypeCreate: function() {
+            return openModal(PrefixlistEditCtrl, '/templates/prefixlist_edit.html', {id: null});
         },
     };
 });

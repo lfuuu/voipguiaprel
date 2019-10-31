@@ -5,6 +5,10 @@ var CamelGtEditCtrl = function($rootScope, $scope, Redirect, CamelGt, Nnp, param
 
     var watchers = {
         country_code: function (newValue, oldValue) {
+            if (!$scope.item) {
+                return;
+            }
+
             regionLoadComplete = false;
             operatorLoadComplete = false;
             if (!newValue || newValue.length == 0) {

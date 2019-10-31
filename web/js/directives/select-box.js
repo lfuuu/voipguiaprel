@@ -41,8 +41,14 @@
 
             function openItem(itemId) {
                 var editFunction = Redirect[attrs.list + 'Edit'];
+                var clearFunction = List[attrs.list + 'ClearList'];
+
                 if (editFunction !== undefined) {
-                    editFunction(itemId).then(function () {
+                    editFunction(itemId, scope.param).then(function () {
+                        if (clearFunction !== undefined) {
+                            clearFunction(scope.param);
+                        }
+
                         loadList();
                     })
                 }
