@@ -633,5 +633,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         prefixlistByTypeCreate: function() {
             return openModal(PrefixlistEditCtrl, '/templates/prefixlist_edit.html', {id: null});
         },
+        camelTestAuthClone: function(id) {
+            return openModal(CamelTestAuthEditCtrl, '/templates/camel/test_auth_edit.html', {id: id, clone: true});
+        },
     };
 });

@@ -2,6 +2,10 @@ var CamelTestAuthEditCtrl = function($rootScope, $scope, Redirect, CamelTestAuth
     if (params.id) {
         CamelTestAuth.get({id: params.id}).then(function (data) {
             $scope.item = data;
+
+            if (params.clone) {
+                delete $scope.item.id;
+            }
         });
     } else {
         $scope.item = {

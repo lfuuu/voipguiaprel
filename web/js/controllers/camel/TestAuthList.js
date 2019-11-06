@@ -48,6 +48,18 @@ var CamelTestAuthListCtrl = function($scope, CamelTestAuth, Redirect, $window) {
         });
     };
 
+    $scope.cloneTest = function(item) {
+        if (!userPermissions['camel_test_auth_create']) {
+            return;
+        }
+
+        if (window.getSelection().type == 'Range') return;
+
+        Redirect.camelTestAuthClone(item.id).then(function () {
+            $scope.init();
+        });
+    };
+
     $scope.deleteItem = function(item) {
         if (!$window.confirm('Удалить?')) return;
 

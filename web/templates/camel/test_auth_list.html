@@ -52,6 +52,7 @@
                 </a>
             </th>
             <th width="1%"></th>
+            <th width="1%"></th>
             <th ng-if="userPermissions['camel_test_auth_delete']" width="1%"></th>
         </tr>
     </thead>
@@ -65,6 +66,7 @@
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.a_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.b_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.gt_number}}</td>
+            <td ng-if="userPermissions['camel_test_auth_create']"><button type="button" class="btn btn-default btn-sm" ng-click="cloneTest(item)">Клонировать</button></td>
             <td>
                 <comment-icon ng-if="item.id" key="{{item.id}}" type="camelTestAuth" comment="item.object_comment"></comment-icon>
             </td>
