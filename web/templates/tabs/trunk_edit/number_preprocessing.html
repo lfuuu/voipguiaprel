@@ -16,63 +16,25 @@
                         <option ng-repeat="numPreproc in trunkNumberPreprocessingType" value="{{numPreproc.id}}">{{numPreproc.name}}</option>
                     </select>
                 </td>
-                <td width="5%" style="cursor: ns-resize">
-                    NOA:
+                <td style="cursor: ns-resize">
+                    <div style="display: grid; grid-template-columns: 50px 50px 70px repeat(7, 1fr)">
+                        <div class="preprocessing-child preprocessing-child-title">NOA:</div>
+                        <div class="preprocessing-child"><input class="form-control input-sm" style="width: 25px;" ng-model="line.noa"/></div>
+                        <div ng-if="preprocPrefix(line)" class="preprocessing-child">Длина номера:</div>
+                        <div ng-if="preprocPrefix(line)" class="preprocessing-child"><input class="form-control input-sm" style="width: 45px;" ng-model="line.length" required /></div>
+                        <div ng-if="preprocPrefix(line)" class="preprocessing-child preprocessing-child-title">Префикс:</div>
+                        <div ng-if="preprocPrefix(line)" class="preprocessing-child"><input class="form-control input-sm" style="width: 65px;" ng-model="line.prefix" required /></div>
+                        <div ng-if="preprocPosRange(line)" class="preprocessing-child preprocessing-child-title">Начало:</div>
+                        <div ng-if="line.mod_type == 1" class="preprocessing-child preprocessing-child-title">Позиция:</div>
+                        <div ng-if="preprocPosRange(line) || line.mod_type == 1" class="preprocessing-child"><input class="form-control input-sm" style="width: 30px;" ng-model="line.start_pos" required /></div>
+                        <div ng-if="preprocPosRange(line)" class="preprocessing-child preprocessing-child-title">Конец:</div>
+                        <div ng-if="preprocPosRange(line)" class="preprocessing-child"><input class="form-control input-sm" style="width: 30px;" ng-model="line.end_pos" required /></div>
+                        <div ng-if="preprocValue(line)" class="preprocessing-child preprocessing-child-title">Regex:</div>
+                        <div ng-if="preprocValue(line)" class="preprocessing-child"><input class="form-control input-sm" style="width: 170px;" ng-model="line.regex" /></div>
+                        <div ng-if="preprocValue(line)" class="preprocessing-child preprocessing-child-title">Значение:</div>
+                        <div ng-if="preprocValue(line)" class="preprocessing-child"><input class="form-control input-sm" style="width: 85px;" ng-model="line.mod_value" required /></div>
+                    </div>
                 </td>
-                <td width="5%">
-                    <input class="form-control input-sm" ng-model="line.noa"/>
-                </td>
-                <!--Старый способ с префиксом-->
-                <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
-                    Длина&nbsp;номера:
-                </td>
-                <td ng-if="preprocPrefix(line)" width="10%">
-                    <input class="form-control input-sm" ng-model="line.length" required />
-                </td>
-                <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
-                    Префикс:
-                </td>
-                <td ng-if="preprocPrefix(line)" width="10%">
-                    <input class="form-control input-sm" ng-model="line.prefix" required />
-                </td>
-
-                <!-- Начало/Конец -->
-                <td ng-if="preprocPosRange(line)" width="5%" style="cursor: ns-resize">
-                    Начало:
-                </td>
-                <td ng-if="line.mod_type == 1" width="5%" style="cursor: ns-resize">
-                    Позиция:
-                </td>
-                <td ng-if="preprocPosRange(line) || line.mod_type == 1" width="10%">
-                    <input class="form-control input-sm" ng-model="line.start_pos" required />
-                </td>
-                <td ng-if="preprocPosRange(line)" width="10%" style="cursor: ns-resize">
-                    Конец:
-                </td>
-                <td ng-if="preprocPosRange(line)" width="10%">
-                    <input class="form-control input-sm" ng-model="line.end_pos" required />
-                </td>
-
-                <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
-                    Regex:
-                </td>
-                <td ng-if="preprocValue(line)" width="20%">
-                    <input class="form-control input-sm" ng-model="line.regex" />
-                </td>
-
-                <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
-                    Значение:
-                </td>
-                <td ng-if="preprocValue(line)" width="5%">
-                    <input class="form-control input-sm" ng-model="line.mod_value" required />
-                </td>
-
-                <td ng-if="!preprocPosRange(line) || line.mod_type == 3" width="5%" style="cursor: ns-resize"> </td>
-                <td ng-if="!preprocPosRange(line) || line.mod_type == 3" width="10%"> </td>
-                <td ng-if="!preprocPosRange(line) && line.mod_type != 1" width="5%" style="cursor: ns-resize"> </td>
-                <td ng-if="!preprocPosRange(line) && line.mod_type != 1" width="10%"> </td>
-                <td ng-if="line.mod_type == 3" width="5%" style="cursor: ns-resize"> </td>
-                <td ng-if="line.mod_type == 3" width="10%"> </td>
 
                 <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.avoid_mod" ng-click="line.avoid_mod=!line.avoid_mod">Без модификаторов</input> </td>
                 <td>
@@ -85,7 +47,7 @@
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="17">
+                <td colspan="8">
                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(1)"><i class="glyphicon glyphicon-plus"></i> А-номер</button>
                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(2)"><i class="glyphicon glyphicon-plus"></i> B-номер</button>
                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(3)"><i class="glyphicon glyphicon-plus"></i> C-номер</button>

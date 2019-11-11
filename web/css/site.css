@@ -282,3 +282,11 @@ td > div > .select2-container > .select2-choice {
 [data-has-mark='true'] {
 	background-color: lightgreen;
 }
+
+.preprocessing-child {
+	padding: 0 5px 0 5px;
+}
+
+.preprocessing-child-title {
+	padding-top: 6px;
+}
