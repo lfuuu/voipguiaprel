@@ -16,6 +16,12 @@
                         <option ng-repeat="numPreproc in trunkNumberPreprocessingType" value="{{numPreproc.id}}">{{numPreproc.name}}</option>
                     </select>
                 </td>
+                <td width="5%" style="cursor: ns-resize">
+                    NOA:
+                </td>
+                <td width="5%">
+                    <input class="form-control input-sm" ng-model="line.noa"/>
+                </td>
                 <!--Старый способ с префиксом-->
                 <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
                     Длина&nbsp;номера:
@@ -79,7 +85,7 @@
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="9">
+                <td colspan="17">
                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(1)"><i class="glyphicon glyphicon-plus"></i> А-номер</button>
                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(2)"><i class="glyphicon glyphicon-plus"></i> B-номер</button>
                     <button type="button" class="btn btn-success btn-xs" ng-click="addNumberPreprocessing(3)"><i class="glyphicon glyphicon-plus"></i> C-номер</button>
