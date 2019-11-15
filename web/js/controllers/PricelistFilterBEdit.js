@@ -124,8 +124,6 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
                 });
             }
 
-            $scope.saveEnabled = true;
-
             $scope.$watch('item.nnp_country', watchers.nnp_country);
             $scope.$watch('item.nnp_region', watchers.nnp_region);
             $scope.$watch('item.filter_country', watchers.filter_country);
@@ -279,11 +277,13 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
                     });
 
                     $q.all([regionList, operatorList, ndcList]).then(function () {
-                        $scope.saveEnabled = true;
+                        $scope.saveEnabled = !$scope.pricelistIsActive;
                     });
                 } else {
-                    $scope.saveEnabled = true;
+                    $scope.saveEnabled = !$scope.pricelistIsActive;
                 }
+            } else {
+                $scope.saveEnabled = !$scope.pricelistIsActive;
             }
         } catch (error) {
             $scope.nnpDataParseError = true;

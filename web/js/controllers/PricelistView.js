@@ -339,7 +339,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     };
 
     $scope.editFilterA = function (id) {
-        Redirect.pricelistFilterAEdit(id).then(function () {
+        Redirect.pricelistFilterAEdit(id, $scope.pricelistIsActive).then(function () {
             $scope.initData($scope.item.id);
         }, function () {
             $scope.initData($scope.item.id);
@@ -347,7 +347,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
     };
 
     $scope.editFilterB = function (id) {
-        Redirect.pricelistFilterBEdit(id).then(function () {
+        Redirect.pricelistFilterBEdit(id, $scope.pricelistIsActive).then(function () {
             $scope.initData($scope.item.id);
         }, function () {
             $scope.initData($scope.item.id);
