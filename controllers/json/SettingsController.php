@@ -86,7 +86,9 @@ class SettingsController extends JsonController
             'prefixlist_block' => $prefixlistBlock,
             'hub_number_capacity' => $hubNumberCapacityFormatted,
             'trunk_groups' => $trunkGroups,
-            'rn_replace_prefixlist_id' => $server->rn_replace_prefixlist_id
+            'rn_replace_prefixlist_id' => $server->rn_replace_prefixlist_id,
+            'fsb_numa_blacklist_ids' => $server->fsb_numa_blacklist_ids,
+            'fsb_numb_blacklist_ids' => $server->fsb_numb_blacklist_ids,
         ];
     }
 
@@ -106,11 +108,29 @@ class SettingsController extends JsonController
                 $prefixlistBlock = $this->request['prefixlist_block'];
                 unset($this->request['prefixlist_block']);
             }
+
+            if (isset($this->request['fsb_numa_blacklist_ids'])) {
+                $fsbNumaBlacklistIds = $this->request['fsb_numa_blacklist_ids'];
+                unset($this->request['fsb_numa_blacklist_ids']);
+            }
+
+            if (isset($this->request['fsb_numb_blacklist_ids'])) {
+                $fsbNumbBlacklistIds = $this->request['fsb_numb_blacklist_ids'];
+                unset($this->request['fsb_numb_blacklist_ids']);
+            }
             
             $server->load($this->request, '');
             
             if ($prefixlistBlock) {
                 $server->prefixlist_block = '{' . implode(',', $prefixlistBlock) . '}';
+            }
+
+            if ($fsbNumaBlacklistIds) {
+                $server->fsb_numa_blacklist_ids = '{' . implode(',', $fsbNumaBlacklistIds) . '}';
+            }
+
+            if ($fsbNumbBlacklistIds) {
+                $server->fsb_numb_blacklist_ids = '{' . implode(',', $fsbNumbBlacklistIds) . '}';
             }
             
             if ($server->isAttributeChanged('min_price_for_autorouting')) {

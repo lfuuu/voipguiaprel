@@ -1,5 +1,5 @@
 <div class="input-group input-group-sm">
-    <select ui-select2 data-placeholder="{{placeholder}}" ng-model="model" ng-disabled="{{disabled}}" ng-required="{{required}}" style="width: 99%">
+    <select ui-select2 data-placeholder="{{placeholder}}" ng-model="model" ng-disabled="{{disabled}}" ng-required="{{required}}" ng-multiple="{{multiple}}" style="width: 99%">
         <option ng-if="placeholder || default" value="">{{default ? '-- ' + default + ' --' : ''}}</option>
         <option value="new">-- Создать --</option>
         <option ng-repeat="item in list" value="{{item.id}}">{{item.name}}</option>

@@ -14,7 +14,8 @@
                 default: '@',
                 required: '@',
                 param: '@',
-                disabled: '@'
+                disabled: '@',
+                multiple: '@'
             }
         };
         return directive;
