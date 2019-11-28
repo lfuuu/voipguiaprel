@@ -636,5 +636,45 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         camelTestAuthClone: function(id) {
             return openModal(CamelTestAuthEditCtrl, '/templates/camel/test_auth_edit.html', {id: id, clone: true});
         },
+        apiBillingApiList: function() {
+            $cookies.api_billing_selected_page = 'apiBillingApiList';
+            return openTab(ApiBillingApiListCtrl, '/templates/api_billing/api_list.html');
+        },
+        apiBillingApiCreate: function() {
+            return openModal(ApiBillingApiEditCtrl, '/templates/api_billing/api_edit.html', {id: null});
+        },
+        apiBillingApiEdit: function(id) {
+            return openModal(ApiBillingApiEditCtrl, '/templates/api_billing/api_edit.html', {id: id});
+        },
+        apiBillingApiMethodList: function() {
+            $cookies.api_billing_selected_page = 'apiBillingApiMethodList';
+            return openTab(ApiBillingApiMethodListCtrl, '/templates/api_billing/api_method_list.html');
+        },
+        apiBillingApiMethodCreate: function() {
+            return openModal(ApiBillingApiMethodEditCtrl, '/templates/api_billing/api_method_edit.html', {id: null});
+        },
+        apiBillingApiMethodEdit: function(id) {
+            return openModal(ApiBillingApiMethodEditCtrl, '/templates/api_billing/api_method_edit.html', {id: id});
+        },
+        apiBillingApiPricelistList: function() {
+            $cookies.api_billing_selected_page = 'apiBillingApiPricelistList';
+            return openTab(ApiBillingApiPricelistListCtrl, '/templates/api_billing/api_pricelist_list.html');
+        },
+        apiBillingApiPricelistCreate: function() {
+            return openModal(ApiBillingApiPricelistEditCtrl, '/templates/api_billing/api_pricelist_edit.html', {id: null});
+        },
+        apiBillingApiPricelistEdit: function(id) {
+            return openModal(ApiBillingApiPricelistEditCtrl, '/templates/api_billing/api_pricelist_edit.html', {id: id});
+        },
+        apiBillingApiPricelistItemList: function() {
+            $cookies.api_billing_selected_page = 'apiBillingApiPricelistItemList';
+            return openTab(ApiBillingApiPricelistItemListCtrl, '/templates/api_billing/api_pricelist_item_list.html');
+        },
+        apiBillingApiPricelistItemCreate: function() {
+            return openModal(ApiBillingApiPricelistItemEditCtrl, '/templates/api_billing/api_pricelist_item_edit.html', {id: null});
+        },
+        apiBillingApiPricelistItemEdit: function(id) {
+            return openModal(ApiBillingApiPricelistItemEditCtrl, '/templates/api_billing/api_pricelist_item_edit.html', {id: id});
+        },
     };
 });

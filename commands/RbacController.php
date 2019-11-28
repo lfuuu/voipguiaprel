@@ -180,6 +180,22 @@ class RbacController extends Controller {
         ['name' => 'camel_outcome_delete', 'description' => 'Удаление Camel Outcome'],
         ['name' => 'camel_server_list', 'description' => 'Просмотр списка Camel серверов'],
         ['name' => 'camel_server_edit', 'description' => 'Редактирование Camel сервера'],
+        ['name' => 'api_billing_api_list', 'description' => 'Просмотр списка API в API биллере'],
+        ['name' => 'api_billing_api_create', 'description' => 'Создание API в API биллере'],
+        ['name' => 'api_billing_api_edit', 'description' => 'Редактирование API в API биллере'],
+        ['name' => 'api_billing_api_delete', 'description' => 'Удаление API из API биллера'],
+        ['name' => 'api_billing_api_method_list', 'description' => 'Просмотр списка методов API в API биллере'],
+        ['name' => 'api_billing_api_method_create', 'description' => 'Создание метода API в API биллере'],
+        ['name' => 'api_billing_api_method_edit', 'description' => 'Редактирование метода API в API биллере'],
+        ['name' => 'api_billing_api_method_delete', 'description' => 'Удаление метода API из API биллера'],
+        ['name' => 'api_billing_api_pricelist_list', 'description' => 'Просмотр списка прайслистов в API биллере'],
+        ['name' => 'api_billing_api_pricelist_create', 'description' => 'Создание прайслиста в API биллере'],
+        ['name' => 'api_billing_api_pricelist_edit', 'description' => 'Редактирование прайслиста в API биллере'],
+        ['name' => 'api_billing_api_pricelist_delete', 'description' => 'Удаление прайслиста из API биллера'],
+        ['name' => 'api_billing_api_pricelist_item_list', 'description' => 'Просмотр списка элементов прайслистов в API биллере'],
+        ['name' => 'api_billing_api_pricelist_item_create', 'description' => 'Создание элемента прайслиста в API биллере'],
+        ['name' => 'api_billing_api_pricelist_item_edit', 'description' => 'Редактирование элемента прайслиста в API биллере'],
+        ['name' => 'api_billing_api_pricelist_item_delete', 'description' => 'Удаление элемента прайслиста из API биллера'],
     ];
 
     private static $_roles = [
@@ -187,6 +203,7 @@ class RbacController extends Controller {
         ['name' => 'admin_billing', 'description' => 'Администратор биллинга'],
         ['name' => 'admin_camel', 'description' => 'Администратор Camel'],
         ['name' => 'admin_settings', 'description' => 'Администратор настроек системы'],
+        ['name' => 'admin_api_billing', 'description' => 'Администратор API биллинга'],
         ['name' => 'superadmin', 'description' => 'Супер администратор'],
         ['name' => 'engineer', 'description' => 'Инженер'],
         ['name' => 'manager', 'description' => 'Менеджер'],
@@ -277,6 +294,12 @@ class RbacController extends Controller {
         ['role' => 'admin_settings', 'permissions' => [
             'acl_list', 'action_log_list'
         ]],
+        ['role' => 'admin_api_billing', 'permissions' => [
+            'api_billing_api_list', 'api_billing_api_create', 'api_billing_api_edit', 'api_billing_api_delete',
+            'api_billing_method_api_list', 'api_billing_method_api_create', 'api_billing_method_api_edit', 'api_billing_api_method_delete',
+            'api_billing_api_pricelist_list', 'api_billing_api_pricelist_create', 'api_billing_api_pricelist_edit', 'api_billing_api_pricelist_delete',
+            'api_billing_api_pricelist_item_list', 'api_billing_api_pricelist_item_create', 'api_billing_api_pricelist_item_edit', 'api_billing_api_pricelist_item_delete',
+        ]],
         ['role' => 'engineer', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view',
             'trunk_list', 'trunk_create', 'trunk_edit',
@@ -335,6 +358,11 @@ class RbacController extends Controller {
     public static function getSettingsPermissions()
     {
         return self::getPermissions('admin_settings');
+    }
+
+    public static function getApiBillingPermissions()
+    {
+        return self::getPermissions('admin_api_billing');
     }
 
     public function actionInit() {

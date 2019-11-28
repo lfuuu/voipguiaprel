@@ -1,9 +1,9 @@
 (function () {
-    app.directive('camelSelectBox', camelSelectBox);
+    app.directive('apiBillingSelectBox', apiBillingSelectBox);
 
-    camelSelectBox.$inject = ['CamelList', 'Redirect'];
+    apiBillingSelectBox.$inject = ['ApiBillingList', 'Redirect'];
 
-    function camelSelectBox(CamelList, Redirect) {
+    function apiBillingSelectBox(ApiBillingList, Redirect) {
         var directive = {
             link: link,
             templateUrl: '/templates/directives/select-box.html',
@@ -31,7 +31,7 @@
             });
 
             function loadList() {
-                var listFunction = CamelList[attrs.list];
+                var listFunction = ApiBillingList[attrs.list];
 
                 if (listFunction !== undefined) {
                     listFunction({}).then(function (data) {
@@ -41,7 +41,7 @@
             }
 
             function openItem(itemId) {
-                var editFunction = Redirect['camel' + attrs.list[0].toUpperCase() + attrs.list.slice(1) + 'Edit'];
+                var editFunction = Redirect['apiBilling' + attrs.list[0].toUpperCase() + attrs.list.slice(1) + 'Edit'];
 
                 if (editFunction !== undefined) {
                     editFunction(itemId).then(function () {

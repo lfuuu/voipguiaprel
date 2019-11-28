@@ -4,6 +4,7 @@ use yii\helpers\Url;
 use app\assets\AppAsset;
 use app\assets\AppSettingsAsset;
 use app\assets\AppCamelAsset;
+use app\assets\AppApiBillingAsset;
 use app\assets\AppLibAsset;
 use app\commands\RbacController;
 
@@ -17,10 +18,12 @@ if ($_SERVER['REQUEST_URI'] == '/routing') {
     AppAsset::register($this);
 } elseif ($_SERVER['REQUEST_URI'] == '/billing') {
     AppAsset::register($this);
-} elseif ($_SERVER['REQUEST_URI'] == '/camel'|| preg_match("/^\/cs/i", $_SERVER['REQUEST_URI'])) {
+} elseif ($_SERVER['REQUEST_URI'] == '/camel' || preg_match("/^\/cs/i", $_SERVER['REQUEST_URI'])) {
     AppCamelAsset::register($this);
 } elseif ($_SERVER['REQUEST_URI'] == '/settings') {
     AppSettingsAsset::register($this);
+} elseif ($_SERVER['REQUEST_URI'] == '/api-billing' || preg_match("/^\/abs/i", $_SERVER['REQUEST_URI'])) {
+    AppApiBillingAsset::register($this);
 } else {
     AppAsset::register($this);
 }
@@ -32,10 +35,12 @@ if (Yii::$app->user->identity) {
     $billingPermissions = RbacController::getBillingPermissions();
     $camelPermissions = RbacController::getCamelPermissions();
     $settingsPermissions = RbacController::getSettingsPermissions();
+    $apiBillingPermissions = RbacController::getApiBillingPermissions();
 
     $userRoutingPermissions = [];
     $userBillingPermissions = [];
     $userCamelPermissions = [];
+    $userApiBillingPermissions = [];
     $userSettingsPermissions = [];
 
     foreach ($userPermissions as $permissionKey => $permission) {
@@ -47,6 +52,8 @@ if (Yii::$app->user->identity) {
             $userCamelPermissions[$permissionKey] = true;
         } else if (in_array($permission->name, $settingsPermissions)) {
             $userSettingsPermissions[$permissionKey] = true;
+        } else if (in_array($permission->name, $apiBillingPermissions)) {
+            $userApiBillingPermissions[$permissionKey] = true;
         }
     }
 
@@ -54,11 +61,13 @@ if (Yii::$app->user->identity) {
     $userHasBilling = count($userBillingPermissions) > 0 ? true : false;
     $userHasCamel = count($userCamelPermissions) > 0 ? true : false;
     $userHasSettings = count($userSettingsPermissions) > 0 ? true : false;
+    $userHasApiBilling = count($userApiBillingPermissions) > 0 ? true : false;
 } else {
     $userHasRouting = false;
     $userHasBilling = false;
     $userHasCamel = false;
     $userHasSettings = false;
+    $userHasApiBilling = false;
 }
 
 ?>
@@ -88,6 +97,9 @@ if (Yii::$app->user->identity) {
 <?php } ?>
 <?php if ($userHasCamel) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/camel'|| preg_match("/^\/cs/i", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/camel'])?>">Camel</a></li>
+<?php } ?>
+<?php if ($userHasApiBilling) { ?>
+                        <li<?php if ($_SERVER['REQUEST_URI'] == '/api-billing'|| preg_match("/^\/abs/i", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/api-billing'])?>">Биллинг API</a></li>
 <?php } ?>
 <?php if (\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')): ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace'])?>">Биржа РФ</a></li>

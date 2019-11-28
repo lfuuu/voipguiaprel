@@ -42,4 +42,11 @@ class CategoryController extends BaseController
             'servers' => ServerOcs::find()->where(['type' => 'ocslte'])->orderBy('id')->all(),
         ]);
     }
+
+    public function actionApiBilling()
+    {
+        return $this->render('api_billing', [
+            'servers' => ServerOcs::find()->where(['type' => 'apibill'])->orderBy('id')->all(),
+        ]);
+    }
 }
