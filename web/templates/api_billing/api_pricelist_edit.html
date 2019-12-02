@@ -12,6 +12,49 @@
             </div>
         </div>
 
+        <table class="table table-striped" style="font-size: smaller; font-weight: bold;">
+            <thead>
+            <tr>
+                <th></th>
+                <th>API</th>
+                <th>Метод API</th>
+                <th>Цена</th>
+                <th>Включено</th>
+                <th>Удалить</th>
+            </tr>
+            </thead>
+            <tbody ui-sortable="sortableOptions" ng-model="item.items">
+            <tr style="border-bottom: lightgrey solid 2px;border-top: lightgrey solid 2px;" ng-repeat="line in item.items">
+                <td width="1%" style="cursor: ns-resize; padding-bottom: 3px;padding-top: 3px;vertical-align: middle;">
+                    <span class="badge">{{$index + 1}}</span>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
+                    <api-billing-select-box list="api" model="line.api_id" default="API"></api-billing-select-box>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
+                    <api-billing-select-box list="apiMethod" model="line.api_method_id" default="Метод API"></api-billing-select-box>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
+                    <input class="form-control" placeholder="Цена" ng-model="line.price" required>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%"">
+                    <div class="btn-group" ng-click="line.enabled = !line.enabled">
+                        <button type="button" class="btn btn-sm {{line.enabled ? 'btn-success active' : 'btn-default'}}">Да</button>
+                        <button type="button" class="btn btn-sm {{!line.enabled ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    </div>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="5%" ng-if="userPermissions['api_billing_api_pricelist_item_delete']">
+                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePricelistItem($index)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6">
+                    <button type="button" class="btn btn-success btn-xs" ng-click="addPricelistItem()"><i class="glyphicon glyphicon-plus"></i> Добавить элемент</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
     </div>
     <div class="modal-footer">
         <div class="pull-left">

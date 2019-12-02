@@ -5,13 +5,13 @@ var ApiBillingApiPricelistItemListCtrl = function($scope, ApiBillingApiPricelist
     $scope.searchQuery = '';
 
     $scope.filterFields = [
-        'id', 'name', 'pricelist_id', 'api_id', 'api_method_id', 'enabled'
+        'id', 'name', 'pricelist_id', 'api_id', 'api_method_id', 'enabled', 'price'
     ];
 
     $scope.init = function(tab) {
         if (tab) tab.title = 'Список элементов прайслистов';
 
-        ApiBillingApiPricelistItem.read().then(function(data){
+        ApiBillingApiPricelistItem.read({server_id: $scope.server.id}).then(function(data){
             $scope.list = data;
         });
     };

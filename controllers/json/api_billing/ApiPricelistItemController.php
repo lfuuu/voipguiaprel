@@ -30,6 +30,7 @@ class ApiPricelistItemController extends JsonController
                 ->innerJoin('billing_api.api_method am', 'am.id = api.api_method_id')
                 ->innerJoin('billing_api.api_pricelist ap', 'ap.id = api.pricelist_id')
                 ->orderBy('api.' . $this->nameParamName)
+                ->where(['a.server_id' => $this->request['server_id']])
                 ->asArray()
                 ->all();
 

@@ -5,9 +5,35 @@ var ApiBillingApiPricelistEditCtrl = function($rootScope, $scope, ApiBillingApiP
         });
     } else {
         $scope.item = {
-            name: ''
+            name: '',
+            items: []
         };
     }
+
+    $scope.sortableOptions = {
+        update: function (e, ui) {
+            var sortBlocked = false;
+
+            if (ui.item.sortable.index < ui.item.sortable.dropindex) {
+                var dropMin = ui.item.sortable.index;
+                var dropMax = ui.item.sortable.dropindex;
+            } else {
+                var dropMin = ui.item.sortable.dropindex;
+                var dropMax = ui.item.sortable.index;
+            }
+
+            for (var routeKey in $scope.item.routes) {
+                if (routeKey >= dropMin && routeKey <= dropMax && $scope.item.routes[routeKey]['is_locked']) {
+                    sortBlocked = true;
+                }
+            }
+
+            if (sortBlocked) {
+                ui.item.sortable.cancel();
+            }
+        },
+        axis: 'y'
+    };
 
     $scope.save = function () {
         ApiBillingApiPricelist.save($scope.item).then(function () {
@@ -17,5 +43,18 @@ var ApiBillingApiPricelistEditCtrl = function($rootScope, $scope, ApiBillingApiP
 
     $scope.back = function () {
         $modalInstance.dismiss();
+    };
+
+    $scope.addPricelistItem = function () {
+        $scope.item.items.push({
+            pricelist_id: '',
+            api_id: '',
+            api_method_id: '',
+            enabled: true
+        });
+    };
+
+    $scope.removePricelistItem = function (index) {
+        $scope.item.items.splice(index, 1);
     };
 };

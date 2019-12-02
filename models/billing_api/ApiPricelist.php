@@ -32,4 +32,12 @@ class ApiPricelist extends \yii\db\ActiveRecord
             [['name'], 'string'],
         ];
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getItems()
+    {
+        return $this->hasMany(ApiPricelistItem::className(), ['pricelist_id' => 'id']);
+    }
 }

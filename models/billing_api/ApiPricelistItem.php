@@ -23,10 +23,11 @@ class ApiPricelistItem extends \yii\db\ActiveRecord
         return new ApiPricelistItemQuery(get_called_class());
     }
 
-    public static function create(array $data = null)
+    public static function create(array $data = null, ApiPricelist $pricelist = null)
     {
         $item = new self();
         $item->load($data, '');
+        $item->pricelist_id = $pricelist->id;
         return $item;
     }
 
@@ -37,5 +38,14 @@ class ApiPricelistItem extends \yii\db\ActiveRecord
             [['price'], 'string'],
             [['enabled'], 'boolean'],
         ];
+    }
+
+    /**
+     * @param ApiPricelist $pricelist
+     * @return int
+     */
+    public static function deleteByPricelist(ApiPricelist $pricelist)
+    {
+        return self::deleteAll(['pricelist_id' => $pricelist->id]);
     }
 }
