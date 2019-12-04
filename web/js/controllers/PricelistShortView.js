@@ -92,7 +92,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
                     for (var prefixPriceKey in data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit) {
                         var prefixItem = data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit[prefixPriceKey];
-                        var bNumberPrice = (parseFloat(prefixItem.b_number_price)).toFixed(4);
+                        var bNumberPrice = (parseFloat(prefixItem.b_number_price)).toFixed(6);
                         var hasPrefixMark = $scope.elementType === 'prefix' && $scope.elementId == prefixItem.id;
 
                         if (simplifiedPrefixList[prefixItem.prefix_b]) {
