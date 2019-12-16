@@ -18,7 +18,7 @@
                 <th></th>
                 <th>GT-номер</th>
                 <th>А-номер</th>
-                <th>B-номер regexp</th>
+                <th>B-номер <span style="color: green">R</span>egexp/<span style="color: royalblue">S</span>elect</th>
                 <th>Outcome</th>
                 <th>Блок</th>
                 <th></th>
@@ -38,7 +38,14 @@
                     <select-box disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
-                    <input class="form-control" placeholder="Regexp" ng-model="line.b_number_regexp" required>
+                    <div style="display: grid; grid-template-columns: 50px auto">
+                        <div class="btn-group" ng-click="line.b_number_regexp_or_select = !line.b_number_regexp_or_select">
+                            <button type="button" class="btn btn-sm {{line.b_number_regexp_or_select ? 'btn-success active' : 'btn-default'}}">R</button>
+                            <button type="button" class="btn btn-sm {{!line.b_number_regexp_or_select ? 'btn-primary active' : 'btn-default'}}">S</button>
+                        </div>
+                        <input ng-hide="!line.b_number_regexp_or_select" ng-required="line.b_number_regexp_or_select" class="form-control" placeholder="Regexp" ng-model="line.b_number_regexp">
+                        <select-box ng-hide="line.b_number_regexp_or_select" disabled="{{line.is_locked}}" list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box>
+                    </div>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
                     <camel-select-box list="outcome" model="line.outcome_id" required></camel-select-box>

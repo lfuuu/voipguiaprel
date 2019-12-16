@@ -1,6 +1,14 @@
 var CamelRouteTableEditCtrl = function($rootScope, $scope, Redirect, CamelRouteTable, CamelList, Number, params, $modalInstance) {
     if (params.id) {
         CamelRouteTable.get({id: params.id}).then(function (data) {
+            for (var i in data.routes) {
+                if (data.routes[i].b_number_regexp) {
+                    data.routes[i].b_number_regexp_or_select = true;
+                } else {
+                    data.routes[i].b_number_regexp_or_select = false;
+                }
+            }
+
             $scope.item = data;
         });
     } else {
@@ -37,7 +45,7 @@ var CamelRouteTableEditCtrl = function($rootScope, $scope, Redirect, CamelRouteT
     };
 
     $scope.addRoute = function () {
-        $scope.item.routes.push({a_number_id: null, b_number_regexp: null, gt_id: null, outcome_id: null});
+        $scope.item.routes.push({a_number_id: null, b_number_regexp: null, gt_id: null, outcome_id: null, b_number_regexp_or_select: true});
     };
 
     $scope.removeRoute = function (index) {
@@ -45,7 +53,17 @@ var CamelRouteTableEditCtrl = function($rootScope, $scope, Redirect, CamelRouteT
     };
 
     $scope.save = function () {
-        CamelRouteTable.save($scope.item).then(function () {
+        var data = angular.copy($scope.item);
+
+        for (var i in data.routes) {
+            if (data.routes[i].b_number_regexp_or_select) {
+                delete data.routes[i].b_number_id;
+            } else {
+                delete data.routes[i].b_number_regexp;
+            }
+        }
+
+        CamelRouteTable.save(data).then(function () {
             $modalInstance.close();
         });
     };
