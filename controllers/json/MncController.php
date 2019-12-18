@@ -20,7 +20,7 @@ class MncController extends JsonController
     
         return
             Mnc::find()
-                ->select(['id' => 'mnc', 'mnc' => new Expression('LPAD(mnc::text, 2, \'0\')'), 'name' => 'network'])
+                ->select(['id' => 'mnc', 'mnc' => new Expression('LPAD(mnc::text, 3, \'0\')'), 'name' => 'network'])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -34,7 +34,7 @@ class MncController extends JsonController
         
         return
             Mnc::find()
-                ->select([new Expression('LPAD(nnp.mnc.mcc::text, 3, \'0\') as mcc'), new Expression('LPAD(nnp.mnc.mnc::text, 2, \'0\') as mnc'), 'nnp.mnc.network', 'mcc.country'])
+                ->select([new Expression('LPAD(nnp.mnc.mcc::text, 3, \'0\') as mcc'), new Expression('LPAD(nnp.mnc.mnc::text, 3, \'0\') as mnc'), 'nnp.mnc.network', 'mcc.country'])
                 ->innerJoin('nnp.mcc mcc', 'mcc.mcc = nnp.mnc.mcc')
                 ->orderBy('network')
                 ->asArray()
@@ -51,7 +51,7 @@ class MncController extends JsonController
         
         return
             Mnc::find()
-                ->select(['id' => 'mnc', 'mnc' => new Expression('LPAD(mnc::text, 2, \'0\')'), 'name' => 'network'])
+                ->select(['id' => 'mnc', 'mnc' => new Expression('LPAD(mnc::text, 3, \'0\')'), 'name' => 'network'])
                 ->where(['mcc' => $mcc])
                 ->orderBy('network')
                 ->asArray()
@@ -66,7 +66,7 @@ class MncController extends JsonController
         
         $item = Mnc::find()
             ->where(['mcc' => $this->request['mcc']])
-            ->andWhere(new Expression('LPAD(mnc::text, 2, \'0\')') . ' = :mnc')
+            ->andWhere(new Expression('LPAD(mnc::text, 3, \'0\')') . ' = :mnc')
             ->addParams([':mnc' => $this->request['mnc']])
             ->one();
         
@@ -86,8 +86,10 @@ class MncController extends JsonController
         $result = [];
     
         if (isset($this->request['mnc'])) {
-            $item = Mnc::findOne($this->request['mnc']);
-        
+            $item = Mnc::find()
+                ->where(['mcc' => $this->request['mcc'], 'mnc' => $this->request['mnc']])
+                ->one();
+
             if (empty($item)) {
                 if (!\Yii::$app->user->can('mnc_create')) {
                     throw new ForbiddenHttpException('Access denied');
