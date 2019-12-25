@@ -248,6 +248,13 @@
 
 <div class="form-group">
     <div class="col-sm-4">
+        <label class="col-sm-8 control-label">Разрешить autocall</label>
+        <div class="col-sm-4">
+            <div class="btn-group" ng-click="item.autocall = !item.autocall">
+                <button type="button" class="btn btn-sm {{item.autocall ? 'btn-success active' : 'btn-default'}}">Да</button>
+                <button type="button" class="btn btn-sm {{!item.autocall ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+            </div>
+        </div>
     </div>
 
     <div class="col-sm-4">

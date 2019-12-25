@@ -9,6 +9,9 @@ use app\queries\auth\CamelTrunkQuery;
  * @property int $camel_route_table_id
  * @property int $server_id
  * @property int $prefixlist_id
+ * @property string $trunk_mcn
+ * @property string $trunk_tele2
+ * @property bool $insert_cdr
  */
 class CamelTrunk extends \yii\db\ActiveRecord
 {
@@ -36,8 +39,9 @@ class CamelTrunk extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'string'],
-            [['prefixlist_id', 'camel_route_table_id', 'server_id'], 'integer']
+            [['name', 'trunk_mcn', 'trunk_tele2'], 'string'],
+            [['prefixlist_id', 'camel_route_table_id', 'server_id'], 'integer'],
+            [['insert_cdr'], 'boolean']
         ];
     }
 

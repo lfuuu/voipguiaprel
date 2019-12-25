@@ -34,6 +34,30 @@
                         <camel-select-box list="routeTable" model="item.camel_route_table_id" required></camel-select-box>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Транк розница</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Транк розница" ng-model="item.trunk_mcn">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Транк оператор</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" placeholder="Транк оператор" ng-model="item.trunk_tele2">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Транслировать в CDR</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" ng-click="item.insert_cdr = !item.insert_cdr">
+                            <button type="button" class="btn btn-sm {{item.insert_cdr ? 'btn-success active' : 'btn-default'}}">Да</button>
+                            <button type="button" class="btn btn-sm {{!item.insert_cdr ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-pane" id="number_preprocessing">

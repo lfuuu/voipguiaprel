@@ -51,6 +51,7 @@ use yii\db\Query;
  * @property string $object_comment
  * @property bool $no_copy_numc_to_numa
  * @property bool $rn_pricelist
+ * @property bool $autocall
  *
  * @property \yii\db\ActiveQuery rulesSourceOrig
  * @property \yii\db\ActiveQuery rulesDestinationOrig
@@ -95,7 +96,7 @@ class Trunk extends \yii\db\ActiveRecord
                 'term_afilter_default_allowed', 'term_bfilter_default_allowed', 'term_cfilter_default_allowed',
                 'roaming_orig', 'roaming_term', 'mgmn2_orig', 'mgmn2_term',
                 'transparent_header', 'pbx', 'uplink_trunk', 'internal_trunk', 'no_copy_numc_to_numa',
-                'rn_pricelist'
+                'rn_pricelist', 'autocall'
             ], 'boolean'],
             [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id'], 'integer'],
             [['back_trunk'], 'string', 'max' => 50],
