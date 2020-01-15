@@ -1,0 +1,25 @@
+{
+    "ami": {
+        "ip": "1.1.1.1",
+        "port": "5038",
+        "login": "autocall",
+        "password": "xxxx"
+    },
+    "hubs": {
+        "11":"CFO",
+        "12":"UFO",
+        "13":"YUFO",
+        "14":"PFO",
+        "15":"SZFO",
+        "16":"DVFO",
+        "17":"SFO",
+        "19":"AT",
+        "20":"EU",
+        "99":"MSK"
+    },
+    "channel": "Local/s@autocall-out/n",
+    "extension": "s",
+    "context": "autocall",
+    "priority": 1,
+    "waittime": 3000
+}
