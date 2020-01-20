@@ -105,7 +105,7 @@ class TestDialController extends JsonController
 
         $server = $this->getServerOr404($item->server_id);
 
-        $apiUrl = 'http://172.18.0.8:3000/';
+        $apiUrl = 'http://eridanus.mcn.ru:3000/';
 
         $apiParams = [
             'num_a' => $item->src_number,
