@@ -1,0 +1,91 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">
+            Тест вызова {{item.name}}
+        </h3>
+        <h3 ng-if="!item.id">Создание Теста вызова</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.name" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Группа теста</label>
+            <div class="col-sm-10">
+                <select ui-select2 style="width: 100%" tags="true" placeholder="Группа теста" ng-model="item.testgroup_id" required>
+                    <option value="">-- Выберите --</option>
+                    <option ng-repeat="group in testGroupList" value="{{group.id}}">{{group.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Транк терминации</label>
+            <div class="col-sm-10">
+                <select ui-select2 style="width: 100%" tags="true" placeholder="Транк" ng-model="item.term_trunk_id">
+                    <option value="">-- Выберите --</option>
+                    <option ng-repeat="trunk in trunkList" value="{{trunk.id}}">{{trunk.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Номер А</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Номер А" ng-model="item.src_number" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Номер B</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Номер B" ng-model="item.dst_number" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Номер C</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Номер C" ng-model="item.redirect_number">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Длительность вызова</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Длительность" ng-model="item.duration" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Примечание</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" placeholder="Примечание" ng-model="item.note"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Автотест</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.is_autotest = !item.is_autotest">
+                    <button type="button" class="btn btn-sm {{item.is_autotest ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.is_autotest ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+            <action-log-view-button ng-if="userPermissions['action_log_view']" key="{{item.id}}" type="json/test-dial"></action-log-view-button>
+        </div>
+    </div>
+
+</form>

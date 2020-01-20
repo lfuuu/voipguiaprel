@@ -43,6 +43,7 @@
             <!-- <a class="list-group-item" ng-click="Redirect.destinationList()" ng-class="{active:tabs.isController('DestinationListCtrl')}">Направления</a> -->
             <a class="list-group-item" ng-if="userPermissions['test_auth_list']" ng-click="Redirect.testAuthList()" ng-class="{active:tabs.isController('TestAuthListCtrl')}">Тестирование маршрутизации</a>
             <a class="list-group-item" ng-if="userPermissions['test_call_list']" ng-click="Redirect.testCallList()" ng-class="{active:tabs.isController('TestCallListCtrl')}">Тестирование звонков</a>
+            <a class="list-group-item" ng-if="userPermissions['test_dial_list']" ng-click="Redirect.testDialList()" ng-class="{active:tabs.isController('TestDialListCtrl')}">Тестирование вызовов</a>
             <a class="list-group-item" ng-if="userPermissions['test_group_list']" ng-click="Redirect.testGroupList()" ng-class="{active:tabs.isController('TestGroupListCtrl')}">Группы тестов</a>
             <a class="list-group-item" ng-if="userPermissions['blacklist_edit']" ng-click="Redirect.blacklistSettings()">Блокировка по номеру</a>
         </div>

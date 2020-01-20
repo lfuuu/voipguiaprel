@@ -13,6 +13,7 @@ class AppAsset extends AssetBundle
         'js/app.js',
         'js/services/ApiLoader.js',
         'js/services/Api.js',
+        'js/services/RoutingApi.js',
         'js/services/Filter.js',
         'js/services/Redirect.js',
         'js/directives/select-box.js',
@@ -119,7 +120,9 @@ class AppAsset extends AssetBundle
         'js/controllers/ActionLogView.js',
         'js/controllers/MainSettings.js',
         'js/controllers/settings/ActionLogList.js',
-        'js/controllers/settings/ActionLogItemView.js'
+        'js/controllers/settings/ActionLogItemView.js',
+        'js/controllers/routing/TestDialList.js',
+        'js/controllers/routing/TestDialEdit.js',
     ];
 
     public $templates = [
@@ -220,5 +223,7 @@ class AppAsset extends AssetBundle
         'templates/main_settings.html',
         'templates/settings/action_log_list.html',
         'templates/settings/action_log_item_view.html',
+        'templates/routing/test_dial_edit.html',
+        'templates/routing/test_dial_list.html',
     ];
 }

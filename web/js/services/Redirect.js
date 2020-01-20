@@ -676,5 +676,18 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         apiBillingApiPricelistItemEdit: function(id) {
             return openModal(ApiBillingApiPricelistItemEditCtrl, '/templates/api_billing/api_pricelist_item_edit.html', {id: id});
         },
+        testDialList: function() {
+            $cookies.routing_selected_page = 'testDialList';
+            return openTab(TestDialListCtrl, '/templates/routing/test_dial_list.html');
+        },
+        testDialCreate: function() {
+            return openModal(TestDialEditCtrl, '/templates/routing/test_dial_edit.html', {id: null});
+        },
+        testDialEdit: function(id) {
+            return openModal(TestDialEditCtrl, '/templates/routing/test_dial_edit.html', {id: id});
+        },
+        testDialClone: function(id) {
+            return openModal(TestDialEditCtrl, '/templates/routing/test_dial_edit.html', {id: id, clone: true});
+        },
     };
 });

@@ -78,6 +78,7 @@ $config = [
                 'json/camel/<controller>/<action>' => 'json/camel/<controller>/<action>',
                 'json/api_billing/<controller>/<action>' => 'json/api_billing/<controller>/<action>',
                 'json/settings/<controller>/<action>' => 'json/settings/<controller>/<action>',
+                'json/routing/<controller>/<action>' => 'json/routing/<controller>/<action>',
                 'json/<controller>/<action>' => 'json/<controller>/<action>',
                 '<controller>/<action>' => '<controller>/<action>',
             ],

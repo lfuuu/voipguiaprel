@@ -40,6 +40,7 @@ use app\models\RouteTable;
 use app\models\Server;
 use app\models\TrunkGroup;
 use app\models\auth\Hub;
+use app\models\auth\TestDial;
 use app\models\InstanceSettings;
 use app\models\Uplink;
 use yii\filters\AccessControl;
@@ -553,6 +554,20 @@ class BaseController extends \yii\web\Controller
         $item = ReleaseReason::findOne($releaseReasonId);
         if ($item === null) {
             throw new HttpException(404, 'Release reason не найден');
+        }
+        return $item;
+    }
+
+    /**
+     * @param int $testAuthId
+     * @return TestDial
+     * @throws HttpException
+     */
+    protected function getTestDialOr404($testDialId)
+    {
+        $item = TestDial::findOne($testDialId);
+        if ($item === null) {
+            throw new HttpException(404, 'TestDial не найден');
         }
         return $item;
     }

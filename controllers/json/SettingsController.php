@@ -118,7 +118,7 @@ class SettingsController extends JsonController
                 $fsbNumbBlacklistIds = $this->request['fsb_numb_blacklist_ids'];
                 unset($this->request['fsb_numb_blacklist_ids']);
             }
-            
+
             $server->load($this->request, '');
             
             if ($prefixlistBlock) {
@@ -132,7 +132,7 @@ class SettingsController extends JsonController
             if ($fsbNumbBlacklistIds) {
                 $server->fsb_numb_blacklist_ids = '{' . implode(',', $fsbNumbBlacklistIds) . '}';
             }
-            
+
             if ($server->isAttributeChanged('min_price_for_autorouting')) {
                 $server->need_recalc_routing_report = true;
             }

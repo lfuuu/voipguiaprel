@@ -483,6 +483,45 @@
             "time": "2017-11-19T06:14:39+00:00"
         },
         {
+            "name": "tpyo/amazon-s3-php-class",
+            "version": "dev-mcn",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/welltime/amazon-s3-php-class.git",
+                "reference": "6637cd0fe1d766bdbd966c8eaa95b7ff5d1d883f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/welltime/amazon-s3-php-class/zipball/6637cd0fe1d766bdbd966c8eaa95b7ff5d1d883f",
+                "reference": "6637cd0fe1d766bdbd966c8eaa95b7ff5d1d883f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "S3.php"
+                ]
+            },
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Donovan Schönknecht",
+                    "email": "don@tpyo.net"
+                }
+            ],
+            "description": "A standalone Amazon S3 (REST) client for PHP 5.2.x using CURL that does not require PEAR.",
+            "homepage": "https://github.com/tpyo/amazon-s3-php-class",
+            "support": {
+                "source": "https://github.com/welltime/amazon-s3-php-class/tree/mcn"
+            },
+            "time": "2015-05-14T14:07:45+00:00"
+        },
+        {
             "name": "markbaker/complex",
             "version": "1.4.6",
             "source": {
@@ -961,7 +1000,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "kartik-v/yii2-widget-select2": 20,
-        "phpoffice/phpspreadsheet": 20
+        "phpoffice/phpspreadsheet": 20,
+        "tpyo/amazon-s3-php-class": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

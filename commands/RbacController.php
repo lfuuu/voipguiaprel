@@ -196,6 +196,10 @@ class RbacController extends Controller {
         ['name' => 'api_billing_api_pricelist_item_create', 'description' => 'Создание элемента прайслиста в API биллере'],
         ['name' => 'api_billing_api_pricelist_item_edit', 'description' => 'Редактирование элемента прайслиста в API биллере'],
         ['name' => 'api_billing_api_pricelist_item_delete', 'description' => 'Удаление элемента прайслиста из API биллера'],
+        ['name' => 'test_dial_list', 'description' => 'Просмотр списка тестов вызовов'],
+        ['name' => 'test_dial_create', 'description' => 'Создание теста вызовов'],
+        ['name' => 'test_dial_edit', 'description' => 'Редактирование теста вызовов'],
+        ['name' => 'test_dial_delete', 'description' => 'Удаление теста вызовов'],
     ];
 
     private static $_roles = [
