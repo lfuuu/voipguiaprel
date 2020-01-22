@@ -73,7 +73,7 @@ function doCall(cfg, call) {
 
             setTimeout(() => {
                 client.disconnect();
-            }, 50000);
+            }, 2000);
 
         })
         .catch(error => console.log(error));

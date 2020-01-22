@@ -39,7 +39,8 @@ function uuidv4() {
     });
 }
 
-app.use(logger()).get("/docall", function (req, res, next) {
+app.get("/docall", function (req, res, next) {
+//app.use(logger()).get("/docall", function (req, res, next) {
 
     let query = req.query;
 
@@ -69,8 +70,8 @@ app.use(logger()).get("/docall", function (req, res, next) {
 });
 
 
-app.use(logger()).listen(3001, function () {
-    console.log("Server running on port 3001");
+app.use(logger()).listen(3000, function () {
+    console.log("Server running on port 3000");
 });
 
 module.exports.apiapp = app;
