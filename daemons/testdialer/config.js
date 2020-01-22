@@ -30,4 +30,7 @@ function config(filename) {
     return build_cfg_rec(cfg);
 }
 
-module.exports = config;
+const args = require('minimist')(process.argv.slice(2));
+const CONFIG_PATH = args.config || 'testdial_cfg.json';
+
+module.exports = config(CONFIG_PATH);
