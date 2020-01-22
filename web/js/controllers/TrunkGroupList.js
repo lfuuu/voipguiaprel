@@ -1,5 +1,4 @@
 var TrunkGroupListCtrl = function($scope, TrunkGroup, Redirect, $window) {
-
     $scope.sortType = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';

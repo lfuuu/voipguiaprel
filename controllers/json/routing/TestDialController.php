@@ -89,6 +89,37 @@ class TestDialController extends JsonController
         ];
     }
 
+    public function actionGetForCdr()
+    {
+        if (!\Yii::$app->user->can($this->editPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+        $item = $modelName::find()
+            ->alias('td')
+            ->select(
+                [
+                    'hub_id' => 'h.id', 'src_route' => 'src.name', 'dst_route' => 'dst.name',
+                    'src_number' => 'td.src_number', 'dst_number' => 'td.dst_number',
+                    'redirect_number' => 'td.redirect_number'
+                ]
+            )
+            ->innerJoin('public.server s', 's.id = td.server_id')
+            ->leftJoin('auth.hub h', 'h.id = s.hub_id')
+            ->leftJoin('auth.trunk src', 'src.id = h.testdial_ast_id')
+            ->innerJoin('auth.trunk dst', 'dst.id = td.term_trunk_id')
+            ->where(['td.' . $this->idParamName => $this->request[$this->idParamName]])
+            ->asArray()
+            ->one();
+
+        if ($item === null) {
+            throw new HttpException(404, $modelName . ' не найден');
+        }
+
+        return $item;
+    }
+
     public function actionCall()
     {
         if (!\Yii::$app->user->can($this->listPermission)) {

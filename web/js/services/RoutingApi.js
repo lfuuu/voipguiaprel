@@ -53,6 +53,10 @@ app.factory('TestDial', function ($q, ApiLoader, $rootScope) {
         return ApiLoader.post(url + 'call', {id: id});
     };
 
+    functions.getForCdr = function (id) {
+        return ApiLoader.post(url + 'get-for-cdr', {id: id});
+    };
+
     return functions;
 });
 

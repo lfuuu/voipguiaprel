@@ -126,6 +126,7 @@
         </th>
         <th width="1%">&nbsp;</th>
         <th width="1%">&nbsp;</th>
+        <th width="1%">&nbsp;</th>
         <th ng-if="userPermissions['test_call_create']" width="1%">&nbsp;</th>
         <th width="1%">&nbsp;</th>
         <th width="1%" ng-if="userPermissions['test_call_delete']">&nbsp;</th>
@@ -151,6 +152,7 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">
                 <span class="label label-success" ng-if="item.is_autotest">AUTO</span>
         </td>
+        <td><a class="btn btn-default btn-sm" target="_blank" href="/billing?cdrReportRead&testDial&{{item.id}}">Отчет</a></td>
         <td><a class="btn btn-default btn-sm" target="_blank" href="/test-dial/download?id={{item.id}}">Скачать</a></td>
         <td ng-if="userPermissions['test_call_create']"><button type="button" class="btn btn-default btn-sm" ng-click="cloneTest(item)">Клонировать</button></td>
         <td>

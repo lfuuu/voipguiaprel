@@ -494,9 +494,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         headerRuleCreate: function() {
             return openModal(HeaderRuleEditCtrl, '/templates/header_rule_edit.html', {id: null});
         },
-        cdrReportRead: function() {
+        cdrReportRead: function(objectType, objectId) {
             $cookies.billing_selected_page = 'cdrReportRead';
-            return openTab(CdrReportReadCtrl, '/templates/cdr_report_read.html', {});
+            return openTab(CdrReportReadCtrl, '/templates/cdr_report_read.html', {object_type: objectType, object_id: objectId});
         },
         cdrReportView: function(mcn_callid) {
             return openModal(CdrReportViewCtrl, '/templates/cdr_report_view.html', {mcn_callid: mcn_callid});
