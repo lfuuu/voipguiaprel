@@ -142,7 +142,9 @@ class TestDialController extends JsonController
             'num_a' => $item->src_number,
             'num_b' => $item->dst_number,
             'hub' => $server->hub_id,
-            'troute' => $item->term_trunk_id
+            'troute' => $item->term_trunk_id,
+            'num_c' => $item->redirect_number,
+            'duration' => $item->duration
         ];
 
         $request = $apiUrl . 'docall/?' . http_build_query($apiParams);
