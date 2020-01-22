@@ -86,10 +86,8 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
                     disconnect_cause_id: '',
                     out_redirect_number: ''
                 };
-
-                $scope.$watch('item.hub_id', watchers.hub_id);
                 
-                Trunk.listNameAndAlias($scope.item.hub_id).then(function (dataTrunk) {
+                Trunk.listNameAndAlias(data.hub_id).then(function (dataTrunk) {
                     $scope.trunkNameList = dataTrunk;
     
                     $scope.item.src_route = data.src_route;
@@ -112,6 +110,8 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
         } else {
             $scope.initDefault();
         }
+
+        $scope.$watch('item.hub_id', watchers.hub_id);
     };
 
     $scope.clickSearch = function() {
