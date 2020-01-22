@@ -104,6 +104,6 @@ class Pricelist extends \yii\db\ActiveRecord
                 'sim_partner' => new Expression('(select string_agg(name, \', \') from billing_uu.sim_imsi_partner where billing_uu.sim_imsi_partner.id = ANY (billing_uu.pricelist_location.sim_partner))'),
                 'sim_profile' => new Expression('(select string_agg(name, \', \') from billing_uu.sim_imsi_profile where billing_uu.sim_imsi_profile.id = ANY (billing_uu.pricelist_location.sim_profile))'),
             ])
-            ->orderBy('id');
+            ->orderBy('mcc_string');
     }
 }
