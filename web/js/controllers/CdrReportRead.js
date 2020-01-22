@@ -53,8 +53,6 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
             disconnect_cause_id: '',
             out_redirect_number: ''
         };
-
-        $scope.clickSearch();
     };
 
     $scope.initWithParams = function () {
@@ -86,15 +84,6 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
                     disconnect_cause_id: '',
                     out_redirect_number: ''
                 };
-                
-                Trunk.listNameAndAlias(data.hub_id).then(function (dataTrunk) {
-                    $scope.trunkNameList = dataTrunk;
-    
-                    $scope.item.src_route = data.src_route;
-                    $scope.item.dst_route = data.dst_route;
-
-                    $scope.clickSearch();
-                });
             });
         }
     };
