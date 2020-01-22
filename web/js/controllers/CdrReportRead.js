@@ -35,24 +35,10 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
         date.setMinutes(date.getMinutes() - 1);
         var dateFrom = date.toISOString().slice(0, 19).replace('T', ' ');
 
-        $scope.item = {
-            src_number: '',
-            dst_number: '',
-            redirect_number: '',
-            src_route: '',
-            dst_route: '',
-            time_from: dateFrom,
-            time_to: dateTo,
-            time_relative: '',
-            limit: 100,
-            hub_id: '',
-            mcn_callid: '',
-            sort_asc: true,
-            show_all: true,
-            is_time_absolute: true,
-            disconnect_cause_id: '',
-            out_redirect_number: ''
-        };
+        $scope.item.time_from = dateFrom;
+        $scope.item.time_to = dateTo;
+
+        $scope.clickSearch();
     };
 
     $scope.initWithParams = function () {
@@ -64,26 +50,29 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
         var dateFrom = date.toISOString().slice(0, 19).replace('T', ' ');
         
         if (params.object_type == 'testDial') {
-            TestDial.getForCdr(params.object_id).then(function (data) {
+            TestDial.getForCdr(params.object_id).then(function (testData) {
                 
-                $scope.item = {
-                    src_number: data.src_number,
-                    dst_number: data.dst_number,
-                    redirect_number: data.redirect_number,
-                    src_route: data.src_route,
-                    dst_route: data.dst_route,
-                    time_from: dateFrom,
-                    time_to: dateTo,
-                    time_relative: '',
-                    limit: 100,
-                    hub_id: data.hub_id,
-                    mcn_callid: '',
-                    sort_asc: false,
-                    show_all: true,
-                    is_time_absolute: true,
-                    disconnect_cause_id: '',
-                    out_redirect_number: ''
-                };
+                List.hub().then(function (data) {
+                    $scope.hubList = data;
+
+                    Trunk.listNameAndAlias(testData.hub_id).then(function (dataTrunk) {
+                        $scope.trunkNameList = dataTrunk;
+
+                        $scope.item.src_number = testData.src_number;
+                        $scope.item.dst_number = testData.dst_number;
+                        $scope.item.redirect_number = testData.redirect_number;
+                        $scope.item.src_route = testData.src_route;
+                        $scope.item.dst_route = testData.dst_route;
+                        $scope.item.time_from = dateFrom;
+                        $scope.item.time_to = dateTo;
+                        $scope.item.hub_id = testData.hub_id;
+                        $scope.item.show_all = true;
+                        $scope.item.sort_asc = false;
+    
+                        $scope.clickSearch();
+                    });
+                });
+                
             });
         }
     };
@@ -93,6 +82,22 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
         
         $scope.list = [];
 
+        $scope.item = {
+            src_number: '',
+            dst_number: '',
+            redirect_number: '',
+            src_route: '',
+            dst_route: '',
+            time_relative: '',
+            limit: 100,
+            hub_id: '',
+            mcn_callid: '',
+            sort_asc: true,
+            show_all: true,
+            is_time_absolute: true,
+            disconnect_cause_id: '',
+            out_redirect_number: ''
+        };
 
         if (params.object_type && params.object_id) {
             $scope.initWithParams();
@@ -121,13 +126,11 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
         $scope.disconnectCauseList = data;
     });
 
-    List.hub().then(function (data) {
-        $scope.hubList = data;
-
-        if ($scope.testDialData) {
-            $scope.item.hub_id = $scope.testDialData.hub_id;
-        }
-    });
+    if (!(params.object_type && params.object_id)) {
+        List.hub().then(function (data) {
+            $scope.hubList = data;
+        });
+    }
 
     $scope.clickItem = function(item) {
         if (!userPermissions['cdr_report_read']) {
