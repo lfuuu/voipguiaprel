@@ -123,6 +123,11 @@ var TestDialListCtrl = function($scope, TestDial, List, Redirect, $window) {
     };
 
     $scope.callTest = function (item) {
+        $("#call_button_" + item.id).prop('disabled', true);
+        function enableCall(callItem) {
+            $("#call_button_" + callItem.id).prop('disabled', false);
+        }
+        setTimeout(enableCall, 2000, item);
         TestDial.call(item.id).then(function (result) {
             // do_nothing
         });

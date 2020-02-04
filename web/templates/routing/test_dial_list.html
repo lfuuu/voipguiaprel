@@ -142,7 +142,7 @@
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.server_id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
         <td>
-            <button type="button" class="btn btn-default btn-sm" ng-click="callTest(item)">CALL</button>
+            <button type="button" id="call_button_{{item.id}}" class="btn btn-default btn-sm" ng-click="callTest(item)">CALL</button>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.term_trunk_name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.src_number}}</td>
