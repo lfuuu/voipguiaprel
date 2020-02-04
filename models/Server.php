@@ -164,6 +164,21 @@ class Server extends \yii\db\ActiveRecord
         return $result;
     }
 
+    public function getMinServerOnHub()
+    {
+        if (!$this->hub_id) {
+            $result = $this->id;
+        } else {
+            $result = self::find()
+                ->select(['id' => new Expression("min(id)")])
+                ->where(['hub_id' => $this->hub_id])
+                ->asArray()
+                ->one();
+        }
+        
+        return $result;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

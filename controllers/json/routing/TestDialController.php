@@ -136,12 +136,14 @@ class TestDialController extends JsonController
 
         $server = $this->getServerOr404($item->server_id);
 
+        $hub = $server->getMinServerOnHub();
+
         $apiUrl = 'http://eridanus.mcn.ru:3000/';
 
         $apiParams = [
             'num_a' => $item->src_number,
             'num_b' => $item->dst_number,
-            'hub' => $server->hub_id,
+            'hub' => $hub['id'],
             'troute' => $item->term_trunk_id,
             'num_c' => $item->redirect_number,
             'duration' => $item->duration
