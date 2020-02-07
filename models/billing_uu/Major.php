@@ -11,6 +11,7 @@ use yii\helpers\Json;
  * @property int $country_code
  * @property string $nnp_filter_json
  * @property int $major_group_id
+ * @property string $numbers_to_call
  */
 class Major extends \yii\db\ActiveRecord
 {
@@ -25,7 +26,7 @@ class Major extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'nnp_filter_json'], 'string'],
+            [['name', 'nnp_filter_json', 'numbers_to_call'], 'string'],
             [['order', 'country_code', 'major_group_id'], 'integer']
         ];
     }
