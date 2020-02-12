@@ -96,6 +96,21 @@ class PricelistController extends BaseController
 
         $this->createExcelFilterBDocument($data);
     }
+
+    public function actionExcelPrefixesNew($id, $minimize, $use_ranges)
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $data = Pricelist::find()
+            ->with('location.filterA')
+            ->where(['id' => $id])
+            ->asArray()
+            ->one();
+        
+        $this->createExcelPrefixesNewDocument($data, $minimize, $use_ranges);
+    }
     
     private function createExcelDocument($pricelist)
     {
@@ -753,6 +768,84 @@ class PricelistController extends BaseController
             $currentRowNumber++;
         }
     }
+
+    private function createExcelPrefixesNewDocument($pricelist, $minimize, $use_ranges)
+    {
+        $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
+        $maxColumnNumber = 3;
+        
+        $spreadsheet = new Spreadsheet();
+        
+        $firstSheetFilled = false;
+        
+        foreach ($pricelist['location'] as $location) {
+            if (empty($location['filterA'])) {
+                continue;
+            }
+
+            foreach ($location['filterA'] as $filterA) {
+                $apiParams = [
+                    'cmd' => 'annotatePricelistv2',
+                    'id' => $filterA['id'],
+                    'minimize' => $minimize == 'true' ? 1 : 0,
+                    'use_ranges' => $use_ranges == 'true' ? 1 : 0
+                ];
+                
+                $request = $apiUrl . http_build_query($apiParams);
+
+                $response = file_get_contents($request);
+                
+                if (empty($response)) {
+                    continue;
+                }
+
+                $processedResponse = explode("\n", $response);
+                
+                if (!$firstSheetFilled) {
+                    $sheet = $spreadsheet->getActiveSheet();
+                    $firstSheetFilled = true;
+                } else {
+                    $sheet = $spreadsheet->createSheet();
+                }
+                
+                for ($i = 0; $i < $maxColumnNumber; $i++) {
+                    $sheet->getColumnDimensionByColumn($i + 1)->setAutoSize(true);
+                }
+                
+                $filterAHeader = isset($filterA['description']) ? $filterA['description'] : (string)$filterA['id'];
+
+                if (empty($filterAHeader)) {
+                    $filterAHeader = 'Пустой фильтр A';
+                }
+                
+                if (mb_strlen($filterAHeader) > 31) {
+                    $filterAHeader = mb_substr($filterAHeader, 0, 28) . '...';
+                }
+                
+                $sheet->setTitle($filterAHeader);
+                
+                $row = 1;
+
+                foreach ($processedResponse as $item) {
+                    $itemArray = explode(',', $item);
+
+                    for ($i = 0; $i < $maxColumnNumber; $i++) {
+                        if (isset($itemArray[$i])) {
+                            $sheet->setCellValueByColumnAndRow($i + 1, $row, trim(strip_tags($itemArray[$i])));
+                        }
+                    }
+                    
+                    $row++;
+                }
+            }
+        }
+        
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="file.xlsx"');
+        $writer->save('php://output');
+    }
+
     
     private function createExcelPrefixesDocument($pricelist)
     {

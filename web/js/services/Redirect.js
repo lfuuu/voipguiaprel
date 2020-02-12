@@ -689,5 +689,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         testDialClone: function(id) {
             return openModal(TestDialEditCtrl, '/templates/routing/test_dial_edit.html', {id: id, clone: true});
         },
+        pricelistExcelPrefixesParamsEdit: function(id) {
+            return openModal(PricelistExcelPrefixesParamsEditCtrl, '/templates/billing/pricelist_excel_prefixes_params_edit.html', {id: id});
+        },
     };
 });

@@ -13,9 +13,12 @@
                     <a popover="Местоположения" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-locations?id={{item.id}}" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-picture"></span>
                     </a>
-                    <a popover="Префиксы" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-prefixes?id={{item.id}}" class="btn btn-default btn-xs">
+                    <a popover="Префиксы (новые)" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcelPrefixesNew()" href="#" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-list"></span>
                     </a>
+                    <!-- <a popover="Префиксы" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-prefixes?id={{item.id}}" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-list"></span>
+                    </a> -->
                     <a popover="Прайслист" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcel()" href="#" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>
                     </a>
@@ -25,6 +28,7 @@
                     <a popover="Single Line" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-single-line?id={{item.id}}" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-list"></span>
                     </a>
+                    
                 </td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_location" data-has-mark="{{item.has_location_mark}}" colspan="8" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.location_text}} <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span></td>
