@@ -226,7 +226,7 @@
                     </a>
                 </td>
                 <td ng-if="item.is_filter_b">
-                    <a popover="Удалить" data-popover-trigger="mouseenter" popover-placement="bottom" ng-if="!item.has_children && userPermissions['pricelist_delete']" class="btn btn-danger btn-xs" ng-click="deleteFilterB(item.id)">
+                    <a popover="Удалить" data-popover-trigger="mouseenter" popover-placement="bottom" ng-if="userPermissions['pricelist_delete']" class="btn btn-danger btn-xs" ng-click="deleteFilterB(item)">
                         <span class="glyphicon glyphicon-minus"></span>
                     </a>
                 </td>

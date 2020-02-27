@@ -378,10 +378,18 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
         });
     };
 
-    $scope.deleteFilterB = function (id) {
-        if (!$window.confirm('Удалить фильтр B?')) return;
+    $scope.deleteFilterB = function (item) {
+        var message = '';
 
-        PricelistFilterB.delete(id).then(function(response) {
+        if (item.has_children) {
+            message = 'Вы уверены, что хотите удалить фильтр B и ВСЕ созданные в нем прайсы префиксов?';
+        } else {
+            message = 'Удалить фильтр B?';
+        }
+
+        if (!$window.confirm(message)) return;
+
+        PricelistFilterB.delete(item.id).then(function(response) {
             $scope.initData($scope.item.id);
         });
     };
