@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models\billing_uu;
+use yii\db\Expression;
 use app\queries\billing_uu\PricelistPrefixPriceQuery;
 
 /**
@@ -58,5 +59,30 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
         $item = new self();
         $item->load($data, '');
         return $item;
+    }
+
+    public static function getGroupedByPrice($filterAId)
+    {
+        $result = [];
+
+        $tempResult = self::find()
+            ->alias('p')
+            ->select('p.*')
+            ->select([
+                'b_number_price',
+                'description' => new Expression('string_agg(distinct b.description, \', \')'),
+                'date_from' => new Expression('min(p.date_from)'),
+            ])
+            ->innerJoin('billing_uu.pricelist_filter_b b', 'b.id = p.pricelist_filter_b_id')
+            ->where(['b.pricelist_filter_a_id' => $filterAId])
+            ->groupBy(['b_number_price'])
+            ->asArray()
+            ->all();
+
+        foreach ($tempResult as $item) {
+            $result[(string)floatval($item['b_number_price'])] = $item;
+        }
+
+        return $result;
     }
 }

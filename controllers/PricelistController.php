@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\classes\BaseController;
 use app\models\billing_uu\Pricelist;
+use app\models\billing_uu\PricelistPrefixPrice;
 use app\models\Server;
 use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
@@ -772,7 +773,7 @@ class PricelistController extends BaseController
     private function createExcelPrefixesNewDocument($pricelist, $minimize, $use_ranges)
     {
         $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
-        $maxColumnNumber = 3;
+        $maxColumnNumber = 4;
         
         $spreadsheet = new Spreadsheet();
         
@@ -790,7 +791,13 @@ class PricelistController extends BaseController
                     'minimize' => $minimize == 'true' ? 1 : 0,
                     'use_ranges' => $use_ranges == 'true' ? 1 : 0
                 ];
-                
+
+                $prefixes = PricelistPrefixPrice::getGroupedByPrice($filterA['id']);
+
+                if (empty($prefixes)) {
+                    continue;
+                }
+
                 $request = $apiUrl . http_build_query($apiParams);
 
                 $response = file_get_contents($request);
@@ -829,9 +836,25 @@ class PricelistController extends BaseController
                 foreach ($processedResponse as $item) {
                     $itemArray = explode(',', $item);
 
-                    for ($i = 0; $i < $maxColumnNumber; $i++) {
-                        if (isset($itemArray[$i])) {
-                            $sheet->setCellValueByColumnAndRow($i + 1, $row, trim(strip_tags($itemArray[$i])));
+                    if (isset($itemArray[1])) {
+                        if (empty($prefixes) || !isset($prefixes[trim(strip_tags($itemArray[1]))])) {
+                            $sheet->setCellValueByColumnAndRow(1, $row, $this->getFilterName);
+                        } else {
+                            $sheet->setCellValueByColumnAndRow(1, $row, $prefixes[trim(strip_tags($itemArray[1]))]['description']);
+                        }
+                    }
+
+                    for ($i = 1; $i < $maxColumnNumber; $i++) {
+                        if (isset($itemArray[$i - 1])) {
+                            $sheet->setCellValueByColumnAndRow($i + 1, $row, trim(strip_tags($itemArray[$i - 1])));
+                        }
+                    }
+
+                    if (isset($itemArray[1])) {
+                        if (empty($prefixes) || !isset($prefixes[trim(strip_tags($itemArray[1]))])) {
+                            $sheet->setCellValueByColumnAndRow(4, $row, $filterA['description']);
+                        } else {
+                            $sheet->setCellValueByColumnAndRow(4, $row, $prefixes[trim(strip_tags($itemArray[1]))]['date_from']);
                         }
                     }
                     
