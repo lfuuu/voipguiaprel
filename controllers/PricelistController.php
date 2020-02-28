@@ -105,7 +105,7 @@ class PricelistController extends BaseController
         }
 
         $data = Pricelist::find()
-            ->with('location.filterA')
+            ->with('location.filterA.filterB')
             ->where(['id' => $id])
             ->asArray()
             ->one();
@@ -713,28 +713,43 @@ class PricelistController extends BaseController
             $filterTextArray = [];
         
             if (isset($filter['nnp_country_name_eng'])) {
-                $filterTextArray = array_merge($filterTextArray,
-                    explode(', ', $filter['nnp_country_name_eng']));
+                if ($filter['f_inv_nnp_country']) {
+                    $filterTextArray[] = 'Except:';
+                }
+
+                $filterTextArray[] = $filter['nnp_country_name_eng'];
             }
         
             if (isset($filter['nnp_ndc_type_name'])) {
-                $filterTextArray = array_merge($filterTextArray,
-                    explode(', ', $filter['nnp_ndc_type_name']));
+                if ($filter['f_inv_nnp_ndc_type']) {
+                    $filterTextArray[] = 'Except:';
+                }
+
+                $filterTextArray[] = $filter['nnp_ndc_type_name'];
             }
         
             if (isset($filter['nnp_operator_name'])) {
-                $filterTextArray = array_merge($filterTextArray,
-                    explode(', ', $filter['nnp_operator_name']));
+                if ($filter['f_inv_nnp_operator']) {
+                    $filterTextArray[] = 'Except:';
+                }
+
+                $filterTextArray[] = $filter['nnp_operator_name'];
             }
         
             if (isset($filter['nnp_region_name'])) {
-                $filterTextArray = array_merge($filterTextArray,
-                    explode(', ', $filter['nnp_region_name']));
+                if ($filter['f_inv_nnp_region']) {
+                    $filterTextArray[] = 'Except:';
+                }
+
+                $filterTextArray[] = $filter['nnp_region_name'];
             }
         
             if (isset($filter['nnp_city_name'])) {
-                $filterTextArray = array_merge($filterTextArray,
-                    explode(', ', $filter['nnp_city_name']));
+                if ($filter['f_inv_nnp_city']) {
+                    $filterTextArray[] = 'Except:';
+                }
+
+                $filterTextArray[] = $filter['nnp_city_name'];
             }
         
             $filterCount = 0;
@@ -797,13 +812,19 @@ class PricelistController extends BaseController
                 if (empty($prefixes)) {
                     continue;
                 }
-
+                
                 $request = $apiUrl . http_build_query($apiParams);
-
+                
                 $response = file_get_contents($request);
                 
                 if (empty($response)) {
                     continue;
+                }
+
+                $filterBDescriptionArray = [];
+
+                foreach ($filterA['filterB'] as $filterB) {
+                    $filterBDescriptionArray[$filterB['id']] = $this->getFilterName($filterB);
                 }
 
                 $processedResponse = explode("\n", $response);
@@ -837,10 +858,23 @@ class PricelistController extends BaseController
                     $itemArray = explode(',', $item);
 
                     if (isset($itemArray[1])) {
-                        if (empty($prefixes) || !isset($prefixes[trim(strip_tags($itemArray[1]))])) {
+                        $key = trim(strip_tags($itemArray[1]));
+
+                        if (empty($prefixes) || !isset($prefixes[$key])) {
                             $sheet->setCellValueByColumnAndRow(1, $row, $this->getFilterName);
                         } else {
-                            $sheet->setCellValueByColumnAndRow(1, $row, $prefixes[trim(strip_tags($itemArray[1]))]['description']);
+                            if (!empty($prefixes[$key]['description'])) {
+                                $sheet->setCellValueByColumnAndRow(1, $row, $prefixes[$key]['description']);
+                            } else {
+                                $descriptionArray = [];
+
+                                foreach (explode(',', $prefixes[$key]['ids']) as $filterBId) {
+                                    $descriptionArray[] = $filterBDescriptionArray[$filterBId][0];
+                                }
+
+                                $description = implode('; ', $descriptionArray);
+                                $sheet->setCellValueByColumnAndRow(1, $row, $description);
+                            }
                         }
                     }
 

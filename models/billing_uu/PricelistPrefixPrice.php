@@ -70,6 +70,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
             ->select('p.*')
             ->select([
                 'b_number_price',
+                'ids' => new Expression('string_agg(distinct b.id::text, \',\')'),
                 'description' => new Expression('string_agg(distinct b.description, \', \')'),
                 'date_from' => new Expression('min(p.date_from)'),
             ])
