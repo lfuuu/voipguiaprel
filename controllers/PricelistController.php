@@ -105,7 +105,7 @@ class PricelistController extends BaseController
         }
 
         $data = Pricelist::find()
-            ->with('location.filterA.filterB')
+            ->with('location.filterA.filterB.prefixPriceNoLimit')
             ->where(['id' => $id])
             ->asArray()
             ->one();
@@ -767,6 +767,20 @@ class PricelistController extends BaseController
         
         return array($filterText, $filterCount);
     }
+
+    private function isFilterEmpty($filter)
+    {
+        if ($filter['nnp_country'] != '{}' || ($filter['nnp_ndc'] != '{}' && !empty($filter['nnp_ndc'])) || 
+            $filter['nnp_operator'] != '{}' || $filter['nnp_region'] != '{}' || 
+            $filter['nnp_city'] != '{}' || $filter['nnp_ndc_type'] != '{}' || 
+            $filter['f_inv_nnp_country'] || $filter['f_inv_nnp_ndc'] || 
+            $filter['f_inv_nnp_operator'] || $filter['f_inv_nnp_region'] || 
+            $filter['f_inv_nnp_city'] || $filter['f_inv_nnp_ndc_type']) {
+            return false;
+        }
+        
+        return true;
+    }
     
     private function createCountriesSheet(&$spreadsheet, $countryNames)
     {
@@ -800,99 +814,27 @@ class PricelistController extends BaseController
             }
 
             foreach ($location['filterA'] as $filterA) {
-                $apiParams = [
-                    'cmd' => 'annotatePricelistv2',
-                    'id' => $filterA['id'],
-                    'minimize' => $minimize == 'true' ? 1 : 0,
-                    'use_ranges' => $use_ranges == 'true' ? 1 : 0
-                ];
-
                 $prefixes = PricelistPrefixPrice::getGroupedByPrice($filterA['id']);
-
+                
                 if (empty($prefixes)) {
                     continue;
                 }
-                
-                $request = $apiUrl . http_build_query($apiParams);
-                
-                $response = file_get_contents($request);
-                
-                if (empty($response)) {
-                    continue;
-                }
 
-                $filterBDescriptionArray = [];
+                $doRequest = false;
 
                 foreach ($filterA['filterB'] as $filterB) {
-                    $filterBDescriptionArray[$filterB['id']] = $this->getFilterName($filterB);
+                    if (!$this->isFilterEmpty($filterB)) {
+                        $doRequest = true;
+                        break;
+                    }
                 }
 
-                $processedResponse = explode("\n", $response);
-                
-                if (!$firstSheetFilled) {
-                    $sheet = $spreadsheet->getActiveSheet();
-                    $firstSheetFilled = true;
+                if ($doRequest) {
+                    $this->fillPrefixesNewSpreadSheetFromRequest($filterA, $minimize, $use_ranges, $apiUrl, $firstSheetFilled, 
+                                                                 $spreadsheet, $maxColumnNumber, $prefixes);
                 } else {
-                    $sheet = $spreadsheet->createSheet();
-                }
-                
-                for ($i = 0; $i < $maxColumnNumber; $i++) {
-                    $sheet->getColumnDimensionByColumn($i + 1)->setAutoSize(true);
-                }
-                
-                $filterAHeader = isset($filterA['description']) ? $filterA['description'] : (string)$filterA['id'];
-
-                if (empty($filterAHeader)) {
-                    $filterAHeader = 'Пустой фильтр A';
-                }
-                
-                if (mb_strlen($filterAHeader) > 31) {
-                    $filterAHeader = mb_substr($filterAHeader, 0, 28) . '...';
-                }
-                
-                $sheet->setTitle($filterAHeader);
-                
-                $row = 1;
-
-                foreach ($processedResponse as $item) {
-                    $itemArray = explode(',', $item);
-
-                    if (isset($itemArray[1])) {
-                        $key = trim(strip_tags($itemArray[1]));
-
-                        if (empty($prefixes) || !isset($prefixes[$key])) {
-                            $sheet->setCellValueByColumnAndRow(1, $row, $this->getFilterName);
-                        } else {
-                            if (!empty($prefixes[$key]['description'])) {
-                                $sheet->setCellValueByColumnAndRow(1, $row, $prefixes[$key]['description']);
-                            } else {
-                                $descriptionArray = [];
-
-                                foreach (explode(',', $prefixes[$key]['ids']) as $filterBId) {
-                                    $descriptionArray[] = $filterBDescriptionArray[$filterBId][0];
-                                }
-
-                                $description = implode('; ', $descriptionArray);
-                                $sheet->setCellValueByColumnAndRow(1, $row, $description);
-                            }
-                        }
-                    }
-
-                    for ($i = 1; $i < $maxColumnNumber; $i++) {
-                        if (isset($itemArray[$i - 1])) {
-                            $sheet->setCellValueByColumnAndRow($i + 1, $row, trim(strip_tags($itemArray[$i - 1])));
-                        }
-                    }
-
-                    if (isset($itemArray[1])) {
-                        if (empty($prefixes) || !isset($prefixes[trim(strip_tags($itemArray[1]))])) {
-                            $sheet->setCellValueByColumnAndRow(4, $row, $filterA['description']);
-                        } else {
-                            $sheet->setCellValueByColumnAndRow(4, $row, $prefixes[trim(strip_tags($itemArray[1]))]['date_from']);
-                        }
-                    }
-                    
-                    $row++;
+                    $this->fillPrefixesNewSpreadSheetFromFilter($filterA, $minimize, $use_ranges, $apiUrl, $firstSheetFilled, 
+                                                                 $spreadsheet, $maxColumnNumber);
                 }
             }
         }
@@ -903,6 +845,144 @@ class PricelistController extends BaseController
         $writer->save('php://output');
     }
 
+    private function fillPrefixesNewSpreadSheetFromRequest($filterA, $minimize, $use_ranges, $apiUrl, &$firstSheetFilled, 
+                                                &$spreadsheet, $maxColumnNumber, $prefixes)
+    {
+        $apiParams = [
+            'cmd' => 'annotatePricelistv2',
+            'id' => $filterA['id'],
+            'minimize' => $minimize == 'true' ? 1 : 0,
+            'use_ranges' => $use_ranges == 'true' ? 1 : 0
+        ];
+        
+        $request = $apiUrl . http_build_query($apiParams);
+        
+        $response = file_get_contents($request);
+        
+        if (empty($response)) {
+            continue;
+        }
+
+        $filterBDescriptionArray = [];
+
+        foreach ($filterA['filterB'] as $filterB) {
+            $filterBDescriptionArray[$filterB['id']] = $this->getFilterName($filterB);
+        }
+
+        $processedResponse = explode("\n", $response);
+        
+        if (!$firstSheetFilled) {
+            $sheet = $spreadsheet->getActiveSheet();
+            $firstSheetFilled = true;
+        } else {
+            $sheet = $spreadsheet->createSheet();
+        }
+        
+        for ($i = 0; $i < $maxColumnNumber; $i++) {
+            $sheet->getColumnDimensionByColumn($i + 1)->setAutoSize(true);
+        }
+        
+        $filterAHeader = isset($filterA['description']) ? $filterA['description'] : (string)$filterA['id'];
+
+        if (empty($filterAHeader)) {
+            $filterAHeader = 'Пустой фильтр A';
+        }
+        
+        if (mb_strlen($filterAHeader) > 31) {
+            $filterAHeader = mb_substr($filterAHeader, 0, 28) . '...';
+        }
+        
+        $sheet->setTitle($filterAHeader);
+        
+        $row = 1;
+
+        foreach ($processedResponse as $item) {
+            $itemArray = explode(',', $item);
+
+            if (isset($itemArray[1])) {
+                $key = trim(strip_tags($itemArray[1]));
+
+                if (empty($prefixes) || !isset($prefixes[$key])) {
+                    $sheet->setCellValueByColumnAndRow(1, $row, $this->getFilterName);
+                } else {
+                    if (!empty($prefixes[$key]['description'])) {
+                        $sheet->setCellValueByColumnAndRow(1, $row, $prefixes[$key]['description']);
+                    } else {
+                        $descriptionArray = [];
+
+                        foreach (explode(',', $prefixes[$key]['ids']) as $filterBId) {
+                            $descriptionArray[] = $filterBDescriptionArray[$filterBId][0];
+                        }
+
+                        $description = implode('; ', $descriptionArray);
+                        $sheet->setCellValueByColumnAndRow(1, $row, $description);
+                    }
+                }
+            }
+
+            for ($i = 1; $i < $maxColumnNumber; $i++) {
+                if (isset($itemArray[$i - 1])) {
+                    $sheet->setCellValueByColumnAndRow($i + 1, $row, trim(strip_tags($itemArray[$i - 1])));
+                }
+            }
+
+            if (isset($itemArray[1])) {
+                if (empty($prefixes) || !isset($prefixes[trim(strip_tags($itemArray[1]))])) {
+                    $sheet->setCellValueByColumnAndRow(4, $row, $filterA['description']);
+                } else {
+                    $sheet->setCellValueByColumnAndRow(4, $row, $prefixes[trim(strip_tags($itemArray[1]))]['date_from']);
+                }
+            }
+            
+            $row++;
+        }
+    }
+
+    private function fillPrefixesNewSpreadSheetFromFilter($filterA, $minimize, $use_ranges, $apiUrl, &$firstSheetFilled, 
+                                                &$spreadsheet, $maxColumnNumber)
+    {
+        $filterBDescriptionArray = [];
+
+        foreach ($filterA['filterB'] as $filterB) {
+            $filterBDescriptionArray[$filterB['id']] = $this->getFilterName($filterB);
+        }
+
+        if (!$firstSheetFilled) {
+            $sheet = $spreadsheet->getActiveSheet();
+            $firstSheetFilled = true;
+        } else {
+            $sheet = $spreadsheet->createSheet();
+        }
+        
+        for ($i = 0; $i < $maxColumnNumber; $i++) {
+            $sheet->getColumnDimensionByColumn($i + 1)->setAutoSize(true);
+        }
+        
+        $filterAHeader = isset($filterA['description']) ? $filterA['description'] : (string)$filterA['id'];
+
+        if (empty($filterAHeader)) {
+            $filterAHeader = 'Пустой фильтр A';
+        }
+        
+        if (mb_strlen($filterAHeader) > 31) {
+            $filterAHeader = mb_substr($filterAHeader, 0, 28) . '...';
+        }
+        
+        $sheet->setTitle($filterAHeader);
+        
+        $row = 1;
+
+        foreach ($filterA['filterB'] as $filterB) {
+            foreach ($filterB['prefixPriceNoLimit'] as $prefixPrice) {
+                $sheet->setCellValueByColumnAndRow(1, $row, $filterB['description']);
+                $sheet->setCellValueByColumnAndRow(2, $row, $prefixPrice['prefix_b']);
+                $sheet->setCellValueByColumnAndRow(3, $row, $prefixPrice['b_number_price']);
+                $sheet->setCellValueByColumnAndRow(4, $row, $prefixPrice['date_from']);
+
+                $row++;
+            }
+        }
+    }
     
     private function createExcelPrefixesDocument($pricelist)
     {
