@@ -364,17 +364,20 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         pricelistFilterACreate: function(id, pricelistIsActive) {
             return openModal(PricelistFilterAEditCtrl, '/templates/pricelist_filter_a_edit.html', {location_id: id, pricelist_is_active: pricelistIsActive});
         },
-        pricelistFilterBEdit: function(id, pricelistIsActive) {
-            return openModal(PricelistFilterBEditCtrl, '/templates/pricelist_filter_b_edit.html', {id: id, pricelist_is_active: pricelistIsActive});
+        pricelistFilterBEdit: function(id, pricelistIsActive, pricelistDateStart) {
+            return openModal(PricelistFilterBEditCtrl, '/templates/pricelist_filter_b_edit.html', {id: id, pricelist_is_active: pricelistIsActive, pricelist_date_start: pricelistDateStart});
         },
-        pricelistFilterBCreate: function(id, pricelistIsActive, pricelistDefaultTarificationFreeSeconds, pricelistDefaultTarificationIntervalSeconds, pricelistDefaultTarificationMinPaidSeconds, pricelistDefaultTarificationType) {
+        pricelistFilterBCreate: function(id, pricelistIsActive, pricelistDefaultTarificationFreeSeconds,
+                                         pricelistDefaultTarificationIntervalSeconds, pricelistDefaultTarificationMinPaidSeconds,
+                                         pricelistDefaultTarificationType, pricelistDateStart) {
             return openModal(PricelistFilterBEditCtrl, '/templates/pricelist_filter_b_edit.html', {
                 filter_a_id: id,
                 pricelist_is_active: pricelistIsActive,
                 pricelist_default_tarification_free_seconds: pricelistDefaultTarificationFreeSeconds,
                 pricelist_default_tarification_interval_seconds: pricelistDefaultTarificationIntervalSeconds,
                 pricelist_default_tarification_min_paid_seconds: pricelistDefaultTarificationMinPaidSeconds,
-                pricelist_default_tarification_type: pricelistDefaultTarificationType
+                pricelist_default_tarification_type: pricelistDefaultTarificationType,
+                pricelist_date_start: pricelistDateStart
             });
         },
         pricelistPrefixPriceEdit: function (id, pricelistIsActive, pricelistId) {

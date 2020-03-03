@@ -6,6 +6,7 @@ use app\models\billing_uu\PricelistPrefixPrice;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use DateTime;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -58,11 +59,22 @@ class PricelistPrefixPriceController extends JsonController
                 'field' => 'prefix_b'
             ];
         }
+
+        $dateFrom = $this->request['date_from'];
+        $dateTo = $this->request['date_to'];
+        
+        $dt = DateTime::createFromFormat("Y-m-d", $dateFrom);
+        if ($dt === false || array_sum($dt::getLastErrors())) {
+            return ['error' => 'Некорректный формат даты!', 'field' => 'date_from'];
+        }
+        
+        $dt = DateTime::createFromFormat("Y-m-d", $dateTo);
+        if ($dt === false || array_sum($dt::getLastErrors())) {
+            return ['error' => 'Некорректный формат даты!', 'field' => 'date_to'];
+        }
         
         $filterBId = $this->request['pricelist_filter_b_id'];
         $id = isset($this->request['id']) ? $this->request['id'] : null;
-        $dateFrom = $this->request['date_from'];
-        $dateTo = $this->request['date_to'];
         $priceRequest = $this->request['b_number_price'];
         $pricelistIsActive = $this->request['pricelist_is_active'];
         $pricelistId = $this->request['pricelist_id'];

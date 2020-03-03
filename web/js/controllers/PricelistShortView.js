@@ -249,7 +249,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     };
 
     $scope.editFilterB = function (id) {
-        Redirect.pricelistFilterBEdit(id, $scope.pricelistIsActive).then(function () {
+        Redirect.pricelistFilterBEdit(id, $scope.pricelistIsActive, $scope.item.date_start).then(function () {
             $scope.initData($scope.item.id);
         }, function () {
             $scope.initData($scope.item.id);

@@ -112,9 +112,15 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
 
     $scope.pricelistIsActive = params.pricelist_is_active;
 
+    var date = new Date();
+    var pricelistDate = new Date(params.pricelist_date_start);
+
     if (params.id) {
         PricelistFilterB.get({id: params.id}).then(function (data) {
             $scope.item = data;
+
+            $scope.item.prefixes_date_start = date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10);
+            $scope.item.prefixes_date_end = '3000-01-01';
 
             $scope.setNnpFields(data);
 
@@ -150,7 +156,9 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             filter_country: 643,
             rating: 1,
             use_for_minimum: false,
-            use_cutoff_for_minimum: false
+            use_cutoff_for_minimum: false,
+            prefixes_date_start: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
+            prefixes_date_end: '3000-01-01'
         };
 
         $scope.saveEnabled = true;
@@ -179,7 +187,9 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             filter_country: 643,
             rating: 1,
             use_for_minimum: false,
-            use_cutoff_for_minimum: false
+            use_cutoff_for_minimum: false,
+            prefixes_date_start: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
+            prefixes_date_end: '3000-01-01'
         };
 
         $scope.saveEnabled = true;
@@ -219,7 +229,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     };
 
     $scope.save = function () {
-        $scope.errors.error = false;
+        $scope.errors = [];
+        
         var data = angular.copy($scope.item);
 
         data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
@@ -231,11 +242,17 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
 
         PricelistFilterB.save(data).then(function (result) {
             if (result.error) {
-                $scope.errors.error = true;
+                $scope.displayError(result);
+                return;
             } else {
                 $modalInstance.close();
             }
         });
+    };
+
+    $scope.displayError = function(response)
+    {
+        $scope.errors[response.field + '_error'] = response.error;
     };
 
     $scope.setNnpFields = function(data) {

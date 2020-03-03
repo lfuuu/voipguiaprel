@@ -8,6 +8,7 @@ use app\models\billing_uu\PricelistPrefixPrice;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use DateTime;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\web\ForbiddenHttpException;
@@ -61,7 +62,29 @@ class PricelistFilterBController extends JsonController
     
         if (isset($this->request['prefixes'])) {
             if (preg_match("/[^\d,.\-\s]/", $this->request['prefixes'])) {
-                return ['error' => 'Некорректный формат префиксов!'];
+                return ['error' => 'Некорректный формат префиксов!', 'field' => 'prefixes'];
+            }
+            
+            if (isset($this->request['prefixes_date_start'])) {
+                $dt = DateTime::createFromFormat("Y-m-d", $this->request['prefixes_date_start']);
+                if ($dt !== false && !array_sum($dt::getLastErrors())) {
+                    $dateStart = $this->request['prefixes_date_start'];
+                } else {
+                    return ['error' => 'Некорректный формат даты!', 'field' => 'prefixes_date_start'];
+                }
+            } else {
+                $dateStart = date('Y-m-d');
+            }
+            
+            if (isset($this->request['prefixes_date_end'])) {
+                $dt = DateTime::createFromFormat("Y-m-d", $this->request['prefixes_date_end']);
+                if ($dt !== false && !array_sum($dt::getLastErrors())) {
+                    $dateEnd = $this->request['prefixes_date_end'];
+                } else {
+                    return ['error' => 'Некорректный формат даты!', 'field' => 'prefixes_date_end'];
+                }
+            } else {
+                $dateEnd = '3000-01-01';
             }
         }
         
@@ -87,8 +110,8 @@ class PricelistFilterBController extends JsonController
                             'pricelist_filter_b_id' => $item->id,
                             'prefix_b' => trim($prefixB),
                             'b_number_price' => str_replace(',', '.', $prefixPrice),
-                            'date_from' => date('Y-m-d'),
-                            'date_to' => '3000-01-01'
+                            'date_from' => $dateStart,
+                            'date_to' => $dateEnd
                         ];
                     }
                 }

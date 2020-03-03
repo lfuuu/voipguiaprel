@@ -2,6 +2,7 @@
 
 namespace app\models\billing_uu;
 use app\queries\billing_uu\PricelistFilterAQuery;
+use yii\db\Expression;
 
 /**
  * @property int $id
@@ -81,6 +82,6 @@ class PricelistFilterA extends \yii\db\ActiveRecord
             ->leftJoin('(select b.id, string_agg(name, \', \' order by name) as nnp_region_name from nnp.region r join billing_uu.pricelist_filter_b b on r.id = any(b.nnp_region) group by b.id) as r', 'r.id = billing_uu.pricelist_filter_b.id')
             ->leftJoin('(select b.id, string_agg(name, \', \' order by name) as nnp_city_name from nnp.city cty join billing_uu.pricelist_filter_b b on cty.id = any(b.nnp_city) group by b.id) as cty', 'cty.id = billing_uu.pricelist_filter_b.id')
             ->leftJoin('(select b.id, string_agg(name, \', \' order by name) as nnp_ndc_type_name from nnp.ndc_type t join billing_uu.pricelist_filter_b b on t.id = any(b.nnp_ndc_type) group by b.id) as t', 't.id = billing_uu.pricelist_filter_b.id')
-            ->orderBy('id');
+            ->orderBy(new Expression('concat(c.nnp_country_name, t.nnp_ndc_type_name, o.nnp_operator_name, r.nnp_region_name, cty.nnp_city_name)'));
     }
 }
