@@ -42,9 +42,7 @@ class ImsiPartnerController extends JsonController
         
         return
             ImsiPartner::find()
-                ->select(['billing_uu.sim_imsi_partner.*', 'att.trunk_name as term_trunk_name', 'ato.trunk_name as orig_trunk_name', 'ps.name as mvno_region_name'])
-                ->leftJoin('auth.trunk att', 'att.id = billing_uu.sim_imsi_partner.term_trunk_id')
-                ->leftJoin('auth.trunk ato', 'ato.id = billing_uu.sim_imsi_partner.orig_trunk_id')
+                ->select(['billing_uu.sim_imsi_partner.*', 'ps.name as mvno_region_name'])
                 ->leftJoin('public.server ps', 'ps.id = billing_uu.sim_imsi_partner.mvno_region_id')
                 ->orderBy('id')
                 ->asArray()

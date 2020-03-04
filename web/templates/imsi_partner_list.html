@@ -30,20 +30,6 @@
             </a>
         </th>
         <th>
-            <a href="#" ng-click="sortType = 'orig_trunk_name'; sortReverse = !sortReverse">
-                Транк оригинации
-                <span ng-show="sortType == 'orig_trunk_name' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'orig_trunk_name' && !sortReverse" class="caret-up"></span>
-            </a>
-        </th>
-        <th>
-            <a href="#" ng-click="sortType = 'term_trunk_name'; sortReverse = !sortReverse">
-                Транк терминации
-                <span ng-show="sortType == 'term_trunk_name' && sortReverse" class="caret-down"></span>
-                <span ng-show="sortType == 'term_trunk_name' && !sortReverse" class="caret-up"></span>
-            </a>
-        </th>
-        <th>
             <a href="#" ng-click="sortType = 'mvno_region_id'; sortReverse = !sortReverse">
                 Регион подключения партнера
                 <span ng-show="sortType == 'mvno_region_id' && sortReverse" class="caret-down"></span>
@@ -72,8 +58,6 @@
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.orig_trunk_name}}</td>
-        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.term_trunk_name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.mvno_region_name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.location_name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">
