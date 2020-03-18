@@ -526,6 +526,8 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 delete data.nnp_destination;
                 delete data.nnp_is_exclude_destination;
             }
+        } else {
+            data.is_use_ported = false;
         }
 
         Prefixlist.save(data).then(function (result) {
