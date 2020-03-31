@@ -328,6 +328,20 @@
                             <span style="color: red;">Некорректный формат префиксов!<br/>Допустимы только цифры, тире, точка, запятая, пробел и табуляция.</span>
                         </div>
                     </div>
+                    <div>
+                        <table class="table table-striped">
+                            <tr>
+                                <th class="col-sm-2">Дата окончания действия</th>
+                                <th>Префиксы</th>
+                            </tr>
+                            <tr ng-repeat="(key, val) in item.old_prefixes">
+                                <td>{{key}}</td>
+                                <td>
+                                    <div ng-repeat="(lineKey, lineVal) in val"><b>{{lineKey}}</b>: {{lineVal}}</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

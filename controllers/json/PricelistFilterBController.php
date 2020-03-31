@@ -22,7 +22,7 @@ class PricelistFilterBController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
-        return
+        $result = 
             PricelistFilterB::find()
                 ->alias('b')
                 ->select(
@@ -34,6 +34,26 @@ class PricelistFilterBController extends JsonController
                 ->where(['b.id' => $this->request['id']])
                 ->asArray()
                 ->one();
+
+        $prefixes = PricelistPrefixPrice::find()
+            ->select(['date_to', 'b_number_price', 'prefixes' => new Expression('string_agg(prefix_b, \', \')')])
+            ->where(['pricelist_filter_b_id' => $this->request['id']])
+            ->groupBy(['date_to', 'b_number_price'])
+            ->asArray()
+            ->all();
+
+        $prefixesProcessed = [];
+
+        foreach ($prefixes as $prefixArray) {
+            if (!isset($prefixesProcessed[$prefixArray['date_to']])) {
+                $prefixesProcessed[$prefixArray['date_to']] = [];
+            }
+            $prefixesProcessed[$prefixArray['date_to']][$prefixArray['b_number_price']] = $prefixArray['prefixes'];
+        }
+
+        $result['old_prefixes'] = $prefixesProcessed;
+
+        return $result;
     }
     
     public function actionSave()
