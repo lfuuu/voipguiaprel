@@ -294,13 +294,13 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
                     });
 
                     $q.all([regionList, operatorList, ndcList]).then(function () {
-                        $scope.saveEnabled = !$scope.pricelistIsActive;
+                        $scope.saveEnabled = true;
                     });
                 } else {
-                    $scope.saveEnabled = !$scope.pricelistIsActive;
+                    $scope.saveEnabled = true;
                 }
             } else {
-                $scope.saveEnabled = !$scope.pricelistIsActive;
+                $scope.saveEnabled = true;
             }
         } catch (error) {
             $scope.nnpDataParseError = true;
