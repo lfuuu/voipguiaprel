@@ -121,6 +121,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
 
             $scope.item.prefixes_date_start = date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10);
             $scope.item.prefixes_date_end = '3000-01-01';
+            $scope.item.prefixes_replace = false;
 
             $scope.setNnpFields(data);
 
@@ -158,7 +159,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             use_for_minimum: false,
             use_cutoff_for_minimum: false,
             prefixes_date_start: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
-            prefixes_date_end: '3000-01-01'
+            prefixes_date_end: '3000-01-01',
+            prefixes_replace: false
         };
 
         $scope.saveEnabled = true;
@@ -189,7 +191,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             use_for_minimum: false,
             use_cutoff_for_minimum: false,
             prefixes_date_start: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
-            prefixes_date_end: '3000-01-01'
+            prefixes_date_end: '3000-01-01',
+            prefixes_replace: false
         };
 
         $scope.saveEnabled = true;

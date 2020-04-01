@@ -136,6 +136,13 @@ class PricelistFilterBController extends JsonController
                     }
                 }
                 
+                if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
+                    Yii::$app->db->createCommand('update billing_uu.pricelist_prefix_price set date_to = :date_to where pricelist_filter_b_id = :b_id and date_to > :date_to')
+                        ->bindValue(':date_to', $dateStart)
+                        ->bindValue(':b_id', $item->id)
+                        ->execute();
+                }
+                
                 foreach ($prefixesToSave as $prefixToSave) {
                     $prefixCreatedItem = PricelistPrefixPrice::create($prefixToSave);
                     if (!$prefixCreatedItem->save()) {
@@ -181,7 +188,29 @@ class PricelistFilterBController extends JsonController
 
         if (isset($this->request['prefixes'])) {
             if (preg_match("/[^\d,.\-\s]/", $this->request['prefixes'])) {
-                return ['error' => 'Некорректный формат префиксов!'];
+                return ['error' => 'Некорректный формат префиксов!', 'field' => 'prefixes'];
+            }
+            
+            if (isset($this->request['prefixes_date_start'])) {
+                $dt = DateTime::createFromFormat("Y-m-d", $this->request['prefixes_date_start']);
+                if ($dt !== false && !array_sum($dt::getLastErrors())) {
+                    $dateStart = $this->request['prefixes_date_start'];
+                } else {
+                    return ['error' => 'Некорректный формат даты!', 'field' => 'prefixes_date_start'];
+                }
+            } else {
+                $dateStart = date('Y-m-d');
+            }
+            
+            if (isset($this->request['prefixes_date_end'])) {
+                $dt = DateTime::createFromFormat("Y-m-d", $this->request['prefixes_date_end']);
+                if ($dt !== false && !array_sum($dt::getLastErrors())) {
+                    $dateEnd = $this->request['prefixes_date_end'];
+                } else {
+                    return ['error' => 'Некорректный формат даты!', 'field' => 'prefixes_date_end'];
+                }
+            } else {
+                $dateEnd = '3000-01-01';
             }
         }
 
@@ -207,12 +236,19 @@ class PricelistFilterBController extends JsonController
                             'pricelist_filter_b_id' => $item->id,
                             'prefix_b' => trim($prefixB),
                             'b_number_price' => str_replace(',', '.', $prefixPrice),
-                            'date_from' => date('Y-m-d'),
-                            'date_to' => '3000-01-01'
+                            'date_from' => $dateStart,
+                            'date_to' => $dateEnd
                         ];
                     }
                 }
 
+                if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
+                    Yii::$app->db->createCommand('update billing_uu.pricelist_prefix_price set date_to = :date_to where pricelist_filter_b_id = :b_id and date_to > :date_to')
+                        ->bindValue(':date_to', date('Y-m-d'))
+                        ->bindValue(':b_id', $item->id)
+                        ->execute();
+                }
+                
                 foreach ($prefixesToSave as $prefixToSave) {
                     $prefixCreatedItem = PricelistPrefixPrice::create($prefixToSave);
                     if (!$prefixCreatedItem->save()) {
