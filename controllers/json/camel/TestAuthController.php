@@ -3,6 +3,7 @@
 namespace app\controllers\json\camel;
 
 use app\classes\JsonController;
+use app\models\ServerOcs;
 
 class TestAuthController extends JsonController
 {
@@ -22,14 +23,23 @@ class TestAuthController extends JsonController
         }
 
         $modelName = $this->modelName;
-
+        
         $item = $modelName::findOne($this->request['id']);
 
         if ($item === null) {
             throw new HttpException(404, $this->modelName . ' не найден');
         }
+        
+        $server = ServerOcs::findOne($item->server_id);
 
-        $apiUrl = 'http://reg99.mcntelecom.ru:8101/';
+        if ($server === null) {
+            throw new HttpException(404, 'Сервер для ' . $this->modelName . ' не найден');
+        }
+        
+        $isReserve = (isset($this->request['is_reserve']) && $this->request['is_reserve']) ? true : false;
+        
+        $apiUrl = $isReserve ? $server->camel_reserve : $server->camel_gw;
+        
         $apiParams = [
             'a_number' => $item->a_number,
             'b_number' => $item->b_number,

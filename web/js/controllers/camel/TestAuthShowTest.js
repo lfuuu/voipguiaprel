@@ -3,7 +3,7 @@ var CamelTestAuthShowTestCtrl = function($scope, CamelTestAuth, params, $modalIn
     $scope.details = 1;
 
     if (params.id) {
-        CamelTestAuth.result({id: params.id}).then(function(data){
+        CamelTestAuth.result({id: params.id, is_reserve: params.is_reserve}).then(function(data){
             $scope.item = data.item;
             $scope.result = data.result;
             $scope.result_new = data.result_new;

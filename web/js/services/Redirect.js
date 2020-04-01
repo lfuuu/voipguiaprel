@@ -597,7 +597,10 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(CamelTestAuthEditCtrl, '/templates/camel/test_auth_edit.html', {id: id});
         },
         camelTestAuthShowTest: function(id) {
-            return openModal(CamelTestAuthShowTestCtrl, '/templates/camel/test_auth_show_test.html', {id: id});
+            return openModal(CamelTestAuthShowTestCtrl, '/templates/camel/test_auth_show_test.html', {id: id, is_reserve: false});
+        },
+        camelTestAuthShowTestReserve: function(id) {
+            return openModal(CamelTestAuthShowTestCtrl, '/templates/camel/test_auth_show_test.html', {id: id, is_reserve: true});
         },
         userList: function() {
             $cookies.settings_selected_page = 'userList';

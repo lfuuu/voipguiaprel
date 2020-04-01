@@ -77,9 +77,9 @@ app.factory('CamelTestAuth', function ($q, ApiLoader, $rootScope) {
     var promise = undefined;
     var functions = basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
 
-    functions.result = function (id) {
+    functions.result = function (data) {
         list = undefined;
-        return ApiLoader.post(url + 'result', {id: id});
+        return ApiLoader.post(url + 'result', data);
     };
 
     return functions;

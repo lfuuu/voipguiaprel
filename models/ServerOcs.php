@@ -9,6 +9,7 @@ use app\queries\ServerOcsQuery;
  * @property bool $active
  * @property string $type
  * @property string $camel_gw
+ * @property string $camel_reserve
  * @property int $default_routing_server_id
  */
 class ServerOcs extends \yii\db\ActiveRecord
@@ -33,7 +34,7 @@ class ServerOcs extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'type', 'camel_gw'], 'string'],
+            [['name', 'type', 'camel_gw', 'camel_reserve'], 'string'],
             [['default_routing_server_id'], 'integer'],
             [['active'], 'boolean']
         ];

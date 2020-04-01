@@ -25,6 +25,10 @@ var CamelTestAuthListCtrl = function($scope, CamelTestAuth, Redirect, $window) {
     $scope.showTestPrimary = function (item) {
         $scope.showTestBasic(item, 'camelTestAuthShowTest');
     };
+    
+    $scope.showTestReserve = function (item) {
+        $scope.showTestBasic(item, 'camelTestAuthShowTestReserve');
+    };
 
     $scope.showTestBasic = function (item, method) {
         if (window.getSelection().type == 'Range') {
