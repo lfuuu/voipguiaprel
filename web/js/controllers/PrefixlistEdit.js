@@ -713,6 +713,12 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 $scope.item.number_ndc_type = filterData.ndc_type_id;
                 $scope.item.number_source = filterData.source;
                 $scope.item.number_status = filterData.status;
+                $scope.item.number_exclude_country = filterData.exclude_country_code;
+                $scope.item.number_exclude_region = filterData.exclude_region_id;
+                $scope.item.number_exclude_city = filterData.exclude_city_id;
+                $scope.item.number_exclude_ndc_type = filterData.exclude_ndc_type_id;
+                $scope.item.number_exclude_source = filterData.exclude_source;
+                $scope.item.number_exclude_status = filterData.exclude_status;
 
                 if ($scope.item.number_country) {
                     Nnp.regionList({country_code: $scope.item.number_country}).then(function (data) {

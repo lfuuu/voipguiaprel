@@ -375,6 +375,12 @@ class Prefixlist extends \yii\db\ActiveRecord
             'ndc_type_id' => isset($input['number_ndc_type']) ? $input['number_ndc_type'] : '',
             'source' => isset($input['number_source']) ? $input['number_source'] : '',
             'status' => isset($input['number_status']) ? $input['number_status'] : '',
+            'exclude_country_code' => isset($input['number_exclude_country']) ? $input['number_exclude_country'] : '',
+            'exclude_region_id' => isset($input['number_exclude_region']) ? $input['number_exclude_region'] : '',
+            'exclude_city_id' => isset($input['number_exclude_city']) ? $input['number_exclude_city'] : '',
+            'exclude_ndc_type_id' => isset($input['number_exclude_ndc_type']) ? $input['number_exclude_ndc_type'] : '',
+            'exclude_source' => isset($input['number_exclude_source']) ? $input['number_exclude_source'] : '',
+            'exclude_status' => isset($input['number_exclude_status']) ? $input['number_exclude_status'] : '',
             'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
         ];
         
