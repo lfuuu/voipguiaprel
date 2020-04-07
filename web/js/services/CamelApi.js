@@ -81,6 +81,11 @@ app.factory('CamelTestAuth', function ($q, ApiLoader, $rootScope) {
         list = undefined;
         return ApiLoader.post(url + 'result', data);
     };
+    
+    functions.descend = function (data) {
+        list = undefined;
+        return ApiLoader.post(url + 'descend', data);
+    };
 
     return functions;
 });

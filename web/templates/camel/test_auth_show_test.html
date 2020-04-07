@@ -15,7 +15,7 @@
             <br />
             <div class="tree-container-bordered">
             <div ng-if="node.name" ui-tree-handle class="tree-node tree-node-content">
-                <a class="btn btn-success btn-xs" ng-disabled="!node.nodes" data-nodrag ng-click="toggle(this);">
+                <a class="btn btn-success btn-xs" ng-disabled="!node.nodes" data-nodrag ng-click="toggle(this); descend(node)">
                     <span class="glyphicon" ng-class="{
                       'glyphicon-chevron-right': collapsed,
                       'glyphicon-chevron-down': !collapsed
@@ -29,7 +29,9 @@
                 <table>
                     <tr>
                         <td style="vertical-align:top;">
-                            <span class="label label-warning">[RESULT]</span>
+                            <span ng-if="node.type == 'RESULT'" class="label label-warning">[RESULT]</span>
+                            <span ng-if="node.type == 'INFO'" class="label label-info">[INFO]</span>
+                            <span ng-if="node.type != 'INFO' && node.type != 'RESULT'" class="label label-danger">[UNKNOWN]</span>
                         </td>
                         <td>
                             <span ng-if="node.color && node.color == 'red'" class="bg-danger">{{node.message}}</span>

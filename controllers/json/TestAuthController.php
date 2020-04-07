@@ -3,6 +3,7 @@
 namespace app\controllers\json;
 
 use app\classes\JsonController;
+use app\classes\traits\TestResult as TestResult;
 use app\exceptions\FormValidationException;
 use app\models\Server;
 use app\models\TestAuth;
@@ -15,6 +16,8 @@ use Yii;
 
 class TestAuthController extends JsonController
 {
+    use TestResult;
+    
     const TEST_RESULT_DIVIDER_START = '2B2EKSTARTJSON';
     const TEST_RESULT_DIVIDER_STOP = '2B2EKSTOPJSON';
     
@@ -25,6 +28,12 @@ class TestAuthController extends JsonController
     const TEST_DIRECTION_RESERVE = 2;
     const TEST_DIRECTION_RESERVE_2 = 3;
     const TEST_DIRECTION_DEV = 4;
+    
+    protected $createPermission = 'test_auth_create';
+    protected $listPermission = 'test_auth_list';
+    protected $editPermission = 'test_auth_edit';
+    protected $deletePermission = 'test_auth_delete';
+    protected $stepParamName = 'steps';
     
     private $_oldTestResultTypes = ['ERROR', 'RESULT', 'INFO', 'HEADER'];
 
@@ -306,6 +315,7 @@ class TestAuthController extends JsonController
         $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
         
         $apiParams['user'] = Yii::$app->user->getId();
+        $apiParams['date'] = date('Y-m-d H:i:s');
         
         $requestForKey = $apiUrl . 'test/auth?' . http_build_query($apiParams);
         
@@ -618,110 +628,5 @@ class TestAuthController extends JsonController
         $finalResult = $this->findByPath($result, '', self::TEST_RESULT_INITIAL_DEPTH);
         
         return $finalResult;
-    }
-    
-    private function processResult($result)
-    {
-        $newResult = [];
-    
-        foreach ($result[0]['steps'] as $stepKey => $step) {
-            $newResult['steps'][$stepKey] = $this->processItemRecursive($step, $stepKey);
-        }
-    
-        return $newResult;
-    }
-    
-    private function processItemRecursive($item, $path = '')
-    {
-        $newItem = $item;
-    
-        $newItem['path'] = $path;
-    
-        if (array_key_exists('steps', $item) && count($item['steps']) > 0) {
-            foreach ($item['steps'] as $stepKey => $step) {
-                $newItem['steps'][$stepKey] = $this->processItemRecursive($step, $path . ',' . $stepKey);
-            }
-        }
-        
-        return $newItem;
-    }
-    
-    private function findByPath($result, $path, $depth = self::TEST_RESULT_DEFAULT_DEPTH)
-    {
-        $newResult = [];
-        
-        if (empty($path)) {
-            if (!empty($result) && array_key_exists('steps', $result)) {
-                foreach ($result['steps'] as $stepKey => $step) {
-                    $newResult['steps'][$stepKey] = $this->findByPathRecursive($step, $depth - 1);
-                }
-            }
-        } else {
-            $pathArray = explode(',', $path);
-            
-            $newResult = &$result;
-    
-            foreach ($pathArray as $key) {
-                $newResult = &$newResult['steps'][$key];
-            }
-            
-            if (array_key_exists('steps', $newResult)) {
-                foreach ($newResult['steps'] as &$step) {
-                    if (array_key_exists('steps', $step)) {
-                        $step['steps'] = [];
-                    }
-                }
-            }
-        }
-        
-        return $newResult;
-    }
-    
-    private function findByPathRecursive($item, $depth)
-    {
-        $newItem = $item;
-    
-        if ($depth == 0) {
-            if (array_key_exists('steps', $item)) {
-                $newItem['steps'] = [];
-            }
-        } else {
-            if (array_key_exists('steps', $item) && count($item['steps']) > 0) {
-                foreach ($item['steps'] as $stepKey => $step) {
-                    $newItem['steps'][$stepKey] = $this->findByPathRecursive($step, $depth - 1);
-                }
-            }
-        }
-    
-        return $newItem;
-    }
-    
-    public function actionDescend()
-    {
-        if (!\Yii::$app->user->can('test_auth_list')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-        
-        $path = $this->request['path'];
-        $key = $this->request['key'];
-        
-        $data = Yii::$app->cache->get($key);
-        
-        if ($data === false) {
-            throw new Exception('No data in cache');
-        }
-        
-        return $this->findByPath($data, $path);
-    }
-    
-    public function actionClearCache()
-    {
-        if (!\Yii::$app->user->can('test_auth_list')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-    
-        Yii::$app->cache->flush();
-        
-        return ['success' => 1];
     }
 }

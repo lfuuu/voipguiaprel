@@ -6,7 +6,6 @@ var CamelTestAuthShowTestCtrl = function($scope, CamelTestAuth, params, $modalIn
         CamelTestAuth.result({id: params.id, is_reserve: params.is_reserve}).then(function(data){
             $scope.item = data.item;
             $scope.result = data.result;
-            $scope.result_new = data.result_new;
             $scope.key = data.key;
             $scope.url = data.url;
         });
@@ -17,21 +16,21 @@ var CamelTestAuthShowTestCtrl = function($scope, CamelTestAuth, params, $modalIn
     }
 
     $scope.descend = function (item) {
-        if (item.steps && item.steps.length == 0) {
-            TestCall.descend({'path': item.path, 'key': $scope.key}).then(function (result) {
+        if (item.nodes && item.nodes.length == 0) {
+            CamelTestAuth.descend({'path': item.path, 'key': $scope.key}).then(function (result) {
                 var pathArray = item.path.split(',');
 
-                $scope.updateItemRecursively($scope.result_new, pathArray, result.steps);
+                $scope.updateItemRecursively($scope.result, pathArray, result.nodes);
             });
         }
     };
 
-    $scope.updateItemRecursively = function (item, path, steps) {
+    $scope.updateItemRecursively = function (item, path, nodes) {
         if (path.length > 0) {
             var index = path.shift();
-            $scope.updateItemRecursively(item['steps'][index], path, steps);
+            $scope.updateItemRecursively(item['nodes'][index], path, nodes);
         } else {
-            item.steps = steps;
+            item.nodes = nodes;
         }
     };
 

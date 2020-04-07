@@ -3,10 +3,18 @@
 namespace app\controllers\json\camel;
 
 use app\classes\JsonController;
+use app\classes\traits\TestResult;
 use app\models\ServerOcs;
+use yii\web\ForbiddenHttpException;
+use yii\web\HttpException;
 
 class TestAuthController extends JsonController
 {
+    use TestResult;
+    
+    const TEST_RESULT_DEFAULT_DEPTH = 1;
+    const TEST_RESULT_INITIAL_DEPTH = 2;
+    
     protected $modelName = 'app\models\auth\CamelTestAuth';
     protected $idParamName = 'id';
     protected $nameParamName = 'name';
@@ -15,6 +23,7 @@ class TestAuthController extends JsonController
     protected $listPermission = 'camel_test_auth_list';
     protected $editPermission = 'camel_test_auth_edit';
     protected $deletePermission = 'camel_test_auth_delete';
+    private $stepParamName = 'nodes';
 
     public function actionResult()
     {
@@ -51,13 +60,35 @@ class TestAuthController extends JsonController
         ];
 
         $request = $apiUrl . 'api/camel?' . http_build_query($apiParams);
+        
+        $apiParams['user'] = \Yii::$app->user->getId();
+        $apiParams['date'] = date('Y-m-d H:i:s');
+        
+        $requestForKey = $apiUrl . 'test/auth?' . http_build_query($apiParams);
+        
+        $key = md5($requestForKey);
 
-        $response = json_decode(file_get_contents($request), true);
+        $response = file_get_contents($request);
 
         return [
             'item' => $item->toArray(),
-            'result' => ['nodes' => [$response]],
+            'name' => 'root',
+            'key' => $key,
+            'result' => $this->generateNewResult($response, $key),
             'url' => $request
         ];
+    }
+    
+    private function generateNewResult($resultString, $key)
+    {
+        $tempResult = json_decode($resultString, true);
+        
+        $result = $this->processResult([$tempResult]);
+        
+        \Yii::$app->cache->set($key, $result);
+        
+        $finalResult = $this->findByPath($result, '', self::TEST_RESULT_INITIAL_DEPTH);
+        
+        return $finalResult;
     }
 }
