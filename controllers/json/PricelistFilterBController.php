@@ -8,6 +8,9 @@ use app\models\billing_uu\PricelistPrefixPrice;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use app\models\billing_uu\PricelistLocation;
+use app\models\billing_uu\PricelistPrefixPriceHistory;
+use app\models\billing_uu\PricelistPrefixPriceHistoryItem;
 use DateTime;
 use yii\db\Expression;
 use yii\db\Query;
@@ -31,27 +34,10 @@ class PricelistFilterBController extends JsonController
                     'filter_country' => 'm.country_code']
                 )
                 ->leftJoin(['m' => Major::tableName()], 'm.id = b.nnp_filter')
+                ->with('prefixPriceHistory')
                 ->where(['b.id' => $this->request['id']])
                 ->asArray()
                 ->one();
-
-        $prefixes = PricelistPrefixPrice::find()
-            ->select(['date_to', 'b_number_price', 'prefixes' => new Expression('string_agg(prefix_b, \', \')')])
-            ->where(['pricelist_filter_b_id' => $this->request['id']])
-            ->groupBy(['date_to', 'b_number_price'])
-            ->asArray()
-            ->all();
-
-        $prefixesProcessed = [];
-
-        foreach ($prefixes as $prefixArray) {
-            if (!isset($prefixesProcessed[$prefixArray['date_to']])) {
-                $prefixesProcessed[$prefixArray['date_to']] = [];
-            }
-            $prefixesProcessed[$prefixArray['date_to']][$prefixArray['b_number_price']] = $prefixArray['prefixes'];
-        }
-
-        $result['old_prefixes'] = $prefixesProcessed;
 
         return $result;
     }
@@ -79,32 +65,12 @@ class PricelistFilterBController extends JsonController
             $item = PricelistFilterB::create();
             $result['log'] = ['data_before' => []];
         }
-    
+        
         if (isset($this->request['prefixes'])) {
-            if (preg_match("/[^\d,.\-\s]/", $this->request['prefixes'])) {
-                return ['error' => 'Некорректный формат префиксов!', 'field' => 'prefixes'];
-            }
-            
-            if (isset($this->request['prefixes_date_start'])) {
-                $dt = DateTime::createFromFormat("Y-m-d", $this->request['prefixes_date_start']);
-                if ($dt !== false && !array_sum($dt::getLastErrors())) {
-                    $dateStart = $this->request['prefixes_date_start'];
-                } else {
-                    return ['error' => 'Некорректный формат даты!', 'field' => 'prefixes_date_start'];
-                }
-            } else {
-                $dateStart = date('Y-m-d');
-            }
-            
-            if (isset($this->request['prefixes_date_end'])) {
-                $dt = DateTime::createFromFormat("Y-m-d", $this->request['prefixes_date_end']);
-                if ($dt !== false && !array_sum($dt::getLastErrors())) {
-                    $dateEnd = $this->request['prefixes_date_end'];
-                } else {
-                    return ['error' => 'Некорректный формат даты!', 'field' => 'prefixes_date_end'];
-                }
-            } else {
-                $dateEnd = '3000-01-01';
+            $validationResult = $this->validateInput();
+        
+            if (isset($validationResult['error'])) {
+                return $validationResult;
             }
         }
         
@@ -117,37 +83,9 @@ class PricelistFilterBController extends JsonController
             }
             
             if (isset($this->request['prefixes'])) {
-                $prefixesToSave = [];
-                $prefixesArray = explode("\n", $this->request['prefixes']);
-                
-                foreach ($prefixesArray as $prefixItem) {
-                    list($prefixBString, $prefixPrice) = preg_split("/[\t]/", $prefixItem);
-                    
-                    $prefixBArray = explode(',', str_replace(['-'], ',', $prefixBString));
-                    
-                    foreach ($prefixBArray as $prefixB) {
-                        $prefixesToSave[] = [
-                            'pricelist_filter_b_id' => $item->id,
-                            'prefix_b' => trim($prefixB),
-                            'b_number_price' => str_replace(',', '.', $prefixPrice),
-                            'date_from' => $dateStart,
-                            'date_to' => $dateEnd
-                        ];
-                    }
-                }
-                
-                if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
-                    Yii::$app->db->createCommand('update billing_uu.pricelist_prefix_price set date_to = :date_to where pricelist_filter_b_id = :b_id and date_to > :date_to')
-                        ->bindValue(':date_to', $dateStart)
-                        ->bindValue(':b_id', $item->id)
-                        ->execute();
-                }
-                
-                foreach ($prefixesToSave as $prefixToSave) {
-                    $prefixCreatedItem = PricelistPrefixPrice::create($prefixToSave);
-                    if (!$prefixCreatedItem->save()) {
-                        throw new FormValidationException($item);
-                    }
+                $upsertResult = $this->upsertPrefixes($item);
+                if (isset($upsertResult['error'])) {
+                    return $upsertResult;
                 }
             }
             
@@ -187,30 +125,10 @@ class PricelistFilterBController extends JsonController
         }
 
         if (isset($this->request['prefixes'])) {
-            if (preg_match("/[^\d,.\-\s]/", $this->request['prefixes'])) {
-                return ['error' => 'Некорректный формат префиксов!', 'field' => 'prefixes'];
-            }
-            
-            if (isset($this->request['prefixes_date_start'])) {
-                $dt = DateTime::createFromFormat("Y-m-d", $this->request['prefixes_date_start']);
-                if ($dt !== false && !array_sum($dt::getLastErrors())) {
-                    $dateStart = $this->request['prefixes_date_start'];
-                } else {
-                    return ['error' => 'Некорректный формат даты!', 'field' => 'prefixes_date_start'];
-                }
-            } else {
-                $dateStart = date('Y-m-d');
-            }
-            
-            if (isset($this->request['prefixes_date_end'])) {
-                $dt = DateTime::createFromFormat("Y-m-d", $this->request['prefixes_date_end']);
-                if ($dt !== false && !array_sum($dt::getLastErrors())) {
-                    $dateEnd = $this->request['prefixes_date_end'];
-                } else {
-                    return ['error' => 'Некорректный формат даты!', 'field' => 'prefixes_date_end'];
-                }
-            } else {
-                $dateEnd = '3000-01-01';
+            $validationResult = $this->validateInput();
+        
+            if (isset($validationResult['error'])) {
+                return $validationResult;
             }
         }
 
@@ -223,37 +141,9 @@ class PricelistFilterBController extends JsonController
             }
 
             if (isset($this->request['prefixes'])) {
-                $prefixesToSave = [];
-                $prefixesArray = explode("\n", $this->request['prefixes']);
-
-                foreach ($prefixesArray as $prefixItem) {
-                    list($prefixBString, $prefixPrice) = preg_split("/[\t]/", $prefixItem);
-
-                    $prefixBArray = explode(',', str_replace(['-'], ',', $prefixBString));
-
-                    foreach ($prefixBArray as $prefixB) {
-                        $prefixesToSave[] = [
-                            'pricelist_filter_b_id' => $item->id,
-                            'prefix_b' => trim($prefixB),
-                            'b_number_price' => str_replace(',', '.', $prefixPrice),
-                            'date_from' => $dateStart,
-                            'date_to' => $dateEnd
-                        ];
-                    }
-                }
-
-                if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
-                    Yii::$app->db->createCommand('update billing_uu.pricelist_prefix_price set date_to = :date_to where pricelist_filter_b_id = :b_id and date_to > :date_to')
-                        ->bindValue(':date_to', date('Y-m-d'))
-                        ->bindValue(':b_id', $item->id)
-                        ->execute();
-                }
-                
-                foreach ($prefixesToSave as $prefixToSave) {
-                    $prefixCreatedItem = PricelistPrefixPrice::create($prefixToSave);
-                    if (!$prefixCreatedItem->save()) {
-                        throw new FormValidationException($item);
-                    }
+                $upsertResult = $this->upsertPrefixes($item);
+                if (isset($upsertResult['error'])) {
+                    return $upsertResult;
                 }
             }
 
@@ -277,6 +167,151 @@ class PricelistFilterBController extends JsonController
         $result['log']['data_after'] = $this->getDataForLog($item);
 
         return $result;
+    }
+    
+    private function validateInput()
+    {
+        if (preg_match("/[^\d,.\-\s]/", $this->request['prefixes'])) {
+            return ['error' => 'Некорректный формат префиксов! Допустимы только цифры, тире, точка, запятая, пробел и табуляция.', 'field' => 'prefixes'];
+        }
+    }
+    
+    private function prepareDates($rawDateStart, $rawDateEnd)
+    {
+        if (isset($rawDateStart)) {
+            $dt = DateTime::createFromFormat("Y-m-d", $rawDateStart);
+            if ($dt !== false && !array_sum($dt::getLastErrors())) {
+                if ($dt < DateTime::createFromFormat("Y-m-d", date('Y-m-d'))) {
+                    return ['error' => 'Дата начала действия не может быть раньше, чем сейчас!', 'field' => 'prefixes'];
+                }
+                $dateStart = $rawDateStart;
+            } else {
+                return ['error' => 'Некорректный формат даты начала действия!', 'field' => 'prefixes'];
+            }
+        } else {
+            $dateStart = date('Y-m-d');
+        }
+        
+        if (isset($rawDateEnd)) {
+            $dtEnd = DateTime::createFromFormat("Y-m-d", $rawDateEnd);
+            if ($dtEnd !== false && !array_sum($dtEnd::getLastErrors())) {
+                if ($dtEnd < DateTime::createFromFormat("Y-m-d", $dateStart)) {
+                    return ['error' => 'Дата окончания действия не может быть раньше, чем дата начала действия!', 'field' => 'prefixes'];
+                }
+                $dateEnd = $rawDateEnd;
+            } else {
+                return ['error' => 'Некорректный формат даты окончания действия!', 'field' => 'prefixes'];
+            }
+        } else {
+            $dateEnd = '3000-01-01';
+        }
+        
+        return ['date_start' => $dateStart, 'date_end' => $dateEnd];
+    }
+    
+    private function upsertPrefixes($item)
+    {
+        $prefixesToSave = [];
+        $prefixesArray = explode("\n", $this->request['prefixes']);
+        try {
+            $interconnectPrice = floatval($item->interconnect_price);
+            
+            foreach ($prefixesArray as $prefixItem) {
+                $input = preg_split("/[\t]/", $prefixItem);
+                $prefixBString = $input[0];
+                $prefixPrice = $input[1];
+                $rawDateStart = $input[2]; // Если даты нет, то ругнется, и правильно сделает. Для этого внизу catch().
+                $rawDateEnd = isset($input[3]) ? $input[3] : '3000-01-01';
+                
+                $preparedDates = $this->prepareDates($rawDateStart, $rawDateEnd);
+                
+                if (isset($preparedDates['error'])) {
+                    return $preparedDates;
+                } else {
+                    $dateStart = $preparedDates['date_start'];
+                    $dateEnd = $preparedDates['date_end'];
+                }
+                
+                $prefixBArray = explode(',', str_replace(['-'], ',', $prefixBString));
+                
+                foreach ($prefixBArray as $prefixB) {
+                    $bNumberPrice = str_replace(',', '.', $prefixPrice);
+                    $bNumberPrice = floatval($bNumberPrice);
+                    $prefixesToSave[] = [
+                        'pricelist_filter_b_id' => $item->id,
+                        'prefix_b' => trim($prefixB),
+                        'b_number_price' => (string)($bNumberPrice - $interconnectPrice),
+                        'date_from' => $dateStart,
+                        'date_to' => $dateEnd
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            return ['error' => 'Ошибка при обработке префиксов! Каждая пара префикс-цена должна быть на отдельной строке. Префиксы должны быть отделены от цены символом табуляции. Префиксы можно перечислять через запятую или через тире.', 'field' => 'prefixes'];
+        }
+        
+        Yii::$app->db->createCommand('update billing_uu.pricelist_prefix_price_history set data_before = null where pricelist_filter_b_id = :b_id')
+                ->bindValue(':b_id', $item->id)
+                ->execute();
+        
+        $dataBefore = PricelistPrefixPrice::find()
+            ->where(['pricelist_filter_b_id' => $item->id])
+            ->asArray()
+            ->all();
+            
+        $pricelistId = PricelistLocation::find()
+            ->alias('pl')
+            ->select(['pl.pricelist_id'])
+            ->innerJoin('billing_uu.pricelist_filter_a a', 'a.pricelist_location_id = pl.id')
+            ->where(['a.id' => $item->pricelist_filter_a_id])
+            ->asArray()
+            ->one();
+            
+        $historyData = [
+            'pricelist_filter_b_id' => $item->id,
+            'pricelist_id' => $pricelistId['pricelist_id'],
+            'date_from' => $dateStart,
+            'date_to' => $dateEnd,
+            'date_created' => date('Y-m-d H:i:s'),
+            'type' => (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) ? 'replace' : 'add',
+            'total_count' => count($prefixesToSave),
+            'data_before' => json_encode($dataBefore)
+        ];
+        
+        $historyObject = PricelistPrefixPriceHistory::create($historyData);
+        $historyObject->save();
+
+        if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
+            $dataRemoved = PricelistPrefixPrice::find()
+                ->where(['pricelist_filter_b_id' => $item->id])
+                ->andWhere('date_to > now()')
+                ->all();
+            
+            foreach ($dataRemoved as $removedItem) {
+                $historyItemData = [
+                    'pricelist_prefix_price_history_id' => $historyObject->id,
+                    'prefix_b' => $removedItem->prefix_b,
+                    'price_old' => $removedItem->b_number_price,
+                    'price_new' => '',
+                    'date_from' => $removedItem->date_from,
+                    'date_to' => date('Y-m-d'),
+                    'type' => 'delete'
+                ];
+                
+                $historyItemObject = PricelistPrefixPriceHistoryItem::create($historyItemData);
+                $historyItemObject->save();
+                
+                $removedItem->date_to = date('Y-m-d');
+                $removedItem->save();
+            }
+        }
+        
+        foreach ($prefixesToSave as $prefixToSave) {
+            $prefixCreatedItem = PricelistPrefixPrice::create($prefixToSave, $historyObject->id);
+            if (!$prefixCreatedItem->save()) {
+                throw new FormValidationException($item);
+            }
+        }
     }
     
     /**

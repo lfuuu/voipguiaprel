@@ -95,10 +95,21 @@ class PricelistFilterB extends \yii\db\ActiveRecord
             ->select(['*', 'b_number_price' => new Expression('round(billing_uu.pricelist_prefix_price.b_number_price, 6)')])
             ->innerJoin('(select *, row_number() over (partition by pricelist_filter_b_id order by prefix_b) as rownum 
                 from billing_uu.pricelist_prefix_price p
+                where date_to > now()
                 ) p1', 'p1.id = billing_uu.pricelist_prefix_price.id')
             ->where('p1.rownum <= :limit')
             ->orderBy('billing_uu.pricelist_prefix_price.prefix_b')
             ->addParams([':limit' => PricelistPrefixPrice::PAGE_LIMIT]);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPrefixPriceHistory()
+    {
+        return $this->hasMany(PricelistPrefixPriceHistory::className(), ['pricelist_filter_b_id' => 'id'])
+            ->select(['id', 'pricelist_filter_b_id', 'date_from', 'date_to', 'pricelist_id', 'total_count', 'date_created', 'type', 'has_backup' => new Expression('case when data_before is not null then true else false end')])
+            ->orderBy('billing_uu.pricelist_prefix_price_history.date_created');
     }
     
     /**
@@ -111,6 +122,7 @@ class PricelistFilterB extends \yii\db\ActiveRecord
                 'billing_uu.pricelist_prefix_price.*',
                 'b_number_price' => new Expression('round(billing_uu.pricelist_prefix_price.b_number_price, 6)')
             ])
+            ->where('date_to > now()')
             ->orderBy('billing_uu.pricelist_prefix_price.prefix_b, billing_uu.pricelist_prefix_price.date_from');
     }
     
@@ -118,7 +130,7 @@ class PricelistFilterB extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])
             ->select(['pricelist_filter_b_id', 'total_count' => new Expression('count(*)')])
+            ->where('date_to > now()')
             ->groupBy('pricelist_filter_b_id');
     }
-
 }

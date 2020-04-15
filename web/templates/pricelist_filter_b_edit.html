@@ -30,7 +30,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Цена интерконнекта</label>
                 <div class="col-sm-10">
-                    <input class="form-control" placeholder="1.234" ng-model="item.interconnect_price" required>
+                    <input class="form-control" placeholder="1.234" ng-model="item.interconnect_price" ng-disabled="item.id" required>
                 </div>
             </div>
 
@@ -302,24 +302,6 @@
 
                 <div class="tab-pane" id="prefix-import">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Дата начала действия</label>
-                        <div class="col-sm-6">
-                            <input class="form-control" placeholder="2020-10-20" ng-model="item.prefixes_date_start"></input>
-                        </div>
-                        <div ng-hide="!errors.prefixes_date_start_error" class="col-sm-4">
-                            <span style="color: red;">Некорректный формат даты!</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Дата окончания действия</label>
-                        <div class="col-sm-6">
-                            <input class="form-control" placeholder="3020-10-20" ng-model="item.prefixes_date_end"></input>
-                        </div>
-                        <div ng-hide="!errors.prefixes_date_end_error" class="col-sm-4">
-                            <span style="color: red;">Некорректный формат даты!</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label class="col-sm-2 control-label">Вид операции</label>
                         <div class="col-sm-6">
                             <div class="btn-group">
@@ -340,20 +322,28 @@
                             <textarea class="form-control" placeholder="Префиксы" ng-model="item.prefixes"></textarea>
                         </div>
                         <div ng-hide="!errors.prefixes_error" class="col-sm-4">
-                            <span style="color: red;">Некорректный формат префиксов!<br/>Допустимы только цифры, тире, точка, запятая, пробел и табуляция.</span>
+                            <span style="color: red;">{{errors.prefixes_error}}</span>
                         </div>
                     </div>
-                    <div>
+                    <div ng-if="item.prefixPriceHistory[0]">
                         <table class="table table-striped">
-                            <tr>
-                                <th class="col-sm-2">Дата окончания действия</th>
-                                <th>Префиксы</th>
-                            </tr>
-                            <tr ng-repeat="(key, val) in item.old_prefixes">
-                                <td>{{key}}</td>
-                                <td>
-                                    <div ng-repeat="(lineKey, lineVal) in val"><b>{{lineKey}}</b>: {{lineVal}}</div>
-                                </td>
+                            <thead>
+                                <tr>
+                                    <th class="col-sm-2">Дата начала действия</th>
+                                    <th class="col-sm-2">Дата окончания действия</th>
+                                    <th class="col-sm-2">Прайслист</th>
+                                    <th class="col-sm-2">Операция</th>
+                                    <th class="col-sm-2">Дата операции</th>
+                                    <th class="col-sm-2"></th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="val in item.prefixPriceHistory">
+                                <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">{{val.date_from}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
+                                <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">{{val.date_to}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
+                                <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">#{{val.pricelist_id}} ({{val.total_count}})</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
+                                <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">{{val.type=='replace' ? 'Замена' : 'Добавление'}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
+                                <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">{{val.date_created}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
+                                <td><button type="button" class="btn btn-default btn-sm" ng-if="val.has_backup" ng-click="undoPrefixImport(val)">Отмена</button class="btn btn-default btn-sm"></td>
                             </tr>
                         </table>
                     </div>

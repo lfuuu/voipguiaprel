@@ -1,4 +1,4 @@
-var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterB, Nnp, List, params, $modalInstance, $window, Redirect) {
+var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterB, PricelistPrefixPriceHistory, Nnp, params, $modalInstance, $window, Redirect) {
 
     $scope.NNP_MODE_FILTER = 1;
     $scope.NNP_MODE_PARAMETERS = 2;
@@ -325,6 +325,22 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             $modalInstance.close();
         });
     };
+    
+    $scope.openPrefixPriceHistory = function(item) {
+        Redirect.pricelistPrefixPriceHistoryView(item.id).then(function () {
+            $scope.init();
+        });
+    }
+    
+    $scope.undoPrefixImport = function(item) {
+        if (!$window.confirm("Вы уверены, что хотите отменить эту операцию?\n" + 
+         "Будут отменены ВСЕ действия, произведенные с прайсами префиксов\n" +
+         "выбранного в данный момент фильтра Б!")) return;
+        
+        PricelistPrefixPriceHistory.undoImport({'id': item.id}).then(function (response) {
+            $modalInstance.close();
+        });
+    }
 
     $scope.back = function () {
         $modalInstance.close();

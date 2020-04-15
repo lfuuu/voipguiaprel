@@ -28,6 +28,7 @@ class JsonController extends BaseController
     protected $throwExceptionOnEmptyItemInSave = true;
     protected $readWhere = [];
     protected $readSelect = ['*'];
+    protected $getSelect = ['*'];
     protected $createPermission = '';
     protected $listPermission = '';
     protected $editPermission = '';
@@ -191,6 +192,7 @@ class JsonController extends BaseController
 
         $modelName = $this->modelName;
         $item = $modelName::find()
+            ->select($this->getSelect)
             ->with($this->withDependencies)
             ->where([$this->idParamName => $this->request[$this->idParamName]])
             ->asArray()

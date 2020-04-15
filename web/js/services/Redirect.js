@@ -698,5 +698,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         pricelistExcelPrefixesParamsEdit: function(id) {
             return openModal(PricelistExcelPrefixesParamsEditCtrl, '/templates/billing/pricelist_excel_prefixes_params_edit.html', {id: id});
         },
+        pricelistPrefixPriceHistoryView: function(id) {
+            return openModal(PricelistPrefixPriceHistoryViewCtrl, '/templates/billing/pricelist_prefix_price_history_view.html', {id: id});
+        },
     };
 });

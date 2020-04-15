@@ -10,6 +10,7 @@ use app\queries\billing_uu\PricelistPrefixPriceQuery;
  * @property string $prefix_b
  * @property float $b_number_price
  * @property int $change_flag
+ * @property int $history_id
  */
 class PricelistPrefixPrice extends \yii\db\ActiveRecord
 {
@@ -27,7 +28,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
     {
         return [
             [['prefix_b', 'b_number_price', 'date_from', 'date_to'], 'string'],
-            [['pricelist_filter_b_id', 'change_flag'], 'integer'],
+            [['pricelist_filter_b_id', 'change_flag', 'history_id'], 'integer'],
         ];
     }
 
@@ -52,12 +53,66 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
     
     /**
      * @param array|null $data
-     * @return ImsiPartner
+     * @return PricelistPrefixPrice
      */
-    public static function create(array $data = null)
+    public static function create(array $data = null, $historyId = null)
     {
+        $oldItems = self::find()
+            ->where(['pricelist_filter_b_id' => $data['pricelist_filter_b_id'], 'prefix_b' => $data['prefix_b']])
+            ->andWhere('date_to > :date_to')
+            ->addParams(['date_to' => $data['date_from']])
+            ->all();
+        
+        if (!empty($oldItems)) {
+            foreach ($oldItems as $oldItem) {
+                if ($historyId) {
+                    $historyItem = [
+                        'pricelist_prefix_price_history_id' => $historyId,
+                        'prefix_b' => $data['prefix_b'],
+                        'price_old' => $oldItem->b_number_price,
+                        'price_new' => $data['b_number_price'],
+                        'date_from' => $data['date_from'],
+                        'date_to' => $data['date_to']
+                    ];
+                    
+                    if ($oldItem->b_number_price < $data['b_number_price']) {
+                        $historyItem['type'] = 'increase';
+                    } elseif ($oldItem->b_number_price > $data['b_number_price']) {
+                        $historyItem['type'] = 'decrease';
+                    } elseif ($data['date_to'] == '3000-01-01') {
+                        $historyItem['type'] = 'prolong';
+                    } else {
+                        $historyItem['type'] = 'delete';
+                    }
+                }
+                
+                $oldItem->date_to = $data['date_from'];
+                $oldItem->save();
+            }
+        } else {
+            if ($historyId) {
+                $historyItem = [
+                    'pricelist_prefix_price_history_id' => $historyId,
+                    'prefix_b' => $data['prefix_b'],
+                    'price_old' => '',
+                    'price_new' => $data['b_number_price'],
+                    'date_from' => $data['date_from'],
+                    'date_to' => $data['date_to'],
+                    'type' => 'new',
+                ];
+            }
+        }
+            
         $item = new self();
+        
         $item->load($data, '');
+        
+        if ($historyId) {
+            $item->history_id = $historyId;
+            $historyItemObject = PricelistPrefixPriceHistoryItem::create($historyItem);
+            $historyItemObject->save();
+        }
+        
         return $item;
     }
 

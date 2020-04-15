@@ -200,6 +200,7 @@ class RbacController extends Controller {
         ['name' => 'test_dial_create', 'description' => 'Создание теста вызовов'],
         ['name' => 'test_dial_edit', 'description' => 'Редактирование теста вызовов'],
         ['name' => 'test_dial_delete', 'description' => 'Удаление теста вызовов'],
+        ['name' => 'pricelist_prefix_price_history_list', 'description' => 'Просмотр истории загрузки префиксов'],
     ];
 
     private static $_roles = [

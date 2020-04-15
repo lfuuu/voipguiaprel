@@ -124,6 +124,7 @@ class AppAsset extends AssetBundle
         'js/controllers/routing/TestDialList.js',
         'js/controllers/routing/TestDialEdit.js',
         'js/controllers/billing/PricelistExcelPrefixesParamsEdit.js',
+        'js/controllers/billing/PricelistPrefixPriceHistoryView.js',
     ];
 
     public $templates = [
@@ -227,5 +228,6 @@ class AppAsset extends AssetBundle
         'templates/routing/test_dial_edit.html',
         'templates/routing/test_dial_list.html',
         'templates/billing/pricelist_excel_prefixes_params_edit.html',
+        'templates/billing/pricelist_prefix_price_history_view.html',
     ];
 }

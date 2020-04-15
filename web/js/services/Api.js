@@ -2195,6 +2195,24 @@ app.factory('Scripts', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('PricelistPrefixPriceHistory', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/billing/pricelist-prefix-price-history/';
+    return {
+        undoImport: function(data) {
+            return ApiLoader.post(url + 'undo-import', data);
+        },
+    };
+});
+
+app.factory('PricelistPrefixPriceHistoryItem', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/billing/pricelist-prefix-price-history-item/';
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+    };
+});
+
 app.filter('belongsToTestGroup', function () {
   return function (items, groupId) {
     if (!items) {
