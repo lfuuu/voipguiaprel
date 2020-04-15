@@ -192,7 +192,7 @@ class PricelistFilterBController extends JsonController
             $dateStart = date('Y-m-d');
         }
         
-        if (isset($rawDateEnd)) {
+        if (isset($rawDateEnd) && $rawDateEnd !== '') {
             $dtEnd = DateTime::createFromFormat("Y-m-d", $rawDateEnd);
             if ($dtEnd !== false && !array_sum($dtEnd::getLastErrors())) {
                 if ($dtEnd < DateTime::createFromFormat("Y-m-d", $dateStart)) {
