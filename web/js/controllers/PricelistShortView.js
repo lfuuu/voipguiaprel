@@ -60,7 +60,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 var totalPrefixCount = 0;
 
                 for (var filterBCountKey in data.location[locationKey].filterA[filterAKey].filterB) {
-                    totalPrefixCount += data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPriceCount[0].total_count;
+                    totalPrefixCount += $scope.countPrefix(data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPrice);
                     if (typeof data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPriceCount[0] !== 'undefined' &&
                         data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPriceCount[0].total_count > $scope.limit) {
                         totalPrefixCount++;
@@ -181,6 +181,23 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         
         return {list: simplifiedPrefixList, count: prefixCount};
     };
+    
+    $scope.countPrefix = function (data) {
+        var simplifiedPrefixList = {};
+        var prefixCount = 0;
+
+        for (var prefixPriceKey in data) {
+            var prefixItem = data[prefixPriceKey];
+
+            if (!simplifiedPrefixList[prefixItem.prefix_b]) {
+                simplifiedPrefixList[prefixItem.prefix_b] = true;
+
+                prefixCount++;
+            }
+        }
+        
+        return prefixCount;
+    };
 
     $scope.focusOnMark = function () {
         if ($('[data-has-mark="true"]')[0]) {
@@ -267,6 +284,12 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     }
                 }
             }
+            
+            for (var i in $scope.list) {
+                if ($scope.list[i].is_filter_a_header == true && $scope.list[i].filter_a_id == headerItem.filter_a_id && index != i) {
+                    $scope.list[i].total_prefix_count = parseInt($scope.list[i].total_prefix_count) - parseInt(headerItem.prefix_count) + parseInt(prefixCount)
+                }
+            }
 
             $scope.list.splice(index, headerItem.prefix_count);
             
@@ -292,7 +315,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                         is_prefix_price: true,
                         prefix_b: prefixB == 'null' ? '' : prefixB,
                         prefix_count: prefixCount,
-                        total_prefix_count: headerItem.total_prefix_count,
+                        total_prefix_count: parseInt(headerItem.total_prefix_count) - parseInt(headerItem.prefix_count) + parseInt(prefixCount),
                         total_pagination_count: headerItem.total_pagination_count,
                         interconnect_price: headerItem.interconnect_price,
                         prefixes: item
