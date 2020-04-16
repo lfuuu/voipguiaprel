@@ -59,19 +59,11 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 var hasFilterAHeader = false;
                 var totalPrefixCount = 0;
 
-                var totalSimplifiedPrefixList = {};
-
                 for (var filterBCountKey in data.location[locationKey].filterA[filterAKey].filterB) {
-                    for (var prefixPriceCountKey in data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPriceNoLimit) {
-                        var prefixItem = data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPriceNoLimit[prefixPriceCountKey];
-
-                        if (totalSimplifiedPrefixList[prefixItem.pricelist_filter_b_id + '_' + prefixItem.prefix_b]) {
-                            //do_nothing
-                        } else {
-                            totalSimplifiedPrefixList[prefixItem.pricelist_filter_b_id + '_' + prefixItem.prefix_b] = true;
-
-                            totalPrefixCount++;
-                        }
+                    totalPrefixCount += data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPriceCount[0].total_count;
+                    if (typeof data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPriceCount[0] !== 'undefined' &&
+                        data.location[locationKey].filterA[filterAKey].filterB[filterBCountKey].prefixPriceCount[0].total_count > $scope.limit) {
+                        totalPrefixCount++;
                     }
                 }
 
@@ -87,36 +79,13 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
                     var hasFilterBHeader = false;
 
-                    var simplifiedPrefixList = {};
-                    var prefixCount = 0;
-
-                    for (var prefixPriceKey in data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit) {
-                        var prefixItem = data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceNoLimit[prefixPriceKey];
-                        var bNumberPrice = (parseFloat(prefixItem.b_number_price)).toFixed(6);
-                        var hasPrefixMark = $scope.elementType === 'prefix' && $scope.elementId == prefixItem.id;
-
-                        if (simplifiedPrefixList[prefixItem.prefix_b]) {
-                            var previousItem = simplifiedPrefixList[prefixItem.prefix_b][(simplifiedPrefixList[prefixItem.prefix_b].length - 1)];
-                            var previousPrice = parseFloat(previousItem.b_number_price);
-
-                            simplifiedPrefixList[prefixItem.prefix_b].push({
-                                prefix_price_id: prefixItem.id,
-                                has_prefix_mark: hasPrefixMark,
-                                b_number_price: bNumberPrice,
-                                date_from: prefixItem.date_from,
-                                price_change: previousPrice > bNumberPrice ? 'decrease' : 'increase'
-                            });
-                        } else {
-                            simplifiedPrefixList[prefixItem.prefix_b] = [{
-                                prefix_price_id: prefixItem.id,
-                                has_prefix_mark: hasPrefixMark,
-                                b_number_price: bNumberPrice,
-                                date_from: prefixItem.date_from,
-                                price_change: 'none'
-                            }];
-
-                            prefixCount++;
-                        }
+                    var simplifiedPrefixListResult = $scope.simplifyPrefixList(item.prefixPrice);
+                    var simplifiedPrefixList = simplifiedPrefixListResult.list;
+                    var prefixCount = simplifiedPrefixListResult.count;
+                    
+                    if (typeof data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0] !== 'undefined' &&
+                        data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count > $scope.limit) {
+                        prefixCount++;
                     }
 
                     for (var prefixB in simplifiedPrefixList) {
@@ -138,6 +107,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                                 prefix_b: prefixB == 'null' ? '' : prefixB,
                                 prefix_count: prefixCount,
                                 total_prefix_count: totalPrefixCount,
+                                total_pagination_count: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count,
                                 interconnect_price: parseFloat(interconnectPrice),
                                 prefixes: item
                             });
@@ -155,11 +125,61 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
                         hasFilterAHeader = true;
                     }
+                    
+                    if (typeof data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0] !== 'undefined' &&
+                        data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count > $scope.limit) {
+                        $scope.list.push({
+                            is_filter_b_header: false,
+                            is_filter_a_header: false,
+                            is_prefix_price: false,
+                            is_prefix_price_footer: true,
+                            totalCount: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPriceCount[0].total_count,
+                            currentPage: 1,
+                            offset: 0,
+                            filter_b_id: filterBId
+                        });
+                    }
                 }
             }
         }
 
         setTimeout($scope.focusOnMark, 0);
+    };
+    
+    $scope.simplifyPrefixList = function (data) {
+        var simplifiedPrefixList = {};
+        var prefixCount = 0;
+
+        for (var prefixPriceKey in data) {
+            var prefixItem = data[prefixPriceKey];
+            var bNumberPrice = (parseFloat(prefixItem.b_number_price)).toFixed(6);
+            var hasPrefixMark = $scope.elementType === 'prefix' && $scope.elementId == prefixItem.id;
+
+            if (simplifiedPrefixList[prefixItem.prefix_b]) {
+                var previousItem = simplifiedPrefixList[prefixItem.prefix_b][(simplifiedPrefixList[prefixItem.prefix_b].length - 1)];
+                var previousPrice = parseFloat(previousItem.b_number_price);
+
+                simplifiedPrefixList[prefixItem.prefix_b].push({
+                    prefix_price_id: prefixItem.id,
+                    has_prefix_mark: hasPrefixMark,
+                    b_number_price: bNumberPrice,
+                    date_from: prefixItem.date_from,
+                    price_change: previousPrice > bNumberPrice ? 'decrease' : 'increase'
+                });
+            } else {
+                simplifiedPrefixList[prefixItem.prefix_b] = [{
+                    prefix_price_id: prefixItem.id,
+                    has_prefix_mark: hasPrefixMark,
+                    b_number_price: bNumberPrice,
+                    date_from: prefixItem.date_from,
+                    price_change: 'none'
+                }];
+
+                prefixCount++;
+            }
+        }
+        
+        return {list: simplifiedPrefixList, count: prefixCount};
     };
 
     $scope.focusOnMark = function () {
@@ -202,7 +222,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     };
 
     $scope.initData = function (id) {
-        Pricelist.getWithDependentsNoLimit({id: id}).then(function (data) {
+        Pricelist.getWithDependents({id: id}).then(function (data) {
             $scope.item = data;
             $scope.drawTable(data);
         });
@@ -222,6 +242,91 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
     $scope.back = function () {
         $modalInstance.dismiss();
+    };
+    
+    $scope.setPagingData = function (page, filterBId) {
+        $scope.getPrefixPriceList(filterBId, page);
+    };
+    
+    $scope.getPrefixPriceList = function (filter_b_id, page) {
+        PricelistPrefixPrice.read({pricelist_filter_b_id: filter_b_id, page_number: page}).then(function (data) {
+            $scope.prefixes[filter_b_id] = data;
+            
+            var simplifiedPrefixResult = $scope.simplifyPrefixList(data);
+            var simplifiedPrefixList = simplifiedPrefixResult.list;
+            var prefixCount = simplifiedPrefixResult.count + 1;
+
+            var index = '';
+
+            for (var i in $scope.list) {
+                if ($scope.list[i].is_prefix_price == true && $scope.list[i].filter_b_id == filter_b_id) {
+                    if (index == '') {
+                        var headerItem = $scope.list[i];
+                        index = i;
+                        break;
+                    }
+                }
+            }
+
+            $scope.list.splice(index, headerItem.prefix_count);
+            
+            var hasFilterBHeader = false;
+            var hasFilterAHeader = headerItem.is_filter_a_header;
+            
+            var indexCounter = 0;
+            
+            for (var prefixB in simplifiedPrefixList) {
+                var item = simplifiedPrefixList[prefixB];
+                if (!hasFilterBHeader) {
+                    var toPush = {
+                        is_filter_b_header: true,
+                        is_filter_a_header: headerItem.is_filter_a_header,
+                        has_filter_a_mark: headerItem.has_filter_a_mark,
+                        has_filter_b_mark: headerItem.has_filter_b_mark,
+                        filter_a_name: headerItem.filter_a_name,
+                        filter_b_name: headerItem.filter_b_name,
+                        filter_b_rating: headerItem.filter_b_rating,
+                        filter_b_use_for_minimum: headerItem.filter_b_use_for_minimum,
+                        filter_a_id: headerItem.filter_a_id,
+                        filter_b_id: headerItem.filter_b_id,
+                        is_prefix_price: true,
+                        prefix_b: prefixB == 'null' ? '' : prefixB,
+                        prefix_count: prefixCount,
+                        total_prefix_count: headerItem.total_prefix_count,
+                        total_pagination_count: headerItem.total_pagination_count,
+                        interconnect_price: headerItem.interconnect_price,
+                        prefixes: item
+                    };
+                    
+                    $scope.list.splice(parseInt(index) + parseInt(indexCounter), 0, toPush);
+
+                    hasFilterBHeader = true;
+                } else {
+                    var toPush = {
+                        is_filter_b_header: false,
+                        is_filter_a_header: !hasFilterAHeader,
+                        is_prefix_price: true,
+                        prefix_b: prefixB == 'null' ? '' : prefixB,
+                        prefixes: item
+                    };
+                    $scope.list.splice(parseInt(index) + parseInt(indexCounter), 0, toPush);
+                }
+                
+                indexCounter++;
+                hasFilterAHeader = true;
+            }
+            
+            $scope.list.splice(parseInt(index) + parseInt(indexCounter), 0, {
+                is_filter_b_header: false,
+                is_filter_a_header: false,
+                is_prefix_price: false,
+                is_prefix_price_footer: true,
+                totalCount: headerItem.total_pagination_count,
+                currentPage: page,
+                offset: 0,
+                filter_b_id: headerItem.filter_b_id
+            });
+        });
     };
 
     $scope.viewPricelist = function (id) {
