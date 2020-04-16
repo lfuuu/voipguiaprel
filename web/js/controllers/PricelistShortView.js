@@ -149,17 +149,16 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     $scope.simplifyPrefixList = function (data) {
         var simplifiedPrefixList = {};
         var prefixCount = 0;
-
+        
         for (var prefixPriceKey in data) {
             var prefixItem = data[prefixPriceKey];
             var bNumberPrice = (parseFloat(prefixItem.b_number_price)).toFixed(6);
             var hasPrefixMark = $scope.elementType === 'prefix' && $scope.elementId == prefixItem.id;
-
-            if (simplifiedPrefixList[prefixItem.prefix_b]) {
-                var previousItem = simplifiedPrefixList[prefixItem.prefix_b][(simplifiedPrefixList[prefixItem.prefix_b].length - 1)];
+            if (simplifiedPrefixList[prefixItem.prefix_b + ' ']) {
+                var previousItem = simplifiedPrefixList[prefixItem.prefix_b + ' '][(simplifiedPrefixList[prefixItem.prefix_b + ' '].length - 1)];
                 var previousPrice = parseFloat(previousItem.b_number_price);
 
-                simplifiedPrefixList[prefixItem.prefix_b].push({
+                simplifiedPrefixList[prefixItem.prefix_b + ' '].push({
                     prefix_price_id: prefixItem.id,
                     has_prefix_mark: hasPrefixMark,
                     b_number_price: bNumberPrice,
@@ -167,7 +166,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     price_change: previousPrice > bNumberPrice ? 'decrease' : 'increase'
                 });
             } else {
-                simplifiedPrefixList[prefixItem.prefix_b] = [{
+                simplifiedPrefixList[prefixItem.prefix_b + ' '] = [{
                     prefix_price_id: prefixItem.id,
                     has_prefix_mark: hasPrefixMark,
                     b_number_price: bNumberPrice,
