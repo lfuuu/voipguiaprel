@@ -6,6 +6,8 @@ use app\models\billing_uu\PricelistPrefixPrice;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use app\models\billing_uu\PricelistPrefixPriceHistory;
+use app\models\billing_uu\PricelistPrefixPriceHistoryItem;
 use DateTime;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
@@ -80,24 +82,40 @@ class PricelistPrefixPriceController extends JsonController
         $pricelistIsActive = $this->request['pricelist_is_active'];
         $pricelistId = $this->request['pricelist_id'];
         
-        if (strpos($prefixB, ',') !== false) {
-            $prefixBArray = explode(',', $prefixB);
-            
-            foreach ($prefixBArray as $prefixB) {
+        $transaction = PricelistPrefixPrice::getDb()->beginTransaction();
+        try {
+            if (strpos($prefixB, ',') !== false) {
+                $prefixBArray = explode(',', $prefixB);
+                
+                $historyObject = PricelistPrefixPriceHistory::createHistory($filterBId, $pricelistId, $dateFrom, $dateTo, count($prefixBArray), 'add');
+                
+                foreach ($prefixBArray as $prefixB) {
+                    $prefixB = trim($prefixB);
+                    $saveResult = $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest, $pricelistIsActive, $pricelistId, $historyObject->id);
+                    
+                    if (isset($saveResult['error'])) {
+                        return $saveResult;
+                    }
+                }
+            } else {
+                $historyObject = PricelistPrefixPriceHistory::createHistory($filterBId, $pricelistId, $dateFrom, $dateTo, 1, 'add');
+                
                 $prefixB = trim($prefixB);
-                $saveResult = $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest, $pricelistIsActive, $pricelistId);
+                $saveResult = $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest, $pricelistIsActive, $pricelistId, $historyObject->id);
                 
                 if (isset($saveResult['error'])) {
                     return $saveResult;
                 }
             }
-        } else {
-            $prefixB = trim($prefixB);
-            return $this->saveSingle($id, $prefixB, $filterBId, $dateFrom, $dateTo, $priceRequest, $pricelistIsActive, $pricelistId);
+            
+            $transaction->commit();
+        } finally {
+            if ($transaction->getIsActive())
+                $transaction->rollBack();
         }
     }
     
-    private function saveSingle($id, $prefixB, $filterBId, $dateFromRequest, $dateToRequest, $priceRequest, $pricelistIsActive, $pricelistId)
+    private function saveSingle($id, $prefixB, $filterBId, $dateFromRequest, $dateToRequest, $priceRequest, $pricelistIsActive, $pricelistId, $historyId)
     {
         if ($pricelistIsActive && !isset($this->request['id'])) {
             //create----------------------------------------------------------------------------------------------------
@@ -122,7 +140,7 @@ class PricelistPrefixPriceController extends JsonController
                 return ['error' => 'В этом фильтре B уже есть такой префикс (' . $prefixB . ') c такой датой (' . $dateFromRequest . ')', 'field' => 'date_from'];
             }
     
-            $item = PricelistPrefixPrice::create();
+            $item = null;
             
         } elseif ($pricelistIsActive && isset($this->request['id'])) {
             //edit----------------------------------------------------------------------------------------------------
@@ -170,7 +188,7 @@ class PricelistPrefixPriceController extends JsonController
                 return ['error' => 'В этом фильтре B уже есть такой префикс (' . $prefixB . ') c такой датой (' . $dateFromRequest . ')', 'field' => 'date_from'];
             }
     
-            $item = PricelistPrefixPrice::create();
+            $item = null;
             
         } elseif (!$pricelistIsActive && isset($this->request['id'])) {
             //edit------------------------------------------------------------------------------------------------------
@@ -197,24 +215,44 @@ class PricelistPrefixPriceController extends JsonController
             }
         }
         
-        $item->load([
+        $data = [
             'prefix_b' => $prefixB,
             'pricelist_filter_b_id' => $filterBId,
             'date_from' => $dateFromRequest,
             'date_to' => $dateToRequest,
             'b_number_price' => $priceRequest
-        ], '');
-    
-        $transaction = PricelistPrefixPrice::getDb()->beginTransaction();
-        try {
-            if (!$item->save()) {
-                throw new FormValidationException($item);
-            }
+        ];
         
-            $transaction->commit();
-        } finally {
-            if ($transaction->getIsActive())
-                $transaction->rollBack();
+        if (!$item) {
+            $item = PricelistPrefixPrice::create($data, $historyId);
+        } else {
+            $historyItem = [
+                'pricelist_prefix_price_history_id' => $historyId,
+                'prefix_b' => $data['prefix_b'],
+                'price_old' => $item->b_number_price,
+                'price_new' => $data['b_number_price'],
+                'date_from' => $data['date_from'],
+                'date_to' => $data['date_to']
+            ];
+            
+            if ($item->b_number_price < $data['b_number_price']) {
+                $historyItem['type'] = 'increase';
+            } elseif ($item->b_number_price > $data['b_number_price']) {
+                $historyItem['type'] = 'decrease';
+            } elseif ($data['date_to'] == '3000-01-01') {
+                $historyItem['type'] = 'prolong';
+            } else {
+                $historyItem['type'] = 'delete';
+            }
+            
+            $item->load($data, '');
+            
+            $historyItemObject = PricelistPrefixPriceHistoryItem::create($historyItem);
+            $historyItemObject->save();
+        }
+
+        if (!$item->save()) {
+            throw new FormValidationException($item);
         }
     }
     

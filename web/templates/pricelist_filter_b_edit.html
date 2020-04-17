@@ -317,7 +317,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Список префиксов <span class="glyphicon glyphicon-question-sign" popover="Дата должна быть в формате ДД-ММ-ГГГГ" data-popover-trigger="mouseenter" popover-placement="left"></span></label>
+                        <label class="col-sm-2 control-label">Список префиксов <span class="glyphicon glyphicon-question-sign" popover="Дата должна быть в формате ДД.ММ.ГГГГ" data-popover-trigger="mouseenter" popover-placement="left"></span></label>
                         <div class="col-sm-6">
                             <textarea class="form-control" placeholder="Префиксы" ng-model="item.prefixes"></textarea>
                         </div>
@@ -343,7 +343,7 @@
                                 <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">#{{val.pricelist_id}} ({{val.total_count}})</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
                                 <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">{{val.type=='replace' ? 'Замена' : 'Добавление'}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
                                 <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">{{val.date_created}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
-                                <td><button type="button" class="btn btn-default btn-sm" ng-if="val.has_backup" ng-click="undoPrefixImport(val)">Отмена</button class="btn btn-default btn-sm"></td>
+                                <td><button type="button" class="btn btn-default btn-sm" ng-if="$last && val.has_backup" ng-click="undoPrefixImport(val)">Отмена</button class="btn btn-default btn-sm"></td>
                             </tr>
                         </table>
                     </div>

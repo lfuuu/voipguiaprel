@@ -179,7 +179,7 @@ class PricelistFilterBController extends JsonController
     private function prepareDates($rawDateStart, $rawDateEnd)
     {
         if (isset($rawDateStart)) {
-            $dt = DateTime::createFromFormat("d-m-Y", $rawDateStart);
+            $dt = DateTime::createFromFormat("d.m.Y", $rawDateStart);
             if ($dt !== false && !array_sum($dt::getLastErrors())) {
                 if ($dt < DateTime::createFromFormat("Y-m-d", date('Y-m-d'))) {
                     return ['error' => 'Дата начала действия не может быть раньше, чем сейчас!', 'field' => 'prefixes'];
@@ -193,7 +193,7 @@ class PricelistFilterBController extends JsonController
         }
         
         if (isset($rawDateEnd) && $rawDateEnd !== '') {
-            $dtEnd = DateTime::createFromFormat("d-m-Y", $rawDateEnd);
+            $dtEnd = DateTime::createFromFormat("d.m.Y", $rawDateEnd);
             if ($dtEnd !== false && !array_sum($dtEnd::getLastErrors())) {
                 if ($dtEnd < DateTime::createFromFormat("Y-m-d", $dateStart)) {
                     return ['error' => 'Дата окончания действия не может быть раньше, чем дата начала действия!', 'field' => 'prefixes'];
@@ -221,7 +221,7 @@ class PricelistFilterBController extends JsonController
                 $prefixBString = $input[0];
                 $prefixPrice = $input[1];
                 $rawDateStart = $input[2]; // Если даты нет, то ругнется, и правильно сделает. Для этого внизу catch().
-                $rawDateEnd = isset($input[3]) ? $input[3] : '01-01-3000';
+                $rawDateEnd = isset($input[3]) ? $input[3] : '01.01.3000';
                 
                 $preparedDates = $this->prepareDates($rawDateStart, $rawDateEnd);
                 
@@ -250,15 +250,6 @@ class PricelistFilterBController extends JsonController
             return ['error' => 'Ошибка при обработке префиксов! Каждая пара префикс-цена должна быть на отдельной строке. Префиксы должны быть отделены от цены символом табуляции. Префиксы можно перечислять через запятую или через тире.', 'field' => 'prefixes'];
         }
         
-        Yii::$app->db->createCommand('update billing_uu.pricelist_prefix_price_history set data_before = null where pricelist_filter_b_id = :b_id')
-                ->bindValue(':b_id', $item->id)
-                ->execute();
-        
-        $dataBefore = PricelistPrefixPrice::find()
-            ->where(['pricelist_filter_b_id' => $item->id])
-            ->asArray()
-            ->all();
-            
         $pricelistId = PricelistLocation::find()
             ->alias('pl')
             ->select(['pl.pricelist_id'])
@@ -266,20 +257,9 @@ class PricelistFilterBController extends JsonController
             ->where(['a.id' => $item->pricelist_filter_a_id])
             ->asArray()
             ->one();
-            
-        $historyData = [
-            'pricelist_filter_b_id' => $item->id,
-            'pricelist_id' => $pricelistId['pricelist_id'],
-            'date_from' => $dateStart,
-            'date_to' => $dateEnd,
-            'date_created' => date('Y-m-d H:i:s'),
-            'type' => (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) ? 'replace' : 'add',
-            'total_count' => count($prefixesToSave),
-            'data_before' => json_encode($dataBefore)
-        ];
         
-        $historyObject = PricelistPrefixPriceHistory::create($historyData);
-        $historyObject->save();
+        $historyObject = PricelistPrefixPriceHistory::createHistory($item->id, $pricelistId, $dateStart, $dateEnd,
+            count($prefixesToSave), (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) ? 'replace' : 'add');
 
         if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
             $dataRemoved = PricelistPrefixPrice::find()

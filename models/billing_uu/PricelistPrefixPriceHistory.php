@@ -3,6 +3,7 @@
 namespace app\models\billing_uu;
 use yii\db\Expression;
 use app\queries\billing_uu\PricelistPrefixPriceHistoryQuery;
+use Yii;
 
 /**
  * @property int $id
@@ -56,5 +57,44 @@ class PricelistPrefixPriceHistory extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PricelistPrefixPrice::className(), ['history_id' => 'id'])
             ->orderBy('billing_uu.pricelist_prefix_price.prefix_b');
+    }
+    
+    public static function createHistory($filterBId, $pricelistId, $dateStart, $dateEnd, $prefixCount, $type)
+    {
+        Yii::$app->db->createCommand(<<<SQL
+update billing_uu.pricelist_prefix_price_history pph
+set data_before = null
+where pricelist_filter_b_id = :b_id
+and id not in (
+    select id from billing_uu.pricelist_prefix_price_history
+    where pricelist_filter_b_id = :b_id
+    order by date_created desc
+    limit 4
+);
+SQL
+)
+                ->bindValue(':b_id', $filterBId)
+                ->execute();
+                
+        $dataBefore = PricelistPrefixPrice::find()
+            ->where(['pricelist_filter_b_id' => $filterBId])
+            ->asArray()
+            ->all();
+            
+        $historyData = [
+            'pricelist_filter_b_id' => $filterBId,
+            'pricelist_id' => $pricelistId,
+            'date_from' => $dateStart,
+            'date_to' => $dateEnd,
+            'date_created' => date('Y-m-d H:i:s'),
+            'type' => $type,
+            'total_count' => $prefixCount,
+            'data_before' => json_encode($dataBefore)
+        ];
+        
+        $historyObject = self::create($historyData);
+        $historyObject->save();
+        
+        return $historyObject;
     }
 }
