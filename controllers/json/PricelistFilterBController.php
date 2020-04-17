@@ -179,12 +179,12 @@ class PricelistFilterBController extends JsonController
     private function prepareDates($rawDateStart, $rawDateEnd)
     {
         if (isset($rawDateStart)) {
-            $dt = DateTime::createFromFormat("Y-m-d", $rawDateStart);
+            $dt = DateTime::createFromFormat("d-m-Y", $rawDateStart);
             if ($dt !== false && !array_sum($dt::getLastErrors())) {
                 if ($dt < DateTime::createFromFormat("Y-m-d", date('Y-m-d'))) {
                     return ['error' => 'Дата начала действия не может быть раньше, чем сейчас!', 'field' => 'prefixes'];
                 }
-                $dateStart = $rawDateStart;
+                $dateStart = $dt->format('Y-m-d');
             } else {
                 return ['error' => 'Некорректный формат даты начала действия!', 'field' => 'prefixes'];
             }
@@ -193,12 +193,12 @@ class PricelistFilterBController extends JsonController
         }
         
         if (isset($rawDateEnd) && $rawDateEnd !== '') {
-            $dtEnd = DateTime::createFromFormat("Y-m-d", $rawDateEnd);
+            $dtEnd = DateTime::createFromFormat("d-m-Y", $rawDateEnd);
             if ($dtEnd !== false && !array_sum($dtEnd::getLastErrors())) {
                 if ($dtEnd < DateTime::createFromFormat("Y-m-d", $dateStart)) {
                     return ['error' => 'Дата окончания действия не может быть раньше, чем дата начала действия!', 'field' => 'prefixes'];
                 }
-                $dateEnd = $rawDateEnd;
+                $dateEnd = $dtEnd->format('Y-m-d');
             } else {
                 return ['error' => 'Некорректный формат даты окончания действия!', 'field' => 'prefixes'];
             }
@@ -221,7 +221,7 @@ class PricelistFilterBController extends JsonController
                 $prefixBString = $input[0];
                 $prefixPrice = $input[1];
                 $rawDateStart = $input[2]; // Если даты нет, то ругнется, и правильно сделает. Для этого внизу catch().
-                $rawDateEnd = isset($input[3]) ? $input[3] : '3000-01-01';
+                $rawDateEnd = isset($input[3]) ? $input[3] : '01-01-3000';
                 
                 $preparedDates = $this->prepareDates($rawDateStart, $rawDateEnd);
                 
