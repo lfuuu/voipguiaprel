@@ -4,6 +4,9 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
     $scope.limit = 10;
     $scope.prefixes = [];
+    
+    var date = new Date();
+    $scope.dateNow = date.toISOString().slice(0, 10);
 
     $scope.drawTable = function (data) {
         $scope.list = [];
@@ -163,6 +166,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     has_prefix_mark: hasPrefixMark,
                     b_number_price: bNumberPrice,
                     date_from: prefixItem.date_from,
+                    date_to: prefixItem.date_to,
                     price_change: previousPrice > bNumberPrice ? 'decrease' : 'increase'
                 });
             } else {
@@ -171,6 +175,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     has_prefix_mark: hasPrefixMark,
                     b_number_price: bNumberPrice,
                     date_from: prefixItem.date_from,
+                    date_to: prefixItem.date_to,
                     price_change: 'none'
                 }];
 

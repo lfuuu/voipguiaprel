@@ -51,10 +51,11 @@
                     <span ng-repeat="prefixItem in item.prefixes track by prefixItem.prefix_price_id">
                         {{$first ? '' : '|'}}
                         <span style="cursor: pointer" ng-click="editPrefixPrice(prefixItem.prefix_price_id)" data-has-mark="{{prefixItem.has_prefix_mark}}">
-                            <span ng-if="!$first && prefixItem.price_change == 'increase'" style="color: green;">&#11105;</span>
-                            <span ng-if="!$first && prefixItem.price_change == 'decrease'" style="color: red;">&#11107;</span>
-                            {{prefixItem.b_number_price}}
-                            <span ng-if="!$first" style="color: grey; font-size: smaller;">c&nbsp;{{prefixItem.date_from}}</span>
+                            <span ng-if="$first">{{prefixItem.b_number_price}}</span>
+                            <span ng-if="!$first && prefixItem.price_change == 'decrease'" style="color: green;">{{prefixItem.b_number_price}} понижение c {{prefixItem.date_from}}</span>
+                            <span ng-if="!$first && prefixItem.price_change == 'increase'" style="color: red;">{{prefixItem.b_number_price}} повышение c {{prefixItem.date_from}}</span>
+                            <span ng-if="$last && prefixItem.date_to != '3000-01-01'" style="color: black; font-weight: bold;">до {{prefixItem.date_to}}</span>
+                            <span ng-if="$first && prefixItem.date_from > dateNow" style="color: blue;">+ c {{prefixItem.date_from}}</span>
                         </span>
                     </span>
                 </td>
