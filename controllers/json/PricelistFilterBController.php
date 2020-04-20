@@ -258,7 +258,7 @@ class PricelistFilterBController extends JsonController
             ->asArray()
             ->one();
         
-        $historyObject = PricelistPrefixPriceHistory::createHistory($item->id, $pricelistId, $dateStart, $dateEnd,
+        $historyObject = PricelistPrefixPriceHistory::createHistory($item->id, $pricelistId['pricelist_id'], $dateStart, $dateEnd,
             count($prefixesToSave), (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) ? 'replace' : 'add');
 
         if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
