@@ -152,6 +152,13 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     $scope.simplifyPrefixList = function (data) {
         var simplifiedPrefixList = {};
         var prefixCount = 0;
+        data.sort(function(a, b) {
+            if (a.date_from > b.date_from) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
         
         for (var prefixPriceKey in data) {
             var prefixItem = data[prefixPriceKey];
