@@ -261,10 +261,19 @@ class PricelistFilterBController extends JsonController
         $historyObject = PricelistPrefixPriceHistory::createHistory($item->id, $pricelistId['pricelist_id'], $dateStart, $dateEnd,
             count($prefixesToSave), (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) ? 'replace' : 'add');
 
+        foreach ($prefixesToSave as $prefixToSave) {
+            $prefixCreatedItem = PricelistPrefixPrice::create($prefixToSave, $historyObject->id);
+            if (!$prefixCreatedItem->save()) {
+                throw new FormValidationException($item);
+            }
+        }
+        
         if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
             $dataRemoved = PricelistPrefixPrice::find()
                 ->where(['pricelist_filter_b_id' => $item->id])
                 ->andWhere('date_to > now()')
+                ->andWhere('history_id <> :historyId')
+                ->addParams([':historyId' => $historyObject->id])
                 ->all();
             
             foreach ($dataRemoved as $removedItem) {
@@ -283,13 +292,6 @@ class PricelistFilterBController extends JsonController
                 
                 $removedItem->date_to = date('Y-m-d');
                 $removedItem->save();
-            }
-        }
-        
-        foreach ($prefixesToSave as $prefixToSave) {
-            $prefixCreatedItem = PricelistPrefixPrice::create($prefixToSave, $historyObject->id);
-            if (!$prefixCreatedItem->save()) {
-                throw new FormValidationException($item);
             }
         }
     }

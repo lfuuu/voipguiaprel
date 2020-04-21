@@ -84,6 +84,8 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                     } else {
                         $historyItem['type'] = 'delete';
                     }
+                    
+                    $oldItem->history_id = $historyId;
                 }
                 
                 $oldItem->date_to = $data['date_from'];
