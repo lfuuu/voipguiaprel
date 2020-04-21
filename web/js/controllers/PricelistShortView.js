@@ -164,7 +164,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             var prefixItem = data[prefixPriceKey];
             var bNumberPrice = (parseFloat(prefixItem.b_number_price)).toFixed(6);
             var hasPrefixMark = $scope.elementType === 'prefix' && $scope.elementId == prefixItem.id;
-            if (simplifiedPrefixList[prefixItem.prefix_b + ' ']) {
+            if (simplifiedPrefixList[prefixItem.prefix_b + ' '] && prefixItem.date_from >= $scope.dateNow) {
                 var previousItem = simplifiedPrefixList[prefixItem.prefix_b + ' '][(simplifiedPrefixList[prefixItem.prefix_b + ' '].length - 1)];
                 var previousPrice = parseFloat(previousItem.b_number_price);
 
@@ -174,9 +174,13 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     b_number_price: bNumberPrice,
                     date_from: prefixItem.date_from,
                     date_to: prefixItem.date_to,
-                    price_change: previousPrice > bNumberPrice ? 'decrease' : 'increase'
+                    price_change: previousPrice > bNumberPrice ? 'decrease' : (previousPrice == bNumberPrice ? 'none' : 'increase')
                 });
             } else {
+                if (!simplifiedPrefixList[prefixItem.prefix_b + ' ']) {
+                    prefixCount++;
+                }
+                
                 simplifiedPrefixList[prefixItem.prefix_b + ' '] = [{
                     prefix_price_id: prefixItem.id,
                     has_prefix_mark: hasPrefixMark,
@@ -185,8 +189,6 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                     date_to: prefixItem.date_to,
                     price_change: 'none'
                 }];
-
-                prefixCount++;
             }
         }
         
