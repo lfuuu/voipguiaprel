@@ -63,7 +63,7 @@
                 <td ng-if="item.is_prefix_price"></td>
                 <!----------------------------------------------------->
                 <td ng-if="item.is_prefix_price_footer" colspan="2">
-                    <pagination style="display: inline;" max-size="5" rotate="false" total-items="item.totalCount" items-per-page="limit" page="item.currentPage" on-select-page="setPagingData(page, item.filter_b_id)"></pagination>
+                    <pagination style="display: inline;" max-size="5" rotate="false" total-items="item.totalCount" items-per-page="limit" page="item.currentPage" on-select-page="setPagingData(page, item.filter_b_id)" boundary-links="true"></pagination>
                 </td>
                 <td ng-if="item.is_prefix_price_footer"></td>
             </tr>

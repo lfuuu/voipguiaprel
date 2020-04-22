@@ -153,10 +153,16 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         var simplifiedPrefixList = {};
         var prefixCount = 0;
         data.sort(function(a, b) {
-            if (a.date_from > b.date_from) {
+            if ((a.prefix_b + ' ') > (b.prefix_b + ' ')) {
                 return 1;
-            } else {
+            } else if ((a.prefix_b + ' ') < (b.prefix_b + ' ')) {
                 return -1;
+            } else {
+                if (a.date_from > b.date_from) {
+                    return 1;
+                } else {
+                    return -1;
+                }
             }
         });
         
