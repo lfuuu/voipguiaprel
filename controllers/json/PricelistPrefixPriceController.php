@@ -66,14 +66,18 @@ class PricelistPrefixPriceController extends JsonController
         $dateFrom = $this->request['date_from'];
         $dateTo = $this->request['date_to'];
         
-        $dt = DateTime::createFromFormat("Y-m-d", $dateFrom);
-        if ($dt === false || array_sum($dt::getLastErrors())) {
+        $dtFrom = DateTime::createFromFormat("Y-m-d", $dateFrom);
+        if ($dtFrom === false || array_sum($dtFrom::getLastErrors())) {
             return ['error' => 'Некорректный формат даты!', 'field' => 'date_from'];
         }
         
-        $dt = DateTime::createFromFormat("Y-m-d", $dateTo);
-        if ($dt === false || array_sum($dt::getLastErrors())) {
+        $dtTo = DateTime::createFromFormat("Y-m-d", $dateTo);
+        if ($dtTo === false || array_sum($dtTo::getLastErrors())) {
             return ['error' => 'Некорректный формат даты!', 'field' => 'date_to'];
+        }
+        
+        if ($dtFrom >= $dtTo) {
+            return ['error' => 'Дата окончания должна быть больше, чем дата начала!', 'field' => 'date_to'];
         }
         
         $filterBId = $this->request['pricelist_filter_b_id'];
@@ -150,6 +154,7 @@ class PricelistPrefixPriceController extends JsonController
             $dateFromNew = strtotime($dateFromRequest);
             $dateNow = strtotime(date('Y-m-d'));
             $dateFromPricelist = strtotime($pricelist->date_start);
+            $dateFromPrefixPrice = strtotime($item->date_from);
             
             $dateToCompare = ($dateNow > $dateFromPricelist) ? $dateNow : $dateFromPricelist;
 
@@ -164,6 +169,10 @@ class PricelistPrefixPriceController extends JsonController
     
             if ($result) {
                 return ['error' => 'В этом фильтре B уже есть такой префикс (' . $prefixB . ') c такой датой (' . $dateFromRequest . ')', 'field' => 'date_from'];
+            }
+            
+            if ($dateFromPrefixPrice !== $dateFromNew) {
+                $item = null;
             }
         } elseif (!$pricelistIsActive && !isset($this->request['id'])) {
             //create----------------------------------------------------------------------------------------------------
@@ -198,6 +207,7 @@ class PricelistPrefixPriceController extends JsonController
             $dateFromNew = strtotime($dateFromRequest);
             $dateNow = strtotime(date('Y-m-d'));
             $dateFromPricelist = strtotime($pricelist->date_start);
+            $dateFromPrefixPrice = strtotime($item->date_from);
             
             $dateToCompare = ($dateNow > $dateFromPricelist) ? $dateNow : $dateFromPricelist;
     
@@ -212,6 +222,10 @@ class PricelistPrefixPriceController extends JsonController
     
             if ($result) {
                 return ['error' => 'В этом фильтре B уже есть такой префикс (' . $prefixB . ') c такой датой (' . $dateFromRequest . ')', 'field' => 'date_from'];
+            }
+            
+            if ($dateFromPrefixPrice !== $dateFromNew) {
+                $item = null;
             }
         }
         
