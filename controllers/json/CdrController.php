@@ -34,6 +34,9 @@ class CdrController extends JsonController
         $sortAsc = $this->request['sort_asc'];
         $disconnectCauseId = $this->request['disconnect_cause_id'];
         $showAll = $this->request['show_all'];
+        $source = $this->request['source'];
+        $sessionTime = $this->request['session_time'];
+        $sessionCompare = $this->request['session_compare'];
         
         $where = [];
         
@@ -121,6 +124,23 @@ class CdrController extends JsonController
         
         if (!$showAll) {
             $query->andWhere('c.session_time > 0');
+        }
+        
+        if ($source) {
+            switch ($source) {
+                case 'xml':
+                    $query->andWhere('c.mcn_callid is null');
+                    break;
+                case 'accounting':
+                    $query->andWhere('c.mcn_callid is not null');
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        if ($sessionCompare && $sessionTime && in_array($sessionCompare, ['>=', '=', '<=']) && is_numeric($sessionTime)) {
+            $query->andWhere('c.session_time ' . $sessionCompare . ' ' . $sessionTime);
         }
         
         return $query->asArray()->all();
