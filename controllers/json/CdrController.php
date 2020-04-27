@@ -130,6 +130,8 @@ class CdrController extends JsonController
             switch ($source) {
                 case 'xml':
                     $query->andWhere('c.mcn_callid is null');
+                    $query->andWhere("c.src_route not like '%Roaming%'");
+                    $query->andWhere("c.dst_route not like '%Roaming%'");
                     break;
                 case 'accounting':
                     $query->andWhere('c.mcn_callid is not null');
