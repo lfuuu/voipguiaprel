@@ -117,6 +117,59 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
         
         return $item;
     }
+    
+    public static function updateOldWithHistory(array $data, $historyId)
+    {
+        $oldItems = self::find()
+            ->where(['pricelist_filter_b_id' => $data[0], 'prefix_b' => $data[1]])
+            ->andWhere('date_to > :date_to')
+            ->addParams(['date_to' => $data[3]])
+            ->all();
+        
+        if (!empty($oldItems)) {
+            foreach ($oldItems as $oldItem) {
+                if ($historyId) {
+                    $historyItem = [
+                        $historyId,
+                        $data[1],
+                        $oldItem->b_number_price,
+                        $data[2],
+                        $data[3],
+                        $data[4]
+                    ];
+                    
+                    if ($oldItem->b_number_price < $data[2]) {
+                        $historyItem[] = 'increase';
+                    } elseif ($oldItem->b_number_price > $data[2]) {
+                        $historyItem[] = 'decrease';
+                    } elseif ($data[4] == '3000-01-01') {
+                        $historyItem[] = 'prolong';
+                    } else {
+                        $historyItem[] = 'delete';
+                    }
+                    
+                    $oldItem->history_id = $historyId;
+                }
+                
+                $oldItem->date_to = $data[3];
+                $oldItem->save();
+            }
+        } else {
+            if ($historyId) {
+                $historyItem = [
+                    $historyId,
+                    $data[1],
+                    '',
+                    $data[2],
+                    $data[3],
+                    $data[4],
+                    'new',
+                ];
+            }
+        }
+        
+        return $historyItem;
+    }
 
     public static function getGroupedByPrice($filterAId)
     {
