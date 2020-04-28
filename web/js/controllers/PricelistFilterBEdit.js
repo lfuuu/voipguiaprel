@@ -18,6 +18,9 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         {id: 1, name: 'round'},
         {id: 2, name: 'ceil'}
     ];
+    
+    $scope.loading = false;
+    $scope.saveError = false;
 
     var watchers = {
         filter_country: function (newValue, oldValue) {
@@ -232,6 +235,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     };
 
     $scope.save = function () {
+        $scope.loading = true;
+        $scope.saveError = false;
         $scope.errors = [];
         
         var data = angular.copy($scope.item);
@@ -243,14 +248,22 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
         data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
 
-        PricelistFilterB.save(data).then(function (result) {
-            if (result.error) {
-                $scope.displayError(result);
-                return;
-            } else {
-                $modalInstance.close();
+        PricelistFilterB.save(data).then(
+            function (result) {
+                $scope.loading = false;
+                if (result.error) {
+                    $scope.displayError(result);
+                    return;
+                } else {
+                    $modalInstance.close();
+                }
             }
-        });
+        ).catch(
+            function (error) {
+                $scope.loading = false;
+                $scope.saveError = true;
+            }
+        );
     };
 
     $scope.displayError = function(response)

@@ -350,6 +350,12 @@
                 </div>
             </div>
         </div>
+        <div ng-if=loading class="col-sm-10">
+            <span style="color: green">Идет сохранение/импорт данных!</span>
+        </div>
+        <div ng-if="saveError" class="col-sm-10">
+            <span style="color: red">Произошла ошибка сохранения данных!</span>
+        </div>
         <div class="clearfix"></div>
     </div>
 
