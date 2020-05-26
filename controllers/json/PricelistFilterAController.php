@@ -7,6 +7,11 @@ use app\models\billing_uu\PricelistFilterA;
 use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use app\models\billing_uu\Pricelist;
+use app\models\billing_uu\PricelistFilterB;
+use app\models\billing_uu\PricelistLocation;
+use app\models\billing_uu\PricelistPrefixPrice;
+use DateTime;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\web\ForbiddenHttpException;
@@ -64,6 +69,13 @@ class PricelistFilterAController extends JsonController
         try {
             if (!$item->save()) {
                 throw new FormValidationException($item);
+            }
+            
+            if (isset($this->request['filters'])) {
+                $upsertResult = $this->upsertFilters($item);
+                if (isset($upsertResult['error'])) {
+                    return $upsertResult;
+                }
             }
             
             $transaction->commit();
@@ -129,6 +141,114 @@ class PricelistFilterAController extends JsonController
         $result['log']['data_after'] = $this->getDataForLog($item);
 
         return $result;
+    }
+    
+    private function upsertFilters($item)
+    {
+        $pricelistType = Pricelist::find()
+            ->alias('p')
+            ->select('type_id')
+            ->innerJoin('billing_uu.pricelist_location pl', 'pl.pricelist_id = p.id')
+            ->where(['pl.id' => $item->pricelist_location_id])
+            ->asArray()
+            ->one();
+        
+        $filtersArray = explode("\n", $this->request['filters']);
+        try {
+            foreach ($filtersArray as $filterItem) {
+                $input = preg_split("/[\t]/", $filterItem);
+                
+                $nnpFilterId = $input[0];
+                $filterBDescription = $input[1];
+                $prefixPrice = $input[2];
+                $rawDateStart = $input[3]; // Если даты нет, то ругнется, и правильно сделает. Для этого внизу catch().
+                $rawDateEnd = isset($input[4]) ? $input[4] : '01.01.3000';
+                
+                $preparedDates = $this->prepareDates($rawDateStart, $rawDateEnd);
+                
+                if (isset($preparedDates['error'])) {
+                    return $preparedDates;
+                } else {
+                    $dateStart = $preparedDates['date_start'];
+                    $dateEnd = $preparedDates['date_end'];
+                }
+                
+                $tarificationIntervalSeconds = ($pricelistType['type_id'] == 1) ? 60 : 1;
+                
+                $filterBObject = PricelistFilterB::create([
+                    'pricelist_filter_a_id' => $item->id,
+                    'description' => $filterBDescription,
+                    'mode_selected' => true,
+                    'interconnect_price' => '0.000000',
+                    'ported_num_price' => '0.000000',
+                    'operator_price' => '0.000000',
+                    'transit_price' => '0.000000',
+                    'tarification_free_seconds' => 0,
+                    'tarification_interval_seconds' => $tarificationIntervalSeconds,
+                    'tarification_type' => 2,
+                    'tarification_min_paid_seconds' => 1,
+                    'rating' => 1,
+                    'nnp_filter' => $nnpFilterId
+                ]);
+                
+                $filterBObject->save();
+                
+                (new Query())->select(new Expression('billing_uu.copy_b_nnp_filter(:filter_b_id)'))
+                ->addParams([
+                    ':filter_b_id' => $filterBObject->id
+                ])->one();
+                
+                $bNumberPrice = str_replace(',', '.', $prefixPrice);
+                $bNumberPrice = floatval($bNumberPrice);
+                
+                $prefixPriceObject = PricelistPrefixPrice::create([
+                    'prefix_b' => '',
+                    'pricelist_filter_b_id' => $filterBObject->id,
+                    'b_number_price' => (string)$bNumberPrice,
+                    'date_from' => $dateStart,
+                    'date_to' => $dateEnd
+                ]);
+                
+                $prefixPriceObject->save();
+            }
+        } catch (\Exception $e) {
+            return ['error' => 'Ошибка при обработке фильтров!', 'field' => 'filters'];
+        }
+        
+        return true;
+    }
+    
+    private function prepareDates($rawDateStart, $rawDateEnd)
+    {
+        if (isset($rawDateStart)) {
+            $dt = DateTime::createFromFormat("d.m.Y", $rawDateStart);
+            if ($dt !== false && !array_sum($dt::getLastErrors())) {
+                if ($dt < DateTime::createFromFormat("Y-m-d", date('Y-m-d'))) {
+                    return ['error' => 'Дата начала действия не может быть раньше, чем сейчас!', 'field' => 'filters'];
+                }
+                $dateStart = $dt->format('Y-m-d');
+            } else {
+                return ['error' => 'Некорректный формат даты начала действия!', 'field' => 'filters'];
+            }
+        } else {
+            $dateStart = date('Y-m-d');
+        }
+        
+        if (isset($rawDateEnd) && $rawDateEnd !== '') {
+            $dtEnd = DateTime::createFromFormat("d.m.Y", $rawDateEnd);
+            if ($dtEnd !== false && !array_sum($dtEnd::getLastErrors())) {
+                if ($dtEnd < DateTime::createFromFormat("Y-m-d", $dateStart)) {
+                    return ['error' => 'Дата окончания действия не может быть раньше, чем дата начала действия!', 'field' => 'filters'];
+                }
+                $dateEnd = $dtEnd->format('Y-m-d');
+            } else {
+                return ['error' => 'Некорректный формат даты окончания действия!', 'field' => 'filters'];
+            }
+        } else {
+            $dateEnd = '3000-01-01';
+        }
+        
+        return ['date_start' => $dateStart, 'date_end' => $dateEnd];
     }
     
     /**

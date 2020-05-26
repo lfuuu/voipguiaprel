@@ -65,6 +65,9 @@
                 <li class="{{(nnpMode == NNP_MODE_PARAMETERS) ? 'active' : '' }}">
                     <a href="#nnp-parameters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_PARAMETERS)">ННП-Параметры</a>
                 </li>
+                <li>
+                    <a href="#nnp-filter-import" data-toggle="tab">Импорт NNP-фильтров</a>
+                </li>
             </ul>
             <br/>
 
@@ -228,6 +231,17 @@
                         </div>
                     </div>
 
+                </div>
+                <div class="tab-pane" id="nnp-filter-import">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Список фильтров <span class="glyphicon glyphicon-question-sign" popover="Дата должна быть в формате ДД.ММ.ГГГГ" data-popover-trigger="mouseenter" popover-placement="left"></span></label>
+                        <div class="col-sm-6">
+                            <textarea class="form-control" placeholder="Фильтры" ng-model="item.filters"></textarea>
+                        </div>
+                        <div ng-hide="!errors.filters_error" class="col-sm-4">
+                            <span style="color: red;">{{errors.filters_error}}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

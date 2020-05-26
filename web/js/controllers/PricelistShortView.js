@@ -225,10 +225,6 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     };
 
     $scope.formFilterText = function (item) {
-        if (item.description) {
-            return item.description;
-        }
-
         var filterText;
 
         if (item.nnp_country == '{}' && item.f_inv_nnp_country ||
@@ -248,12 +244,18 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             if (!filterText) {
                 filterText = item.f_inv_nnp_destination ? ('Кроме: ' + item.nnp_destination_name) : item.nnp_destination_name;
             }
-
-            if (!filterText) {
-                filterText = '--';
-            }
         }
-
+        
+        if (item.description && filterText) {
+            filterText = item.description + ' (' + filterText + ')';
+        } else if (!item.description && filterText) {
+            // do_nothing
+        } else if (item.description && filterText) {
+            filterText = item.description;
+        } else {
+            filterText = '--';
+        }
+        
         return filterText;
     };
 

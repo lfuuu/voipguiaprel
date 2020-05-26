@@ -4,6 +4,13 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     $scope.NNP_MODE_PARAMETERS = 2;
 
     $scope.saveEnabled = false;
+    
+    $scope.errors = {
+        error: false
+    };
+
+    $scope.loading = false;
+    $scope.saveError = false;
 
     var countryLoadComplete = false;
     var regionLoadComplete = false;
@@ -198,9 +205,28 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
         data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
 
-        PricelistFilterA.save(data).then(function () {
-            $modalInstance.close();
-        });
+        
+        PricelistFilterA.save(data).then(
+            function (result) {
+                $scope.loading = false;
+                if (result.error) {
+                    $scope.displayError(result);
+                    return;
+                } else {
+                    $modalInstance.close();
+                }
+            }
+        ).catch(
+            function (error) {
+                $scope.loading = false;
+                $scope.saveError = true;
+            }
+        );
+    };
+    
+    $scope.displayError = function(response)
+    {
+        $scope.errors[response.field + '_error'] = response.error;
     };
 
     $scope.setNnpFields = function(data) {
