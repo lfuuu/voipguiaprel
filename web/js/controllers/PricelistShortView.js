@@ -250,7 +250,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             filterText = item.description + ' (' + filterText + ')';
         } else if (!item.description && filterText) {
             // do_nothing
-        } else if (item.description && filterText) {
+        } else if (item.description && !filterText) {
             filterText = item.description;
         } else {
             filterText = '--';
