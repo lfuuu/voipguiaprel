@@ -129,12 +129,14 @@ class NnpController extends JsonController
             return [];
         }
         
-        if ($countryCode == self::COUNTRY_CODE_RUSSIA) {
+        if ($countryCode == [self::COUNTRY_CODE_RUSSIA]) {
             $selectName = 'o.name';
-        } else {
+        } else if (!in_array(self::COUNTRY_CODE_RUSSIA, $countryCode)) {
             $selectName = 'o.name_translit';
+        } else {
+            $selectName = new Expression('case when o.country_code = ' . self::COUNTRY_CODE_RUSSIA . ' then o.name else o.name_translit end');
         }
-        
+
         $query = Operator::find()
             ->alias('o')
             ->select(['o.id', 'name' => $selectName])
