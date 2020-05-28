@@ -896,6 +896,8 @@ class PricelistController extends BaseController
         
         $row = 1;
 
+        $sheet->getStyle('C:C')->getNumberFormat()->setFormatCode('0.000000');
+
         foreach ($processedResponse as $item) {
             $itemArray = explode(',', $item);
 
@@ -903,7 +905,7 @@ class PricelistController extends BaseController
                 $key = trim(strip_tags($itemArray[1]));
 
                 if (empty($prefixes) || !isset($prefixes[$key])) {
-                    $sheet->setCellValueByColumnAndRow(1, $row, $this->getFilterName);
+                    $sheet->setCellValueByColumnAndRow(1, $row, $this->getFilterName($filterB));
                 } else {
                     if (!empty($prefixes[$key]['description'])) {
                         $sheet->setCellValueByColumnAndRow(1, $row, $prefixes[$key]['description']);

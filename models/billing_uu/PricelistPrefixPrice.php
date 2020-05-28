@@ -186,6 +186,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
             ])
             ->innerJoin('billing_uu.pricelist_filter_b b', 'b.id = p.pricelist_filter_b_id')
             ->where(['b.pricelist_filter_a_id' => $filterAId])
+            ->andWhere('p.date_to > now()')
             ->groupBy(['b_number_price'])
             ->asArray()
             ->all();
