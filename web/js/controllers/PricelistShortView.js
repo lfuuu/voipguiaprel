@@ -239,7 +239,8 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 ((item.nnp_ndc_type_name == null) ? '' : (item.f_inv_nnp_ndc_type ? (' Кроме: ' + item.nnp_ndc_type_name) : (' ' + item.nnp_ndc_type_name))) +
                 ((item.nnp_operator_name == null) ? '' : (item.f_inv_nnp_operator ? (' Кроме: ' + item.nnp_operator_name) : (' ' + item.nnp_operator_name))) +
                 ((item.nnp_region_name == null) ? '' : (item.f_inv_nnp_region ? (' Кроме: ' + item.nnp_region_name) : (' ' + item.nnp_region_name))) +
-                ((item.nnp_city_name == null) ? '' : (item.f_inv_nnp_city ? (' Кроме: ' + item.nnp_city_name) : (' ' + item.nnp_city_name)));
+                ((item.nnp_city_name == null) ? '' : (item.f_inv_nnp_city ? (' Кроме: ' + item.nnp_city_name) : (' ' + item.nnp_city_name))) + 
+                (item.regexp ? ' Regexp: ' + item.regexp : '');
 
             if (!filterText) {
                 filterText = item.f_inv_nnp_destination ? ('Кроме: ' + item.nnp_destination_name) : item.nnp_destination_name;

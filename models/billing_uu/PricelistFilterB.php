@@ -37,6 +37,7 @@ use yii\db\Expression;
  * @property bool $use_cutoff_for_minimum
  * @property string $nnp_ndc
  * @property bool $f_inv_nnp_ndc
+ * @property string $regexp
  */
 class PricelistFilterB extends \yii\db\ActiveRecord
 {
@@ -53,7 +54,7 @@ class PricelistFilterB extends \yii\db\ActiveRecord
         return [
             [['nnp_destination', 'nnp_country', 'nnp_operator', 'nnp_region', 'nnp_city', 'nnp_ndc_type',
                 'interconnect_price', 'ported_num_price', 'time_start', 'time_end', 'description',
-                'operator_price', 'transit_price', 'nnp_ndc'], 'string'],
+                'operator_price', 'transit_price', 'nnp_ndc', 'regexp'], 'string'],
             [['pricelist_filter_a_id', 'tarification_free_seconds', 'tarification_interval_seconds',
                 'tarification_type', 'tarification_min_paid_seconds', 'nnp_filter', 'rating'], 'integer'],
             [['mode_selected', 'f_inv_nnp_destination', 'f_inv_nnp_country', 'f_inv_nnp_operator',

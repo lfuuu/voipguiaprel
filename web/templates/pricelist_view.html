@@ -9,7 +9,7 @@
                 <td style="text-align: center; background-color: #BBAAAA" ng-if="item.is_pricelist_header">
                     <b>Прайслист</b>
                 </td>
-                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header" colspan="12"></td>
+                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header" colspan="13"></td>
                 <!-- Колонки прайслиста ------------------------------------------------->
                 <td style="background-color: #BBAAAA;border-left: 1px solid grey;" ng-if="item.is_pricelist_header_columns"></td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="4"></td>
@@ -23,7 +23,7 @@
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Версия</td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Огр. по мин. цене</td>
                 <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns">Тип ограничения</td>
-                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="6"></td>
+                <td style="background-color: #BBAAAA" ng-if="item.is_pricelist_header_columns" colspan="7"></td>
                 <!-- Данные прайслиста-------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_pricelist"></td>
                 <td ng-if="item.is_pricelist" colspan="4"></td>
@@ -37,7 +37,7 @@
                 <td ng-if="item.is_pricelist">{{item.version}}</td>
                 <td ng-if="item.is_pricelist">{{item.minimum_margin}}</td>
                 <td ng-if="item.is_pricelist">{{item.minimum_margin_type}}</td>
-                <td ng-if="item.is_pricelist" colspan="2"></td>
+                <td ng-if="item.is_pricelist" colspan="3"></td>
                 <td ng-if="item.is_pricelist">
                     <a popover="Выгрузить в Excel" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcel()" href="#" class="btn btn-success btn-xs">
                         <span class="glyphicon glyphicon-list-alt"></span>
@@ -61,7 +61,7 @@
                 <td style="text-align: center; background-color: #BBAABB" ng-if="item.is_location_header">
                     <b>Местоположение</b>
                 </td>
-                <td style="background-color: #BBAABB" ng-if="item.is_location_header" colspan="12"></td>
+                <td style="background-color: #BBAABB" ng-if="item.is_location_header" colspan="13"></td>
                 <!-- Колонки местоположения -------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_location_header_columns"></td>
                 <td style="background-color: #BBAABB; border-left: 1px solid grey;" ng-if="item.is_location_header_columns"></td>
@@ -71,7 +71,7 @@
                 <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">MNC</td>
                 <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">Добавочная цена</td>
                 <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns && pricelistServiceTypeId == 3">Порог округления</td>
-                <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns" colspan="{{pricelistServiceTypeId == 3 ? 8 : 9}}"></td>
+                <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns" colspan="{{pricelistServiceTypeId == 3 ? 9 : 10}}"></td>
                 <!-- Данные местоположения -------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_location"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_location"></td>
@@ -81,7 +81,7 @@
                 <td ng-if="item.is_location" style="text-align: left;">{{item.mnc}}</td>
                 <td ng-if="item.is_location" style="text-align: left;">{{item.delta_price}}</td>
                 <td ng-if="item.is_location && pricelistServiceTypeId == 3" style="text-align: left;">{{item.rounding_threshold}}</td>
-                <td ng-if="item.is_location" colspan="{{pricelistServiceTypeId == 3 ? 4 : 5}}"></td>
+                <td ng-if="item.is_location" colspan="{{pricelistServiceTypeId == 3 ? 5 : 6}}"></td>
                 <td ng-if="item.is_location">
                     <a popover="Добавить местоположение" data-popover-trigger="mouseenter" popover-placement="bottom" class="btn btn-success btn-xs" ng-click="addLocation(item.parent_id)">
                         <span class="glyphicon glyphicon-repeat"></span>
@@ -110,7 +110,7 @@
                 <td style="text-align: center; background-color: #AAAABB" ng-if="item.is_filter_a_header">
                     <b>Фильтр А</b>
                 </td>
-                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header" colspan="12"></td>
+                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header" colspan="13"></td>
                 <!-- Колонки фильтра А -------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_a_header_columns"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_a_header_columns"></td>
@@ -127,6 +127,7 @@
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Тип NDC</td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">NDC</td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Подмена RN, %</td>
+                <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns">Regexp</td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header_columns" colspan="4"></td>
                 <!-- Данные фильтра А -------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_a"></td>
@@ -144,6 +145,7 @@
                 <td ng-if="item.is_filter_a">{{item.nnp_ndc_type}}</td>
                 <td ng-if="item.is_filter_a">{{item.nnp_ndc}}</td>
                 <td ng-if="item.is_filter_a">{{item.rn_replacement_probability}}</td>
+                <td ng-if="item.is_filter_a">{{item.regexp}}</td>
                 <td ng-if="item.is_filter_a">
                     <a popover="Добавить фильтр А" data-popover-trigger="mouseenter" popover-placement="bottom" class="btn btn-success btn-xs" ng-click="addFilterA(item.parent_id)">
                         <span class="glyphicon glyphicon-repeat"></span>
@@ -173,7 +175,7 @@
                 <td style="text-align: center; background-color: #AABBBB" ng-if="item.is_filter_b_header">
                     <b>Фильтр В</b>
                 </td>
-                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header" colspan="11"></td>
+                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header" colspan="12"></td>
                 <!-- Колонки фильтра Б -------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_b_header_columns"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_b_header_columns"></td>
@@ -192,6 +194,7 @@
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Тип NDC</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">NDC</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Минималки</td>
+                <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns">Regexp</td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header_columns" colspan="4"></td>
                 <!-- Данные фильтра Б -------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_b"></td>
@@ -211,6 +214,7 @@
                 <td ng-if="item.is_filter_b">{{item.nnp_ndc_type}}</td>
                 <td ng-if="item.is_filter_b">{{item.nnp_ndc}}</td>
                 <td ng-if="item.is_filter_b">{{item.use_for_minimum}}</td>
+                <td ng-if="item.is_filter_b">{{item.regexp}}</td>
                 <td ng-if="item.is_filter_b">
                     <a popover="Добавить фильтр В" data-popover-trigger="mouseenter" popover-placement="bottom" class="btn btn-success btn-xs" ng-click="addFilterB(item.parent_id)">
                         <span class="glyphicon glyphicon-repeat"></span>
@@ -241,7 +245,7 @@
                 <td style="text-align: center; background-color: #AABBAA" ng-if="item.is_prefix_price_header">
                     <b>Префикс</b>
                 </td>
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header" colspan="11"></td>
+                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header" colspan="12"></td>
                 <!-- Колонки прайсов префиксов -------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price_header_columns"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price_header_columns"></td>
@@ -252,7 +256,7 @@
                 <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Префикс номера</td>
                 <td style="text-align: right; background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Цена номера B</td>
                 <td style="text-align: right; background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns">Дата активации</td>
-                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="10"></td>
+                <td style="background-color: #AABBAA" ng-if="item.is_prefix_price_header_columns" colspan="11"></td>
                 <!-- Данные прайсов префиксов -------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price"></td>
                 <td style="border-left: 1px solid grey;" ng-if="item.is_prefix_price"></td>
@@ -263,8 +267,7 @@
                 <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
                 <td style="text-align: right;" ng-if="item.is_prefix_price">{{item.b_number_price}}</td>
                 <td style="text-align: right;" ng-if="item.is_prefix_price">{{item.date_from}}</td>
-                <td ng-if="item.is_prefix_price" colspan="7"></td>
-                <td ng-if="item.is_prefix_price"></td>
+                <td ng-if="item.is_prefix_price" colspan="9"></td>
                 <td ng-if="item.is_prefix_price">
                     <a popover="Редактировать" data-popover-trigger="mouseenter" popover-placement="bottom" ng-if="item.has_buttons" class="btn btn-info btn-xs" ng-click="editPrefixPrice(item.prefix_price_id)">
                         <span class="glyphicon glyphicon-pencil"></span>

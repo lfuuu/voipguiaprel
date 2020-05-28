@@ -117,7 +117,8 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                     rn_replacement_probability: item.rn_replacement_probability,
                     time_start: item.time_start,
                     time_end: item.time_end,
-                    has_children: data.location[locationKey].filterA[filterAKey].filterB.length > 0
+                    has_children: data.location[locationKey].filterA[filterAKey].filterB.length > 0,
+                    regexp: item.regexp
                 });
 
                 var filterBHeaderSet = false;
@@ -160,7 +161,8 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
                         time_start: item.time_start,
                         time_end: item.time_end,
                         use_for_minimum: item.use_for_minimum ? 'Да' : 'Нет',
-                        has_children: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPrice.length > 0
+                        has_children: data.location[locationKey].filterA[filterAKey].filterB[filterBKey].prefixPrice.length > 0,
+                        regexp: item.regexp
                     };
 
                     $scope.list.push(filterBItem);
