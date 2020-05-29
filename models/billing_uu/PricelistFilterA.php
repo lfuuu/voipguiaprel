@@ -28,7 +28,7 @@ use yii\db\Expression;
  * @property bool $f_inv_nnp_ndc
  * @property int $rn_replacement_probability
  * @property bool $f_rn_pricelist
- * @property string $regexp
+ * @property string $regex
  */
 class PricelistFilterA extends \yii\db\ActiveRecord
 {
@@ -44,7 +44,7 @@ class PricelistFilterA extends \yii\db\ActiveRecord
     {
         return [
             [['nnp_destination', 'nnp_country', 'nnp_operator', 'nnp_region', 'nnp_city',
-                'nnp_ndc_type', 'time_start', 'time_end', 'description', 'nnp_ndc', 'regexp'], 'string'],
+                'nnp_ndc_type', 'time_start', 'time_end', 'description', 'nnp_ndc', 'regex'], 'string'],
             [['pricelist_location_id', 'nnp_filter', 'rn_replacement_probability'], 'integer'],
             [['mode_selected', 'f_inv_nnp_destination', 'f_inv_nnp_country', 'f_inv_nnp_operator',
                 'f_inv_nnp_region', 'f_inv_nnp_city', 'f_inv_nnp_ndc_type', 'f_inv_nnp_ndc',
