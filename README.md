@@ -43,3 +43,9 @@ codecept run unit
 codecept run functionnal
 codecept run acceptance
 ```
+
+Если после запуска контейнера не запускается веб-интерфейс, выполнить:
+docker ps
+Найти там идентификатор контейнера voipgui, а потом выполнить:
+docker exec -it <container_id> bash
+/usr/sbin/httpd -DFOREGROUND

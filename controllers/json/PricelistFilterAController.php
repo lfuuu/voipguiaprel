@@ -9,11 +9,16 @@ use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterB;
+use app\models\billing_uu\PricelistFilterBHistory;
+use app\models\billing_uu\PricelistFilterBHistoryItem;
 use app\models\billing_uu\PricelistLocation;
 use app\models\billing_uu\PricelistPrefixPrice;
+use app\models\billing_uu\PricelistPrefixPriceHistory;
+use app\models\billing_uu\PricelistPrefixPriceHistoryItem;
 use DateTime;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -33,6 +38,7 @@ class PricelistFilterAController extends JsonController
                     'date_trunc(\'second\', time_end) as time_end',
                     'filter_country' => 'm.country_code']
                 )
+                ->with('filterBHistory')
                 ->leftJoin(['m' => Major::tableName()], 'm.id = a.nnp_filter')
                 ->where(['a.id' => $this->request['id']])
                 ->asArray()
@@ -145,9 +151,9 @@ class PricelistFilterAController extends JsonController
     
     private function upsertFilters($item)
     {
-        $pricelistType = Pricelist::find()
+        $pricelistData = Pricelist::find()
             ->alias('p')
-            ->select('type_id')
+            ->select(['p.id', 'p.type_id'])
             ->innerJoin('billing_uu.pricelist_location pl', 'pl.pricelist_id = p.id')
             ->where(['pl.id' => $item->pricelist_location_id])
             ->asArray()
@@ -155,9 +161,23 @@ class PricelistFilterAController extends JsonController
         
         $filtersArray = explode("\n", $this->request['filters']);
         try {
+            $nnpFilterIds = [];
+            $inputArray = [];
+            
+            $filterBHistoryObject = PricelistFilterBHistory::createHistory($item->id, $pricelistData['id'], '3000-01-01', '3000-01-01', count($filtersArray), 'add');
+            
             foreach ($filtersArray as $filterItem) {
                 $input = preg_split("/[\t]/", $filterItem);
                 
+                if (in_array($input[0], $nnpFilterIds)) {
+                    throw new BadRequestHttpException('Одинаковые id nnp-фильтров!', 500);
+                }
+                
+                $nnpFilterIds[] = $input[0];
+                $inputArray[] = $input;
+            }
+            
+            foreach ($inputArray as $input) {
                 $nnpFilterId = $input[0];
                 $filterBDescription = $input[1];
                 $prefixPrice = $input[2];
@@ -173,44 +193,127 @@ class PricelistFilterAController extends JsonController
                     $dateEnd = $preparedDates['date_end'];
                 }
                 
-                $tarificationIntervalSeconds = ($pricelistType['type_id'] == 1) ? 60 : 1;
+                $filterBObject = PricelistFilterB::find()
+                    ->where(['pricelist_filter_a_id' => $item->id, 'nnp_filter' => $nnpFilterId])
+                    ->one();
                 
-                $filterBObject = PricelistFilterB::create([
-                    'pricelist_filter_a_id' => $item->id,
+                $filterBHistoryItem = [
+                    'pricelist_filter_b_history_id' => $filterBHistoryObject->id,
                     'description' => $filterBDescription,
-                    'mode_selected' => true,
-                    'interconnect_price' => '0.000000',
-                    'ported_num_price' => '0.000000',
-                    'operator_price' => '0.000000',
-                    'transit_price' => '0.000000',
-                    'tarification_free_seconds' => 0,
-                    'tarification_interval_seconds' => $tarificationIntervalSeconds,
-                    'tarification_type' => 2,
-                    'tarification_min_paid_seconds' => 1,
-                    'rating' => 1,
-                    'nnp_filter' => $nnpFilterId
-                ]);
-                
-                $filterBObject->save();
-                
-                (new Query())->select(new Expression('billing_uu.copy_b_nnp_filter(:filter_b_id)'))
-                ->addParams([
-                    ':filter_b_id' => $filterBObject->id
-                ])->one();
-                
-                $bNumberPrice = str_replace(',', '.', $prefixPrice);
-                $bNumberPrice = floatval($bNumberPrice);
-                
-                $prefixPriceObject = PricelistPrefixPrice::create([
-                    'prefix_b' => '',
-                    'pricelist_filter_b_id' => $filterBObject->id,
-                    'b_number_price' => (string)$bNumberPrice,
                     'date_from' => $dateStart,
-                    'date_to' => $dateEnd
-                ]);
+                    'date_to' => $dateEnd,
+                    'nnp_filter_id' => $nnpFilterId
+                ];
+                    
+                if (isset($filterBObject)) {
+                    $filterBHistoryItem['type'] = 'edit';
+                    
+                    $filterBObject->description = $filterBDescription;
+                    $filterBObject->save();
+                    
+                    $historyObject = PricelistPrefixPriceHistory::createHistory($filterBObject->id, $pricelistData['id'], $dateStart, $dateEnd, 1, 'add');
+                    
+                    $prefixPriceObject = PricelistPrefixPrice::find()
+                        ->where(['pricelist_filter_b_id' => $filterBObject->id])
+                        ->orderBy('id desc')
+                        ->one();
+                    
+                    $bNumberPrice = str_replace(',', '.', $prefixPrice);
+                    $bNumberPrice = (string)floatval($bNumberPrice);
+                    
+                    if (!$prefixPriceObject) {
+                        $prefixPriceObject = PricelistPrefixPrice::create([
+                            'prefix_b' => '',
+                            'pricelist_filter_b_id' => $filterBObject->id,
+                            'b_number_price' => $bNumberPrice,
+                            'date_from' => $dateStart,
+                            'date_to' => $dateEnd
+                        ], $historyObject->id);
+                        
+                        $prefixPriceObject->save();
+                    } else {
+                        $historyItem = [
+                            'pricelist_prefix_price_history_id' => $historyObject->id,
+                            'prefix_b' => $prefixPriceObject->prefix_b,
+                            'price_old' => $prefixPriceObject->b_number_price,
+                            'price_new' => $bNumberPrice,
+                            'date_from' => $dateStart,
+                            'date_to' => $dateEnd
+                        ];
+                        
+                        if ($prefixPriceObject->b_number_price < $bNumberPrice) {
+                            $historyItem['type'] = 'increase';
+                        } elseif ($prefixPriceObject->b_number_price > $bNumberPrice) {
+                            $historyItem['type'] = 'decrease';
+                        } elseif ($dateEnd == '3000-01-01') {
+                            $historyItem['type'] = 'prolong';
+                        } else {
+                            $historyItem['type'] = 'delete';
+                        }
+                        
+                        $historyItemObject = PricelistPrefixPriceHistoryItem::create($historyItem);
+                        $historyItemObject->save();
+                        
+                        $prefixPriceObject->b_number_price = $bNumberPrice;
+                        $prefixPriceObject->date_from = $dateStart;
+                        $prefixPriceObject->date_to = $dateEnd;
+                        
+                        $prefixPriceObject->save();
+                    }
+                } else {
+                    $filterBHistoryItem['type'] = 'add';
+                    
+                    $tarificationIntervalSeconds = ($pricelistData['type_id'] == 1) ? 60 : 1;
+                    
+                    $filterBObject = PricelistFilterB::create([
+                        'pricelist_filter_a_id' => $item->id,
+                        'description' => $filterBDescription,
+                        'mode_selected' => true,
+                        'interconnect_price' => '0.000000',
+                        'ported_num_price' => '0.000000',
+                        'operator_price' => '0.000000',
+                        'transit_price' => '0.000000',
+                        'tarification_free_seconds' => 0,
+                        'tarification_interval_seconds' => $tarificationIntervalSeconds,
+                        'tarification_type' => 2,
+                        'tarification_min_paid_seconds' => 1,
+                        'rating' => 1,
+                        'nnp_filter' => $nnpFilterId
+                    ]);
+                    
+                    $filterBObject->save();
+                    
+                    $historyObject = PricelistPrefixPriceHistory::createHistory($filterBObject->id, $pricelistData['id'], $dateStart, $dateEnd, 1, 'add');
+                    
+                    (new Query())->select(new Expression('billing_uu.copy_b_nnp_filter(:filter_b_id)'))
+                        ->addParams([
+                            ':filter_b_id' => $filterBObject->id
+                        ])->one();
+                    
+                    $bNumberPrice = str_replace(',', '.', $prefixPrice);
+                    $bNumberPrice = floatval($bNumberPrice);
+                    
+                    $prefixPriceObject = PricelistPrefixPrice::create([
+                        'prefix_b' => '',
+                        'pricelist_filter_b_id' => $filterBObject->id,
+                        'b_number_price' => (string)$bNumberPrice,
+                        'date_from' => $dateStart,
+                        'date_to' => $dateEnd
+                    ], $historyObject->id);
+                    
+                    $prefixPriceObject->save();
+                }
                 
-                $prefixPriceObject->save();
+                $filterBHistoryItemObject = PricelistFilterBHistoryItem::create($filterBHistoryItem);
+                $filterBHistoryItemObject->save();
             }
+            
+            $filterBHistoryObject->date_from = $dateStart;
+            $filterBHistoryObject->date_to = $dateEnd;
+            
+            $filterBHistoryObject->save();
+        } catch (BadRequestHttpException $e) {
+            return ['error' => $e->getMessage(), 'field' => 'filters'];
         } catch (\Exception $e) {
             return ['error' => 'Ошибка при обработке фильтров!', 'field' => 'filters'];
         }

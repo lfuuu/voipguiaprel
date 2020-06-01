@@ -71,6 +71,16 @@ class PricelistFilterA extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getFilterBHistory()
+    {
+        return $this->hasMany(PricelistFilterBHistory::className(), ['pricelist_filter_a_id' => 'id'])
+            ->select(['id', 'pricelist_filter_a_id', 'date_from', 'date_to', 'pricelist_id', 'total_count', 'date_created', 'type', 'has_backup' => new Expression('case when data_before is not null then true else false end')])
+            ->orderBy('billing_uu.pricelist_filter_b_history.date_created');
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getFilterB()
     {
         return $this->hasMany(PricelistFilterB::className(), ['pricelist_filter_a_id' => 'id'])
