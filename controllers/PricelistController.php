@@ -860,7 +860,7 @@ class PricelistController extends BaseController
         $response = file_get_contents($request);
         
         if (empty($response)) {
-            continue;
+            return;
         }
 
         $filterBDescriptionArray = [];
@@ -905,7 +905,8 @@ class PricelistController extends BaseController
                 $key = trim(strip_tags($itemArray[1]));
 
                 if (empty($prefixes) || !isset($prefixes[$key])) {
-                    $sheet->setCellValueByColumnAndRow(1, $row, $this->getFilterName($filterB));
+                    $filterText = $this->getFilterName($filterB)[0];
+                    $sheet->setCellValueByColumnAndRow(1, $row, $filterText);
                 } else {
                     if (!empty($prefixes[$key]['description'])) {
                         $sheet->setCellValueByColumnAndRow(1, $row, $prefixes[$key]['description']);
