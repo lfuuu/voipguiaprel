@@ -10,10 +10,11 @@ use app\models\nnp\Country;
 use app\models\nnp\Destination;
 use app\models\nnp\NdcType;
 use app\models\nnp\NumberRange;
-use app\models\nnp\Operator;
 use app\models\nnp\Region;
 use app\models\geo\Country as GeoCountry;
 use app\models\geo\City as GeoCity;
+use app\models\materialized_view\Ndc;
+use app\models\materialized_view\Operator;
 use yii\db\Expression;
 use Yii;
 
@@ -77,13 +78,10 @@ class NnpController extends JsonController
             return [];
         }
 
-        $query = NumberRange::find()
-            ->select(['id' => 'ndc', 'name' => 'ndc'])
-            ->distinct()
+        $query = Ndc::find()
+            ->select(['id', 'name'])
             ->where(['country_code' => $countryCode])
-            ->andWhere('ndc is not null')
-            ->asArray()
-            ->orderBy('ndc');
+            ->asArray();
 
         return $query->all();
     }
@@ -129,21 +127,9 @@ class NnpController extends JsonController
             return [];
         }
         
-        if ($countryCode == [self::COUNTRY_CODE_RUSSIA]) {
-            $selectName = 'o.name';
-        } else if (!in_array(self::COUNTRY_CODE_RUSSIA, $countryCode)) {
-            $selectName = 'o.name_translit';
-        } else {
-            $selectName = new Expression('case when o.country_code = ' . self::COUNTRY_CODE_RUSSIA . ' then o.name else o.name_translit end');
-        }
-
         $query = Operator::find()
-            ->alias('o')
-            ->select(['o.id', 'name' => $selectName])
-            ->innerJoin(NumberRange::tableName() . ' as nr', 'nr.operator_id = o.id')
-            ->where(['o.country_code' => $countryCode, 'nr.is_active' => true, 'nr.country_code' => $countryCode])
-            ->groupBy('o.id')
-            ->orderBy('name')
+            ->select(['id', 'name'])
+            ->where(['country_code' => $countryCode])
             ->asArray();
 
         return $query->all();
