@@ -1,6 +1,8 @@
 <?php
 
 namespace app\models\billing_uu;
+
+use app\classes\traits\ModelRules;
 use app\queries\billing_uu\PricelistQuery;
 use yii\db\Expression;
 use yii\db\Query;
@@ -30,15 +32,14 @@ use yii\db\Query;
  */
 class Pricelist extends \yii\db\ActiveRecord
 {
+    use ModelRules;
+    
     public static function tableName()
     {
         return 'billing_uu.pricelist';
     }
     
-    /**
-     * @return array
-     */
-    public function rules()
+    private static function rulesStatic()
     {
         return [
             [['name', 'currency_id', 'date_created', 'date_start', 'date_end', 'description'], 'string'],

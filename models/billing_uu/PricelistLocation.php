@@ -1,6 +1,8 @@
 <?php
 
 namespace app\models\billing_uu;
+
+use app\classes\traits\ModelRules;
 use app\models\nnp\Mcc;
 use app\queries\billing_uu\PricelistLocationQuery;
 
@@ -17,15 +19,26 @@ use app\queries\billing_uu\PricelistLocationQuery;
  */
 class PricelistLocation extends \yii\db\ActiveRecord
 {
+    use ModelRules;
+    
+    const LOCATION_TYPE_LOCAL = 1;
+    const LOCATION_TYPE_GUEST = 2;
+    const LOCATION_TYPE_MN = 3;
+    const LOCATION_TYPE_MVNO = 4;
+    
+    const LOCATION_TYPE_NAMES = [
+        self::LOCATION_TYPE_LOCAL => 'Домашний регион',
+        self::LOCATION_TYPE_GUEST => 'Гостевой регион',
+        self::LOCATION_TYPE_MN => 'Международный регион',
+        self::LOCATION_TYPE_MVNO => 'MVNO',
+    ];
+    
     public static function tableName()
     {
         return 'billing_uu.pricelist_location';
     }
     
-    /**
-     * @return array
-     */
-    public function rules()
+    private static function rulesStatic()
     {
         return [
             [['mcc', 'mnc', 'delta_price', 'description', 'sim_partner', 'sim_profile'], 'string'],

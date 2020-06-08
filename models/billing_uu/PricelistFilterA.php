@@ -1,6 +1,8 @@
 <?php
 
 namespace app\models\billing_uu;
+
+use app\classes\traits\ModelRules;
 use app\queries\billing_uu\PricelistFilterAQuery;
 use yii\db\Expression;
 
@@ -32,6 +34,8 @@ use yii\db\Expression;
  */
 class PricelistFilterA extends \yii\db\ActiveRecord
 {
+    use ModelRules;
+    
     public static function tableName()
     {
         return 'billing_uu.pricelist_filter_a';
@@ -40,7 +44,7 @@ class PricelistFilterA extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public function rules()
+    private static function rulesStatic()
     {
         return [
             [['nnp_destination', 'nnp_country', 'nnp_operator', 'nnp_region', 'nnp_city',

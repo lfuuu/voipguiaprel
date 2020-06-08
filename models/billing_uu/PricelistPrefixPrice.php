@@ -1,6 +1,8 @@
 <?php
 
 namespace app\models\billing_uu;
+
+use app\classes\traits\ModelRules;
 use yii\db\Expression;
 use app\queries\billing_uu\PricelistPrefixPriceQuery;
 
@@ -11,9 +13,12 @@ use app\queries\billing_uu\PricelistPrefixPriceQuery;
  * @property float $b_number_price
  * @property int $change_flag
  * @property int $history_id
+ * @property string $b_number_connect_price
  */
 class PricelistPrefixPrice extends \yii\db\ActiveRecord
 {
+    use ModelRules;
+    
     const PAGE_LIMIT = 10;
     
     public static function tableName()
@@ -24,10 +29,10 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public function rules()
+    private static function rulesStatic()
     {
         return [
-            [['prefix_b', 'b_number_price', 'date_from', 'date_to'], 'string'],
+            [['prefix_b', 'b_number_price', 'date_from', 'date_to', 'b_number_connect_price'], 'string'],
             [['pricelist_filter_b_id', 'change_flag', 'history_id'], 'integer'],
         ];
     }

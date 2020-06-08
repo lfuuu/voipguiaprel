@@ -48,6 +48,36 @@ class PricelistPrefixPriceController extends JsonController
                 ->all();
     }
     
+    public function actionReadPage()
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $pageNumber = $this->request['page_number'];
+        $offset = ($pageNumber - 1) * PricelistPrefixPrice::PAGE_LIMIT;
+        $limit = PricelistPrefixPrice::PAGE_LIMIT;
+        
+        $query = <<<SQL
+        select * from billing_uu.pricelist_prefix_price ppp
+        where pricelist_filter_b_id = :b_id
+        and prefix_b in (
+            select distinct prefix_b from billing_uu.pricelist_prefix_price
+            where pricelist_filter_b_id = :b_id
+            and date_to > now()
+            order by prefix_b
+            offset :offset
+            limit :limit
+        );
+SQL;
+        
+        $result = PricelistPrefixPrice::findBySql($query, [':b_id' => $this->request['pricelist_filter_b_id'], ':offset' => $offset, ':limit' => $limit])
+            ->asArray()
+            ->all();
+        
+        return $result;
+    }
+    
     public function actionSave()
     {
         if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {

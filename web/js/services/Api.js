@@ -1587,8 +1587,8 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         getWithDependents: function(data) {
             return ApiLoader.post(url + 'get-with-dependents', data);
         },
-        getWithDependentsNoLimit: function(data) {
-            return ApiLoader.post(url + 'get-with-dependents-no-limit', data);
+        getWithDependentsNew: function(data) {
+            return ApiLoader.post(url + 'get-with-dependents-new', data);
         },
         toggleActive: function(id) {
             return ApiLoader.post(url + 'toggle-active', {id: id});
@@ -1814,6 +1814,9 @@ app.factory('PricelistPrefixPrice', function ($q, ApiLoader, $rootScope) {
     return {
         read: function(data) {
             return ApiLoader.post(url + 'read', data);
+        },
+        readPage: function(data) {
+            return ApiLoader.post(url + 'read-page', data);
         },
         get: function(data) {
             return ApiLoader.post(url + 'get', data);
