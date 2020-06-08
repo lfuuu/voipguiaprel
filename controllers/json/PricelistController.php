@@ -268,10 +268,12 @@ SQL;
                     $count = $realCount;
                 }
                 
-                $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $realCount);
-                $filterAKey = $counter;
-                $filterBKey = $counter;
-                $counter++;
+                if ($count > 0) {
+                    $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $realCount);
+                    $filterAKey = $counter;
+                    $filterBKey = $counter;
+                    $counter++;
+                }
             }
             
             if (empty($queryItem['pfb__id'])) {
@@ -294,10 +296,12 @@ SQL;
                     $count = $realCount;
                 }
                 
-                $result[$counter] = self::createFilterBPrefixRow($queryItem, $idArrays, $count, $realCount);
-                $filterBKey = $counter;
-                $counter++;
-                $result[$filterAKey]['total_prefix_count'] += $count;
+                if ($count > 0) {
+                    $result[$counter] = self::createFilterBPrefixRow($queryItem, $idArrays, $count, $realCount);
+                    $filterBKey = $counter;
+                    $counter++;
+                    $result[$filterAKey]['total_prefix_count'] += $count;
+                }
             }
             
             if (empty($queryItem['ppp__id'])) {
