@@ -61,6 +61,7 @@ class PricelistPrefixPriceController extends JsonController
         $query = <<<SQL
         select * from billing_uu.pricelist_prefix_price ppp
         where pricelist_filter_b_id = :b_id
+        and date_to > now()
         and prefix_b in (
             select distinct prefix_b from billing_uu.pricelist_prefix_price
             where pricelist_filter_b_id = :b_id

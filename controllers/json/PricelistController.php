@@ -129,6 +129,19 @@ class PricelistController extends JsonController
             }
         }
         
+        $prefixPriceSelect = <<<SQL
+        LATERAL (select * from billing_uu.pricelist_prefix_price ppp
+        where pricelist_filter_b_id = pfb.id
+        and date_to > now()
+        and prefix_b in (
+            select distinct prefix_b from billing_uu.pricelist_prefix_price
+            where pricelist_filter_b_id = pfb.id
+            and date_to > now()
+            order by prefix_b
+            limit :limit
+        ))
+SQL;
+        
         $queryResult = 
             Pricelist::find()
                 ->alias('p')
@@ -136,10 +149,10 @@ class PricelistController extends JsonController
                 ->leftJoin(PricelistLocation::tableName() . ' as pl', 'pl.pricelist_id = p.id')
                 ->leftJoin(PricelistFilterA::tableName() . ' as pfa', 'pfa.pricelist_location_id = pl.id')
                 ->leftJoin(PricelistFilterB::tableName() . ' as pfb', 'pfb.pricelist_filter_a_id = pfa.id')
-                ->leftJoin(PricelistPrefixPrice::tableName() . ' as ppp', 'ppp.pricelist_filter_b_id = pfb.id')
+                ->leftJoin(new Expression($prefixPriceSelect) . ' as ppp', 'ppp.pricelist_filter_b_id = pfb.id')
                 ->where(['p.id' => $this->request['id']])
-                ->andWhere('ppp.date_to > now()')
                 ->orderBy('pl.id, pfa.id, pfb.id, ppp.prefix_b, ppp.id')
+                ->addParams([':limit' => PricelistPrefixPrice::PAGE_LIMIT])
                 ->asArray()
                 ->all();
 
@@ -305,8 +318,8 @@ class PricelistController extends JsonController
                 if (!$isPrefixSet && ($counter - $filterBKey) < PricelistPrefixPrice::PAGE_LIMIT) {
                     $result[$counter] = self::createPrefixRow($queryItem);
                     $counter++;
-                } elseif (($counter - $filterBKey) == PricelistPrefixPrice::PAGE_LIMIT) {
-                    $count = (new Query())
+                    if (($counter - $filterBKey) == PricelistPrefixPrice::PAGE_LIMIT) {
+                        $count = (new Query())
                         ->select('prefix_b')
                         ->distinct()
                         ->from('billing_uu.pricelist_prefix_price')
@@ -317,6 +330,7 @@ class PricelistController extends JsonController
                     
                     $result[$counter] = self::createPrefixFooterRow($queryItem, $result[$filterBKey]['filter_b_id'], $count);
                     $counter++;
+                    }
                 }
             }
         }
