@@ -76,6 +76,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         Pricelist.getWithDependentsNew({id: id, mark_type: markType, mark_id: markId}).then(function (data) {
             $scope.item = {};
             $scope.item.id = data[0]['id'];
+            $scope.item.date_start = data[0]['date_start'];
         
             $scope.pricelistIsActive = data[0]['is_active'];
             $scope.pricelistDateStart = data[0]['date_start'];
