@@ -157,7 +157,11 @@ SQL;
                 ->asArray()
                 ->all();
 
-        $result = PricelistView::getForShortForm($queryResult);
+        if (isset($this->request['type']) && $this->request['type'] == 'short') {
+            $result = PricelistView::getForShortForm($queryResult);
+        } else {
+            $result = PricelistView::getForFullForm($queryResult);
+        }
 
         return $result;
     }

@@ -8,6 +8,174 @@ use yii\db\Query;
 
 class PricelistView
 {
+    public static function getForFullForm($queryResult)
+    {
+        $locationsProcessed = [];
+        $filtersAProcessed = [];
+        $filtersBProcessed = [];
+        
+        $mccIdArray = [];
+        $nnpCountryIdArray = [];
+        $nnpDestinationIdArray = [];
+        $nnpOperatorIdArray = [];
+        $nnpRegionIdArray = [];
+        $nnpCityIdArray = [];
+        $nnpNdcTypeIdArray = [];
+        
+        $idArrays = [
+            'nnp.mcc' => ['ids' => &$mccIdArray, 'name_field' => 'country', 'id_field' => 'mcc'],
+            'nnp.country' => ['ids' => &$nnpCountryIdArray, 'name_field' => 'name_rus', 'id_field' => 'code'],
+            'nnp.destination' => ['ids' => &$nnpDestinationIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+            'nnp.operator' => ['ids' => &$nnpOperatorIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+            'nnp.region' => ['ids' => &$nnpRegionIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+            'nnp.city' => ['ids' => &$nnpCityIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+            'nnp.ndc_type' => ['ids' => &$nnpNdcTypeIdArray, 'name_field' => 'name', 'id_field' => 'id']
+        ];
+        
+        foreach ($queryResult as $queryItem) {
+            if (!in_array($queryItem['pl__id'], $locationsProcessed)) {
+                self::processQueryArray($mccIdArray, $queryItem['pl__mcc']);
+                
+                $locationsProcessed[] = $queryItem['pl__id'];
+            }
+            
+            if (!in_array($queryItem['pfa__id'], $filtersAProcessed)) {
+                self::processQueryArray($nnpCountryIdArray, $queryItem['pfa__nnp_country']);
+                self::processQueryArray($nnpDestinationIdArray, $queryItem['pfa__nnp_destination']);
+                self::processQueryArray($nnpOperatorIdArray, $queryItem['pfa__nnp_operator']);
+                self::processQueryArray($nnpRegionIdArray, $queryItem['pfa__nnp_region']);
+                self::processQueryArray($nnpCityIdArray, $queryItem['pfa__nnp_city']);
+                self::processQueryArray($nnpNdcTypeIdArray, $queryItem['pfa__nnp_ndc_type']);
+                
+                $filtersAProcessed[] = $queryItem['pfa__id'];
+            }
+            
+            if (!in_array($queryItem['pfb__id'], $filtersBProcessed)) {
+                self::processQueryArray($nnpCountryIdArray, $queryItem['pfb__nnp_country']);
+                self::processQueryArray($nnpDestinationIdArray, $queryItem['pfb__nnp_destination']);
+                self::processQueryArray($nnpOperatorIdArray, $queryItem['pfb__nnp_operator']);
+                self::processQueryArray($nnpRegionIdArray, $queryItem['pfb__nnp_region']);
+                self::processQueryArray($nnpCityIdArray, $queryItem['pfb__nnp_city']);
+                self::processQueryArray($nnpNdcTypeIdArray, $queryItem['pfb__nnp_ndc_type']);
+                
+                $filtersBProcessed[] = $queryItem['pfb__id'];
+            }
+        }
+        
+        foreach ($idArrays as $key => &$item) {
+            $item['ids'] = array_unique($item['ids']);
+            
+            if (count($item['ids'])) {
+                $tempIds = (new Query())->select(['id' => $item['id_field'], 'name' => $item['name_field']])->from($key)->where([$item['id_field'] => $item['ids']])->all();
+                $item['ids'] = [];
+                foreach ($tempIds as $tempId) {
+                    $item['ids'][$tempId['id']] = $tempId['name'];
+                }
+            }
+        }
+        
+        $result = [];
+        $counter = 0;
+        $locationKey = 0;
+        $filterAKey = 0;
+        $filterBKey = 0;
+        
+        foreach ($queryResult as $queryItem) {
+            if (empty($result)) {
+                $result[$counter] = ['is_pricelist_header' => true];
+                $counter++;
+                $result[$counter] = ['is_pricelist_header_columns' => true];
+                $counter++;
+                $result[$counter] = self::createPricelistRowFull($queryItem);
+                $counter++;
+            }
+            
+            if (empty($queryItem['pl__id'])) {
+                continue;
+            }
+            
+            if (!isset($result[$locationKey]['is_location']) || ($result[$locationKey]['is_location'] && $result[$locationKey]['id'] != $queryItem['pl__id'])) {
+                if ($locationKey != ($counter - 1)) {
+                    $result[$counter] = ['is_location_header' => true];
+                    $counter++;
+                    $result[$counter] = ['is_location_header_columns' => true];
+                    $counter++;
+                }
+                
+                $result[$counter] = self::createLocationRowFull($queryItem, $idArrays);
+                $locationKey = $counter;
+                $counter++;
+            }
+            
+            if (empty($queryItem['pfa__id'])) {
+                continue;
+            }
+            
+            if (!isset($result[$filterAKey]['is_filter_a']) || ($result[$filterAKey]['is_filter_a'] && $result[$filterAKey]['id'] != $queryItem['pfa__id'])) {
+                if ($filterAKey != ($counter - 1)) {
+                    $result[$counter] = ['is_filter_a_header' => true];
+                    $counter++;
+                    $result[$counter] = ['is_filter_a_header_columns' => true];
+                    $counter++;
+                }
+                
+                $result[$counter] = self::createFilterARowFull($queryItem, $idArrays);
+                $filterAKey = $counter;
+                $counter++;
+            }
+            
+            if (empty($queryItem['pfb__id'])) {
+                continue;
+            }
+            
+            if (!isset($result[$filterBKey]['is_filter_b']) || ($result[$filterBKey]['is_filter_b'] && $result[$filterBKey]['id'] != $queryItem['pfb__id'])) {
+                if ($filterBKey != ($counter - 1)) {
+                    $result[$counter] = ['is_filter_b_header' => true];
+                    $counter++;
+                    $result[$counter] = ['is_filter_b_header_columns' => true];
+                    $counter++;
+                }
+                
+                $result[$counter] = self::createFilterBRowFull($queryItem, $idArrays);
+                $filterBKey = $counter;
+                $counter++;
+            }
+            
+            if (empty($queryItem['ppp__id'])) {
+                continue;
+            }
+            
+            if (!isset($result[$counter - 1]['prefix_price_id']) || $result[$counter - 1]['prefix_price_id'] != $queryItem['ppp__id']) {
+                if ($filterBKey == ($counter - 1)) {
+                    $result[$counter] = ['is_prefix_price_header' => true];
+                    $counter++;
+                    $result[$counter] = ['is_prefix_price_header_columns' => true];
+                    $counter++;
+                }
+                
+                if (($counter - $filterBKey) < (PricelistPrefixPrice::PAGE_LIMIT + 3)) {
+                    $result[$counter] = self::createPrefixRowFull($queryItem);
+                    $counter++;
+                    if (($counter - $filterBKey) == (PricelistPrefixPrice::PAGE_LIMIT + 3)) {
+                        $count = (new Query())
+                            ->select('id')
+                            ->distinct()
+                            ->from('billing_uu.pricelist_prefix_price')
+                            ->where('pricelist_filter_b_id = :b_id')
+                            ->andWhere('date_to > now()')
+                            ->addParams([':b_id' => $queryItem['pfb__id']])
+                            ->count();
+                    
+                        $result[$counter] = self::createPrefixFooterRowFull($queryItem, $result[$filterBKey]['id'], $count);
+                        $counter++;
+                    }
+                }
+            }
+        }
+        
+        return $result;
+    }
+    
     public static function getForShortForm($queryResult)
     {
         $locationsProcessed = [];
@@ -211,6 +379,24 @@ class PricelistView
         ];
     }
     
+    private static function createPricelistRowFull($item)
+    {
+        return [
+            'currency_id' => $item['p__currency_id'],
+            'date_end' => $item['p__date_end'],
+            'date_start' => $item['p__date_start'],
+            'id' => $item['p__id'],
+            'is_active' => $item['p__is_active'] ? 'Да' : 'Нет',
+            'is_global' => $item['p__is_global'] ? 'Да' : 'Нет',
+            'is_pricelist' => true,
+            'minimum_margin' => $item['p__minimum_margin'],
+            'minimum_margin_type' => (($item['p__minimum_margin_type'] == 1) ? 'Деньги' : 'Процент'),
+            'name' => $item['p__name'],
+            'orig' => $item['p__orig'] ? 'Оригинация' : 'Терминация',
+            'version' => $item['p__pricelist_version']
+        ];
+    }
+    
     private static function createLocationRow($item, $idArrays)
     {
         $isBasic = ($item['pl__id'] == $item['p__basic_pricelist_location_id']);
@@ -224,6 +410,25 @@ class PricelistView
             'location_text' => $locationText,
             'has_children' => isset($item['pfa__id']),
             'is_basic' => $isBasic
+        ];
+    }
+    
+    private static function createLocationRowFull($item, $idArrays)
+    {
+        $mcc = self::getNameFromDictionary($item['pl__mcc'], $idArrays['nnp.mcc']['ids']);
+        $mnc = self::formMncText($item);
+        
+        return [
+            'delta_price' => $item['pl__delta_price'],
+            'has_children' => isset($item['pfa__id']),
+            'id' => $item['pl__id'],
+            'is_location' => true,
+            'location_id' => PricelistLocation::LOCATION_TYPE_NAMES[$item['pl__location_id']],
+            'mcc' => $mcc,
+            'mnc' => $mnc,
+            'parent_id' => $item['p__id'],
+            'pricelist_service_type_id' => $item['p__service_type_id'],
+            'rounding_treshold' => $item['pl__rounding_threshold']
         ];
     }
     
@@ -259,6 +464,37 @@ class PricelistView
         ];
     }
     
+    private static function createFilterARowFull($item, $idArrays)
+    {
+        $prefix = 'pfa__';
+        
+        $countryName = self::getNameFromDictionary($item[$prefix . 'nnp_country'], $idArrays['nnp.country']['ids']);
+        $ndcTypeName = self::getNameFromDictionary($item[$prefix . 'nnp_ndc_type'], $idArrays['nnp.ndc_type']['ids']);
+        $operatorName = self::getNameFromDictionary($item[$prefix . 'nnp_operator'], $idArrays['nnp.operator']['ids']);
+        $regionName = self::getNameFromDictionary($item[$prefix . 'nnp_region'], $idArrays['nnp.region']['ids']);
+        $cityName = self::getNameFromDictionary($item[$prefix . 'nnp_city'], $idArrays['nnp.city']['ids']);
+        $destinationName = self::getNameFromDictionary($item[$prefix . 'nnp_destination'], $idArrays['nnp.destination']['ids']);
+        
+        return [
+            'has_children' => isset($item['pfb__id']),
+            'id' => $item['pfa__id'],
+            'is_filter_a' => true,
+            'mode_selected' => $item['pfa__mode_selected'] ? 'Выбранные' : 'Кроме выбранных',
+            'nnp_city' => $cityName,
+            'nnp_country' => $countryName,
+            'nnp_destination' => $destinationName,
+            'nnp_ndc' => $item['pfa__nnp_ndc'],
+            'nnp_ndc_type' => $ndcTypeName,
+            'nnp_operator' => $operatorName,
+            'nnp_region' => $regionName,
+            'parent_id' => $item['pl__id'],
+            'regexp' => $item['pfa__regex'],
+            'rn_replacement_probability' => $item['pfa__rn_replacement_probability'],
+            'time_end' => $item['pfa__time_end'],
+            'time_start' => $item['pfa__time_start']
+        ];
+    }
+    
     private static function createFilterBPrefixRow($item, $idArrays, $count, $realCount)
     {
         return [
@@ -289,6 +525,43 @@ class PricelistView
         ];
     }
     
+    private static function createFilterBRowFull($item, $idArrays)
+    {
+        $prefix = 'pfb__';
+        
+        $countryName = self::getNameFromDictionary($item[$prefix . 'nnp_country'], $idArrays['nnp.country']['ids']);
+        $ndcTypeName = self::getNameFromDictionary($item[$prefix . 'nnp_ndc_type'], $idArrays['nnp.ndc_type']['ids']);
+        $operatorName = self::getNameFromDictionary($item[$prefix . 'nnp_operator'], $idArrays['nnp.operator']['ids']);
+        $regionName = self::getNameFromDictionary($item[$prefix . 'nnp_region'], $idArrays['nnp.region']['ids']);
+        $cityName = self::getNameFromDictionary($item[$prefix . 'nnp_city'], $idArrays['nnp.city']['ids']);
+        $destinationName = self::getNameFromDictionary($item[$prefix . 'nnp_destination'], $idArrays['nnp.destination']['ids']);
+        
+        return [
+            'has_children' => isset($item['ppp__id']),
+            'id' => $item['pfb__id'],
+            'interconnect_price' => $item['pfb__interconnect_price'],
+            'is_filter_b' => true,
+            'mode_selected' => $item['pfb__mode_selected'] ? 'Выбранные' : 'Кроме выбранных',
+            'nnp_city' => $cityName,
+            'nnp_country' => $countryName,
+            'nnp_destination' => $destinationName,
+            'nnp_ndc' => $item['pfb__nnp_ndc'],
+            'nnp_ndc_type' => $ndcTypeName,
+            'nnp_operator' => $operatorName,
+            'nnp_region' => $regionName,
+            'parent_id' => $item['pfa__id'],
+            'ported_num_price' => $item['pfb__ported_num_price'],
+            'regexp' => $item['pfb__regex'],
+            'tarification_free_seconds' => $item['pfb__tarification_free_seconds'],
+            'tarification_interval_seconds' => $item['pfb__tarification_interval_seconds'],
+            'tarification_min_paid_seconds' => $item['pfb__tarification_min_paid_seconds'],
+            'tarification_type' => $item['pfb__tarification_type'],
+            'time_end' => $item['pfb__time_end'],
+            'time_start' => $item['pfb__time_start'],
+            'use_for_minimum' => $item['pfb__use_for_minimum'] ? 'Да' : 'Нет'
+        ];
+    }
+    
     private static function createPrefixRow($item)
     {
         return [
@@ -306,6 +579,21 @@ class PricelistView
                     'price_change' => 'none'
                 ]
             ]
+        ];
+    }
+    
+    private static function createPrefixRowFull($item)
+    {
+        return [
+            'is_prefix_price' => true,
+            'filter_b_id' => $item['pfb__id'],
+            'prefix_price_id' => $item['ppp__id'],
+            'b_number_price' => $item['ppp__b_number_price'],
+            'change_flag' => $item['ppp__change_flag'],
+            'prefix_b' => $item['ppp__prefix_b'],
+            'date_from' => $item['ppp__date_from'],
+            'date_to' => $item['ppp__date_to'],
+            'has_buttons' => true,
         ];
     }
     
@@ -339,6 +627,17 @@ class PricelistView
         ];
     }
     
+    private static function createPrefixFooterRowFull($item, $filterBId, $count)
+    {
+        return [
+            'is_prefix_price_footer' => true,
+            'totalCount' => $count,
+            'currentPage' => 1,
+            'offset' => 0,
+            'filter_b_id' => $filterBId
+        ];
+    }
+    
     private static function processQueryArray(&$idArray, $queryItemElement)
     {
         if (empty($queryItemElement) || $queryItemElement == '{}') {
@@ -357,19 +656,7 @@ class PricelistView
         $mcc = self::getNameFromDictionary($item['pl__mcc'], $idArrays['nnp.mcc']['ids']);
         $simPartner = self::getNameFromDictionary($item['pl__sim_partner'], $idArrays['billing_uu.sim_imsi_partner']['ids']);
         $simProfile = self::getNameFromDictionary($item['pl__sim_profile'], $idArrays['billing_uu.sim_imsi_profile']['ids']);
-        
-        if (!empty($item['pl__mcc']) && $item['pl__mcc'] != '{}' && !empty($item['pl__mnc'] && $item['pl__mnc'] != '{}')) {
-            $tempMcc = str_replace(['{', '}'], '', $item['pl__mcc']);
-            $tempMcc = explode(',', $tempMcc);
-            $tempMnc = str_replace(['{', '}'], '', $item['pl__mnc']);
-            $tempMnc = explode(',', $tempMnc);
-            $mncArray = (new Query())->select('network')->from('nnp.mnc')->where(['mcc' => $tempMcc, 'mnc' => $tempMnc])->all();
-            $mncFormattedArray = [];
-            foreach ($mncArray as $mncItem) {
-                $mncFormattedArray[] = $mncItem['network'];
-            }
-            $mnc = implode(', ', $mncFormattedArray);
-        }
+        $mnc = self::formMncText($item);
         
         $locationText = isset($item['pl__description']) ? $item['pl__description'] : 
             ((($isBasic ? 'Базовое местоположение: ' : 'Местоположение: ') . PricelistLocation::LOCATION_TYPE_NAMES[$item['pl__location_id']]) . 
@@ -378,6 +665,28 @@ class PricelistView
             (empty($simPartner) ? '' : ('; Sim Партнер: ' . $simPartner)) . (empty($simProfile) ? '' : ('; Sim Профиль: ' . $simProfile)));
         
         return $locationText;
+    }
+    
+    private static function formMncText($item)
+    {
+        if (!empty($item['pl__mcc']) && $item['pl__mcc'] != '{}' && !empty($item['pl__mnc'] && $item['pl__mnc'] != '{}')) {
+            $tempMcc = str_replace(['{', '}'], '', $item['pl__mcc']);
+            $tempMcc = explode(',', $tempMcc);
+            $tempMnc = str_replace(['{', '}'], '', $item['pl__mnc']);
+            $tempMnc = explode(',', $tempMnc);
+            $mncArray = (new Query())->select('network')->from('nnp.mnc')->where(['mcc' => $tempMcc, 'mnc' => $tempMnc])->all();
+            $mncFormattedArray = [];
+            
+            foreach ($mncArray as $mncItem) {
+                $mncFormattedArray[] = $mncItem['network'];
+            }
+            
+            $mnc = implode(', ', $mncFormattedArray);
+        } else {
+            $mnc = '';
+        }
+        
+        return $mnc;
     }
     
     private static function formFilterText($item, $prefix, $idArrays)
