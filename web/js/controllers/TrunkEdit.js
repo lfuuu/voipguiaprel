@@ -99,6 +99,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
             term_bfilter_default_allowed: true,
             term_cfilter_default_allowed: true,
             location_id: 1,
+            rounding_type: 1,
             sorm: {
                 enabled: false,
                 source_type_id: '',
