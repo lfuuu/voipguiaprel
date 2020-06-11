@@ -112,7 +112,7 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
             $scope.pricelistDefaultTarificationIntervalSeconds,
             $scope.pricelistDefaultTarificationMinPaidSeconds,
             $scope.pricelistDefaultTarificationType,
-            $scope.item.date_start
+            $scope.item[2].date_start
         ).then(function () {
             $scope.initData($scope.item.id);
         }, function () {
