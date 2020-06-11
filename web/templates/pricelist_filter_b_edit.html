@@ -175,14 +175,14 @@
                 <div class="tab-pane{{(nnpMode == NNP_MODE_PARAMETERS) ? ' active' : '' }}" id="nnp-parameters">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Страна</label>
-                        <div class="col-sm-6">
+                        <div class="col-sm-7">
                             <select ui-select2 ng-model="item.nnp_country" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="country in countryList" value="{{::country.code}}">
                                     {{::country.name_rus}}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="btn-group">
                                 <button type="button"
                                         class="btn {{!item.f_inv_nnp_country ? 'btn-primary active' : 'btn-default'}}"
@@ -198,13 +198,20 @@
 
                     <div class="form-group" ng-if="item.nnp_country">
                         <label class="col-sm-2 control-label">Регион</label>
-                        <div class="col-sm-6">
+                        <div ng-if="regionList && regionList.length > 0" class="col-sm-7">
                             <select ui-select2 ng-model="item.nnp_region" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="region in regionList" value="{{::region.id}}">{{::region.name}}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-sm-4">
+                        <div ng-if="!regionList || regionList.length == 0" class="col-sm-7">
+                            <button type="button"
+                                    class="btn btn-primary info"
+                                    ng-click="loadRegions()">Загрузить данные
+                            </button>
+                            <span ng-if="item.nnp_region && item.nnp_region != {}">Текущее значение: {{item.nnp_region}}</span>
+                        </div>
+                        <div class="col-sm-3">
                             <div class="btn-group">
                                 <button type="button"
                                         class="btn {{!item.f_inv_nnp_region ? 'btn-primary active' : 'btn-default'}}"
@@ -220,12 +227,19 @@
 
                     <div class="form-group" ng-if="item.nnp_country && item.nnp_region">
                         <label class="col-sm-2 control-label">Город</label>
-                        <div class="col-sm-6">
+                        <div ng-if="cityList && cityList.length > 0" class="col-sm-7">
                             <select ui-select2 ng-model="item.nnp_city" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="city in cityList" value="{{::city.id}}">{{::city.name}}</option>
                             </select>
                         </div>
-                        <div class="col-sm-4">
+                        <div ng-if="!cityList || cityList.length == 0" class="col-sm-7">
+                            <button type="button"
+                                    class="btn btn-primary info"
+                                    ng-click="loadCities()">Загрузить данные
+                            </button>
+                            <span ng-if="item.nnp_city && item.nnp_city != {}">Текущее значение: {{item.nnp_city}}</span>
+                        </div>
+                        <div class="col-sm-3">
                             <div class="btn-group">
                                 <button type="button"
                                         class="btn {{!item.f_inv_nnp_city ? 'btn-primary active' : 'btn-default'}}"
@@ -241,14 +255,21 @@
 
                     <div class="form-group" ng-if="item.nnp_country">
                         <label class="col-sm-2 control-label">Оператор</label>
-                        <div class="col-sm-6">
+                        <div ng-if="operatorList && operatorList.length > 0" class="col-sm-7">
                             <select ui-select2 ng-model="item.nnp_operator" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="operator in operatorList" value="{{::operator.id}}">
                                     {{::operator.name}}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-sm-4">
+                        <div ng-if="!operatorList || operatorList.length == 0" class="col-sm-7">
+                            <button type="button"
+                                    class="btn btn-primary info"
+                                    ng-click="loadOperators()">Загрузить данные
+                            </button>
+                            <span ng-if="item.nnp_operator && item.nnp_operator != {}">Текущее значение: {{item.nnp_operator}}</span>
+                        </div>
+                        <div class="col-sm-3">
                             <div class="btn-group">
                                 <button type="button"
                                         class="btn {{!item.f_inv_nnp_operator ? 'btn-primary active' : 'btn-default'}}"
@@ -264,13 +285,13 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Тип NDC</label>
-                        <div class="col-sm-6">
+                        <div class="col-sm-7">
                             <select ui-select2 ng-model="item.nnp_ndc_type" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="btn-group">
                                 <button type="button"
                                         class="btn {{!item.f_inv_nnp_ndc_type ? 'btn-primary active' : 'btn-default'}}"
@@ -286,13 +307,20 @@
 
                     <div class="form-group" ng-if="item.nnp_country">
                         <label class="col-sm-2 control-label">NDC</label>
-                        <div class="col-sm-6">
+                        <div ng-if="ndcList && ndcList.length > 0" class="col-sm-7">
                             <select ui-select2 ng-model="item.nnp_ndc" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="ndc in ndcList" value="{{::ndc.id}}">{{::ndc.name}}
+                                <option ng-repeat="ndc in ndcList" value="{{ndc.id}}">{{ndc.name}}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-sm-4">
+                        <div ng-if="!ndcList || ndcList.length == 0" class="col-sm-7">
+                            <button type="button"
+                                    class="btn btn-primary info"
+                                    ng-click="loadNdcs()">Загрузить данные
+                            </button>
+                            <span ng-if="item.nnp_ndc && item.nnp_ndc != {}">Текущее значение: {{item.nnp_ndc}}</span>
+                        </div>
+                        <div class="col-sm-3">
                             <div class="btn-group">
                                 <button type="button"
                                         class="btn {{!item.f_inv_nnp_ndc ? 'btn-primary active' : 'btn-default'}}"

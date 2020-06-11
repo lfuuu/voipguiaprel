@@ -2,18 +2,13 @@ var MajorEditCtrl = function($scope, $q, Redirect, Nnp, Major, List, params, $mo
 
     $scope.saveEnabled = false;
 
-    var countryLoadComplete = false;
-    var regionLoadComplete = false;
-    var cityLoadComplete = false;
-    var operatorLoadComplete = false;
-    var ndcLoadComplete = false;
-
     var watchers = {
         nnp_country: function (newValue, oldValue) {
-            regionLoadComplete = false;
-            operatorLoadComplete = false;
-            ndcLoadComplete = false;
-            if (!newValue || newValue.length == 0) {
+            if ((typeof $scope.item) == 'undefined') {
+                return;
+            }
+
+            if (!newValue || newValue.length == 0 || (oldValue && newValue.length < oldValue.length)) {
                 $scope.item.nnp_region = null;
                 $scope.item.nnp_city = null;
                 $scope.item.nnp_operator = null;
@@ -23,63 +18,22 @@ var MajorEditCtrl = function($scope, $q, Redirect, Nnp, Major, List, params, $mo
 
             if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
                 $scope.regionList = null;
+                $scope.cityList = null;
                 $scope.operatorList = null;
                 $scope.ndcList = null;
-
-                if (countryLoadComplete) {
-                    var region = $scope.item.nnp_region;
-                    var city = $scope.item.nnp_city;
-                    var operator = $scope.item.nnp_operator;
-                    var ndc = $scope.item.nnp_ndc;
-                }
-
-                Nnp.regionList({country_code: newValue}).then(function (data) {
-                    $scope.regionList = data;
-
-                    if (countryLoadComplete) {
-                        $scope.item.nnp_region = region;
-                        $scope.item.nnp_city = city;
-                        regionLoadComplete = true;
-                    }
-                });
-
-                Nnp.operatorList({country_code: newValue}).then(function (data) {
-                    $scope.operatorList = data;
-
-                    if (countryLoadComplete) {
-                        $scope.item.nnp_operator = operator;
-                        operatorLoadComplete = true;
-                    }
-                });
-
-                Nnp.ndcList({country_code: newValue}).then(function (data) {
-                    $scope.ndcList = data;
-
-                    if (countryLoadComplete) {
-                        $scope.item.nnp_ndc = ndc;
-                        ndcLoadComplete = true;
-                    }
-                });
             }
         },
         nnp_region: function (newValue, oldValue) {
-            cityLoadComplete = false;
-            if (!newValue || newValue.length == 0) {
+            if ((typeof $scope.item) == 'undefined') {
+                return;
+            }
+
+            if (!newValue || newValue.length == 0 || (oldValue && newValue.length < oldValue.length)) {
                 $scope.item.nnp_city = null;
             }
 
             if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
                 $scope.cityList = null;
-
-                var city = $scope.item.nnp_city;
-
-                Nnp.cityList({country_code: $scope.item.nnp_country, region: newValue}).then(function (data) {
-                    $scope.cityList = data;
-                    $scope.cities = data;
-
-                    $scope.item.nnp_city = city;
-                    cityLoadComplete = true;
-                });
             }
         }
     };
@@ -88,13 +42,12 @@ var MajorEditCtrl = function($scope, $q, Redirect, Nnp, Major, List, params, $mo
         Major.get({id: params.id}).then(function(data){
             $scope.item = data;
 
-            $scope.setNnpFields(data);
+            $scope.setNnpFields();
 
             Major.findUsagesInPricelists({id: params.id}).then(function (data) {
                 $scope.usagesInPricelists = data;
             });
 
-            $scope.$watch('item.nnp_country', watchers.nnp_country);
             $scope.$watch('item.nnp_region', watchers.nnp_region);
         });
     } else {
@@ -120,7 +73,6 @@ var MajorEditCtrl = function($scope, $q, Redirect, Nnp, Major, List, params, $mo
 
         $scope.saveEnabled = true;
 
-        $scope.$watch('item.nnp_country', watchers.nnp_country);
         $scope.$watch('item.nnp_region', watchers.nnp_region);
 
     }
@@ -128,6 +80,7 @@ var MajorEditCtrl = function($scope, $q, Redirect, Nnp, Major, List, params, $mo
     Nnp.countryList().then(function (data) {
         $scope.countryList = data;
         countryLoadComplete = true;
+        $scope.$watch('item.nnp_country', watchers.nnp_country);
     });
 
     Nnp.ndcTypeList().then(function (data) {
@@ -155,39 +108,12 @@ var MajorEditCtrl = function($scope, $q, Redirect, Nnp, Major, List, params, $mo
             }
 
             $scope.item.nnp_country = filterData.country_code;
-
-            if ($scope.item.nnp_country) {
-                var regionList = Nnp.regionList({country_code: $scope.item.nnp_country}).then(function (data) {
-                    regionLoadComplete = true;
-                    $scope.regionList = data;
-                    $scope.item.nnp_region = filterData.region_id;
-
-                    if ($scope.item.nnp_region) {
-                        $scope.item.nnp_city = filterData.city_id;
-                        Nnp.cityList({country_code: $scope.item.nnp_country, region: $scope.item.nnp_region}).then(function (data) {
-                            $scope.cityList = data;
-                            $scope.cities = data;
-
-                        });
-                    }
-                });
-
-                var operatorList = Nnp.operatorList({country_code: $scope.item.nnp_country}).then(function (data) {
-                    $scope.operatorList = data;
-                    $scope.item.nnp_operator = filterData.operator_id;
-                });
-
-                var ndcList = Nnp.ndcList({country_code: $scope.item.nnp_country}).then(function (data) {
-                    $scope.ndcList = data;
-                    $scope.item.nnp_ndc = filterData.ndc;
-                });
-
-                $q.all([regionList, operatorList, ndcList]).then(function () {
-                    $scope.saveEnabled = true;
-                });
-            } else {
-                $scope.saveEnabled = true;
-            }
+            $scope.item.nnp_region = filterData.region_id;
+            $scope.item.nnp_operator = filterData.operator_id;
+            $scope.item.nnp_city = filterData.city_id;
+            $scope.item.nnp_ndc = filterData.ndc;
+            
+            $scope.saveEnabled = true;
         } catch (error) {
             $scope.nnpDataParseError = true;
         }
@@ -203,6 +129,46 @@ var MajorEditCtrl = function($scope, $q, Redirect, Nnp, Major, List, params, $mo
         Redirect.pricelistShortView(item.id, item.service_type_id).then(function () {
             //do_nothing
         });
+    };
+    
+    
+    $scope.loadRegions = function () {
+        if ($scope.item.nnp_country && $scope.item.nnp_country.length > 0) {
+            Nnp.regionList({country_code: $scope.item.nnp_country}).then(function (data) {
+                $scope.regionList = data;
+                $scope.item.nnp_region = $scope.parseNnpData($scope.item.nnp_region);
+            });
+        }
+    };
+
+    $scope.loadOperators = function () {
+        if ($scope.item.nnp_country && $scope.item.nnp_country.length > 0) {
+            Nnp.operatorList({country_code: $scope.item.nnp_country}).then(function (data) {
+                $scope.operatorList = data;
+                $scope.item.nnp_operator = $scope.parseNnpData($scope.item.nnp_operator);
+            });
+        }
+    };
+
+    $scope.loadCities = function () {
+        if ($scope.item.nnp_region && $scope.item.nnp_region.length > 0) {
+            Nnp.cityList({
+                country_code: $scope.item.nnp_country,
+                region: $scope.item.nnp_region
+            }).then(function (data) {
+                $scope.cityList = data;
+                $scope.item.nnp_city = $scope.parseNnpData($scope.item.nnp_city);
+            });
+        }
+    };
+
+    $scope.loadNdcs = function () {
+        if ($scope.item.nnp_country && $scope.item.nnp_country.length > 0) {
+            Nnp.ndcList({country_code: $scope.item.nnp_country}).then(function (data) {
+                $scope.ndcList = data;
+                $scope.item.nnp_ndc = $scope.parseNnpData($scope.item.nnp_ndc);
+            });
+        }
     };
 
     $scope.save = function()
