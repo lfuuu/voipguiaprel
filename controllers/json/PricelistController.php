@@ -51,11 +51,11 @@ class PricelistController extends JsonController
             ->select([
                 'p.*',
                 'g.name as group_name',
-                'is_in_use' => new Expression('sum(case when atl.id is not null then 1 else 0 end) > 0')
+                'is_in_use' => new Expression('sum(case when atl.tariff_id is not null then 1 else 0 end) > 0')
             ])
             ->leftJoin('billing_uu.pricelist_group g', 'g.id = p.pricelist_group_id')
             ->leftJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = p.id')
-            ->leftJoin('billing_uu.account_tariff_light atl', 'atl.tariff_id = pp.tariff_id')
+            ->leftJoin('billing_uu.account_tariff_light_view atl', 'atl.tariff_id = pp.tariff_id')
             ->orderBy('name')
             ->groupBy('p.id, g.id')
             ->limit($limit)
