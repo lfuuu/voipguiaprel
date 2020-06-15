@@ -291,7 +291,7 @@ class PricelistView
                 }
                 
                 if ($count > 0) {
-                    $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $realCount);
+                    $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $count);
                     $filterAKey = $counter;
                     $filterBKey = $counter;
                     $counter++;
