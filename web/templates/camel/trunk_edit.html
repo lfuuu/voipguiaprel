@@ -94,26 +94,42 @@
                                 </td>
 
                                 <!-- Начало/Конец -->
-                                <td ng-if="preprocPosRange(line)" width="5%" style="cursor: ns-resize">
+                                <td ng-if="preprocPosRange(line)" width="1%" style="cursor: ns-resize">
                                     Начало:
                                 </td>
-                                <td ng-if="line.mod_type == 1" width="5%" style="cursor: ns-resize">
+                                <td ng-if="line.mod_type == 1" width="1%" style="cursor: ns-resize">
                                     Позиция:
                                 </td>
-                                <td ng-if="preprocPosRange(line) || line.mod_type == 1" width="10%">
-                                    <input class="form-control input-sm" ng-model="line.start_pos" required />
+                                <td ng-if="preprocPosRange(line) || line.mod_type == 1" width="1%">
+                                    <input class="form-control" style="width: 30px;min-width: 30px;" ng-model="line.start_pos" required />
                                 </td>
-                                <td ng-if="preprocPosRange(line)" width="10%" style="cursor: ns-resize">
+                                <td ng-if="preprocPosRange(line)" width="1%" style="cursor: ns-resize">
                                     Конец:
                                 </td>
-                                <td ng-if="preprocPosRange(line)" width="10%">
-                                    <input class="form-control input-sm" ng-model="line.end_pos" required />
+                                <td ng-if="preprocPosRange(line)" width="1%">
+                                    <input class="form-control" style="width: 30px;min-width: 30px;" ng-model="line.end_pos" required />
                                 </td>
-
+                                
+                                <td ng-if="!preprocPosRange(line)" colspan="2" width="1%" style="cursor: ns-resize">
+                                </td>
+                                
+                                <td ng-if="line.mod_type == 5" width="10%" style="cursor: ns-resize">
+                                    A/B/C/GT:
+                                </td>
+                                <td ng-if="line.mod_type == 5" width="10%">
+                                    <select-box list="numberAll" model="line.number_id" default="Любой номер"></select-box>
+                                </td>
+                                
+                                <td ng-if="line.mod_type == 2" width="5%" colspan="2" style="cursor: ns-resize">
+                                </td>
+                                
                                 <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
                                     Regex:
                                 </td>
-                                <td ng-if="preprocValue(line)" width="20%">
+                                <td ng-if="preprocValue(line) && line.mod_type == 5" width="20%">
+                                    <input class="form-control input-sm" ng-model="line.regex" />
+                                </td>
+                                <td ng-if="preprocValue(line) && line.mod_type != 5" colspan="3" width="20%">
                                     <input class="form-control input-sm" ng-model="line.regex" />
                                 </td>
 
@@ -124,12 +140,8 @@
                                     <input class="form-control input-sm" style="width: 50px;" ng-model="line.mod_value" required />
                                 </td>
 
-                                <td ng-if="!preprocPosRange(line) || line.mod_type == 3" width="5%" style="cursor: ns-resize"> </td>
-                                <td ng-if="!preprocPosRange(line) || line.mod_type == 3" width="10%"> </td>
-                                <td ng-if="!preprocPosRange(line) && line.mod_type != 1" width="5%" style="cursor: ns-resize"> </td>
-                                <td ng-if="!preprocPosRange(line) && line.mod_type != 1" width="10%"> </td>
-                                <td ng-if="line.mod_type == 3" width="5%" style="cursor: ns-resize"> </td>
-                                <td ng-if="line.mod_type == 3" width="10%"> </td>
+                                <td ng-if="!preprocPosRange(line) && line.mod_type != 1 && line.mod_type != 2" colspan="4" style="cursor: ns-resize"> </td>
+                                <td ng-if="line.mod_type == 3" colspan="6" style="cursor: ns-resize"> </td>
 
                                 <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.avoid_mod" ng-click="line.avoid_mod=!line.avoid_mod">Без модификаторов</input> </td>
                                 <td>

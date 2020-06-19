@@ -16,7 +16,8 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
         {'id': 1, 'name': 'Вставка'},
         {'id': 2, 'name': 'Добавление в конец'},
         {'id': 3, 'name': 'Удаление'},
-        {'id': 4, 'name': 'Замена'}
+        {'id': 4, 'name': 'Замена'},
+        {'id': 5, 'name': 'Замена если номер'}
     ];
 
     Prefixlist.listByType({type_id: 14}).then(function (data) {

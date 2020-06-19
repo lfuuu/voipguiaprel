@@ -718,6 +718,44 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
 	};
 });
 
+app.factory('NumberAll', function ($q, ApiLoader, $rootScope) {
+	var url = '/json/number/';
+	var list = undefined;
+	var promise = undefined;
+	return {
+	    clearList: function(type) {
+            list = undefined;
+            promise = undefined;
+        },
+        list: function (type, serverId) {
+            if (!serverId) {
+                serverId = $rootScope.server.id;
+            }
+            
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {server_id: serverId};
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(list);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+	};
+});
+
 app.factory('Destination', function ($q, ApiLoader, $rootScope) {
     var url = '/json/destination/';
     var list = undefined;
@@ -1927,7 +1965,7 @@ app.factory('SimImsi', function ($q, ApiLoader, $rootScope) {
 });
 
 app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
-                              RouteCase, Outcome, Number, Destination,
+                              RouteCase, Outcome, Number, NumberAll, Destination,
                               Airp, ReleaseReason, RouteTable, Network,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
                               PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
@@ -1975,6 +2013,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     numberClearList: function (type) {
       Number.clearList(type);
+    },
+    numberAll: function (serverId) {
+      return NumberAll.list(serverId);
     },
     destination: function () {
       return Destination.list();

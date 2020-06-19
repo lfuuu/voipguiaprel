@@ -26,14 +26,17 @@ class NumberController extends JsonController
             $where = "server_id = ".$server->id." or sw_share_with_camel";
         }
 
-        return
-            Number::find()
+        $query = Number::find()
                 ->select(['id', 'name', 'type_id'])
                 ->where($where)
-                ->andWhere(['type_id' => $this->request['type_id']])
                 ->orderBy('name')
-                ->asArray()
-                ->all();
+                ->asArray();
+        
+        if (isset($this->request['type_id'])) {
+            $query->andWhere(['type_id' => $this->request['type_id']]);
+        }
+        
+        return $query->all();
     }
 
     public function actionListByType()

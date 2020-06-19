@@ -21,6 +21,7 @@ use app\queries\auth\CamelTrunkNumberPreprocessingQuery;
  * @property bool $acc
  * @property bool $auth
  * @property bool $avoid_mod
+ * @property int $number_id
  */
 class CamelTrunkNumberPreprocessing extends \yii\db\ActiveRecord
 {
@@ -52,7 +53,7 @@ class CamelTrunkNumberPreprocessing extends \yii\db\ActiveRecord
         return [
             [['prefix', 'object_comment', 'mod_value', 'regex'], 'string'],
             [['camel_trunk_id', 'order', 'noa', 'length',
-                'abc_mode', 'mod_type', 'start_pos', 'end_pos'], 'integer'],
+                'abc_mode', 'mod_type', 'start_pos', 'end_pos', 'number_id'], 'integer'],
             [['src', 'acc', 'auth', 'avoid_mod'], 'boolean']
         ];
     }
