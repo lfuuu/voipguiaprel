@@ -290,3 +290,8 @@ td > div > .select2-container > .select2-choice {
 .preprocessing-child-title {
 	padding-top: 6px;
 }
+
+.table-condensed td {
+    padding-left: 4px;
+    padding-right: 4px;
+}

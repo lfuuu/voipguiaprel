@@ -62,18 +62,18 @@
 
             <div class="tab-pane" id="number_preprocessing">
                 <div class="form-group">
-                    <label class="col-sm-1 control-label">Препроцессинг номеров</label>
-                    <div class="col-sm-11">
-                        <table class="table table-striped">
+                    <div class="col-sm-12">
+                        <table class="table table-striped table-condensed">
                             <tbody ui-sortable="{axis: 'y'}" ng-model="item.numberPreprocessing">
                             <tr ng-repeat="line in item.numberPreprocessing">
+                                <td>{{$index + 1}}</td>
                                 <td width="7%" style="cursor: ns-resize">
                                     <span ng-if="line.abc_mode == 1" class="label label-default">A-номер</span>
                                     <span ng-if="line.abc_mode == 2" class="label label-default">B-номер</span>
                                     <span ng-if="line.abc_mode == 4" class="label label-default">GT-номер</span>
                                 </td>
-                                <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.auth" ng-click="line.auth=!line.auth">Auth</input> </td>
-                                <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.acc" ng-click="line.acc=!line.acc">Acc</input> </td>
+                                <td><input type="checkbox" class="col-sm-8"  ng-checked="line.auth" ng-click="line.auth=!line.auth">Auth</input></td>
+                                <td><input type="checkbox" class="col-sm-8"  ng-checked="line.acc" ng-click="line.acc=!line.acc">Acc</input></td>
                                 <td width="15%">
                                     <select ui-select2 ng-model="line.mod_type" placeholder="round" style="width: 100%" >
                                         <option ng-repeat="numPreproc in trunkNumberPreprocessingType" value="{{numPreproc.id}}">{{numPreproc.name}}</option>
@@ -81,7 +81,7 @@
                                 </td>
                                 <!--Старый способ с префиксом-->
                                 <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
-                                    Длина&nbsp;номера:
+                                    Длина номера:
                                 </td>
                                 <td ng-if="preprocPrefix(line)" width="10%">
                                     <input class="form-control input-sm" ng-model="line.length" required />
@@ -127,7 +127,7 @@
                                     Regex:
                                 </td>
                                 <td ng-if="preprocValue(line) && line.mod_type == 5" width="20%">
-                                    <input class="form-control input-sm" ng-model="line.regex" />
+                                    <input class="form-control" style="min-width:60px;" ng-model="line.regex" />
                                 </td>
                                 <td ng-if="preprocValue(line) && line.mod_type != 5" colspan="3" width="20%">
                                     <input class="form-control input-sm" ng-model="line.regex" />
@@ -140,10 +140,10 @@
                                     <input class="form-control input-sm" style="width: 50px;" ng-model="line.mod_value" required />
                                 </td>
 
-                                <td ng-if="!preprocPosRange(line) && line.mod_type != 1 && line.mod_type != 2" colspan="4" style="cursor: ns-resize"> </td>
-                                <td ng-if="line.mod_type == 3" colspan="6" style="cursor: ns-resize"> </td>
+                                <td ng-if="!preprocPosRange(line) && line.mod_type != 1 && line.mod_type != 2" colspan="4" style="cursor: ns-resize"></td>
+                                <td ng-if="line.mod_type == 3" colspan="6" style="cursor: ns-resize"></td>
 
-                                <td> <input type="checkbox" class="col-sm-8"  ng-checked="line.avoid_mod" ng-click="line.avoid_mod=!line.avoid_mod">Без модификаторов</input> </td>
+                                <td><input type="checkbox" class="col-sm-8" ng-checked="line.avoid_mod" ng-click="line.avoid_mod=!line.avoid_mod" popover="Без модификаторов" data-popover-trigger="mouseenter" popover-placement="top">Б/М</input></td>
                                 <td>
                                     <comment-icon key="{{line.id}}" type="trunk_preprocessing" comment="line.object_comment"></comment-icon>
                                 </td>
