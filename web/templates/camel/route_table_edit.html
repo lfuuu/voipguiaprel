@@ -48,7 +48,7 @@
                     </div>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
-                    <camel-select-box list="outcome" model="line.outcome_id" required></camel-select-box>
+                    <camel-outcome-select-box outcome-model="line.outcome_id" route-table-model="line.outcome_route_table_id" required></outcome-select-box>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%" ng-if="userPermissions['camel_route_table_route_lock']">
                     <div class="btn-group" ng-click="line.is_locked = !line.is_locked">

@@ -19,6 +19,7 @@ class AppCamelAsset extends AssetBundle
         'js/directives/select-box.js',
         'js/directives/select-box-new.js',
         'js/directives/outcome-select-box.js',
+        'js/directives/camel-outcome-select-box.js',
         'js/directives/comment-icon.js',
         'js/directives/action-log-view-button.js',
         'js/directives/camel-select-box.js',

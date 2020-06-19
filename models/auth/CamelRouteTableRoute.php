@@ -14,6 +14,7 @@ use app\queries\auth\CamelRouteTableRouteQuery;
  * @property bool $is_locked
  * @property string $object_comment
  * @property int $b_number_id
+ * @property int $outcome_route_table_id
  */
 class CamelRouteTableRoute extends \yii\db\ActiveRecord
 {
@@ -44,7 +45,7 @@ class CamelRouteTableRoute extends \yii\db\ActiveRecord
     {
         return [
             [['b_number_regexp', 'object_comment', 'outcome_args', 'object_comment'], 'string'],
-            [['order', 'gt_number_id', 'a_number_id', 'b_number_id', 'outcome_id'], 'integer'],
+            [['order', 'gt_number_id', 'a_number_id', 'b_number_id', 'outcome_id', 'outcome_route_table_id'], 'integer'],
             [['is_locked'], 'boolean'],
         ];
     }
