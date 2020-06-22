@@ -291,7 +291,7 @@ class PricelistView
                 }
                 
                 if ($count > 0) {
-                    $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $count);
+                    $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $realCount);
                     $filterAKey = $counter;
                     $filterBKey = $counter;
                     $counter++;
@@ -448,7 +448,7 @@ class PricelistView
             'is_prefix_price' => true,
             'prefix_b' => $item['ppp__prefix_b'] . ' ',
             'prefix_count' => $count,
-            'total_prefix_count' => $realCount,
+            'total_prefix_count' => $count,
             'total_pagination_count' => $realCount,
             'interconnect_price' => empty($item['pfb__interconnect_price']) ? 0 : floatval($item['pfb__interconnect_price']),
             'prefixes' => [
