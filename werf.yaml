@@ -1,0 +1,99 @@
+project: voip-gui
+configVersion: 1
+
+---
+image: voip_gui
+from: centos:7
+
+docker:
+  WORKDIR: /opt/voip_gui
+  USER: root
+  ENV:
+    POSTGRES_DB: nispd
+    POSTGRES_HOST: localhost
+    POSTGRES_USER:
+    POSTGRES_PASSWORD:
+  ENTRYPOINT: ["/opt/voip_gui/ENTRYPOINT.sh"]
+  #CMD: ["/usr/sbin/httpd" , "-DFOREGROUND"]
+  #CMD: ["/bin/sleep","infinity"]
+  EXPOSE: "80"
+
+git:
+- add: /
+  to: /opt/voip_gui
+  owner: apache
+  group: apache
+
+shell:
+  beforeInstall:
+  - yum -y update && yum -y install centos-release-scl-rh epel-release 
+  - yum -y install mc git vim curl
+  - rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+  - yum install -y php56w php56w-cli php56w-curl php56w-gd php56w-json php56w-mcrypt php56w-mysqlnd php56w-pgsql php56w-readline php56w-xdebug php56w-xmlrpc php56w-mbstring php56w-zip php56w-dom
+  - yum clean all
+  install:
+  - curl -sS https://getcomposer.org/installer | php
+  - mv composer.phar /usr/local/bin/composer 
+  - composer global require "fxp/composer-asset-plugin"
+  - cd /opt/voip_gui/
+  - composer install
+  setup: |
+    cd /opt/voip_gui/config
+    cp db-local.tpl.php db-local.php
+    cp log-local.tpl.php log-local.php
+    cp params-local.tpl.php params-local.php
+    chown -R apache:apache /opt/voip_gui/web
+    chmod 777 /opt/voip_gui/runtime
+    chmod 777 /opt/voip_gui/web/assets
+    cp -pf /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.default
+    sed -i \
+    -e '/^KeepAlive .*$/d' \
+    -e '/^MaxKeepAliveRequests .*$/d' \
+    -e '/^KeepAliveTimeout .*$/d' \
+    -e '/^ServerSignature On$/d' \
+    -e '/^ServerTokens OS$/d' \
+    /etc/httpd/conf/httpd.conf \
+    && truncate -s 0 \
+    /etc/httpd/conf.d/autoindex.conf \
+    && chmod 444 \
+    /etc/httpd/conf.d/autoindex.conf \
+    && truncate -s 0 \
+    /etc/httpd/conf.d/welcome.conf \
+    && chmod 444 \
+    /etc/httpd/conf.d/welcome.conf \
+    && { \
+    /bin/echo ''; \
+    echo '#'; \
+    echo '# Custom configuration'; \
+    echo '#'; \
+    echo 'ServerName voip_gui:80'; \
+    echo 'KeepAlive On'; \
+    echo 'MaxKeepAliveRequests 200'; \
+    echo 'KeepAliveTimeout 2'; \
+    echo 'DocumentRoot "/opt/voip_gui/web"'; \
+        echo '<Directory "/opt/voip_gui/web">'; \
+    echo '  AllowOverride All'; \
+    echo '  Require all granted'; \
+    echo ''; \
+    echo '</Directory>'; \
+    } >> /etc/httpd/conf/httpd.conf
+
+#shell:
+#  beforeInstall:
+#  - yum -y update
+#  - yum -y install centos-release-scl-rh epel-release
+#  - rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+#  - yum -y install mc wget tar git vim unzip initscripts less cat split
+#  - yum install -y php56w php56w-cli php56w-curl php56w-gd php56w-json php56w-mcrypt php56w-mysqlnd php56w-pgsql php56w-readline php56w-xdebug php56w-xmlrpc php56w-mbstring
+#  install:
+#  - cd /opt/voip-gui
+#  - curl -sS https://getcomposer.org/installer | php 
+#  - mv composer.phar /usr/local/bin/composer
+#  - /usr/local/bin/composer global require "fxp/composer-asset-plugin"
+#  - /usr/local/bin/composer install
+
+#- name: Disable docker hook for apt-cache deletion
+#  shell: |
+#    set -e
+#    sed -i -e "s/DPkg::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
+#    sed -i -e "s/APT::Update::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
