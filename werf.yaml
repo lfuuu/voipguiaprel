@@ -13,7 +13,7 @@ docker:
     POSTGRES_HOST: localhost
     POSTGRES_USER:
     POSTGRES_PASSWORD:
-    LC_ALL: en_US.UTF-8
+  # LC_ALL: en_US.UTF-8
   ENTRYPOINT: ["/opt/voip_gui/ENTRYPOINT.sh"]
   #CMD: ["/usr/sbin/httpd" , "-DFOREGROUND"]
   #CMD: ["/bin/sleep","infinity"]
@@ -30,7 +30,7 @@ ansible:
     - name: 1
       shell: |
         yum -y update && yum -y install centos-release-scl-rh epel-release 
-        yum -y install git vim curl
+        yum -y install curl
         rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
         yum install -y php56w php56w-cli php56w-curl php56w-gd php56w-json php56w-mcrypt php56w-mysqlnd php56w-pgsql php56w-readline php56w-xdebug php56w-xmlrpc php56w-mbstring php56w-zip php56w-dom
         yum clean all
@@ -56,35 +56,35 @@ ansible:
         chmod 777 /opt/voip_gui/web/assets
         cp -pf /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.default
         sed -i \
-        -e '/^KeepAlive .*$/d' \
-        -e '/^MaxKeepAliveRequests .*$/d' \
-        -e '/^KeepAliveTimeout .*$/d' \
-        -e '/^ServerSignature On$/d' \
-        -e '/^ServerTokens OS$/d' \
-        /etc/httpd/conf/httpd.conf \
+          -e '/^KeepAlive .*$/d' \
+          -e '/^MaxKeepAliveRequests .*$/d' \
+          -e '/^KeepAliveTimeout .*$/d' \
+          -e '/^ServerSignature On$/d' \
+          -e '/^ServerTokens OS$/d' \
+          /etc/httpd/conf/httpd.conf \
         && truncate -s 0 \
-        /etc/httpd/conf.d/autoindex.conf \
+              /etc/httpd/conf.d/autoindex.conf \
         && chmod 444 \
-        /etc/httpd/conf.d/autoindex.conf \
+              /etc/httpd/conf.d/autoindex.conf \
         && truncate -s 0 \
-        /etc/httpd/conf.d/welcome.conf \
+              /etc/httpd/conf.d/welcome.conf \
         && chmod 444 \
-        /etc/httpd/conf.d/welcome.conf \
+              /etc/httpd/conf.d/welcome.conf \
         && { \
-        /bin/echo ''; \
-        echo '#'; \
-        echo '# Custom configuration'; \
-        echo '#'; \
-        echo 'ServerName voip_gui:80'; \
-        echo 'KeepAlive On'; \
-        echo 'MaxKeepAliveRequests 200'; \
-        echo 'KeepAliveTimeout 2'; \
-        echo 'DocumentRoot "/opt/voip_gui/web"'; \
-            echo '<Directory "/opt/voip_gui/web">'; \
-        echo '  AllowOverride All'; \
-        echo '  Require all granted'; \
-        echo ''; \
-        echo '</Directory>'; \
+          /bin/echo ''; \
+          echo '#'; \
+          echo '# Custom configuration'; \
+          echo '#'; \
+          echo 'ServerName voip_gui:80'; \
+          echo 'KeepAlive On'; \
+          echo 'MaxKeepAliveRequests 200'; \
+          echo 'KeepAliveTimeout 2'; \
+          echo 'DocumentRoot "/opt/voip_gui/web"'; \
+              echo '<Directory "/opt/voip_gui/web">'; \
+          echo '  AllowOverride All'; \
+          echo '  Require all granted'; \
+          echo ''; \
+          echo '</Directory>'; \
         } >> /etc/httpd/conf/httpd.conf
       args:
         chdir: /opt/voip_gui
