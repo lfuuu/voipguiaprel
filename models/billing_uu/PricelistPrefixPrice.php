@@ -130,6 +130,9 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
             ->andWhere('date_to > :date_to')
             ->addParams(['date_to' => $data[3]])
             ->all();
+            
+        $newPrice = str_replace(',', '.', $data[2]);
+        $newPrice = floatval($newPrice);
         
         if (!empty($oldItems)) {
             foreach ($oldItems as $oldItem) {
@@ -138,14 +141,14 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                         $historyId,
                         $data[1],
                         $oldItem->b_number_price,
-                        $data[2],
+                        $newPrice,
                         $data[3],
                         $data[4]
                     ];
                     
-                    if ($oldItem->b_number_price < $data[2]) {
+                    if ($oldItem->b_number_price < $newPrice) {
                         $historyItem[] = 'increase';
-                    } elseif ($oldItem->b_number_price > $data[2]) {
+                    } elseif ($oldItem->b_number_price > $newPrice) {
                         $historyItem[] = 'decrease';
                     } elseif ($data[4] == '3000-01-01') {
                         $historyItem[] = 'prolong';
@@ -165,7 +168,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                     $historyId,
                     $data[1],
                     '',
-                    $data[2],
+                    $newPrice,
                     $data[3],
                     $data[4],
                     'new',
