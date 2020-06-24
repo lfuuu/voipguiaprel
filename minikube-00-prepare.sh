@@ -10,8 +10,6 @@ export REGISTRY_IP=$(kubectl -n kube-system get svc/werf-registry -o=template={{
 minikube ssh "cat /etc/hosts |  grep -v werf-registry | sudo tee /etc/hosts"
 minikube ssh "echo '$REGISTRY_IP werf-registry.kube-system.svc.cluster.local' | sudo tee -a /etc/hosts"
 
-minikube ssh "cat /etc/hosts"
-
 sudo sed -i -e '/^.*werf-registry.*l$/d' /etc/hosts
 echo "127.0.0.1 werf-registry.kube-system.svc.cluster.local" | sudo tee -a /etc/hosts
 
