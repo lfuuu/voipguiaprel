@@ -9,4 +9,7 @@
 # настройка реестра в миникубе
 
 . $(multiwerf use 1.1 stable --as-file)
-werf build-and-publish --stages-storage :local --tag-custom voip-gui --images-repo :minikube
+
+source ./minikube-def.sh
+
+werf build-and-publish --stages-storage :local --tag-custom $TAG --images-repo :minikube
