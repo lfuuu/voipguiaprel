@@ -2,7 +2,7 @@ project: voip-gui
 configVersion: 1
 
 ---
-image: voip_gui
+image: ~
 from: centos:7
 
 docker:
