@@ -4,4 +4,5 @@ vendor
 .idea
 .vagrant
 
+.werf_secret_key
 

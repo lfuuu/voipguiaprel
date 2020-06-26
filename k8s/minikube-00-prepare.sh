@@ -1,8 +1,7 @@
 # Этот скрипт нужно запустить в отдельном терминале.
 # Он подготавливает minikube. Запускает в нем службу реестра и ингресса. а так же выставляет службу реестра наружу.
 
-minikube addons enable registry
-minikube addons enable ingress
+minikube start --addons registry --addons ingress
 
 kubectl -n kube-system expose rc/registry --type=ClusterIP --port=5000 --target-port=5000 --name=werf-registry
 
