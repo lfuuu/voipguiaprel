@@ -10,6 +10,12 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
             numberPreprocessing: [],
         };
     }
+    
+    $scope.locationIds = [
+        {id: 1, name: 'Домашний регион'},
+        {id: 2, name: 'Национальный роуминг'},
+        {id: 3, name: 'Международный роуминг'}
+    ];
 
     $scope.trunkNumberPreprocessingType = [
         {'id': 0, 'name': 'Префикс'},

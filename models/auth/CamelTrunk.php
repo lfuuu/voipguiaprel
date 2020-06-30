@@ -12,6 +12,7 @@ use app\queries\auth\CamelTrunkQuery;
  * @property string $trunk_mcn
  * @property string $trunk_tele2
  * @property bool $insert_cdr
+ * @property int $location_id
  */
 class CamelTrunk extends \yii\db\ActiveRecord
 {
@@ -40,7 +41,7 @@ class CamelTrunk extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'trunk_mcn', 'trunk_tele2'], 'string'],
-            [['prefixlist_id', 'camel_route_table_id', 'server_id'], 'integer'],
+            [['prefixlist_id', 'camel_route_table_id', 'server_id', 'location_id'], 'integer'],
             [['insert_cdr'], 'boolean']
         ];
     }
