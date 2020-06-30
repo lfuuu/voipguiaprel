@@ -3,7 +3,6 @@
 
 source ./minikube-def.sh
 
-kubectl -n kube-system wait --for=condition=ready --timeout=60s pods -l app.kubernetes.io/component=controller
 werf deploy --dir ../ --stages-storage :local --images-repo :minikube --tag-custom $APPNAME --env $ENVNAME --log-debug=true
 
 # TODO: Сделать, если строчка есть, что бы ничего не менялось и пароль не спрашивало лишний раз
