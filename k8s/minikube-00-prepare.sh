@@ -15,7 +15,7 @@ kubectl -n kube-system wait --for=condition=ready --timeout=120s pods -l actual-
 kubectl -n kube-system wait --for=condition=ready --timeout=120s pods -l registry-proxy=true
 kubectl -n kube-system wait --for=condition=ready --timeout=120s pods -l app.kubernetes.io/component=controller
 
-kubectl -n kube-system expose rc/registry --type=ClusterIP --port=5000 --target-port=5000 --name=werf-registry
+kubectl -n kube-system expose rc/registry --type=ClusterIP --port=5000 --target-port=5000 --name=werf-registry --selector='actual-registry=true'
 
 export REGISTRY_IP=$(kubectl -n kube-system get svc/werf-registry -o=template={{.spec.clusterIP}})
 minikube ssh "cat /etc/hosts |  grep -v werf-registry | sudo tee /etc/hosts"
