@@ -5,4 +5,4 @@ vendor
 .vagrant
 
 .werf_secret_key
-
+values.yaml
