@@ -1,0 +1,63 @@
+{{ if not (eq .Values.global.env "prod") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin4
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  selector:
+    app: {{ .Chart.Name }}
+    tier: pgadmin4
+  ports: 
+  - name: http
+    port: 80
+    protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      tier: pgadmin4
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        tier: pgadmin4
+    spec:
+      containers:
+      - image: dpage/pgadmin4
+        name: pg-db
+        env:
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: admin@mcn.ru
+        - name: PGADMIN_DEFAULT_PASSWORD
+          value: adminmcn
+        ports:
+        - containerPort: 80
+          name: pgadmin4
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Chart.Name }}-pgadmin
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - host: pgadmin-{{ .Chart.Name }}-{{ .Values.global.env }}.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: pgadmin4
+          servicePort: 80
+{{- else }}
+
+{{- end }}

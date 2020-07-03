@@ -1,19 +1,20 @@
+{{- if (eq .Values.global.env "prod") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-backend
+  name: {{ .Chart.Name }}-backend-prod
 spec:
   replicas: 3
   selector:
       matchLabels:
-        app: {{ .Chart.Name }}-backend
+        app: {{ .Chart.Name }}-backend-prod
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-backend
+        app: {{ .Chart.Name }}-backend-prod
     spec:
       containers:
-      - name: backend
+      - name: backend-prod
 {{ tuple . | werf_container_image | indent 8 }}
         livenessProbe:
           httpGet:
@@ -43,14 +44,34 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Chart.Name }}-backend
+  name: {{ .Chart.Name }}-backend-prod
   labels:
-    app: {{ .Chart.Name }}-backend
+    app: {{ .Chart.Name }}-backend-prod
 spec:
   clusterIP: None
   selector:
-    app: {{ .Chart.Name }}-backend
+    app: {{ .Chart.Name }}-backend-prod
   ports:
   - name: http
     port: 80
     protocol: TCP
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Chart.Name }}-frontend
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - host: {{ .Chart.Name }}-{{ .Values.global.env }}.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Chart.Name }}-backend-prod
+          servicePort: 80
+{{- else }}
+
+{{- end }}

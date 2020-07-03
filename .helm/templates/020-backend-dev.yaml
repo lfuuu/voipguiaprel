@@ -1,0 +1,99 @@
+{{- if not (eq .Values.global.env "prod") }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Chart.Name }}-backend-dev
+spec:
+  replicas: 1
+  serviceName: {{ .Chart.Name }}-backend-dev
+  selector:
+      matchLabels:
+        app: {{ .Chart.Name }}-backend-dev
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-backend-dev
+    spec:
+      containers:
+      - name: backend-dev
+{{ tuple . | werf_container_image | indent 8 }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.postgres.db }}
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: POSTGRES_USER
+          value: voipgui
+        - name: POSTGRES_PASSWORD
+          value: password
+{{ tuple . | werf_container_env | indent 8 }}
+        volumeMounts:
+        - mountPath: /workspace
+          name: voipgui-src
+      volumes:
+      - name: voipgui-src
+        persistentVolumeClaim:
+          claimName: voipgui-src-pv-claim
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: voipgui-src-pv-claim
+  labels:
+    app: {{ .Chart.Name }}-backend-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-backend-dev
+  labels:
+    app: {{ .Chart.Name }}-backend-dev
+spec:
+  clusterIP: None
+  selector:
+    app: {{ .Chart.Name }}-backend-dev
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Chart.Name }}-frontend
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - host: {{ .Chart.Name }}-{{ .Values.global.env }}.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Chart.Name }}-backend-dev
+          servicePort: 80
+{{- else }}
+
+{{- end }}

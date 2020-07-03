@@ -1,0 +1,17 @@
+#app:
+#  url:
+#    _default: {{ .Chart.Name }}-{{ .Values.global.env }}.local
+#    production: voip-gui.mcn.ru
+#    stage: voip-gui.k8s-suzanna.mcn.local
+
+postgres:
+  host:
+    _default: db
+  exthost:
+    production: eridanus.mcn.ru
+  extport:
+    production: 5432
+  db:
+    _default: nispd
+  user:
+    _default: voipgui

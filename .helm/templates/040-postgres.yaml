@@ -1,0 +1,63 @@
+{{- if not (eq .Values.global.env "prod") }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      service: postgres
+  replicas: 1
+  serviceName: postgres
+  template:
+    metadata:
+      labels:
+        service: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:12
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: trust
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: pg-data
+      volumes:
+      - name: pg-data
+        persistentVolumeClaim:
+          claimName: pg-db-pv-claim
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pg-db-pv-claim
+  labels:
+    app: {{ .Chart.Name }}-postgres
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    service: postgres
+spec:
+  ports:
+  - name: "5432"
+    port: 5432
+  selector:
+    service: postgres
+{{- else }}
+
+{{- end }}
