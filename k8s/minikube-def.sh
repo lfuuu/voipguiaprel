@@ -4,5 +4,5 @@
 
 
 APPNAME=voip-gui
-ENVNAME=prod
+ENVNAME=dev
 TAG=voip-gui
