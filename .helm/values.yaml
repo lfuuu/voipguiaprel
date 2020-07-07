@@ -4,14 +4,11 @@
 #    production: voip-gui.mcn.ru
 #    stage: voip-gui.k8s-suzanna.mcn.local
 
-postgres:
-  host:
-    _default: db
-  exthost:
-    production: eridanus.mcn.ru
-  extport:
-    production: 5432
-  db:
-    _default: nispd
-  user:
-    _default: voipgui
+postgres_dev:
+  host: db
+  port: 5432
+  db: nispd
+  adminuser: postgres
+  user: voipgui
+  password: qwe123
+

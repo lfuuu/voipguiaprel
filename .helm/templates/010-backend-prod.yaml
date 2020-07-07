@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-backend-prod
 spec:
-  replicas: 3
+  replicas: 1
   selector:
       matchLabels:
         app: {{ .Chart.Name }}-backend-prod
@@ -32,13 +32,13 @@ spec:
           protocol: TCP
         env:
         - name: POSTGRES_DB
-          value: {{ .Values.postgres.db }}
+          value: {{ .Values.postgres_prod.db }}
         - name: POSTGRES_HOST
-          value: {{ .Values.postgres.host }}
+          value: {{ .Values.postgres_prod.host }}
         - name: POSTGRES_USER
-          value: {{ .Values.postgres.user }}
+          value: {{ .Values.postgres_prod.user }}
         - name: POSTGRES_PASSWORD
-          value: {{ .Values.postgres.password }}
+          value: {{ .Values.postgres_prod.password }}
 {{ tuple . | werf_container_env | indent 8 }}
 ---
 apiVersion: v1

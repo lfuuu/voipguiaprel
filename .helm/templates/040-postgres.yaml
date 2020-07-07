@@ -2,24 +2,24 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgres
+  name: {{ .Values.postgres_dev.host }}
 spec:
   selector:
     matchLabels:
-      service: postgres
+      service: {{ .Values.postgres_dev.host }}
   replicas: 1
-  serviceName: postgres
+  serviceName: {{ .Values.postgres_dev.host }}
   template:
     metadata:
       labels:
-        service: postgres
+        service: {{ .Values.postgres_dev.host }}
     spec:
       containers:
-      - name: postgres
+      - name: {{ .Values.postgres_dev.host }}
         image: postgres:12
         env:
         - name: POSTGRES_USER
-          value: postgres
+          value: {{ .Values.postgres_dev.adminuser }}
         - name: POSTGRES_HOST_AUTH_METHOD
           value: trust
         ports:
@@ -49,15 +49,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: {{ .Values.postgres_dev.host }}
   labels:
-    service: postgres
+    service: {{ .Values.postgres_dev.host }}
 spec:
   ports:
   - name: "5432"
     port: 5432
   selector:
-    service: postgres
+    service: {{ .Values.postgres_dev.host }}
 {{- else }}
 
 {{- end }}

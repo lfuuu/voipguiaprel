@@ -14,6 +14,16 @@ spec:
       labels:
         app: {{ .Chart.Name }}-backend-dev
     spec:
+      initContainers:
+      - name: wait-pod-postgres
+        image: busybox:1.28
+        command:  ['sh', '-c', "until nslookup {{ .Values.postgres_dev.host }}.{{ .Chart.Name }}-{{ .Values.global.env }}.svc.cluster.local; do echo waiting for postgres; sleep 2; done"]
+      - name: wait-postgres-ready
+        image: postgres:12
+        command:
+          - "sh"
+          - "-c"
+          - "until pg_isready -h {{ .Values.postgres_dev.host }} -U {{ .Values.postgres_dev.adminuser }} -p {{ .Values.postgres_dev.port }}; do sleep 2; done;"
       containers:
       - name: backend-dev
 {{ tuple "voip-gui-dev" . | werf_container_image | indent 8 }}
@@ -26,20 +36,19 @@ spec:
           httpGet:
             path: /
             port: 80
-            scheme: HTTP
         ports:
         - containerPort: 80
           name: http
           protocol: TCP
         env:
         - name: POSTGRES_DB
-          value: {{ .Values.postgres.db }}
+          value: {{ .Values.postgres_dev.db }}
         - name: POSTGRES_HOST
-          value: postgres
+          value: {{ .Values.postgres_dev.host }}
         - name: POSTGRES_USER
-          value: voipgui
+          value: {{ .Values.postgres_dev.user }}
         - name: POSTGRES_PASSWORD
-          value: password
+          value: {{ .Values.postgres_dev.password }}
 {{ tuple . | werf_container_env | indent 8 }}
         volumeMounts:
         - mountPath: /workspace

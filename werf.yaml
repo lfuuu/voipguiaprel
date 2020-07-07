@@ -94,7 +94,7 @@ image: voip-gui-dev
 from: centos:7
 
 docker:
-  WORKDIR: /opt/voip_gui
+  WORKDIR: /root
   USER: root
   ENV:
     POSTGRES_DB: nispd
@@ -102,48 +102,44 @@ docker:
     POSTGRES_USER:
     POSTGRES_PASSWORD:
   # LC_ALL: en_US.UTF-8
-  ENTRYPOINT: ["/opt/voip_gui/ENTRYPOINT.sh"]
-  #CMD: ["/usr/sbin/httpd" , "-DFOREGROUND"]
+  #ENTRYPOINT: ["/opt/voip_gui/ENTRYPOINT.sh"]
+  CMD: ["/usr/sbin/httpd" , "-DFOREGROUND"]
   #CMD: ["/bin/sleep","infinity"]
   EXPOSE: "80"
 
 git:
-- add: /
-  to: /opt/voip_gui
-  owner: apache
-  group: apache
+- add: /install/prepare-scripts
+  to: /root/prepare-scripts
+  owner: root
+  group: root
 
 ansible:
   beforeInstall:
     - name: 1
       shell: |
-        yum -y update && yum -y install centos-release-scl-rh epel-release 
+        yum -y update && yum -y install centos-release-scl-rh epel-release
+        yum -y install http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm
         rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
         yum install -y php56w php56w-cli php56w-curl php56w-gd php56w-json php56w-mcrypt php56w-mysqlnd php56w-pgsql php56w-readline php56w-xdebug php56w-xmlrpc php56w-mbstring php56w-zip php56w-dom
+        yum -y install curl mc git sshd
         yum clean all
   install:
     - name: 2
       shell: |
-        yum -y update
-        yum -y install curl mc git
-        yum clean all
+        mkdir -p ~/.ssh
+        ln -s /workspace/.ssh/id_rsa ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        mkdir -p /opt/voip_gui/web
+        echo "Сделай:<br>rm -rf /opt/voip_gui; ln -s /workspace/voip_gui /opt/voip_gui" > /opt/voip_gui/web/index.html
+        printf "Host github.com\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" >> /etc/ssh/ssh_config
         curl -sS https://getcomposer.org/installer | php
         mv composer.phar /usr/local/bin/composer 
         composer global require "fxp/composer-asset-plugin"
-        cd /opt/voip_gui/
-        composer install
       args:
-        chdir: /opt/voip_gui
+        chdir: /root
   setup:
-    - name: 3
+    - name: Настройка веб-сервера
       shell: |
-        cd /opt/voip_gui/config
-        cp db-local.tpl.php db-local.php
-        cp log-local.tpl.php log-local.php
-        cp params-local.tpl.php params-local.php
-        chown -R apache:apache /opt/voip_gui/web
-        chmod 777 /opt/voip_gui/runtime
-        chmod 777 /opt/voip_gui/web/assets
         cp -pf /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.default
         sed -i \
           -e '/^KeepAlive .*$/d' \
@@ -177,4 +173,4 @@ ansible:
           echo '</Directory>'; \
         } >> /etc/httpd/conf/httpd.conf
       args:
-        chdir: /opt/voip_gui
+        chdir: /root
