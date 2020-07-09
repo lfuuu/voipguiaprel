@@ -369,7 +369,7 @@ class PricelistFilterBController extends JsonController
         $historyObject = PricelistPrefixPriceHistory::createHistory($item->id, $pricelistId['pricelist_id'], $dateStart, $dateEnd,
             count($prefixesToSave), (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) ? 'replace' : 'add');
 
-        // \Yii::$app->db->createCommand("alter table billing_uu.pricelist_prefix_price disable trigger notify")->queryAll();
+        \Yii::$app->db->createCommand("alter table billing_uu.pricelist_prefix_price disable trigger notify")->queryAll();
             
         foreach ($prefixesToSave as $prefixToSave) {
             $prefixCreatedItem = PricelistPrefixPrice::create($prefixToSave, $historyObject->id);
@@ -405,9 +405,7 @@ class PricelistFilterBController extends JsonController
             }
         }
         
-        // \Yii::$app->db->createCommand("alter table billing_uu.pricelist_prefix_price enable trigger notify")->queryAll();
-            
-        // \Yii::$app->db->createCommand("select event.notify('nnp_pricelist_prefix_price', 0);")->queryAll();
+        \Yii::$app->db->createCommand("alter table billing_uu.pricelist_prefix_price enable trigger notify")->queryAll();
     }
     
     /**

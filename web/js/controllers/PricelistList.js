@@ -117,4 +117,10 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         $scope.offset = ((page - 1) * $scope.limit);
         $scope.refreshList();
     };
+    
+    $scope.synchronize = function () {
+        Pricelist.synchronize().then(function (response) {
+            
+        });
+    };
 };

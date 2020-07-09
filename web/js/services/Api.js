@@ -1667,6 +1667,9 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         },
         oldSearch: function (data) {
             return ApiLoader.post(url + 'old-search', data);
+        },
+        synchronize: function (data) {
+            return ApiLoader.post(url + 'synchronize', data);
         }
     };
 });

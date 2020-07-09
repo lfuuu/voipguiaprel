@@ -522,4 +522,15 @@ SQL;
         
         return json_decode($response, true);
     }
+    
+    public function actionSynchronize()
+    {
+        if (!\Yii::$app->user->can('pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+         \Yii::$app->db->createCommand("select event.notify('nnp_pricelist_prefix_price', 0);")->queryAll();
+        
+        return ['success' => 1];
+    }
 }
