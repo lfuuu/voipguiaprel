@@ -3,8 +3,15 @@ var RouteReplaceEditCtrl = function ($scope, RouteReplace, List, params, $modalI
 
     $scope.origAttrList = List.origAttribute();
     $scope.termAttrList = List.termAttribute();
+    var serverId;
+    
+    if (params.server_id) {
+        serverId = params.server_id;
+    } else {
+        serverId = $scope.server.id;
+    }
 
-    RouteReplace.read({server_id: $scope.server.id}).then(function (data) {
+    RouteReplace.read({server_id: serverId}).then(function (data) {
         $scope.items = data;
     });
 

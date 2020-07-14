@@ -45,6 +45,10 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
             TrunkGroup.findGroupsWithGroup({id: params.id}).then(function(data) {
                 $scope.item.findGroups = data;
             });
+            
+            TrunkGroup.findRouteReplaceWithGroup({id: params.id}).then(function(data) {
+                $scope.item.findRouteReplace = data;
+            });
         });
     } else {
         $scope.item = {
@@ -98,6 +102,16 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
         }
 
         Redirect.trunkGroupEdit(trunkGroupId).then(function () {
+            $scope.init();
+        });
+    };
+    
+    $scope.clickRouteReplaceItem = function(serverId) {
+        if (window.getSelection().type == 'Range') {
+            return;
+        }
+
+        Redirect.routeReplaceEdit(serverId).then(function () {
             $scope.init();
         });
     };

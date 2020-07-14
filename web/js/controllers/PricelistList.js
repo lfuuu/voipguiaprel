@@ -123,4 +123,10 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
             
         });
     };
+    
+    $scope.checkCommerce = function (id) {
+        Redirect.pricelistInCommerceView(id).then(function () {
+            $scope.init();
+        });
+    };
 };

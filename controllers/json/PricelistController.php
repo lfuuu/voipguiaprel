@@ -108,6 +108,36 @@ class PricelistController extends JsonController
         ];
     }
     
+    public function actionGetInCommerce()
+    {
+        if (!\Yii::$app->user->can('pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
+        $id = $this->request['id'];
+        
+        $query = Pricelist::find()
+            ->alias('p')
+            ->select([
+                'pricelist_id' => 'p.id',
+                'p_trunk_id' => 'st.trunk_id',
+                'p_trunk_name' => 't.name',
+                'p_trunk_server_id' => 't.server_id',
+                'l_trunk_id' => 'st.id'
+            ])
+            ->innerJoin('billing_uu.package_pricelist pp', 'pp.pricelist_id = p.id')
+            ->innerJoin(
+                'billing_uu.account_tariff_light atl',
+                'atl.tariff_id = pp.tariff_id and atl.service_type_id in (23,24) and now() between atl.activate_from and atl.deactivate_from'
+            )
+            ->innerJoin('billing.service_trunk st', 'st.id = atl.account_tariff_id')
+            ->innerJoin('auth.trunk t', 't.id = st.trunk_id')
+            ->where(['p.id' => $id])
+            ->asArray();
+
+        return $query->all();
+    }
+    
     public function actionGetWithDependentsNew()
     {
         if (!\Yii::$app->user->can('pricelist_list')) {

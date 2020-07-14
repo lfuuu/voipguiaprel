@@ -222,10 +222,11 @@ class PricelistFilterBController extends JsonController
                 ->asArray()
                 ->one();
             
-            $historyObject = PricelistPrefixPriceHistory::createHistory($item->id, $pricelistId['pricelist_id'], '3000-01-01', '3000-01-01',
-                0, (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) ? 'replace' : 'add');
+            
             
             $interconnectPrice = floatval($item->interconnect_price);
+            
+            $historyObjectList = [];
             
             foreach ($prefixesArray as $prefixItem) {
                 $input = preg_split("/[\t]/", $prefixItem);
@@ -243,12 +244,21 @@ class PricelistFilterBController extends JsonController
                     $dateEnd = $preparedDates['date_end'];
                 }
                 
+                if (isset($historyObjectList[$dateStart])) {
+                    $historyObject = $historyObjectList[$dateStart];
+                } else {
+                    $historyObject = PricelistPrefixPriceHistory::createHistory($item->id, $pricelistId['pricelist_id'], $dateStart, '3000-01-01',
+                        0, (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) ? 'replace' : 'add', false);
+                    
+                    $historyObjectList[$dateStart] = $historyObject;
+                }
+                
                 $prefixBArray = explode(',', str_replace(['-'], ',', $prefixBString));
                 
                 foreach ($prefixBArray as $prefixB) {
                     $bNumberPrice = str_replace(',', '.', $prefixPrice);
                     $bNumberPrice = floatval($bNumberPrice);
-                    $prefixesToSave[] = [
+                    $prefixesToSave[$dateStart][] = [
                         $item->id,
                         trim($prefixB),
                         (string)($bNumberPrice - $interconnectPrice),
@@ -263,46 +273,49 @@ class PricelistFilterBController extends JsonController
         }
         
         // \Yii::$app->db->createCommand("alter table billing_uu.pricelist_prefix_price disable trigger notify")->queryAll();
-        
-        $historyObject->total_count = count($prefixesToSave);
-        $historyObject->date_from = $dateStart;
-        $historyObject->date_to = $dateEnd;
-        
-        $historyObject->save();
-        
         $historyItems = [];
         
-        foreach ($prefixesToSave as $prefixToSave) {
-            $historyItems[] = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id);
-        }
-        
-        \Yii::$app->db->createCommand()->batchInsert(
-            'billing_uu.pricelist_prefix_price',
-            ['pricelist_filter_b_id', 'prefix_b', 'b_number_price', 'date_from', 'date_to', 'history_id'],
-            $prefixesToSave
-        )->execute();
-        
-        if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
-            $dataRemoved = PricelistPrefixPrice::find()
-                ->where(['pricelist_filter_b_id' => $item->id])
-                ->andWhere('date_to > now()')
-                ->andWhere('history_id is null OR history_id <> :historyId')
-                ->addParams([':historyId' => $historyObject->id])
-                ->all();
+        foreach ($prefixesToSave as $prefixDateStart => $prefixesToSaveList) {
+            $historyObject = $historyObjectList[$prefixDateStart];
             
-            foreach ($dataRemoved as $removedItem) {
-                $historyItems[] = [
-                    $historyObject->id,
-                    $removedItem->prefix_b,
-                    $removedItem->b_number_price,
-                    '',
-                    $removedItem->date_from,
-                    date('Y-m-d'),
-                    'delete'
-                ];
+            $historyObject->total_count = count($prefixesToSaveList);
+            $historyObject->date_to = $dateEnd;
+            $historyObject->fillDataBefore();
+            
+            $historyObject->save();
+            
+            foreach ($prefixesToSaveList as $prefixToSave) {
+                $historyItems[] = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id);
+            }
+            
+            \Yii::$app->db->createCommand()->batchInsert(
+                'billing_uu.pricelist_prefix_price',
+                ['pricelist_filter_b_id', 'prefix_b', 'b_number_price', 'date_from', 'date_to', 'history_id'],
+                $prefixesToSaveList
+            )->execute();
+            
+            if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
+                $dataRemoved = PricelistPrefixPrice::find()
+                    ->where(['pricelist_filter_b_id' => $item->id])
+                    ->andWhere('date_to > now()')
+                    ->andWhere('history_id is null OR history_id <> :historyId')
+                    ->addParams([':historyId' => $historyObject->id])
+                    ->all();
                 
-                $removedItem->date_to = date('Y-m-d');
-                $removedItem->save();
+                foreach ($dataRemoved as $removedItem) {
+                    $historyItems[] = [
+                        $historyObject->id,
+                        $removedItem->prefix_b,
+                        $removedItem->b_number_price,
+                        '',
+                        $removedItem->date_from,
+                        date('Y-m-d'),
+                        'delete'
+                    ];
+                    
+                    $removedItem->date_to = date('Y-m-d');
+                    $removedItem->save();
+                }
             }
         }
         

@@ -185,6 +185,21 @@ class TrunkGroupController extends JsonController
         
         return $group->getGroupsWithGroup();
     }
+    
+    /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionGetRouteReplaceWithGroup()
+    {
+        if (!\Yii::$app->user->can('trunk_group_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $group = $this->getTrunkGroupOr404($this->request['id']);
+        
+        return $group->getRouteReplaceWithGroup();
+    }
 
     /**
      * @throws FormValidationException
