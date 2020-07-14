@@ -311,8 +311,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         ocaBwCreate: function() {
             return openModal(OcaBwEditCtrl, '/templates/oca_bw_edit.html', {id: null});
         },
-        routeReplaceEdit: function() {
-            return openModal(RouteReplaceEditCtrl, '/templates/route_replace_edit.html');
+        routeReplaceEdit: function(serverId) {
+            return openModal(RouteReplaceEditCtrl, '/templates/route_replace_edit.html', {server_id: serverId});
         },
         pricelistList: function() {
             $cookies.billing_selected_page = 'pricelistList';
@@ -700,6 +700,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
         pricelistPrefixPriceHistoryView: function(id) {
             return openModal(PricelistPrefixPriceHistoryViewCtrl, '/templates/billing/pricelist_prefix_price_history_view.html', {id: id});
+        },
+        pricelistInCommerceView: function(id) {
+            return openModal(PricelistInCommerceCtrl, '/templates/billing/pricelist_in_commerce.html', {id: id});
         },
     };
 });

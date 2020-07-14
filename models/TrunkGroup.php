@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\auth\OutcomeRule;
+use app\models\auth\RouteReplace;
 use yii\db\Query;
 
 /**
@@ -181,6 +182,31 @@ class TrunkGroup extends \yii\db\ActiveRecord
                 ->from(['tg' => self::tableName()])
                 ->innerJoin(['tgi' => TrunkGroupItem::tableName()], 'tgi.trunk_group_id = tg.id')
                 ->where(['tgi.child_trunk_group_id' => $this->id])
+                ->all();
+    }
+    
+    public function getRouteReplaceWithGroup()
+    {
+        return
+            (new Query)
+                ->select([
+                    'id' => 'rr.id',
+                    'order' => 'rr.order',
+                    'server_id' =>'rr.server_id',
+                    'number_a_id' => 'number_a.id',
+                    'number_b_id' => 'number_b.id',
+                    'number_c_id' => 'number_c.id',
+                    'number_a_name' => 'number_a.name',
+                    'number_b_name' => 'number_b.name',
+                    'number_c_name' => 'number_c.name',
+                ])
+                ->distinct()
+                ->from(['rr' => RouteReplace::tableName()])
+                ->leftJoin(['number_a' => Number::tableName()], 'number_a.id = rr.a_number_id')
+                ->leftJoin(['number_b' => Number::tableName()], 'number_b.id = rr.b_number_id')
+                ->leftJoin(['number_c' => Number::tableName()], 'number_c.id = rr.c_number_id')
+                ->where(['rr.orig_trunk_group_id' => $this->id])
+                ->orWhere(['rr.term_trunk_group_id' => $this->id])
                 ->all();
     }
 }

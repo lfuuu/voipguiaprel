@@ -13,6 +13,7 @@
             <li><a href="#route-table-with-group-{{pageIdSuffix}}" data-toggle="tab">Таблицы маршрутизации с группой</a></li>
             <li><a href="#outcome-with-group-{{pageIdSuffix}}" data-toggle="tab">Outcome с группой</a></li>
             <li><a href="#group-with-group-{{pageIdSuffix}}" data-toggle="tab">Группы транков с группой</a></li>
+            <li><a href="#route-replace-with-group-{{pageIdSuffix}}" data-toggle="tab">Правила с атрибутами с группой</a></li>
         </ul>
 
         <br/>
@@ -278,6 +279,57 @@
                         </td>
                         <td>
                             <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_group" comment="line.object_comment"></comment-icon>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="tab-pane" id="route-replace-with-group-{{pageIdSuffix}}">
+                <table class="table table-striped">
+                    <colgroup>
+                        <col width="16%" />
+                        <col width="16%" />
+                        <col width="16%" />
+                        <col width="16%" />
+                        <col width="16%" />
+                        <col width="16%" />
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Номер</th>
+                        <th>Сервер</th>
+                        <th>Номер-А</th>
+                        <th>Номер-B</th>
+                        <th>Номер-C</th>
+                    </tr>
+                    </thead>
+                    <tbody ng-model="item.findRouteReplace">
+                    <tr ng-repeat="line in item.findRouteReplace">
+                        <td style="cursor: pointer" ng-click="clickRouteReplaceItem(line.server_id)">
+                            {{line.id}}
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickRouteReplaceItem(line.server_id)">
+                            {{line.order}}
+                        </td>
+                        <td style="cursor: pointer" ng-click="clickRouteReplaceItem(line.server_id)">
+                            {{line.server_id}}
+                        </td>
+                        <td>
+                            <span ng-if="line.number_a_id">
+                                {{line.number_a_name}}
+                            </span>
+                        </td>
+                        <td>
+                            <span ng-if="line.number_b_id">
+                                {{line.number_b_name}}
+                            </span>
+                        </td>
+                        <td>
+                            <span ng-if="line.number_c_id">
+                                {{line.number_c_name}}
+                            </span>
                         </td>
                     </tr>
                     </tbody>

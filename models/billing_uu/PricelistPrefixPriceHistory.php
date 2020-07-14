@@ -59,7 +59,7 @@ class PricelistPrefixPriceHistory extends \yii\db\ActiveRecord
             ->orderBy('billing_uu.pricelist_prefix_price.prefix_b');
     }
     
-    public static function createHistory($filterBId, $pricelistId, $dateStart, $dateEnd, $prefixCount, $type)
+    public static function createHistory($filterBId, $pricelistId, $dateStart, $dateEnd, $prefixCount, $type, $withData = true)
     {
         Yii::$app->db->createCommand(<<<SQL
 update billing_uu.pricelist_prefix_price_history pph
@@ -76,10 +76,14 @@ SQL
                 ->bindValue(':b_id', $filterBId)
                 ->execute();
                 
-        $dataBefore = PricelistPrefixPrice::find()
-            ->where(['pricelist_filter_b_id' => $filterBId])
-            ->asArray()
-            ->all();
+        if ($withData) {
+            $dataBefore = PricelistPrefixPrice::find()
+                ->where(['pricelist_filter_b_id' => $filterBId])
+                ->asArray()
+                ->all();
+        } else {
+            $dataBefore = [];
+        }
             
         $historyData = [
             'pricelist_filter_b_id' => $filterBId,
@@ -96,5 +100,15 @@ SQL
         $historyObject->save();
         
         return $historyObject;
+    }
+    
+    public function fillDataBefore()
+    {
+        $dataBefore = PricelistPrefixPrice::find()
+            ->where(['pricelist_filter_b_id' => $this->pricelist_filter_b_id])
+            ->asArray()
+            ->all();
+        
+        $this->data_before = json_encode($dataBefore);
     }
 }

@@ -234,6 +234,9 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
         findGroupsWithGroup: function(data) {
             return ApiLoader.post(url + 'get-groups-with-group', data);
         },
+        findRouteReplaceWithGroup: function(data) {
+            return ApiLoader.post(url + 'get-route-replace-with-group', data);
+        },
         save: function(data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
@@ -1621,6 +1624,9 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         },
         get: function(data) {
             return ApiLoader.post(url + 'get', data);
+        },
+        getInCommerce: function(data) {
+            return ApiLoader.post(url + 'get-in-commerce', data);
         },
         getWithDependents: function(data) {
             return ApiLoader.post(url + 'get-with-dependents', data);

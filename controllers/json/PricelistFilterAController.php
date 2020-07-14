@@ -153,7 +153,7 @@ class PricelistFilterAController extends JsonController
     {
         $pricelistData = Pricelist::find()
             ->alias('p')
-            ->select(['p.id', 'p.type_id'])
+            ->select(['p.id', 'p.type_id', 'p.default_tarification_free_seconds', 'p.default_tarification_interval_seconds', 'p.default_tarification_min_paid_seconds'])
             ->innerJoin('billing_uu.pricelist_location pl', 'pl.pricelist_id = p.id')
             ->where(['pl.id' => $item->pricelist_location_id])
             ->asArray()
@@ -273,10 +273,10 @@ class PricelistFilterAController extends JsonController
                         'ported_num_price' => '0.000000',
                         'operator_price' => '0.000000',
                         'transit_price' => '0.000000',
-                        'tarification_free_seconds' => 0,
-                        'tarification_interval_seconds' => $tarificationIntervalSeconds,
+                        'tarification_free_seconds' => $pricelistData['default_tarification_free_seconds'],
+                        'tarification_interval_seconds' => $pricelistData['default_tarification_interval_seconds'],
                         'tarification_type' => 2,
-                        'tarification_min_paid_seconds' => 1,
+                        'tarification_min_paid_seconds' => $pricelistData['default_tarification_min_paid_seconds'],
                         'rating' => 1,
                         'nnp_filter' => $nnpFilterId
                     ]);
