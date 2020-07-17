@@ -284,7 +284,7 @@ class PricelistView
                     ->addParams([':b_id' => $queryItem['pfb__id']])
                     ->count();
                 
-                if ($realCount > PricelistPrefixPrice::PAGE_LIMIT) {
+                if ($realCount >= PricelistPrefixPrice::PAGE_LIMIT) {
                     $count = PricelistPrefixPrice::PAGE_LIMIT + 1;
                 } else {
                     $count = $realCount;
@@ -312,7 +312,7 @@ class PricelistView
                     ->addParams([':b_id' => $queryItem['pfb__id']])
                     ->count();
                 
-                if ($realCount > PricelistPrefixPrice::PAGE_LIMIT) {
+                if ($realCount >= PricelistPrefixPrice::PAGE_LIMIT) {
                     $count = PricelistPrefixPrice::PAGE_LIMIT + 1;
                 } else {
                     $count = $realCount;
