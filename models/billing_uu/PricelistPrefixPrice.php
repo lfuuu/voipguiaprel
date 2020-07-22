@@ -134,8 +134,12 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
         $newPrice = str_replace(',', '.', $data[2]);
         $newPrice = floatval($newPrice);
         
+        $oldItemsIds = [];
+        
         if (!empty($oldItems)) {
             foreach ($oldItems as $oldItem) {
+                $oldItemsIds[] = $oldItem->id;
+                
                 if ($historyId) {
                     $historyItem = [
                         $historyId,
@@ -176,7 +180,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
             }
         }
         
-        return $historyItem;
+        return [$historyItem, $oldItemsIds];
     }
 
     public static function getGroupedByPrice($filterAId)
