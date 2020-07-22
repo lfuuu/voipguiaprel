@@ -222,8 +222,6 @@ class PricelistFilterBController extends JsonController
                 ->asArray()
                 ->one();
             
-            
-            
             $interconnectPrice = floatval($item->interconnect_price);
             
             $historyObjectList = [];
@@ -274,9 +272,12 @@ class PricelistFilterBController extends JsonController
         
         // \Yii::$app->db->createCommand("alter table billing_uu.pricelist_prefix_price disable trigger notify")->queryAll();
         $historyItems = [];
+        $historyItemsIds = [];
+        $oldItemsIds = [];
         
         foreach ($prefixesToSave as $prefixDateStart => $prefixesToSaveList) {
             $historyObject = $historyObjectList[$prefixDateStart];
+            $historyItemsIds[] = $historyObject->id;
             
             $historyObject->total_count = count($prefixesToSaveList);
             $historyObject->date_to = $dateEnd;
@@ -285,7 +286,9 @@ class PricelistFilterBController extends JsonController
             $historyObject->save();
             
             foreach ($prefixesToSaveList as $prefixToSave) {
-                $historyItems[] = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id);
+                $updateOldResult = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id); 
+                $historyItems[] = $updateOldResult[0];
+                $oldItemsIds = array_merge($oldItemsIds, $updateOldResult[1]);
             }
             
             \Yii::$app->db->createCommand()->batchInsert(
@@ -293,29 +296,36 @@ class PricelistFilterBController extends JsonController
                 ['pricelist_filter_b_id', 'prefix_b', 'b_number_price', 'date_from', 'date_to', 'history_id'],
                 $prefixesToSaveList
             )->execute();
+        }
+
+        if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
+            $historyWhere = new \yii\db\Expression('history_id not in (' . implode(',', $historyItemsIds) . ')');
             
-            if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
-                $dataRemoved = PricelistPrefixPrice::find()
-                    ->where(['pricelist_filter_b_id' => $item->id])
-                    ->andWhere('date_to > now()')
-                    ->andWhere('history_id is null OR history_id <> :historyId')
-                    ->addParams([':historyId' => $historyObject->id])
-                    ->all();
+            $dataRemovedQuery = PricelistPrefixPrice::find()
+                ->where(['pricelist_filter_b_id' => $item->id])
+                ->andWhere('date_to > now()')
+                ->andWhere($historyWhere);
+            
+            if (!empty($oldItemsIds)) {
+                $dataRemovedQuery->andWhere('id not in (:ids)')
+                    ->addParams([':ids' => $oldItemsIds]);
+            }
+            
+            $dataRemoved = $dataRemovedQuery->all();
+            
+            foreach ($dataRemoved as $removedItem) {
+                $historyItems[] = [
+                    $historyObject->id,
+                    $removedItem->prefix_b,
+                    $removedItem->b_number_price,
+                    '',
+                    $removedItem->date_from,
+                    date('Y-m-d'),
+                    'delete'
+                ];
                 
-                foreach ($dataRemoved as $removedItem) {
-                    $historyItems[] = [
-                        $historyObject->id,
-                        $removedItem->prefix_b,
-                        $removedItem->b_number_price,
-                        '',
-                        $removedItem->date_from,
-                        date('Y-m-d'),
-                        'delete'
-                    ];
-                    
-                    $removedItem->date_to = date('Y-m-d');
-                    $removedItem->save();
-                }
+                $removedItem->date_to = date('Y-m-d');
+                $removedItem->save();
             }
         }
         
