@@ -1,5 +1,5 @@
 APPNAME=voip-gui
-ENVNAME=stage
+ENVNAME=suzanna
 TAG=voip-gui
 REGISTRY=harbor.mcn.loc
 PROJECT=werf

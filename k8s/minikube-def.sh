@@ -3,6 +3,6 @@
 #   dev* - конфигурация для разработки, запускаются база и пгадмин 
 
 APPNAME=voip-gui
-ENVNAME=dev
+ENVNAME=prod
 TAG=1.121
 

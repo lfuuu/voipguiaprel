@@ -1,4 +1,4 @@
-cp $HOME/.kube/config $HOME/.kube/config_save
+cp $HOME/.kube/config $HOME/.kube/conf_save
 configs=$HOME/.kube/config
 for file in ~/.kube/*config*
 do
