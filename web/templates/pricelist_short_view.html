@@ -8,31 +8,32 @@
             <tr ng-repeat="item in list">
                 <td ng-if="item.is_pricelist" colspan="8" style="text-align: center;">
                     {{item.name}} | {{item.orig ? 'Оригинация' : 'Терминация'}} | Создан: {{item.date_created}}{{item.is_active ? ' | Активен с: ' + item.date_start : ''}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
-                </td>
-                <td style="width: 120px;" ng-if="item.is_pricelist">
-                    <a popover="Местоположения" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-locations?id={{item.id}}" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-picture"></span>
-                    </a>
-                    <a popover="Префиксы (новые)" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcelPrefixesNew()" href="#" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-list"></span>
-                    </a>
-                    <!-- <a popover="Префиксы" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-prefixes?id={{item.id}}" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-list"></span>
-                    </a> -->
-                    <a popover="Прайслист" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcel()" href="#" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-list-alt"></span>
-                    </a>
-                    <a style="display: none" popover="Прайслист (фильтр В)" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-filter-b?id={{item.id}}" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-list"></span>
-                    </a>
-                    <a popover="Single Line" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-single-line?id={{item.id}}" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-list"></span>
-                    </a>
-                    
+                    <span style="float:right">
+                        <a popover="Полный прайслист" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/p{{item.id}}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </a>
+                        <a popover="Местоположения" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-locations?id={{item.id}}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-picture"></span>
+                        </a>
+                        <a popover="Префиксы (новые)" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcelPrefixesNew()" href="#" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-list"></span>
+                        </a>
+                        <!-- <a popover="Префиксы" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-prefixes?id={{item.id}}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-list"></span>
+                        </a> -->
+                        <a popover="Прайслист" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcel()" href="#" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                        </a>
+                        <a style="display: none" popover="Прайслист (фильтр В)" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-filter-b?id={{item.id}}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-list"></span>
+                        </a>
+                        <a popover="Single Line" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-single-line?id={{item.id}}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-list"></span>
+                        </a>
+                    </span>
                 </td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_location" data-has-mark="{{item.has_location_mark}}" colspan="8" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.location_text}} <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span></td>
-                <td ng-if="item.is_location" colspan="1" style="border-bottom: 2px solid black;{{item.is_basic ? ' background-color: lightgrey;' : ''}}"></td>
                 <!---------------------------------------------------->
                 <td ng-if="item.is_prefix_price && item.is_filter_a_header" data-has-mark="{{item.has_filter_a_mark}}" rowspan="{{item.total_prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
                     {{item.filter_a_name}} <span style="color: grey; cursor: pointer" ng-click="editFilterA(item.filter_a_id)">(#{{item.filter_a_id}})</span>
@@ -47,7 +48,7 @@
                     И:&nbsp;{{item.interconnect_price}}</span>
                 </td>
                 <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
-                <td ng-if="item.is_prefix_price">
+                <td style="min-width: 250px;" ng-if="item.is_prefix_price">
                     <span ng-repeat="prefixItem in item.prefixes track by prefixItem.prefix_price_id">
                         {{$first ? '' : '|'}}
                         <span style="cursor: pointer" ng-click="editPrefixPrice(prefixItem.prefix_price_id)" data-has-mark="{{prefixItem.has_prefix_mark}}">
@@ -60,12 +61,10 @@
                         </span>
                     </span>
                 </td>
-                <td ng-if="item.is_prefix_price"></td>
                 <!----------------------------------------------------->
                 <td ng-if="item.is_prefix_price_footer" colspan="2">
                     <pagination style="display: inline;" max-size="5" rotate="false" total-items="item.totalCount" items-per-page="limit" page="item.currentPage" on-select-page="setPagingData(page, item.filter_b_id)" boundary-links="true"></pagination>
                 </td>
-                <td ng-if="item.is_prefix_price_footer"></td>
             </tr>
             </tbody>
         </table>

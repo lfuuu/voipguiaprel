@@ -13,14 +13,115 @@ use \PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use yii\web\ForbiddenHttpException;
+Use app\classes\traits\PricelistView;
+use yii\db\Query;
 
 class PricelistController extends BaseController
 {
+    use PricelistView;
+    
     private $_locations = [
         1 => 'Домашний регион',
         2 => 'Гостевой регион',
         3 => 'Международный регион'
     ];
+    
+    public function actionIndex($pricelistId)
+    {
+        $pricelist = Pricelist::find()
+            ->with('location.filterA.filterB.prefixPriceNoLimit')
+            ->where(['id' => $pricelistId])
+            ->asArray()
+            ->one();
+
+        $mccIdArray = [];
+        $simImsiPartnerIdArray = [];
+        $simImsiProfileIdArray = [];
+        $nnpCountryIdArray = [];
+        $nnpDestinationIdArray = [];
+        $nnpOperatorIdArray = [];
+        $nnpRegionIdArray = [];
+        $nnpCityIdArray = [];
+        $nnpNdcTypeIdArray = [];
+
+        $idArrays = [
+            'nnp.mcc' => ['ids' => &$mccIdArray, 'name_field' => 'country', 'id_field' => 'mcc'],
+            'billing_uu.sim_imsi_profile' => ['ids' => &$simImsiProfileIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+            'billing_uu.sim_imsi_partner' => ['ids' => &$simImsiPartnerIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+            'nnp.country' => ['ids' => &$nnpCountryIdArray, 'name_field' => 'name_rus', 'id_field' => 'code'],
+            'nnp.destination' => ['ids' => &$nnpDestinationIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+            'nnp.operator' => ['ids' => &$nnpOperatorIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+            'nnp.region' => ['ids' => &$nnpRegionIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+            'nnp.city' => ['ids' => &$nnpCityIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+            'nnp.ndc_type' => ['ids' => &$nnpNdcTypeIdArray, 'name_field' => 'name', 'id_field' => 'id']
+        ];
+
+        foreach ($pricelist['location'] as $location) {
+            self::processQueryArray($mccIdArray, $location['mcc']);
+            self::processQueryArray($simImsiPartnerIdArray, $location['sim_partner']);
+            self::processQueryArray($simImsiProfileIdArray, $location['sim_profile']);
+            
+            foreach ($location['filterA'] as $filterA) {
+                self::processQueryArray($nnpCountryIdArray, $filterA['nnp_country']);
+                self::processQueryArray($nnpDestinationIdArray, $filterA['nnp_destination']);
+                self::processQueryArray($nnpOperatorIdArray, $filterA['nnp_operator']);
+                self::processQueryArray($nnpRegionIdArray, $filterA['nnp_region']);
+                self::processQueryArray($nnpCityIdArray, $filterA['nnp_city']);
+                self::processQueryArray($nnpNdcTypeIdArray, $filterA['nnp_ndc_type']);
+                
+                foreach ($filterA['filterB'] as $filterB) {
+                    self::processQueryArray($nnpCountryIdArray, $filterB['nnp_country']);
+                    self::processQueryArray($nnpDestinationIdArray, $filterB['nnp_destination']);
+                    self::processQueryArray($nnpOperatorIdArray, $filterB['nnp_operator']);
+                    self::processQueryArray($nnpRegionIdArray, $filterB['nnp_region']);
+                    self::processQueryArray($nnpCityIdArray, $filterB['nnp_city']);
+                    self::processQueryArray($nnpNdcTypeIdArray, $filterB['nnp_ndc_type']);
+                }
+            }
+        }
+        
+        foreach ($idArrays as $key => &$item) {
+            $item['ids'] = array_unique($item['ids']);
+            
+            if (count($item['ids'])) {
+                $tempIds = (new Query())->select(['id' => $item['id_field'], 'name' => $item['name_field']])->from($key)->where([$item['id_field'] => $item['ids']])->all();
+                $item['ids'] = [];
+                foreach ($tempIds as $tempId) {
+                    $item['ids'][$tempId['id']] = $tempId['name'];
+                }
+            }
+        }
+        
+        foreach ($pricelist['location'] as &$location) {
+            $isBasic = ($location['id'] == $pricelist['basic_pricelist_location_id']);
+            $location['text'] = self::formLocationText($location, $isBasic, $idArrays, '');
+            
+            foreach ($location['filterA'] as &$filterA) {
+                $filterA['prefix_count'] = 0;
+                $filterA['text'] = self::formFilterText($filterA, '', $idArrays);
+                
+                foreach ($filterA['filterB'] as &$filterB) {
+                    $filterB['text'] = self::formFilterText($filterB, '', $idArrays);
+                    $filterB['prefixes'] = [];
+                    
+                    foreach ($filterB['prefixPriceNoLimit'] as $prefixPrice) {
+                        if (!isset($filterB['prefixes'][$prefixPrice['prefix_b']])) {
+                            $filterB['prefixes'][$prefixPrice['prefix_b']] = [];
+                        }
+                        
+                        $filterB['prefixes'][$prefixPrice['prefix_b']][] = $prefixPrice;
+                    }
+                    
+                    $filterB['prefix_count'] = count($filterB['prefixes']);
+                    $filterA['prefix_count'] += count($filterB['prefixes']);
+                }
+            }
+        }
+        
+        return $this->render('index', [
+            'pricelist' => $pricelist
+        ]);
+    }
     
     public function actionExcel($id)
     {

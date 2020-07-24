@@ -270,6 +270,8 @@ class PricelistFilterBController extends JsonController
             return ['error' => 'Ошибка при обработке префиксов! Каждая пара префикс-цена должна быть на отдельной строке. Префиксы должны быть отделены от цены символом табуляции. Префиксы можно перечислять через запятую или через тире.', 'field' => 'prefixes'];
         }
         
+        unset($prefixesArray);
+        
         // \Yii::$app->db->createCommand("alter table billing_uu.pricelist_prefix_price disable trigger notify")->queryAll();
         $historyItems = [];
         $historyItemsIds = [];
@@ -297,9 +299,12 @@ class PricelistFilterBController extends JsonController
                 $prefixesToSaveList
             )->execute();
         }
+        
+        unset($prefixesToSave);
+        unset($prefixesToSaveList);
 
         if (isset($this->request['prefixes_replace']) && $this->request['prefixes_replace']) {
-            $historyWhere = new \yii\db\Expression('history_id not in (' . implode(',', $historyItemsIds) . ')');
+            $historyWhere = new \yii\db\Expression('history_id is null or history_id not in (' . implode(',', $historyItemsIds) . ')');
             
             $dataRemovedQuery = PricelistPrefixPrice::find()
                 ->where(['pricelist_filter_b_id' => $item->id])
