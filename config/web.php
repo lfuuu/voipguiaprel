@@ -75,6 +75,7 @@ $config = [
                 'abs<serverId>/<action>' => 'api-billing/<action>',
                 'c<versionId>' => 'config/index',
                 'c<versionId>/<action>' => 'config/<action>',
+                'p<pricelistId>' => 'pricelist/index',
                 'json/camel/<controller>/<action>' => 'json/camel/<controller>/<action>',
                 'json/api_billing/<controller>/<action>' => 'json/api_billing/<controller>/<action>',
                 'json/settings/<controller>/<action>' => 'json/settings/<controller>/<action>',
