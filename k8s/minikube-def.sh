@@ -4,5 +4,6 @@
 
 APPNAME=voip-gui
 ENVNAME=dev
-TAG=1.122
+CI_URL="$APPNAME-$ENVNAME.local"
+TAG=1.129
 

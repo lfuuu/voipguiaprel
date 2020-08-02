@@ -13,3 +13,5 @@
 source ./minikube-def.sh
 
 werf build-and-publish --dir ../ --stages-storage :local --tag-custom $TAG --images-repo :minikube 
+
+

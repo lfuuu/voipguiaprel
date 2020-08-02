@@ -7,8 +7,10 @@
 postgres_dev:
   host: db
   port: 5432
-  db: nispd
+  db: nispd_test
   adminuser: postgres
   user: voipgui
   password: qwe123
+
+ci_url: voip-gui-dev.local
 

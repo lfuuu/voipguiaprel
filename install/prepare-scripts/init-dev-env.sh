@@ -1,6 +1,12 @@
 set -e
 cd /workspace
 
+if ! [ -f /workspace/.configprepare ]; then
+echo "0. Готовим конфиги"
+
+cp /root/.pgpass_b /root/.pgpass && chmod 600 /root/.pgpass && touch /workspace/.configprepare
+fi
+
 if ! [ -f /workspace/.gitclone ]; then
 echo "1. Разворачиваем репозиторий"
 git clone git@github.com:welltime/voip_gui.git && touch /workspace/.gitclone
@@ -30,6 +36,8 @@ cd /workspace/voip_gui
 composer install
 touch /workspace/.composer
 fi
+
+echo "### Для разворота база используйте скрипт /workspace/voip_gui/install/db/init_test_db.sh"
 
 rm -rf /opt/voip_gui
 ln -s /workspace/voip_gui /opt/voip_gui

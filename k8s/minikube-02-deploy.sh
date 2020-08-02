@@ -6,10 +6,11 @@ set -e
 source ./minikube-def.sh
 
 cp ~/.ssh/id_rsa ../.helm/.werf/tmp/id_rsa
-
-werf deploy --dir ../ --stages-storage :local --images-repo :minikube --tag-custom $TAG --env $ENVNAME
+cp ~/.pgpass ../.helm/.werf/tmp/.pgpass
+werf deploy --dir ../ --stages-storage :local --images-repo :minikube --tag-custom $TAG --env $ENVNAME --set ci_url=$CI_URL
 
 rm ../.helm/.werf/tmp/id_rsa
+rm ../.helm/.werf/tmp/.pgpass
 
 # TODO: Сделать, если строчка есть, что бы ничего не менялось и пароль не спрашивало лишний раз
 
@@ -22,9 +23,9 @@ if [ $ENVNAME = "dev" ]; then
     kubectl -n $NAMESPACE exec -it $PODNAME -- /bin/bash /root/prepare-scripts/init-dev-env.sh
 fi
 
-sudo sed -i -e '/^.*'$APPNAME'-'$ENVNAME'\.local$/d' /etc/hosts
-echo `minikube ip`" $APPNAME-$ENVNAME.local" | sudo tee -a /etc/hosts
-echo "Сервис доступен по адресу http://$APPNAME-$ENVNAME.local"
+sudo sed -i -e '/^.*'$CI_URL'\.local$/d' /etc/hosts
+echo `minikube ip`" $CI_URL" | sudo tee -a /etc/hosts
+echo "Сервис доступен по адресу http://$CI_URL"
 
 if [ $ENVNAME = "prod" ]; then
 echo "Это прод"

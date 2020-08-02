@@ -1,4 +1,3 @@
-{{- if not (eq .Values.global.env "dev") }}
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -9,18 +8,14 @@ metadata:
     ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  {{- if not (eq .Values.global.env "prod") }}
-  - host: voip-gui.k8s-test.mcn.loc
-  {{- else }}
-  - host: {{ .Chart.Name }}-{{ .Values.global.env }}.local
-  {{- end }}
+  - host: {{ .Values.ci_url | quote }}
     http:
       paths:
       - path: /
         backend:
-          serviceName: {{ .Chart.Name }}-backend-prod
-          servicePort: 80
+{{- if (eq .Values.global.env "dev") }}
+          serviceName: {{ .Chart.Name }}-backend-dev
 {{- else }}
-
+          serviceName: {{ .Chart.Name }}-backend-prod
 {{- end }}
-
+          servicePort: 80

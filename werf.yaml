@@ -117,15 +117,17 @@ ansible:
   beforeInstall:
     - name: 1
       shell: |
-        yum -y update && yum -y install centos-release-scl-rh epel-release
+        yum -y update && yum -y install epel-release yum-utils centos-release-scl
         yum -y install http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm
         rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+        yum --enablerepo=centos-sclo-rh -y install rh-postgresql12
         yum install -y php56w php56w-cli php56w-curl php56w-gd php56w-json php56w-mcrypt php56w-mysqlnd php56w-pgsql php56w-readline php56w-xdebug php56w-xmlrpc php56w-mbstring php56w-zip php56w-dom
         yum -y install curl mc git unzip
         yum clean all
   install:
     - name: 2
       shell: |
+        echo "source /opt/rh/rh-postgresql12/enable" >> /etc/bashrc
         mkdir -p ~/.ssh
         ln -s /workspace/.ssh/id_rsa ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
@@ -178,5 +180,5 @@ ansible:
 image: pgdb-dev
 from: postgres:12.3
 git:
-- add: /install/prepare-scripts/init.sql
+- add: /install/db/SQL/init.sql
   to: /docker-entrypoint-initdb.d/init.sql
