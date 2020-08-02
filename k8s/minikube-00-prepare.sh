@@ -5,7 +5,7 @@ unset KUBECONFIG
 if [ $(minikube status | grep Running | wc -l) -gt 0 ]; then
 	minikube addons enable ingress registry
 else
-	minikube start --addons registry --addons ingress
+	minikube start --addons registry --addons ingress --cpus=4 --memory=8000MB
 fi
 
 echo "Ожидание старта деплойментов"

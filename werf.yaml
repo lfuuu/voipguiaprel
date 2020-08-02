@@ -121,7 +121,7 @@ ansible:
         yum -y install http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm
         rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
         yum install -y php56w php56w-cli php56w-curl php56w-gd php56w-json php56w-mcrypt php56w-mysqlnd php56w-pgsql php56w-readline php56w-xdebug php56w-xmlrpc php56w-mbstring php56w-zip php56w-dom
-        yum -y install curl mc git sshd
+        yum -y install curl mc git unzip
         yum clean all
   install:
     - name: 2
@@ -174,3 +174,9 @@ ansible:
         } >> /etc/httpd/conf/httpd.conf
       args:
         chdir: /root
+---
+image: pgdb-dev
+from: postgres:12.3
+git:
+- add: /install/prepare-scripts/init.sql
+  to: /docker-entrypoint-initdb.d/init.sql

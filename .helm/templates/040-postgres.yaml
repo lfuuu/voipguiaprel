@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: {{ .Values.postgres_dev.host }}
-        image: postgres:12
+{{ tuple "pgdb-dev" . | werf_container_image | indent 8 }}
+#        image: postgres:12
         env:
         - name: POSTGRES_USER
           value: {{ .Values.postgres_dev.adminuser }}
@@ -29,22 +30,9 @@ spec:
           name: pg-data
       volumes:
       - name: pg-data
-        persistentVolumeClaim:
-          claimName: pg-db-pv-claim
+        hostPath:
+          path: /.volumes/pgdb_voipgui
       restartPolicy: Always
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pg-db-pv-claim
-  labels:
-    app: {{ .Chart.Name }}-postgres
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
 ---
 apiVersion: v1
 kind: Service

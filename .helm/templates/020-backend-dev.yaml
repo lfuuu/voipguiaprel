@@ -52,25 +52,12 @@ spec:
 {{ tuple . | werf_container_env | indent 8 }}
         volumeMounts:
         - mountPath: /workspace
-          name: voipgui-src
+          name: workspace-voipgui
       volumes:
-      - name: voipgui-src
-        persistentVolumeClaim:
-          claimName: voipgui-src-pv-claim
+      - name: workspace-voipgui
+        hostPath:
+          path: /.volumes/workspace-voipgui
       restartPolicy: Always
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: voipgui-src-pv-claim
-  labels:
-    app: {{ .Chart.Name }}-backend-dev
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
