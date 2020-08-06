@@ -1,0 +1,60 @@
+{{- if (eq .Values.global.env "prod") }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-testdial-daemon-prod
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+        app: {{ .Chart.Name }}-testdial-daemon-prod
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-testdial-daemon-prod
+    spec:
+      containers:
+      - name: testcall-daemon-prod
+{{ tuple "testcall-daemon-prod" . | werf_container_image | indent 8 }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+            scheme: HTTP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+            scheme: HTTP
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - name: config-volume
+          subPath: testdial_cfg.json
+          mountPath: /app/testdialer/testdial_cfg.json  
+        env:
+{{ tuple . | werf_container_env | indent 8 }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ .Chart.Name }}-config-files
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-testdial-daemon-prod
+  labels:
+    app: {{ .Chart.Name }}-testdial-daemon-prod
+spec:
+  clusterIP: None
+  selector:
+    app: {{ .Chart.Name }}-testdial-daemon-prod
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP
+{{- else }}
+
+{{- end }}

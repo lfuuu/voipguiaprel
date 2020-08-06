@@ -13,4 +13,3 @@ postgres_dev:
   password: qwe123
 
 ci_url: voip-gui-dev.local
-

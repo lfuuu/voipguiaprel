@@ -7,6 +7,7 @@ source ./minikube-def.sh
 
 cp ~/.ssh/id_rsa ../.helm/.werf/tmp/id_rsa
 cp ~/.pgpass ../.helm/.werf/tmp/.pgpass
+
 werf deploy --dir ../ --stages-storage :local --images-repo :minikube --tag-custom $TAG --env $ENVNAME --set ci_url=$CI_URL
 
 rm ../.helm/.werf/tmp/id_rsa

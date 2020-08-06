@@ -14,7 +14,8 @@ function build_cfg_rec(cfg_json) {
         extension: cfg_json.extension || "s",
         context: cfg_json.context || "autocall",
         priority: cfg_json.priority || 1,
-        waittime: cfg_json.waittime || 3000
+        waittime: cfg_json.waittime || 3000,
+        onlyConsoleLog: cfg_json.onlyConsoleLog || false,
     }
 }
 

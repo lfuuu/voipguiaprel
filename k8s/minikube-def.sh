@@ -3,7 +3,7 @@
 #   dev* - конфигурация для разработки, запускаются база и пгадмин 
 
 APPNAME=voip-gui
-ENVNAME=dev
+ENVNAME=prod
 CI_URL="$APPNAME-$ENVNAME.local"
-TAG=1.129
+TAG=1.135
 

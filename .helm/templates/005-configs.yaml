@@ -5,3 +5,32 @@ metadata:
 data:
   .pgpass: |
 {{ .Files.Get ".werf/tmp/.pgpass" | indent 8 }}
+  testdial_cfg.json: |
+    {
+      "ami": {
+          "ip": {{ .Values.ami.ip | quote }},
+          "port": {{ .Values.ami.port | quote }},
+          "login": {{ .Values.ami.login | quote }},
+          "password": {{ .Values.ami.password | quote }}
+      },
+      "hubs": {
+          "11":"CFO",
+          "12":"UFO",
+          "13":"YUFO",
+          "14":"PFO",
+          "15":"SZFO",
+          "16":"DVFO",
+          "17":"SFO",
+          "19":"AT",
+          "20":"EU",
+          "99":"MSK"
+      },
+      "channel": "Local/s@autocall-out/n",
+      "extension": "s",
+      "context": "autocall",
+      "priority": 1,
+      "waittime": 3000,
+      "onlyConsoleLog": 1
+    }
+
+

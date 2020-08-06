@@ -39,6 +39,8 @@ spec:
           value: {{ .Values.postgres_prod.user }}
         - name: POSTGRES_PASSWORD
           value: {{ .Values.postgres_prod.password }}
+        - name: TEST_DIAL_URL
+          value: "http://{{ .Chart.Name }}-testdial-daemon-prod:3000/"
 {{ tuple . | werf_container_env | indent 8 }}
 ---
 apiVersion: v1
