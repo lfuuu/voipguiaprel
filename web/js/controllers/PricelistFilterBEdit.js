@@ -1,4 +1,4 @@
-var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterB, PricelistPrefixPriceHistory, Nnp, params, $modalInstance, $window, Redirect) {
+var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, PricelistFilterB, PricelistPrefixPriceHistory, Nnp, params, $modalInstance, $window, Redirect) {
 
     $scope.NNP_MODE_FILTER = 1;
     $scope.NNP_MODE_PARAMETERS = 2;
@@ -12,6 +12,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         {id: 1, name: 'round'},
         {id: 2, name: 'ceil'}
     ];
+    
+    $scope.porting_type = List.considerPortingMode();
     
     $scope.loading = false;
     $scope.saveError = false;
@@ -116,7 +118,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             prefixes_date_start: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
             prefixes_date_end: '3000-01-01',
             prefixes_replace: false,
-            f_consider_porting: true
+            consider_porting_mode: 1
         };
 
         $scope.saveEnabled = true;
@@ -148,7 +150,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             prefixes_date_start: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
             prefixes_date_end: '3000-01-01',
             prefixes_replace: false,
-            f_consider_porting: true
+            consider_porting_mode: 1
         };
 
         $scope.saveEnabled = true;
