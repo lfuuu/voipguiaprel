@@ -44,6 +44,8 @@ class PricelistFilterBController extends JsonController
     
     public function actionSave()
     {
+        set_time_limit(0);
+        
         if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
@@ -213,6 +215,7 @@ class PricelistFilterBController extends JsonController
     {
         $prefixesToSave = [];
         $prefixesArray = explode("\n", $this->request['prefixes']);
+        
         try {
             $pricelistId = PricelistLocation::find()
                 ->alias('pl')
@@ -271,13 +274,35 @@ class PricelistFilterBController extends JsonController
         }
         
         unset($prefixesArray);
+        unset($pricelistId);
+        unset($this->request['prefixes']);
         
-        // \Yii::$app->db->createCommand("alter table billing_uu.pricelist_prefix_price disable trigger notify")->queryAll();
         $historyItems = [];
         $historyItemsIds = [];
         $oldItemsIds = [];
+        $oldItemsHistory = [];
         
         foreach ($prefixesToSave as $prefixDateStart => $prefixesToSaveList) {
+            $oldItems = PricelistPrefixPrice::find()
+                ->select(['id', 'prefix_b', 'b_number_price'])
+                ->where(['pricelist_filter_b_id' => $item->id])
+                ->andWhere('date_to > :date_to')
+                ->addParams(['date_to' => $dateStart])
+                ->asArray()
+                ->all();
+           
+            $oldItemsKeyValue = [];
+            
+            foreach ($oldItems as $oldItemObject) {
+                if (!isset($oldItemsKeyValue[$oldItemObject['prefix_b']])) {
+                    $oldItemsKeyValue[$oldItemObject['prefix_b']] = [];
+                }
+                
+                $oldItemsKeyValue[$oldItemObject['prefix_b']][] = $oldItemObject;
+            }
+            
+            unset($oldItems);
+            
             $historyObject = $historyObjectList[$prefixDateStart];
             $historyItemsIds[] = $historyObject->id;
             
@@ -285,13 +310,30 @@ class PricelistFilterBController extends JsonController
             $historyObject->date_to = $dateEnd;
             $historyObject->fillDataBefore();
             
+            $oldItemsHistory[$historyObject->id] = [];
+            
             $historyObject->save();
             
             foreach ($prefixesToSaveList as $prefixToSave) {
-                $updateOldResult = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id); 
-                $historyItems[] = $updateOldResult[0];
-                $oldItemsIds = array_merge($oldItemsIds, $updateOldResult[1]);
+                $oldPrefixItems = $oldItemsKeyValue[$prefixToSave[1]];
+                
+                $updateOldResult = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id, $oldPrefixItems); 
+                $historyItems[] = $updateOldResult;
+                
+                if (!isset($oldItemsIds[$prefixDateStart])) {
+                    $oldItemsIds[$prefixDateStart] = [];
+                }
+                
+                foreach ($oldPrefixItems as $oldPrefixItem) {
+                    $oldItemsIds[$prefixDateStart][] = $oldPrefixItem['id'];
+                }
             }
+            
+            \Yii::$app->db->createCommand()->update(
+                'billing_uu.pricelist_prefix_price',
+                ['date_to' => $prefixDateStart, 'history_id' => $historyObject->id],
+                new Expression('id in (' . implode(',', $oldItemsIds[$prefixDateStart]) . ')')
+            )->execute();
             
             \Yii::$app->db->createCommand()->batchInsert(
                 'billing_uu.pricelist_prefix_price',
@@ -310,13 +352,15 @@ class PricelistFilterBController extends JsonController
                 ->where(['pricelist_filter_b_id' => $item->id])
                 ->andWhere('date_to > now()')
                 ->andWhere($historyWhere);
-            
+                
             if (!empty($oldItemsIds)) {
-                $dataRemovedQuery->andWhere('id not in (:ids)')
-                    ->addParams([':ids' => $oldItemsIds]);
+                foreach ($oldItemsIds as $oldItemsIdsByDate) {
+                    $dataRemovedQuery->andWhere('id not in (' . implode(',', $oldItemsIdsByDate) . ')');
+                }
             }
             
             $dataRemoved = $dataRemovedQuery->all();
+            $removedItemIds = [];
             
             foreach ($dataRemoved as $removedItem) {
                 $historyItems[] = [
@@ -329,8 +373,15 @@ class PricelistFilterBController extends JsonController
                     'delete'
                 ];
                 
-                $removedItem->date_to = date('Y-m-d');
-                $removedItem->save();
+                $removedItemIds[] = $removedItem->id;
+            }
+            
+            if (!empty($removedItemIds)) {
+                \Yii::$app->db->createCommand()->update(
+                    'billing_uu.pricelist_prefix_price',
+                    ['date_to' => date('Y-m-d'), 'history_id' => $historyObject->id],
+                    new Expression('id in (' . implode(',', $removedItemIds) . ')')
+                )->execute();
             }
         }
         
@@ -339,10 +390,6 @@ class PricelistFilterBController extends JsonController
             ['pricelist_prefix_price_history_id', 'prefix_b', 'price_old', 'price_new', 'date_from', 'date_to', 'type'],
             $historyItems
         )->execute();
-        
-        // \Yii::$app->db->createCommand("alter table billing_uu.pricelist_prefix_price enable trigger notify")->queryAll();
-            
-        // \Yii::$app->db->createCommand("select event.notify('nnp_pricelist_prefix_price', 0);")->queryAll();
     }
     
     private function upsertPrefixes($item)

@@ -123,48 +123,33 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
         return $item;
     }
     
-    public static function updateOldWithHistory(array $data, $historyId)
+    public static function updateOldWithHistory(array $data, $historyId, $oldItems)
     {
-        $oldItems = self::find()
-            ->where(['pricelist_filter_b_id' => $data[0], 'prefix_b' => $data[1]])
-            ->andWhere('date_to > :date_to')
-            ->addParams(['date_to' => $data[3]])
-            ->all();
-            
         $newPrice = str_replace(',', '.', $data[2]);
         $newPrice = floatval($newPrice);
         
-        $oldItemsIds = [];
-        
         if (!empty($oldItems)) {
             foreach ($oldItems as $oldItem) {
-                $oldItemsIds[] = $oldItem->id;
-                
                 if ($historyId) {
                     $historyItem = [
                         $historyId,
                         $data[1],
-                        $oldItem->b_number_price,
+                        $oldItem['b_number_price'],
                         $newPrice,
                         $data[3],
                         $data[4]
                     ];
                     
-                    if ($oldItem->b_number_price < $newPrice) {
+                    if ($oldItem['b_number_price'] < $newPrice) {
                         $historyItem[] = 'increase';
-                    } elseif ($oldItem->b_number_price > $newPrice) {
+                    } elseif ($oldItem['b_number_price'] > $newPrice) {
                         $historyItem[] = 'decrease';
                     } elseif ($data[4] == '3000-01-01') {
                         $historyItem[] = 'prolong';
                     } else {
                         $historyItem[] = 'delete';
                     }
-                    
-                    $oldItem->history_id = $historyId;
                 }
-                
-                $oldItem->date_to = $data[3];
-                $oldItem->save();
             }
         } else {
             if ($historyId) {
@@ -180,7 +165,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
             }
         }
         
-        return [$historyItem, $oldItemsIds];
+        return $historyItem;
     }
 
     public static function getGroupedByPrice($filterAId)
