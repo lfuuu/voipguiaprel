@@ -115,7 +115,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             use_cutoff_for_minimum: false,
             prefixes_date_start: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
             prefixes_date_end: '3000-01-01',
-            prefixes_replace: false
+            prefixes_replace: false,
+            f_consider_porting: true
         };
 
         $scope.saveEnabled = true;
@@ -146,7 +147,8 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             use_cutoff_for_minimum: false,
             prefixes_date_start: date > pricelistDate ? date.toISOString().slice(0, 10) : pricelistDate.toISOString().slice(0, 10),
             prefixes_date_end: '3000-01-01',
-            prefixes_replace: false
+            prefixes_replace: false,
+            f_consider_porting: true
         };
 
         $scope.saveEnabled = true;

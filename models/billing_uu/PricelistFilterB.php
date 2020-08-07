@@ -40,6 +40,7 @@ use yii\db\Expression;
  * @property string $nnp_ndc
  * @property bool $f_inv_nnp_ndc
  * @property string $regex
+ * @property bool $f_consider_porting
  */
 class PricelistFilterB extends \yii\db\ActiveRecord
 {
@@ -63,7 +64,7 @@ class PricelistFilterB extends \yii\db\ActiveRecord
                 'tarification_type', 'tarification_min_paid_seconds', 'nnp_filter', 'rating'], 'integer'],
             [['mode_selected', 'f_inv_nnp_destination', 'f_inv_nnp_country', 'f_inv_nnp_operator',
                 'f_inv_nnp_region', 'f_inv_nnp_city', 'f_inv_nnp_ndc_type', 'use_for_minimum',
-                'use_cutoff_for_minimum', 'f_inv_nnp_ndc'], 'boolean']
+                'use_cutoff_for_minimum', 'f_inv_nnp_ndc', 'f_consider_porting'], 'boolean']
         ];
     }
 
@@ -124,7 +125,12 @@ class PricelistFilterB extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PricelistPrefixPrice::className(), ['pricelist_filter_b_id' => 'id'])
             ->select([
-                'billing_uu.pricelist_prefix_price.*',
+                'billing_uu.pricelist_prefix_price.id',
+                'billing_uu.pricelist_prefix_price.pricelist_filter_b_id',
+                'billing_uu.pricelist_prefix_price.prefix_b',
+                'billing_uu.pricelist_prefix_price.b_number_price',
+                'billing_uu.pricelist_prefix_price.date_from',
+                'billing_uu.pricelist_prefix_price.date_to',
                 'b_number_price' => new Expression('round(billing_uu.pricelist_prefix_price.b_number_price, 6)')
             ])
             ->where('date_to > now()')
