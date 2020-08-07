@@ -40,7 +40,7 @@ use yii\db\Expression;
  * @property string $nnp_ndc
  * @property bool $f_inv_nnp_ndc
  * @property string $regex
- * @property bool $f_consider_porting
+ * @property int $consider_porting_mode
  */
 class PricelistFilterB extends \yii\db\ActiveRecord
 {
@@ -61,10 +61,10 @@ class PricelistFilterB extends \yii\db\ActiveRecord
                 'interconnect_price', 'ported_num_price', 'time_start', 'time_end', 'description',
                 'operator_price', 'transit_price', 'nnp_ndc', 'regex'], 'string'],
             [['pricelist_filter_a_id', 'tarification_free_seconds', 'tarification_interval_seconds',
-                'tarification_type', 'tarification_min_paid_seconds', 'nnp_filter', 'rating'], 'integer'],
+                'tarification_type', 'tarification_min_paid_seconds', 'nnp_filter', 'rating', 'consider_porting_mode'], 'integer'],
             [['mode_selected', 'f_inv_nnp_destination', 'f_inv_nnp_country', 'f_inv_nnp_operator',
                 'f_inv_nnp_region', 'f_inv_nnp_city', 'f_inv_nnp_ndc_type', 'use_for_minimum',
-                'use_cutoff_for_minimum', 'f_inv_nnp_ndc', 'f_consider_porting'], 'boolean']
+                'use_cutoff_for_minimum', 'f_inv_nnp_ndc'], 'boolean']
         ];
     }
 

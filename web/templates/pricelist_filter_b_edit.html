@@ -129,10 +129,9 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Учитывать портированность</label>
                 <div class="col-sm-10">
-                    <div class="btn-group" ng-click="item.f_consider_porting = !item.f_consider_porting">
-                        <button type="button" class="btn btn-sm {{item.f_consider_porting ? 'btn-primary active' : 'btn-default'}}">Да</button>
-                        <button type="button" class="btn btn-sm {{!item.f_consider_porting ? 'btn-danger active' : 'btn-default'}}">Нет</button>
-                    </div>
+                    <select ui-select2 ng-model="item.consider_porting_mode" placeholder="porting" style="width: 100%" >
+                        <option ng-repeat="portingItem in porting_type" value="{{portingItem.id}}">{{portingItem.name}}</option>
+                    </select>
                 </div>
             </div>
             

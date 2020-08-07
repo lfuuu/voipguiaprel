@@ -2149,6 +2149,13 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         {'id': '0', 'name': 'Искать за все время'}
       ];
     },
+    considerPortingMode: function () {
+        return [
+          {'id': 1, 'name': 'Пропускать все'},
+          {'id': 2, 'name': 'Пропускать только портированные'},
+          {'id': 3, 'name': 'Пропускать только непортированные'}
+        ];
+      },
     hub: function () {
       return Hub.list();
     }
