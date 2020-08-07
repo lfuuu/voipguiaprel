@@ -32,5 +32,32 @@ data:
       "waittime": 3000,
       "onlyConsoleLog": 1
     }
+  config.local.php: |
+    <?php
+    return [
+        'resources' => [
+            'http://iberus.mcn.ru:8099/healthcheck',
+            'http://iberus.mcn.ru:8032/test/healthcheck',
+            'http://reg10.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg11.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg12.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg13.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg14.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg15.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg16.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg17.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg19.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg20.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg99.mcntelecom.ru:8032/test/healthcheck',
+            ['url' => 'http://apibill.mcn.ru:8110/api/health/','title' => 'apibill01'],
+            ['url' => 'http://apibill2.mcn.ru:8110/api/health/', 'title' => 'apibill02'],
+            ['url' => 'http://reg99.mcntelecom.ru:8101/api/health/', 'title' => 'ocslte (Квотирующий биллер)'],
+            ['url' => 'http://iberus.mcn.ru:8099/healthcheck', 'title' => 'pgsync'],
+            'https://lk.mcn.ru/lk/statistics/index',
+            ['url' => 'https://stat.mcn.ru/export/health/health_for_managers.json', 'title' => 'stat.mcn.ru (for managers)'],
+            'https://vpbx.mcn.ru/vpbx/health',
+            'https://stat.mcn.ru/export/health/health.json',
+        ],
+    ];
 
 

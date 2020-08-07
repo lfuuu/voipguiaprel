@@ -30,6 +30,10 @@ spec:
         - containerPort: 80
           name: http
           protocol: TCP
+        volumeMounts:
+        - name: config-volume
+          subPath: config.local.php
+          mountPath: /opt/voip_gui/web/health/config.local.php 
         env:
         - name: POSTGRES_DB
           value: {{ .Values.postgres_prod.db }}
@@ -42,6 +46,10 @@ spec:
         - name: TEST_DIAL_URL
           value: "http://{{ .Chart.Name }}-testdial-daemon-prod:3000/"
 {{ tuple . | werf_container_env | indent 8 }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ .Chart.Name }}-config-files
 ---
 apiVersion: v1
 kind: Service

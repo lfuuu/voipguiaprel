@@ -5,5 +5,5 @@
 APPNAME=voip-gui
 ENVNAME=prod
 CI_URL="$APPNAME-$ENVNAME.local"
-TAG=1.135
+TAG=1.137
 
