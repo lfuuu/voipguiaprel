@@ -315,7 +315,7 @@ class PricelistFilterBController extends JsonController
             $historyObject->save();
             
             foreach ($prefixesToSaveList as $prefixToSave) {
-                $oldPrefixItems = $oldItemsKeyValue[$prefixToSave[1]];
+                $oldPrefixItems = isset($oldItemsKeyValue[$prefixToSave[1]]) ? $oldItemsKeyValue[$prefixToSave[1]] : [];
                 
                 $updateOldResult = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id, $oldPrefixItems); 
                 $historyItems[] = $updateOldResult;
@@ -329,11 +329,13 @@ class PricelistFilterBController extends JsonController
                 }
             }
             
-            \Yii::$app->db->createCommand()->update(
-                'billing_uu.pricelist_prefix_price',
-                ['date_to' => $prefixDateStart, 'history_id' => $historyObject->id],
-                new Expression('id in (' . implode(',', $oldItemsIds[$prefixDateStart]) . ')')
-            )->execute();
+            if (!empty($oldItemsIds[$prefixDateStart])) {
+                \Yii::$app->db->createCommand()->update(
+                    'billing_uu.pricelist_prefix_price',
+                    ['date_to' => $prefixDateStart, 'history_id' => $historyObject->id],
+                    new Expression('id in (' . implode(',', $oldItemsIds[$prefixDateStart]) . ')')
+                )->execute();
+            }
             
             \Yii::$app->db->createCommand()->batchInsert(
                 'billing_uu.pricelist_prefix_price',
