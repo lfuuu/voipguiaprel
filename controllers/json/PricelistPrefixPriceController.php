@@ -301,6 +301,30 @@ SQL;
         }
     }
     
+    public function actionSingleHistory()
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $prefixB = $this->request['prefix_b'];
+        
+        if (empty(trim($prefixB))) {
+            $andWhere = ['prefix_b' => ''];
+        } else {
+            $andWhere = ['prefix_b' => trim($prefixB)];
+        }
+        
+        return
+            PricelistPrefixPrice::find()
+                ->select(['id', 'pricelist_filter_b_id', 'prefix_b', 'b_number_price', 'date_from', 'date_to'])
+                ->where(['pricelist_filter_b_id' => $this->request['pricelist_filter_b_id']])
+                ->andWhere($andWhere)
+                ->orderBy('id desc')
+                ->asArray()
+                ->all();
+    }
+    
     /**
      * @throws StaleObjectException
      * @throws HttpException

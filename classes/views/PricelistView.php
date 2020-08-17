@@ -571,6 +571,7 @@ class PricelistView
             'is_filter_b_header' => false,
             'is_filter_a_header' => false,
             'is_prefix_price' => true,
+            'filter_b_id' => $item['pfb__id'],
             'prefix_b' => $item['ppp__prefix_b'] . ' ',
             'prefixes' => [
                 [

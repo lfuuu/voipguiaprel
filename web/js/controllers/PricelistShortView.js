@@ -231,6 +231,12 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             $scope.initData($scope.item.id);
         });
     };
+    
+    $scope.viewPrefixHistory = function (prefixB, pricelistFilterBId) {
+        Redirect.pricelistSinglePrefixHistoryView(pricelistFilterBId, prefixB).then(function () {
+            $scope.initData($scope.item.id);
+        });
+    };
 
     $scope.printToExcelExpanded = function () {
         window.open('/pricelist/excel?id=' + $scope.item.id, '_blank');

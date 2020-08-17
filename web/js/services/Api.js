@@ -1873,6 +1873,9 @@ app.factory('PricelistPrefixPrice', function ($q, ApiLoader, $rootScope) {
         },
         delete: function(id) {
             return ApiLoader.post(url + 'delete', {id: id});
+        },
+        singleHistory: function(filterBId, prefixB) {
+            return ApiLoader.post(url + 'single-history', {pricelist_filter_b_id: filterBId, prefix_b: prefixB});
         }
     };
 });

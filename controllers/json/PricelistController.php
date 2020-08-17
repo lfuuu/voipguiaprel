@@ -170,7 +170,7 @@ class PricelistController extends JsonController
             and date_to > now()
             order by prefix_b
             limit :limit
-        ))
+        ) or prefix_b is null)
 SQL;
         
         $queryResult = 

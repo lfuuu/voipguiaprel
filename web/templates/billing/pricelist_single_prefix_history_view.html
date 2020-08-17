@@ -1,0 +1,33 @@
+<form class="form-horizontal" name="form">
+    <div class="modal-header">
+        <h3>История</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-2">ID</th>
+                    <th class="col-sm-2">Фильтр Б</th>
+                    <th class="col-sm-2">Префикс</th>
+                    <th class="col-sm-2">Цена</th>
+                    <th class="col-sm-2">Дата начала действия</th>
+                    <th class="col-sm-2">Дата окончания действия</th>
+                </tr>
+            </thead>
+            <tr ng-repeat="val in list">
+                <td>{{val.id}}</td>
+                <td>{{val.pricelist_filter_b_id}}</td>
+                <td>{{val.prefix_b}}</td>
+                <td>{{val.b_number_price}}</td>
+                <td>{{val.date_from}}</td>
+                <td>{{val.date_to}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

@@ -51,8 +51,9 @@
                 <td style="min-width: 250px;" ng-if="item.is_prefix_price">
                     <span ng-repeat="prefixItem in item.prefixes track by prefixItem.prefix_price_id">
                         {{$first ? '' : '|'}}
-                        <span style="cursor: pointer" ng-click="editPrefixPrice(prefixItem.prefix_price_id)" data-has-mark="{{prefixItem.has_prefix_mark}}">
-                            <span ng-if="$first">{{prefixItem.b_number_price}}</span>
+                        <span style="cursor: pointer" data-has-mark="{{prefixItem.has_prefix_mark}}">
+                            <span ng-if="$first" ng-click="editPrefixPrice(prefixItem.prefix_price_id)">{{prefixItem.b_number_price}}</span>
+                            <button ng-if="$first" class="btn btn-xs glyphicon glyphicon-list" style="padding-bottom:3px" ng-click="viewPrefixHistory(item.prefix_b, item.filter_b_id)"></button>
                             <span ng-if="$first && prefixItem.date_from > dateNow" style="color: blue;">+ c {{prefixItem.date_from}}</span>
                             <span ng-if="!$first && prefixItem.price_change == 'decrease'" style="color: green;">{{prefixItem.b_number_price}} понижение c {{prefixItem.date_from}}</span>
                             <span ng-if="!$first && prefixItem.price_change == 'increase'" style="color: red;">{{prefixItem.b_number_price}} повышение c {{prefixItem.date_from}}</span>
