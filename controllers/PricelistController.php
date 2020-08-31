@@ -260,7 +260,6 @@ class PricelistController extends BaseController
     
     private function createPricelistSheet(&$spreadsheet, $pricelist)
     {
-        $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
         $names = [
             "Source country filter",
             "Destination",
@@ -298,21 +297,6 @@ class PricelistController extends BaseController
                 if (empty($filterA['filterB'])) {
                     continue;
                 }
-
-//                $apiParams = [
-//                    'cmd' => 'annotatePricelistv2',
-//                    'id' => $filterA['id']
-//                ];
-//
-//                $request = $apiUrl . http_build_query($apiParams);
-//
-//                $response = file_get_contents($request);
-//
-//                if (empty($response)) {
-//                    continue;
-//                }
-//
-//                $processedResponse = $this->processAnnotateResponse($response);
 
                 if (isset($filterA['nnp_country_name_eng'])) {
                     $countryNames = array_merge($countryNames, explode(', ', $filterA['nnp_country_name_eng']));
@@ -379,10 +363,13 @@ class PricelistController extends BaseController
                     }
                     
                     $filterBEndRowNumber = $currentRowNumber - 1;
-                    $sheet->mergeCellsByColumnAndRow($minColumnNumber + 1, $filterBStartRowNumber, $minColumnNumber + 1,
-                        $filterBEndRowNumber);
-                    $sheet->mergeCellsByColumnAndRow($minColumnNumber + 2, $filterBStartRowNumber, $minColumnNumber + 2,
-                        $filterBEndRowNumber);
+                    
+                    if ($filterBEndRowNumber > $filterBStartRowNumber) {
+                        $sheet->mergeCellsByColumnAndRow($minColumnNumber + 1, $filterBStartRowNumber, $minColumnNumber + 1,
+                            $filterBEndRowNumber);
+                        $sheet->mergeCellsByColumnAndRow($minColumnNumber + 2, $filterBStartRowNumber, $minColumnNumber + 2,
+                            $filterBEndRowNumber);
+                    }
                     
                     if (($filterBEndRowNumber - $filterBStartRowNumber) < $filterBCount) {
                         $sheet->getRowDimension($filterBStartRowNumber)->setRowHeight(15 * ($filterBCount - $filterBEndRowNumber + $filterBStartRowNumber + 1));
@@ -412,15 +399,8 @@ class PricelistController extends BaseController
                 $sheet->getStyleByColumnAndRow($minColumnNumber, $filterAStartRowNumber, $minColumnNumber,
                     $filterAEndRowNumber)
                     ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-
-//                $sheet->mergeCellsByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $minColumnNumber + 10,
-//                    $filterAEndRowNumber);
-//                $sheet->setCellValueByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $processedResponse);
-//                $sheet->getStyleByColumnAndRow($minColumnNumber + 10, $filterAStartRowNumber, $minColumnNumber + 10,
-//                    $filterAEndRowNumber)->getAlignment()->setVertical(Alignment::VERTICAL_TOP);
             }
         }
-
         return $countryNames;
     }
 
@@ -891,12 +871,14 @@ class PricelistController extends BaseController
         $sheet->setTitle('Countries EU');
         $currentRowNumber = 1;
         
-        $countryNames = array_unique($countryNames);
-        sort($countryNames);
-        
-        foreach ($countryNames as $name) {
-            $sheet->setCellValueByColumnAndRow(1, $currentRowNumber, $name);
-            $currentRowNumber++;
+        if (!empty($countryNames)) {
+            $countryNames = array_unique($countryNames);
+            sort($countryNames);
+            
+            foreach ($countryNames as $name) {
+                $sheet->setCellValueByColumnAndRow(1, $currentRowNumber, $name);
+                $currentRowNumber++;
+            }
         }
     }
 
