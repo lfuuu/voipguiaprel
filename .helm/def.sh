@@ -5,7 +5,7 @@
 function dev()
 {
 	APPNAME=voip-gui
-	ENVNAME=prod
+	ENVNAME=dev
 	CI_URL="$APPNAME-$ENVNAME.local"
 	TAG=1.137
 }
@@ -13,17 +13,16 @@ function dev()
 function stage()
 {
 	APPNAME=voip-gui
-	ENVNAME=prod
+	ENVNAME=stage
 	CI_URL="$APPNAME-$ENVNAME.local"
 	TAG=1.137
 }
-
 
 function prod()
 {
 	APPNAME=voip-gui
 	ENVNAME=prod
-	CI_URL="$APPNAME-$ENVNAME.local"
+	CI_URL="$APPNAME.mcnhost.ru"
 	TAG=1.137
 }
 
