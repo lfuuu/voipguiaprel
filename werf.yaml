@@ -184,7 +184,7 @@ git:
   to: /docker-entrypoint-initdb.d/init.sql
 ---
 image: testcall-daemon-prod
-from: node:12-slim
+from: node:12
 docker:
   WORKDIR: /app/testdialer
   # Non-root user
