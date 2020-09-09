@@ -1,7 +1,7 @@
 #!/bin/bash
 
-rm .werf/tmp/id_rsa
-rm .werf/tmp/.pgpass
+rm ../.werf/tmp/id_rsa
+rm ../.werf/tmp/.pgpass
 
 if [ $ENVNAME = "dev" ]; then
     echo "Копируем ключ ssh"
