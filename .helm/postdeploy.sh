@@ -7,7 +7,7 @@ cd $DIR
 rm -rf .werf/tmp/id_rsa
 rm -rf .werf/tmp/.pgpass
 
-if [ $ENVNAME = "dev" ]; then
+if [ "$ENVNAME" = "dev" ]; then
     echo "Копируем ключ ssh"
     PODNAME="$APPNAME-backend-dev-0"
     NAMESPACE="$APPNAME-$ENVNAME"
