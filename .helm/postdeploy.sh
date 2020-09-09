@@ -1,7 +1,11 @@
 #!/bin/bash
 
-rm ../.werf/tmp/id_rsa
-rm ../.werf/tmp/.pgpass
+THIS=`readlink -f "${BASH_SOURCE[0]}"`
+DIR=`dirname "${THIS}"`
+cd $DIR
+
+rm -rf .werf/tmp/id_rsa
+rm -rf .werf/tmp/.pgpass
 
 if [ $ENVNAME = "dev" ]; then
     echo "Копируем ключ ssh"
