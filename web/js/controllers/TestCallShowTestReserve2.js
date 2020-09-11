@@ -1,6 +1,7 @@
 var TestCallShowTestReserve2Ctrl = function($scope, TestCall, params, $modalInstance) {
 
     $scope.details = 1;
+    $scope.type = 'Reserve2';
 
     if (params.id) {
         TestCall.result({id: params.id, isReserve2: true, displayTreeView: true}).then(function (data) {

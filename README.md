@@ -45,7 +45,5 @@ codecept run acceptance
 ```
 
 Если после запуска контейнера не запускается веб-интерфейс, выполнить:
-docker ps | grep "voipgui"
-Найти там идентификатор контейнера voipgui, а потом выполнить:
-docker exec -it <container_id> bash
-/usr/sbin/httpd -DFOREGROUND
+CONT_PATH=$(docker ps | grep voipgui | head -n1 | awk '{print $1;}');docker exec -it $CONT_PATH bash;
+/usr/sbin/httpd -DFOREGROUND;

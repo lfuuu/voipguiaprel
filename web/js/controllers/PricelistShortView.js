@@ -167,6 +167,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 } else {
                     var toPush = {
                         is_filter_b_header: false,
+                        filter_b_id: headerItem.filter_b_id,
                         is_filter_a_header: !hasFilterAHeader,
                         is_prefix_price: true,
                         prefix_b: prefixB == 'null' ? '' : prefixB,

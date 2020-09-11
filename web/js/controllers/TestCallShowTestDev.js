@@ -1,6 +1,7 @@
 var TestCallShowTestDevCtrl = function($scope, TestCall, params, $modalInstance) {
 
     $scope.details = 1;
+    $scope.type = 'Dev';
 
     if (params.id) {
         TestCall.result({id: params.id, isDev: true, displayTreeView: true}).then(function (data) {
