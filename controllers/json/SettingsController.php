@@ -89,6 +89,10 @@ class SettingsController extends JsonController
             'rn_replace_prefixlist_id' => $server->rn_replace_prefixlist_id,
             'fsb_numa_blacklist_ids' => $server->fsb_numa_blacklist_ids,
             'fsb_numb_blacklist_ids' => $server->fsb_numb_blacklist_ids,
+            'local_spc' => $server->local_spc,
+            'zone_spc' => $server->zone_spc,
+            'mg_spc' => $server->mg_spc,
+            'mn_spc' => $server->mn_spc,
         ];
     }
 

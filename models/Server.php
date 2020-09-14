@@ -61,6 +61,11 @@ use app\models\event\Queue;
  * @property int $vats_trunk_id
  *
  * @property int $instance_settings_id
+ * 
+ * @property string $local_spc
+ * @property string $zone_spc
+ * @property string $mg_spc
+ * @property string $mn_spc
  */
 class Server extends \yii\db\ActiveRecord
 {
@@ -103,6 +108,7 @@ class Server extends \yii\db\ActiveRecord
             [['service_numbers', 'hostname_reserve', 'hostname_reserve_2', 'hostname_dev',
                 'nas_ip_address', 'name_short', 'prefixlist_block', 'fsb_numa_blacklist_ids', 'fsb_numb_blacklist_ids'], 'string'],
             [['hostname', 'name_short', 'name'], 'string', 'max' => 30],
+            [['local_spc', 'zone_spc', 'mg_spc', 'mn_spc'], 'string', 'max' => 32],
         ];
     }
 

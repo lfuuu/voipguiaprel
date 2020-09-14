@@ -43,6 +43,13 @@
     </div>
 </div>
 
+<div ng-hide="!item.sorm.enabled || item.sorm.source_type_id != 3" class="form-group">
+    <label class="col-sm-2 control-label">SS7 КПС</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="SS7 КПС" ng-model="item.sorm.spc" ng-disabled="!item.sorm.enabled"/>
+    </div>
+</div>
+
 <div ng-hide="!item.sorm.enabled" class="form-group">
     <label class="col-sm-2 control-label">Узлы</label>
     <div class="col-sm-10">

@@ -24,6 +24,7 @@ use app\queries\sorm\TrunkQuery;
  * @property integer $source_type_id
  * @property string $ip_addr
  * @property string $object_comment
+ * @property string $spc
  * @property
  */
 class Trunk extends \yii\db\ActiveRecord
@@ -45,6 +46,7 @@ class Trunk extends \yii\db\ActiveRecord
             [['operator_id', 'code_trunk', 'type', 'region_id', 'source_type_id'], 'integer'],
             [['is_ip', 'is_show'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
+            [['spc'], 'string', 'max' => 32],
         ];
     }
     

@@ -49,6 +49,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                     groups: data.trunkSorm[0].groups.replace('{', '').replace('}', '').split(','),
                     sorm_operator_id: data.trunkSorm[0].sorm_operator_id.replace('{', '').replace('}', '').split(','),
                     source_type_id: data.trunkSorm[0].source_type_id,
+                    spc: data.trunkSorm[0].spc,
                     items: []
                 };
 
@@ -67,7 +68,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                     name: '',
                     ip_addr: '',
                     groups: {},
-                    items: []
+                    items: [],
+                    spc: ''
                 };
             }
 
@@ -107,7 +109,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
                 ip_addr: '',
                 is_show: false,
                 groups: {},
-                sorm_operator_id: 1
+                sorm_operator_id: 1,
+                spc: ''
             }
         };
     }
