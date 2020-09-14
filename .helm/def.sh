@@ -8,6 +8,7 @@ function dev()
 	ENVNAME=dev
 	CI_URL="$APPNAME-$ENVNAME.local"
 	TAG=1.137
+        PGADMIN_IN_DEV="yes"
 }
 
 function stage()
