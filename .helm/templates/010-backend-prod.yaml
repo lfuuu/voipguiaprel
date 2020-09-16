@@ -11,6 +11,8 @@ spec:
   template:
     metadata:
       labels:
+        ingressInternal: "yes"
+        ingressExternal: "no"
         app: {{ .Chart.Name }}-backend-prod
     spec:
       containers:

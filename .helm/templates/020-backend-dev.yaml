@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}-backend-dev
+        ingressInternal: "yes"
+        ingressExternal: "no"
     spec:
       initContainers:
       - name: wait-pod-postgres
