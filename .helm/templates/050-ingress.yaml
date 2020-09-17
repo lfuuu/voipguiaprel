@@ -1,17 +1,5 @@
 {{- if (eq .Values.use_ngnix_virtualserver "yes") }}
 
-apiVersion: k8s.nginx.org/v1alpha1
-kind: Policy
-metadata:
-  name: webapp-internal-policy
-spec:
-  accessControl:
-    allow:
-     - 85.94.32.0/24
-     - 172.16.0.0/16
-     - 192.168.0.0/16
-     - 10.0.0.0/8
----
 apiVersion: k8s.nginx.org/v1
 kind: VirtualServer
 metadata:
@@ -20,6 +8,7 @@ spec:
   host: {{ .Values.ci_url | quote }}
   policies:
   - name: webapp-internal-policy
+    namespace: kube-system
   upstreams:
   - name: upstream-{{ .Chart.Name }}-backend-prod
     service: {{ .Chart.Name }}-backend-prod
