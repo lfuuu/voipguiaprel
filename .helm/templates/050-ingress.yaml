@@ -1,3 +1,36 @@
+{{- if (eq .Values.use_ngnix_virtualserver "yes") }}
+
+apiVersion: k8s.nginx.org/v1alpha1
+kind: Policy
+metadata:
+  name: webapp-internal-policy
+spec:
+  accessControl:
+    allow:
+     - 85.94.32.0/24
+     - 172.16.0.0/16
+     - 192.168.0.0/16
+     - 10.0.0.0/8
+---
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: {{ .Chart.Name }}-frontend
+spec:
+  host: {{ .Values.ci_url | quote }}
+  policies:
+  - name: webapp-internal-policy
+  upstreams:
+  - name: upstream-{{ .Chart.Name }}-backend-prod
+    service: {{ .Chart.Name }}-backend-prod
+    port: 80
+  routes:
+  - path: /
+    action:
+      pass: upstream-{{ .Chart.Name }}-backend-prod
+
+{{- else }}
+
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -19,3 +52,5 @@ spec:
           serviceName: {{ .Chart.Name }}-backend-prod
 {{- end }}
           servicePort: 80
+
+{{- end }}

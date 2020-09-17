@@ -13,3 +13,5 @@ postgres_dev:
   password: qwe123
 
 ci_url: voip-gui-dev.local
+
+use_ngnix_virtualserver: "no"
