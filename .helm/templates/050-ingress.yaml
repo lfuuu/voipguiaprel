@@ -9,6 +9,13 @@ spec:
   policies:
   - name: webapp-internal-policy
     namespace: kube-system
+  tls:
+    redirect:
+      enable: true
+  server-snippets: |
+    listen 443 ssl;
+    ssl_certificate /etc/nginx/secrets/wildcard;
+    ssl_certificate_key /etc/nginx/secrets/wildcard;
   upstreams:
   - name: upstream-{{ .Chart.Name }}-backend-prod
     service: {{ .Chart.Name }}-backend-prod

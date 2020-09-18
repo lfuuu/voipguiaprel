@@ -23,7 +23,7 @@ function prod()
 {
 	APPNAME=voip-gui
 	ENVNAME=prod
-	CI_URL="voipgui.mcn.ru"
+	CI_URL="voipgui2.mcn.ru"
 	TAG=1.137
 }
 
