@@ -1,4 +1,6 @@
-{{- if (eq .Values.global.env "prod") }}
+{{- if (eq .Values.global.env "dev") }}
+{{- else }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -67,6 +69,6 @@ spec:
   - name: http
     port: 80
     protocol: TCP
-{{- else }}
+
 
 {{- end }}

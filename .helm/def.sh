@@ -15,7 +15,15 @@ function stage()
 {
 	APPNAME=voip-gui
 	ENVNAME=stage
-	CI_URL="$APPNAME-$ENVNAME.local"
+	CI_URL="$APPNAME-$ENVNAME.mcn.ru"
+	TAG=1.137
+}
+
+function vagrant()
+{
+	APPNAME=voip-gui
+	ENVNAME=vagrant
+	CI_URL="$APPNAME-$ENVNAME.mcn.ru"
 	TAG=1.137
 }
 
