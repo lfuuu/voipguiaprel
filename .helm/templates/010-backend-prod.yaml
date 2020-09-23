@@ -18,20 +18,25 @@ spec:
         app: {{ .Chart.Name }}-backend-prod
     spec:
       containers:
-      - name: backend-prod
-{{ tuple "voip-gui-prod" . | werf_container_image | indent 8 }}
+      - name: nginx
+{{ tuple "nginx" . | include "werf_container_image" | indent 8 }}
+        volumeMounts:
+        - name: config-volume
+          subPath: nginx.conf
+          mountPath: /etc/nginx/nginx.conf
         livenessProbe:
           httpGet:
-            path: /
+            path: /healthz
             port: 80
             scheme: HTTP
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 80
-            scheme: HTTP
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/usr/sbin/nginx", "-s", "quit"]
+      - name: backend-prod
+{{ tuple "voip-gui-prod" . | werf_container_image | indent 8 }}
         ports:
-        - containerPort: 80
+        - containerPort: 8080
           name: http
           protocol: TCP
         volumeMounts:
@@ -48,7 +53,18 @@ spec:
         - name: POSTGRES_PASSWORD
           value: {{ .Values.postgres_prod.password }}
         - name: TEST_DIAL_URL
-          value: "http://{{ .Chart.Name }}-testdial-daemon-prod:3000/"
+          value: "http://127.0.0.1:3000/"
+      - name: testcall-daemon-prod
+{{ tuple "testcall-daemon-prod" . | werf_container_image | indent 8 }}
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - name: config-volume
+          subPath: testdial_cfg.json
+          mountPath: /app/testdialer/testdial_cfg.json  
+        env:
 {{ tuple . | werf_container_env | indent 8 }}
       volumes:
       - name: config-volume
@@ -69,6 +85,5 @@ spec:
   - name: http
     port: 80
     protocol: TCP
-
 
 {{- end }}

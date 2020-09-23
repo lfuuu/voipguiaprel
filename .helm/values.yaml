@@ -15,3 +15,4 @@ postgres_dev:
 ci_url: voip-gui-dev.local
 
 use_ngnix_virtualserver: "no"
+use_network_polices: "no"

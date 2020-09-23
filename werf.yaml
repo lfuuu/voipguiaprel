@@ -24,7 +24,12 @@ git:
   to: /opt/voip_gui
   owner: apache
   group: apache
-
+  stageDependencies:
+    install:
+      - composer.json
+      - composer.lock
+    setup:
+      - "**/*"
 ansible:
   beforeInstall:
     - name: 1
@@ -33,6 +38,7 @@ ansible:
         yum -y install curl
         rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
         yum install -y php56w php56w-cli php56w-curl php56w-gd php56w-json php56w-mcrypt php56w-mysqlnd php56w-pgsql php56w-readline php56w-xdebug php56w-xmlrpc php56w-mbstring php56w-zip php56w-dom
+        yum install -y mc lynx
         yum clean all
   install:
     - name: 2
@@ -57,6 +63,7 @@ ansible:
         cp -pf /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.default
         sed -i \
           -e '/^KeepAlive .*$/d' \
+          -e '/^Listen 80.*$/d' \
           -e '/^MaxKeepAliveRequests .*$/d' \
           -e '/^KeepAliveTimeout .*$/d' \
           -e '/^ServerSignature On$/d' \
@@ -75,7 +82,8 @@ ansible:
           echo '#'; \
           echo '# Custom configuration'; \
           echo '#'; \
-          echo 'ServerName voip_gui:80'; \
+          echo 'Listen 8080'; \
+          echo 'ServerName voip_gui:8080'; \
           echo 'KeepAlive On'; \
           echo 'MaxKeepAliveRequests 200'; \
           echo 'KeepAliveTimeout 2'; \
@@ -183,6 +191,11 @@ git:
 - add: /install/db/SQL/init.sql
   to: /docker-entrypoint-initdb.d/init.sql
 ---
+image: nginx
+from: nginx:stable-alpine
+docker:
+  EXPOSE: '80'
+---
 image: testcall-daemon-prod
 from: node:12
 docker:
@@ -215,6 +228,9 @@ ansible:
       pkg:
         - locales
         - ca-certificates
+        - mc
+        - lynx
+        - telnet
   - name: "Generate en_US.UTF-8 default locale"
     locale_gen:
       name: en_US.UTF-8

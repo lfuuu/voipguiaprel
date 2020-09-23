@@ -1,0 +1,18 @@
+{{- if (eq .Values.use_network_polices "yes") }}
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-internal-ingress
+  namespace: {{ .Chart.Name }}-{{ .Values.global.env }}
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          namespace: {{ .Chart.Name }}-{{ .Values.global.env }}
+  policyTypes:
+  - Ingress
+  
+{{- end }}
