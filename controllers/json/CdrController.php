@@ -88,18 +88,18 @@ class CdrController extends JsonController
         $params = [];
         if ($isTimeAbsolute) {
             if (empty($timeFrom) && !empty($timeTo)) {
-                $andWhere = 'c.setup_time <= :time_to';
+                $andWhere = 'c.connect_time <= :time_to';
                 $params = [':time_to' => $timeTo];
             } elseif (!empty($timeFrom) && empty($timeTo)) {
-                $andWhere = 'c.setup_time >= :time_from';
+                $andWhere = 'c.connect_time >= :time_from';
                 $params = [':time_from' => $timeFrom];
             } elseif (!empty($timeFrom) && !empty($timeTo)) {
-                $andWhere = 'c.setup_time >= :time_from and c.setup_time <= :time_to';
+                $andWhere = 'c.connect_time >= :time_from and c.connect_time <= :time_to';
                 $params = [':time_from' => $timeFrom, ':time_to' => $timeTo];
             }
         } else {
             if (!empty($timeRelative)) {
-                $andWhere = 'c.setup_time >= (now() - INTERVAL \'' . (int)$timeRelative . ' seconds\') at time zone \'utc\'';
+                $andWhere = 'c.connect_time >= (now() - INTERVAL \'' . (int)$timeRelative . ' seconds\') at time zone \'utc\'';
             }
         }
         
