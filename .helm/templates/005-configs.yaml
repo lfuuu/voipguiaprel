@@ -5,7 +5,7 @@ metadata:
 data:
   nginx.conf: |
     user nginx;
-    worker_processes 1;
+    worker_processes 20;
 
     error_log /dev/stderr;
 

@@ -33,16 +33,31 @@ spec:
           preStop:
             exec:
               command: ["/usr/sbin/nginx", "-s", "quit"]
+      - name: php-health-check-prod
+{{ tuple "php-health-check-prod" . | werf_container_image | indent 8 }}
+        volumeMounts:
+        - name: config-volume
+          subPath: config.local.php
+          mountPath: /app/health/config.local.php
+        - name: shared-healthdata
+          mountPath: /app/assets
       - name: backend-prod
 {{ tuple "voip-gui-prod" . | werf_container_image | indent 8 }}
         ports:
         - containerPort: 8080
           name: http
           protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
         volumeMounts:
         - name: config-volume
           subPath: config.local.php
           mountPath: /opt/voip_gui/web/health/config.local.php 
+        - name: shared-healthdata
+          mountPath: /opt/voip_gui/web/assets2
         env:
         - name: POSTGRES_DB
           value: {{ .Values.postgres_prod.db }}
@@ -70,6 +85,8 @@ spec:
       - name: config-volume
         configMap:
           name: {{ .Chart.Name }}-config-files
+      - name: shared-healthdata
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
