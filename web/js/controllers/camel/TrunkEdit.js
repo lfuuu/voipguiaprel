@@ -8,6 +8,7 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
             name: '',
             server_id: $scope.server.id,
             numberPreprocessing: [],
+            is_route_incoming_calls: false
         };
     }
     

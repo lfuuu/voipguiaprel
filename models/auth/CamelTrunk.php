@@ -13,6 +13,7 @@ use app\queries\auth\CamelTrunkQuery;
  * @property string $trunk_tele2
  * @property bool $insert_cdr
  * @property int $location_id
+ * @property bool $is_route_incoming_calls
  */
 class CamelTrunk extends \yii\db\ActiveRecord
 {
@@ -42,7 +43,7 @@ class CamelTrunk extends \yii\db\ActiveRecord
         return [
             [['name', 'trunk_mcn', 'trunk_tele2'], 'string'],
             [['prefixlist_id', 'camel_route_table_id', 'server_id', 'location_id'], 'integer'],
-            [['insert_cdr'], 'boolean']
+            [['insert_cdr', 'is_route_incoming_calls'], 'boolean']
         ];
     }
 
