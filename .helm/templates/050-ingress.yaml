@@ -5,6 +5,9 @@ kind: VirtualServer
 metadata:
   name: {{ .Chart.Name }}-frontend
   annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    ingress.kubernetes.io/rewrite-target: /
     nginx.org/client-max-body-size: 2048m
 spec:
   host: {{ .Values.ci_url | quote }}
@@ -22,6 +25,7 @@ spec:
   - name: upstream-{{ .Chart.Name }}-backend-prod
     service: {{ .Chart.Name }}-backend-prod
     port: 80
+    client-max-body-size: 2048m
   routes:
   - path: /
     action:
