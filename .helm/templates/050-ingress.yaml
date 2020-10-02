@@ -4,6 +4,8 @@ apiVersion: k8s.nginx.org/v1
 kind: VirtualServer
 metadata:
   name: {{ .Chart.Name }}-frontend
+  annotations:
+    nginx.org/client-max-body-size: 2048m
 spec:
   host: {{ .Values.ci_url | quote }}
   policies:
