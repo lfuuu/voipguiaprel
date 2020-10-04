@@ -95,7 +95,7 @@ ansible:
           echo '</Directory>'; \
         } >> /etc/httpd/conf/httpd.conf \
         && ln -s /opt/voip_gui/web/assets2/healthData.json /opt/voip_gui/web/assets/healthData.json \
-        && sed -i -e 's/^memory_limit.*/memory_limit = 1G/' /etc/php.ini \
+        && sed -i -e 's/^memory_limit.*/memory_limit = 4G/' /etc/php.ini \
         && sed -i -e 's/^upload_max_filesize.*/upload_max_filesize = 500M/' /etc/php.ini
       args:
         chdir: /opt/voip_gui

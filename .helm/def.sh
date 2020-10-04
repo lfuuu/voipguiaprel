@@ -3,11 +3,12 @@
 #   dev* - конфигурация для разработки, запускаются база и пгадмин 
 
 
-	TAG=1.170
+TAG=1.175
+APPNAME=voip-gui
+
 
 function dev()
 {
-	APPNAME=voip-gui
 	ENVNAME=dev
 	CI_URL="$APPNAME-$ENVNAME.local"
         PGADMIN_IN_DEV="yes"
@@ -15,21 +16,18 @@ function dev()
 
 function stage()
 {
-	APPNAME=voip-gui
 	ENVNAME=stage
 	CI_URL="$APPNAME-$ENVNAME.mcn.ru"
 }
 
 function vagrant()
 {
-	APPNAME=voip-gui
 	ENVNAME=vagrant
 	CI_URL="$APPNAME-$ENVNAME.mcn.ru"
 }
 
 function prod()
 {
-	APPNAME=voip-gui
 	ENVNAME=prod
 	CI_URL="voipgui.mcn.ru"
 }
