@@ -7,6 +7,7 @@ use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use yii\web\ForbiddenHttpException;
 use app\models\auth\Hub;
+use app\models\auth\MvnoLink;
 
 class SettingsController extends JsonController
 {
@@ -37,6 +38,8 @@ class SettingsController extends JsonController
         if ($server->prefixlist_block && $server->prefixlist_block !== '{}') {
             $prefixlistBlock = explode(',', str_replace(['{', '}'], '', $server->prefixlist_block));
         }
+        
+        $mvnoLinkList = MvnoLink::findAll(['server_id' => $server->id]);
 
         return [
             'server_id' => $server->id,
@@ -93,6 +96,7 @@ class SettingsController extends JsonController
             'zone_spc' => $server->zone_spc,
             'mg_spc' => $server->mg_spc,
             'mn_spc' => $server->mn_spc,
+            'mvno_link' => $this->readMvnoLink($mvnoLinkList)
         ];
     }
 
@@ -122,6 +126,11 @@ class SettingsController extends JsonController
                 $fsbNumbBlacklistIds = $this->request['fsb_numb_blacklist_ids'];
                 unset($this->request['fsb_numb_blacklist_ids']);
             }
+            
+            if (isset($this->request['mvno_link'])) {
+                $mvnoLinkList = $this->request['mvno_link'];
+                unset($this->request['mvno_link']);
+            }
 
             $server->load($this->request, '');
             
@@ -135,6 +144,12 @@ class SettingsController extends JsonController
 
             if ($fsbNumbBlacklistIds) {
                 $server->fsb_numb_blacklist_ids = '{' . implode(',', $fsbNumbBlacklistIds) . '}';
+            }
+            
+            if ($mvnoLinkList) {
+                $this->saveMvnoLink($mvnoLinkList, $this->request['server_id']);
+            } else {
+                MvnoLink::deleteAll(['server_id' => $this->request['server_id']]);
             }
 
             if ($server->isAttributeChanged('min_price_for_autorouting')) {
@@ -164,5 +179,40 @@ class SettingsController extends JsonController
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+    }
+    
+    private function saveMvnoLink($mvnoLinkList, $serverId)
+    {
+        MvnoLink::deleteAll(['server_id' => $serverId]);
+        
+        foreach ($mvnoLinkList as $mvnoLink) {
+            $params = [
+                'server_id' => $serverId,
+                'mvno_partner_id' => $mvnoLink['mvno_partner_id'],
+                'mvno_trunk_ids' => '{' . implode(',', $mvnoLink['mvno_trunk_ids']) . '}',
+                'trunk_groups' => '{' . implode(',', $mvnoLink['trunk_groups']) . '}',
+                'number_capacity' => '{' . implode(',', $mvnoLink['number_capacity']) . '}',
+            ];
+            
+            $mvnoLinkObject = MvnoLink::create($params);
+            $mvnoLinkObject->save();
+        }
+    }
+    
+    private function readMvnoLink($mvnoLinkList)
+    {
+        $result = [];
+        
+        foreach ($mvnoLinkList as $mvnoLink) {
+            $result[] = [
+                'server_id' => $mvnoLink->server_id,
+                'mvno_partner_id' => $mvnoLink->mvno_partner_id,
+                'mvno_trunk_ids' => explode(',', str_replace(['{', '}'], '', $mvnoLink->mvno_trunk_ids)),
+                'trunk_groups' => explode(',', str_replace(['{', '}'], '', $mvnoLink->trunk_groups)),
+                'number_capacity' => explode(',', str_replace(['{', '}'], '', $mvnoLink->number_capacity)),
+            ];
+        }
+        
+        return $result;
     }
 }

@@ -28,7 +28,7 @@ trait PricelistView
         $simProfile = self::getNameFromDictionary($item[$prefix. 'sim_profile'], $idArrays['billing_uu.sim_imsi_profile']['ids']);
         $mnc = self::formMncText($item);
         
-        $locationText = isset($item[$prefix. 'description']) ? $item[$prefix. 'description'] : 
+        $locationText = !empty($item[$prefix. 'description']) ? $item[$prefix. 'description'] : 
             ((($isBasic ? 'Базовое местоположение: ' : 'Местоположение: ') . PricelistLocation::LOCATION_TYPE_NAMES[$item[$prefix. 'location_id']]) . 
             (empty($mcc) ? '' : ('; MCC: ' . $mcc)) . (empty($mnc) ? '' : ('; MNC: ' . $mnc)) . 
             (empty($item[$prefix. 'delta_price']) ? '' : '; Наценка: ' . $item[$prefix. 'delta_price']) . 

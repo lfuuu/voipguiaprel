@@ -1982,7 +1982,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
                               PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
                               MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-                              User, ServerOcs) {
+                              User, ServerOcs, SimImsi) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -2082,6 +2082,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     user: function () {
       return User.read();
+    },
+    mvnoPartner: function () {
+      return SimImsi.partner();
     },
     testResult: function () {
       return [

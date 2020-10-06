@@ -24,6 +24,10 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
   List.prefixlist().then(function (data) {
     $scope.prefixlist_list = data;
   });
+  
+  List.mvnoPartner().then(function (data) {
+    $scope.mvno_partner_list = data;
+  });
 
   $scope.save = function () {
     switch ($scope.vpbx_type_id) {
@@ -73,5 +77,13 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
 
   $scope.removePrefixlist = function (index) {
     $scope.item.hub_number_capacity.splice(index, 1);
+  };
+  
+  $scope.addMvnoLink = function () {
+    $scope.item.mvno_link.push({number_capacity: [], mvno_trunk_ids: [], trunk_groups: []});
+  };
+
+  $scope.removeMvnoLink = function (index) {
+    $scope.item.mvno_link.splice(index, 1);
   };
 };

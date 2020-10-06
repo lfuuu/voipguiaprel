@@ -12,6 +12,7 @@
             <li ng-if="item.hub_id"><a href="#hubnumbercapacity" data-toggle="tab">Номерная емкость хаба</a></li>
             <li><a href="#prefixlist_block" data-toggle="tab">Блокировка по номеру</a></li>
             <li><a href="#spc" data-toggle="tab">КПС узла связи</a></li>
+            <li><a href="#mvno_link" data-toggle="tab">МВНО</a></li>
         </ul>
 
         <br/>
@@ -443,6 +444,61 @@
                     <label class="col-sm-4 control-label">МН КПС</label>
                     <div class="col-sm-8">
                         <input class="form-control" ng-model="item.mn_spc" />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane" id="mvno_link">
+                <div ng-repeat="line in item.mvno_link">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Оператор</label>
+                        <div class="col-sm-9">
+                            <select ui-select2 ng-model="line.mvno_partner_id" style="width: 100%">
+                                <option ng-repeat="partner in mvno_partner_list" value="{{partner.id}}">
+                                    {{partner.name}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeMvnoLink($index)"></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Префикслисты</label>
+                        <div class="col-sm-10">
+                            <select-box list="prefixlist" model="line.number_capacity" multiple="multiple" placeholder="Выберите"
+                                    required="false"></select-box>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Транки</label>
+                        <div class="col-sm-10">
+                            <select-box list="trunk" model="line.mvno_trunk_ids" multiple="multiple" placeholder="Выберите"
+                                    required="false"></select-box>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Группы транков</label>
+                        <div class="col-sm-10">
+                            <select-box list="trunkGroup" model="line.trunk_groups" multiple="multiple" placeholder="Выберите"
+                                    required="false"></select-box>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">&nbsp;</label>
+                        <div class="col-sm-10">
+                            &nbsp;
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="col-sm-10">
+                        <button type="button" class="btn btn-success btn-xs" ng-click="addMvnoLink()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
                     </div>
                 </div>
             </div>
