@@ -189,9 +189,9 @@ class SettingsController extends JsonController
             $params = [
                 'server_id' => $serverId,
                 'mvno_partner_id' => $mvnoLink['mvno_partner_id'],
-                'mvno_trunk_ids' => '{' . implode(',', $mvnoLink['mvno_trunk_ids']) . '}',
-                'trunk_groups' => '{' . implode(',', $mvnoLink['trunk_groups']) . '}',
-                'number_capacity' => '{' . implode(',', $mvnoLink['number_capacity']) . '}',
+                'mvno_trunk_ids' => (!empty($mvnoLink['mvno_trunk_ids']) ? '{' . implode(',', $mvnoLink['mvno_trunk_ids']) . '}' : null),
+                'trunk_groups' => (!empty($mvnoLink['trunk_groups']) ? '{' . implode(',', $mvnoLink['trunk_groups']) . '}' : null),
+                'number_capacity' => (!empty($mvnoLink['number_capacity']) ? '{' . implode(',', $mvnoLink['number_capacity']) . '}' : null),
             ];
             
             $mvnoLinkObject = MvnoLink::create($params);
@@ -207,9 +207,9 @@ class SettingsController extends JsonController
             $result[] = [
                 'server_id' => $mvnoLink->server_id,
                 'mvno_partner_id' => $mvnoLink->mvno_partner_id,
-                'mvno_trunk_ids' => explode(',', str_replace(['{', '}'], '', $mvnoLink->mvno_trunk_ids)),
-                'trunk_groups' => explode(',', str_replace(['{', '}'], '', $mvnoLink->trunk_groups)),
-                'number_capacity' => explode(',', str_replace(['{', '}'], '', $mvnoLink->number_capacity)),
+                'mvno_trunk_ids' => (!is_null($mvnoLink->mvno_trunk_ids) ? explode(',', str_replace(['{', '}'], '', $mvnoLink->mvno_trunk_ids)) : []),
+                'trunk_groups' => (!is_null($mvnoLink->trunk_groups) ? explode(',', str_replace(['{', '}'], '', $mvnoLink->trunk_groups)) : []),
+                'number_capacity' => (!is_null($mvnoLink->number_capacity) ? explode(',', str_replace(['{', '}'], '', $mvnoLink->number_capacity)) : []),
             ];
         }
         
