@@ -43,6 +43,11 @@ spec:
           mountPath: /app/assets
       - name: backend-prod
 {{ tuple "voip-gui-prod" . | werf_container_image | indent 8 }}
+        resources:
+          requests:
+            memory: 4G
+          limits:
+            memory: 7G
         ports:
         - containerPort: 8080
           name: http
