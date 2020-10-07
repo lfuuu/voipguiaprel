@@ -58,6 +58,14 @@
                                     class="btn {{item.type_id == TYPE_ID_MEG_TO_MEG ? 'btn-primary active' : 'btn-default'}}"
                                     ng-click="setType(TYPE_ID_MEG_TO_MEG)">Meg-to-Meg
                             </button>
+                            <button type="button"
+                                    class="btn {{item.type_id == TYPE_ID_MVNO_TO_REG ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_MVNO_TO_REG)">Mvno-to-Reg
+                            </button>
+                            <button type="button"
+                                    class="btn {{item.type_id == TYPE_ID_MVNO_TO_MEG ? 'btn-primary active' : 'btn-default'}}"
+                                    ng-click="setType(TYPE_ID_MVNO_TO_MEG)">Mvno-to-Meg
+                            </button>
 
                             <!-- Спрятано до лучших времен -->
 

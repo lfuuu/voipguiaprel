@@ -9,6 +9,8 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
     $scope.TYPE_ID_MEG_TO_MEG = 7;
     $scope.TYPE_ID_TRUNK_GROUP = 8;
     $scope.TYPE_ID_AUTOMATIC_2 = 9;
+    $scope.TYPE_ID_MVNO_TO_REG = 10;
+    $scope.TYPE_ID_MVNO_TO_MEG = 11;
 
     if (params.id) {
         Outcome.get({id: params.id}).then(function (data) {
@@ -71,6 +73,18 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
             $scope.item.header = null;
         }
         if ($scope.item.type_id == $scope.TYPE_ID_AUTOMATIC_2) {
+            $scope.item.route_case_id = null;
+            $scope.item.release_reason_id = null;
+            $scope.item.airp_id = null;
+            $scope.item.calling_station_id = null;
+            $scope.item.called_station_id = null;
+            $scope.item.header = null;
+        }
+        if ($scope.item.type_id == $scope.TYPE_ID_MEG_TO_REG ||
+            $scope.item.type_id == $scope.TYPE_ID_MEG_TO_MEG ||
+            $scope.item.type_id == $scope.TYPE_ID_MVNO_TO_REG ||
+            $scope.item.type_id == $scope.TYPE_ID_MVNO_TO_MEG
+            ) {
             $scope.item.route_case_id = null;
             $scope.item.release_reason_id = null;
             $scope.item.airp_id = null;

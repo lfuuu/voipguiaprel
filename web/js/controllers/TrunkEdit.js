@@ -190,7 +190,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
         {'id': 1, 'name': 'Вставка'},
         {'id': 2, 'name': 'Добавление в конец'},
         {'id': 3, 'name': 'Удаление'},
-        {'id': 4, 'name': 'Замена'}
+        {'id': 4, 'name': 'Замена'},
+        {'id': 5, 'name': 'Замена если номер'}
     ];
 
     $scope.addNumbersRule = function (key) {

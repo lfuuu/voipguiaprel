@@ -20,6 +20,7 @@ use app\queries\TrunkNumberPreprocessingQuery;
  * @property bool $auth
  * @property bool $acc
  * @property bool $avoid_mod
+ * @property int $number_id
  */
 class TrunkNumberPreprocessing extends \yii\db\ActiveRecord
 {
@@ -53,7 +54,7 @@ class TrunkNumberPreprocessing extends \yii\db\ActiveRecord
             [['noa'], 'integer', 'min' => 0, 'max' => 3],
             [['length'], 'integer', 'min' => 0, 'max' => 20],
             [['prefix'], 'string', 'min' => 1,  'max' => 10],
-            [['abc_mode'], 'integer'],
+            [['abc_mode', 'number_id'], 'integer'],
             [['mod_type'], 'integer'],
             [['start_pos'], 'integer', 'min' => 1, 'max' => 40],
             [['end_pos'], 'integer', 'min' => 1, 'max' => 40],
