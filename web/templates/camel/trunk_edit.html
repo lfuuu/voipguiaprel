@@ -103,13 +103,13 @@
                                     Длина номера:
                                 </td>
                                 <td ng-if="preprocPrefix(line)" width="10%">
-                                    <input class="form-control input-sm" ng-model="line.length" required />
+                                    <input class="form-control" ng-model="line.length" required />
                                 </td>
                                 <td ng-if="preprocPrefix(line)" width="5%" style="cursor: ns-resize">
                                     Преф.:
                                 </td>
                                 <td ng-if="preprocPrefix(line)" width="10%">
-                                    <input class="form-control input-sm" ng-model="line.prefix" required />
+                                    <input class="form-control" ng-model="line.prefix" required />
                                 </td>
 
                                 <!-- Начало/Конец -->
@@ -146,7 +146,7 @@
                                     Преф.:
                                 </td>
                                 <td ng-if="preprocValue(line) && line.mod_type == 5" width="1%">
-                                    <input class="form-control" style="width: 30px;min-width: 30px;" ng-model="line.prefix" />
+                                    <input class="form-control" style="width: 60px;min-width: 60px;" ng-model="line.prefix" />
                                 </td>
                                 
                                 <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
@@ -156,14 +156,14 @@
                                     <input class="form-control" style="min-width:60px;" ng-model="line.regex" />
                                 </td>
                                 <td ng-if="preprocValue(line) && line.mod_type != 5" colspan="5" width="20%">
-                                    <input class="form-control input-sm" ng-model="line.regex" />
+                                    <input class="form-control ng-model="line.regex" />
                                 </td>
 
                                 <td ng-if="preprocValue(line)" width="5%" style="cursor: ns-resize">
                                     Знач.:
                                 </td>
                                 <td ng-if="preprocValue(line)" width="5%">
-                                    <input class="form-control input-sm" style="width: 50px;" ng-model="line.mod_value" required />
+                                    <input class="form-control" style="width: 50px;" ng-model="line.mod_value" required />
                                 </td>
 
                                 <td ng-if="!preprocPosRange(line) && line.mod_type != 1 && line.mod_type != 2" colspan="6" style="cursor: ns-resize"></td>
