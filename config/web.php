@@ -21,6 +21,9 @@ $config = [
     'language' => 'ru-RU',
     'bootstrap' => ['log'],
     'components' => [
+        'session' => [
+            'class' => 'yii\web\DbSession',
+        ],
         'request' => [
             'cookieValidationKey' => 'Jkjh9834jkjhsHJK89834hjk338',
             'parsers' => [ 'application/json' => 'yii\web\JsonParser' ],
