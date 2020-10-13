@@ -23,6 +23,7 @@ $config = [
     'components' => [
         'session' => [
             'class' => 'yii\web\DbSession',
+            'cookieParams' => ['lifetime' => 6 * 60 * 60]
         ],
         'request' => [
             'cookieValidationKey' => 'Jkjh9834jkjhsHJK89834hjk338',
