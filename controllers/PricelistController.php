@@ -205,6 +205,8 @@ class PricelistController extends BaseController
             throw new ForbiddenHttpException('Access denied');
         }
 
+        set_time_limit(0);
+        
         $data = Pricelist::find()
             ->with('location.filterA.filterB.prefixPriceNoLimit')
             ->where(['id' => $id])
