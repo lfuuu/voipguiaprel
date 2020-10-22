@@ -6,10 +6,12 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-backend-prod
 spec:
-  replicas: 1
+  replicas: 2
   selector:
       matchLabels:
         app: {{ .Chart.Name }}-backend-prod
+  strategy: 
+       type: RollingUpdate
   template:
     metadata:
       labels:
@@ -47,7 +49,7 @@ spec:
           requests:
             memory: 4G
           limits:
-            memory: 7G
+            memory: 6G
         ports:
         - containerPort: 8080
           name: http
