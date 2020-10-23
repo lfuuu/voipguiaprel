@@ -29,6 +29,9 @@ spec:
     service: {{ .Chart.Name }}-backend-prod
     port: 80
     client-max-body-size: 2048m
+    connect-timeout: 600s
+    read-timeout: 1800s
+    send-timeout: 1800s
   routes:
   - path: /
     action:
