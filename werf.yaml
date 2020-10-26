@@ -43,7 +43,8 @@ ansible:
   install:
     - name: 2
       shell: |
-        curl -sS https://getcomposer.org/installer | php
+        curl -sS https://getcomposer.org/installer -O
+        php installer --version=1.10.16
         mv composer.phar /usr/local/bin/composer 
         composer global require "fxp/composer-asset-plugin"
         cd /opt/voip_gui/
