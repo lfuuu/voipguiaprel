@@ -15,8 +15,6 @@ class JsonController extends BaseController
 
     public $enableCsrfValidation = false;
 
-    protected $request;
-    
     protected $doNotLog = false;
     
     private $saveMethods = ['save', 'saveAndUpdate', 'toggleActive', 'inherit', 'copy', 'delete'];
