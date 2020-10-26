@@ -200,7 +200,8 @@ ansible:
         mkdir -p /opt/voip_gui/web
         echo "Сделай:<br>rm -rf /opt/voip_gui; ln -s /workspace/voip_gui /opt/voip_gui" > /opt/voip_gui/web/index.html
         printf "Host github.com\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" >> /etc/ssh/ssh_config
-        curl -sS https://getcomposer.org/installer | php
+        curl -sS https://getcomposer.org/installer -O
+        php installer --version=1.10.16
         mv composer.phar /usr/local/bin/composer 
         composer global require "fxp/composer-asset-plugin"
       args:
