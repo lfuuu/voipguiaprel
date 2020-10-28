@@ -17,6 +17,8 @@ class JsonController extends BaseController
 
     protected $doNotLog = false;
     
+    protected $request;
+    
     private $saveMethods = ['save', 'saveAndUpdate', 'toggleActive', 'inherit', 'copy', 'delete'];
 
     protected $modelName = '';
