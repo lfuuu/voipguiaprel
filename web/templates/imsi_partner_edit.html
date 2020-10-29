@@ -37,6 +37,26 @@
                 </div>
             </div>
         </div>
+        
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Добавлять RN</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.is_append_rn = !item.is_append_rn">
+                    <button type="button" class="btn btn-sm {{item.is_append_rn ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.is_append_rn ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Добавлять GN</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.is_append_gn = !item.is_append_gn">
+                    <button type="button" class="btn btn-sm {{item.is_append_gn ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.is_append_gn ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <div class="pull-left">

@@ -6,11 +6,11 @@ use app\queries\ImsiPartnerQuery;
 /**
  * @property int $id
  * @property string $name
- * @property int $term_trunk_id
- * @property int $orig_trunk_id
  * @property int $mvno_region_id
  * @property int $location_id
  * @property bool $is_active
+ * @property bool $is_append_rn
+ * @property bool $is_append_gn
  * @property string $object_comment
  */
 class ImsiPartner extends \yii\db\ActiveRecord
@@ -27,8 +27,8 @@ class ImsiPartner extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string'],
-            [['orig_trunk_id','term_trunk_id', 'mvno_region_id', 'location_id'], 'integer'],
-            [['is_active'], 'boolean'],
+            [['mvno_region_id', 'location_id'], 'integer'],
+            [['is_active', 'is_append_rn', 'is_append_gn'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
