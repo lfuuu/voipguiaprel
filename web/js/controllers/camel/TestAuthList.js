@@ -1,4 +1,4 @@
-var CamelTestAuthListCtrl = function($scope, CamelTestAuth, Redirect, $window) {
+var CamelTestAuthListCtrl = function($scope, CamelTestAuth, CamelList, Redirect, $window) {
 
     $scope.sortType = 'name';
     $scope.sortReverse = false;
@@ -7,15 +7,32 @@ var CamelTestAuthListCtrl = function($scope, CamelTestAuth, Redirect, $window) {
     $scope.filterFields = [
         'id', 'name'
     ];
-
-    $scope.init = function(tab) {
+    
+    $scope.searchArray = {
+        id: '',
+        name: '',
+        group_id: '',
+    };
+    
+    $scope.init = function (tab) {
         if (tab) tab.title = 'Тесты маршрутизации';
 
-        CamelTestAuth.read({server_id: $scope.server.id}).then(function(data){
+        $scope.refreshList();
+    };
+
+    $scope.refreshList = function() {
+        CamelTestAuth.read({
+                server_id: $scope.server.id,
+                search_array: $scope.searchArray,
+            }).then(function (data) {
             $scope.list = data;
         });
     };
 
+    CamelList.testGroup({}).then(function (data) {
+        $scope.testGroupList = data;
+    });
+    
     $scope.clickCreate = function() {
         Redirect.camelTestAuthCreate().then(function () {
             $scope.init();

@@ -1,13 +1,35 @@
-<div ng-if="userPermissions['camel_test_auth_create']" class="pull-right">
-    <a class="btn btn-primary btn-sm" ng-click="clickCreate()">Создать</a>
+<div>
+    <a ng-if="userPermissions['camel_test_auth_create']" class="btn btn-primary search-form-button" ng-click="clickCreate()">Создать</a>
+    <button type="submit" class="btn btn-success search-form-button" ng-click="clickSearch()">Поиск</button>
+    <button type="submit" ng-hide="hideFilter" class="btn btn-warning search-form-button" ng-click="hideFilter = true">Скрыть фильтр</button>
+    <button type="submit" ng-hide="!hideFilter" class="btn btn-info search-form-button" ng-click="hideFilter = false">Показать фильтр</button>
 </div>
 <h4>Тесты маршрутизации</h4>
 
-<form>
+<form ng-hide="hideFilter">
     <div class="form-group">
-        <div class="input-group">
-            <div class="input-group-addon"><i class="fa-search"></i></div>
-            <input type="text" class="form-control" placeholder="Поиск" ng-model="searchQuery">
+        <div class="row">
+            <div class="form-group col-sm-4 search-form-item first-form-item">
+                <label class="col-sm-2 search-field-label">ID</label>
+                <div class="col-sm-10 search-input">
+                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.id" ng-keydown="$event.keyCode === 13 && refreshList()">
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Название</label>
+                <div class="col-sm-10 search-input">
+                    <input type="text" class="form-control" placeholder="Поиск" ng-model="searchArray.name" ng-keydown="$event.keyCode === 13 && refreshList()">
+                </div>
+            </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-2 search-field-label">Группа</label>
+                <div class="col-sm-10 search-input">
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Группа" ng-model="searchArray.group_id" ng-change="refreshList()" required>
+                        <option value="">-- Выберите группу --</option>
+                        <option ng-repeat="group in testGroupList" value="{{group.id}}">{{group.name}}</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 </form>
@@ -30,6 +52,13 @@
                 </a>
             </th>
             <th width="20%"> </th>
+            <th>
+                <a href="#" ng-click="sortType = 'testgroup_name'; sortReverse = !sortReverse">
+                    Группа
+                    <span ng-show="sortType == 'testgroup_name' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'testgroup_name' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
             <th>
                 <a href="#" ng-click="sortType = 'a_number'; sortReverse = !sortReverse">
                     А номер
@@ -64,6 +93,7 @@
                 <button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">MAIN</button>
                 <button type="button" class="btn btn-default btn-sm" ng-click="showTestReserve(item)">RESERVE</button>
             </td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.testgroup_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.a_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.b_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.gt_number}}</td>

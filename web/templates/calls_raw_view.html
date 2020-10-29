@@ -32,6 +32,18 @@
             <th width="5%">
                 Currency
             </th>
+            <th width="5%">
+                MCC
+            </th>
+            <th width="5%">
+                MNC
+            </th>
+            <th width="5%">
+                SIM Partner
+            </th>
+            <th width="5%">
+                Leg type
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -54,6 +66,10 @@
             <td>{{item.rate}}</td>
             <td>{{item.cost}}</td>
             <td>{{item.currency.currency}}</td>
+            <td>{{item.mcc}}</td>
+            <td>{{item.mnc}}</td>
+            <td>{{item.sim_imsi_profile_id}}</td>
+            <td>{{item.leg_type}}</td>
         </tr>
 
         </tbody>

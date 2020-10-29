@@ -5,6 +5,7 @@ namespace app\controllers\json\camel;
 use app\classes\JsonController;
 use app\classes\traits\TestResult;
 use app\models\ServerOcs;
+use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -25,6 +26,50 @@ class TestAuthController extends JsonController
     protected $deletePermission = 'camel_test_auth_delete';
     private $stepParamName = 'nodes';
 
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     * @throws HttpException
+     */
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can('camel_test_auth_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $modelName = $this->modelName;
+    
+        $searchArray = $this->request['search_array'];
+        
+        $testGroupId = isset($searchArray['group_id']) ? $searchArray['group_id'] : '';
+        
+        if ($testGroupId == '') {
+            $groupWhere = 'true';
+        } else {
+            $groupWhere = ['auth.camel_test_auth.camel_testgroup_id' => $testGroupId];
+        }
+        
+        $query = $modelName::find()
+                ->select(['auth.camel_test_auth.*', 'testgroup_name' => 'tg.group_name'])
+                ->leftJoin('auth.camel_testgroup tg', 'tg.id = auth.camel_test_auth.camel_testgroup_id')
+                ->where($groupWhere)
+                ->orderBy('name')
+                ->asArray();
+    
+        if (isset($searchArray['name']) && $searchArray['name']) {
+            $query->andWhere('name ilike :name');
+            $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
+        }
+    
+        if (isset($searchArray['id']) && $searchArray['id']) {
+            $query->andWhere('id = :id');
+            $query->addParams([':id' => $searchArray['id']]);
+        }
+        
+        $data = $query->all();
+        
+        return $data;
+    }
+    
     public function actionResult()
     {
         if (!\Yii::$app->user->can($this->listPermission)) {
