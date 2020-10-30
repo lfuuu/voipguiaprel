@@ -39,6 +39,9 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
     });
 
     $scope.save = function () {
+        if (!$scope.item.f_setup_cpc) {
+            $scope.item.cpc = null;
+        }
         if ($scope.item.type_id == $scope.TYPE_ID_AUTOMATIC) {
             $scope.item.route_case_id = null;
             $scope.item.release_reason_id = null;

@@ -24,6 +24,8 @@ use yii\db\Query;
  * @property string $object_comment
  * @property string $gn
  * @property string $ocpn
+ * @property boolean $f_setup_cpc
+ * @property string $cpc
  * @property
  */
 class Outcome extends \yii\db\ActiveRecord
@@ -60,8 +62,9 @@ class Outcome extends \yii\db\ActiveRecord
     {
         return [
             [['name','rn', 'gn','ocpn', 'header'], 'string', 'max' => 50],
+            [['cpc'], 'string'],
             [['type_id'], 'integer'],
-            [['sw_shared', 'outcome_rule_default_allowed'], 'boolean'],
+            [['sw_shared', 'outcome_rule_default_allowed', 'f_setup_cpc'], 'boolean'],
             [['route_case_id', 'release_reason_id', 'airp_id','route_case_1_id','route_case_2_id'], 'integer'],
             [['calling_station_id', 'called_station_id'], 'match', 'pattern' => '/^\d{1,20}$/'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
