@@ -942,6 +942,7 @@ class PricelistController extends BaseController
         
         $request = $apiUrl . http_build_query($apiParams);
         
+        ini_set('default_socket_timeout', 600);
         $response = file_get_contents($request);
         
         if (empty($response)) {
@@ -1094,6 +1095,7 @@ class PricelistController extends BaseController
                 
                 $request = $apiUrl . http_build_query($apiParams);
                 
+                ini_set('default_socket_timeout', 600);
                 $response = file_get_contents($request);
                 
                 if (empty($response)) {
