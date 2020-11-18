@@ -1463,6 +1463,37 @@ app.factory('TestGroup', function ($q, ApiLoader, $rootScope) {
   };
 });
 
+
+app.factory('LegType', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/leg-type/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+      list: function() {
+        if (promise !== undefined) return promise;
+  
+        var deferred = $q.defer();
+        if (list !== undefined) {
+          deferred.resolve(list);
+          return deferred.promise;
+        } else {
+          var data = {server_id: $rootScope.server.id};
+          ApiLoader.post(url + 'list', data)
+            .then(function(data){
+              list = data;
+              promise = undefined;
+              deferred.resolve(data);
+            }, function(data){
+              promise = undefined;
+              deferred.reject(data);
+            });
+          promise = deferred.promise;
+        }
+        return deferred.promise;
+      }
+    };
+  });
+
 app.factory('TestPricelistGroup', function ($q, ApiLoader, $rootScope) {
     var url = '/json/test-pricelist-group/';
     var list = undefined;
@@ -1982,7 +2013,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                               Attribute, Server, FmcTrunk, Cpc, Hub,
                               PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
                               MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-                              User, ServerOcs, SimImsi) {
+                              User, ServerOcs, SimImsi, LegType) {
   return {
     trunk: function () {
       return Trunk.list();
@@ -2085,6 +2116,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     },
     mvnoPartner: function () {
       return SimImsi.partner();
+    },
+    legType: function () {
+      return LegType.list();
     },
     testResult: function () {
       return [

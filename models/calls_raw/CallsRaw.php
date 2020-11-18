@@ -2,6 +2,7 @@
 
 namespace app\models\calls_raw;
 use app\models\billing\Client;
+use app\models\billing\LegType;
 use app\queries\calls_raw\CallsRawQuery;
 
 /**
@@ -36,5 +37,10 @@ class CallsRaw extends \yii\db\ActiveRecord
     public function getCurrency()
     {
         return $this->hasOne(Client::className(), ['id' => 'account_id'])->select(['id', 'currency']);
+    }
+    
+    public function getLegTypeName()
+    {
+        return $this->hasOne(LegType::className(), ['id' => 'leg_type'])->select(['id', 'note']);
     }
 }

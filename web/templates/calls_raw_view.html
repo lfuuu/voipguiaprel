@@ -69,11 +69,12 @@
             <td>{{item.mcc}}</td>
             <td>{{item.mnc}}</td>
             <td>{{item.sim_imsi_profile_id}}</td>
-            <td>{{item.leg_type}}</td>
+            <td><span popover="{{item.legTypeName.note}}" data-popover-trigger="mouseenter" popover-placement="top">{{item.leg_type}}</span></td>
         </tr>
 
         </tbody>
     </table>
+    <div style="display:inline-block;width:100%;word-wrap:break-word;">{{item}}</div>
 </div>
 <div class="modal-footer">
     <div class="pull-left">

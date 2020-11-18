@@ -1,4 +1,4 @@
-var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modalInstance, STAT_HOST, $window) {
+var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, $modalInstance, STAT_HOST, $window) {
     var serverId;
 
     if (params.server_id) {
@@ -114,6 +114,10 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
             }
         };
     }
+    
+    List.legType().then(function (data) {
+        $scope.legTypeList = data;
+    });
 
     $scope.addPriority = function () {
         $scope.item.priorities.push({prefixlist_id: '', priority: 0, priority_with_equal_price: 0});
@@ -174,7 +178,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, params, $modal
 
     $scope.locationIds = [
         {id: 1, name: 'Домашний регион'},
-        {id: 2, name: 'Национальный роуминг'},
+        {id: 2, name: 'Гостевой регион'},
         {id: 3, name: 'Международный роуминг'}
     ];
 

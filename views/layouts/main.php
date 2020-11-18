@@ -28,6 +28,23 @@ if ($_SERVER['REQUEST_URI'] == '/routing') {
     AppAsset::register($this);
 }
 
+try {
+    $handle = fopen("../.helm/def.sh", "r");
+    if ($handle) {
+        while (($line = fgets($handle)) !== false) {
+            if (strpos($line, 'TAG=') !== false) {
+                $version = trim(substr($line, 4));
+                break;
+            }
+        }
+        fclose($handle);
+    } else {
+        $version = 1;
+    }
+} catch (\Exception $e) {
+    $version = 2;
+}
+
 if (Yii::$app->user->identity) {
     $userPermissions = Yii::$app->authManager->getPermissionsByUser(Yii::$app->user->identity->getId());
 
@@ -110,6 +127,7 @@ if (Yii::$app->user->identity) {
                         <li><a href="<?=Url::to(['/health/health.html'])?>" target="_blank">Здоровье биллеров</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                        <li><a>Версия: <?= $version ?></a></li>
 <?php if ($userHasSettings) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/settings') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/settings'])?>">Настройки</a></li>
 <?php } ?>

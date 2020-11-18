@@ -162,8 +162,10 @@ class CdrController extends JsonController
                     'disconnect_cause_description' => 'dc.description',
                 ])
                 ->with('callsRaw.currency')
+                ->with('callsRaw.legTypeName')
                 ->innerJoin('public.server s', 's.id = c.server_id')
                 ->leftJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
+                ->leftJoin('billing.leg_type lt', 'lt.id = c.disconnect_cause')
                 ->where(['c.mcn_callid' => $this->request['mcn_callid']])
                 ->asArray()
                 ->all();
