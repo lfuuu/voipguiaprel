@@ -25,12 +25,16 @@ class PricelistLocation extends \yii\db\ActiveRecord
     const LOCATION_TYPE_GUEST = 2;
     const LOCATION_TYPE_MN = 3;
     const LOCATION_TYPE_MVNO = 4;
+    const LOCATION_TYPE_NONE = 5;
+    const LOCATION_TYPE_INCOMING = 6;
     
     const LOCATION_TYPE_NAMES = [
         self::LOCATION_TYPE_LOCAL => 'Домашний регион',
         self::LOCATION_TYPE_GUEST => 'Гостевой регион',
         self::LOCATION_TYPE_MN => 'Международный регион',
         self::LOCATION_TYPE_MVNO => 'MVNO',
+        self::LOCATION_TYPE_NONE => 'Не использовать',
+        self::LOCATION_TYPE_INCOMING => 'Входящие в международном регионе',
     ];
     
     public static function tableName()
