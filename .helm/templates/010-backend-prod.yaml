@@ -47,9 +47,9 @@ spec:
 {{ tuple "voip-gui-prod" . | werf_container_image | indent 8 }}
         resources:
           requests:
-            memory: 4G
+            memory: 8G
           limits:
-            memory: 6G
+            memory: 12G
         ports:
         - containerPort: 8080
           name: http
