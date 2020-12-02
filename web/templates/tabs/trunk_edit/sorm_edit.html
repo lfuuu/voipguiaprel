@@ -59,6 +59,20 @@
     </div>
 </div>
 
+<div ng-hide="!item.sorm.groups.includes('1')" class="form-group">
+    <label class="col-sm-2 control-label">Access транк</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="Access транк" ng-model="item.sorm.access_trunk" ng-disabled="!item.sorm.enabled"/>
+    </div>
+</div>
+
+<div ng-hide="!item.sorm.groups.includes('1')" class="form-group">
+    <label class="col-sm-2 control-label">Core транк</label>
+    <div class="col-sm-10">
+        <input class="form-control" placeholder="Core транк" ng-model="item.sorm.core_trunk" ng-disabled="!item.sorm.enabled"/>
+    </div>
+</div>
+
 <div ng-hide="!item.sorm.enabled" class="form-group">
     <div class="col-sm-12">
         <table class="table table-striped">

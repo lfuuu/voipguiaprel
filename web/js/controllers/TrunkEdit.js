@@ -50,6 +50,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
                     sorm_operator_id: data.trunkSorm[0].sorm_operator_id.replace('{', '').replace('}', '').split(','),
                     source_type_id: data.trunkSorm[0].source_type_id,
                     spc: data.trunkSorm[0].spc,
+                    access_trunk: data.trunkSorm[0].access_trunk,
+                    core_trunk: data.trunkSorm[0].core_trunk,
                     items: []
                 };
 

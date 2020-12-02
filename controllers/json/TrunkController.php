@@ -270,7 +270,8 @@ class TrunkController extends JsonController
 
             foreach ($data['items'] as $item) {
                 $this->processSormData($trunk, $item['old_name'], $data['name'], $data['ip_addr'], $item['is_show'], $data['groups'],
-                    $data['sorm_operator_id'], $data['source_type_id'], $data['spc'], $regionId, isset($item['object_comment']) ? $item['object_comment'] : null, isset($item['id']) ? $item['id'] : null);
+                    $data['sorm_operator_id'], $data['source_type_id'], $data['spc'], $data['access_trunk'], $data['core_trunk'],
+                    $regionId, isset($item['object_comment']) ? $item['object_comment'] : null, isset($item['id']) ? $item['id'] : null);
             }
         }
     }
@@ -278,7 +279,8 @@ class TrunkController extends JsonController
     private function processSormData (
         $trunk, $oldName, $name, $ipAddr, $isShow,
         $groups, $sormOperatorId, $sourceTypeId,
-        $spc, $regionId, $objectComment = null,
+        $spc, $accessTrunk, $coreTrunk,
+        $regionId, $objectComment = null,
         $id = null
     )
     {
@@ -306,6 +308,15 @@ class TrunkController extends JsonController
             $trunkSorm->ip_addr = $ipAddr ? $ipAddr : null;
             $trunkSorm->is_show = isset($isShow) ? $isShow : false;
             $trunkSorm->groups = $groups ? '{' . implode(',', $groups) . '}' : '{}';
+            
+            if (in_array(1, $groups)) {
+                $trunkSorm->access_trunk = $accessTrunk;
+                $trunkSorm->core_trunk = $coreTrunk;
+            } else {
+                $trunkSorm->access_trunk = '';
+                $trunkSorm->core_trunk = '';
+            }
+            
             $trunkSorm->old_name = $oldName;
             $trunkSorm->sorm_operator_id = $sormOperatorId ? '{' . implode(',', $sormOperatorId) . '}' : '{}';
             $trunkSorm->source_type_id = $sourceTypeId;
@@ -332,6 +343,14 @@ class TrunkController extends JsonController
                 'spc' => ($sourceTypeId == 3 ? $spc : ''),
                 'object_comment' => $objectComment
             ];
+            
+            if (in_array(1, $groups)) {
+                $dataToCreate['access_trunk'] = $accessTrunk;
+                $dataToCreate['core_trunk'] = $coreTrunk;
+            } else {
+                $dataToCreate['access_trunk'] = '';
+                $dataToCreate['core_trunk'] = '';
+            }
     
             $trunkSorm = TrunkSorm::create($dataToCreate);
             $trunkSorm->save();
