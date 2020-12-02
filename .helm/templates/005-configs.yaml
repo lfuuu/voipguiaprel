@@ -66,8 +66,10 @@ data:
         }
       }
     }
+{{- if (eq .Values.global.env "dev") }}
   .pgpass: |
 {{ .Files.Get ".werf/tmp/.pgpass" | indent 8 }}
+{{- end }}
   testdial_cfg.json: |
     {
       "ami": {
