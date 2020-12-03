@@ -1,44 +1,3 @@
-{{- if (eq .Values.use_ngnix_virtualserver "yes") }}
-
-apiVersion: k8s.nginx.org/v1
-kind: VirtualServer
-metadata:
-  name: {{ .Chart.Name }}-frontend
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    ingress.kubernetes.io/rewrite-target: /
-    nginx.org/client-max-body-size: 2048m
-spec:
-  host: {{ .Values.ci_url | quote }}
-  policies:
-  - name: webapp-internal-policy
-    namespace: kube-system
-  tls:
-    redirect:
-      enable: true
-  server-snippets: |
-    listen 443 ssl;
-    ssl_certificate /etc/nginx/secrets/wildcard;
-    ssl_certificate_key /etc/nginx/secrets/wildcard;
-    proxy_connect_timeout   6000s;
-    proxy_send_timeout      18000s;
-    proxy_read_timeout      18000s;
-  upstreams:
-  - name: upstream-{{ .Chart.Name }}-backend-prod
-    service: {{ .Chart.Name }}-backend-prod
-    port: 80
-    client-max-body-size: 2048m
-    connect-timeout: 6000s
-    read-timeout: 18000s
-    send-timeout: 18000s
-  routes:
-  - path: /
-    action:
-      pass: upstream-{{ .Chart.Name }}-backend-prod
-
-{{- else }}
-
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -50,6 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: 6000
     nginx.ingress.kubernetes.io/proxy-send-timeout: 18000
     nginx.ingress.kubernetes.io/proxy-read-timeout: 18000
+    nginx.ingress.kubernetes.io/proxy-body-size: 4096m
 spec:
   rules:
   - host: {{ .Values.ci_url | quote }}
@@ -63,5 +23,3 @@ spec:
           serviceName: {{ .Chart.Name }}-backend-prod
 {{- end }}
           servicePort: 80
-
-{{- end }}
