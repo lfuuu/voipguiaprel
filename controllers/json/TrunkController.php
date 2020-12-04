@@ -250,8 +250,8 @@ class TrunkController extends JsonController
                 throw new ErrorException('Sorm operator id must not be empty');
             }
 
-            if (empty($data['groups']) || (count($data['groups']) == 1 && $data['groups'][0] == '')) {
-                throw new ErrorException('Hosts must not be empty');
+            if (!isset($data['groups']) || empty($data['groups']) || (count($data['groups']) == 1 && $data['groups'][0] == '')) {
+                $data['groups'] = [];
             }
 
             if ($data['ip_addr'] && !filter_var($data['ip_addr'], FILTER_VALIDATE_IP)) {
@@ -270,7 +270,9 @@ class TrunkController extends JsonController
 
             foreach ($data['items'] as $item) {
                 $this->processSormData($trunk, $item['old_name'], $data['name'], $data['ip_addr'], $item['is_show'], $data['groups'],
-                    $data['sorm_operator_id'], $data['source_type_id'], $data['spc'], $data['access_trunk'], $data['core_trunk'],
+                    $data['sorm_operator_id'], $data['source_type_id'], $data['spc'],
+                    (isset($data['access_trunk']) ? $data['access_trunk'] : ''),
+                    (isset($data['core_trunk']) ? $data['core_trunk'] : ''),
                     $regionId, isset($item['object_comment']) ? $item['object_comment'] : null, isset($item['id']) ? $item['id'] : null);
             }
         }
