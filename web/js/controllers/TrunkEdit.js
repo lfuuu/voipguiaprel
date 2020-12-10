@@ -51,7 +51,9 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
                     source_type_id: data.trunkSorm[0].source_type_id,
                     spc: data.trunkSorm[0].spc,
                     access_trunk: data.trunkSorm[0].access_trunk,
+                    access_trunk_ip: data.trunkSorm[0].access_trunk_ip,
                     core_trunk: data.trunkSorm[0].core_trunk,
+                    core_trunk_ip: data.trunkSorm[0].core_trunk_ip,
                     items: []
                 };
 
@@ -262,10 +264,10 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
         $scope.item.numberPreprocessing.splice(index, 1);
     };
 
-    $scope.validateIPAddress= function (ip) {
+    $scope.validateIPAddress= function (ip, message) {
         if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip))
         {
-            alert("Некорректный IP-адрес");
+            alert(message);
             return false;
         } else {
             return true;
@@ -278,11 +280,23 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
         }
 
         if (
-            $scope.item.sorm.enabled &&
-            $scope.item.sorm.ip_addr != '' &&
-            $scope.item.sorm.ip_addr != null &&
-            (typeof $scope.item.sorm.ip_addr != 'undefined') &&
-            !$scope.validateIPAddress($scope.item.sorm.ip_addr)
+            $scope.item.sorm.enabled && 
+            (
+                $scope.item.sorm.ip_addr != '' &&
+                $scope.item.sorm.ip_addr != null &&
+                (typeof $scope.item.sorm.ip_addr != 'undefined') &&
+                !$scope.validateIPAddress($scope.item.sorm.ip_addr, "Некорректный IP-адрес")
+                ||
+                $scope.item.sorm.access_trunk_ip != '' &&
+                $scope.item.sorm.access_trunk_ip != null &&
+                (typeof $scope.item.sorm.access_trunk_ip != 'undefined') &&
+                !$scope.validateIPAddress($scope.item.sorm.access_trunk_ip, "Некорректный Access транк IP")
+                ||
+                $scope.item.sorm.core_trunk_ip != '' &&
+                $scope.item.sorm.core_trunk_ip != null &&
+                (typeof $scope.item.sorm.core_trunk_ip != 'undefined') &&
+                !$scope.validateIPAddress($scope.item.sorm.core_trunk_ip, "Некорректный Core транк IP")
+            )
         ) {
             return;
         }

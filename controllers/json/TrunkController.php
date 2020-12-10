@@ -257,6 +257,14 @@ class TrunkController extends JsonController
             if ($data['ip_addr'] && !filter_var($data['ip_addr'], FILTER_VALIDATE_IP)) {
                 throw new ErrorException('IP address is incorrect');
             }
+            
+            if ($data['access_trunk_ip'] && !filter_var($data['access_trunk_ip'], FILTER_VALIDATE_IP)) {
+                throw new ErrorException('Access trunk IP is incorrect');
+            }
+            
+            if ($data['core_trunk_ip'] && !filter_var($data['core_trunk_ip'], FILTER_VALIDATE_IP)) {
+                throw new ErrorException('Core trunk IP is incorrect');
+            }
 
             $idsToStay = [];
     
@@ -272,7 +280,9 @@ class TrunkController extends JsonController
                 $this->processSormData($trunk, $item['old_name'], $data['name'], $data['ip_addr'], $item['is_show'], $data['groups'],
                     $data['sorm_operator_id'], $data['source_type_id'], $data['spc'],
                     (isset($data['access_trunk']) ? $data['access_trunk'] : ''),
+                    (isset($data['access_trunk_ip']) ? $data['access_trunk_ip'] : ''),
                     (isset($data['core_trunk']) ? $data['core_trunk'] : ''),
+                    (isset($data['core_trunk_ip']) ? $data['core_trunk_ip'] : ''),
                     $regionId, isset($item['object_comment']) ? $item['object_comment'] : null, isset($item['id']) ? $item['id'] : null);
             }
         }
@@ -281,7 +291,7 @@ class TrunkController extends JsonController
     private function processSormData (
         $trunk, $oldName, $name, $ipAddr, $isShow,
         $groups, $sormOperatorId, $sourceTypeId,
-        $spc, $accessTrunk, $coreTrunk,
+        $spc, $accessTrunk, $accessTrunkIp, $coreTrunk, $coreTrunkIp,
         $regionId, $objectComment = null,
         $id = null
     )
@@ -313,10 +323,14 @@ class TrunkController extends JsonController
             
             if (in_array(1, $groups)) {
                 $trunkSorm->access_trunk = $accessTrunk;
+                $trunkSorm->access_trunk_ip = $accessTrunkIp;
                 $trunkSorm->core_trunk = $coreTrunk;
+                $trunkSorm->core_trunk_ip = $coreTrunkIp;
             } else {
                 $trunkSorm->access_trunk = '';
+                $trunkSorm->access_trunk_ip = '';
                 $trunkSorm->core_trunk = '';
+                $trunkSorm->core_trunk_ip = '';
             }
             
             $trunkSorm->old_name = $oldName;
@@ -348,10 +362,14 @@ class TrunkController extends JsonController
             
             if (in_array(1, $groups)) {
                 $dataToCreate['access_trunk'] = $accessTrunk;
+                $dataToCreate['access_trunk_ip'] = $accessTrunkIp;
                 $dataToCreate['core_trunk'] = $coreTrunk;
+                $dataToCreate['core_trunk_ip'] = $coreTrunkIp;
             } else {
                 $dataToCreate['access_trunk'] = '';
+                $dataToCreate['access_trunk_ip'] = '';
                 $dataToCreate['core_trunk'] = '';
+                $dataToCreate['core_trunk_ip'] = '';
             }
     
             $trunkSorm = TrunkSorm::create($dataToCreate);

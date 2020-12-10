@@ -61,15 +61,23 @@
 
 <div ng-hide="!item.sorm.groups.includes('1')" class="form-group">
     <label class="col-sm-2 control-label">Access транк</label>
-    <div class="col-sm-10">
+    <div class="col-sm-4">
         <input class="form-control" placeholder="Access транк" ng-model="item.sorm.access_trunk" ng-disabled="!item.sorm.enabled"/>
+    </div>
+    <label class="col-sm-2 control-label">Access транк IP</label>
+    <div class="col-sm-4">
+        <input class="form-control" placeholder="Access транк IP" ng-model="item.sorm.access_trunk_ip" ng-disabled="!item.sorm.enabled"/>
     </div>
 </div>
 
 <div ng-hide="!item.sorm.groups.includes('1')" class="form-group">
     <label class="col-sm-2 control-label">Core транк</label>
-    <div class="col-sm-10">
+    <div class="col-sm-4">
         <input class="form-control" placeholder="Core транк" ng-model="item.sorm.core_trunk" ng-disabled="!item.sorm.enabled"/>
+    </div>
+    <label class="col-sm-2 control-label">Core транк IP</label>
+    <div class="col-sm-4">
+        <input class="form-control" placeholder="Core транк IP" ng-model="item.sorm.core_trunk_ip" ng-disabled="!item.sorm.enabled"/>
     </div>
 </div>
 
