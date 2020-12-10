@@ -52,8 +52,10 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
                     spc: data.trunkSorm[0].spc,
                     access_trunk: data.trunkSorm[0].access_trunk,
                     access_trunk_ip: data.trunkSorm[0].access_trunk_ip,
+                    access_trunk_name: data.trunkSorm[0].access_trunk_name,
                     core_trunk: data.trunkSorm[0].core_trunk,
                     core_trunk_ip: data.trunkSorm[0].core_trunk_ip,
+                    core_trunk_name: data.trunkSorm[0].core_trunk_name,
                     items: []
                 };
 

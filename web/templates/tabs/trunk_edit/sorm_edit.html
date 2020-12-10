@@ -61,23 +61,31 @@
 
 <div ng-hide="!item.sorm.groups.includes('1')" class="form-group">
     <label class="col-sm-2 control-label">Access транк</label>
-    <div class="col-sm-4">
+    <div class="col-sm-2">
         <input class="form-control" placeholder="Access транк" ng-model="item.sorm.access_trunk" ng-disabled="!item.sorm.enabled"/>
     </div>
-    <label class="col-sm-2 control-label">Access транк IP</label>
-    <div class="col-sm-4">
-        <input class="form-control" placeholder="Access транк IP" ng-model="item.sorm.access_trunk_ip" ng-disabled="!item.sorm.enabled"/>
+    <label class="col-sm-1 control-label" style="max-width: 30px">IP</label>
+    <div class="col-sm-2">
+        <input class="form-control" placeholder="IP" ng-model="item.sorm.access_trunk_ip" ng-disabled="!item.sorm.enabled"/>
+    </div>
+    <label class="col-sm-1 control-label" style="max-width: 80px">Название</label>
+    <div class="col-sm-5">
+        <input class="form-control" placeholder="Название" ng-model="item.sorm.access_trunk_name" ng-disabled="!item.sorm.enabled"/>
     </div>
 </div>
 
 <div ng-hide="!item.sorm.groups.includes('1')" class="form-group">
     <label class="col-sm-2 control-label">Core транк</label>
-    <div class="col-sm-4">
+    <div class="col-sm-2">
         <input class="form-control" placeholder="Core транк" ng-model="item.sorm.core_trunk" ng-disabled="!item.sorm.enabled"/>
     </div>
-    <label class="col-sm-2 control-label">Core транк IP</label>
-    <div class="col-sm-4">
-        <input class="form-control" placeholder="Core транк IP" ng-model="item.sorm.core_trunk_ip" ng-disabled="!item.sorm.enabled"/>
+    <label class="col-sm-1 control-label" style="max-width: 30px">IP</label>
+    <div class="col-sm-2">
+        <input class="form-control" placeholder="IP" ng-model="item.sorm.core_trunk_ip" ng-disabled="!item.sorm.enabled"/>
+    </div>
+    <label class="col-sm-1 control-label" style="max-width: 80px">Название</label>
+    <div class="col-sm-5">
+        <input class="form-control" placeholder=Название ng-model="item.sorm.core_trunk_name" ng-disabled="!item.sorm.enabled"/>
     </div>
 </div>
 
