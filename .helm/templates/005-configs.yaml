@@ -3,8 +3,6 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-config-files
 data:
-  php.ini: |
-    memory_limit = 4G
   nginx.conf: |
     user nginx;
     worker_processes 2;

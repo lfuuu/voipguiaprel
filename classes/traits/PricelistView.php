@@ -133,13 +133,37 @@ trait PricelistView
                         $filterBTextA = self::formFilterText($a, 'pfb__', $idArrays);
                         $filterBTextB = self::formFilterText($b, 'pfb__', $idArrays);
                         
-                        return strcmp($filterBTextA, $filterBTextB);
+                        $compare = strcmp($filterBTextA, $filterBTextB);
+                        
+                        if ($compare === 0) {
+                            if ($a['pfb__id'] > $b['pfb__id']) {
+                                return 1;
+                            } elseif ($a['pfb__id'] < $b['pfb__id']) {
+                                return -1;
+                            } else {
+                                return 0;
+                            }
+                        } else {
+                            return $compare;
+                        }
                     }
                 } else {
                     $filterATextA = self::formFilterText($a, 'pfa__', $idArrays);
                     $filterATextB = self::formFilterText($b, 'pfa__', $idArrays);
                     
-                    return strcmp($filterATextA, $filterATextB);
+                    $compare = strcmp($filterATextA, $filterATextB);
+                    
+                    if ($compare === 0) {
+                        if ($a['pfa__id'] > $b['pfa__id']) {
+                            return 1;
+                        } elseif ($a['pfa__id'] < $b['pfa__id']) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        return $compare;
+                    }
                 }
             } else {
                 $isBasicA = ($a['pl__id'] == $a['p__basic_pricelist_location_id']);
@@ -148,7 +172,19 @@ trait PricelistView
                 $locationTextA = self::formLocationText($a, $isBasicA, $idArrays);
                 $locationTextB = self::formLocationText($b, $isBasicB, $idArrays);
                 
-                return strcmp($locationTextA, $locationTextB);
+                $compare = strcmp($locationTextA, $locationTextB);
+                
+                if ($compare === 0) {
+                    if ($a['pl__id'] > $b['pl__id']) {
+                        return 1;
+                    } elseif ($a['pl__id'] < $b['pl__id']) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    return $compare;
+                }
             }
         });
     }

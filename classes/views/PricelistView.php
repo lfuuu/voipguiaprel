@@ -83,7 +83,7 @@ class PricelistView
         $filterAKey = 0;
         $filterBKey = 0;
         
-        self::sortAlphabetically($queryResult, $idArrays);
+        // self::sortAlphabetically($queryResult, $idArrays);
         
         foreach ($queryResult as $queryItem) {
             if (empty($result)) {
