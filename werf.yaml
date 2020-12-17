@@ -240,7 +240,9 @@ ansible:
           echo '  Require all granted'; \
           echo ''; \
           echo '</Directory>'; \
-        } >> /etc/httpd/conf/httpd.conf 
+        } >> /etc/httpd/conf/httpd.conf \
+        && sed -i -e 's/^memory_limit.*/memory_limit = 4G/' /etc/php.ini \
+        && sed -i -e 's/^upload_max_filesize.*/upload_max_filesize = 500M/' /etc/php.ini
       args:
         chdir: /root
 ---

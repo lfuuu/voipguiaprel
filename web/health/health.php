@@ -49,7 +49,7 @@ foreach ($config['resources'] as $resource) {
     $data = getData($url);
     $dataJSON = json_decode($data, $assoc = true);
 
-    if (json_last_error() === JSON_ERROR_NONE) {
+    if (json_last_error() === JSON_ERROR_NONE && is_array($dataJSON)) {
         $result[$title] = array_merge($dataJSON, [
             'resourceUrl' => $url,
         ]);

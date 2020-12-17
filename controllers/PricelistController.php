@@ -403,6 +403,7 @@ class PricelistController extends BaseController
                     ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
             }
         }
+
         return $countryNames;
     }
 

@@ -193,6 +193,7 @@ class SettingsController extends JsonController
                 'trunk_groups' => (!empty($mvnoLink['trunk_groups']) ? '{' . implode(',', $mvnoLink['trunk_groups']) . '}' : null),
                 'number_capacity' => (!empty($mvnoLink['number_capacity']) ? '{' . implode(',', $mvnoLink['number_capacity']) . '}' : null),
                 'ported_number_prefixes' => (!empty($mvnoLink['ported_number_prefixes']) ? '{' . implode(',', $mvnoLink['ported_number_prefixes']) . '}' : null),
+                'excluded_number_prefixes' => (!empty($mvnoLink['excluded_number_prefixes']) ? '{' . implode(',', $mvnoLink['excluded_number_prefixes']) . '}' : null),
                 'routing_number' => $mvnoLink['routing_number']
             ];
             
@@ -213,6 +214,7 @@ class SettingsController extends JsonController
                 'trunk_groups' => (!is_null($mvnoLink->trunk_groups) ? explode(',', str_replace(['{', '}'], '', $mvnoLink->trunk_groups)) : []),
                 'number_capacity' => (!is_null($mvnoLink->number_capacity) ? explode(',', str_replace(['{', '}'], '', $mvnoLink->number_capacity)) : []),
                 'ported_number_prefixes' => (!is_null($mvnoLink->ported_number_prefixes) ? explode(',', str_replace(['{', '}'], '', $mvnoLink->ported_number_prefixes)) : []),
+                'excluded_number_prefixes' => (!is_null($mvnoLink->excluded_number_prefixes) ? explode(',', str_replace(['{', '}'], '', $mvnoLink->excluded_number_prefixes)) : []),
                 'routing_number' => $mvnoLink->routing_number
             ];
         }

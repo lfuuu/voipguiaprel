@@ -121,4 +121,35 @@ trait PricelistView
         
         return implode(', ', $nameArray);
     }
+    
+    public static function sortAlphabetically(&$arrayToSort, $idArrays)
+    {
+        usort($arrayToSort, function($a, $b) use ($idArrays) {
+            if ($a['pl__id'] == $b['pl__id']) {
+                if ($a['pfa__id'] == $b['pfa__id']) {
+                    if ($a['pfb__id'] == $b['pfb__id']) {
+                        return strcmp($a['ppp__prefix_b'] . ' ', $b['ppp__prefix_b'] . ' ');
+                    } else {
+                        $filterBTextA = self::formFilterText($a, 'pfb__', $idArrays);
+                        $filterBTextB = self::formFilterText($b, 'pfb__', $idArrays);
+                        
+                        return strcmp($filterBTextA, $filterBTextB);
+                    }
+                } else {
+                    $filterATextA = self::formFilterText($a, 'pfa__', $idArrays);
+                    $filterATextB = self::formFilterText($b, 'pfa__', $idArrays);
+                    
+                    return strcmp($filterATextA, $filterATextB);
+                }
+            } else {
+                $isBasicA = ($a['pl__id'] == $a['p__basic_pricelist_location_id']);
+                $isBasicB = ($b['pl__id'] == $b['p__basic_pricelist_location_id']);
+                
+                $locationTextA = self::formLocationText($a, $isBasicA, $idArrays);
+                $locationTextB = self::formLocationText($b, $isBasicB, $idArrays);
+                
+                return strcmp($locationTextA, $locationTextB);
+            }
+        });
+    }
 }

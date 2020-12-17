@@ -80,7 +80,8 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
   };
   
   $scope.addMvnoLink = function () {
-    $scope.item.mvno_link.push({number_capacity: [], mvno_trunk_ids: [], trunk_groups: [], ported_number_prefixes: [], routing_number: ''});
+    $scope.item.mvno_link.push({number_capacity: [], mvno_trunk_ids: [], trunk_groups: [],
+        ported_number_prefixes: [], excluded_number_prefixes: [], routing_number: ''});
   };
 
   $scope.removeMvnoLink = function (index) {

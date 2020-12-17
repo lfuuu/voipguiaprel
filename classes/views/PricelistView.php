@@ -83,6 +83,8 @@ class PricelistView
         $filterAKey = 0;
         $filterBKey = 0;
         
+        self::sortAlphabetically($queryResult, $idArrays);
+        
         foreach ($queryResult as $queryItem) {
             if (empty($result)) {
                 $result[$counter] = ['is_pricelist_header' => true];
@@ -256,6 +258,8 @@ class PricelistView
         $locationKey = 0;
         $filterAKey = 0;
         $filterBKey = 0;
+        
+        self::sortAlphabetically($queryResult, $idArrays);
         
         foreach ($queryResult as $queryItem) {
             if (empty($result)) {

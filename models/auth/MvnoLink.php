@@ -12,6 +12,7 @@ use app\queries\auth\MvnoLinkQuery;
  * @property string $number_capacity
  * @property string $routing_number
  * @property string $ported_number_prefixes
+ * @property string $excluded_number_prefixes
  */
 class MvnoLink extends \yii\db\ActiveRecord
 {
@@ -35,7 +36,8 @@ class MvnoLink extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['mvno_trunk_ids', 'trunk_groups', 'number_capacity', 'routing_number', 'ported_number_prefixes'], 'string'],
+            [['mvno_trunk_ids', 'trunk_groups', 'number_capacity', 'routing_number',
+                'ported_number_prefixes', 'excluded_number_prefixes'], 'string'],
             [['server_id', 'mvno_partner_id'], 'integer'],
         ];
     }
