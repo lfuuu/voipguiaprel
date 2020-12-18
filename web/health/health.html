@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <script type="text/javascript">
         (function () {
 
@@ -22,13 +23,14 @@
                     'STATUS_UNKNOWN': 2,
                     'STATUS_WARNING': 3,
                     'STATUS_CRITICAL': 4,
-                    'STATUS_ERROR': 4
+                    'STATUS_ERROR': 4,
+                    'STATUS_NO_RESPONSE': 5
                 },
 
                 request: null,
                 $monitor: null,
                 $lastUpdate: null,
-		
+
                 errors: [],
                 warnings: [],
                 criticalErrors: [],
@@ -37,7 +39,7 @@
                     initSeconds = parseInt(initSeconds, 10);
 
                     var hours = Math.floor(initSeconds / 3600),
-                            minutes = Math.floor((initSeconds - (hours * 3600)) / 60);
+                        minutes = Math.floor((initSeconds - (hours * 3600)) / 60);
 
                     if (hours < 10) {
                         hours = '0' + hours;
@@ -152,19 +154,19 @@
                 setBlock: function (title, params) {
                     var
                         $block = this.get('#' + title),
-                        $header = this.create('div', {class: 'header'}),
-                        $headerInfo = this.create('div', {class: 'header info'}),
-                        $footerInfo = this.create('div', {class: 'footer info'}),
-                        $content = this.create('div', {class: 'content'}),
+                        $header = this.create('div', { class: 'header' }),
+                        $headerInfo = this.create('div', { class: 'header info' }),
+                        $footerInfo = this.create('div', { class: 'footer info' }),
+                        $content = this.create('div', { class: 'content' }),
                         maxPriority = 0,
                         instanceId = parseInt(params.instanceId, 10);
 
                     for (var index in params) {
                         if (
-                                params.hasOwnProperty(index)
-                                && index.indexOf('item') === 0
-                                && typeof params[index] == 'object'
-                                && params[index].statusId !== 'STATUS_OK'
+                            params.hasOwnProperty(index)
+                            && index.indexOf('item') === 0
+                            && typeof params[index] == 'object'
+                            && params[index].statusId !== 'STATUS_OK'
                         ) {
                             $content.appendChild(
                                 this.create('div', {
@@ -216,7 +218,7 @@
                     );
 
                     if ($content.className == 'info error') {
-			health.criticalErrors.push($block);
+                        health.criticalErrors.push($block);
                         return false;
                     }
 
@@ -228,7 +230,7 @@
                         // Billing resources
                         views.billing(this, $block, params);
                     }
-                    
+
                     if ($block.className == 'block status-4') {
                         health.errors.push($block);
                     } else if ($block.className == 'block status-3') {
@@ -236,97 +238,99 @@
                     }
 
                 },
-                sortBlocks: function() {
-		    health.warnings.forEach(function(warning) {
+                sortBlocks: function () {
+                    health.warnings.forEach(function (warning) {
                         health.$monitor.insertBefore(warning, health.$monitor.firstChild);
                     });
-                    health.errors.forEach(function(error) {
+                    health.errors.forEach(function (error) {
                         health.$monitor.insertBefore(error, health.$monitor.firstChild);
                     });
-                    health.criticalErrors.forEach(function(criticalError) {
+                    health.criticalErrors.forEach(function (criticalError) {
                         health.$monitor.insertBefore(criticalError, health.$monitor.firstChild);
                     });
-		    health.warnings = [];
-		    health.errors = [];
-		    health.criticalErrors = [];
+                    health.warnings = [];
+                    health.errors = [];
+                    health.criticalErrors = [];
                 }
             },
 
-            views = {
-                billing: function ($health, $block, params) {
-                    var
-                        $headerInfo = $block.querySelector('div.header.info'),
-                        $footerInfo = $block.querySelector('div.footer.info'),
-                        regions = [];
+                views = {
+                    billing: function ($health, $block, params) {
+                        var
+                            $headerInfo = $block.querySelector('div.header.info'),
+                            $footerInfo = $block.querySelector('div.footer.info'),
+                            regions = [];
 
-                    if (params.regionList instanceof Object) {
-                        if (Object.keys(params.regionList).length > 1) {
-                            for (var index in params.regionList) {
-                                 if (
-                                     params.regionList.hasOwnProperty(index)
-                                    && typeof params.regionList[index] == 'object'
-                                    && params.regionList[index].regionId != params.instanceId
-                                 ) {
-                                    regions.push(params.regionList[index].regionName);
-                                 }
+                        if (params.regionList instanceof Object) {
+                            if (Object.keys(params.regionList).length > 1) {
+                                for (var index in params.regionList) {
+                                    if (
+                                        params.regionList.hasOwnProperty(index)
+                                        && typeof params.regionList[index] == 'object'
+                                        && params.regionList[index].regionId != params.instanceId
+                                    ) {
+                                        regions.push(params.regionList[index].regionName);
+                                    }
+                                }
+                            } else {
+                                regions.push(params.regionList[0].regionName);
                             }
-                        } else {
-                            regions.push(params.regionList[0].regionName);
+
+                            $headerInfo.appendChild(
+                                $health.create('div', {
+                                    class: 'pull-left',
+                                    text: regions.join(', ')
+                                })
+                            );
                         }
 
-                        $headerInfo.appendChild(
+                        if (params.autoLockFinance !== undefined) {
+                            $headerInfo.appendChild(
+                                $health.create('div', {
+                                    class: 'pull-right' + (!params.autoLockFinance ? ' icon-dollar enabled' : '')
+                                })
+                            );
+                        }
+
+                        $footerInfo.appendChild(
                             $health.create('div', {
                                 class: 'pull-left',
-                                text: regions.join(', ')
+                                text: ("currentCalls" in params ? 'Calls: ' + params.currentCalls : '')
                             })
                         );
-                    }
-
-                    if (params.autoLockFinance !== undefined) {
-                        $headerInfo.appendChild(
+                        $footerInfo.appendChild(
                             $health.create('div', {
-                                class: 'pull-right' + (!params.autoLockFinance ? ' icon-dollar enabled' : '')
+                                class: 'pull-right',
+                                text: ("runTime" in params ? 'Runtime: ' + $health.getTimeFormat(params.runTime) : '')
                             })
                         );
-                    }
+                    },
+                    extends: function ($health, $block, params) {
+                        var $footerInfo = $block.querySelector('div.footer.info');
 
-                    $footerInfo.appendChild(
-                        $health.create('div', {
-                            class: 'pull-left',
-                            text: ("currentCalls" in params ? 'Calls: ' + params.currentCalls : '')
-                        })
-                    );
-                    $footerInfo.appendChild(
-                        $health.create('div', {
-                            class: 'pull-right',
-                            text: ("runTime" in params ? 'Runtime: ' + $health.getTimeFormat(params.runTime) : '' )
-                        })
-                    );
-                },
-                extends: function ($health, $block, params) {
-                    var $footerInfo = $block.querySelector('div.footer.info');
-
-                    if ("extendedInfo" in params) {
-                        $footerInfo.innerHTML = params.extendedInfo;
+                        if ("extendedInfo" in params) {
+                            $footerInfo.innerHTML = params.extendedInfo;
+                        }
                     }
-                }
-            };
+                };
 
             document.addEventListener('DOMContentLoaded', function () {
                 health.init();
-		health.sortBlocks();
+                health.sortBlocks();
                 setInterval(function () {
                     health.load();
-		    health.sortBlocks();
+                    health.sortBlocks();
                 }, health.requestTimeout);
             });
         })();
     </script>
     <link href="health.css" rel="stylesheet" />
 </head>
+
 <body>
     <div id="monitor">
         <div id="last-update" class="info text"></div>
     </div>
 </body>
+
 </html>

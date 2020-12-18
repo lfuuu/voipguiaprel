@@ -54,7 +54,18 @@ foreach ($config['resources'] as $resource) {
             'resourceUrl' => $url,
         ]);
     } else {
-        $result[$title] = $data;
+        if ($data == '') {
+            $result[$title] = [
+                'item0' => [
+                    'statusId' => 'STATUS_NO_RESPONSE',
+                    'statusMessage' => 'Сервис недоступен'
+                ],
+                'instanceId' => 10,
+                'resourceUrl' => $url,
+            ];
+        } else {
+            $result[$title] = $data;
+        }
     }
 }
 
