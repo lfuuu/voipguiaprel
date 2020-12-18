@@ -12,6 +12,7 @@ use Yii;
  * @property string $name
  * @property string $note
  * @property string $number_capacity
+ * @property string $excluded_number_capacity
  * @property string $trunk_groups
  * @property integer $market_place_id
  *
@@ -37,7 +38,7 @@ class Hub extends \yii\db\ActiveRecord
         return [
             [['dt'], 'safe'],
             [['name'], 'required'],
-            [['note', 'number_capacity', 'trunk_groups'], 'string'],
+            [['note', 'number_capacity', 'excluded_number_capacity', 'trunk_groups'], 'string'],
             [['name'], 'string', 'max' => 50],
             [['market_place_id'], 'integer']
         ];

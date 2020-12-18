@@ -356,27 +356,19 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Списки префиксов</label>
                     <div class="col-sm-10">
-                        <table class="table table-striped">
-                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.hub_number_capacity">
-                            <tr ng-repeat="line in item.hub_number_capacity">
-                                <td width="90%">
-                                    <select-box list="prefixlist" model="line.id" placeholder="Выберите"></select-box>
-                                </td>
-                                <td width="10%">
-                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removePrefixlist($index)"></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="7">
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="addPrefixlist()"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
+                        <select-box list="prefixlist" model="item.hub_number_capacity" multiple="multiple" placeholder="Выберите"
+                                required="false"></select-box>
                     </div>
                 </div>
+                
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Исключить из номерной емкости</label>
+                    <div class="col-sm-10">
+                        <select-box list="prefixlist" model="item.hub_excluded_number_capacity" multiple="multiple" placeholder="Выберите"
+                                required="false"></select-box>
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Группы транков</label>
                     <div class="col-sm-10">

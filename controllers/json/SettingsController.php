@@ -21,16 +21,13 @@ class SettingsController extends JsonController
         $hub = Hub::findOne($server->hub_id);
         
         $hubNumberCapacityFormatted = [];
+        $hubExcludedNumberCapacityFormatted = [];
         $prefixlistBlock = [];
         $trunkGroups = '';
         
         if (isset($hub)) {
-            if ($hub->number_capacity && $hub->number_capacity !== '{}') {
-                $hubNumberCapacity = explode(',', str_replace(['{', '}'], '', $hub->number_capacity));
-                foreach ($hubNumberCapacity as $hubNumberCapacityItem) {
-                    $hubNumberCapacityFormatted[] = ['id' => $hubNumberCapacityItem];
-                }
-            }
+            $hubNumberCapacityFormatted = (!is_null($hub->number_capacity) ? explode(',', str_replace(['{', '}'], '', $hub->number_capacity)) : []);
+            $hubExcludedNumberCapacityFormatted = (!is_null($hub->excluded_number_capacity) ? explode(',', str_replace(['{', '}'], '', $hub->excluded_number_capacity)) : []);
             
             $trunkGroups = $hub->trunk_groups;
         }
@@ -88,6 +85,7 @@ class SettingsController extends JsonController
             'hub_id' => $server->hub_id,
             'prefixlist_block' => $prefixlistBlock,
             'hub_number_capacity' => $hubNumberCapacityFormatted,
+            'hub_excluded_number_capacity' => $hubExcludedNumberCapacityFormatted,
             'trunk_groups' => $trunkGroups,
             'rn_replace_prefixlist_id' => $server->rn_replace_prefixlist_id,
             'fsb_numa_blacklist_ids' => $server->fsb_numa_blacklist_ids,
@@ -158,11 +156,11 @@ class SettingsController extends JsonController
             
             if (isset($hub)) {
                 if (isset($this->request['hub_number_capacity'])) {
-                    $hubNumberCapacityArray = [];
-                    foreach ($this->request['hub_number_capacity'] as $numberCapacity) {
-                        $hubNumberCapacityArray[] = $numberCapacity['id'];
-                    }
-                    $hub->number_capacity = '{' . implode(',', $hubNumberCapacityArray) . '}';
+                    $hub->number_capacity = (!empty($this->request['hub_number_capacity']) ? '{' . implode(',', $this->request['hub_number_capacity']) . '}' : null);
+                }
+                
+                if (isset($this->request['hub_excluded_number_capacity'])) {
+                    $hub->excluded_number_capacity = (!empty($this->request['hub_excluded_number_capacity']) ? '{' . implode(',', $this->request['hub_excluded_number_capacity']) . '}' : null);
                 }
     
                 if (isset($this->request['trunk_groups'])) {
