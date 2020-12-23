@@ -5,6 +5,7 @@ namespace app\classes\views;
 use app\models\billing_uu\PricelistPrefixPrice;
 use app\models\billing_uu\PricelistLocation;
 use app\classes\traits\PricelistView as PricelistViewTrait;
+use yii\db\Expression;
 use yii\db\Query;
 
 class PricelistView
@@ -283,7 +284,7 @@ class PricelistView
             
             if (!isset($result[$filterAKey]['is_filter_a_header']) || ($result[$filterAKey]['is_filter_a_header'] && $result[$filterAKey]['filter_a_id'] != $queryItem['pfa__id'])) {
                 $realCount = (new Query())
-                    ->select('prefix_b')
+                    ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
                     ->distinct()
                     ->from('billing_uu.pricelist_prefix_price')
                     ->where('pricelist_filter_b_id = :b_id')
@@ -311,7 +312,7 @@ class PricelistView
             
             if (!isset($result[$filterBKey]['is_filter_b_header']) || ($result[$filterBKey]['is_filter_b_header'] && $result[$filterBKey]['filter_b_id'] != $queryItem['pfb__id'])) {
                 $realCount = (new Query())
-                    ->select('prefix_b')
+                    ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
                     ->distinct()
                     ->from('billing_uu.pricelist_prefix_price')
                     ->where('pricelist_filter_b_id = :b_id')
@@ -353,7 +354,7 @@ class PricelistView
                     $counter++;
                     if (($counter - $filterBKey) == PricelistPrefixPrice::PAGE_LIMIT) {
                         $count = (new Query())
-                        ->select('prefix_b')
+                        ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
                         ->distinct()
                         ->from('billing_uu.pricelist_prefix_price')
                         ->where('pricelist_filter_b_id = :b_id')
