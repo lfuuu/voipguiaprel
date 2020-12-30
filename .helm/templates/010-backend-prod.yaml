@@ -94,6 +94,17 @@ spec:
           name: {{ .Chart.Name }}-config-files
       - name: shared-healthdata
         emptyDir: {}
+{{- if (eq .Values.global.env "prod") }}        
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: workertype
+                operator: In
+                values:
+                - virtual
+{{- end }}        
 ---
 apiVersion: v1
 kind: Service
