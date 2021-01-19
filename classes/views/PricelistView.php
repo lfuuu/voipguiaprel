@@ -345,6 +345,7 @@ class PricelistView
                     if ($result[$i]['prefix_b'] == $queryItem['ppp__prefix_b'] . ' ') {
                         $result[$i]['prefixes'][] = self::createPrefixItem($queryItem, $result[$i]['prefixes']);
                         usort($result[$i]['prefixes'], array(self::class, 'sortPrefixes'));
+                        self::recalcPrefixesDynamics($result[$i]['prefixes']);
                         $isPrefixSet = true;
                         break;
                     }
@@ -376,6 +377,24 @@ class PricelistView
     private static function sortPrefixes($a, $b)
     {
         return $a['date_from'] > $b['date_from'];
+    }
+    
+    private static function recalcPrefixesDynamics(&$prefixes)
+    {
+        for ($i = 0; $i < count($prefixes); $i++) {
+            if ($i == 0) {
+                $prefixes[$i]['price_change'] = 'none';
+                continue;
+            }
+            
+            if ($prefixes[$i - 1]['b_number_price'] > $prefixes[$i]['b_number_price']) {
+                $prefixes[$i]['price_change'] = 'decrease';
+            } elseif ($prefixes[$i - 1]['b_number_price'] < $prefixes[$i]['b_number_price']) {
+                $prefixes[$i]['price_change'] = 'increase';
+            } else {
+                $prefixes[$i]['price_change'] = 'none';
+            }
+        }
     }
     
     private static function createPricelistRow($item)

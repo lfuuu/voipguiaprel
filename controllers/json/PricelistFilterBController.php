@@ -281,8 +281,13 @@ class PricelistFilterBController extends JsonController
         $historyItemsIds = [];
         $oldItemsIds = [];
         $oldItemsHistory = [];
+        $maxDateStart = date('Y-m-d');
         
         foreach ($prefixesToSave as $prefixDateStart => $prefixesToSaveList) {
+            if ($maxDateStart < $prefixDateStart) {
+                $maxDateStart = $prefixDateStart;
+            }
+            
             $oldItems = PricelistPrefixPrice::find()
                 ->select(['id', 'prefix_b', 'b_number_price'])
                 ->where(['pricelist_filter_b_id' => $item->id])
@@ -352,7 +357,7 @@ class PricelistFilterBController extends JsonController
             
             $dataRemovedQuery = PricelistPrefixPrice::find()
                 ->where(['pricelist_filter_b_id' => $item->id])
-                ->andWhere('date_to > now()')
+                ->andWhere('date_to > \'' . $maxDateStart . '\'')
                 ->andWhere($historyWhere);
                 
             if (!empty($oldItemsIds)) {
@@ -371,7 +376,7 @@ class PricelistFilterBController extends JsonController
                     $removedItem->b_number_price,
                     '',
                     $removedItem->date_from,
-                    date('Y-m-d'),
+                    $maxDateStart,
                     'delete'
                 ];
                 
@@ -381,7 +386,7 @@ class PricelistFilterBController extends JsonController
             if (!empty($removedItemIds)) {
                 \Yii::$app->db->createCommand()->update(
                     'billing_uu.pricelist_prefix_price',
-                    ['date_to' => date('Y-m-d'), 'history_id' => $historyObject->id],
+                    ['date_to' => $maxDateStart, 'history_id' => $historyObject->id],
                     new Expression('id in (' . implode(',', $removedItemIds) . ')')
                 )->execute();
             }
