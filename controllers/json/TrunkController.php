@@ -258,11 +258,11 @@ class TrunkController extends JsonController
                 throw new ErrorException('IP address is incorrect');
             }
             
-            if ($data['access_trunk_ip'] && !filter_var($data['access_trunk_ip'], FILTER_VALIDATE_IP)) {
+            if (isset($data['access_trunk_ip']) && $data['access_trunk_ip'] && !filter_var($data['access_trunk_ip'], FILTER_VALIDATE_IP)) {
                 throw new ErrorException('Access trunk IP is incorrect');
             }
             
-            if ($data['core_trunk_ip'] && !filter_var($data['core_trunk_ip'], FILTER_VALIDATE_IP)) {
+            if (isset($data['core_trunk_ip']) && $data['core_trunk_ip'] && !filter_var($data['core_trunk_ip'], FILTER_VALIDATE_IP)) {
                 throw new ErrorException('Core trunk IP is incorrect');
             }
 

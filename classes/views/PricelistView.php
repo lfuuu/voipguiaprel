@@ -344,6 +344,7 @@ class PricelistView
                 for ($i = $filterBKey; $i < $counter; $i++) {
                     if ($result[$i]['prefix_b'] == $queryItem['ppp__prefix_b'] . ' ') {
                         $result[$i]['prefixes'][] = self::createPrefixItem($queryItem, $result[$i]['prefixes']);
+                        usort($result[$i]['prefixes'], array(self::class, 'sortPrefixes'));
                         $isPrefixSet = true;
                         break;
                     }
@@ -372,6 +373,10 @@ class PricelistView
         return $result;
     }
     
+    private static function sortPrefixes($a, $b)
+    {
+        return $a['date_from'] > $b['date_from'];
+    }
     
     private static function createPricelistRow($item)
     {

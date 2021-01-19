@@ -68,7 +68,7 @@ makeSQLDumpFromProd() {
 
     # Центральная база
     echo "]]] 3. Дампим cхему центральной БД. сервер [$HOST_DB_MAIN],база [$NAME_DB_MAIN]"
-    pg_dump -c -s -N sorm_itgrad --if-exists -h $HOST_DB_MAIN -p $PORT_DB_MAIN -U $DB_USER $NAME_DB_MAIN > $DIR/SQL/NISPD_CENTRAL_DB.schema.sql
+    pg_dump -c -s -N sorm_itgrad -N hdb_catalog --if-exists -h $HOST_DB_MAIN -p $PORT_DB_MAIN -U $DB_USER $NAME_DB_MAIN > $DIR/SQL/NISPD_CENTRAL_DB.schema.sql
 
     # Схему с calls'ами докатываем.
     echo "]]] 4. Дампим схемы calls_raw,calls_cdr и calls_aggr центральной БД без данных. сервер [$HOST_DB_MAIN],база [$NAME_DB_MAIN]"
