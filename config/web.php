@@ -29,7 +29,9 @@ $config = [
             'cookieValidationKey' => 'Jkjh9834jkjhsHJK89834hjk338',
             'parsers' => [ 'application/json' => 'yii\web\JsonParser' ],
         ],
-        'cache' => 'yii\caching\FileCache',
+        'cache' => [
+            'class' => 'yii\caching\DbCache'
+        ],
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => false,
