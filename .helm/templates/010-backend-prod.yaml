@@ -6,7 +6,7 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-backend-prod
 spec:
-  replicas: 1
+  replicas: 2
   selector:
       matchLabels:
         app: {{ .Chart.Name }}-backend-prod
@@ -94,7 +94,7 @@ spec:
           name: {{ .Chart.Name }}-config-files
       - name: shared-healthdata
         emptyDir: {}
-{{- if (eq .Values.global.env "prod") }}        
+{{- if (eq .Values.global.env "prod") }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -104,7 +104,8 @@ spec:
                 operator: In
                 values:
                 - virtual
-{{- end }}        
+                - baremetal
+{{- end }}
 ---
 apiVersion: v1
 kind: Service
