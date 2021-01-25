@@ -6,7 +6,7 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-backend-prod
 spec:
-  replicas: 2
+  replicas: 1
   selector:
       matchLabels:
         app: {{ .Chart.Name }}-backend-prod
@@ -104,7 +104,7 @@ spec:
                 operator: In
                 values:
                 - virtual
-                - baremetal
+                #- baremetal
 {{- end }}
 ---
 apiVersion: v1
