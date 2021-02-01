@@ -28,6 +28,8 @@ spec:
           mountPath: /etc/nginx/nginx.conf
         - name: assets
           mountPath: /opt/voip_gui/web/assets
+        - name: shared-healthdata
+          mountPath: /opt/voip_gui/web/assets2
         livenessProbe:
           httpGet:
             path: /healthz
@@ -83,8 +85,8 @@ spec:
         - name: config-volume
           subPath: testdial_cfg.json
           mountPath: /app/testdialer/testdial_cfg.json  
-        env:
-{{ tuple . | werf_container_env | indent 8 }}
+#         env:
+# {{ tuple . | werf_container_env | indent 8 }}
       volumes:
       - name: config-volume
         configMap:
