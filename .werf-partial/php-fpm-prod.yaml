@@ -89,6 +89,7 @@ ansible:
         chown -R www-data:www-data /opt/voip_gui/web
         chmod 777 /opt/voip_gui/runtime
         chmod 777 /opt/voip_gui/web/assets
+        mkdir /usr/local/etc/php/conf.custom
 
 {{- if (eq .env "dev") }}
 {{- end }}

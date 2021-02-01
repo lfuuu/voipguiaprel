@@ -8,15 +8,15 @@ data:
     memory_limit = 4G
     post_max_size = 100M
     upload_max_filesize = 100M
-
     error_reporting = 22517
     display_errors = On
     display_startup_errors = Off
     enable_dl = Off
     log_errors = On
     error_log = /dev/stdout
-
-
+    max_execution_time = 600
+    ###
+    
   www.conf: |
     [www]
     user = www-data
