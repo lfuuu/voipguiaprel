@@ -1,0 +1,69 @@
+{{- if (eq .env "dev") }}
+
+image: {{ .project }}-ubuntu-dev
+from: ubuntu
+
+docker:
+  WORKDIR: /root
+  USER: root
+  EXPOSE: "80"
+  ENV:
+    POSTGRES_DB: nispd
+    POSTGRES_HOST: localhost
+    POSTGRES_USER:
+    POSTGRES_PASSWORD:
+  CMD: ["/bin/sleep","infinity"]
+
+ansible:
+  beforeInstall:
+  - name: Disable docker hook for apt-cache deletion
+    shell: |
+      set -e
+      sed -i -e "s/DPkg::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
+      sed -i -e "s/APT::Update::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
+  - name: "Install additional packages"
+    apt:
+      state: present
+      update_cache: yes
+      pkg:
+        - locales
+        - ca-certificates
+        - apt-transport-https
+        - curl
+        - mc
+        - sudo
+        - traceroute
+        - iputils-ping
+        - zip 
+        - git
+        - wget
+        - gnupg
+        - postgresql-client
+  - name: Дополнительная настройка
+    shell: |
+      mkdir -p /opt/voip_gui/web
+      printf "Host github.com\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" >> /etc/ssh/ssh_config
+      ln -s /workspace/voip_gui /opt/voip_gui
+  - name: "Generate en_US.UTF-8 default locale"
+    locale_gen:
+      name: en_US.UTF-8
+      state: present
+  - name: "Create non-root group for the main application"
+    group:
+      name: www-data
+      state: present
+      gid: 1000
+  - name: "Create non-root user for the main application"
+    user:
+      name: www-data
+      comment: "Create non-root user for the main application"
+      uid: 1000
+      group: www-data
+      shell: /bin/bash
+      home: /home/www-data
+
+  install:
+
+  setup:
+
+{{- end }}

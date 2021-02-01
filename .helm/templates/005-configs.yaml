@@ -3,8 +3,45 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-config-files
 data:
+  voipgui.php.ini: |-
+    [PHP]
+    memory_limit = 4G
+    post_max_size = 100M
+    upload_max_filesize = 100M
+
+    error_reporting = 22517
+    display_errors = On
+    display_startup_errors = Off
+    enable_dl = Off
+    log_errors = On
+    error_log = /dev/stdout
+
+
+  www.conf: |
+    [www]
+    user = www-data
+    group = www-data
+    listen = 127.0.0.1:9000
+    pm = dynamic
+    pm.max_children = 256
+    pm.start_servers = 5
+    pm.min_spare_servers = 5
+    pm.max_spare_servers = 35 
+    pm.max_requests = 1000
+
+  db-local.php: |
+    <?php
+
+    return [
+        'dsn' => 'pgsql:host={{ .Values.postgres_prod.host }};dbname={{ .Values.postgres_prod.db }}',
+        'username' => '{{ .Values.postgres_prod.user }}',
+        'password' => '{{ .Values.postgres_prod.password }}'
+    ];
+
   nginx.conf: |
-    user nginx;
+
+    user www-data www-data;
+  
     worker_processes 2;
 
     error_log /dev/stderr;
@@ -29,6 +66,12 @@ data:
       set_real_ip_from  172.0.0.0/8;
       set_real_ip_from  192.168.0.0/16;
 
+      fastcgi_buffers 16 16k;
+      fastcgi_buffer_size 32k;
+      proxy_buffer_size   128k;
+      proxy_buffers   4 256k;
+      proxy_busy_buffers_size   256k;
+
       real_ip_header X-Real-IP;
       real_ip_recursive on;
 
@@ -45,25 +88,44 @@ data:
       server {
         listen 80;
         server_name {{ .Values.ci_url }};
+        root /opt/voip_gui/web;
+        index index.php;
+
         charset utf-8;
-        root /www;
         access_log /dev/stdout combined_plus;
+
+        proxy_connect_timeout   2h;
+        proxy_send_timeout      2h;
+        proxy_read_timeout      2h;
 
         location /healthz {
           return 200;
           access_log off;
         }
 
+        location ~ [^/]\.php(/|$) {
+          fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+          fastcgi_pass 127.0.0.1:9000;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_param PATH_INFO       $fastcgi_path_info;
+          fastcgi_read_timeout 600;
+        }
+
         location / {
           client_max_body_size    2000M;
-          proxy_connect_timeout   6000s;
-          proxy_send_timeout      18000s;
-          proxy_read_timeout      18000s;
-          proxy_set_header Host $host;
-          proxy_pass http://127.0.0.1:8080;
+          try_files $uri @php;
+          index  index.html index.htm;
+        }
+
+        location @php {
+          fastcgi_pass 127.0.0.1:9000;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root/index.php;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Real-IP $remote_addr;
         }
+
       }
     }
 {{- if (eq .Values.global.env "dev") }}

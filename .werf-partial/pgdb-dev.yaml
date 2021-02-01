@@ -1,0 +1,9 @@
+{{- if (eq .env "dev") }}
+
+image: pgdb-dev
+from: postgres:12
+git:
+- add: /install/db/SQL/init.sql
+  to: /docker-entrypoint-initdb.d/init.sql
+
+{{- end }}

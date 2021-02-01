@@ -18,7 +18,7 @@ cd /workspace/voip_gui/config
 cp db-local.tpl.php db-local.php
 cp log-local.tpl.php log-local.php
 cp params-local.tpl.php params-local.php
-chown -R apache:apache /opt/voip_gui/web
+chown -R www-data:www-data /opt/voip_gui/web
 chmod 777 /workspace/voip_gui/runtime
 chmod 777 /workspace/voip_gui/web/assets
 sed -i "s/host=localhost;dbname=nispd/host=$POSTGRES_HOST;dbname=$POSTGRES_DB/" db-local.php

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 THIS=`readlink -f "${BASH_SOURCE[0]}"`
 DIR=`dirname "${THIS}"`

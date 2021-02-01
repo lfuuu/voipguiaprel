@@ -1,0 +1,18 @@
+image: {{ .project }}-nginx-prod
+from: nginx:stable-alpine
+docker:
+  EXPOSE: '80'
+  
+git:
+- add: /web
+  to: /opt/voip_gui/web
+  owner: www-data
+  group: www-data
+
+ansible:
+  beforeInstall:
+    - name: "Add www-data user"
+      shell: |
+        addgroup -g 1000 -S www-data1 
+        adduser -u 1000 -D -S -G www-data1 www-data
+

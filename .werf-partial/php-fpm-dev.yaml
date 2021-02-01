@@ -1,0 +1,83 @@
+{{- if (eq .env "dev") }}
+
+image: {{ .project }}-php-fpm-dev
+from: php:5.6-fpm
+
+docker:
+  WORKDIR: /root
+  USER: root
+  EXPOSE: "80"
+  ENV:
+    POSTGRES_DB: nispd
+    POSTGRES_HOST: localhost
+    POSTGRES_USER:
+    POSTGRES_PASSWORD:
+
+git:
+- add: /install/prepare-scripts
+  to: /root/prepare-scripts
+  owner: root
+  group: root
+
+ansible:
+  beforeInstall:
+  - name: Disable docker hook for apt-cache deletion
+    shell: |
+      set -e
+      sed -i -e "s/DPkg::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
+      sed -i -e "s/APT::Update::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
+  - name: "Install additional packages"
+    apt:
+      state: present
+      update_cache: yes
+      pkg:
+        - locales
+        - ca-certificates
+        - apt-transport-https
+        - curl
+        - zip 
+        - git
+        - wget
+  - name: "Generate en_US.UTF-8 default locale"
+    locale_gen:
+      name: en_US.UTF-8
+      state: present
+  - name: "Create non-root group for the main application"
+    group:
+      name: www-data
+      state: present
+      gid: 1000
+  - name: "Create non-root user for the main application"
+    user:
+      name: www-data
+      comment: "Create non-root user for the main application"
+      uid: 1000
+      group: www-data
+      shell: /bin/bash
+      home: /home/www-data
+  - name: Install php extensions
+    shell:
+      cmd: |
+        cd /tmp/
+        curl https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions >> install-php-extensions
+        mv install-php-extensions /usr/local/bin/
+        chmod uga+x /usr/local/bin/install-php-extensions && sync
+        install-php-extensions gd mbstring zip mcrypt curl
+        install-php-extensions dom xmlrpc readline json pdo_pgsql
+        cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+        mkdir -p /opt/voip_gui/web
+        echo "Сделай:<br>rm -rf /opt/voip_gui; ln -s /workspace/voip_gui /opt/voip_gui" > /opt/voip_gui/web/index.html
+        printf "Host github.com\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" >> /etc/ssh/ssh_config
+  - name:  Setup composer
+    shell:
+      cmd: |
+        cd && mkdir temp && cd temp \
+        && curl -sS https://getcomposer.org/installer -O \
+        && php installer --version=1.10.16 \
+        && mv composer.phar /usr/local/bin/composer \
+        && composer global require "fxp/composer-asset-plugin"
+  install:
+
+  setup:
+
+{{- end }}

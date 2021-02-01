@@ -1,0 +1,19 @@
+{{- if (eq .env "dev") }}
+
+image: {{ .project }}-nginx-dev
+from: nginx:stable-alpine
+docker:
+  EXPOSE: '80'
+  
+ansible:
+  beforeInstall:
+    - name: "Add www-data user"
+      shell: |
+        addgroup -g 1000 -S www-data1 
+        adduser -u 1000 -D -S -G www-data1 www-data
+    - name: "Make symbol link to www"
+      shell: |
+        ln -s /workspace/voip_gui /opt/voip_gui
+
+{{- end }}
+

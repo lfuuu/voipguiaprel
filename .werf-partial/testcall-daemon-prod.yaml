@@ -1,0 +1,57 @@
+image: testcall-daemon-prod
+from: node:12
+docker:
+  WORKDIR: /app/testdialer
+  # Non-root user
+  USER: app
+  EXPOSE: "3000"
+  ENV:
+    LC_ALL: en_US.UTF-8
+    TERM: xterm
+    COLORTERM: truecolor
+  #CMD: ["/bin/sleep","infinity"]
+  CMD: ["node","testdial.js"]
+git:
+- add: /daemons/testdialer
+  to: /app/testdialer
+  owner: app
+  group: app
+ansible:
+  beforeInstall:
+  - name: Disable docker hook for apt-cache deletion 
+    shell: |
+      set -e
+      sed -i -e "s/DPkg::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
+      sed -i -e "s/APT::Update::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
+  - name: "Install additional packages"
+    apt:
+      state: present
+      update_cache: yes
+      pkg:
+        - locales
+        - ca-certificates
+  - name: "Generate en_US.UTF-8 default locale"
+    locale_gen:
+      name: en_US.UTF-8
+      state: present
+  - name: "Create non-root group for the main application"
+    group:
+      name: app
+      state: present
+      gid: 242
+  - name: "Create non-root user for the main application"
+    user:
+      name: app
+      comment: "Create non-root user for the main application"
+      uid: 242
+      group: app
+      shell: /bin/bash
+      home: /app
+  setup:
+  - name: "Установка runtime-пакетов"
+    shell: |
+      npm i --production
+    become: yes
+    become_user: app
+    args:
+      chdir: /app/testdialer
