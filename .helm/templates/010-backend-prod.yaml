@@ -32,7 +32,7 @@ spec:
           mountPath: /opt/voip_gui/web/assets2
         livenessProbe:
           httpGet:
-            path: /healthz
+            path: /
             port: 80
             scheme: HTTP
         lifecycle:
