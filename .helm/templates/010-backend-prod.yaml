@@ -6,7 +6,7 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-backend-prod
 spec:
-  replicas: 1
+  replicas: {{- if (eq .Values.global.env "dev") }} 1 {{- else }} 2 {{- end }}
   selector:
       matchLabels:
         app: {{ .Chart.Name }}-backend-prod
@@ -18,6 +18,24 @@ spec:
         ingressInternal: "yes"
         ingressExternal: "no"
         app: {{ .Chart.Name }}-backend-prod
+{{- if (eq .Values.global.env "prod") }}
+      annotations:
+        scheduler.alpha.kubernetes.io/affinity: >
+            {
+              "podAntiAffinity": {
+                "requiredDuringSchedulingIgnoredDuringExecution": [{
+                  "labelSelector": {
+                    "matchExpressions": [{
+                      "key": "app",
+                      "operator": "In",
+                      "values": ["{{ .Chart.Name }}-backend-prod"]
+                    }]
+                  },
+                  "topologyKey": "kubernetes.io/hostname"
+                }]
+              }
+            }
+{{- end }}
     spec:
       containers:
       - name: nginx
@@ -107,7 +125,7 @@ spec:
                 operator: In
                 values:
                 - virtual
-                #- baremetal
+                - baremetal
 {{- end }}
 ---
 apiVersion: v1
