@@ -48,11 +48,13 @@ spec:
           mountPath: /opt/voip_gui/web/assets
         - name: shared-healthdata
           mountPath: /opt/voip_gui/web/assets2
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-            scheme: HTTP
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 80
+        #     scheme: HTTP
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 5
         lifecycle:
           preStop:
             exec:
