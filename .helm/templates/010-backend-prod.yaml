@@ -37,6 +37,15 @@ spec:
             }
 {{- end }}
     spec:
+      initContainers:
+      - name: make healthData.json symbol link
+        image: busybox:1.28
+        command:  ['ln', '-s', '/opt/voip_gui/web/assets2/healthData.json', '/opt/voip_gui/web/assets/healthData.json']
+        volumeMounts:
+        - name: assets
+          mountPath: /opt/voip_gui/web/assets
+        - name: shared-healthdata
+          mountPath: /opt/voip_gui/web/assets2
       containers:
       - name: nginx
 {{ tuple (printf "%s-%s" .Chart.Name "nginx-prod") . | werf_container_image | indent 8 }}
@@ -48,13 +57,6 @@ spec:
           mountPath: /opt/voip_gui/web/assets
         - name: shared-healthdata
           mountPath: /opt/voip_gui/web/assets2
-        # livenessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 80
-        #     scheme: HTTP
-        #   initialDelaySeconds: 5
-        #   periodSeconds: 5
         lifecycle:
           preStop:
             exec:
@@ -83,7 +85,7 @@ spec:
           mountPath: /usr/local/etc/php-fpm.d/www.conf
         - name: config-volume
           subPath: config.local.php
-          mountPath: /opt/voip_gui/web/health/config.local.php 
+          mountPath: /opt/voip_gui/web/health/config.local.php
         - name: shared-healthdata
           mountPath: /opt/voip_gui/web/assets2
         - name: assets
@@ -94,9 +96,6 @@ spec:
         env:
         - name: TEST_DIAL_URL
           value: "http://127.0.0.1:3000/"
-        #- name: PHP_INI_SCAN_DIR
-        #  value: :/usr/local/etc/php/conf.custom
-        
       - name: testcall-daemon-prod
 {{ tuple "testcall-daemon-prod" . | werf_container_image | indent 8 }}
         ports:
@@ -106,9 +105,7 @@ spec:
         volumeMounts:
         - name: config-volume
           subPath: testdial_cfg.json
-          mountPath: /app/testdialer/testdial_cfg.json  
-#         env:
-# {{ tuple . | werf_container_env | indent 8 }}
+          mountPath: /app/testdialer/testdial_cfg.json
       volumes:
       - name: config-volume
         configMap:
