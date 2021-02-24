@@ -322,9 +322,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
          "Будут отменены ВСЕ действия, произведенные с прайсами префиксов\n" +
          "выбранного в данный момент фильтра Б!")) return;
         
-        PricelistPrefixPriceHistory.undoImport({'id': item.id}).then(function (response) {
-            $modalInstance.close();
-        });
+         window.open('/resetter.php?id=' + item.id, '_blank');
     }
 
     $scope.back = function () {

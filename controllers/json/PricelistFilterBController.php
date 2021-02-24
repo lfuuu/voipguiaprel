@@ -272,7 +272,7 @@ class PricelistFilterBController extends JsonController
         } catch (\Exception $e) {
             return ['error' => 'Ошибка при обработке префиксов! Каждая пара префикс-цена должна быть на отдельной строке. Префиксы должны быть отделены от цены символом табуляции. Префиксы можно перечислять через запятую или через тире.', 'field' => 'prefixes'];
         }
-        
+
         unset($prefixesArray);
         unset($pricelistId);
         unset($this->request['prefixes']);

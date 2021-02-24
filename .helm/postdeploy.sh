@@ -19,4 +19,16 @@ if [ "$ENVNAME" = "dev" ]; then
     NAMESPACE="$APPNAME-$ENVNAME"
     kubectl -n $NAMESPACE wait --for=condition=ready --timeout=120s pods $PODNAME
     kubectl -n $NAMESPACE exec -it $PODNAME -c php-fpm -- /bin/bash /root/prepare-scripts/init-dev-env.sh
+    
+    PODNAME="$APPNAME-importer-dev-0"
+    kubectl -n $NAMESPACE wait --for=condition=ready --timeout=120s pods $PODNAME
+    kubectl -n $NAMESPACE exec -it $PODNAME -c php-fpm -- /bin/bash /root/prepare-scripts/init-dev-env.sh
+    
+    PODNAME="$APPNAME-exporter-dev-0"
+    kubectl -n $NAMESPACE wait --for=condition=ready --timeout=120s pods $PODNAME
+    kubectl -n $NAMESPACE exec -it $PODNAME -c php-fpm -- /bin/bash /root/prepare-scripts/init-dev-env.sh
+    
+    PODNAME="$APPNAME-resetter-dev-0"
+    kubectl -n $NAMESPACE wait --for=condition=ready --timeout=120s pods $PODNAME
+    kubectl -n $NAMESPACE exec -it $PODNAME -c php-fpm -- /bin/bash /root/prepare-scripts/init-dev-env.sh
 fi

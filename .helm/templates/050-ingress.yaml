@@ -28,3 +28,27 @@ spec:
           serviceName: {{ .Chart.Name }}-backend-prod
 {{- end }}
           servicePort: 80
+      - path: /importer.php
+        backend:
+{{- if (eq .Values.global.env "dev") }}
+          serviceName: {{ .Chart.Name }}-importer-dev
+{{- else }}
+          serviceName: {{ .Chart.Name }}-importer-prod
+{{- end }}
+          servicePort: 80
+      - path: /exporter.php
+        backend:
+{{- if (eq .Values.global.env "dev") }}
+          serviceName: {{ .Chart.Name }}-exporter-dev
+{{- else }}
+          serviceName: {{ .Chart.Name }}-exporter-prod
+{{- end }}
+          servicePort: 80
+      - path: /resetter.php
+        backend:
+{{- if (eq .Values.global.env "dev") }}
+          serviceName: {{ .Chart.Name }}-resetter-dev
+{{- else }}
+          serviceName: {{ .Chart.Name }}-resetter-prod
+{{- end }}
+          servicePort: 80

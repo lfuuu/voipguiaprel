@@ -1,0 +1,137 @@
+{{- if (eq .Values.global.env "dev") }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Chart.Name }}-exporter-dev
+spec:
+  replicas: 1
+  serviceName: {{ .Chart.Name }}-exporter-dev
+  selector:
+      matchLabels:
+        app: {{ .Chart.Name }}-exporter-dev
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-exporter-dev
+        ingressInternal: "yes"
+        ingressExternal: "no"
+    spec:
+      initContainers:
+      - name: wait-pod-postgres
+        image: busybox:1.28
+        command:  ['sh', '-c', "until nslookup {{ .Values.postgres_dev.host }}.{{ .Chart.Name }}-{{ .Values.global.env }}.svc.cluster.local; do echo waiting for postgres; sleep 2; done"]
+      - name: wait-postgres-ready
+        image: postgres:12
+        command:
+          - "sh"
+          - "-c"
+          - "until pg_isready -h {{ .Values.postgres_dev.host }} -U {{ .Values.postgres_dev.adminuser }} -p {{ .Values.postgres_dev.port }}; do sleep 2; done;"
+      containers:
+      - name: nginx
+{{ tuple (printf "%s-%s" .Chart.Name "nginx-dev") . | werf_container_image | indent 8 }}
+        volumeMounts:
+        - name: config-volume
+          subPath: nginx.conf
+          mountPath: /etc/nginx/nginx.conf
+        - mountPath: /workspace
+          name: workspace-voipgui
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+            scheme: HTTP
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/usr/sbin/nginx", "-s", "quit"]
+      - name: ubuntu
+{{ tuple (printf "%s-%s" .Chart.Name "ubuntu-dev") . | werf_container_image | indent 8 }}
+        env:
+        - name: SSH_AUTH_SOCK
+          value: /ssh-agent
+        volumeMounts:
+        - mountPath: /workspace
+          name: workspace-voipgui
+        - mountPath: /root/.pgpass_b
+          name: config-volume
+          mode: 
+          subPath: .pgpass
+        - name: ssh-agent-sock
+          mountPath: /ssh-agent
+      - name: php-fpm
+{{ tuple (printf "%s-%s" .Chart.Name "php-fpm-dev") . | werf_container_image | indent 8 }}
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 80
+        #     scheme: HTTP
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 80
+        resources:
+          requests:
+            memory: 128M
+          limits:
+            memory: 8G
+        ports:
+        - containerPort: 9000
+          name: http
+          protocol: TCP
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.postgres_dev.db }}
+        - name: POSTGRES_HOST
+          value: {{ .Values.postgres_dev.host }}
+        - name: POSTGRES_USER
+          value: {{ .Values.postgres_dev.user }}
+        - name: POSTGRES_PASSWORD
+          value: {{ .Values.postgres_dev.password }}
+        - name: SSH_AUTH_SOCK
+          value: /ssh-agent
+        volumeMounts:
+        - name: config-volume
+          subPath: api.php.ini
+          mountPath: /usr/local/etc/php/conf.custom
+        - name: config-volume
+          subPath: www.conf
+          mountPath: /usr/local/etc/php-fpm.d/www.conf
+        - mountPath: /workspace
+          name: workspace-voipgui
+        - mountPath: /root/.pgpass_b
+          name: config-volume
+          mode: 
+          subPath: .pgpass
+        - name: ssh-agent-sock
+          mountPath: /ssh-agent
+      volumes:
+      - name: workspace-voipgui
+        hostPath:
+          path: /.volumes/workspace-voipgui
+      - name: config-volume
+        configMap:
+          name: {{ .Chart.Name }}-config-files
+      - name: ssh-agent-sock
+        hostPath:
+          path: /ssh-agent
+          type: Socket
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-exporter-dev
+  labels:
+    app: {{ .Chart.Name }}-exporter-dev
+spec:
+  clusterIP: None
+  selector:
+    app: {{ .Chart.Name }}-exporter-dev
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+---
+{{- else }}
+
+{{- end }}
