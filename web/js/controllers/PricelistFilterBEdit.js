@@ -218,6 +218,13 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
                     $scope.displayError(result);
                     return;
                 } else {
+                    if (
+                        (typeof result.pricelist_filter_b_id) !== 'undefined' &&
+                        (typeof result.import_key) !== 'undefined' &&
+                        (typeof result.is_replace) !== 'undefined'
+                    ) {
+                        window.open('/importer.php?id=' + result.pricelist_filter_b_id + '&key=' + result.import_key + '&is_replace=' + result.is_replace, '_blank');
+                    }
                     $modalInstance.close();
                 }
             }
