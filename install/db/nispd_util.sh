@@ -63,7 +63,7 @@ makeSQLDumpFromProd() {
     echo "#### makeSQLDumpFromProd: Снимаем минимальный дамп с центральной и региональной боевой базы"
 
     echo "]]] 2. Дампим данные ЦЕНТРАЛЬНОЙ БД без схем  calls_raw,calls_aggr,calls_cdr,calls_raw_cache,nnp_ported. сервер [$HOST_DB_MAIN],база [$NAME_DB_MAIN]"
-    pg_dump -a -n auth -n billing -n billing_api -n billing_uu -n event -n geo -n mtt_billing -n nnp -n public -n tests --disable-triggers -O -h $HOST_DB_MAIN -U $DB_USER -p $PORT_DB_MAIN $NAME_DB_MAIN > $DIR/SQL/NISPD_CENTRAL_DB.data_wo_calls_data.sql
+    pg_dump -a -n auth -n billing -n billing_api -n billing_uu -n event -n geo -n mtt_billing -n nnp -n public -n tests -T billing.defs -T nnp.number_range -T nnp.number_range_prefix -T nnp_ported.number -T auth.prefixlist_prefix --disable-triggers -O -h $HOST_DB_MAIN -U $DB_USER -p $PORT_DB_MAIN $NAME_DB_MAIN > $DIR/SQL/NISPD_CENTRAL_DB.data_wo_calls_data.sql
     pg_dump -a -t vpbx.billing_did_location -t voip.pricelist --disable-triggers -O -h $HOST_DB_MAIN -U $DB_USER -p $PORT_DB_MAIN $NAME_DB_MAIN >> $DIR/SQL/NISPD_CENTRAL_DB.data_wo_calls_data.sql
 
     # Центральная база
