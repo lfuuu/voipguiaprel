@@ -71,11 +71,6 @@ spec:
           mountPath: /app/assets
       - name: php-fpm
 {{ tuple (printf "%s-%s" .Chart.Name "php-fpm-prod") . | werf_container_image | indent 8 }}
-        resources:
-          requests:
-            memory: 8G
-          limits:
-            memory: 8G
         volumeMounts:
         - name: config-volume
           subPath: voipgui.php.ini
