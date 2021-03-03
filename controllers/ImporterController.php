@@ -10,28 +10,30 @@ use yii\web\ForbiddenHttpException;
 
 class ImporterController extends BaseController
 {
+    const COMMENT = 6;
+
     public function actionImport($id, $key, $is_replace)
     {
         if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
+
         $is_replace = ($is_replace === 'true');
-        
+
         ini_set('memory_limit', '-1');
         ini_set('max_execution_time', 0);
-        
+
         $startTime = microtime(true);
         $prefixesToSave = Yii::$app->cache->get($key);
         $historyObjectList = Yii::$app->cache->get($key . '_history');
-        
+
         $maxDateStart = date('Y-m-d');
-        
+
         foreach ($prefixesToSave as $prefixDateStart => $prefixesToSaveList) {
             if ($maxDateStart < $prefixDateStart) {
                 $maxDateStart = $prefixDateStart;
             }
-            
+
             $oldItems = PricelistPrefixPrice::find()
                 ->select(['id', 'prefix_b', 'b_number_price'])
                 ->where(['pricelist_filter_b_id' => $id])
@@ -39,45 +41,51 @@ class ImporterController extends BaseController
                 ->addParams(['date_to' => $prefixDateStart])
                 ->asArray()
                 ->all();
-           
+
             $oldItemsKeyValue = [];
-            
+
             foreach ($oldItems as $oldItemObject) {
                 if (!isset($oldItemsKeyValue[$oldItemObject['prefix_b']])) {
                     $oldItemsKeyValue[$oldItemObject['prefix_b']] = [];
                 }
-                
+
                 $oldItemsKeyValue[$oldItemObject['prefix_b']][] = $oldItemObject;
             }
-            
+
             unset($oldItems);
-            
+
             $historyObject = $historyObjectList[$prefixDateStart];
             $historyItemsIds[] = $historyObject->id;
-            
-            $historyObject->total_count = count($prefixesToSaveList);
-            $historyObject->date_to = '3000-01-01';//$dateEnd;
+
+            $historyObject->date_to = '3000-01-01'; //$dateEnd;
             $historyObject->fillDataBefore();
-            
             $oldItemsHistory[$historyObject->id] = [];
-            
-            $historyObject->save();
-            
+
+            $count = 0;
+            $finalPrefixesList = [];
             foreach ($prefixesToSaveList as $prefixToSave) {
+
                 $oldPrefixItems = isset($oldItemsKeyValue[$prefixToSave[1]]) ? $oldItemsKeyValue[$prefixToSave[1]] : [];
-                
-                $updateOldResult = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id, $oldPrefixItems); 
-                $historyItems[] = $updateOldResult;
-                
-                if (!isset($oldItemsIds[$prefixDateStart])) {
-                    $oldItemsIds[$prefixDateStart] = [];
-                }
-                
-                foreach ($oldPrefixItems as $oldPrefixItem) {
-                    $oldItemsIds[$prefixDateStart][] = $oldPrefixItem['id'];
+                $updateOldResult = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id, $oldPrefixItems);
+                if ($updateOldResult[self::COMMENT] != null) {
+                    $count += 1;
+                    $finalPrefixesList[] = $prefixToSave;
+
+                    $historyItems[] = $updateOldResult;
+
+                    if (!isset($oldItemsIds[$prefixDateStart])) {
+                        $oldItemsIds[$prefixDateStart] = [];
+                    }
+
+                    foreach ($oldPrefixItems as $oldPrefixItem) {
+                        $oldItemsIds[$prefixDateStart][] = $oldPrefixItem['id'];
+                    }
                 }
             }
-            
+
+            $historyObject->total_count = $count;
+            $historyObject->save();
+
             if (!empty($oldItemsIds[$prefixDateStart])) {
                 \Yii::$app->db->createCommand()->update(
                     'billing_uu.pricelist_prefix_price',
@@ -85,25 +93,26 @@ class ImporterController extends BaseController
                     new Expression('id in (' . implode(',', $oldItemsIds[$prefixDateStart]) . ')')
                 )->execute();
             }
-            
+
             \Yii::$app->db->createCommand()->batchInsert(
                 'billing_uu.pricelist_prefix_price',
                 ['pricelist_filter_b_id', 'prefix_b', 'b_number_price', 'date_from', 'date_to', 'history_id'],
-                $prefixesToSaveList
+                $finalPrefixesList
             )->execute();
         }
-        
+
         unset($prefixesToSave);
         unset($prefixesToSaveList);
+        unset($finalPrefixesList);
 
         if ($is_replace) {
             $historyWhere = new \yii\db\Expression('history_id is null or history_id not in (' . implode(',', $historyItemsIds) . ')');
-            
+
             $dataRemovedQuery = PricelistPrefixPrice::find()
                 ->where(['pricelist_filter_b_id' => $id])
                 ->andWhere('date_to > \'' . $maxDateStart . '\'')
                 ->andWhere($historyWhere);
-                
+
             if (!empty($oldItemsIds)) {
                 foreach ($oldItemsIds as $oldItemsIdsByDate) {
                     if (!empty($oldItemsIdsByDate)) {
@@ -111,10 +120,10 @@ class ImporterController extends BaseController
                     }
                 }
             }
-            
+
             $dataRemoved = $dataRemovedQuery->all();
             $removedItemIds = [];
-            
+
             foreach ($dataRemoved as $removedItem) {
                 $historyItems[] = [
                     $historyObject->id,
@@ -125,10 +134,10 @@ class ImporterController extends BaseController
                     $maxDateStart,
                     'delete'
                 ];
-                
+
                 $removedItemIds[] = $removedItem->id;
             }
-            
+
             if (!empty($removedItemIds)) {
                 \Yii::$app->db->createCommand()->update(
                     'billing_uu.pricelist_prefix_price',
@@ -137,17 +146,18 @@ class ImporterController extends BaseController
                 )->execute();
             }
         }
-        
+
         \Yii::$app->db->createCommand()->batchInsert(
             'billing_uu.pricelist_prefix_price_history_item',
             ['pricelist_prefix_price_history_id', 'prefix_b', 'price_old', 'price_new', 'date_from', 'date_to', 'type'],
             $historyItems
         )->execute();
-        
+
+
         $endTime = microtime(true);
-        
+
         return $this->render('import', [
             'delta_time' => round($endTime - $startTime, 2)
-        ]); 
+        ]);
     }
 }

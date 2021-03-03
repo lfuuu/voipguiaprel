@@ -18,14 +18,14 @@ use app\queries\billing_uu\PricelistPrefixPriceQuery;
 class PricelistPrefixPrice extends \yii\db\ActiveRecord
 {
     use ModelRules;
-    
+
     const PAGE_LIMIT = 10;
-    
+
     public static function tableName()
     {
         return 'billing_uu.pricelist_prefix_price';
     }
-    
+
     /**
      * @return array
      */
@@ -41,21 +41,21 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
     {
         return new PricelistPrefixPriceQuery(get_called_class());
     }
-    
+
     public static function checkIfPrefixDateExists($prefixB, $filterBId, $dateFrom, $id = null)
     {
         $query = self::find()
             ->where(['prefix_b' => $prefixB, 'pricelist_filter_b_id' => $filterBId, 'date_from' => $dateFrom]);
-        
+
         if ($id) {
             $query
                 ->andWhere('id <> :id')
                 ->addParams([':id' => $id]);
         }
-        
+
         return $query->exists();
     }
-    
+
     /**
      * @param array|null $data
      * @return PricelistPrefixPrice
@@ -67,7 +67,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
             ->andWhere('date_to > :date_to')
             ->addParams(['date_to' => $data['date_from']])
             ->all();
-        
+
         if (!empty($oldItems)) {
             foreach ($oldItems as $oldItem) {
                 if ($historyId) {
@@ -79,7 +79,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                         'date_from' => $data['date_from'],
                         'date_to' => $data['date_to']
                     ];
-                    
+
                     if ($oldItem->b_number_price < $data['b_number_price']) {
                         $historyItem['type'] = 'increase';
                     } elseif ($oldItem->b_number_price > $data['b_number_price']) {
@@ -89,10 +89,10 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                     } else {
                         $historyItem['type'] = 'delete';
                     }
-                    
+
                     $oldItem->history_id = $historyId;
                 }
-                
+
                 $oldItem->date_to = $data['date_from'];
                 $oldItem->save();
             }
@@ -109,25 +109,25 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                 ];
             }
         }
-            
+
         $item = new self();
-        
+
         $item->load($data, '');
-        
+
         if ($historyId) {
             $item->history_id = $historyId;
             $historyItemObject = PricelistPrefixPriceHistoryItem::create($historyItem);
             $historyItemObject->save();
         }
-        
+
         return $item;
     }
-    
+
     public static function updateOldWithHistory(array $data, $historyId, $oldItems)
     {
         $newPrice = str_replace(',', '.', $data[2]);
         $newPrice = floatval($newPrice);
-        
+
         if (!empty($oldItems)) {
             foreach ($oldItems as $oldItem) {
                 if ($historyId) {
@@ -139,11 +139,14 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                         $data[3],
                         $data[4]
                     ];
-                    
+
                     if ($oldItem['b_number_price'] < $newPrice) {
                         $historyItem[] = 'increase';
                     } elseif ($oldItem['b_number_price'] > $newPrice) {
                         $historyItem[] = 'decrease';
+                    } elseif ($oldItem['b_number_price'] == $newPrice) {    
+                        //если старая цена = новая - повторение, следовательно показываем null для дальнейшего отсеивания
+                        $historyItem[] = null;
                     } elseif ($data[4] == '3000-01-01') {
                         $historyItem[] = 'prolong';
                     } else {
@@ -164,7 +167,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                 ];
             }
         }
-        
+
         return $historyItem;
     }
 
