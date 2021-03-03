@@ -70,8 +70,6 @@ use app\models\event\Queue;
 class Server extends \yii\db\ActiveRecord
 {
 
-    const API_DEFAULT_PORT = 8032;
-
     /**
      * @return string
      */
@@ -117,9 +115,7 @@ class Server extends \yii\db\ActiveRecord
      */
     public function getApiUrl()
     {
-        return 'http://' . $this->hostname
-            . (!parse_url($this->hostname, PHP_URL_PORT) ? ':' . self::API_DEFAULT_PORT : '')
-            . '/';
+        return $this->hostname;
     }
 
     /**
@@ -127,9 +123,7 @@ class Server extends \yii\db\ActiveRecord
      */
     public function getApiUrlReserve()
     {
-        return 'http://' . $this->hostname_reserve
-            . (!parse_url($this->hostname_reserve, PHP_URL_PORT) ? ':' . self::API_DEFAULT_PORT : '')
-            . '/';
+        return $this->hostname_reserve;
     }
     
     /**
@@ -137,9 +131,7 @@ class Server extends \yii\db\ActiveRecord
      */
     public function getApiUrlReserve2()
     {
-        return 'http://' . $this->hostname_reserve_2
-            . (!parse_url($this->hostname_reserve_2, PHP_URL_PORT) ? ':' . self::API_DEFAULT_PORT : '')
-            . '/';
+        return $this->hostname_reserve_2;
     }
     
     /**
@@ -147,9 +139,7 @@ class Server extends \yii\db\ActiveRecord
      */
     public function getApiUrlDev()
     {
-        return 'http://' . $this->hostname_dev
-            . (!parse_url($this->hostname_dev, PHP_URL_PORT) ? ':' . self::API_DEFAULT_PORT : '')
-            . '/';
+        return $this->hostname_dev;
     }
     
     /**
