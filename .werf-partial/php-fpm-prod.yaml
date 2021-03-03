@@ -1,5 +1,5 @@
 image: {{ .project }}-php-fpm-prod
-from: php:5.6-fpm
+from: php:7.4-fpm
 
 docker:
   WORKDIR: /home/www-data
@@ -38,7 +38,11 @@ ansible:
         - ca-certificates
         - apt-transport-https
         - curl
-        - zip 
+        - zip
+        - vim
+        - nano
+        - telnet
+        - mc
   - name: "Generate en_US.UTF-8 default locale"
     locale_gen:
       name: en_US.UTF-8
@@ -60,6 +64,7 @@ ansible:
         && curl -sS https://getcomposer.org/installer -O \
         && php installer --version=1.10.16 \
         && mv composer.phar /usr/local/bin/composer \
+        && composer self-update --1 \
         && composer global require "fxp/composer-asset-plugin"
   - name: "Create non-root group for the main application"
     group:

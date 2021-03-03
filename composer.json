@@ -8,8 +8,12 @@
     }
   ],
   "require": {
-    "php": ">=5.5.0",
-    "yiisoft/yii2": "2.0.14.2",
+    "php": ">=7.4.0",
+    "ext-pdo": "*",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-openssl": "*",
+    "yiisoft/yii2": ">=2.0.14.2",
     "graylog2/gelf-php": "*",
     "kartik-v/yii2-widget-select2": "@dev",
     "phpoffice/phpspreadsheet": "1.8.2",

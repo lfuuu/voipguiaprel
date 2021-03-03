@@ -4,10 +4,8 @@ namespace app\controllers\json;
 
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
-use app\models\sorm\Commutator;
 use app\models\sorm\Operator;
 use app\models\TrunkLoadLimit;
-use app\models\voip\Pricelist;
 use app\models\billing\ServiceTrunk;
 use app\models\Trunk;
 use app\models\sorm\Trunk as TrunkSorm;
@@ -16,17 +14,14 @@ use app\models\TrunkNumberPreprocessing;
 use app\models\TrunkPriority;
 use app\models\TrunkTrunkRule;
 use yii\base\ErrorException;
-use yii\base\Exception;
-use Yii;
-use yii\db\Query;
 use yii\db\StaleObjectException;
+use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\db\Expression;
 
 class TrunkController extends JsonController
 {
-    
     const TYPE_ORIGINATION = 1;
     const TYPE_TERMINATION = 2;
 
@@ -618,10 +613,12 @@ class TrunkController extends JsonController
             ->andWhere('t.uplink_trunk = true')
             ->andWhere('st.expire_dt > now()')
             ->orderBy('t.server_id, sts.id')
-            ->indexBy('price_name_basic')
+//            ->indexBy('price_name_basic')
             ->addParams([':market_place_id' => $marketPlaceId])
             ->asArray()
             ->all();
+
+        $items = ArrayHelper::index($items, 'price_name_basic');
 
         $result = [];
         

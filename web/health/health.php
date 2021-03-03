@@ -22,7 +22,7 @@ try {
     ];
 
     file_put_contents(RESULT_FILEPATH, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT));
-    die;
+    exit();
 }
 
 $result = [

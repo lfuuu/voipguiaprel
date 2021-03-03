@@ -8,13 +8,13 @@ use app\models\Server;
 use app\models\Trunk;
 use app\models\Uplink;
 use yii\base\Exception;
+use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\db\Expression;
 
 class UplinkController extends JsonController
 {
-
     const LEVEL_HUB = 1;
     const LEVEL_REGION = 2;
     const LEVEL_PHYSICAL_TRUNK = 3;
@@ -91,10 +91,12 @@ class UplinkController extends JsonController
             ->where('sts.type = ' . self::TYPE_TERMINATION)
             ->andWhere('sts.pricelist_id is not null or sts.nnp_tariff_id is not null')
             ->orderBy('region_id, l_trunk_id, sts.order')
-            ->indexBy('price_name_basic')
+            //->indexBy('price_name_basic')
             ->asArray()
             ->all();
-        
+
+        $items = ArrayHelper::index($items, 'price_name_basic');
+
         $result = [];
         
         $regionHubs = $this->getRegionHubIds();

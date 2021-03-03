@@ -8,5 +8,5 @@ env=$1
 $env
 export ENVNAME=${1:-"dev"}
 
-werf build --dir ../ --stages-storage :local
+werf build --dir ../ --stages-storage :local --introspect-error=true
 

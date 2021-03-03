@@ -6,15 +6,34 @@ data:
   voipgui.php.ini: |-
     [PHP]
     memory_limit = 4G
-    post_max_size = 100M
-    upload_max_filesize = 100M
+    post_max_size = 900M
+
+    output_buffering = 0
+    expose_php = On
+    max_input_time = 300
+    serialize_precision = 17
+    max_input_vars = 100000
+    max_file_uploads = 20
+    max_input_nesting_level = 64
+    upload_max_filesize = 500M
     error_reporting = 22517
     display_errors = On
     display_startup_errors = Off
     enable_dl = Off
     log_errors = On
     error_log = /dev/stdout
-    max_execution_time = 600
+    max_execution_time = 1800
+    report_memleaks = On
+    variables_order = "EGPCS"
+    request_order = "GP"
+    date.timezone = "Europe/Moscow"
+
+    mail.add_x_header = On
+    zend.assertions = 1
+    zend.exception_ignore_args = Off
+
+    [Session]
+    session.gc_maxlifetime = 14400
     ###
     
   www.conf: |
@@ -26,8 +45,10 @@ data:
     pm.max_children = 256
     pm.start_servers = 5
     pm.min_spare_servers = 5
-    pm.max_spare_servers = 35 
+    pm.max_spare_servers = 35
     pm.max_requests = 1000
+
+    slowlog = /var/log/php-fpm-slow.log
 
   db-local.php: |
     <?php

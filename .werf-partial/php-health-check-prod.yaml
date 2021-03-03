@@ -1,5 +1,5 @@
 image: php-health-check-prod
-from: php:5.6-cli
+from: php:7.4-cli
 docker:
 #  CMD: ["/bin/sleep", "infinity"]
   CMD: ["bash","/app/health/run.sh"]
@@ -30,6 +30,10 @@ ansible:
       pkg:
         - locales
         - ca-certificates
+        - vim
+        - nano
+        - telnet
+        - mc
   - name: "Generate en_US.UTF-8 default locale"
     locale_gen:
       name: en_US.UTF-8
