@@ -13,6 +13,7 @@ var PricelistPrefixPriceHistoryViewCtrl = function($rootScope, $scope, Pricelist
         'delete': 'Удаление кода',
         'new': 'Новый код',
         'prolong': 'Продление кода',
+        'skipped': 'Пропущен',
     };
     
     $scope.styleMap = {
@@ -21,6 +22,7 @@ var PricelistPrefixPriceHistoryViewCtrl = function($rootScope, $scope, Pricelist
         'delete': 'font-weight: bold; background-color: lightgrey;',
         'new': 'font-weight: bold; background-color: lightblue;',
         'prolong': 'font-weight: bold; background-color: white;',
+        'skipeed': 'font-weight: bold; background-color: white;',
     };
 
     $scope.back = function () {

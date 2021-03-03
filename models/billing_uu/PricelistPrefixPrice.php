@@ -20,6 +20,12 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
     use ModelRules;
 
     const PAGE_LIMIT = 10;
+    
+    const IMPORT_STATUS_INCREASE = 'increase';
+    const IMPORT_STATUS_DECREASE = 'decrease';
+    const IMPORT_STATUS_PROLONG = 'prolong';
+    const IMPORT_STATUS_DELETE = 'delete';
+    const IMPORT_STATUS_SKIPPED = 'skipped';
 
     public static function tableName()
     {
@@ -141,16 +147,17 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                     ];
 
                     if ($oldItem['b_number_price'] < $newPrice) {
-                        $historyItem[] = 'increase';
+                        $historyItem[] = self::IMPORT_STATUS_INCREASE;
                     } elseif ($oldItem['b_number_price'] > $newPrice) {
-                        $historyItem[] = 'decrease';
-                    } elseif ($oldItem['b_number_price'] == $newPrice) {    
-                        //если старая цена = новая - повторение, следовательно показываем null для дальнейшего отсеивания
-                        $historyItem[] = null;
+                        $historyItem[] = self::IMPORT_STATUS_DECREASE;
                     } elseif ($data[4] == '3000-01-01') {
-                        $historyItem[] = 'prolong';
+                        $historyItem[] = self::IMPORT_STATUS_PROLONG;
+                    } elseif ($data[4] != $oldItem['date_to']) {
+                        $historyItem[] = self::IMPORT_STATUS_DELETE;
                     } else {
-                        $historyItem[] = 'delete';
+                        // если старая цена = новая - повторение, следовательно показываем 'skipped' для дальнейшего отсеивания
+                        // плюс учитываем дату окончания. Если она меняется, то отсеивать нельзя
+                        $historyItem[] = self::IMPORT_STATUS_SKIPPED;
                     }
                 }
             }

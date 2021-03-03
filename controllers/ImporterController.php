@@ -35,7 +35,7 @@ class ImporterController extends BaseController
             }
 
             $oldItems = PricelistPrefixPrice::find()
-                ->select(['id', 'prefix_b', 'b_number_price'])
+                ->select(['id', 'prefix_b', 'b_number_price', 'date_to'])
                 ->where(['pricelist_filter_b_id' => $id])
                 ->andWhere('date_to > :date_to')
                 ->addParams(['date_to' => $prefixDateStart])
@@ -63,24 +63,34 @@ class ImporterController extends BaseController
 
             $count = 0;
             $finalPrefixesList = [];
-            foreach ($prefixesToSaveList as $prefixToSave) {
+            $skippedPrefixesList = [];
 
+            foreach ($prefixesToSaveList as $prefixToSave) {
                 $oldPrefixItems = isset($oldItemsKeyValue[$prefixToSave[1]]) ? $oldItemsKeyValue[$prefixToSave[1]] : [];
                 $updateOldResult = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id, $oldPrefixItems);
-                if ($updateOldResult[self::COMMENT] != null) {
+
+                if ($updateOldResult[self::COMMENT] != PricelistPrefixPrice::IMPORT_STATUS_SKIPPED) {
                     $count += 1;
                     $finalPrefixesList[] = $prefixToSave;
-
-                    $historyItems[] = $updateOldResult;
-
+                    
                     if (!isset($oldItemsIds[$prefixDateStart])) {
                         $oldItemsIds[$prefixDateStart] = [];
                     }
-
+    
                     foreach ($oldPrefixItems as $oldPrefixItem) {
                         $oldItemsIds[$prefixDateStart][] = $oldPrefixItem['id'];
                     }
+                } else {
+                    if (!isset($skippedPrefixesList[$prefixDateStart])) {
+                        $skippedPrefixesList[$prefixDateStart] = [];
+                    }
+    
+                    foreach ($oldPrefixItems as $oldPrefixItem) {
+                        $skippedPrefixesList[$prefixDateStart][] = $oldPrefixItem['id'];
+                    }
                 }
+
+                $historyItems[] = $updateOldResult;
             }
 
             $historyObject->total_count = $count;
@@ -91,6 +101,14 @@ class ImporterController extends BaseController
                     'billing_uu.pricelist_prefix_price',
                     ['date_to' => $prefixDateStart, 'history_id' => $historyObject->id],
                     new Expression('id in (' . implode(',', $oldItemsIds[$prefixDateStart]) . ')')
+                )->execute();
+            }
+            
+            if (!empty($skippedPrefixesList[$prefixDateStart])) {
+                \Yii::$app->db->createCommand()->update(
+                    'billing_uu.pricelist_prefix_price',
+                    ['history_id' => $historyObject->id],
+                    new Expression('id in (' . implode(',', $skippedPrefixesList[$prefixDateStart]) . ')')
                 )->execute();
             }
 
