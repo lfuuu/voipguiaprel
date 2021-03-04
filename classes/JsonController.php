@@ -88,7 +88,7 @@ class JsonController extends BaseController
                     if (isset($result['result'])) {
                         $result = $result['result'];
                     } else {
-                        $result = null;
+                        $result = ['success' => 1];
                     }
                 } else {
                     $dataBefore = [];
