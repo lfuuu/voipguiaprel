@@ -148,6 +148,8 @@ SQL;
             if ($transaction->getIsActive())
                 $transaction->rollBack();
         }
+        
+        return ['success' => 1];
     }
     
     private function saveSingle($id, $prefixB, $filterBId, $dateFromRequest, $dateToRequest, $priceRequest, $pricelistIsActive, $pricelistId, $historyId)
@@ -338,5 +340,7 @@ SQL;
         
         $item = $this->getPricelistPrefixPriceOr404($this->request['id']);
         $item->delete();
+        
+        return ['success' => 1];
     }
 }

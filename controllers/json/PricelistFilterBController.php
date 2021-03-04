@@ -392,5 +392,7 @@ class PricelistFilterBController extends JsonController
         
         $item = $this->getPricelistFilterBOr404($this->request['id']);
         $item->delete();
+        
+        return ['success' => 1];
     }
 }
