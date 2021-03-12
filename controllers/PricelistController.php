@@ -5,13 +5,12 @@ namespace app\controllers;
 use app\classes\BaseController;
 use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistPrefixPrice;
-use app\models\Server;
 use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use \PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use yii\web\ForbiddenHttpException;
 Use app\classes\traits\PricelistView;
 use yii\db\Query;
@@ -20,7 +19,7 @@ class PricelistController extends BaseController
 {
     use PricelistView;
     
-    private $_locations = [
+    protected $_locations = [
         1 => 'Домашний регион',
         2 => 'Гостевой регион',
         3 => 'Международный регион'
@@ -128,14 +127,15 @@ class PricelistController extends BaseController
         if (!\Yii::$app->user->can('pricelist_edit')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
+
         $data = Pricelist::find()
             ->with('location.filterA.filterB.prefixPriceNoLimit')
             ->where(['id' => $id])
             ->asArray()
             ->one();
-        
-        $this->createExcelDocument($data);
+
+        $fileName = 'price_list-' . date('Y-m-d_H-i') . '.xlsx';
+        $this->createExcelDocument($data, $fileName);
     }
     
     public function actionExcelPrefixes($id)
@@ -149,8 +149,9 @@ class PricelistController extends BaseController
             ->where(['id' => $id])
             ->asArray()
             ->one();
-        
-        $this->createExcelPrefixesDocument($data);
+
+        $fileName = 'price_list_prefixes-' . date('Y-m-d_H-i') . '.xlsx';
+        $this->createExcelPrefixesDocument($data, $fileName);
     }
     
     public function actionExcelLocations($id)
@@ -165,8 +166,9 @@ class PricelistController extends BaseController
             ->where(['p.id' => $id])
             ->asArray()
             ->one();
-        
-        $this->createExcelLocationsDocument($data);
+
+        $fileName = 'price_list_locations-' . date('Y-m-d_H-i') . '.xlsx';
+        $this->createExcelLocationsDocument($data, $fileName);
     }
 
     public function actionExcelSingleLine($id)
@@ -181,7 +183,8 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
 
-        $this->createExcelSingleLineDocument($data);
+        $fileName = 'single_line-' . date('Y-m-d_H-i') . '.xlsx';
+        $this->createExcelSingleLineDocument($data, $fileName);
     }
 
     public function actionExcelFilterB($id)
@@ -196,7 +199,8 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
 
-        $this->createExcelFilterBDocument($data);
+        $fileName = 'price_list_filter_b-' . date('Y-m-d_H-i') . '.xlsx';
+        $this->createExcelFilterBDocument($data, $fileName);
     }
 
     public function actionExcelPrefixesNew($id, $minimize, $use_ranges)
@@ -212,11 +216,18 @@ class PricelistController extends BaseController
             ->where(['id' => $id])
             ->asArray()
             ->one();
-        
-        $this->createExcelPrefixesNewDocument($data, $minimize, $use_ranges);
+
+        $fileName = 'price_list_prefixes_new-' . date('Y-m-d_H-i') . '.xlsx';
+        $this->createExcelPrefixesNewDocument($data, $minimize, $use_ranges, $fileName);
     }
-    
-    private function createExcelDocument($pricelist)
+
+    /**
+     * @param $pricelist
+     * @param string $fileName
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    protected function createExcelDocument($pricelist, $fileName = 'file.xlsx')
     {
         $spreadsheet = new Spreadsheet();
 
@@ -227,11 +238,18 @@ class PricelistController extends BaseController
         
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="file.xlsx"');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
         $writer->save('php://output');
+        exit();
     }
 
-    private function createExcelFilterBDocument($pricelist)
+    /**
+     * @param array $pricelist
+     * @param string $fileName
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    protected function createExcelFilterBDocument(array $pricelist, $fileName = 'file.xlsx')
     {
         $spreadsheet = new Spreadsheet();
 
@@ -242,11 +260,20 @@ class PricelistController extends BaseController
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="file.xlsx"');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
         $writer->save('php://output');
+        exit();
     }
 
-    private function createExcelSingleLineDocument($pricelist)
+    /**
+     *
+     *
+     * @param array $pricelist
+     * @param string $fileName
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    protected function createExcelSingleLineDocument(array $pricelist, $fileName = 'single_line.xlsx')
     {
         $spreadsheet = new Spreadsheet();
 
@@ -256,11 +283,18 @@ class PricelistController extends BaseController
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="single_line.xlsx"');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
         $writer->save('php://output');
+        exit();
     }
-    
-    private function createPricelistSheet(&$spreadsheet, $pricelist)
+
+    /**
+     * @param Spreadsheet $spreadsheet
+     * @param $pricelist
+     * @return array
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    protected function createPricelistSheet(Spreadsheet $spreadsheet, $pricelist)
     {
         $names = [
             "Source country filter",
@@ -407,7 +441,13 @@ class PricelistController extends BaseController
         return $countryNames;
     }
 
-    private function createPricelistFilterBSheet(&$spreadsheet, $pricelist)
+    /**
+     * @param Spreadsheet $spreadsheet
+     * @param $pricelist
+     * @return array
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    protected function createPricelistFilterBSheet(Spreadsheet $spreadsheet, $pricelist)
     {
         $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
         $names = [
@@ -568,7 +608,11 @@ class PricelistController extends BaseController
         return $countryNames;
     }
 
-    private function processAnnotateResponse($response)
+    /**
+     * @param $response
+     * @return array|string
+     */
+    protected function processAnnotateResponse($response)
     {
         $responseArray = explode("\n", $response);
 
@@ -600,18 +644,27 @@ class PricelistController extends BaseController
         return $processedResponse;
     }
 
-    private function processFilterBResponse($response)
+    /**
+     * @param $response
+     * @return string
+     */
+    protected function processFilterBResponse($response)
     {
         return 'test filter b response';
     }
-    
-    private function createSingleLineSheet(&$spreadsheet, $pricelist)
+
+    /**
+     * @param Spreadsheet $spreadsheet
+     * @param $pricelist
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    protected function createSingleLineSheet(Spreadsheet $spreadsheet, $pricelist)
     {
         $spreadsheet->createSheet();
         
         $sheet = $spreadsheet->getSheet(0);
         $sheet->setTitle('Single line');
-        
+
         $names = [
             "Destination",
             "Codes",
@@ -629,7 +682,7 @@ class PricelistController extends BaseController
         
         $currentRowNumber = $this->setHeader($sheet, $names, $pricelist, $minColumnNumber, $maxColumnNumber,
             $currentRowNumber);
-        
+
         $currentRowNumber += 1;
 
         $apiUrl = 'http://reg10.mcntelecom.ru:8032/';
@@ -682,6 +735,7 @@ class PricelistController extends BaseController
                     krsort($flattenedPrefixPriceNoLimit);
                     
                     foreach ($prefixListFromResponse as $prefix) {
+                        $prefix = strval($prefix);
                         foreach ($flattenedPrefixPriceNoLimit as $prefixPriceKey => $prefixPrice) {
                             if ($prefixPriceKey == '') {
                                 $simplifiedPrefixPriceList[$prefix] = $prefixPrice;
@@ -692,6 +746,8 @@ class PricelistController extends BaseController
                     }
                     
                     foreach ($simplifiedPrefixPriceList as $prefixPriceKey => $prefixPrice) {
+                        $prefixPriceKey = strval($prefixPriceKey);
+
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $prefixPriceKey);
                         $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber,
                             $prefixPrice[0]['b_number_price']);
@@ -730,8 +786,18 @@ class PricelistController extends BaseController
             }
         }
     }
-    
-    private function setHeader(&$sheet, $names, $pricelist, $minColumnNumber, $maxColumnNumber, $currentRowNumber)
+
+    /**
+     * @param Worksheet $sheet
+     * @param $names
+     * @param $pricelist
+     * @param $minColumnNumber
+     * @param $maxColumnNumber
+     * @param $currentRowNumber
+     * @return int
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    protected function setHeader(Worksheet $sheet, $names, $pricelist, $minColumnNumber, $maxColumnNumber, $currentRowNumber)
     {
         for ($i = 0; $i < $maxColumnNumber; $i++) {
             $sheet->getColumnDimensionByColumn($i + 1)->setAutoSize(true);
@@ -786,8 +852,12 @@ class PricelistController extends BaseController
         
         return $currentRowNumber;
     }
-    
-    private function getFilterName($filter)
+
+    /**
+     * @param $filter
+     * @return array
+     */
+    protected function getFilterName($filter)
     {
         if (!empty($filter['description'])) {
             $filterText = trim($filter['description']);
@@ -852,7 +922,11 @@ class PricelistController extends BaseController
         return array($filterText, $filterCount);
     }
 
-    private function isFilterEmpty($filter)
+    /**
+     * @param $filter
+     * @return bool
+     */
+    protected function isFilterEmpty($filter)
     {
         if ($filter['nnp_country'] != '{}' || ($filter['nnp_ndc'] != '{}' && !empty($filter['nnp_ndc'])) || 
             $filter['nnp_operator'] != '{}' || $filter['nnp_region'] != '{}' || 
@@ -865,8 +939,13 @@ class PricelistController extends BaseController
         
         return true;
     }
-    
-    private function createCountriesSheet(&$spreadsheet, $countryNames)
+
+    /**
+     * @param Spreadsheet $spreadsheet
+     * @param $countryNames
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    protected function createCountriesSheet(Spreadsheet $spreadsheet, $countryNames)
     {
         $spreadsheet->createSheet();
         
@@ -885,7 +964,14 @@ class PricelistController extends BaseController
         }
     }
 
-    private function createExcelPrefixesNewDocument($pricelist, $minimize, $use_ranges)
+    /**
+     * @param array $pricelist
+     * @param $minimize
+     * @param $useRanges
+     * @param string $fileName
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    protected function createExcelPrefixesNewDocument(array $pricelist, $minimize, $useRanges, $fileName = 'file.xlsx')
     {
         $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
         $maxColumnNumber = 4;
@@ -916,10 +1002,10 @@ class PricelistController extends BaseController
                 }
 
                 if ($doRequest) {
-                    $this->fillPrefixesNewSpreadSheetFromRequest($filterA, $minimize, $use_ranges, $apiUrl, $firstSheetFilled, 
+                    $this->fillPrefixesNewSpreadSheetFromRequest($filterA, $minimize, $useRanges, $apiUrl, $firstSheetFilled,
                                                                  $spreadsheet, $maxColumnNumber, $prefixes);
                 } else {
-                    $this->fillPrefixesNewSpreadSheetFromFilter($filterA, $minimize, $use_ranges, $apiUrl, $firstSheetFilled, 
+                    $this->fillPrefixesNewSpreadSheetFromFilter($filterA, $firstSheetFilled,
                                                                  $spreadsheet, $maxColumnNumber);
                 }
             }
@@ -927,18 +1013,30 @@ class PricelistController extends BaseController
         
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="file.xlsx"');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
         $writer->save('php://output');
+        exit();
     }
 
-    private function fillPrefixesNewSpreadSheetFromRequest($filterA, $minimize, $use_ranges, $apiUrl, &$firstSheetFilled, 
-                                                &$spreadsheet, $maxColumnNumber, $prefixes)
+    /**
+     * @param $filterA
+     * @param $minimize
+     * @param $useRanges
+     * @param $apiUrl
+     * @param $firstSheetFilled
+     * @param Spreadsheet $spreadsheet
+     * @param $maxColumnNumber
+     * @param $prefixes
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    protected function fillPrefixesNewSpreadSheetFromRequest($filterA, $minimize, $useRanges, $apiUrl, &$firstSheetFilled,
+                                                           Spreadsheet $spreadsheet, $maxColumnNumber, $prefixes)
     {
         $apiParams = [
             'cmd' => 'annotatePricelistv2',
             'id' => $filterA['id'],
             'minimize' => $minimize == 'true' ? 1 : 0,
-            'use_ranges' => $use_ranges == 'true' ? 1 : 0
+            'use_ranges' => $useRanges == 'true' ? 1 : 0
         ];
         
         $request = $apiUrl . http_build_query($apiParams);
@@ -1029,8 +1127,14 @@ class PricelistController extends BaseController
         }
     }
 
-    private function fillPrefixesNewSpreadSheetFromFilter($filterA, $minimize, $use_ranges, $apiUrl, &$firstSheetFilled, 
-                                                &$spreadsheet, $maxColumnNumber)
+    /**
+     * @param $filterA
+     * @param $firstSheetFilled
+     * @param Spreadsheet $spreadsheet
+     * @param $maxColumnNumber
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    protected function fillPrefixesNewSpreadSheetFromFilter($filterA, &$firstSheetFilled, Spreadsheet $spreadsheet, $maxColumnNumber)
     {
         $filterBDescriptionArray = [];
 
@@ -1074,8 +1178,14 @@ class PricelistController extends BaseController
             }
         }
     }
-    
-    private function createExcelPrefixesDocument($pricelist)
+
+    /**
+     * @param array $pricelist
+     * @param string $fileName
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    protected function createExcelPrefixesDocument(array $pricelist, $fileName = 'file.xlsx')
     {
         $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
         $maxColumnNumber = 3;
@@ -1151,11 +1261,18 @@ class PricelistController extends BaseController
         
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="file.xlsx"');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
         $writer->save('php://output');
+        exit();
     }
-    
-    private function createExcelLocationsDocument($pricelist)
+
+    /**
+     * @param array $pricelist
+     * @param string $fileName
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    protected function createExcelLocationsDocument(array $pricelist, $fileName = 'file.xlsx')
     {
         $rowNumber = 1;
         $maxColumnNumber = 4;
@@ -1185,7 +1302,8 @@ class PricelistController extends BaseController
         
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="file.xlsx"');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
         $writer->save('php://output');
+        exit();
     }
 }
