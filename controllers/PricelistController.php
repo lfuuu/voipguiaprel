@@ -360,7 +360,7 @@ class PricelistController extends BaseController
                     
                     $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $filterBText);
                     if ($filterB['rating'] != 1) {
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $filterB['rating']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, strval($filterB['rating']));
                     }
                     $filterBStartRowNumber = $currentRowNumber;
                     
@@ -530,7 +530,7 @@ class PricelistController extends BaseController
 
                     $sheet->setCellValueByColumnAndRow($minColumnNumber + 1, $currentRowNumber, $filterBText);
                     if ($filterB['rating'] != 1) {
-                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, $filterB['rating']);
+                        $sheet->setCellValueByColumnAndRow($minColumnNumber + 2, $currentRowNumber, strval($filterB['rating']));
                     }
                     $filterBStartRowNumber = $currentRowNumber;
 
@@ -1077,9 +1077,10 @@ class PricelistController extends BaseController
         if (mb_strlen($filterAHeader) > 31) {
             $filterAHeader = mb_substr($filterAHeader, 0, 28) . '...';
         }
-        
-        $sheet->setTitle($filterAHeader);
-        
+
+        $sheetTitle = str_replace(Worksheet::getInvalidCharacters(), '-', $filterAHeader);
+        $sheet->setTitle($sheetTitle);
+
         $row = 1;
 
         $sheet->getStyle('C:C')->getNumberFormat()->setFormatCode('0.000000');
@@ -1162,8 +1163,9 @@ class PricelistController extends BaseController
         if (mb_strlen($filterAHeader) > 31) {
             $filterAHeader = mb_substr($filterAHeader, 0, 28) . '...';
         }
-        
-        $sheet->setTitle($filterAHeader);
+
+        $sheetTitle = str_replace(Worksheet::getInvalidCharacters(), '-', $filterAHeader);
+        $sheet->setTitle($sheetTitle);
         
         $row = 1;
 
@@ -1240,8 +1242,9 @@ class PricelistController extends BaseController
                 if (mb_strlen($filterAHeader) > 31) {
                     $filterAHeader = mb_substr($filterAHeader, 0, 28) . '...';
                 }
-                
-                $sheet->setTitle($filterAHeader);
+
+                $sheetTitle = str_replace(Worksheet::getInvalidCharacters(), '-', $filterAHeader);
+                $sheet->setTitle($sheetTitle);
                 
                 $row = 1;
 

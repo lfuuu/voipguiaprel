@@ -116,9 +116,16 @@ data:
         charset utf-8;
         access_log /dev/stdout combined_plus;
 
-        proxy_connect_timeout   2h;
-        proxy_send_timeout      2h;
-        proxy_read_timeout      2h;
+        proxy_connect_timeout       1800;
+        proxy_send_timeout          1800;
+        proxy_read_timeout          1800;
+
+        fastcgi_send_timeout        1800;
+        fastcgi_read_timeout        1800;
+
+        client_header_timeout       1800;
+        client_body_timeout         1800;
+        send_timeout                1800;
 
         location /healthz {
           return 200;
@@ -131,7 +138,6 @@ data:
           include fastcgi_params;
           fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
           fastcgi_param PATH_INFO       $fastcgi_path_info;
-          fastcgi_read_timeout 600;
         }
 
         location / {

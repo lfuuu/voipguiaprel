@@ -86,8 +86,8 @@ spec:
           value: /ssh-agent
         volumeMounts:
         - name: config-volume
-          subPath: api.php.ini
-          mountPath: /usr/local/etc/php/conf.custom
+          subPath: voipgui.php.ini
+          mountPath: /usr/local/etc/php/conf.d/voipgui.php.ini
         - name: config-volume
           subPath: www.conf
           mountPath: /usr/local/etc/php-fpm.d/www.conf
