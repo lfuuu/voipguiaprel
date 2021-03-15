@@ -12,6 +12,7 @@ use app\queries\auth\CamelTestAuthQuery;
  * @property string $gt_number
  * @property string $a_number
  * @property string $b_number
+ * @property string $c_number
  * @property bool $is_autotest
  * @property string $correct_answer
  * @property string $note
@@ -40,7 +41,7 @@ class CamelTestAuth extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'camel_trunk_name', 'gt_number', 'a_number', 'b_number',
+            [['name', 'camel_trunk_name', 'gt_number', 'a_number', 'b_number','c_number',
                 'correct_answer', 'note', 'object_comment'], 'string'],
             [['server_id', 'camel_testgroup_id'], 'integer'],
             [['is_autotest', 'with_debug_info'], 'boolean']

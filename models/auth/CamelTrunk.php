@@ -43,7 +43,7 @@ class CamelTrunk extends \yii\db\ActiveRecord
         return [
             [['name', 'trunk_mcn', 'trunk_tele2'], 'string'],
             [['prefixlist_id', 'camel_route_table_id', 'server_id', 'location_id'], 'integer'],
-            [['insert_cdr', 'is_route_incoming_calls'], 'boolean']
+            [['insert_cdr', 'is_route_incoming_calls', 'no_copy_numc_to_numa'], 'boolean']
         ];
     }
 

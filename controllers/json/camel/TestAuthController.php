@@ -93,7 +93,7 @@ class TestAuthController extends JsonController
         $isReserve = (isset($this->request['is_reserve']) && $this->request['is_reserve']) ? true : false;
         
         $apiUrl = $isReserve ? $server->camel_reserve : $server->camel_gw;
-        
+
         $apiParams = [
             'a_number' => $item->a_number,
             'b_number' => $item->b_number,
@@ -103,6 +103,9 @@ class TestAuthController extends JsonController
             'server_id' => $item->server_id,
             'type' => 'acc'
         ];
+
+        if(isset($item->c_number)){
+            $apiParams['c_number'] = $item->c_number;
 
         $request = $apiUrl . 'api/camel?' . http_build_query($apiParams);
         

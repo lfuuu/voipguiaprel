@@ -74,6 +74,13 @@
                 </a>
             </th>
             <th>
+                <a href="#" ng-click="sortType = 'c_number'; sortReverse = !sortReverse">
+                    C номер
+                    <span ng-show="sortType == 'c_number' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'c_number' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
+            <th>
                 <a href="#" ng-click="sortType = 'gt_number'; sortReverse = !sortReverse">
                     GT номер
                     <span ng-show="sortType == 'gt_number' && sortReverse" class="caret-down"></span>
@@ -96,6 +103,7 @@
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.testgroup_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.a_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.b_number}}</td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.c_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.gt_number}}</td>
             <td ng-if="userPermissions['camel_test_auth_create']"><button type="button" class="btn btn-default btn-sm" ng-click="cloneTest(item)">Клонировать</button></td>
             <td>
