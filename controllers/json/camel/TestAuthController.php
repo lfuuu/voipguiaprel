@@ -106,7 +106,8 @@ class TestAuthController extends JsonController
 
         if(isset($item->c_number)){
             $apiParams['c_number'] = $item->c_number;
-
+        }
+        
         $request = $apiUrl . 'api/camel?' . http_build_query($apiParams);
         
         $apiParams['user'] = \Yii::$app->user->getId();
