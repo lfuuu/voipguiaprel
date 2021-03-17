@@ -17,5 +17,7 @@ class NumberController extends BaseController
         header('Content-Type: text/plain');
         $exp = ConfigExporter::create(null, $server);
         $exp->exportNumber($number->id, $airp, $outcome, $outcomeNext);
+
+        exit();
     }
 }

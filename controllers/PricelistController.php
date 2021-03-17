@@ -134,7 +134,7 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
 
-        $fileName = 'price_list-' . date('Y-m-d_H-i') . '.xlsx';
+        $fileName = sprintf('price-list_%s_%s.xlsx', $id, date('Y-m-d_H-i'));
         $this->createExcelDocument($data, $fileName);
     }
     
@@ -150,7 +150,7 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
 
-        $fileName = 'price_list_prefixes-' . date('Y-m-d_H-i') . '.xlsx';
+        $fileName = sprintf('price-list-prefixes_%s_%s.xlsx', $id, date('Y-m-d_H-i'));
         $this->createExcelPrefixesDocument($data, $fileName);
     }
     
@@ -167,7 +167,7 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
 
-        $fileName = 'price_list_locations-' . date('Y-m-d_H-i') . '.xlsx';
+        $fileName = sprintf('price-list-locations_%s_%s.xlsx', $id, date('Y-m-d_H-i'));
         $this->createExcelLocationsDocument($data, $fileName);
     }
 
@@ -183,7 +183,7 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
 
-        $fileName = 'single_line-' . date('Y-m-d_H-i') . '.xlsx';
+        $fileName = sprintf('single-line_%s_%s.xlsx', $id, date('Y-m-d_H-i'));
         $this->createExcelSingleLineDocument($data, $fileName);
     }
 
@@ -199,7 +199,7 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
 
-        $fileName = 'price_list_filter_b-' . date('Y-m-d_H-i') . '.xlsx';
+        $fileName = sprintf('price-list-filter-b_%s_%s.xlsx', $id, date('Y-m-d_H-i'));
         $this->createExcelFilterBDocument($data, $fileName);
     }
 
@@ -217,7 +217,8 @@ class PricelistController extends BaseController
             ->asArray()
             ->one();
 
-        $fileName = 'price_list_prefixes_new-' . date('Y-m-d_H-i') . '.xlsx';
+        $idStr = sprintf('%s_%s_%s', $id, $minimize ? 'minimize' : 'no-minimize', $use_ranges ? 'ranges' : 'no-ranges');
+        $fileName = sprintf('price-list-prefixes_new_%s_%s.xlsx', $idStr, date('Y-m-d_H-i'));
         $this->createExcelPrefixesNewDocument($data, $minimize, $use_ranges, $fileName);
     }
 

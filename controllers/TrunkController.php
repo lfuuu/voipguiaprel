@@ -23,6 +23,8 @@ class TrunkController extends BaseController
         header('Content-Type: text/plain');
         $exp = ConfigExporter::create($trunk, $server);
         $exp->export();
+
+        exit();
     }
 
     /**
@@ -34,13 +36,16 @@ class TrunkController extends BaseController
         $server = $this->getServerOr404($serverId);
         $trunk = $this->getTrunkOr404($id);
 
+        $fileName = sprintf('config_%s_%s_%s.txt', $id, $serverId, date('Y-m-d_H-i'));
         header('Content-type: text/csv');
-        header('Content-Disposition: attachment; filename=config.txt');
+        header('Content-Disposition: attachment; filename=' . $fileName);
         header('Pragma: no-cache');
         header('Expires: 0');
 
         $exp = ConfigExporter::create($trunk, $server);
         $exp->export();
+
+        exit();
     }
 
     /**

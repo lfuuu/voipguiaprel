@@ -8,7 +8,6 @@ class TestDialController extends BaseController
 {
     /**
      * @param int $id
-     * @param $serverId
      * @throws \yii\web\HttpException
      */
     public function actionDownload($id) {
@@ -20,13 +19,14 @@ class TestDialController extends BaseController
         \S3::setSSL($s3Config["use_ssl"]);
         \S3::setExceptions(true);
 
-        $s3File = \S3::getObject('autocaller', 'autocall/' . $testDial->autocall_uuid . '.wav');
+        $fileName = sprintf('autocall_%s_%s_%s', $id, $testDial->autocall_uuid, date('Y-m-d_H-i'));
+        $s3File = \S3::getObject('autocaller', 'autocall/' . $fileName . '.wav');
 
         header('Content-type: audio/mpeg');
-        header('Content-Disposition: attachment; filename=' . $testDial->autocall_uuid . '.mp3');
+        header('Content-Disposition: attachment; filename=' . $fileName . '.mp3');
 
         echo $s3File->body;
 
-        die;
+        exit();
     }
 }

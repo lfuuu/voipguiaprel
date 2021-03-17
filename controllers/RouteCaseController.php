@@ -21,5 +21,7 @@ class RouteCaseController extends BaseController
         header('Content-Type: text/plain');
         $exp = ConfigExporter::create(null, $server);
         $exp->exportRC();
+
+        exit();
     }
 }

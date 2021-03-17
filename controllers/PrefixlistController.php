@@ -27,6 +27,8 @@ class PrefixlistController extends BaseController
         foreach ($list as $item) {
             echo $item['prefix'] . "<br/>";
         }
+
+        exit();
     }
     
     public function actionShowBuffer($id) {
@@ -43,6 +45,8 @@ class PrefixlistController extends BaseController
         foreach ($list as $item) {
             echo $item['prefix'] . "<br/>";
         }
+
+        exit();
     }
 
     public function actionOpen()
@@ -60,14 +64,17 @@ class PrefixlistController extends BaseController
                 ->all()
         ;
 
+        $fileName = sprintf('prefixlist_%s_%s.csv', $id, date('Y-m-d_H-i'));
         header("Content-type: text/csv");
-        header("Content-Disposition: attachment; filename=prefixlist.csv");
+        header("Content-Disposition: attachment; filename=" . $fileName);
         header("Pragma: no-cache");
         header("Expires: 0");
 
         foreach ($list as $item) {
             echo $item['prefix'] . ";\n";
         }
+
+        exit();
     }
 
     public function actionUploadCsv($id)
