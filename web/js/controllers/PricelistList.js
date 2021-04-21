@@ -11,7 +11,8 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         service_type_id: '',
         id: '',
         is_active: '',
-        is_orig: ''
+        is_orig: '',
+        currency: '',
     };
 
     $scope.filterFields = [
@@ -45,6 +46,8 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
     List.pricelistGroup().then(function (data) {
         $scope.groupList = data;
     });
+
+    $scope.currency = List.currency();
 
     $scope.clickSearch = function() {
         $scope.refreshList();

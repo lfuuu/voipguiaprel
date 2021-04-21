@@ -70,6 +70,10 @@ class PricelistController extends JsonController
             $query->where(['p.pricelist_group_id' => $searchArray['group_id']]);
             $countQuery->where(['pricelist_group_id' => $searchArray['group_id']]);
         }
+        if (isset($searchArray['currency']) && $searchArray['currency']) {
+            $query->where(['p.currency_id' => $searchArray['currency']]);
+            $countQuery->where(['currency_id' => $searchArray['currency']]);
+        }
         
         if (isset($searchArray['service_type_id']) && $searchArray['service_type_id']) {
             $query->andWhere(['p.service_type_id' => $searchArray['service_type_id']]);
@@ -134,7 +138,7 @@ class PricelistController extends JsonController
             ->innerJoin('auth.trunk t', 't.id = st.trunk_id')
             ->where(['p.id' => $id])
             ->asArray();
-
+            
         return $query->all();
     }
     
