@@ -161,7 +161,7 @@
             <span class="label label-info" ng-if="!item.orig">TERM</span>
             <span class="label label-success" ng-if="item.is_global">Глобальный</span>
             <span class="label label-success" ng-if="item.is_active">Активный</span>
-            <span class="label label-danger" ng-click="checkCommerce(item.id)" ng-if="item.is_in_use">В коммерции</span>
+            <span class="label label-danger" ng-click="checkCommerce(item)" ng-if="item.is_in_use">В коммерции</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_created}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.date_start}}</td>

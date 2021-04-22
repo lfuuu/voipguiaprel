@@ -1659,6 +1659,16 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         getInCommerce: function(data) {
             return ApiLoader.post(url + 'get-in-commerce', data);
         },
+        getInCommercePackage: function(data) {
+            return ApiLoader.post(url + 'get-in-commerce-package', data);
+        },
+        getInCommercePackageSms: function(data) {
+            return ApiLoader.post(url + 'get-in-commerce-package-sms', data);
+        },
+        getInCommercePackageData: function(data) {
+            return ApiLoader.post(url + 'get-in-commerce-package-data', data);
+        },
+        
         getWithDependents: function(data) {
             return ApiLoader.post(url + 'get-with-dependents', data);
         },

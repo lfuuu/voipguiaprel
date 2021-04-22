@@ -1,0 +1,24 @@
+<form class="form-horizontal" name="form">
+    <div class="modal-header">
+        <h3>Коммерция прайслиста {{item.id}}</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table">
+            <tr>
+                <th>Package</th>
+                <th>Service Package</th>
+            </tr>
+            <tr ng-repeat="row in list">
+                <td><a href="#">{{row.package_name}}</a></td>
+                <td><a target="blank" href="https://stat.mcn.ru/uu/tariff/edit?id={{row.tariff_id}}">{{row.tariff_id}}</a></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

@@ -32,7 +32,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         $scope.refreshList();
     };
 
-    $scope.refreshList = function() {
+    $scope.refreshList = function () {
         Pricelist.read({
             search_array: $scope.searchArray,
             offset: $scope.offset,
@@ -49,7 +49,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
 
     $scope.currency = List.currency();
 
-    $scope.clickSearch = function() {
+    $scope.clickSearch = function () {
         $scope.refreshList();
     };
 
@@ -120,16 +120,22 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         $scope.offset = ((page - 1) * $scope.limit);
         $scope.refreshList();
     };
-    
+
     $scope.synchronize = function () {
         Pricelist.synchronize().then(function (response) {
-            
+
         });
     };
-    
-    $scope.checkCommerce = function (id) {
-        Redirect.pricelistInCommerceView(id).then(function () {
-            $scope.init();
-        });
+
+    $scope.checkCommerce = function (item) {
+        if (item.type_id == 2) {
+            Redirect.pricelistInCommerceView(item.id).then(function () {
+                $scope.init();
+            });
+        } else {
+            Redirect.pricelistInCommerceViewPackage(item).then(function () {
+                $scope.init();
+            });
+        }
     };
 };

@@ -126,6 +126,7 @@ class AppAsset extends AssetBundle
         'js/controllers/billing/PricelistExcelPrefixesParamsEdit.js',
         'js/controllers/billing/PricelistPrefixPriceHistoryView.js',
         'js/controllers/billing/PricelistInCommerce.js',
+        'js/controllers/billing/PricelistInCommercePackage.js',
         'js/controllers/billing/PricelistSinglePrefixHistoryView.js',
     ];
 
@@ -232,6 +233,7 @@ class AppAsset extends AssetBundle
         'templates/billing/pricelist_excel_prefixes_params_edit.html',
         'templates/billing/pricelist_prefix_price_history_view.html',
         'templates/billing/pricelist_in_commerce.html',
+        'templates/billing/pricelist_in_commerce_package.html',
         'templates/billing/pricelist_single_prefix_history_view.html',
     ];
 }
