@@ -249,6 +249,13 @@
                 <span ng-show="sortType == 'mcn_callid' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
+        <th width="5%">
+            <a href="#" ng-click="sortType = 'cpc'; sortReverse = !sortReverse">
+                CPC
+                <span ng-show="sortType == 'cpc' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'cpc' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
     </tr>
     </thead>
     <tbody>
@@ -264,6 +271,7 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.session_time}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)"><span popover="{{item.disconnect_cause_description}}" data-popover-trigger="mouseenter" popover-placement="bottom">{{item.disconnect_cause}}</span></td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.mcn_callid}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.cpc}}</td>
     </tr>
 
     </tbody>

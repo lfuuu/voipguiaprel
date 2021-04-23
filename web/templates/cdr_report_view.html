@@ -70,6 +70,13 @@
                     <span ng-show="sortType == 'disconnect_cause' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
+            <th width="5%">
+                <a href="#" ng-click="sortType = 'cpc'; sortReverse = !sortReverse">
+                    CPC
+                    <span ng-show="sortType == 'cpc' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'cpc' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -94,6 +101,7 @@
             <td>in: {{item.redirect_number}}<br/>out: {{item.out_redirect_number}}</td>
             <td>{{item.session_time}}</td>
             <td>{{item.disconnect_cause}}</td>
+            <td>{{item.cpc}}</td>
         </tr>
 
         </tbody>

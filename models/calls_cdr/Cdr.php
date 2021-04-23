@@ -64,7 +64,7 @@ class Cdr extends \yii\db\ActiveRecord
             [['server_id', 'id', 'call_id', 'session_time', 'disconnect_cause', 'src_noa', 'dst_noa', 'hub_id'], 'integer'],
             [['nas_ip', 'src_number', 'dst_number', 'redirect_number', 'setup_time', 'connect_time', 'disconnect_time',
                 'src_route', 'dst_route', 'hash', 'dst_replace', 'call_finished', 'releasing_party', 'in_sig_call_id',
-                'out_sig_call_id', 'session_time_precise', 'mcn_callid', 'out_redirect_number'], 'string'],
+                'out_sig_call_id', 'session_time_precise', 'mcn_callid', 'out_redirect_number', 'cpc'], 'string'],
             [['src_mgmn', 'dst_mgmn'], 'boolean'],
         ];
     }
