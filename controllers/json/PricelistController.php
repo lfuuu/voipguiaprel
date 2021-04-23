@@ -139,6 +139,7 @@ class PricelistController extends JsonController
             ->innerJoin('billing.service_trunk st', 'st.id = atl.account_tariff_id')
             ->innerJoin('auth.trunk t', 't.id = st.trunk_id')
             ->where(['p.id' => $id])
+            ->orderBy('l_trunk_id')
             ->asArray();
             
         return $query->all();
@@ -163,9 +164,10 @@ class PricelistController extends JsonController
             ->innerJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = p.id')
             ->innerJoin(
                 'billing_uu.package pckg',
-                'pckg.tariff_id = pp.tariff_id and pckg.service_type_id = 3'
+                'pckg.tariff_id = pp.tariff_id and pckg.service_type_id in (23,3)'
             )
             ->where(['p.id' => $id])
+            ->orderBy('tariff_id')
             ->asArray();
 
         return $query->all();
@@ -193,6 +195,7 @@ class PricelistController extends JsonController
                 'pckg.tariff_id = sms.tariff_id and pckg.service_type_id = 17'
             )
             ->where(['p.id' => $id])
+            ->orderBy('tariff_id')
             ->asArray();
 
         return $query->all();
@@ -220,6 +223,7 @@ class PricelistController extends JsonController
                 'pckg.tariff_id = data.tariff_id and pckg.service_type_id = 31'
             )
             ->where(['p.id' => $id])
+            ->orderBy('tariff_id')
             ->asArray();
 
         return $query->all();
