@@ -173,8 +173,8 @@
                 <td style="background-color: #AABBBB; border-left: 1px solid grey;" ng-if="item.is_filter_b_header"></td>
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header" colspan="5"></td>
                 <td style="text-align: center; background-color: #AABBBB" ng-if="item.is_filter_b_header">
-                    <b>Фильтр В</b>
-                </td>
+                    <b style ="cursor: pointer" ng-click="editFilterB(item.fiter_b_header_id)">Фильтр В (#{{item.fiter_b_header_id}})</b>
+                </td>        
                 <td style="background-color: #AABBBB" ng-if="item.is_filter_b_header" colspan="12"></td>
                 <!-- Колонки фильтра Б -------------------------------------------------->
                 <td style="border-left: 1px solid grey;" ng-if="item.is_filter_b_header_columns"></td>

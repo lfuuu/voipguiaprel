@@ -136,10 +136,11 @@ class PricelistView
             
             if (!isset($result[$filterBKey]['is_filter_b']) || ($result[$filterBKey]['is_filter_b'] && $result[$filterBKey]['id'] != $queryItem['pfb__id'])) {
                 if ($filterBKey != ($counter - 1)) {
-                    $result[$counter] = ['is_filter_b_header' => true];
+                    $result[$counter] = ['is_filter_b_header' => true, 'fiter_b_header_id' => $queryItem['pfb__id']];
                     $counter++;
                     $result[$counter] = ['is_filter_b_header_columns' => true];
                     $counter++;
+
                 }
                 
                 $result[$counter] = self::createFilterBRowFull($queryItem, $idArrays);
@@ -178,7 +179,7 @@ class PricelistView
                 }
             }
         }
-        
+
         return $result;
     }
     
