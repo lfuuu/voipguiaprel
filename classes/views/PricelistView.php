@@ -426,7 +426,10 @@ class PricelistView
             'minimum_margin_type' => (($item['p__minimum_margin_type'] == 1) ? 'Деньги' : 'Процент'),
             'name' => $item['p__name'],
             'orig' => $item['p__orig'] ? 'Оригинация' : 'Терминация',
-            'version' => $item['p__pricelist_version']
+            'version' => $item['p__pricelist_version'],
+            'default_tarification_free_seconds' => $item['p__default_tarification_free_seconds'],
+            'default_tarification_interval_seconds' => $item['p__default_tarification_interval_seconds'],
+            'default_tarification_min_paid_seconds' => $item['p__default_tarification_min_paid_seconds'],
         ];
     }
     
