@@ -61,7 +61,7 @@ class TestAuthController extends JsonController
         }
     
         if (isset($searchArray['id']) && $searchArray['id']) {
-            $query->andWhere('id = :id');
+            $query->andWhere('auth.camel_test_auth.id = :id');
             $query->addParams([':id' => $searchArray['id']]);
         }
         
