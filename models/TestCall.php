@@ -51,7 +51,7 @@ class TestCall extends \yii\db\ActiveRecord
         return [
             [['name'], 'string', 'max' => 100],
             [['orig'], 'boolean'],
-            [['connect_time', 'note'], 'string'],
+            [['connect_time', 'note','cpc'], 'string'],
             [['session_time'], 'integer'],
             [['src_number', 'dst_number', 'redirect_number', 'dst_replace'], 'string', 'max' => 64],
             [['src_noa','dst_noa','redirect_noa'], 'integer'],

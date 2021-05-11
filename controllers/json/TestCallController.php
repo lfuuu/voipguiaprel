@@ -248,6 +248,10 @@ class TestCallController extends JsonController
             'dst_noa' => $item->dst_noa,
             'dst_replace' => $item->dst_replace
         ];
+
+        if (isset($item->cpc)) {
+            $apiParams['cpc'] =  $item->cpc;
+        }
     
         if ($item->with_debug_info) {
             $apiParams['with_debug_info'] = 1;
