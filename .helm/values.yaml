@@ -12,6 +12,15 @@ postgres_dev:
   user: voipgui
   password: qwe123
 
+postgres_prod_env_ci:
+  host: 192.168.49.1
+  port:  43432
+  db: nispd_test
+  adminuser: postgres
+  user: voipgui
+  password: qwe123
+
+
 ci_url: voip-gui-dev.local
 
 use_ngnix_virtualserver: "no"

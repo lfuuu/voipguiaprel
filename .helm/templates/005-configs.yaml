@@ -1,3 +1,24 @@
+{{- if (eq .Values.global.env "prod-env-ci") }}
+
+{{ $_ := set . "pg_host" .Values.postgres_prod_env_ci.host }}
+{{ $_ := set . "pg_user" .Values.postgres_prod_env_ci.user }}
+{{ $_ := set . "pg_password" .Values.postgres_prod_env_ci.password }}
+{{ $_ := set . "pg_db" .Values.postgres_prod_env_ci.db }}
+{{ $_ := set . "pg_port" .Values.postgres_prod_env_ci.port }}
+
+{{- end }}
+
+{{- if (eq .Values.global.env "prod") }}
+
+{{ $_ := set . "pg_host" .Values.postgres_prod.host }}
+{{ $_ := set . "pg_user" .Values.postgres_prod.user }}
+{{ $_ := set . "pg_password" .Values.postgres_prod.password }}
+{{ $_ := set . "pg_db" .Values.postgres_prod.db }}
+{{ $_ := set . "pg_port" .Values.postgres_prod.port }}
+
+{{- end }}
+
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -35,7 +56,7 @@ data:
     [Session]
     session.gc_maxlifetime = 14400
     ###
-    
+
   www.conf: |
     [www]
     user = www-data
@@ -54,9 +75,9 @@ data:
     <?php
 
     return [
-        'dsn' => 'pgsql:host={{ .Values.postgres_prod.host }};dbname={{ .Values.postgres_prod.db }}',
-        'username' => '{{ .Values.postgres_prod.user }}',
-        'password' => '{{ .Values.postgres_prod.password }}'
+        'dsn' => 'pgsql:host={{ .pg_host }};dbname={{ .pg_db }};port={{ .pg_port }}',
+        'username' => '{{ .pg_user }}',
+        'password' => '{{ .pg_password }}'
     ];
 
   nginx.conf: |
@@ -64,7 +85,7 @@ data:
     user www-data www-data;
 
     worker_processes auto;
-    
+
     error_log /dev/stderr;
 
     events {

@@ -3,7 +3,7 @@
 #   dev* - конфигурация для разработки, запускаются база и пгадмин 
 
 
-TAG=1.363
+TAG=1.365
 APPNAME=voip-gui
 
 
@@ -12,6 +12,14 @@ function dev()
 	export ENVNAME=dev
 	CI_URL="$APPNAME-$ENVNAME.local"
         PGADMIN_IN_DEV="yes"
+}
+
+function prodenvci()
+{
+    MINIKUBE_IP=`minikube ip`
+    export ENVNAME="prod-env-ci"
+    CI_URL="$APPNAME-$ENVNAME.$MINIKUBE_IP.nip.io"
+    PGADMIN_IN_DEV="yes"
 }
 
 function stage()
