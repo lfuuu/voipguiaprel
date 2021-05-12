@@ -17,8 +17,8 @@ var PricelistPrefixPriceHistoryViewCtrl = function($rootScope, $scope, Pricelist
     };
     
     $scope.styleMap = {
-        'decrease': 'font-weight: bold; background-color: #ff9999;',
-        'increase': 'font-weight: bold; background-color: #99ff99;',
+        'decrease': 'font-weight: bold; background-color: #99ff99;',
+        'increase': 'font-weight: bold; background-color: #ff9999;',
         'delete': 'font-weight: bold; background-color: lightgrey;',
         'new': 'font-weight: bold; background-color: lightblue;',
         'prolong': 'font-weight: bold; background-color: white;',
