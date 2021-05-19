@@ -75,11 +75,11 @@ class Pricelist extends \yii\db\ActiveRecord
                 'is_in_use' => new Expression('case when atl.id is not null then true else false end')
             ])
             ->leftJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = billing_uu.pricelist.id')
-            ->leftJoin('billing_uu.account_tariff_light atl', 'atl.id = pp.tariff_id')
+            ->leftJoin('billing_uu.account_tariff_light atl', 'atl.id = pp.tariff_id and now() between atl.activate_from and atl.deactivate_from')
             ->where(['billing_uu.pricelist.id' => $this->id])
             ->asArray()
             ->one();
-        
+
         return $result['is_in_use'];
     }
     
