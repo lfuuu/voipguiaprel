@@ -60,7 +60,6 @@ class PricelistController extends JsonController
             ->leftJoin('billing_uu.account_tariff_light_view atl', 'atl.tariff_id = pp.tariff_id or atl.tariff_id = sms.tariff_id or atl.tariff_id = data.tariff_id')
             ->orderBy('name')
             ->groupBy('p.id, g.id')
-            ->limit($limit)
             ->offset($offset)
             ->asArray();
 
@@ -70,43 +69,42 @@ class PricelistController extends JsonController
 
         if (isset($searchArray['group_id']) && $searchArray['group_id'] && $searchArray['group_id'] != 'all') {
             $query->where(['p.pricelist_group_id' => $searchArray['group_id']]);
-            $countQuery->where(['pricelist_group_id' => $searchArray['group_id']]);
         }
         if (isset($searchArray['currency']) && $searchArray['currency']) {
             $query->where(['p.currency_id' => $searchArray['currency']]);
-            $countQuery->where(['currency_id' => $searchArray['currency']]);
         }
 
         if (isset($searchArray['service_type_id']) && $searchArray['service_type_id']) {
             $query->andWhere(['p.service_type_id' => $searchArray['service_type_id']]);
-            $countQuery->andWhere(['service_type_id' => $searchArray['service_type_id']]);
         }
 
         if (isset($searchArray['is_active']) && is_bool($searchArray['is_active'])) {
             $query->andWhere(['p.is_active' => $searchArray['is_active']]);
-            $countQuery->andWhere(['is_active' => $searchArray['is_active']]);
         }
 
         if (isset($searchArray['is_orig']) && is_bool($searchArray['is_orig'])) {
             $query->andWhere(['p.orig' => $searchArray['is_orig']]);
-            $countQuery->andWhere(['orig' => $searchArray['is_orig']]);
         }
+        
 
         if (isset($searchArray['id']) && $searchArray['id']) {
             $query->andWhere(['p.id' => $searchArray['id']]);
-            $countQuery->andWhere(['id' => $searchArray['id']]);
         }
 
         if (isset($searchArray['query']) && $searchArray['query']) {
             $query->andWhere('p.name ilike :name');
             $query->addParams([':name' => '%' . $searchArray['query'] . '%']);
-            $countQuery->andWhere('name ilike :name');
-            $countQuery->addParams([':name' => '%' . $searchArray['query'] . '%']);
         }
 
-        $data = $query->all();
+        if (isset($searchArray['is_in_use']) && is_bool($searchArray['is_in_use'])) {
+            $query->having('sum(case when atl.tariff_id is not null then 1 else 0 end) = ' . (int) $searchArray['is_in_use']);
+        }
+        
+        $count = $query->count();
 
-        $count = $countQuery->count();
+        $query->limit($limit);
+
+        $data = $query->all();
 
         return [
             'totalCount' => $count,
