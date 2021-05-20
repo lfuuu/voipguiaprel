@@ -12,7 +12,6 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         id: '',
         is_active: '',
         is_orig: '',
-        is_in_use: '',
         currency: '',
     };
 
