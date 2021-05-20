@@ -65,7 +65,17 @@ class PricelistController extends JsonController
             ->asArray();
 
         $countQuery = Pricelist::find()
-            ->select(['id'])
+        ->alias('p')
+            ->select([
+                'p.id',
+                'is_in_use' => new Expression('sum(case when atl.tariff_id is not null then 1 else 0 end) > 0'),
+            ])
+            ->leftJoin('billing_uu.pricelist_group g', 'g.id = p.pricelist_group_id')
+            ->leftJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = p.id')
+            ->leftJoin('billing_uu.package_sms sms', 'sms.nnp_pricelist_id = p.id')
+            ->leftJoin('billing_uu.package_data data', 'data.nnp_pricelist_id = p.id')
+            ->leftJoin('billing_uu.account_tariff_light_view atl', 'atl.tariff_id = pp.tariff_id or atl.tariff_id = sms.tariff_id or atl.tariff_id = data.tariff_id')
+            ->groupBy('p.id, g.id')
             ->distinct();
 
         if (isset($searchArray['group_id']) && $searchArray['group_id'] && $searchArray['group_id'] != 'all') {
@@ -104,9 +114,20 @@ class PricelistController extends JsonController
             $countQuery->addParams([':name' => '%' . $searchArray['query'] . '%']);
         }
 
+        if (isset($searchArray['is_in_use']) && is_bool($searchArray['is_in_use'])) {
+            if($searchArray['is_in_use'] == 1){
+                $query->having('sum(case when atl.tariff_id is not null then 1 else 0 end) > 0') ;
+                $countQuery->having('sum(case when atl.tariff_id is not null then 1 else 0 end) > 0'); 
+            } else {
+                $query->having('sum(case when atl.tariff_id is not null then 1 else 0 end) = 0') ;
+                $countQuery->having('sum(case when atl.tariff_id is not null then 1 else 0 end) = 0'); 
+            }
+        }
+        
+       
         $data = $query->all();
-        $count = $countQuery->count();  
-
+        $count = $countQuery->count();
+        
         return [
             'totalCount' => $count,
             'data' => $data

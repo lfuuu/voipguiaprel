@@ -13,6 +13,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         is_active: '',
         is_orig: '',
         currency: '',
+        is_in_use: '',
     };
 
     $scope.filterFields = [
