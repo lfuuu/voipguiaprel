@@ -96,15 +96,16 @@ class PricelistController extends JsonController
             $query->addParams([':name' => '%' . $searchArray['query'] . '%']);
         }
 
-        if (isset($searchArray['is_in_use']) && is_bool($searchArray['is_in_use'])) {
-            $query->having('sum(case when atl.tariff_id is not null then 1 else 0 end) = ' . (int) $searchArray['is_in_use']);
-        }
-        
-        $count = $query->count();
-
-        $query->limit($limit);
+        //      to fix
+        // if (isset($searchArray['is_in_use']) && is_bool($searchArray['is_in_use'])) {
+        //     $query->having('sum(case when atl.tariff_id is not null then 1 else 0 end) = ' . (int) $searchArray['is_in_use']);
+        //     // $countQuery->having('sum(case when atl.tariff_id is not null then 1 else 0 end) = ' . (int) $searchArray['is_in_use']);
+        // }
+        // $count = $query->count();
+        // $query->limit($limit);
 
         $data = $query->all();
+        $count = $countQuery->count();  
 
         return [
             'totalCount' => $count,
