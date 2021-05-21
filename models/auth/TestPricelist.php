@@ -2,6 +2,7 @@
 
 namespace app\models\auth;
 use app\queries\auth\TestPricelistQuery;
+use app\models\Server;
 
 /**
  * @property int $id
@@ -21,6 +22,8 @@ use app\queries\auth\TestPricelistQuery;
  * @property bool $is_autotest
  * @property int $sim_partner_id
  * @property int $sim_profile_id
+ * 
+ * @property Server $server
  */
 class TestPricelist extends \yii\db\ActiveRecord
 {
@@ -49,5 +52,10 @@ class TestPricelist extends \yii\db\ActiveRecord
             [['name', 'a_number', 'b_number', 'expected_price', 'mock_current_date'], 'string'],
             [['is_orig', 'with_debug_info', 'is_autotest'], 'boolean']
         ];
+    }
+
+    public function getServer()
+    {
+        return $this->hasOne(Server::className(), ['id' => 'server_id']);
     }
 }

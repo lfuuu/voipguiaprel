@@ -233,9 +233,13 @@ class TestPricelistController extends JsonController
         }
         
         $item = $this->getTestPricelistOr404($this->request['id']);
-        $server = Server::findOne($item['server_id']);
         
-        $apiUrl = $server->apiUrl;
+        if ($item === null) {
+            throw new HttpException(404, 'TestPricelist не найден');
+        }
+        // $server = Server::findOne($item['server_id']);
+        
+        $apiUrl = $item->server->apiUrl;
     
         $apiParams = [
             'cmd' => 'priceV2Calc',
@@ -260,6 +264,10 @@ class TestPricelistController extends JsonController
     
         if ($item->sim_profile_id) {
             $apiParams['sim_profile_id'] = $item->sim_profile_id;
+        }
+
+        if (isset($this->request['isDev']) && $item->server->hostname_dev) {
+            $apiUrl = $item->server->apiUrlDev;
         }
         
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
