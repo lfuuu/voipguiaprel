@@ -22,18 +22,21 @@ trait PricelistView
     public static function formLocationText($item, $isBasic, $idArrays, $prefix = 'pl__')
     {
         $locationText = '';
-        
+ 
         $mcc = self::getNameFromDictionary($item[$prefix. 'mcc'], $idArrays['nnp.mcc']['ids']);
         $simPartner = self::getNameFromDictionary($item[$prefix. 'sim_partner'], $idArrays['billing_uu.sim_imsi_partner']['ids']);
         $simProfile = self::getNameFromDictionary($item[$prefix. 'sim_profile'], $idArrays['billing_uu.sim_imsi_profile']['ids']);
         $mnc = self::formMncText($item);
         
-        $locationText = !empty($item[$prefix. 'description']) ? $item[$prefix. 'description'] : 
+        $locationText = !empty($item[$prefix. 'description']) ?  $item[$prefix. 'description'] . ' (' . 
             ((($isBasic ? 'Базовое местоположение: ' : 'Местоположение: ') . PricelistLocation::LOCATION_TYPE_NAMES[$item[$prefix. 'location_id']]) . 
             (empty($mcc) ? '' : ('; MCC: ' . $mcc)) . (empty($mnc) ? '' : ('; MNC: ' . $mnc)) . 
             (empty($item[$prefix. 'delta_price']) ? '' : '; Наценка: ' . $item[$prefix. 'delta_price']) . 
+            (empty($simPartner) ? '' : ('; Sim Партнер: ' . $simPartner)) . (empty($simProfile) ? '' : ('; Sim Профиль: ' . $simProfile))) . ') ': ((($isBasic ? 'Базовое местоположение: ' : 'Местоположение: ') . PricelistLocation::LOCATION_TYPE_NAMES[$item[$prefix. 'location_id']]) . 
+            (empty($mcc) ? '' : ('; MCC: ' . $mcc)) . (empty($mnc) ? '' : ('; MNC: ' . $mnc)) . 
+            (empty($item[$prefix. 'delta_price']) ? '' : '; Наценка: ' . $item[$prefix. 'delta_price']) . 
             (empty($simPartner) ? '' : ('; Sim Партнер: ' . $simPartner)) . (empty($simProfile) ? '' : ('; Sim Профиль: ' . $simProfile)));
-        
+
         return $locationText;
     }
     
