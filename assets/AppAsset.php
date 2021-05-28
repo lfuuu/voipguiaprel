@@ -128,6 +128,7 @@ class AppAsset extends AssetBundle
         'js/controllers/billing/PricelistInCommerce.js',
         'js/controllers/billing/PricelistInCommercePackage.js',
         'js/controllers/billing/PricelistSinglePrefixHistoryView.js',
+        'js/controllers/TrunkLogic.js',
     ];
 
     public $templates = [
@@ -235,5 +236,6 @@ class AppAsset extends AssetBundle
         'templates/billing/pricelist_in_commerce.html',
         'templates/billing/pricelist_in_commerce_package.html',
         'templates/billing/pricelist_single_prefix_history_view.html',
+        'templates/trunk_logic_show.html'
     ];
 }

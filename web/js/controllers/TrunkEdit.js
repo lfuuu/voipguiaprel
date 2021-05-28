@@ -314,14 +314,9 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
         $modalInstance.dismiss();
     };
 
-    $scope.openServiceTrunks = function () {
-        $.each($scope.serviceTrunks, function () {
-            $window.open(
-                STAT_HOST + '/usage/trunk/edit-by?' + $.param({
-                    'clientAccountId': this.client_account_id,
-                    'trunkId': this.trunk_id
-                })
-            );
+    $scope.openServiceTrunks = function (item) {
+        Redirect.trunkLogic(item).then(function () {
+            $scope.init();
         });
     };
 

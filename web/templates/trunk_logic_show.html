@@ -1,0 +1,29 @@
+<form class="form-horizontal" name="form">
+    <div class="modal-header">
+        <h3>Логические транки</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table">
+            <tr>
+                <th>Logic trunks</th>
+                <th>Trunk id</th>
+                <th>Client id</th>
+
+            </tr>
+            <tr ng-repeat="row in list">
+                <!-- <td><a href="#" ng-click="openTrunk(row.p_trunk_id, row.p_trunk_server_id)">{{row.p_trunk_name}}</a></td> -->
+                <td><a target="blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">{{row.description}}</a></td>
+                <td><a target="blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">{{row.trunk_id}} </a></td>
+                <td><a target="blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">{{row.client_account_id}} </a></td>
+
+            </tr>
+        </table>
+    </div>
+
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+
+</form>

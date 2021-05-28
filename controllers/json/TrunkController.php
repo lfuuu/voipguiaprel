@@ -391,10 +391,15 @@ class TrunkController extends JsonController
         if (!\Yii::$app->user->can('trunk_edit') && !\Yii::$app->user->can('trunk_create')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
-        return isset($this->request['trunk_id']) && (int)$this->request['trunk_id'] ?
-            ServiceTrunk::findActualByTrunkId($this->request['trunk_id']) :
-            [];
+
+        if (isset($this->request['trunk_id']) && (int)$this->request['trunk_id']) {
+            $result = ServiceTrunk::findActualByTrunkId($this->request['trunk_id']);
+        }else {
+            $result = [];
+        }
+
+        return $result;
+   
     }
 
     /**

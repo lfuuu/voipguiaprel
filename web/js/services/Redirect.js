@@ -713,5 +713,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         pricelistSinglePrefixHistoryView: function(filterBId, prefixB) {
             return openModal(PricelistSinglePrefixHistoryViewCtrl, '/templates/billing/pricelist_single_prefix_history_view.html', {filter_b_id: filterBId, prefix_b: prefixB});
         },
+        trunkLogic: function(item) {
+            return openModal(TrunkLogicCtrl, 'templates/trunk_logic_show.html', {item: item})
+        }
     };
 });
