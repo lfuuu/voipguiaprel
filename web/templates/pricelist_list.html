@@ -26,12 +26,13 @@
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
-                <label class="col-sm-2 search-field-label">Валюта</label>
-                <div class="col-sm-10 search-input">
-                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Группа" ng-model="searchArray.currency" ng-change="refreshList()" required>
-                        <option value="">-- Выберите валюту --</option>
-                        <option ng-repeat="currency in currency" value="{{currency.id}}">{{currency.name}}</option>
-                    </select>
+                <label class="col-sm-1 search-field-label">В коммерции</label>
+                <div class="col-sm-5 search-input">
+                    <div class="btn-group">
+                        <button type="button" class="btn {{searchArray.is_in_use === true ? 'btn-primary active' : 'btn-default'}}" ng-click="searchArray.is_in_use = true; refreshList()">Да</button>
+                        <button type="button" class="btn {{searchArray.is_in_use === false ? 'btn-danger active' : 'btn-default'}}" ng-click="searchArray.is_in_use = false; refreshList()">Нет</button>
+                        <button type="button" class="btn {{searchArray.is_in_use === '' ? 'btn-info active' : 'btn-default'}}" ng-click="searchArray.is_in_use = ''; refreshList()">Не важно</button>
+                    </div>
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
@@ -45,6 +46,16 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group col-sm-4 search-form-item">
+                <label class="col-sm-1 search-field-label">Направление</label>
+                <div class="col-sm-5 search-input">
+                    <div class="btn-group">
+                        <button type="button" class="btn {{searchArray.is_orig === true ? 'btn-primary active' : 'btn-default'}}" ng-click="searchArray.is_orig = true; refreshList()">Orig</button>
+                        <button type="button" class="btn {{searchArray.is_orig === false ? 'btn-danger active' : 'btn-default'}}" ng-click="searchArray.is_orig = false; refreshList()">Term</button>
+                        <button type="button" class="btn {{searchArray.is_orig === '' ? 'btn-info active' : 'btn-default'}}" ng-click="searchArray.is_orig = ''; refreshList()">Не важно</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="form-group col-sm-4 search-form-item first-form-item">
@@ -54,13 +65,12 @@
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">
-                <label class="col-sm-1 search-field-label">Направление</label>
-                <div class="col-sm-5 search-input">
-                    <div class="btn-group">
-                        <button type="button" class="btn {{searchArray.is_orig === true ? 'btn-primary active' : 'btn-default'}}" ng-click="searchArray.is_orig = true; refreshList()">Orig</button>
-                        <button type="button" class="btn {{searchArray.is_orig === false ? 'btn-danger active' : 'btn-default'}}" ng-click="searchArray.is_orig = false; refreshList()">Term</button>
-                        <button type="button" class="btn {{searchArray.is_orig === '' ? 'btn-info active' : 'btn-default'}}" ng-click="searchArray.is_orig = ''; refreshList()">Не важно</button>
-                    </div>
+                <label class="col-sm-2 search-field-label">Валюта</label>
+                <div class="col-sm-10 search-input">
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" placeholder="Группа" ng-model="searchArray.currency" ng-change="refreshList()" required>
+                        <option value="">-- Выберите валюту --</option>
+                        <option ng-repeat="currency in currency" value="{{currency.id}}">{{currency.name}}</option>
+                    </select>
                 </div>
             </div>
             <div class="form-group col-sm-4 search-form-item">

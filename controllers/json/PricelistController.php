@@ -60,8 +60,6 @@ class PricelistController extends JsonController
             ->leftJoin('billing_uu.account_tariff_light_view atl', 'atl.tariff_id = pp.tariff_id or atl.tariff_id = sms.tariff_id or atl.tariff_id = data.tariff_id')
             ->orderBy('name')
             ->groupBy('p.id, g.id')
-            ->limit($limit)
-            ->offset($offset)
             ->asArray();
 
         $countQuery = Pricelist::find()
@@ -104,8 +102,18 @@ class PricelistController extends JsonController
             $countQuery->addParams([':name' => '%' . $searchArray['query'] . '%']);
         }
 
+        if (isset($searchArray['is_in_use']) && is_bool($searchArray['is_in_use'])) {
+            if($searchArray['is_in_use'] == true){
+                $query->having('sum(case when atl.tariff_id is not null then 1 else 0 end) > 0');
+            }else { 
+                $query->having('sum(case when atl.tariff_id is not null then 1 else 0 end) = 0');
+            }
+        }
+
+        $count = $query->count();  
+        $query->offset($offset);
+        $query->limit($limit);
         $data = $query->all();
-        $count = $countQuery->count();  
 
         return [
             'totalCount' => $count,
