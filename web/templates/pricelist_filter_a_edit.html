@@ -277,6 +277,28 @@
                             <span style="color: red;">{{errors.filters_error}}</span>
                         </div>
                     </div>
+                    <div ng-if="item.filterBHistory[0]">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="col-sm-2">Дата начала действия</th>
+                                    <th class="col-sm-2">Дата окончания действия</th>
+                                    <th class="col-sm-2">Прайслист</th>
+                                    <th class="col-sm-2">Операция</th>
+                                    <th class="col-sm-2">Дата операции</th>
+                                    <th class="col-sm-2"></th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="val in item.filterBHistory">
+                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.date_from}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
+                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.date_to}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
+                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">#{{val.pricelist_id}} ({{val.total_count}})</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
+                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.type=='replace' ? 'Замена' : 'Добавление'}}</td style="cursor: pointer" ng-click="openFilterPriceHistory(val)">
+                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.date_created}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
+                                <td><button type="button" class="btn btn-default btn-sm" ng-if="$last && val.has_backup" ng-click="undoFilterBImport(val)">Отмена</button class="btn btn-default btn-sm"></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

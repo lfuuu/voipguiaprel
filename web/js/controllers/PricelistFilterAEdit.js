@@ -1,4 +1,4 @@
-var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterA, Nnp, List, params, $modalInstance, $window, Redirect) {
+var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterA, Nnp, List, params, $modalInstance, $window, Redirect, PricelistFilterBHistory) {
 
     $scope.NNP_MODE_FILTER = 1;
     $scope.NNP_MODE_PARAMETERS = 2;
@@ -67,7 +67,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     if (params.id) {
         PricelistFilterA.get({id: params.id}).then(function (data) {
             $scope.item = data;
-
+            $scope.filter_b_replace = false;
             $scope.setNnpFields();
 
             if (data.nnp_filter && data.filter_country) {
@@ -91,6 +91,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             nnp_ndc_type: null,
             nnp_ndc: null,
             mode_selected: true,
+            filter_b_replace: false,
             filter_country: 643
         };
 
@@ -107,6 +108,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             nnp_ndc_type: null,
             nnp_ndc: null,
             mode_selected: true,
+            filter_b_replace: false,
             filter_country: 643
         };
 
@@ -262,6 +264,21 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             $modalInstance.close();
         });
     };
+
+    $scope.openFilterBHistory = function(item) {
+        Redirect.pricelistFilterBHistoryView(item.id).then(function () {
+            $scope.init();
+        });
+    }
+
+    $scope.undoFilterBImport = function(item) {
+        if (!$window.confirm("Вы уверены, что хотите отменить эту операцию?\n" + 
+         "Будут отменены ВСЕ действия, произведенные с фильтрами Б\n" +
+         "и относящимся к ним префиксам!")) return;
+
+        PricelistFilterBHistory.undo(item);
+        $modalInstance.close();
+    }
 
     $scope.back = function () {
         $modalInstance.close();

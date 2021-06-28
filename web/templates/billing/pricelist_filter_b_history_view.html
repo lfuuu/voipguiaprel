@@ -6,21 +6,20 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="col-sm-2">Код</th>
-                    <th class="col-sm-2">Цена старая</th>
-                    <th class="col-sm-2">Цена новая</th>
+                    <th class="col-sm-2">Фильтр Б</th>
+                    <th class="col-sm-2">ID</th>
                     <th class="col-sm-2">Дата начала действия</th>
                     <th class="col-sm-2">Дата окончания действия</th>
-                    <th class="col-sm-2">Тип изменения</th>
+                    <!-- <th class="col-sm-2">Тип изменения</th> -->
                 </tr>
             </thead>
             <tr ng-repeat="val in list">
-                <td>{{val.prefix_b}}</td>
-                <td>{{val.price_old}}</td>
-                <td>{{val.price_new}}</td>
+                <td>{{val.description}}</td>
+                <td><span style="cursor: pointer" ng-click="editFilterB(val.pricelist_filter_b_id)">#{{val.pricelist_filter_b_id}}</span></td>
                 <td>{{val.date_from}}</td>
                 <td>{{val.date_to}}</td>
-                <td style="{{styleMap[val.type]}}">{{map[val.type]}}</td>
+                
+                <!-- <td style="{{styleMap[val.type]}}">{{map[val.type]}}</td> -->
             </tr>
         </table>
     </div>

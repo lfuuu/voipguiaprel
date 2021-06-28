@@ -1880,6 +1880,9 @@ app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
         get: function(data) {
             return ApiLoader.post(url + 'get', data);
         },
@@ -2321,6 +2324,24 @@ app.factory('PricelistPrefixPriceHistoryItem', function ($q, ApiLoader, $rootSco
     return {
         read: function(data) {
             return ApiLoader.post(url + 'read', data);
+        },
+    };
+});
+
+app.factory('PricelistFilterBHistoryItem', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/billing/pricelist-filter-b-history-item/';
+    return {
+        read: function(data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+    };
+});
+
+app.factory('PricelistFilterBHistory', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/billing/pricelist-filter-b-history/';
+    return {
+        undo: function(data) {
+            return ApiLoader.post(url + 'undo', data);
         },
     };
 });

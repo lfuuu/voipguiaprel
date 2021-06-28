@@ -704,6 +704,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         pricelistPrefixPriceHistoryView: function(id) {
             return openModal(PricelistPrefixPriceHistoryViewCtrl, '/templates/billing/pricelist_prefix_price_history_view.html', {id: id});
         },
+        pricelistFilterBHistoryView: function(id) {
+            return openModal(PricelistFilterBHistoryViewCtrl, '/templates/billing/pricelist_filter_b_history_view.html', {id: id});
+        },
         pricelistInCommerceView: function(id) {
             return openModal(PricelistInCommerceCtrl, '/templates/billing/pricelist_in_commerce.html', {id: id});
         },

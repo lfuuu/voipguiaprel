@@ -128,6 +128,7 @@ class AppAsset extends AssetBundle
         'js/controllers/billing/PricelistInCommerce.js',
         'js/controllers/billing/PricelistInCommercePackage.js',
         'js/controllers/billing/PricelistSinglePrefixHistoryView.js',
+        'js/controllers/billing/PricelistFilterBHistoryView.js',
         'js/controllers/TrunkLogic.js',
     ];
 
@@ -236,6 +237,7 @@ class AppAsset extends AssetBundle
         'templates/billing/pricelist_in_commerce.html',
         'templates/billing/pricelist_in_commerce_package.html',
         'templates/billing/pricelist_single_prefix_history_view.html',
+        'templates/billing/pricelist_filter_b_history_view.html',
         'templates/trunk_logic_show.html'
     ];
 }

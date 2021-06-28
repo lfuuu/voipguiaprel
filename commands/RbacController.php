@@ -201,6 +201,7 @@ class RbacController extends Controller {
         ['name' => 'test_dial_edit', 'description' => 'Редактирование теста вызовов'],
         ['name' => 'test_dial_delete', 'description' => 'Удаление теста вызовов'],
         ['name' => 'pricelist_prefix_price_history_list', 'description' => 'Просмотр истории загрузки префиксов'],
+        ['name' => 'pricelist_filter_b_history_list', 'description' => 'Просмотр истории'],
     ];
 
     private static $_roles = [
@@ -249,7 +250,7 @@ class RbacController extends Controller {
             'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
             'marketplace_list', 'marketplace_edit', 'cdr_report_read', 'money_tree',
             'pricelist_search', 'old_pricelist_search', 'action_log_view', 'action_log_list',
-            'camel_route_table_list', 'camel_route_table_create', 'camel_route_table_edit', 'camel_route_table_delete'
+            'camel_route_table_list', 'camel_route_table_create', 'camel_route_table_edit', 'camel_route_table_delete', 'pricelist_filter_b_history_list',
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'test_number_edit',
@@ -259,7 +260,7 @@ class RbacController extends Controller {
             'test_pricelist_group_list', 'test_pricelist_group_create', 'test_pricelist_group_edit', 'test_pricelist_group_delete',
             'major_list', 'major_create', 'major_edit', 'major_delete',
             'major_group_list', 'major_group_create', 'major_group_edit', 'major_group_delete', 'cdr_report_read',
-            'pricelist_search', 'old_pricelist_search', 'action_log_view'
+            'pricelist_search', 'old_pricelist_search', 'action_log_view', 'pricelist_filter_b_history_list',
         ]],
         ['role' => 'admin_routing', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view',
@@ -285,7 +286,7 @@ class RbacController extends Controller {
             'oca_bw_list', 'oca_bw_create', 'oca_bw_edit', 'oca_bw_delete',
             'route_replace_edit', 'header_list', 'header_create', 'header_edit', 'header_delete',
             'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
-            'money_tree', 'action_log_view'
+            'money_tree', 'action_log_view', 'pricelist_filter_b_history_list',
         ]],
         ['role' => 'admin_camel', 'permissions' => [
             'camel_trunk_list', 'camel_trunk_create', 'camel_trunk_edit', 'camel_trunk_delete',
@@ -294,7 +295,7 @@ class RbacController extends Controller {
             'camel_test_group_list', 'camel_test_group_create', 'camel_test_group_edit', 'camel_test_group_delete',
             'camel_test_auth_list', 'camel_test_auth_create', 'camel_test_auth_edit', 'camel_test_auth_delete',
             'camel_outcome_list', 'camel_outcome_create', 'camel_outcome_edit', 'camel_outcome_delete',
-            'camel_server_list', 'camel_server_edit'
+            'camel_server_list', 'camel_server_edit', 'pricelist_filter_b_history_list',
         ]],
         ['role' => 'admin_settings', 'permissions' => [
             'acl_list', 'action_log_list'
@@ -303,7 +304,7 @@ class RbacController extends Controller {
             'api_billing_api_list', 'api_billing_api_create', 'api_billing_api_edit', 'api_billing_api_delete',
             'api_billing_method_api_list', 'api_billing_method_api_create', 'api_billing_method_api_edit', 'api_billing_api_method_delete',
             'api_billing_api_pricelist_list', 'api_billing_api_pricelist_create', 'api_billing_api_pricelist_edit', 'api_billing_api_pricelist_delete',
-            'api_billing_api_pricelist_item_list', 'api_billing_api_pricelist_item_create', 'api_billing_api_pricelist_item_edit', 'api_billing_api_pricelist_item_delete',
+            'api_billing_api_pricelist_item_list', 'api_billing_api_pricelist_item_create', 'api_billing_api_pricelist_item_edit', 'api_billing_api_pricelist_item_delete', 'pricelist_filter_b_history_list',
         ]],
         ['role' => 'engineer', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view',
@@ -322,14 +323,14 @@ class RbacController extends Controller {
             'test_auth_list', 'test_auth_create', 'test_auth_edit', 'test_auth_delete',
             'test_call_list', 'test_call_create', 'test_call_edit', 'test_call_delete',
             'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete',
-            'trunkhealth_view_list'
+            'trunkhealth_view_list', 'pricelist_filter_b_history_list',
         ]],
         ['role' => 'manager', 'permissions' => [
             'trunk_list', 'trunk_group_list',
             'test_auth_list', 'test_auth_create', 'test_auth_edit', 'test_auth_delete',
             'test_call_list', 'test_call_create', 'test_call_edit', 'test_call_delete',
             'test_group_list', 'test_group_create', 'test_group_edit', 'test_group_delete',
-            'trunkhealth_view_list'
+            'trunkhealth_view_list', 'pricelist_filter_b_history_list',
         ]]
     ];
     

@@ -78,10 +78,10 @@ SQL
                 
                 
         $dataBefore = [];
-        // $dataBefore = PricelistPrefixPrice::find()
-        //     ->where(['pricelist_filter_b_id' => $filterAId])
-        //     ->asArray()
-        //     ->all();
+        $dataBefore = PricelistFilterB::find()
+            ->where(['pricelist_filter_a_id' => $filterAId])
+            ->asArray()
+            ->all();
             
         $historyData = [
             'pricelist_filter_a_id' => $filterAId,

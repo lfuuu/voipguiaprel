@@ -52,7 +52,6 @@ class PricelistFilterAController extends JsonController
         }
     
         $result = [];
-        
         if (isset($this->request['id'])) {
             if (!\Yii::$app->user->can('pricelist_edit')) {
                 throw new ForbiddenHttpException('Access denied');
@@ -76,7 +75,6 @@ class PricelistFilterAController extends JsonController
             if (!$item->save()) {
                 throw new FormValidationException($item);
             }
-            
             if (isset($this->request['filters'])) {
                 $upsertResult = $this->upsertFilters($item);
                 if (isset($upsertResult['error'])) {
@@ -232,6 +230,15 @@ class PricelistFilterAController extends JsonController
                         
                         $prefixPriceObject->save();
                     } else {
+
+                        $prefixPriceObject = PricelistPrefixPrice::create([
+                            'prefix_b' => '',
+                            'pricelist_filter_b_id' => $filterBObject->id,
+                            'b_number_price' => $bNumberPrice,
+                            'date_from' => $dateStart,
+                            'date_to' => $dateEnd
+                        ], $historyObject->id);
+
                         $historyItem = [
                             'pricelist_prefix_price_history_id' => $historyObject->id,
                             'prefix_b' => $prefixPriceObject->prefix_b,
@@ -240,7 +247,7 @@ class PricelistFilterAController extends JsonController
                             'date_from' => $dateStart,
                             'date_to' => $dateEnd
                         ];
-                        
+             
                         if ($prefixPriceObject->b_number_price < $bNumberPrice) {
                             $historyItem['type'] = 'increase';
                         } elseif ($prefixPriceObject->b_number_price > $bNumberPrice) {
@@ -250,9 +257,6 @@ class PricelistFilterAController extends JsonController
                         } else {
                             $historyItem['type'] = 'delete';
                         }
-                        
-                        $historyItemObject = PricelistPrefixPriceHistoryItem::create($historyItem);
-                        $historyItemObject->save();
                         
                         $prefixPriceObject->b_number_price = $bNumberPrice;
                         $prefixPriceObject->date_from = $dateStart;
@@ -264,7 +268,6 @@ class PricelistFilterAController extends JsonController
                     $filterBHistoryItem['type'] = 'add';
                     
                     $tarificationIntervalSeconds = ($pricelistData['type_id'] == 1) ? 60 : 1;
-                    
                     $filterBObject = PricelistFilterB::create([
                         'pricelist_filter_a_id' => $item->id,
                         'description' => $filterBDescription,
