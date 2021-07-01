@@ -26,7 +26,7 @@ app.controller('MainApiBillingCtrl', function ($rootScope, $scope, $cookies, $ti
     var funcName = false;
     var id = false;
     var type = false;
-
+    
     if (query) {
         var params = query.split('&');
         funcName = params[0];
@@ -37,7 +37,7 @@ app.controller('MainApiBillingCtrl', function ($rootScope, $scope, $cookies, $ti
     } else {
         for (var permissionName in $rootScope.userPermissions) {
             if ($rootScope.apiBillingPermissions.indexOf(permissionName) !== -1 &&
-                permissionName.includes('list') && permissionName !== 'user_list' &&
+                permissionName.includes('item_list') && permissionName !== 'user_list' &&
                 permissionName !== 'role_list' && permissionName !== 'acl_list') {
                 funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
                     return w.toUpperCase();
