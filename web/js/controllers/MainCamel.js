@@ -37,7 +37,7 @@ app.controller('MainCamelCtrl', function ($rootScope, $scope, $cookies, $timeout
     } else {
         for (var permissionName in $rootScope.userPermissions) {
             if ($rootScope.camelPermissions.indexOf(permissionName) !== -1 &&
-                permissionName.includes('list') && permissionName !== 'user_list' &&
+                permissionName.includes('gt_list') && permissionName !== 'user_list' &&
                 permissionName !== 'role_list' && permissionName !== 'acl_list') {
                 funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
                     return w.toUpperCase();
