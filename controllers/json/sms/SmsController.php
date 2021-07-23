@@ -3,6 +3,9 @@
 namespace app\controllers\json\sms;
 
 use app\classes\JsonController;
+use app\exceptions\FormValidationException;
+use app\models\auth\SmsRouteTable;
+use app\models\auth\SmsTrunk;
 use yii\web\ForbiddenHttpException;
 
 class SmsController extends JsonController
@@ -29,5 +32,48 @@ class SmsController extends JsonController
                 ->all();
 
         return $items;
+    }
+    
+    public function actionSave()
+    {
+        if (!\Yii::$app->user->can('camel_trunk_edit') && !\Yii::$app->user->can('camel_trunk_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+    
+        $result = [];
+        
+        if (isset($this->request['id'])) {
+            if (!\Yii::$app->user->can('camel_trunk_edit')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
+            $item = $this->getSmsOr404($this->request['id']);
+            $result['log'] = ['data_before' => $this->getDataForLog($item)];
+        } else {
+            if (!\Yii::$app->user->can('camel_trunk_create')) {
+                throw new ForbiddenHttpException('Access denied');
+            }
+            
+            $item = SmsTrunk::create();
+            $result['log'] = ['data_before' => []];
+        }
+
+        $item->load($this->request, '');
+        $item->route_name = (SmsRouteTable::findOne(['id' => $item['a2psms_route_table_id']]))->name;
+        $transaction = SmsTrunk::getDb()->beginTransaction();
+        try {
+            if (!$item->save()) {
+                throw new FormValidationException($item);
+            }
+
+            $transaction->commit();
+        } finally {
+            if ($transaction->getIsActive())
+                $transaction->rollBack();
+        }
+    
+        $result['log']['data_after'] = $this->getDataForLog($item);
+    
+        return $result;
     }
 }

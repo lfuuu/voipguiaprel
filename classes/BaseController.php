@@ -40,6 +40,7 @@ use app\models\RouteTable;
 use app\models\Server;
 use app\models\TrunkGroup;
 use app\models\auth\Hub;
+use app\models\auth\SmsTrunk;
 use app\models\auth\TestDial;
 use app\models\InstanceSettings;
 use app\models\Uplink;
@@ -441,6 +442,20 @@ class BaseController extends \yii\web\Controller
         $item = Cpc::findOne($cpcId);
         if ($item === null) {
             throw new HttpException(404, 'CPC не найден');
+        }
+        return $item;
+    }
+
+    /**
+     * @param int $smsId
+     * @return SmsTrunk
+     * @throws HttpException
+     */
+    protected function getSmsOr404($smsId)
+    {
+        $item = SmsTrunk::findOne($smsId);
+        if ($item === null) {
+            throw new HttpException(404, 'SMS Trunk не найден');
         }
         return $item;
     }

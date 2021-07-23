@@ -9,6 +9,7 @@ var SmsTrunkEditCtrl = function($rootScope, $scope, Redirect, SmsTrunk, SmsRoute
     } else {
         $scope.item = {
             name: '',
+            route_name: '',
             server_id: $scope.server.id,
         };
     }
