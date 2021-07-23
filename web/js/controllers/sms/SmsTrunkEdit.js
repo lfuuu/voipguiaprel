@@ -1,0 +1,31 @@
+
+var SmsTrunkEditCtrl = function($rootScope, $scope, Redirect, SmsTrunk, SmsRouteTable, SmsList, params, $modalInstance) {
+
+    if (params.id) {
+        SmsTrunk.get({id: params.id}).then(function (data) {
+            $scope.item = data;
+
+        });
+    } else {
+        $scope.item = {
+            name: '',
+            server_id: $scope.server.id,
+        };
+    }
+
+    SmsList.routeTable({server_id: $scope.server.id}).then(function (data) {
+        $scope.routeTableList = data;
+
+    });
+
+    $scope.save = function () {      
+        console.log($scope.item);
+        SmsTrunk.save($scope.item).then(function () {
+            $modalInstance.close();
+        });
+    };
+
+    $scope.back = function () {
+        $modalInstance.dismiss();
+    };
+};

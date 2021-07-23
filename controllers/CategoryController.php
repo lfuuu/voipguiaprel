@@ -36,6 +36,13 @@ class CategoryController extends BaseController
         return $this->render('settings', []);
     }
 
+    public function actionSms()
+    {
+        return $this->render('sms', [
+            'servers' => ServerOcs::find()->orderBy('id')->all(),
+        ]);
+    }
+
     public function actionCamel()
     {
         return $this->render('camel', [

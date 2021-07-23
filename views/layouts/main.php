@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\assets\AppAsset;
+use app\assets\AppSmsAsset;
 use app\assets\AppSettingsAsset;
 use app\assets\AppCamelAsset;
 use app\assets\AppApiBillingAsset;
@@ -16,6 +17,8 @@ AppLibAsset::register($this);
 
 if ($_SERVER['REQUEST_URI'] == '/routing') {
     AppAsset::register($this);
+} elseif ($_SERVER['REQUEST_URI'] == '/sms' || preg_match("/^\/ms/i", $_SERVER['REQUEST_URI'])){
+    AppSmsAsset::register($this);
 } elseif ($_SERVER['REQUEST_URI'] == '/billing') {
     AppAsset::register($this);
 } elseif ($_SERVER['REQUEST_URI'] == '/camel' || preg_match("/^\/cs/i", $_SERVER['REQUEST_URI'])) {
@@ -125,6 +128,10 @@ if (Yii::$app->user->identity) {
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace-eu') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace-eu'])?>">Биржа EU</a></li>
 <?php endif; ?>
                         <li><a href="<?=Url::to(['/health/health.html'])?>" target="_blank">Здоровье биллеров</a></li>
+
+                        <li<?php if ($_SERVER['REQUEST_URI'] == '/sms') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/sms'])?>">SMS</a></li>
+
+
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a>Версия: <?= $version ?></a></li>

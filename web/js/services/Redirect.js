@@ -718,6 +718,36 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
         trunkLogic: function(item) {
             return openModal(TrunkLogicCtrl, 'templates/trunk_logic_show.html', {item: item})
-        }
+        },
+        smsTrunkList: function() {
+            $cookies.sms_selected_page = 'smsTrunkList';
+            return openTab(SmsTrunkListCtrl, '/templates/sms/sms_trunk_list.html');
+        },
+        smsTrunkCreate: function() {
+            return openModal(SmsTrunkEditCtrl, '/templates/sms/sms_trunk_edit.html', {id: null});
+        },
+        smsTrunkEdit: function(id) {
+            return openModal(SmsTrunkEditCtrl, '/templates/sms/sms_trunk_edit.html', {id: id});
+        },
+        smsRouteTableList: function() {
+            $cookies.sms_selected_page = 'smsRouteTableList';
+            return openTab(SmsRouteTableListCtrl, '/templates/sms/sms_route_table_list.html');
+        },
+        smsRouteTableCreate: function() {
+            return openModal(SmsRouteTableEditCtrl, '/templates/sms/route_table_edit.html', {id: null});
+        },
+        smsRouteTableEdit: function(id) {
+            return openModal(SmsRouteTableEditCtrl, '/templates/sms/route_table_edit.html', {id: id});
+        },
+        smsOutcomeList: function() {
+            $cookies.sms_selected_page = 'smsOutcomeList';
+            return openTab(SmsOutcomeListCtrl, '/templates/sms/sms_outcome_list.html', {});
+        },
+        smsOutcomeCreate: function() {
+            return openModal(SmsOutcomeEditCtrl, '/templates/sms/sms_outcome_edit.html', {id: null});
+        },
+        smsOutcomeEdit: function(id) {
+            return openModal(SmsOutcomeEditCtrl, '/templates/sms/sms_outcome_edit.html', {id: id});
+        },
     };
 });

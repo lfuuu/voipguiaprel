@@ -1,0 +1,79 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Таблица маршрутизации {{item.name}}</h3>
+        <h3 ng-if="!item.id">Создание таблицы маршрутизации</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.name" required>
+            </div>
+        </div>
+
+        <table class="table table-striped" style="font-size: smaller; font-weight: bold;">
+            <thead>
+            <tr>
+                <th></th>
+                <th>А-номер</th>
+                <th>B-номер</th>
+                <th>Прайслист</th>
+                <th>Outcome</th>
+                <th>Блок</th>
+                <th></th>
+                <th>Удалить</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody ui-sortable="sortableOptions" ng-model="item.routes">
+            <tr style="border-bottom: lightgrey solid 2px;border-top: lightgrey solid 2px;" ng-repeat="line in item.routes">
+                <p>{{line}}</p>
+                <td width="1%" style="cursor: ns-resize; padding-bottom: 3px;padding-top: 3px;vertical-align: middle;">
+                    <span class="badge">{{$index + 1}}</span>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
+                    <select-box disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
+                    <div style="display: grid; grid-template-columns: 50px auto">
+                        <select-box disabled="{{line.is_locked}}" list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box>
+                    </div>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
+                    <select-box disabled="{{line.is_locked}}" list="pricelist" model="line.nnp_pricelist_id" default="Любой Прайслист"></select-box>
+
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
+                    <sms-outcome-select-box outcome-model="line.a2psms_outcome_id" route-table-model="line.a2psms_outcome_route_table_id" required></outcome-select-box>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%" ng-if="userPermissions['camel_route_table_route_lock']">
+                    <div class="btn-group" ng-click="line.is_locked = !line.is_locked">
+                        <button type="button" class="btn btn-sm {{line.is_locked ? 'btn-success active' : 'btn-default'}}">Да</button>
+                        <button type="button" class="btn btn-sm {{!line.is_locked ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    </div>
+                </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="7%" ng-if="userPermissions['camel_route_table_route_lock']">
+                    <button ng-if="!line.is_locked" type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeRoute($index)"></button>
+                </td>
+                <td width="1%">
+                    <comment-icon key="{{line.id}}" type="route_table_route" comment="line.object_comment"></comment-icon>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="7">
+                    <button type="button" class="btn btn-success btn-xs" ng-click="addRoute()"><i class="glyphicon glyphicon-plus"></i> Добавить роут</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/camel/route-table"></action-log-view-button>
+        </div>
+    </div>
+</form>

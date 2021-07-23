@@ -27,7 +27,7 @@ var NumberEditCtrl = function ($scope, Number, Redirect, Prefixlist, params, $mo
         });
     } else {
         $scope.item = {
-            server_id: ($scope.isCamel ? $scope.server.default_routing_server_id : $scope.server.id),
+            server_id: ($scope.isCamel || $scope.isSms ? $scope.server.default_routing_server_id : $scope.server.id),
             prefixlist_ids: [],
             sw_share_with_camel: ($scope.isCamel ? true : false)
         };

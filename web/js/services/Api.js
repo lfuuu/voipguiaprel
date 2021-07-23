@@ -37,7 +37,49 @@ app.factory('Attribute', function ($q, ApiLoader, $rootScope) {
         },
         delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
+        }
+    };
+});
+
+app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/sms/sms/';
+    var list = undefined;
+    var promise = undefined;
+    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+});
+
+app.factory('SmsRouteTable', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/sms/sms-route-table/';
+    var list = undefined;
+    var promise = undefined;
+    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+});
+
+app.factory('SmsOutcome', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/sms/sms-outcome/';
+    var list = undefined;
+    var promise = undefined;
+    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+});
+
+app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome) {
+    return {
+        trunk: function (data) {
+            return SmsTrunk.list(data);
+        },
+        routeTable: function (data) {
+            return SmsRouteTable.list(data);
+        },
+        outcome: function (data) {
+            return SmsOutcome.list(data);
+        },
+        outcomeType: function () {
+            return [
+                { id: 1, name: 'ACCEPT' },
+                { id: 2, name: 'REJECT' },
+                { id: 3, name: 'TEMP NAME' },
+            ];
         }
     };
 });
@@ -93,16 +135,16 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
         promise = undefined;
 
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        readMarketplace: function(data) {
-          return ApiLoader.post(url + 'read-marketplace', data);
+        readMarketplace: function (data) {
+            return ApiLoader.post(url + 'read-marketplace', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -110,13 +152,13 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = { server_id: $rootScope.server.id };
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -124,37 +166,37 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        listByServer: function(server_id) {
-            var data = {server_id: server_id};
+        listByServer: function (server_id) {
+            var data = { server_id: server_id };
             return ApiLoader.post(url + 'list', data);
         },
-        listByServerWithContract: function(server_id) {
-          var data = {server_id: server_id};
-          return ApiLoader.post(url + 'list-with-contract', data);
+        listByServerWithContract: function (server_id) {
+            var data = { server_id: server_id };
+            return ApiLoader.post(url + 'list-with-contract', data);
         },
-        listNameAndAlias: function(hub_id) {
-            var data = {hub_id: hub_id};
+        listNameAndAlias: function (hub_id) {
+            var data = { hub_id: hub_id };
             return ApiLoader.post(url + 'list-name-and-alias', data);
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
         },
         serviceTrunks: function (trunkId) {
-            return ApiLoader.post(url + 'get-service-trunks', {'trunk_id': trunkId});
+            return ApiLoader.post(url + 'get-service-trunks', { 'trunk_id': trunkId });
         },
         listRoaming: function (servers) {
-            return ApiLoader.post(url + 'list-roaming', {'servers': servers});
+            return ApiLoader.post(url + 'list-roaming', { 'servers': servers });
         },
         toggleAutorouting: function (trunkId, on) {
-            return ApiLoader.post(url + 'toggle-autorouting', {'trunk_id': trunkId, 'on': on});
+            return ApiLoader.post(url + 'toggle-autorouting', { 'trunk_id': trunkId, 'on': on });
         },
-        findUsagesInTrunkGroups: function(id) {
-            return ApiLoader.post(url + 'find-usages-in-trunk-groups', {'id': id});
+        findUsagesInTrunkGroups: function (id) {
+            return ApiLoader.post(url + 'find-usages-in-trunk-groups', { 'id': id });
         }
     };
 });
@@ -166,13 +208,13 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
         promise = undefined;
 
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -180,13 +222,13 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = { server_id: $rootScope.server.id };
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -194,70 +236,70 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        listForMarketplace: function(serverId) {
-          if (!serverId && promise !== undefined) return promise;
+        listForMarketplace: function (serverId) {
+            if (!serverId && promise !== undefined) return promise;
 
-          var deferred = $q.defer();
-          if (list !== undefined) {
-            deferred.resolve(list);
-            return deferred.promise;
-          } else {
-            if (!serverId) {
-              serverId = $rootScope.server.id;
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                if (!serverId) {
+                    serverId = $rootScope.server.id;
+                }
+                var data = { server_id: serverId };
+                ApiLoader.post(url + 'list-for-marketplace', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
             }
-            var data = {server_id: serverId};
-            ApiLoader.post(url + 'list-for-marketplace', data)
-              .then(function(data){
-                list = data;
-                promise = undefined;
-                deferred.resolve(data);
-              }, function(data){
-                promise = undefined;
-                deferred.reject(data);
-              });
-            promise = deferred.promise;
-          }
-          return deferred.promise;
+            return deferred.promise;
         },
-        findIntoRules: function(data) {
+        findIntoRules: function (data) {
             return ApiLoader.post(url + 'get-trunks-with-group-into-rules', data);
         },
-        findIntoPriorities: function(data) {
+        findIntoPriorities: function (data) {
             return ApiLoader.post(url + 'get-trunks-with-group-into-priorities', data);
         },
-        findRouteTablesWithGroup: function(data) {
+        findRouteTablesWithGroup: function (data) {
             return ApiLoader.post(url + 'get-route-tables-with-group', data);
         },
-        findOutcomesWithGroup: function(data) {
+        findOutcomesWithGroup: function (data) {
             return ApiLoader.post(url + 'get-outcomes-with-group', data);
         },
-        findGroupsWithGroup: function(data) {
+        findGroupsWithGroup: function (data) {
             return ApiLoader.post(url + 'get-groups-with-group', data);
         },
-        findRouteReplaceWithGroup: function(data) {
+        findRouteReplaceWithGroup: function (data) {
             return ApiLoader.post(url + 'get-route-replace-with-group', data);
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
 
 
 app.factory('ServiceTrunkRouting', function ($q, ApiLoader, $rootScope) {
-  var
-    url = '/json/service-trunk-routing/';
+    var
+        url = '/json/service-trunk-routing/';
 
-  return {
-    save: function(data) {
-      return ApiLoader.post(url + 'save', data);
-    }
-  };
+    return {
+        save: function (data) {
+            return ApiLoader.post(url + 'save', data);
+        }
+    };
 });
 
 app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
@@ -265,16 +307,16 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        listBlocked: function(data) {
-          return ApiLoader.post(url + 'list-blocked', data);
+        listBlocked: function (data) {
+            return ApiLoader.post(url + 'list-blocked', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -282,13 +324,13 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = { server_id: ($rootScope.server.id ? $rootScope.server.id : $rootScope.serverId)};
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -296,289 +338,289 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        listByType: function(data) {
+        listByType: function (data) {
             return ApiLoader.post(url + 'list-by-type', data);
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
         },
         nnpCalculation: function (id) {
-            return ApiLoader.post(url + 'nnp-calculation', {id: id});
+            return ApiLoader.post(url + 'nnp-calculation', { id: id });
         },
         applyBuffer: function (id) {
-            return ApiLoader.post(url + 'apply-buffer', {id: id});
+            return ApiLoader.post(url + 'apply-buffer', { id: id });
         },
         generatePrefixlist: function (id, type) {
-            return ApiLoader.post(url + 'prefixlist-generation', {id: id, type: type});
+            return ApiLoader.post(url + 'prefixlist-generation', { id: id, type: type });
         },
         findUsagesInNumbers: function (id) {
-            return ApiLoader.post(url + 'find-usages-in-numbers', {id: id});
+            return ApiLoader.post(url + 'find-usages-in-numbers', { id: id });
         },
         findUsagesInTrunkABRules: function (id) {
-            return ApiLoader.post(url + 'find-usages-in-trunk-a-b-rules', {id: id});
+            return ApiLoader.post(url + 'find-usages-in-trunk-a-b-rules', { id: id });
         }
     };
 });
 
 app.factory('ActionLog', function ($q, ApiLoader, $rootScope) {
-  var url = '/json/action-log/';
-  return {
-    get: function(data) {
-      return ApiLoader.post(url + 'get', data);
-    },
-    getOne: function(data) {
-      return ApiLoader.post(url + 'get-one', data);
-    },
-    read: function(data) {
-      return ApiLoader.post(url + 'read', data);
-    },
-    getControllerList: function(data) {
-      return ApiLoader.post(url + 'get-controller-list', data);
-    },
-    getActionList: function(data) {
-      return ApiLoader.post(url + 'get-action-list', data);
-    },
-  };
+    var url = '/json/action-log/';
+    return {
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        getOne: function (data) {
+            return ApiLoader.post(url + 'get-one', data);
+        },
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        getControllerList: function (data) {
+            return ApiLoader.post(url + 'get-controller-list', data);
+        },
+        getActionList: function (data) {
+            return ApiLoader.post(url + 'get-action-list', data);
+        },
+    };
 });
 
 app.factory('User', function ($q, ApiLoader, $rootScope) {
     var url = '/json/user/';
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
     };
 });
 
 app.factory('OcaBw', function ($q, ApiLoader, $rootScope) {
-  var
-    url = '/json/oca-bw/',
-    list = undefined,
-    promise = undefined;
+    var
+        url = '/json/oca-bw/',
+        list = undefined,
+        promise = undefined;
 
-  return {
-    read: function(data) {
-      return ApiLoader.post(url + 'read', data);
-    },
-    get: function(data) {
-      return ApiLoader.post(url + 'get', data);
-    },
-    list: function() {
-      if (promise !== undefined) return promise;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
 
-      var deferred = $q.defer();
-      if (list !== undefined) {
-        deferred.resolve(list);
-        return deferred.promise;
-      } else {
-        var data = {server_id: $rootScope.server.id};
-        ApiLoader.post(url + 'list', data)
-          .then(function(data){
-            list = data;
-            promise = undefined;
-            deferred.resolve(data);
-          }, function(data){
-            promise = undefined;
-            deferred.reject(data);
-          });
-        promise = deferred.promise;
-      }
-      return deferred.promise;
-    },
-    save: function(data) {
-      list = undefined;
-      return ApiLoader.post(url + 'save', data);
-    },
-    delete: function(id) {
-      list = undefined;
-      return ApiLoader.post(url + 'delete', {id: id});
-    }
-  };
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: $rootScope.server.id };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        }
+    };
 });
 
 app.factory('Uplink', function ($q, ApiLoader, $rootScope) {
-  var url = '/json/uplink/';
-  var list = undefined;
-  var promise = undefined;
-  return {
-    read: function() {
-      return ApiLoader.post(url + 'read', {as_tree: false});
-    },
-    readTree: function() {
-      return ApiLoader.post(url + 'read', {as_tree: true});
-    },
-    get: function(data) {
-      return ApiLoader.post(url + 'get', data);
-    },
-    list: function() {
-      if (promise !== undefined) return promise;
+    var url = '/json/uplink/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function () {
+            return ApiLoader.post(url + 'read', { as_tree: false });
+        },
+        readTree: function () {
+            return ApiLoader.post(url + 'read', { as_tree: true });
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
 
-      var deferred = $q.defer();
-      if (list !== undefined) {
-        deferred.resolve(list);
-        return deferred.promise;
-      } else {
-        ApiLoader.post(url + 'list')
-          .then(function(data){
-            list = data;
-            promise = undefined;
-            deferred.resolve(data);
-          }, function(data){
-            promise = undefined;
-            deferred.reject(data);
-          });
-        promise = deferred.promise;
-      }
-      return deferred.promise;
-    },
-    save: function(data) {
-      return ApiLoader.post(url + 'save', data);
-    },
-    delete: function(id, level) {
-      return ApiLoader.post(url + 'delete', {id: id, level: level});
-    }
-  };
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                ApiLoader.post(url + 'list')
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id, level) {
+            return ApiLoader.post(url + 'delete', { id: id, level: level });
+        }
+    };
 });
 
 app.factory('Billing', function (ApiLoader) {
-	var url = '/json/billing/';
-	return {
-		countries: function() {
-			return ApiLoader.post(url + 'countries');
-		},
-		regions: function() {
-			return ApiLoader.post(url + 'regions');
-		},
-		cities: function(geo) {
-			return ApiLoader.post(url + 'cities', geo);
-		},
-		operators: function() {
-			return ApiLoader.post(url + 'operators');
-		},
-		networkTypes: function() {
-			return ApiLoader.post(url + 'network-types');
-		}
-	};
+    var url = '/json/billing/';
+    return {
+        countries: function () {
+            return ApiLoader.post(url + 'countries');
+        },
+        regions: function () {
+            return ApiLoader.post(url + 'regions');
+        },
+        cities: function (geo) {
+            return ApiLoader.post(url + 'cities', geo);
+        },
+        operators: function () {
+            return ApiLoader.post(url + 'operators');
+        },
+        networkTypes: function () {
+            return ApiLoader.post(url + 'network-types');
+        }
+    };
 });
 
 app.factory('RouteCase', function ($q, ApiLoader, $rootScope) {
-	var url = '/json/route-case/';
-	var list = undefined;
-	var promise = undefined;
-	return {
-		read: function(data) {
-			return ApiLoader.post(url + 'read', data);
-		},
-		get: function(data) {
-			return ApiLoader.post(url + 'get', data);
-		},
-		list: function() {
-			if (promise !== undefined) return promise;
+    var url = '/json/route-case/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
 
-			var deferred = $q.defer();
-			if (list !== undefined) {
-				deferred.resolve(list);
-				return deferred.promise;
-			} else {
-				var data = {server_id: $rootScope.server.id};
-				ApiLoader.post(url + 'list', data)
-					.then(function(data){
-						list = data;
-						promise = undefined;
-						deferred.resolve(data);
-					}, function(data){
-						promise = undefined;
-						deferred.reject(data);
-					});
-				promise = deferred.promise;
-			}
-			return deferred.promise;
-		},
-		save: function(data) {
-			list = undefined;
-			return ApiLoader.post(url + 'save', data);
-		},
-		delete: function(id) {
-			list = undefined;
-			return ApiLoader.post(url + 'delete', {id: id});
-		},
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: $rootScope.server.id };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        },
         findUsagesInOutcomes: function (id) {
-            return ApiLoader.post(url + 'find-usages-in-outcomes', {id: id});
+            return ApiLoader.post(url + 'find-usages-in-outcomes', { id: id });
         }
-	};
+    };
 });
 
 
 app.factory('Outcome', function ($q, ApiLoader, $rootScope) {
-	var url = '/json/outcome/';
-	var list = undefined;
-	var promise = undefined;
-	return {
-		read: function(data) {
-			return ApiLoader.post(url + 'read', data);
-		},
-		get: function(data) {
-			return ApiLoader.post(url + 'get', data);
-		},
-		list: function(serverId) {
-			if (promise !== undefined) return promise;
+    var url = '/json/outcome/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function (serverId) {
+            if (promise !== undefined) return promise;
 
             if (!serverId) {
                 serverId = $rootScope.server.id;
             }
 
-			var deferred = $q.defer();
-			if (list !== undefined) {
-				deferred.resolve(list);
-				return deferred.promise;
-			} else {
-				var data = {server_id: serverId};
-				ApiLoader.post(url + 'list', data)
-					.then(function(data){
-						list = data;
-						promise = undefined;
-						deferred.resolve(data);
-					}, function(data){
-						promise = undefined;
-						deferred.reject(data);
-					});
-				promise = deferred.promise;
-			}
-			return deferred.promise;
-		},
-		save: function(data) {
-			list = undefined;
-			return ApiLoader.post(url + 'save', data);
-		},
-		delete: function(id) {
-			list = undefined;
-			return ApiLoader.post(url + 'delete', {id: id});
-		},
-    findUsagesInRouteTables: function(id) {
-      return ApiLoader.post(url + 'find-usages-in-route-tables', {id: id});
-    }
-	};
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: serverId };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        },
+        findUsagesInRouteTables: function (id) {
+            return ApiLoader.post(url + 'find-usages-in-route-tables', { id: id });
+        }
+    };
 });
 
 
 app.factory('Number', function ($q, ApiLoader, $rootScope) {
-	var url = '/json/number/';
-	var listA = undefined;
-	var listB = undefined;
-	var listC = undefined;
-	var listGT = undefined;
-	var promiseA = undefined;
-	var promiseB = undefined;
-	var promiseC = undefined;
-	var promiseGT = undefined;
-	return {
-	    clearList: function(type) {
-	        switch (type) {
+    var url = '/json/number/';
+    var listA = undefined;
+    var listB = undefined;
+    var listC = undefined;
+    var listGT = undefined;
+    var promiseA = undefined;
+    var promiseB = undefined;
+    var promiseC = undefined;
+    var promiseGT = undefined;
+    return {
+        clearList: function (type) {
+            switch (type) {
                 case '1':
                     listA = undefined;
                     promiseA = undefined;
@@ -599,16 +641,17 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                     break;
             }
         },
-		read: function(data) {
-			return ApiLoader.post(url + 'read', data);
-		},
-		get: function(data) {
-			return ApiLoader.post(url + 'get', data);
-		},
-        list: function (type, serverId) {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function (type, serverId ) {
             if (!serverId) {
                 serverId = $rootScope.server.id;
             }
+
             if (type == 1) {
                 if (promiseA !== undefined) return promiseA;
 
@@ -617,7 +660,7 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                     deferred.resolve(listA);
                     return deferred.promise;
                 } else {
-                    var data = {server_id: serverId, type_id: type};
+                    var data = { server_id: serverId, type_id: type };
                     ApiLoader.post(url + 'list', data)
                         .then(function (data) {
                             listA = data;
@@ -638,7 +681,7 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                     deferred.resolve(listB);
                     return deferred.promise;
                 } else {
-                    var data = {server_id: serverId, type_id: type};
+                    var data = { server_id: serverId, type_id: type };
                     ApiLoader.post(url + 'list', data)
                         .then(function (data) {
                             listB = data;
@@ -659,7 +702,7 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                     deferred.resolve(listC);
                     return deferred.promise;
                 } else {
-                    var data = {server_id: serverId, type_id: type};
+                    var data = { server_id: serverId, type_id: type };
                     ApiLoader.post(url + 'list', data)
                         .then(function (data) {
                             listC = data;
@@ -680,7 +723,7 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                     deferred.resolve(listGT);
                     return deferred.promise;
                 } else {
-                    var data = {server_id: serverId, type_id: type};
+                    var data = { server_id: serverId, type_id: type };
                     ApiLoader.post(url + 'list', data)
                         .then(function (data) {
                             listGT = data;
@@ -695,38 +738,38 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
                 return deferred.promise;
             }
         },
-        listByType: function(data) {
+        listByType: function (data) {
             return ApiLoader.post(url + 'list-by-type', data);
         },
-		save: function(data) {
-			listA = listB = undefined;
-			return ApiLoader.post(url + 'save', data);
-		},
-		delete: function(id) {
-			listA = listB = undefined;
-			return ApiLoader.post(url + 'delete', {id: id});
-		},
-        findUsagesInRouteTables: function(id) {
-            return ApiLoader.post(url + 'find-usages-in-route-tables', {id: id});
+        save: function (data) {
+            listA = listB = undefined;
+            return ApiLoader.post(url + 'save', data);
         },
-        findUsagesInTrunkPriority: function(id) {
-            return ApiLoader.post(url + 'find-usages-in-trunk-priority', {id: id});
+        delete: function (id) {
+            listA = listB = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
         },
-        findUsagesInTrunkRules: function(id) {
-            return ApiLoader.post(url + 'find-usages-in-trunk-rules', {id: id});
+        findUsagesInRouteTables: function (id) {
+            return ApiLoader.post(url + 'find-usages-in-route-tables', { id: id });
         },
-        findUsagesInStatRules: function(id) {
-            return ApiLoader.post(url + 'find-usages-in-stat-rules', {id: id});
+        findUsagesInTrunkPriority: function (id) {
+            return ApiLoader.post(url + 'find-usages-in-trunk-priority', { id: id });
         },
-	};
+        findUsagesInTrunkRules: function (id) {
+            return ApiLoader.post(url + 'find-usages-in-trunk-rules', { id: id });
+        },
+        findUsagesInStatRules: function (id) {
+            return ApiLoader.post(url + 'find-usages-in-stat-rules', { id: id });
+        },
+    };
 });
 
 app.factory('NumberAll', function ($q, ApiLoader, $rootScope) {
-	var url = '/json/number/';
-	var list = undefined;
-	var promise = undefined;
-	return {
-	    clearList: function(type) {
+    var url = '/json/number/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        clearList: function (type) {
             list = undefined;
             promise = undefined;
         },
@@ -734,7 +777,7 @@ app.factory('NumberAll', function ($q, ApiLoader, $rootScope) {
             if (!serverId) {
                 serverId = $rootScope.server.id;
             }
-            
+
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -742,7 +785,7 @@ app.factory('NumberAll', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: serverId};
+                var data = { server_id: serverId };
                 ApiLoader.post(url + 'list', data)
                     .then(function (data) {
                         list = data;
@@ -756,7 +799,7 @@ app.factory('NumberAll', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-	};
+    };
 });
 
 app.factory('Destination', function ($q, ApiLoader, $rootScope) {
@@ -764,13 +807,13 @@ app.factory('Destination', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -778,13 +821,13 @@ app.factory('Destination', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = { server_id: $rootScope.server.id };
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -792,44 +835,44 @@ app.factory('Destination', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
 
 app.factory('Settings', function ($q, ApiLoader) {
-	var url = '/json/settings/';
+    var url = '/json/settings/';
 
-	return {
-		get: function(data) {
-			return ApiLoader.post(url + 'get', data);
-		},
-		save: function(data) {
-			return ApiLoader.post(url + 'save', data);
-		}
-	};
+    return {
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        save: function (data) {
+            return ApiLoader.post(url + 'save', data);
+        }
+    };
 });
 
 app.factory('Server', function ($q, ApiLoader) {
     var url = '/json/server/';
 
     return {
-        list: function(data) {
+        list: function (data) {
             return ApiLoader.post(url + 'list', data);
         },
-        listByHub: function(data) {
+        listByHub: function (data) {
             return ApiLoader.post(url + 'list-by-hub', data);
         },
-        listByHubWithContract: function(data) {
-          return ApiLoader.post(url + 'list-by-hub-with-contract', data);
+        listByHubWithContract: function (data) {
+            return ApiLoader.post(url + 'list-by-hub-with-contract', data);
         },
-        checkSyncProgress: function(data) {
+        checkSyncProgress: function (data) {
             return ApiLoader.post(url + 'check-sync-progress', data);
         }
     };
@@ -839,7 +882,7 @@ app.factory('ServerOcs', function ($q, ApiLoader) {
     var url = '/json/server-ocs/';
 
     return {
-        list: function(data) {
+        list: function (data) {
             return ApiLoader.post(url + 'list', data);
         }
     };
@@ -849,7 +892,7 @@ app.factory('FmcTrunk', function ($q, ApiLoader) {
     var url = '/json/fmc-trunk/';
 
     return {
-        list: function(data) {
+        list: function (data) {
             return ApiLoader.post(url + 'list', data);
         }
     };
@@ -859,84 +902,84 @@ app.factory('Pbx', function ($q, ApiLoader) {
     var url = '/json/pbx/';
 
     return {
-        read: function(data) {
-            return ApiLoader.post(url + 'read', {'servers': data});
+        read: function (data) {
+            return ApiLoader.post(url + 'read', { 'servers': data });
         }
     };
 });
 
 app.factory('InstanceSettings', function ($q, ApiLoader) {
-	var url = '/json/instance-settings/';
-	return {
-		get: function(data) {
-			return ApiLoader.post(url + 'get', data);
-		},
-		save: function(data) {
-			return ApiLoader.post(url + 'save', data);
-		}
-	};
+    var url = '/json/instance-settings/';
+    return {
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        save: function (data) {
+            return ApiLoader.post(url + 'save', data);
+        }
+    };
 });
 
 app.factory('BlacklistSettings', function ($q, ApiLoader) {
     var url = '/json/blacklist-settings/';
     return {
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        add: function(data) {
+        add: function (data) {
             return ApiLoader.post(url + 'add', data);
         },
-        delete: function(data) {
+        delete: function (data) {
             return ApiLoader.post(url + 'delete', data);
         },
-        check: function(data) {
+        check: function (data) {
             return ApiLoader.post(url + 'check', data);
         }
     };
 });
 
 app.factory('Airp', function ($q, ApiLoader, $rootScope) {
-	var url = '/json/airp/';
-	var list = undefined;
-	var promise = undefined;
-	return {
-		read: function(data) {
-			return ApiLoader.post(url + 'read', data);
-		},
-		get: function(data) {
-			return ApiLoader.post(url + 'get', data);
-		},
-		list: function() {
-			if (promise !== undefined) return promise;
+    var url = '/json/airp/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
 
-			var deferred = $q.defer();
-			if (list !== undefined) {
-				deferred.resolve(list);
-				return deferred.promise;
-			} else {
-				var data = {server_id: $rootScope.server.id};
-				ApiLoader.post(url + 'list', data)
-					.then(function(data){
-						list = data;
-						promise = undefined;
-						deferred.resolve(data);
-					}, function(data){
-						promise = undefined;
-						deferred.reject(data);
-					});
-				promise = deferred.promise;
-			}
-			return deferred.promise;
-		},
-		save: function(data) {
-			list = undefined;
-			return ApiLoader.post(url + 'save', data);
-		},
-		delete: function(id) {
-			list = undefined;
-			return ApiLoader.post(url + 'delete', {id: id});
-		}
-	};
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: $rootScope.server.id };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        }
+    };
 });
 
 app.factory('Cpc', function ($q, ApiLoader, $rootScope) {
@@ -944,13 +987,13 @@ app.factory('Cpc', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -960,11 +1003,11 @@ app.factory('Cpc', function ($q, ApiLoader, $rootScope) {
             } else {
                 var data = {};
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -972,13 +1015,13 @@ app.factory('Cpc', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
@@ -988,13 +1031,13 @@ app.factory('Cdr', function ($q, ApiLoader) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        disconnectCauseList: function() {
+        disconnectCauseList: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1004,11 +1047,11 @@ app.factory('Cdr', function ($q, ApiLoader) {
             } else {
                 var data = {};
                 ApiLoader.post(url + 'disconnect-cause-list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1024,13 +1067,13 @@ app.factory('Header', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1040,11 +1083,11 @@ app.factory('Header', function ($q, ApiLoader, $rootScope) {
             } else {
                 var data = {};
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1052,59 +1095,59 @@ app.factory('Header', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
 
 app.factory('HeaderRule', function ($q, ApiLoader, $rootScope) {
-  var url = '/json/header-rule/';
-  var list = undefined;
-  var promise = undefined;
-  return {
-    read: function(data) {
-      return ApiLoader.post(url + 'read', data);
-    },
-    get: function(data) {
-      return ApiLoader.post(url + 'get', data);
-    },
-    list: function() {
-      if (promise !== undefined) return promise;
+    var url = '/json/header-rule/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
 
-      var deferred = $q.defer();
-      if (list !== undefined) {
-        deferred.resolve(list);
-        return deferred.promise;
-      } else {
-        var data = {};
-        ApiLoader.post(url + 'list', data)
-          .then(function(data){
-            list = data;
-            promise = undefined;
-            deferred.resolve(data);
-          }, function(data){
-            promise = undefined;
-            deferred.reject(data);
-          });
-        promise = deferred.promise;
-      }
-      return deferred.promise;
-    },
-    save: function(data) {
-      list = undefined;
-      return ApiLoader.post(url + 'save', data);
-    },
-    delete: function(id) {
-      list = undefined;
-      return ApiLoader.post(url + 'delete', {id: id});
-    }
-  };
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        }
+    };
 });
 
 app.factory('Mcc', function ($q, ApiLoader, $rootScope) {
@@ -1112,13 +1155,13 @@ app.factory('Mcc', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1128,11 +1171,11 @@ app.factory('Mcc', function ($q, ApiLoader, $rootScope) {
             } else {
                 var data = {};
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1140,13 +1183,13 @@ app.factory('Mcc', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
@@ -1156,16 +1199,16 @@ app.factory('Mnc', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
         listByMcc: function (data) {
             return ApiLoader.post(url + 'list-by-mcc', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1175,11 +1218,11 @@ app.factory('Mnc', function ($q, ApiLoader, $rootScope) {
             } else {
                 var data = {};
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1187,194 +1230,29 @@ app.factory('Mnc', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
 
 app.factory('ReleaseReason', function ($q, ApiLoader, $rootScope) {
-	var url = '/json/release-reason/';
-	var list = undefined;
-	var promise = undefined;
-	return {
-		read: function(data) {
-			return ApiLoader.post(url + 'read', data);
-		},
-		get: function(data) {
-			return ApiLoader.post(url + 'get', data);
-		},
-		list: function() {
-			if (promise !== undefined) return promise;
-
-			var deferred = $q.defer();
-			if (list !== undefined) {
-				deferred.resolve(list);
-				return deferred.promise;
-			} else {
-				var data = {server_id: $rootScope.server.id};
-				ApiLoader.post(url + 'list', data)
-					.then(function(data){
-						list = data;
-						promise = undefined;
-						deferred.resolve(data);
-					}, function(data){
-						promise = undefined;
-						deferred.reject(data);
-					});
-				promise = deferred.promise;
-			}
-			return deferred.promise;
-		},
-		save: function(data) {
-			list = undefined;
-			return ApiLoader.post(url + 'save', data);
-		},
-		delete: function(id) {
-			list = undefined;
-			return ApiLoader.post(url + 'delete', {id: id});
-		}
-	};
-});
-
-app.factory('RouteTable', function ($q, ApiLoader, $rootScope) {
-	var url = '/json/route-table/';
-	var list = undefined;
-	var promise = undefined;
-	return {
-		read: function(data) {
-			return ApiLoader.post(url + 'read', data);
-		},
-		get: function(data) {
-			return ApiLoader.post(url + 'get', data);
-		},
-		list: function() {
-			if (promise !== undefined) return promise;
-
-			var deferred = $q.defer();
-			if (list !== undefined) {
-				deferred.resolve(list);
-				return deferred.promise;
-			} else {
-				var data = {server_id: $rootScope.server.id};
-				ApiLoader.post(url + 'list', data)
-					.then(function(data){
-						list = data;
-						promise = undefined;
-						deferred.resolve(data);
-					}, function(data){
-						promise = undefined;
-						deferred.reject(data);
-					});
-				promise = deferred.promise;
-			}
-			return deferred.promise;
-		},
-		save: function(data) {
-			list = undefined;
-			return ApiLoader.post(url + 'save', data);
-		},
-		delete: function(id) {
-			list = undefined;
-			return ApiLoader.post(url + 'delete', {id: id});
-		}
-	};
-});
-
-app.factory('RouteReplace', function ($q, ApiLoader, $rootScope) {
-    var url = '/json/route-replace/';
+    var url = '/json/release-reason/';
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        saveMultiple: function(data) {
-            list = undefined;
-            return ApiLoader.post(url + 'save-multiple', data);
-        },
-    };
-});
-
-app.factory('TestAuth', function ($q, ApiLoader, $rootScope) {
-	var url = '/json/test-auth/';
-	var list = undefined;
-	var promise = undefined;
-	return {
-		read: function(data) {
-			return ApiLoader.post(url + 'read', data);
-		},
-		get: function(data) {
-			return ApiLoader.post(url + 'get', data);
-		},
-		result: function(data) {
-			return ApiLoader.post(url + 'result', data);
-		},
-		list: function() {
-			if (promise !== undefined) return promise;
-
-			var deferred = $q.defer();
-			if (list !== undefined) {
-				deferred.resolve(list);
-				return deferred.promise;
-			} else {
-				var data = {server_id: $rootScope.server.id};
-				ApiLoader.post(url + 'list', data)
-					.then(function(data){
-						list = data;
-						promise = undefined;
-						deferred.resolve(data);
-					}, function(data){
-						promise = undefined;
-						deferred.reject(data);
-					});
-				promise = deferred.promise;
-			}
-			return deferred.promise;
-		},
-		save: function(data) {
-			list = undefined;
-			return ApiLoader.post(url + 'save', data);
-		},
-		delete: function(id) {
-			list = undefined;
-			return ApiLoader.post(url + 'delete', {id: id});
-		},
-    descend: function(data) {
-      return ApiLoader.post(url + 'descend', data);
-    },
-    clearCache: function() {
-      return ApiLoader.post(url + 'clear-cache');
-    },
-    trace: function(data) {
-      return ApiLoader.post(url + 'trace', data);
-    }
-	};
-});
-
-app.factory('TestPricelist', function ($q, ApiLoader, $rootScope) {
-    var url = '/json/test-pricelist/';
-    var list = undefined;
-    var promise = undefined;
-    return {
-        read: function(data) {
-            return ApiLoader.post(url + 'read', data);
-        },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        result: function(data) {
-            return ApiLoader.post(url + 'result', data);
-        },
-        numberResult: function(data) {
-            return ApiLoader.post(url + 'number-result', data);
-        },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1382,13 +1260,13 @@ app.factory('TestPricelist', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = { server_id: $rootScope.server.id };
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1396,71 +1274,236 @@ app.factory('TestPricelist', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
+        }
+    };
+});
+
+app.factory('RouteTable', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/route-table/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
         },
-        descend: function(data) {
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: $rootScope.server.id };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        }
+    };
+});
+
+app.factory('RouteReplace', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/route-replace/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        saveMultiple: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save-multiple', data);
+        },
+    };
+});
+
+app.factory('TestAuth', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/test-auth/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        result: function (data) {
+            return ApiLoader.post(url + 'result', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: $rootScope.server.id };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        },
+        descend: function (data) {
             return ApiLoader.post(url + 'descend', data);
         },
-        clearCache: function() {
+        clearCache: function () {
             return ApiLoader.post(url + 'clear-cache');
         },
-        trace: function(data) {
+        trace: function (data) {
+            return ApiLoader.post(url + 'trace', data);
+        }
+    };
+});
+
+app.factory('TestPricelist', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/test-pricelist/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        result: function (data) {
+            return ApiLoader.post(url + 'result', data);
+        },
+        numberResult: function (data) {
+            return ApiLoader.post(url + 'number-result', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: $rootScope.server.id };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        },
+        descend: function (data) {
+            return ApiLoader.post(url + 'descend', data);
+        },
+        clearCache: function () {
+            return ApiLoader.post(url + 'clear-cache');
+        },
+        trace: function (data) {
             return ApiLoader.post(url + 'trace', data);
         }
     };
 });
 
 app.factory('TestGroup', function ($q, ApiLoader, $rootScope) {
-  var url = '/json/test-group/';
-  var list = undefined;
-  var promise = undefined;
-  return {
-    read: function(data) {
-      return ApiLoader.post(url + 'read', data);
-    },
-    get: function(data) {
-      return ApiLoader.post(url + 'get', data);
-    },
-    result: function(data) {
-      return ApiLoader.post(url + 'result', data);
-    },
-    list: function() {
-      if (promise !== undefined) return promise;
+    var url = '/json/test-group/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        result: function (data) {
+            return ApiLoader.post(url + 'result', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
 
-      var deferred = $q.defer();
-      if (list !== undefined) {
-        deferred.resolve(list);
-        return deferred.promise;
-      } else {
-        var data = {server_id: $rootScope.server.id};
-        ApiLoader.post(url + 'list', data)
-          .then(function(data){
-            list = data;
-            promise = undefined;
-            deferred.resolve(data);
-          }, function(data){
-            promise = undefined;
-            deferred.reject(data);
-          });
-        promise = deferred.promise;
-      }
-      return deferred.promise;
-    },
-    save: function(data) {
-      list = undefined;
-      return ApiLoader.post(url + 'save', data);
-    },
-    delete: function(id) {
-      list = undefined;
-      return ApiLoader.post(url + 'delete', {id: id});
-    }
-  };
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: $rootScope.server.id };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        }
+    };
 });
 
 
@@ -1469,46 +1512,46 @@ app.factory('LegType', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-      list: function() {
-        if (promise !== undefined) return promise;
-  
-        var deferred = $q.defer();
-        if (list !== undefined) {
-          deferred.resolve(list);
-          return deferred.promise;
-        } else {
-          var data = {server_id: $rootScope.server.id};
-          ApiLoader.post(url + 'list', data)
-            .then(function(data){
-              list = data;
-              promise = undefined;
-              deferred.resolve(data);
-            }, function(data){
-              promise = undefined;
-              deferred.reject(data);
-            });
-          promise = deferred.promise;
+        list: function () {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: $rootScope.server.id };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
         }
-        return deferred.promise;
-      }
     };
-  });
+});
 
 app.factory('TestPricelistGroup', function ($q, ApiLoader, $rootScope) {
     var url = '/json/test-pricelist-group/';
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        result: function(data) {
+        result: function (data) {
             return ApiLoader.post(url + 'result', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1518,11 +1561,11 @@ app.factory('TestPricelistGroup', function ($q, ApiLoader, $rootScope) {
             } else {
                 var data = {};
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1530,13 +1573,13 @@ app.factory('TestPricelistGroup', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
@@ -1546,16 +1589,16 @@ app.factory('TestCall', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        result: function(data) {
+        result: function (data) {
             return ApiLoader.post(url + 'result', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1563,13 +1606,13 @@ app.factory('TestCall', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = {server_id: $rootScope.server.id};
+                var data = { server_id: $rootScope.server.id };
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1577,63 +1620,63 @@ app.factory('TestCall', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
+        delete: function (id) {
             list = undefined;
-            return ApiLoader.post(url + 'delete', {id: id});
+            return ApiLoader.post(url + 'delete', { id: id });
         },
-        descend: function(data) {
+        descend: function (data) {
             return ApiLoader.post(url + 'descend', data);
         },
-        clearCache: function() {
+        clearCache: function () {
             return ApiLoader.post(url + 'clear-cache');
         }
     };
 });
 
 app.factory('ImsiPartner', function ($q, ApiLoader, $rootScope) {
-  var url = '/json/imsi-partner/';
-  var list = undefined;
-  var promise = undefined;
-  return {
-    read: function(data) {
-      return ApiLoader.post(url + 'read', data);
-    },
-    get: function(data) {
-      return ApiLoader.post(url + 'get', data);
-    },
-    list: function() {
-      if (promise !== undefined) return promise;
+    var url = '/json/imsi-partner/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
 
-      var deferred = $q.defer();
-      if (list !== undefined) {
-        deferred.resolve(list);
-        return deferred.promise;
-      } else {
-        var data = {server_id: $rootScope.server.id};
-        ApiLoader.post(url + 'list', data)
-          .then(function(data){
-            list = data;
-            promise = undefined;
-            deferred.resolve(data);
-          }, function(data){
-            promise = undefined;
-            deferred.reject(data);
-          });
-        promise = deferred.promise;
-      }
-      return deferred.promise;
-    },
-    save: function(data) {
-      return ApiLoader.post(url + 'save', data);
-    },
-    delete: function(id) {
-      return ApiLoader.post(url + 'delete', {id: id});
-    }
-  };
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: $rootScope.server.id };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            return ApiLoader.post(url + 'delete', { id: id });
+        }
+    };
 });
 
 app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
@@ -1641,44 +1684,44 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        inherit: function(id, name) {
-            return ApiLoader.post(url + 'inherit', {id: id, name: name});
+        inherit: function (id, name) {
+            return ApiLoader.post(url + 'inherit', { id: id, name: name });
         },
-        copy: function(id) {
-            return ApiLoader.post(url + 'copy', {id: id});
+        copy: function (id) {
+            return ApiLoader.post(url + 'copy', { id: id });
         },
-        copyAndMultiply: function(id, multiplier) {
-            return ApiLoader.post(url + 'copy-and-multiply', {id: id, multiplier: multiplier});
+        copyAndMultiply: function (id, multiplier) {
+            return ApiLoader.post(url + 'copy-and-multiply', { id: id, multiplier: multiplier });
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        getInCommerce: function(data) {
+        getInCommerce: function (data) {
             return ApiLoader.post(url + 'get-in-commerce', data);
         },
-        getInCommercePackage: function(data) {
+        getInCommercePackage: function (data) {
             return ApiLoader.post(url + 'get-in-commerce-package', data);
         },
-        getInCommercePackageSms: function(data) {
+        getInCommercePackageSms: function (data) {
             return ApiLoader.post(url + 'get-in-commerce-package-sms', data);
         },
-        getInCommercePackageData: function(data) {
+        getInCommercePackageData: function (data) {
             return ApiLoader.post(url + 'get-in-commerce-package-data', data);
         },
-        
-        getWithDependents: function(data) {
+
+        getWithDependents: function (data) {
             return ApiLoader.post(url + 'get-with-dependents', data);
         },
-        getWithDependentsNew: function(data) {
+        getWithDependentsNew: function (data) {
             return ApiLoader.post(url + 'get-with-dependents-new', data);
         },
-        toggleActive: function(id) {
-            return ApiLoader.post(url + 'toggle-active', {id: id});
+        toggleActive: function (id) {
+            return ApiLoader.post(url + 'toggle-active', { id: id });
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1688,11 +1731,11 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
             } else {
                 var data = {};
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1700,14 +1743,14 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             return ApiLoader.post(url + 'save', data);
         },
-        saveAndUpdate: function(data) {
+        saveAndUpdate: function (data) {
             return ApiLoader.post(url + 'save-and-update', data);
         },
-        delete: function(id) {
-            return ApiLoader.post(url + 'delete', {id: id});
+        delete: function (id) {
+            return ApiLoader.post(url + 'delete', { id: id });
         },
         search: function (data) {
             return ApiLoader.post(url + 'search', data);
@@ -1722,47 +1765,11 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
 });
 
 app.factory('OldPricelist', function ($q, ApiLoader, $rootScope) {
-  var url = '/json/old-pricelist/';
-  var list = undefined;
-  var promise = undefined;
-  return {
-    list: function() {
-      if (promise !== undefined) return promise;
-
-      var deferred = $q.defer();
-      if (list !== undefined) {
-        deferred.resolve(list);
-        return deferred.promise;
-      } else {
-        var data = {};
-        ApiLoader.post(url + 'list', data)
-          .then(function(data){
-            list = data;
-            promise = undefined;
-            deferred.resolve(data);
-          }, function(data){
-            promise = undefined;
-            deferred.reject(data);
-          });
-        promise = deferred.promise;
-      }
-      return deferred.promise;
-    }
-  };
-});
-
-app.factory('PricelistGroup', function ($q, ApiLoader, $rootScope) {
-    var url = '/json/pricelist-group/';
+    var url = '/json/old-pricelist/';
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
-            return ApiLoader.post(url + 'read', data);
-        },
-        get: function(data) {
-            return ApiLoader.post(url + 'get', data);
-        },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1772,11 +1779,47 @@ app.factory('PricelistGroup', function ($q, ApiLoader, $rootScope) {
             } else {
                 var data = {};
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        }
+    };
+});
+
+app.factory('PricelistGroup', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/pricelist-group/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1784,11 +1827,11 @@ app.factory('PricelistGroup', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
-            return ApiLoader.post(url + 'delete', {id: id});
+        delete: function (id) {
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
@@ -1798,13 +1841,13 @@ app.factory('MajorGroup', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1814,11 +1857,11 @@ app.factory('MajorGroup', function ($q, ApiLoader, $rootScope) {
             } else {
                 var data = {};
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1826,11 +1869,11 @@ app.factory('MajorGroup', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
-            return ApiLoader.post(url + 'delete', {id: id});
+        delete: function (id) {
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
@@ -1840,17 +1883,17 @@ app.factory('PricelistLocation', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        save: function(data) {
+        save: function (data) {
             return ApiLoader.post(url + 'save', data);
         },
-        listByPricelist: function(data) {
+        listByPricelist: function (data) {
             return ApiLoader.post(url + 'list-by-pricelist', data);
         },
-        delete: function(id) {
-            return ApiLoader.post(url + 'delete', {id: id});
+        delete: function (id) {
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
@@ -1860,17 +1903,17 @@ app.factory('PricelistFilterA', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        save: function(data) {
+        save: function (data) {
             return ApiLoader.post(url + 'save', data);
         },
-        saveAndUpdate: function(data) {
+        saveAndUpdate: function (data) {
             return ApiLoader.post(url + 'save-and-update', data);
         },
-        delete: function(id) {
-            return ApiLoader.post(url + 'delete', {id: id});
+        delete: function (id) {
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
@@ -1880,20 +1923,20 @@ app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        save: function(data) {
+        save: function (data) {
             return ApiLoader.post(url + 'save', data);
         },
-        saveAndUpdate: function(data) {
+        saveAndUpdate: function (data) {
             return ApiLoader.post(url + 'save-and-update', data);
         },
-        delete: function(id) {
-            return ApiLoader.post(url + 'delete', {id: id});
+        delete: function (id) {
+            return ApiLoader.post(url + 'delete', { id: id });
         }
     };
 });
@@ -1903,23 +1946,23 @@ app.factory('PricelistPrefixPrice', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        readPage: function(data) {
+        readPage: function (data) {
             return ApiLoader.post(url + 'read-page', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        save: function(data) {
+        save: function (data) {
             return ApiLoader.post(url + 'save', data);
         },
-        delete: function(id) {
-            return ApiLoader.post(url + 'delete', {id: id});
+        delete: function (id) {
+            return ApiLoader.post(url + 'delete', { id: id });
         },
-        singleHistory: function(filterBId, prefixB) {
-            return ApiLoader.post(url + 'single-history', {pricelist_filter_b_id: filterBId, prefix_b: prefixB});
+        singleHistory: function (filterBId, prefixB) {
+            return ApiLoader.post(url + 'single-history', { pricelist_filter_b_id: filterBId, prefix_b: prefixB });
         }
     };
 });
@@ -1929,13 +1972,13 @@ app.factory('Major', function ($q, ApiLoader, $rootScope) {
     var list = undefined;
     var promise = undefined;
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
-        list: function() {
+        list: function () {
             if (promise !== undefined) return promise;
 
             var deferred = $q.defer();
@@ -1945,11 +1988,11 @@ app.factory('Major', function ($q, ApiLoader, $rootScope) {
             } else {
                 var data = {};
                 ApiLoader.post(url + 'list', data)
-                    .then(function(data){
+                    .then(function (data) {
                         list = data;
                         promise = undefined;
                         deferred.resolve(data);
-                    }, function(data){
+                    }, function (data) {
                         promise = undefined;
                         deferred.reject(data);
                     });
@@ -1957,279 +2000,279 @@ app.factory('Major', function ($q, ApiLoader, $rootScope) {
             }
             return deferred.promise;
         },
-        save: function(data) {
+        save: function (data) {
             return ApiLoader.post(url + 'save', data);
         },
-        saveAndUpdate: function(data) {
+        saveAndUpdate: function (data) {
             return ApiLoader.post(url + 'save-and-update', data);
         },
-        delete: function(id) {
-            return ApiLoader.post(url + 'delete', {id: id});
+        delete: function (id) {
+            return ApiLoader.post(url + 'delete', { id: id });
         },
-        move: function(id, direction) {
-            return ApiLoader.post(url + 'move', {id: id, direction: direction});
+        move: function (id, direction) {
+            return ApiLoader.post(url + 'move', { id: id, direction: direction });
         },
-        findUsagesInPricelists: function(id) {
-            return ApiLoader.post(url + 'find-usages-in-pricelists', {id: id});
+        findUsagesInPricelists: function (id) {
+            return ApiLoader.post(url + 'find-usages-in-pricelists', { id: id });
         },
-        test: function(data) {
+        test: function (data) {
             return ApiLoader.post(url + 'test', data);
         },
     };
 });
 
 app.factory('Network', function ($q, ApiLoader, $rootScope) {
-	var url = '/json/network/';
-	var list = undefined;
-	var promise = undefined;
-	return {
-		list: function() {
-			if (promise !== undefined) return promise;
+    var url = '/json/network/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        list: function () {
+            if (promise !== undefined) return promise;
 
-			var deferred = $q.defer();
-			if (list !== undefined) {
-				deferred.resolve(list);
-				return deferred.promise;
-			} else {
-				var data = {server_id: $rootScope.server.id};
-				ApiLoader.post(url + 'list', data)
-					.then(function(data){
-						list = data;
-						promise = undefined;
-						deferred.resolve(data);
-					}, function(data){
-						promise = undefined;
-						deferred.reject(data);
-					});
-				promise = deferred.promise;
-			}
-			return deferred.promise;
-		}
-	};
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: $rootScope.server.id };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        }
+    };
 });
 
 app.factory('SimImsi', function ($q, ApiLoader, $rootScope) {
-  var url = '/json/sim-imsi/';
-  return {
-    partner: function(data) {
-      return ApiLoader.post(url + 'partner', data);
-    },
-    profile: function(data) {
-      return ApiLoader.post(url + 'profile', data);
-    }
-  };
+    var url = '/json/sim-imsi/';
+    return {
+        partner: function (data) {
+            return ApiLoader.post(url + 'partner', data);
+        },
+        profile: function (data) {
+            return ApiLoader.post(url + 'profile', data);
+        }
+    };
 });
 
 app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
-                              RouteCase, Outcome, Number, NumberAll, Destination,
-                              Airp, ReleaseReason, RouteTable, Network,
-                              Attribute, Server, FmcTrunk, Cpc, Hub,
-                              PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
-                              MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-                              User, ServerOcs, SimImsi, LegType) {
-  return {
-    trunk: function () {
-      return Trunk.list();
-    },
-    trunkByServer: function (serverId) {
-      return Trunk.listByServer(serverId);
-    },
-    trunkGroup: function () {
-      return TrunkGroup.list();
-    },
-    trunkGroupForMarketplace: function (serverId) {
-      return TrunkGroup.listForMarketplace(serverId);
-    },
-    trunkRoaming: function (servers) {
-      return Trunk.listRoaming(servers)
-    },
-    testGroup: function () {
-      return TestGroup.list();
-    },
-    testPricelistGroup: function () {
-      return TestPricelistGroup.list();
-    },
-    prefixlist: function () {
-      return Prefixlist.list();
-    },
-    prefixlistByType: function (type) {
-      return Prefixlist.listByType({type_id: type});
-    },
-    attribute: function () {
-      return Attribute.list();
-    },
-    routeCase: function () {
-      return RouteCase.list();
-    },
-    outcome: function (serverId) {
-      return Outcome.list(serverId);
-    },
-    number: function (type, serverId) {
-      return Number.list(type, serverId);
-    },
-    numberClearList: function (type) {
-      Number.clearList(type);
-    },
-    numberAll: function (serverId) {
-      return NumberAll.list(serverId);
-    },
-    destination: function () {
-      return Destination.list();
-    },
-    airp: function () {
-      return Airp.list();
-    },
-    releaseReason: function () {
-      return ReleaseReason.list();
-    },
-    routeTable: function () {
-      return RouteTable.list();
-    },
-    network: function () {
-      return Network.list();
-    },
-    server: function () {
-      return Server.list();
-    },
-    serverOcs: function () {
-      return ServerOcs.list();
-    },
-    fmcTrunk: function () {
-      return FmcTrunk.list();
-    },
-    cpc: function () {
-      return Cpc.list();
-    },
-    pricelistGroup: function () {
-      return PricelistGroup.list();
-    },
-    majorGroup: function () {
-      return MajorGroup.list();
-    },
-    pricelist: function () {
-      return Pricelist.list();
-    },
-    oldPricelist: function () {
-      return OldPricelist.list();
-    },
-    mcc: function () {
-      return Mcc.list();
-    },
-    header: function () {
-      return Header.list();
-    },
-    headerRule: function () {
-      return HeaderRule.list();
-    },
-    disconnectCause: function () {
-      return Cdr.disconnectCauseList();
-    },
-    user: function () {
-      return User.read();
-    },
-    mvnoPartner: function () {
-      return SimImsi.partner();
-    },
-    legType: function () {
-      return LegType.list();
-    },
-    testResult: function () {
-      return [
-        {'id': 'not_executed', 'name': 'Не выполнен'},
-        {'id': 'passed', 'name': 'Успех'},
-        {'id': 'failed', 'name': 'Неудача'}
-      ];
-    },
-    uplinkActiveMode: function () {
-      return [
-        {'id': 1, 'name': 'all'},
-        {'id': 2, 'name': 'inc'},
-        {'id': 3, 'name': 'exc'}
-      ];
-    },
-    currency: function () {
-      return [
-        {'id': 'RUB', 'name': 'RUB'},
-        {'id': 'EUR', 'name': 'EUR'},
-        {'id': 'HUF', 'name': 'HUF'},
-        {'id': 'USD', 'name': 'USD'}
-      ];
-    },
-    location: function () {
-      return [
-        {'id': '1', 'name': 'Домашний регион'},
-        {'id': '2', 'name': 'Гостевой регион'},
-        {'id': '3', 'name': 'Международный регион'},
-        {'id': '4', 'name': 'MVNO'},
-        {'id': '5', 'name': 'Не использовать'},
-        {'id': '6', 'name': 'Входящие в международном регионе'},
-      ];
-    },
-    origAttribute: function () {
-      return [
-        {'id': '1', 'name': 'МГ/МН-о'},
-        {'id': '2', 'name': 'МГ/МН2-о'}
-      ];
-    },
-    termAttribute: function () {
-      return [
-        {'id': '3', 'name': 'МГ/МН-т'},
-        {'id': '4', 'name': 'МГ/МН2-т'}
-      ];
-    },
-    headerRuleItemMode: function () {
-      return [
-        {'id': '1', 'name': 'Равно'},
-        {'id': '2', 'name': 'Не равно'},
-        {'id': '3', 'name': 'Присутствует'},
-        {'id': '4', 'name': 'Отсутствует'},
-        {'id': '5', 'name': 'Regexp'}
-      ];
-    },
-    timeInterval: function () {
-      return [
-        {'id': '60', 'name': 'Искать за последнюю минуту'},
-        {'id': '300', 'name': 'Искать за последние 5 минут'},
-        {'id': '900', 'name': 'Искать за последние 15 минут'},
-        {'id': '1800', 'name': 'Искать за последние 30 минут'},
-        {'id': '3600', 'name': 'Искать за последний час'},
-        {'id': '7200', 'name': 'Искать за последние 2 часа'},
-        {'id': '28800', 'name': 'Искать за последние 8 часов'},
-        {'id': '86400', 'name': 'Искать за последний день'},
-        {'id': '172800', 'name': 'Искать за последние 2 дня'},
-        {'id': '432000', 'name': 'Искать за последние 5 дней'},
-        {'id': '604800', 'name': 'Искать за последние 7 дней'},
-        {'id': '1209600', 'name': 'Искать за последние 14 дней'},
-        {'id': '2592000', 'name': 'Искать за последние 30 дней'},
-        {'id': '0', 'name': 'Искать за все время'}
-      ];
-    },
-    considerPortingMode: function () {
-        return [
-          {'id': 1, 'name': 'Пропускать все'},
-          {'id': 2, 'name': 'Пропускать только портированные'},
-          {'id': 3, 'name': 'Пропускать только непортированные'}
-        ];
-      },
-    hub: function () {
-      return Hub.list();
-    }
-  };
+    RouteCase, Outcome, Number, NumberAll, Destination,
+    Airp, ReleaseReason, RouteTable, Network,
+    Attribute, Server, FmcTrunk, Cpc, Hub,
+    PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
+    MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
+    User, ServerOcs, SimImsi, LegType) {
+    return {
+        trunk: function () {
+            return Trunk.list();
+        },
+        trunkByServer: function (serverId) {
+            return Trunk.listByServer(serverId);
+        },
+        trunkGroup: function () {
+            return TrunkGroup.list();
+        },
+        trunkGroupForMarketplace: function (serverId) {
+            return TrunkGroup.listForMarketplace(serverId);
+        },
+        trunkRoaming: function (servers) {
+            return Trunk.listRoaming(servers)
+        },
+        testGroup: function () {
+            return TestGroup.list();
+        },
+        testPricelistGroup: function () {
+            return TestPricelistGroup.list();
+        },
+        prefixlist: function () {
+            return Prefixlist.list();
+        },
+        prefixlistByType: function (type) {
+            return Prefixlist.listByType({ type_id: type });
+        },
+        attribute: function () {
+            return Attribute.list();
+        },
+        routeCase: function () {
+            return RouteCase.list();
+        },
+        outcome: function (serverId) {
+            return Outcome.list(serverId);
+        },
+        number: function (type, serverId) {
+            return Number.list(type, serverId);
+        },
+        numberClearList: function (type) {
+            Number.clearList(type);
+        },
+        numberAll: function (serverId) {
+            return NumberAll.list(serverId);
+        },
+        destination: function () {
+            return Destination.list();
+        },
+        airp: function () {
+            return Airp.list();
+        },
+        releaseReason: function () {
+            return ReleaseReason.list();
+        },
+        routeTable: function () {
+            return RouteTable.list();
+        },
+        network: function () {
+            return Network.list();
+        },
+        server: function () {
+            return Server.list();
+        },
+        serverOcs: function () {
+            return ServerOcs.list();
+        },
+        fmcTrunk: function () {
+            return FmcTrunk.list();
+        },
+        cpc: function () {
+            return Cpc.list();
+        },
+        pricelistGroup: function () {
+            return PricelistGroup.list();
+        },
+        majorGroup: function () {
+            return MajorGroup.list();
+        },
+        pricelist: function () {
+            return Pricelist.list();
+        },
+        oldPricelist: function () {
+            return OldPricelist.list();
+        },
+        mcc: function () {
+            return Mcc.list();
+        },
+        header: function () {
+            return Header.list();
+        },
+        headerRule: function () {
+            return HeaderRule.list();
+        },
+        disconnectCause: function () {
+            return Cdr.disconnectCauseList();
+        },
+        user: function () {
+            return User.read();
+        },
+        mvnoPartner: function () {
+            return SimImsi.partner();
+        },
+        legType: function () {
+            return LegType.list();
+        },
+        testResult: function () {
+            return [
+                { 'id': 'not_executed', 'name': 'Не выполнен' },
+                { 'id': 'passed', 'name': 'Успех' },
+                { 'id': 'failed', 'name': 'Неудача' }
+            ];
+        },
+        uplinkActiveMode: function () {
+            return [
+                { 'id': 1, 'name': 'all' },
+                { 'id': 2, 'name': 'inc' },
+                { 'id': 3, 'name': 'exc' }
+            ];
+        },
+        currency: function () {
+            return [
+                { 'id': 'RUB', 'name': 'RUB' },
+                { 'id': 'EUR', 'name': 'EUR' },
+                { 'id': 'HUF', 'name': 'HUF' },
+                { 'id': 'USD', 'name': 'USD' }
+            ];
+        },
+        location: function () {
+            return [
+                { 'id': '1', 'name': 'Домашний регион' },
+                { 'id': '2', 'name': 'Гостевой регион' },
+                { 'id': '3', 'name': 'Международный регион' },
+                { 'id': '4', 'name': 'MVNO' },
+                { 'id': '5', 'name': 'Не использовать' },
+                { 'id': '6', 'name': 'Входящие в международном регионе' },
+            ];
+        },
+        origAttribute: function () {
+            return [
+                { 'id': '1', 'name': 'МГ/МН-о' },
+                { 'id': '2', 'name': 'МГ/МН2-о' }
+            ];
+        },
+        termAttribute: function () {
+            return [
+                { 'id': '3', 'name': 'МГ/МН-т' },
+                { 'id': '4', 'name': 'МГ/МН2-т' }
+            ];
+        },
+        headerRuleItemMode: function () {
+            return [
+                { 'id': '1', 'name': 'Равно' },
+                { 'id': '2', 'name': 'Не равно' },
+                { 'id': '3', 'name': 'Присутствует' },
+                { 'id': '4', 'name': 'Отсутствует' },
+                { 'id': '5', 'name': 'Regexp' }
+            ];
+        },
+        timeInterval: function () {
+            return [
+                { 'id': '60', 'name': 'Искать за последнюю минуту' },
+                { 'id': '300', 'name': 'Искать за последние 5 минут' },
+                { 'id': '900', 'name': 'Искать за последние 15 минут' },
+                { 'id': '1800', 'name': 'Искать за последние 30 минут' },
+                { 'id': '3600', 'name': 'Искать за последний час' },
+                { 'id': '7200', 'name': 'Искать за последние 2 часа' },
+                { 'id': '28800', 'name': 'Искать за последние 8 часов' },
+                { 'id': '86400', 'name': 'Искать за последний день' },
+                { 'id': '172800', 'name': 'Искать за последние 2 дня' },
+                { 'id': '432000', 'name': 'Искать за последние 5 дней' },
+                { 'id': '604800', 'name': 'Искать за последние 7 дней' },
+                { 'id': '1209600', 'name': 'Искать за последние 14 дней' },
+                { 'id': '2592000', 'name': 'Искать за последние 30 дней' },
+                { 'id': '0', 'name': 'Искать за все время' }
+            ];
+        },
+        considerPortingMode: function () {
+            return [
+                { 'id': 1, 'name': 'Пропускать все' },
+                { 'id': 2, 'name': 'Пропускать только портированные' },
+                { 'id': 3, 'name': 'Пропускать только непортированные' }
+            ];
+        },
+        hub: function () {
+            return Hub.list();
+        }
+    };
 });
 
 app.factory('Hub', function ($q, ApiLoader, $rootScope) {
-  var url = '/json/hub/';
-  return {
-    list: function(data) {
-      return ApiLoader.post(url + 'list', data);
-    }
-  };
+    var url = '/json/hub/';
+    return {
+        list: function (data) {
+            return ApiLoader.post(url + 'list', data);
+        }
+    };
 });
 
 app.factory('Comment', function ($q, ApiLoader, $rootScope) {
     var url = '/json/comment/';
     return {
-        save: function(data) {
+        save: function (data) {
             return ApiLoader.post(url + 'save', data);
         }
     };
@@ -2238,7 +2281,7 @@ app.factory('Comment', function ($q, ApiLoader, $rootScope) {
 app.factory('Nnp', function (ApiLoader) {
     var url = '/json/nnp/';
     return {
-        destinationList: function() {
+        destinationList: function () {
             return ApiLoader.post(url + 'destination');
         },
         countryList: function () {
@@ -2280,7 +2323,7 @@ app.factory('Nnp', function (ApiLoader) {
 app.factory('StatisticsTree', function ($q, ApiLoader, $rootScope) {
     var url = '/json/statistics-tree/';
     return {
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         }
     };
@@ -2289,7 +2332,7 @@ app.factory('StatisticsTree', function ($q, ApiLoader, $rootScope) {
 app.factory('MoneyTree', function ($q, ApiLoader, $rootScope) {
     var url = '/json/money-tree/';
     return {
-        get: function(data) {
+        get: function (data) {
             return ApiLoader.post(url + 'get', data);
         }
     };
@@ -2298,13 +2341,13 @@ app.factory('MoneyTree', function ($q, ApiLoader, $rootScope) {
 app.factory('Scripts', function ($q, ApiLoader, $rootScope) {
     var url = '/json/scripts/';
     return {
-        generateTests: function() {
+        generateTests: function () {
             return ApiLoader.post(url + 'generate-tests');
         },
-        deleteTests: function() {
+        deleteTests: function () {
             return ApiLoader.post(url + 'delete-tests');
         },
-        viewTestsLog: function() {
+        viewTestsLog: function () {
             return ApiLoader.post(url + 'view-tests-log');
         },
     };
@@ -2313,7 +2356,7 @@ app.factory('Scripts', function ($q, ApiLoader, $rootScope) {
 app.factory('PricelistPrefixPriceHistory', function ($q, ApiLoader, $rootScope) {
     var url = '/json/billing/pricelist-prefix-price-history/';
     return {
-        undoImport: function(data) {
+        undoImport: function (data) {
             return ApiLoader.post(url + 'undo-import', data);
         },
     };
@@ -2322,7 +2365,7 @@ app.factory('PricelistPrefixPriceHistory', function ($q, ApiLoader, $rootScope) 
 app.factory('PricelistPrefixPriceHistoryItem', function ($q, ApiLoader, $rootScope) {
     var url = '/json/billing/pricelist-prefix-price-history-item/';
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
     };
@@ -2331,7 +2374,7 @@ app.factory('PricelistPrefixPriceHistoryItem', function ($q, ApiLoader, $rootSco
 app.factory('PricelistFilterBHistoryItem', function ($q, ApiLoader, $rootScope) {
     var url = '/json/billing/pricelist-filter-b-history-item/';
     return {
-        read: function(data) {
+        read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
     };
@@ -2340,34 +2383,34 @@ app.factory('PricelistFilterBHistoryItem', function ($q, ApiLoader, $rootScope) 
 app.factory('PricelistFilterBHistory', function ($q, ApiLoader, $rootScope) {
     var url = '/json/billing/pricelist-filter-b-history/';
     return {
-        undo: function(data) {
+        undo: function (data) {
             return ApiLoader.post(url + 'undo', data);
         },
     };
 });
 
 app.filter('belongsToTestGroup', function () {
-  return function (items, groupId) {
-    if (!items) {
-      return [];
-    }
+    return function (items, groupId) {
+        if (!items) {
+            return [];
+        }
 
-    if (!groupId) {
-      return items;
-    }
+        if (!groupId) {
+            return items;
+        }
 
-    var filtered = [];
+        var filtered = [];
 
-    for (var i = 0; i < items.length; i++) {
-      var item = items[i];
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
 
-      if (item.testgroup_id == groupId) {
-        filtered.push(item);
-      }
-    }
+            if (item.testgroup_id == groupId) {
+                filtered.push(item);
+            }
+        }
 
-    return filtered;
-  };
+        return filtered;
+    };
 });
 
 app.filter('testHasResult', function () {
