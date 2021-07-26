@@ -56,12 +56,14 @@ if (Yii::$app->user->identity) {
     $camelPermissions = RbacController::getCamelPermissions();
     $settingsPermissions = RbacController::getSettingsPermissions();
     $apiBillingPermissions = RbacController::getApiBillingPermissions();
+    $smsPermissions = RbacController::getSmsPermissions();
 
     $userRoutingPermissions = [];
     $userBillingPermissions = [];
     $userCamelPermissions = [];
     $userApiBillingPermissions = [];
     $userSettingsPermissions = [];
+    $userSmsPermissions = [];
 
     foreach ($userPermissions as $permissionKey => $permission) {
         if (in_array($permission->name, $routingPermissions)) {
@@ -74,6 +76,8 @@ if (Yii::$app->user->identity) {
             $userSettingsPermissions[$permissionKey] = true;
         } else if (in_array($permission->name, $apiBillingPermissions)) {
             $userApiBillingPermissions[$permissionKey] = true;
+        } else if (in_array($permission->name, $smsPermissions)) {
+            $userSmsPermissions[$permissionKey] = true;
         }
     }
 
@@ -82,12 +86,14 @@ if (Yii::$app->user->identity) {
     $userHasCamel = count($userCamelPermissions) > 0 ? true : false;
     $userHasSettings = count($userSettingsPermissions) > 0 ? true : false;
     $userHasApiBilling = count($userApiBillingPermissions) > 0 ? true : false;
+    $userHasSms = count($userSmsPermissions) > 0 ? true : false;
 } else {
     $userHasRouting = false;
     $userHasBilling = false;
     $userHasCamel = false;
     $userHasSettings = false;
     $userHasApiBilling = false;
+    $userHasSms = false;
 }
 
 ?>
@@ -128,9 +134,9 @@ if (Yii::$app->user->identity) {
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace-eu') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace-eu'])?>">Биржа EU</a></li>
 <?php endif; ?>
                         <li><a href="<?=Url::to(['/health/health.html'])?>" target="_blank">Здоровье биллеров</a></li>
-
+<?php if ($userHasSms) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/sms') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/sms'])?>">SMS</a></li>
-
+<?php } ?>
 
                     </ul>
                     <ul class="nav navbar-nav navbar-right">

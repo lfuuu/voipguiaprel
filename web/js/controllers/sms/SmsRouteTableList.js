@@ -23,7 +23,7 @@ var SmsRouteTableListCtrl = function($scope, SmsRouteTable, Redirect, $window) {
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['camel_route_table_edit']) {
+        if (!userPermissions['sms_route_table_edit']) {
             return;
         }
 

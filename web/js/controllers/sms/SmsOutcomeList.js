@@ -33,7 +33,7 @@ var SmsOutcomeListCtrl = function($scope, SmsOutcome, SmsList, Redirect, $window
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['camel_outcome_edit']) {
+        if (!userPermissions['sms_outcome_edit']) {
             return;
         }
 

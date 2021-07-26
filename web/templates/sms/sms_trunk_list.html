@@ -1,4 +1,4 @@
-<div ng-if="userPermissions['camel_trunk_create']" class="pull-right">
+<div ng-if="userPermissions['sms_trunk_create']" class="pull-right">
     <a class="btn btn-primary btn-sm" ng-click="clickCreate()">Создать</a>
 </div>
 <h4>SMS Транки</h4>
@@ -50,7 +50,7 @@
                 </a>
             </th>
             <th width="1%"></th>
-            <th ng-if="userPermissions['camel_trunk_delete']" width="1%"></th>
+            <th ng-if="userPermissions['sms_trunk_delete']" width="1%"></th>
         </tr>
     </thead>
     <tbody>
@@ -61,7 +61,7 @@
             <td style="cursor: pointer">{{item.a2psms_route_table_id}}</td>
             <td style="cursor: pointer">{{item.route_name}}</td>
 
-            <td ng-if="userPermissions['camel_trunk_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
+            <td ng-if="userPermissions['sms_trunk_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
         </tr>
     </tbody>
 </table>

@@ -22,7 +22,7 @@ var SmsTrunkListCtrl = function($scope, SmsTrunk, Redirect, $window) {
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['camel_trunk_edit']) {
+        if (!userPermissions['sms_trunk_edit']) {
             return;
         }
 

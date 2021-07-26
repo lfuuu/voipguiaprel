@@ -10,8 +10,8 @@ class SmsOutcomeController extends JsonController
     protected $idParamName = 'id';
     protected $nameParamName = 'name';
     protected $readWhere = ['server_id'];
-    protected $createPermission = 'camel_outcome_create';
-    protected $listPermission = 'camel_outcome_list';
-    protected $editPermission = 'camel_outcome_edit';
-    protected $deletePermission = 'camel_outcome_delete';
+    protected $createPermission = 'sms_outcome_create';
+    protected $listPermission = 'sms_outcome_list';
+    protected $editPermission = 'sms_outcome_edit';
+    protected $deletePermission = 'sms_outcome_delete';
 }

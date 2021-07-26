@@ -5,7 +5,7 @@ var PrefixlistListCtrl = function($scope, Prefixlist, Redirect, $window) {
   $scope.searchQuery = '';
 
   $scope.filterFields = [
-    'name', 'dt_update', 'server_id'
+    'id', 'name', 'dt_update', 'server_id',
   ];
 
 	$scope.init = function(tab) {

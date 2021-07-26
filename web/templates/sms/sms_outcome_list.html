@@ -1,4 +1,4 @@
-<div ng-if="userPermissions['camel_outcome_create']" class="pull-right">
+<div ng-if="userPermissions['sms_outcome_create']" class="pull-right">
     <a class="btn btn-primary btn-sm" ng-click="clickCreate()">Создать</a>
 </div>
 <h4>SMS outcomes</h4>
@@ -37,7 +37,7 @@
                 </a>
             </th>
             <th width="1%"></th>
-            <th ng-if="userPermissions['camel_outcome_delete']" width="1%"></th>
+            <th ng-if="userPermissions['sms_outcome_delete']" width="1%"></th>
         </tr>
     </thead>
     <tbody>
@@ -48,7 +48,7 @@
             <td>
                 <comment-icon ng-if="item.id" key="{{item.id}}" type="camelTestAuth" comment="item.object_comment"></comment-icon>
             </td>
-            <td ng-if="userPermissions['camel_outcome_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
+            <td ng-if="userPermissions['sms_outcome_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
         </tr>
     </tbody>
 </table>

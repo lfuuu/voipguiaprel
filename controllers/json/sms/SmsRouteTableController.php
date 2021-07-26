@@ -13,10 +13,10 @@ class SmsRouteTableController extends JsonController
     protected $nameParamName = 'name';
     protected $withDependencies = ['routes'];
     protected $readWhere = ['server_id'];
-    protected $createPermission = 'camel_route_table_create';
-    protected $listPermission = 'camel_route_table_list';
-    protected $editPermission = 'camel_route_table_edit';
-    protected $deletePermission = 'camel_route_table_delete';
+    protected $createPermission = 'sms_route_table_create';
+    protected $listPermission = 'sms_route_table_list';
+    protected $editPermission = 'sms_route_table_edit';
+    protected $deletePermission = 'sms_route_table_delete';
 
     protected function performAfterSaveActions($item, $request)
     {

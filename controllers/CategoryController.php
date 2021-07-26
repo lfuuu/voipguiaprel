@@ -39,7 +39,7 @@ class CategoryController extends BaseController
     public function actionSms()
     {
         return $this->render('sms', [
-            'servers' => ServerOcs::find()->orderBy('id')->all(),
+            'servers' => ServerOcs::find()->where(['id' => 9])->orderBy('id')->one(),
         ]);
     }
 

@@ -16,12 +16,9 @@ use yii\helpers\Url;
             <th style="width:20%">Название</th>
         </tr>
     </thead>
-    <tbody>
-        <?php foreach ($servers as $item) : ?>
-            <tr>
-                <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['sms/index', 'serverId' => $item->id]); ?>'"><?= $item->id ?></td>
-                <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['sms/index', 'serverId' => $item->id]); ?>'"><?= $item->name ?></td>
-            </tr>
-        <?php endforeach; ?>
+        <tr>
+            <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['sms/index', 'serverId' => $servers->id]); ?>'"><?= $servers->id ?></td>
+            <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['sms/index', 'serverId' => $servers->id]); ?>'"><?= $servers->name ?></td>
+        </tr>
     </tbody>
 </table>

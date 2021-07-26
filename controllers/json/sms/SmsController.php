@@ -14,10 +14,10 @@ class SmsController extends JsonController
     protected $idParamName = 'id';
     protected $nameParamName = 'name';
     protected $readWhere = ['server_id'];
-    protected $createPermission = 'camel_trunk_create';
-    protected $listPermission = 'camel_trunk_list';
-    protected $editPermission = 'camel_trunk_edit';
-    protected $deletePermission = 'camel_trunk_delete';
+    protected $createPermission = 'sms_trunk_create';
+    protected $listPermission = 'sms_trunk_list';
+    protected $editPermission = 'sms_trunk_edit';
+    protected $deletePermission = 'sms_trunk_delete';
 
     public function actionRead()
     {
@@ -36,21 +36,22 @@ class SmsController extends JsonController
     
     public function actionSave()
     {
-        if (!\Yii::$app->user->can('camel_trunk_edit') && !\Yii::$app->user->can('camel_trunk_create')) {
+        if (!\Yii::$app->user->can('sms_trunk_edit') && !\Yii::$app->user->can('sms_trunk_edit')) {
             throw new ForbiddenHttpException('Access denied');
         }
     
         $result = [];
         
         if (isset($this->request['id'])) {
-            if (!\Yii::$app->user->can('camel_trunk_edit')) {
+
+            if (!\Yii::$app->user->can('sms_trunk_edit')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             
             $item = $this->getSmsOr404($this->request['id']);
             $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
-            if (!\Yii::$app->user->can('camel_trunk_create')) {
+            if (!\Yii::$app->user->can('sms_trunk_create')) {
                 throw new ForbiddenHttpException('Access denied');
             }
             

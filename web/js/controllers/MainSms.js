@@ -3,7 +3,7 @@ app.controller('MainSmsCtrl', function ($rootScope, $scope, $cookies, $timeout, 
     $rootScope.userName = userName;
     $rootScope.userId = userId;
     $rootScope.userPermissions = userPermissions;
-    $rootScope.camelPermissions = camelPermissions;
+    $rootScope.smsPermissions = smsPermissions;
     $rootScope.isSms = true;
 
     $rootScope.Redirect = Redirect;
@@ -37,8 +37,8 @@ app.controller('MainSmsCtrl', function ($rootScope, $scope, $cookies, $timeout, 
         funcName = $cookies.sms_selected_page;
     } else {
         for (var permissionName in $rootScope.userPermissions) {
-            if ($rootScope.camelPermissions.indexOf(permissionName) !== -1 &&
-                permissionName.includes('gt_list') && permissionName !== 'user_list' &&
+            if ($rootScope.smsPermissions.indexOf(permissionName) !== -1 &&
+                permissionName.includes('sms') && permissionName !== 'user_list' &&
                 permissionName !== 'role_list' && permissionName !== 'acl_list') {
                 funcName = permissionName.replace(/_([a-z])/g, function (m, w) {
                     return w.toUpperCase();
@@ -48,5 +48,14 @@ app.controller('MainSmsCtrl', function ($rootScope, $scope, $cookies, $timeout, 
         }
     }
 
-    Redirect.smsTrunkList();
+    if (funcName && id && type) {
+        Redirect[funcName](id, type);
+    } else if (funcName && id) {
+        Redirect[funcName](id);
+    } else if (funcName) {
+        Redirect[funcName]();
+    } else {
+        Redirect.smsTrunkList();
+    }
+
 });

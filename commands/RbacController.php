@@ -63,9 +63,7 @@ class RbacController extends Controller {
         ['name' => 'cpc_delete', 'description' => 'Удаление CPC'],
         ['name' => 'release_reason_list', 'description' => 'Просмотр списка Release reason'],
         ['name' => 'release_reason_create', 'description' => 'Создание Release reason'],
-        ['name' => 'release_reason_edit', 'description' => 'Редактирование Release reason'],
-        ['name' => 'release_reason_delete', 'description' => 'Удаление Release reason'],
-        ['name' => 'attribute_list', 'description' => 'Просмотр списка атрибутов'],
+        ['name' => 'release_reason_edit', 'description' => 'Редактирование ReleaCamel'],
         ['name' => 'attribute_create', 'description' => 'Создание атрибута'],
         ['name' => 'attribute_edit', 'description' => 'Редактирование атрибута'],
         ['name' => 'attribute_delete', 'description' => 'Удаление атрибута'],
@@ -202,9 +200,22 @@ class RbacController extends Controller {
         ['name' => 'test_dial_delete', 'description' => 'Удаление теста вызовов'],
         ['name' => 'pricelist_prefix_price_history_list', 'description' => 'Просмотр истории загрузки префиксов'],
         ['name' => 'pricelist_filter_b_history_list', 'description' => 'Просмотр истории'],
+        ['name' => 'sms_trunk_list', 'description' => 'Просмотр списка SMS транков'],
+        ['name' => 'sms_trunk_create', 'description' => 'Создание SMS транка'],
+        ['name' => 'sms_trunk_edit', 'description' => 'Редактирование SMS транка'],
+        ['name' => 'sms_trunk_delete', 'description' => 'Удаление SMS транк'],
+        ['name' => 'sms_route_table_list', 'description' => 'Просмотр списка SMS таблиц маршрутизации'],
+        ['name' => 'sms_route_table_create', 'description' => 'Создание SMS таблицы маршрутизации'],
+        ['name' => 'sms_route_table_edit', 'description' => 'Редактирование SMS таблицы маршрутизации'],
+        ['name' => 'sms_route_table_delete', 'description' => 'Удаление SMS таблицы маршрутизации'],
+        ['name' => 'sms_outcome_list', 'description' => 'Просмотр списка SMS Outcomes'],
+        ['name' => 'sms_outcome_create', 'description' => 'Создание SMS Outcome'],
+        ['name' => 'sms_outcome_edit', 'description' => 'Редактирование SMS Outcome'],
+        ['name' => 'sms_outcome_delete', 'description' => 'Удаление SMS Outcome'],
     ];
 
     private static $_roles = [
+        ['name' => 'admin_sms', 'description' => 'Администратор SMS'],
         ['name' => 'admin_routing', 'description' => 'Администратор роутинга'],
         ['name' => 'admin_billing', 'description' => 'Администратор биллинга'],
         ['name' => 'admin_camel', 'description' => 'Администратор Camel'],
@@ -250,7 +261,10 @@ class RbacController extends Controller {
             'header_rule_list', 'header_rule_create', 'header_rule_edit', 'header_rule_delete',
             'marketplace_list', 'marketplace_edit', 'cdr_report_read', 'money_tree',
             'pricelist_search', 'old_pricelist_search', 'action_log_view', 'action_log_list',
-            'camel_route_table_list', 'camel_route_table_create', 'camel_route_table_edit', 'camel_route_table_delete', 'pricelist_filter_b_history_list',
+            'camel_route_table_list', 'camel_route_table_create', 'camel_route_table_edit', 'camel_route_table_delete', 'pricelist_filter_b_history_list', 'sms_trunk_list', 
+            'sms_trunk_create', 'sms_trunk_edit', 'sms_trunk_delete',
+            'sms_route_table_list', 'sms_route_table_create', 'sms_route_table_edit', 'sms_route_table_delete',
+            'sms_outcome_list', 'sms_outcome_create', 'sms_outcome_edit', 'sms_outcome_delete',
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'test_number_edit',
@@ -296,6 +310,11 @@ class RbacController extends Controller {
             'camel_test_auth_list', 'camel_test_auth_create', 'camel_test_auth_edit', 'camel_test_auth_delete',
             'camel_outcome_list', 'camel_outcome_create', 'camel_outcome_edit', 'camel_outcome_delete',
             'camel_server_list', 'camel_server_edit', 'pricelist_filter_b_history_list',
+        ]],
+        ['role' => 'admin_sms', 'permissions' => [
+            'sms_trunk_list', 'sms_trunk_create', 'sms_trunk_edit', 'sms_trunk_delete',
+            'sms_route_table_list', 'sms_route_table_create', 'sms_route_table_edit', 'sms_route_table_delete',
+            'sms_outcome_list', 'sms_outcome_create', 'sms_outcome_edit', 'sms_outcome_delete',
         ]],
         ['role' => 'admin_settings', 'permissions' => [
             'acl_list', 'action_log_list'
@@ -369,6 +388,11 @@ class RbacController extends Controller {
     public static function getApiBillingPermissions()
     {
         return self::getPermissions('admin_api_billing');
+    }
+
+    public static function getSmsPermissions()
+    {
+        return self::getPermissions('admin_sms');
     }
 
     public function actionInit() {
