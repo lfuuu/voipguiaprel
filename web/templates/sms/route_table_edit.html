@@ -33,11 +33,11 @@
                     <span class="badge">{{$index + 1}}</span>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
-                    <select-box disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" default="Любой номер"></select-box>
+                    <select-box disabled="{{line.is_locked}}" list="number" model="line.a_number_id" param="1" server="99" default="Любой номер"></select-box>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">
                     <div style="display: grid; grid-template-columns: 50px auto">
-                        <select-box disabled="{{line.is_locked}}" list="number" model="line.b_number_id" param="2" default="Любой номер"></select-box>
+                        <select-box disabled="{{line.is_locked}}" list="number" model="line.b_number_id" param="2" server="99" default="Любой номер"></select-box>
                     </div>
                 </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="21%">

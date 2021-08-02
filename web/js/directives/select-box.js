@@ -15,7 +15,8 @@
                 required: '@',
                 param: '@',
                 disabled: '@',
-                multiple: '@'
+                multiple: '@',
+                server: '@'
             }
         };
         return directive;
@@ -34,7 +35,7 @@
             function loadList() {
                 var listFunction = List[attrs.list];
                 if (listFunction !== undefined) {
-                    listFunction(scope.param).then(function (data) {
+                    listFunction(scope.param, scope.server ? scope.server : '').then(function (data) {
                         scope.list = data;
                     })
                 }
