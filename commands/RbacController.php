@@ -312,9 +312,10 @@ class RbacController extends Controller {
             'camel_server_list', 'camel_server_edit', 'pricelist_filter_b_history_list',
         ]],
         ['role' => 'admin_sms', 'permissions' => [
-            'sms_trunk_list', 'sms_trunk_create', 'sms_trunk_edit', 'sms_trunk_delete', 'pricelist_list', 'number_list', 'number_create',
-            'number_edit', 'sms_route_table_list', 'sms_route_table_create', 'sms_route_table_edit', 'sms_route_table_delete',
-            'sms_outcome_list', 'sms_outcome_create', 'sms_outcome_edit', 'sms_outcome_delete',
+            'sms_trunk_list', 'sms_trunk_create', 'sms_trunk_edit', 'sms_trunk_delete', 'sms_route_table_list', 'sms_route_table_create', 'sms_route_table_edit', 'sms_route_table_delete',
+            'sms_outcome_list', 'sms_outcome_create', 'sms_outcome_edit', 'sms_outcome_delete', 'prefixlist_list', 'prefixlist_edit', 'pricelist_list', 'pricelist_edit', 'number_list', 'number_create',
+            'number_edit', 'major_group_list', 'major_group_delete', 'major_group_edit', 'major_group_create', 'trunk_list'
+
         ]],
         ['role' => 'admin_settings', 'permissions' => [
             'acl_list', 'action_log_list'

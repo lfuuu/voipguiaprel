@@ -37,7 +37,9 @@ class AppSmsAsset extends AssetBundle
         'js/controllers/PrefixlistList.js',
         'js/controllers/NumberEdit.js',
         'js/controllers/NumberList.js',
-        'js/directives/sms-select-box.js'
+        'js/directives/sms-select-box.js',
+        'js/controllers/PricelistEdit.js',
+        'js/controllers/TrunkList.js',
     ];
 
     public $templates = [
@@ -59,5 +61,7 @@ class AppSmsAsset extends AssetBundle
         'templates/prefixlist_list.html',
         'templates/number_edit.html',
         'templates/number_list.html',
+        'templates/pricelist_edit.html',
+        'templates/trunk_list.html',
     ];
 }
