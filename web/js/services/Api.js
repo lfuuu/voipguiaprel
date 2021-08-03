@@ -324,7 +324,7 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
                 deferred.resolve(list);
                 return deferred.promise;
             } else {
-                var data = { server_id: ($rootScope.server.id ? $rootScope.server.id : $rootScope.serverId)};
+                var data = { server_id: ($rootScope.isSms ? 99 : ($rootScope.server.id ? $rootScope.server.id : $rootScope.serverId))};
                 ApiLoader.post(url + 'list', data)
                     .then(function (data) {
                         list = data;
