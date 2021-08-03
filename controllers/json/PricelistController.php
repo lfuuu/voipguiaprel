@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 namespace app\controllers\json;
 
@@ -171,7 +171,7 @@ class PricelistController extends JsonController
             ->innerJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = p.id')
             ->innerJoin(
                 'billing_uu.package pckg',
-                'pckg.tariff_id = pp.tariff_id and pckg.service_type_id in (23,3)'
+                'pckg.tariff_id = pp.tariff_id and pckg.service_type_id in (3)'
             )
             ->where(['p.id' => $id])
             ->orderBy('tariff_id')
@@ -199,7 +199,7 @@ class PricelistController extends JsonController
             ->innerJoin('billing_uu.package_sms sms', 'sms.nnp_pricelist_id = p.id')
             ->innerJoin(
                 'billing_uu.package pckg',
-                'pckg.tariff_id = sms.tariff_id and pckg.service_type_id = 17'
+                'pckg.tariff_id = sms.tariff_id and pckg.service_type_id in (17,35,36)'
             )
             ->where(['p.id' => $id])
             ->orderBy('tariff_id')

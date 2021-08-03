@@ -128,7 +128,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
     };
 
     $scope.checkCommerce = function (item) {
-        if (item.type_id == 2) {
+        if (item.type_id == 2 && item.service_type_id == 1) {
             Redirect.pricelistInCommerceView(item.id).then(function () {
                 $scope.init();
             });
