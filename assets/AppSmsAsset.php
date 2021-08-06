@@ -40,6 +40,12 @@ class AppSmsAsset extends AssetBundle
         'js/directives/sms-select-box.js',
         'js/controllers/PricelistEdit.js',
         'js/controllers/TrunkList.js',
+        'js/controllers/sms/SmsTestAuthList.js',
+        'js/controllers/sms/SmsTestAuthEdit.js',
+        'js/controllers/sms/SmsTestGroupList.js',
+        'js/controllers/sms/SmsTestGroupEdit.js',
+        'js/controllers/sms/SmsAuthShowTest.js',
+
     ];
 
     public $templates = [
@@ -63,5 +69,10 @@ class AppSmsAsset extends AssetBundle
         'templates/number_list.html',
         'templates/pricelist_edit.html',
         'templates/trunk_list.html',
+        'templates/sms/test_auth_list.html',
+        'templates/sms/test_auth_edit.html',
+        'templates/sms/test_group_list.html',
+        'templates/sms/test_group_edit.html',
+        'templates/sms/test_auth_show_test.html',
     ];
 }

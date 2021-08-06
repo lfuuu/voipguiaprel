@@ -1,3 +1,48 @@
+function basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise) {
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function (data) {
+            if (promise !== undefined) return promise;
+
+            if (!data.server_id) {
+                data.server_id = $rootScope.server.id;
+            }
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                data = data || {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
+};
+
 app.factory('Attribute', function ($q, ApiLoader, $rootScope) {
     var url = '/json/attribute/';
     var list = undefined;
@@ -46,7 +91,53 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
     var url = '/json/sms/sms/';
     var list = undefined;
     var promise = undefined;
-    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function (data) {
+            if (promise !== undefined) return promise;
+
+            if (!data.server_id) {
+                data.server_id = $rootScope.server.id;
+            }
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                data = data || {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        listByServer: function (server_id) {
+            var data = { server_id: $rootScope.server.id };
+            console.log(data);
+            return ApiLoader.post(url + 'list', data);
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
+    };
 });
 
 app.factory('SmsRouteTable', function ($q, ApiLoader, $rootScope) {
@@ -63,7 +154,7 @@ app.factory('SmsOutcome', function ($q, ApiLoader, $rootScope) {
     return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
 });
 
-app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome) {
+app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome, SmsTestGroup) {
     return {
         trunk: function (data) {
             return SmsTrunk.list(data);
@@ -74,6 +165,15 @@ app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome) {
         outcome: function (data) {
             return SmsOutcome.list(data);
         },
+        testGroup: function (data) {
+            return SmsTestGroup.list(data);
+        },
+        testAuth: function (data) {
+            return SmsTestAuth.list(data);
+        },
+        trunkByServer: function (serverId) {
+            return SmsTrunk.listByServer(serverId);
+        },
         outcomeType: function () {
             return [
                 { id: 1, name: 'ACCEPT' },
@@ -83,6 +183,33 @@ app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome) {
         }
     };
 });
+
+app.factory('SmsTestAuth', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/sms/test-auth/';
+    var list = undefined;
+    var promise = undefined;
+    var functions = basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+
+    functions.result = function (data) {
+        list = undefined;
+        return ApiLoader.post(url + 'result', data);
+    };
+    
+    functions.descend = function (data) {
+        list = undefined;
+        return ApiLoader.post(url + 'descend', data);
+    };
+
+    return functions;
+});
+
+app.factory('SmsTestGroup', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/sms/test-group/';
+    var list = undefined;
+    var promise = undefined;
+    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
+});
+
 
 app.factory('AttributeGroup', function ($q, ApiLoader, $rootScope) {
     var url = '/json/attribute-group/';

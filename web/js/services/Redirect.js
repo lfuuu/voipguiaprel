@@ -749,5 +749,28 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         smsOutcomeEdit: function(id) {
             return openModal(SmsOutcomeEditCtrl, '/templates/sms/sms_outcome_edit.html', {id: id});
         },
+        smsTestAuthList: function() {
+            $cookies._selected_page = 'smsTestAuthList';
+            return openTab(SmsTestAuthListCtrl, '/templates/sms/test_auth_list.html', {});
+        },
+        smsTestAuthCreate: function() {
+            return openModal(SmsTestAuthEditCtrl, '/templates/sms/test_auth_edit.html', {id: null});
+        },
+        smsTestAuthEdit: function(id) {
+            return openModal(SmsTestAuthEditCtrl, '/templates/sms/test_auth_edit.html', {id: id});
+        },
+        smsTestAuthShowTest: function(id) {
+            return openModal(SmsTestAuthShowTestCtrl, '/templates/sms/test_auth_show_test.html', {id: id, is_reserve: false});
+        },
+        smsTestGroupList: function() {
+            $cookies.sms_selected_page = 'smsTestGroupList';
+            return openTab(SmsTestGroupListCtrl, '/templates/sms/test_group_list.html', {});
+        },
+        smsTestGroupCreate: function() {
+            return openModal(SmsTestGroupEditCtrl, '/templates/sms/test_group_edit.html', {id: null});
+        },
+        smsTestGroupEdit: function(id) {
+            return openModal(SmsTestGroupEditCtrl, '/templates/sms/test_group_edit.html', {id: id});
+        },
     };
 });
