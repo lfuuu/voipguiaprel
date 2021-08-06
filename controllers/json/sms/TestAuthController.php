@@ -4,6 +4,7 @@ namespace app\controllers\json\sms;
 
 use app\classes\JsonController;
 use app\classes\traits\TestResult;
+use app\models\auth\SmsTrunk;
 use app\models\ServerOcs;
 use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
@@ -66,72 +67,69 @@ class TestAuthController extends JsonController
         }
         
         $data = $query->all();
-        
+
         return $data;
     }
     
-    // public function actionResult()
-    // {
-    // //     if (!\Yii::$app->user->can($this->listPermission)) {
-    // //         throw new ForbiddenHttpException('Access denied');
-    // //     }
+    public function actionResult()
+    {
+        if (!\Yii::$app->user->can($this->listPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
 
-    //     $modelName = $this->modelName;
+        $modelName = $this->modelName;
         
-    //     $item = $modelName::findOne($this->request['id']);
+        $item = $modelName::findOne($this->request['id']);
 
-    //     if ($item === null) {
-    //         throw new HttpException(404, $this->modelName . ' не найден');
-    //     }
+        if ($item === null) {
+            throw new HttpException(404, $this->modelName . ' не найден');
+        }
         
-    //     $server = ServerOcs::findOne($item->server_id);
+        $server = ServerOcs::findOne($item->server_id);
 
-    //     if ($server === null) {
-    //         throw new HttpException(404, 'Сервер для ' . $this->modelName . ' не найден');
-    //     }
+        if ($server === null) {
+            throw new HttpException(404, 'Сервер для ' . $this->modelName . ' не найден');
+        }
         
-    //     $isReserve = (isset($this->request['is_reserve']) && $this->request['is_reserve']) ? true : false;
+        $isReserve = (isset($this->request['is_reserve']) && $this->request['is_reserve']) ? true : false;
         
-    //     $apiUrl = $isReserve ? $server->camel_reserve : $server->camel_gw;
+        $apiUrl = $isReserve ? $server->camel_reserve : $server->camel_gw;
+        
+        
+        $request = $apiUrl . 'api/get.dst_route?' . 'a_num=' . $item->src_number . '&' . 'b_num=' . $item->dst_number . '&' . 'src_route=' . (SmsTrunk::findOne(['id' => $item->trunk_name]))->name;
+        $request = str_replace(' ', '+', $request);
 
-    //     $apiParams = [
-    //         'a_number' => $item->src_number,
-    //         'b_number' => $item->dst_number,
-    //         'with_debug_info' => $item->with_debug_info ? 1 : 0,
-    //         'a2p_trunk_name' => $item->trunk_name,
-    //         'server_id' => $item->server_id,
-    //     ];
-        
-    //     $request = $apiUrl . 'api/sms?' . http_build_query($apiParams);
-        
-    //     $apiParams['user'] = \Yii::$app->user->getId();
-    //     $apiParams['date'] = date('Y-m-d H:i:s');
-        
-    //     $requestForKey = $apiUrl . 'test/auth?' . http_build_query($apiParams);
-        
-    //     $key = md5($requestForKey);
+        $context = stream_context_create(array('http' => array('ignore_errors' => true),));
+        $response = file_get_contents($request, false, $context);
 
-    //     $response = file_get_contents($request);
+        $apiParams['user'] = \Yii::$app->user->getId();
+        $apiParams['date'] = date('Y-m-d H:i:s');
 
-    //     return [
-    //         'item' => $item->toArray(),
-    //         'name' => 'root',
-    //         'key' => $key,
-    //         'result' => $this->generateNewResult($response, $key),
-    //         'url' => $request
-    //     ];
-    // }
+        $requestForKey = $apiUrl . 'test/auth?' . http_build_query($apiParams);
+        
+        $key = md5($requestForKey);
+
+        
+
+        return [
+            'item' => $item->toArray(),
+            'name' => 'root',
+            'key' => $key,
+            'result' => $this->generateNewResult($response, $key),
+            'url' => $request
+        ];
+    }
     
-    // private function generateNewResult($resultString, $key)
-    // {
-    //     $tempResult = json_decode($resultString, true);
+    private function generateNewResult($resultString, $key)
+    {
+        $tempResult = json_decode($resultString, true);
+
+        // $result = $this->processResult($tempResult);
         
-    //     $result = $this->processResult([$tempResult]);
+        \Yii::$app->cache->set($key, $tempResult);
         
-    //     \Yii::$app->cache->set($key, $result);
+        // $finalResult = $this->findByPath($tempResult, '', self::TEST_RESULT_INITIAL_DEPTH);
         
-    //     $finalResult = $this->findByPath($result, '', self::TEST_RESULT_INITIAL_DEPTH);
-        
-    //     return $finalResult;
-    // }
+        return $tempResult;
+    }
 }

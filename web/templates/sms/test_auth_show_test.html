@@ -10,54 +10,12 @@
                 {{url}}
             </div>
         </div>
-
-        <script type="text/ng-template" id="nodes_renderer.html">
-            <br />
-            <div class="tree-container-bordered">
-            <div ng-if="node.name" ui-tree-handle class="tree-node tree-node-content">
-                <a class="btn btn-success btn-xs" ng-disabled="!node.nodes" data-nodrag ng-click="toggle(this); descend(node)">
-                    <span class="glyphicon" ng-class="{
-                      'glyphicon-chevron-right': collapsed,
-                      'glyphicon-chevron-down': !collapsed
-                    }"></span>
-                </a>
-                <span ng-if="node.color && node.color == 'red'" class="bg-danger">{{node.name}}</span>
-                <span ng-if="node.color && node.color == 'yellow'" class="bg-warning">{{node.name}}</span>
-                <span ng-if="!node.color || (node.color != 'red' && node.color != 'yellow')">{{node.name}}</span>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Результат</label>
+            <div class="col-sm-10">
+                <p style="font-size: 15px;"> {{result}}</p>
             </div>
-            <div ng-if="!node.name" style="display: inline-block;" ui-tree-handle class="tree-node tree-node-content">
-                <table>
-                    <tr>
-                        <td style="vertical-align:top;">
-                            <span ng-if="node.type == 'RESULT'" class="label label-warning">[RESULT]</span>
-                            <span ng-if="node.type == 'INFO'" class="label label-info">[INFO]</span>
-                            <span ng-if="node.type != 'INFO' && node.type != 'RESULT'" class="label label-danger">[UNKNOWN]</span>
-                        </td>
-                        <td>
-                            <span ng-if="node.color && node.color == 'red'" class="bg-danger">{{node.message}}</span>
-                            <span ng-if="node.color && node.color == 'yellow'" class="bg-warning">{{node.message}}</span>
-                            <span ng-if="!node.color || (node.color != 'red' && node.color != 'yellow')">{{node.message}}</span>
-                        </td>
-                    </tr>
-                </table>
-                <br />
-            </div>
-
-            <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
-                <li ng-repeat="node in node.nodes" ui-tree-node collapsed="true" class="stripe" ng-include="'nodes_renderer.html'">
-                </li>
-            </ol>
-
-            </div>
-        </script>
-
-        <button ng-click="collapseAll()">Свернуть все<div></div></button>
-        <div ui-tree data-drag-enabled="false" id="tree-root">
-            <ol ui-tree-nodes ng-model="result">
-                <li ng-repeat="node in result.nodes" collapsed="false" ui-tree-node ng-include="'nodes_renderer.html'"></li>
-            </ol>
         </div>
-
     </div>
     <div class="modal-footer">
         <div class="pull-left">
