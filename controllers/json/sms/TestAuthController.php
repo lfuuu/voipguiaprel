@@ -25,7 +25,7 @@ class TestAuthController extends JsonController
     protected $listPermission = 'sms_test_auth_list';
     protected $editPermission = 'sms_test_auth_edit';
     protected $deletePermission = 'sms_test_auth_delete';
-    private $stepParamName = 'nodes';
+    // private $stepParamName = 'nodes';
 
     /**
      * @return array|\yii\db\ActiveRecord[]
@@ -50,8 +50,9 @@ class TestAuthController extends JsonController
         }
         
         $query = $modelName::find()
-                ->select(['auth.a2p_test_auth.*', 'testgroup_name' => 'tg.group_name'])
+                ->select(['auth.a2p_test_auth.*', 'testgroup_name' => 'tg.group_name', 'trunk_name_out' => 'r.name'])
                 ->leftJoin('auth.a2p_testgroup tg', 'tg.id = auth.a2p_test_auth.a2p_testgroup_id')
+                ->leftJoin('auth.a2psms_route r', 'cast(r.id as varchar(10)) = auth.a2p_test_auth.trunk_name')
                 ->where($groupWhere)
                 ->orderBy('name')
                 ->asArray();
