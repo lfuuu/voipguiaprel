@@ -772,5 +772,11 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         smsTestGroupEdit: function(id) {
             return openModal(SmsTestGroupEditCtrl, '/templates/sms/test_group_edit.html', {id: id});
         },
+        alphaNumberCreate: function() {
+            return openModal(AlphaNumberEditCtrl, '/templates/alpha_number_edit.html', {id: null});
+        },
+        alphaNumberEdit: function(id) {
+            return openModal(AlphaNumberEditCtrl, '/templates/alpha_number_edit.html', {id: id});
+        },
     };
 });

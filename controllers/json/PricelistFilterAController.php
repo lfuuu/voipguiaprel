@@ -11,6 +11,7 @@ use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterB;
 use app\models\billing_uu\PricelistFilterBHistory;
 use app\models\billing_uu\PricelistFilterBHistoryItem;
+use app\models\billing_uu\PricelistGroup;
 use app\models\billing_uu\PricelistLocation;
 use app\models\billing_uu\PricelistPrefixPrice;
 use app\models\billing_uu\PricelistPrefixPriceHistory;
@@ -36,10 +37,15 @@ class PricelistFilterAController extends JsonController
                 ->select(
                     ['a.*', 'date_trunc(\'second\', time_start) as time_start',
                     'date_trunc(\'second\', time_end) as time_end',
-                    'filter_country' => 'm.country_code']
+                    'filter_country' => 'm.country_code',
+                    'pricelist_group_id' => 'g.id',
+                    'pricelist_group_name' => 'g.name']
                 )
                 ->with('filterBHistory')
                 ->leftJoin(['m' => Major::tableName()], 'm.id = a.nnp_filter')
+                ->innerJoin([ 'l' => PricelistLocation::tableName()], 'l.id = a.pricelist_location_id')
+                ->innerJoin(['p' => Pricelist::tableName()], 'p.id = l.pricelist_id')
+                ->innerJoin(['g' => PricelistGroup::tableName()], 'g.id = p.pricelist_group_id')
                 ->where(['a.id' => $this->request['id']])
                 ->asArray()
                 ->one();

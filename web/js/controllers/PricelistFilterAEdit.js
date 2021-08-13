@@ -1,4 +1,4 @@
-var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterA, Nnp, List, params, $modalInstance, $window, Redirect, PricelistFilterBHistory) {
+var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterA, Nnp, List, params, $modalInstance, $window, Redirect, PricelistFilterBHistory, AlphaNumber) {
 
     $scope.NNP_MODE_FILTER = 1;
     $scope.NNP_MODE_PARAMETERS = 2;
@@ -75,6 +75,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
                     $scope.filterList = result;
                 });
             }
+            console.log($scope.item);
 
             $scope.saveEnabled = true;
 
