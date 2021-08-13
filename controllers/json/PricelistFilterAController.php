@@ -75,6 +75,8 @@ class PricelistFilterAController extends JsonController
         }
         
         $item->load($this->request, '');
+
+        $item['a2p_alphanumber'] = (int) $this->request['a2p_alphanumber'];
         
         $transaction = PricelistFilterA::getDb()->beginTransaction();
         try {

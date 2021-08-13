@@ -75,8 +75,6 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
                     $scope.filterList = result;
                 });
             }
-            console.log($scope.item);
-
             $scope.saveEnabled = true;
 
             $scope.$watch('item.nnp_region', watchers.nnp_region);
@@ -166,7 +164,6 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
         data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
-
         
         PricelistFilterA.save(data).then(
             function (result) {

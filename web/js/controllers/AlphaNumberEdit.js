@@ -5,7 +5,9 @@ var AlphaNumberEditCtrl = function($scope, List, AlphaNumber, params, $modalInst
             $scope.item = data;
         });
     } else {
-        $scope.item = {};
+        $scope.item = {
+            alphanum: '',
+        };
     }
 
     $scope.save = function()

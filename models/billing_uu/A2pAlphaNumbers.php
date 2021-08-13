@@ -21,7 +21,6 @@ class A2pAlphaNumbers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id'], 'integer'],
             [['alphanum'], 'string'],
         ];
     }
