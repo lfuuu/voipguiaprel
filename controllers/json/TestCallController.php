@@ -2,6 +2,7 @@
 
 namespace app\controllers\json;
 
+use app\classes\BaseController;
 use app\models\TestCall;
 use Yii;
 use app\classes\JsonController;
@@ -349,7 +350,7 @@ class TestCallController extends JsonController
     
         $result = $this->processResult($tempResult);
         
-        Yii::$app->cache->set($key, $result);
+        Yii::$app->cache->set($key, $result, BaseController::ONE_DAY);
         
         $finalResult = $this->findByPath($result, '', self::TEST_RESULT_INITIAL_DEPTH);
         

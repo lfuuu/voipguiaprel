@@ -2,6 +2,7 @@
 
 namespace app\controllers\json;
 
+use app\classes\BaseController;
 use app\models\billing_uu\Major;
 use app\models\billing_uu\PricelistFilterB;
 use app\models\billing_uu\PricelistPrefixPrice;
@@ -281,8 +282,8 @@ class PricelistFilterBController extends JsonController
         }
         
         $key = md5(microtime(true));
-        Yii::$app->cache->set($key, $prefixesToSave);
-        Yii::$app->cache->set($key . '_history', $historyObjectList);
+        Yii::$app->cache->set($key, $prefixesToSave, BaseController::ONE_DAY);
+        Yii::$app->cache->set($key . '_history', $historyObjectList, BaseController::ONE_DAY);
         
         return [
             'key' => $key,

@@ -2,6 +2,7 @@
 
 namespace app\controllers\json;
 
+use app\classes\BaseController;
 use app\models\billing_uu\Major;
 use app\models\billing_uu\PricelistFilterA;
 use Yii;
@@ -11,6 +12,9 @@ use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterB;
 use app\models\billing_uu\PricelistFilterBHistory;
 use app\models\billing_uu\PricelistFilterBHistoryItem;
+use app\models\billing_uu\A2pAlphaNum;
+use app\models\billing_uu\A2pAlphaNumHistory;
+use app\models\billing_uu\A2pAlphaNumHistoryItem;
 use app\models\billing_uu\PricelistGroup;
 use app\models\billing_uu\PricelistLocation;
 use app\models\billing_uu\PricelistPrefixPrice;
@@ -25,6 +29,7 @@ use yii\web\HttpException;
 
 class PricelistFilterAController extends JsonController
 {
+
     public function actionGet()
     {
         if (!\Yii::$app->user->can('pricelist_list')) {
@@ -42,6 +47,7 @@ class PricelistFilterAController extends JsonController
                     'pricelist_group_name' => 'g.name']
                 )
                 ->with('filterBHistory')
+                ->with('alphaNumHistory')
                 ->leftJoin(['m' => Major::tableName()], 'm.id = a.nnp_filter')
                 ->innerJoin([ 'l' => PricelistLocation::tableName()], 'l.id = a.pricelist_location_id')
                 ->innerJoin(['p' => Pricelist::tableName()], 'p.id = l.pricelist_id')
@@ -76,8 +82,6 @@ class PricelistFilterAController extends JsonController
         
         $item->load($this->request, '');
 
-        $item['a2p_alphanumber'] = (int) $this->request['a2p_alphanumber'];
-        
         $transaction = PricelistFilterA::getDb()->beginTransaction();
         try {
             if (!$item->save()) {
@@ -87,6 +91,17 @@ class PricelistFilterAController extends JsonController
                 $upsertResult = $this->upsertFilters($item);
                 if (isset($upsertResult['error'])) {
                     return $upsertResult;
+                }
+            }
+
+            if (isset($this->request['alphanums'])) {
+                $upsertAlphaNums = $this->upsertAlphaNums($item);
+                if (isset($upsertAlphaNums['error'])) {
+                    return $upsertAlphaNums;
+                } else {
+                    $result['result']['import_key'] = $upsertAlphaNums['key'];
+                    $result['result']['pricelist_filter_a_id'] = $upsertAlphaNums['pricelist_filter_a_id'];
+                    $result['result']['is_replace'] = $upsertAlphaNums['is_replace'];
                 }
             }
             
@@ -330,6 +345,50 @@ class PricelistFilterAController extends JsonController
         }
         
         return true;
+    }
+
+    private function upsertAlphaNums($item)
+    {
+        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', 0);
+
+        $alphaNumsToSave = [];
+        $alphaNumsArray = explode(",", $this->request['alphanums']);
+
+        try {
+            $pricelistId = PricelistLocation::find()
+                ->alias('pl')
+                ->select('pl.pricelist_id')
+                ->where(['id' => $item->pricelist_location_id])
+                ->asArray()
+                ->one();
+
+            $historyObject = A2pAlphanumHistory::createHistory($item->id, $pricelistId['pricelist_id'],
+                0, (isset($this->request['alphanum_replace']) && $this->request['alphanum_replace']) ? 'replace' : 'add', false);
+            $historyObjectList[] = $historyObject;
+
+            foreach ($alphaNumsArray as $alphaNum) {
+                $alphaNumsToSave[] = [
+                    $item->id,
+                    $alphaNum,
+                    $historyObject->id,
+                ];
+
+            }
+
+        } catch (\Exception $e) {
+            return ['error' => $e->getMessage(), 'field' => 'alphanums'];
+        }
+
+        $key = uniqId();
+        Yii::$app->cache->set($key, $alphaNumsToSave, BaseController::ONE_DAY);
+        Yii::$app->cache->set($key . '_history', $historyObjectList, BaseController::ONE_DAY);
+        
+        return [
+            'key' => $key,
+            'pricelist_filter_a_id' => $item->id,
+            'is_replace' => (isset($this->request['alphanum_replace']) && $this->request['alphanum_replace'])
+        ];
     }
     
     private function prepareDates($rawDateStart, $rawDateEnd)

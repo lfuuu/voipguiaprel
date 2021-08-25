@@ -305,10 +305,47 @@
                 </div>
                 <div class="tab-pane" id="alphanums" ng-if="item.pricelist_group_id == 32">
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">Вид операции</label>
+                        <div class="col-sm-6">
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn {{!item.alphanum_replace ? 'btn-primary active' : 'btn-default'}}"
+                                        ng-click="item.alphanum_replace = false">Добавление
+                                </button>
+                                <button type="button"
+                                        class="btn {{item.alphanum_replace ? 'btn-danger active' : 'btn-default'}}"
+                                        ng-click="item.alphanum_replace = true">Полная замена
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Альфа номер</label>
                         <div class="col-sm-10">
-                            <select-box list="alphaNumber" model="item.a2p_alphanumber" default="Любой номер"></select-box>
+                            <textarea class="form-control" placeholder="Альфа номера" ng-model="item.alphanums"></textarea>
                         </div>
+                        <div ng-hide="!errors.alphanums_error" class="col-sm-4">
+                            <span style="color: red;">{{errors.alphanums_error}}</span>
+                        </div>
+                    </div>
+                    <div ng-if="item.alphaNumHistory[0]">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="col-sm-2">Прайслист</th>
+                                    <th class="col-sm-2">Операция</th>
+                                    <th class="col-sm-2">Дата операции</th>
+                                    <th class="col-sm-2"></th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="val in item.alphaNumHistory">
+                                <td style="cursor: pointer" ng-click="openAlphaNumHistory(val)">#{{val.pricelist_id}} ({{val.total_count}})</td style="cursor: pointer" ng-click="openAlphaNumHistory(val)">
+                                <td style="cursor: pointer" ng-click="openAlphaNumHistory(val)">{{val.type=='replace' ? 'Замена' : 'Добавление'}}</td style="cursor: pointer" ng-click="openAlphaNumHistory(val)">
+                                <td style="cursor: pointer" ng-click="openAlphaNumHistory(val)">{{val.date_created}}</td style="cursor: pointer" ng-click="openAlphaNumHistory(val)">
+
+                                <td><button type="button" class="btn btn-default btn-sm" ng-if="$last && val.has_backup" ng-click="undoPrefixImport(val)">Отмена</button class="btn btn-default btn-sm"></td>
+                            </tr>
+                        </table>
                     </div>
                 </div>  
             </div>
