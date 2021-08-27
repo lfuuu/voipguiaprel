@@ -12,6 +12,7 @@ use app\models\billing_uu\PricelistLocation;
 use app\models\billing_uu\PricelistPrefixPriceHistory;
 use app\models\billing_uu\PricelistPrefixPriceHistoryItem;
 use DateTime;
+use Exception;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\web\ForbiddenHttpException;
@@ -235,14 +236,15 @@ class PricelistFilterBController extends JsonController
             $interconnectPrice = floatval($item->interconnect_price);
             
             $historyObjectList = [];
-            
+            $repeatingPrefixes = [];
+
             foreach ($prefixesArray as $prefixItem) {
                 $input = preg_split("/[\t]/", $prefixItem);
                 $prefixBString = $input[0];
                 $prefixPrice = $input[1];
                 $rawDateStart = $input[2]; // Если даты нет, то ругнется, и правильно сделает. Для этого внизу catch().
                 $rawDateEnd = isset($input[3]) ? $input[3] : '01.01.3000';
-                
+
                 $preparedDates = $this->prepareDates($rawDateStart, $rawDateEnd);
                 
                 if (isset($preparedDates['error'])) {
@@ -260,10 +262,14 @@ class PricelistFilterBController extends JsonController
                     
                     $historyObjectList[$dateStart] = $historyObject;
                 }
-                
                 $prefixBArray = explode(',', str_replace(['-'], ',', $prefixBString));
-                
                 foreach ($prefixBArray as $prefixB) {
+            
+                    if (isset($repeatingPrefixes[$prefixB])) {
+                        throw new Exception('Повторяющийся префикс! ' . $prefixB);
+                    }
+                    $repeatingPrefixes[$prefixB] = $prefixB;
+
                     $bNumberPrice = str_replace(',', '.', $prefixPrice);
                     $bNumberPrice = floatval($bNumberPrice);
                     $prefixesToSave[$dateStart][] = [
@@ -276,6 +282,7 @@ class PricelistFilterBController extends JsonController
                     ];
                 }
             }
+
         } catch (\Exception $e) {
             return ['error' => 'Ошибка при обработке префиксов! Каждая пара префикс-цена должна быть на отдельной строке. Префиксы должны быть отделены от цены символом табуляции. Префиксы можно перечислять через запятую или через тире.', 'field' => 'prefixes'];
         }
