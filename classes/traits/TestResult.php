@@ -6,11 +6,12 @@ use yii\web\ForbiddenHttpException;
 
 trait TestResult
 {
-    protected function processResult($result)
+    protected function processResult($result, $isSms = false)
     {
         $newResult = [];
-    
-        foreach ($result[0][$this->stepParamName] as $stepKey => $step) {
+
+        $iterate = $isSms ? $result[$this->stepParamName] : $result[0][$this->stepParamName];
+        foreach ($iterate as $stepKey => $step) {
             $newResult[$this->stepParamName][$stepKey] = $this->processItemRecursive($step, $stepKey);
         }
     

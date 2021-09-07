@@ -16,6 +16,9 @@ class TestAuthController extends JsonController
     
     const TEST_RESULT_DEFAULT_DEPTH = 1;
     const TEST_RESULT_INITIAL_DEPTH = 2;
+
+    const TEST_RESULT_DIVIDER_START = '2B2EKSTARTJSON';
+    const TEST_RESULT_DIVIDER_STOP = '2B2EKSTOPJSON';
     
     protected $modelName = 'app\models\auth\SmsTestAuth';
     protected $idParamName = 'id';
@@ -25,7 +28,9 @@ class TestAuthController extends JsonController
     protected $listPermission = 'sms_test_auth_list';
     protected $editPermission = 'sms_test_auth_edit';
     protected $deletePermission = 'sms_test_auth_delete';
-    // private $stepParamName = 'nodes';
+    private $stepParamName = 'nodes';
+
+    private $_oldTestResultTypes = ['ERROR', 'RESULT', 'INFO', 'HEADER'];
 
     /**
      * @return array|\yii\db\ActiveRecord[]
@@ -110,7 +115,6 @@ class TestAuthController extends JsonController
         
         $key = md5($requestForKey);
 
-        
 
         return [
             'item' => $item->toArray(),
@@ -123,14 +127,22 @@ class TestAuthController extends JsonController
     
     private function generateNewResult($resultString, $key)
     {
-        $tempResult = json_decode($resultString, true);
+        $resultString = str_replace("\r", "", $resultString);
+        $resultString = str_replace("\n", "", $resultString);
+        $resultString = str_replace("\t", "", $resultString);
+    
+        $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
 
-        // $result = $this->processResult($tempResult);
+
+        $tempResult = json_decode($resultArray[0], true);
+        $tempResult['trace'] = json_decode($tempResult['trace'], true);
+
+        $result = $this->processResult($tempResult['trace'], true);
         
-        \Yii::$app->cache->set($key, $tempResult);
+        \Yii::$app->cache->set($key, $result);
         
-        // $finalResult = $this->findByPath($tempResult, '', self::TEST_RESULT_INITIAL_DEPTH);
-        
-        return $tempResult;
+        $finalResult = $this->findByPath($result, '', 4);
+
+        return $finalResult;
     }
 }
