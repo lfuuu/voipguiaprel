@@ -130,7 +130,7 @@ class AppAsset extends AssetBundle
         'js/controllers/billing/PricelistSinglePrefixHistoryView.js',
         'js/controllers/billing/PricelistFilterBHistoryView.js',
         'js/controllers/TrunkLogic.js',
-        'js/controllers/AlphaNumberEdit.js'
+        'js/controllers/billing/PricelistAlphaNumHistoryView.js',
     ];
 
     public $templates = [
@@ -240,6 +240,5 @@ class AppAsset extends AssetBundle
         'templates/billing/pricelist_single_prefix_history_view.html',
         'templates/billing/pricelist_filter_b_history_view.html',
         'templates/trunk_logic_show.html',
-        'templates/alpha_number_edit.html'
     ];
 }

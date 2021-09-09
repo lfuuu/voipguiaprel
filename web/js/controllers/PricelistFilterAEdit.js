@@ -1,4 +1,4 @@
-var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterA, Nnp, List, params, $modalInstance, $window, Redirect, PricelistFilterBHistory, AlphaNumber) {
+var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterA, Nnp, List, params, $modalInstance, $window, Redirect, PricelistFilterBHistory) {
 
     $scope.NNP_MODE_FILTER = 1;
     $scope.NNP_MODE_PARAMETERS = 2;
@@ -91,6 +91,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             nnp_ndc: null,
             mode_selected: true,
             filter_b_replace: false,
+            alphanum_replace: false,
             filter_country: 643
         };
 
@@ -108,6 +109,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             nnp_ndc: null,
             mode_selected: true,
             filter_b_replace: false,
+            alphanum_replace: false, 
             filter_country: 643
         };
 
@@ -172,6 +174,13 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
                     $scope.displayError(result);
                     return;
                 } else {
+                    if (
+                        (typeof result.pricelist_filter_a_id) !== 'undefined' &&
+                        (typeof result.import_key) !== 'undefined' &&
+                        (typeof result.is_replace) !== 'undefined'
+                    ) {
+                        window.open('/importer.php/alpha?id=' + result.pricelist_filter_a_id + '&key=' + result.import_key + '&is_replace=' + result.is_replace, '_blank');
+                    }
                     $modalInstance.close();
                 }
             }
@@ -265,6 +274,12 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
 
     $scope.openFilterBHistory = function(item) {
         Redirect.pricelistFilterBHistoryView(item.id).then(function () {
+            $scope.init();
+        });
+    }
+
+    $scope.openAlphaNumHistory = function(item) {
+        Redirect.pricelistAlphaNumHistoryView(item.id).then(function () {
             $scope.init();
         });
     }

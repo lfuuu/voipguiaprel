@@ -4,6 +4,7 @@ namespace app\controllers\json\camel;
 
 use app\classes\JsonController;
 use app\classes\traits\TestResult;
+use app\controllers\json\PricelistFilterAController;
 use app\models\ServerOcs;
 use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
@@ -134,7 +135,7 @@ class TestAuthController extends JsonController
         
         $result = $this->processResult([$tempResult]);
         
-        \Yii::$app->cache->set($key, $result);
+        \Yii::$app->cache->set($key, $result, PricelistFilterAController::ONE_DAY);
         
         $finalResult = $this->findByPath($result, '', self::TEST_RESULT_INITIAL_DEPTH);
         
