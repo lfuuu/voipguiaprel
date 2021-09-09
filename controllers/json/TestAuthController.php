@@ -2,7 +2,6 @@
 
 namespace app\controllers\json;
 
-use app\classes\BaseController;
 use app\classes\JsonController;
 use app\classes\traits\TestResult as TestResult;
 use app\exceptions\FormValidationException;
@@ -624,7 +623,7 @@ class TestAuthController extends JsonController
     
         $result = $this->processResult($tempResult);
         
-        Yii::$app->cache->set($key, $result, BaseController::ONE_DAY);
+        Yii::$app->cache->set($key, $result);
         
         $finalResult = $this->findByPath($result, '', self::TEST_RESULT_INITIAL_DEPTH);
         
