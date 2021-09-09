@@ -1,5 +1,6 @@
+{{- if not (eq .env "dev") }}
 image: {{ .project }}-php-fpm-prod
-from: php:7.4-fpm
+from: php:7.4-fpm-alpine3.13
 
 docker:
   WORKDIR: /home/www-data
@@ -24,42 +25,33 @@ git:
       - "**/*"
 ansible:
   beforeInstall:
-  - name: Disable docker hook for apt-cache deletion
+  - name: install packages for fpm
     shell: |
-      set -e
-      sed -i -e "s/DPkg::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
-      sed -i -e "s/APT::Update::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
-  - name: "Install additional packages"
-    apt:
-      state: present
-      update_cache: yes
-      pkg:
-        - locales
-        - ca-certificates
-        - apt-transport-https
-        - curl
-        - zip
-        - vim
-        - nano
-        - telnet
-        - mc
-  - name: "Generate en_US.UTF-8 default locale"
-    locale_gen:
-      name: en_US.UTF-8
-      state: present
-  - name: Install php extensions
-    shell:
-      cmd: |
-        cd /tmp/
-        curl https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions >> install-php-extensions
-        mv install-php-extensions /usr/local/bin/
-        chmod uga+x /usr/local/bin/install-php-extensions && sync
-        install-php-extensions gd mbstring zip mcrypt curl
-        install-php-extensions dom xmlrpc readline json pdo_pgsql
-        cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+      apk add --no-cache mc parallel libc-dev autoconf make gcc g++ bash tar curl procps busybox-extras iputils \
+      vim htop wget git openssh postgresql-dev postgresql-client zip \
+      lame sox
+  - name: setup user
+    shell: |
+      usermod -u 1000 www-data
+      groupmod -g 1000 www-data
+  - name:  install php-extentions
+    shell: |
+      cd /tmp/
+      curl https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions >> install-php-extensions
+      mv install-php-extensions /usr/local/bin/
+      chmod uga+x /usr/local/bin/install-php-extensions && sync
+      install-php-extensions gd mbstring zip mcrypt curl dom xmlrpc readline json pdo_pgsql amqp igbinary mcrypt msgpack redis ssh2 pdo_pgsql sockets zip opcache xmlwriter bcmath
+  - name: install php config
+    shell: |
+      cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+  - name: Prepare voip_gui dir
+    shell: |
+      mkdir -p /opt/voip_gui/web
+      chown -R www-data. /opt/voip_gui/web
+      echo "Сделай:<br>rm -rf /opt/voip_gui; ln -s /workspace/voip_gui /opt/voip_gui" > /opt/voip_gui/web/index.html
+      printf "Host github.com\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" >> /etc/ssh/ssh_config
   - name:  Setup composer
-    shell:
-      cmd: |
+    shell: |
         cd && mkdir temp && cd temp \
         && curl -sS https://getcomposer.org/installer -O \
         && php installer --version=1.10.16 \
@@ -96,5 +88,4 @@ ansible:
         chmod 777 /opt/voip_gui/web/assets
         mkdir /usr/local/etc/php/conf.custom
 
-{{- if (eq .env "dev") }}
 {{- end }}
