@@ -3,11 +3,7 @@
 namespace app\controllers;
 
 use app\classes\BaseController;
-use app\exceptions\ModelValidationException;
-use app\models\billing_uu\A2pAlphaNum;
-use app\models\billing_uu\A2pAlphaNumHistoryItem;
 use app\models\billing_uu\PricelistPrefixPrice;
-use Exception;
 use Yii;
 use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
@@ -175,120 +171,6 @@ class ImporterController extends BaseController
             $historyItems
         )->execute();
 
-        $endTime = microtime(true);
-
-        return $this->render('import', [
-            'delta_time' => round($endTime - $startTime, 2)
-        ]);
-    }
-
-    public function actionImportAlphaNumbers($id, $key, $is_replace)
-    {
-        if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-
-        $is_replace = ($is_replace === 'true');
-
-        ini_set('memory_limit', '-1');
-        ini_set('max_execution_time', 0);
-
-        $startTime = microtime(true);
-        $alphaNumsToSave = Yii::$app->cache->get($key);
-        $historyObjectList = Yii::$app->cache->get($key . '_history');
-       
-        $finalAlphaList = [];
-        $oldItems = A2pAlphaNum::find()
-                ->select(['id', 'alphanum'])
-                ->where(['pricelist_filter_a_id' => $id])
-                ->asArray()
-                ->all();
-
-        $historyItemsIds = [];
-        foreach ($alphaNumsToSave as $alphaNumsToSaveList) {
-            $oldItemsKeyValue = [];
-
-            foreach ($oldItems as $oldItemObject) {
-                if (!isset($oldItemsKeyValue[$oldItemObject['alphanum']])) {
-                    $oldItemsKeyValue[$oldItemObject['alphanum']] = [];
-                }
-
-                $oldItemsKeyValue[$oldItemObject['alphanum']][] = $oldItemObject;
-            }
-
-            $historyObject = $historyObjectList[0];
-            $historyItemsIds[] = $historyObject->id;
-
-            $historyObject->fillDataBefore();
-            $oldItemsHistory[$historyObject->id] = [];
-
-            $count = 0;
-
-            $oldAlphaItems = isset($oldItemsKeyValue[$alphaNumsToSaveList[1]]) ? $oldItemsKeyValue[$alphaNumsToSaveList[1]] : [];
-            $updateOldResult = A2pAlphaNum::updateOldWithHistory($alphaNumsToSaveList, $historyObject->id, $oldAlphaItems);
-            $count = count($alphaNumsToSave);
-            $finalAlphaList[] = $alphaNumsToSaveList;
-
-            $updateOldResult = [$updateOldResult[0], $updateOldResult[1][1], isset($updateOldResult[2]) && $updateOldResult[2] ? $updateOldResult[2] : null];
-            $historyItems[] = $updateOldResult;
-
-            $historyObject->total_count = $count;
-
-            if (!$historyObject->save()) {
-                throw new ModelValidationException($historyObject);
-            }
-            
-        }
-
-        if ($finalAlphaList) {
-            \Yii::$app->db->createCommand()->batchInsert(
-                A2pAlphaNum::tableName(),
-                ['pricelist_filter_a_id', 'alphanum','history_id'],
-                $finalAlphaList
-            )->execute();    
-        }
-
-        unset($oldItems);
-        unset($alphaNumsToSave);
-        unset($alphaNumsToSaveList);
-        unset($finalAlphaList);
-
-        if ($is_replace) {
-            $historyWhere = new \yii\db\Expression('history_id is null or history_id not in (' . implode(',', $historyItemsIds) . ')');
-
-            $dataRemovedQuery = A2pAlphaNum::find()
-                ->where(['pricelist_filter_a_id' => $id])
-                ->andWhere($historyWhere);
-
-            $dataRemoved = $dataRemovedQuery->all();
-            $removedItemIds = [];
-
-            foreach ($dataRemoved as $removedItem) {
-                $historyItems[] = [
-                    $historyObject->id,
-                    $removedItem->alphanum,
-                    'delete'
-                ];
-
-                $removedItemIds[] = $removedItem->id;
-            }
-
-            if (!empty($removedItemIds)) {
-                \Yii::$app->db->createCommand()->update(
-                    A2pAlphaNum::tableName(),
-                    ['history_id' => $historyObject->id],
-                    ['id' => $removedItemIds]
-                )->execute();
-            }
-        }
-        
-        if ($historyItems) {
-            \Yii::$app->db->createCommand()->batchInsert(
-                A2pAlphaNumHistoryItem::tableName(),
-                ['a2p_alphanum_history_id', 'alphanum', 'type'],
-                $historyItems
-            )->execute();    
-        }
 
         $endTime = microtime(true);
 

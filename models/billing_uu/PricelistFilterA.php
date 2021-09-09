@@ -81,14 +81,6 @@ class PricelistFilterA extends \yii\db\ActiveRecord
             ->select(['id', 'pricelist_filter_a_id', 'date_from', 'date_to', 'pricelist_id', 'total_count', 'date_created', 'type', 'has_backup' => new Expression('case when data_before is not null then true else false end')])
             ->orderBy('billing_uu.pricelist_filter_b_history.date_created');
     }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAlphaNumHistory()
-    {
-        return $this->hasMany(A2pAlphaNumHistory::className(), ['pricelist_filter_a_id' => 'id']);
-    }
     
     /**
      * @return \yii\db\ActiveQuery

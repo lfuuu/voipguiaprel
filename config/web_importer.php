@@ -63,7 +63,6 @@ $config = [
             'enableStrictParsing' => true,
             'rules' => [
                 '' => 'importer/import',
-                'alpha' => 'importer/import-alpha-numbers'
             ],
         ],
         'authManager' => [

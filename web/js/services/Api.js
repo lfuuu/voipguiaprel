@@ -2196,7 +2196,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     Attribute, Server, FmcTrunk, Cpc, Hub,
     PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
     MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-    User, ServerOcs, SimImsi, LegType) {
+    User, ServerOcs, SimImsi, LegType, AlphaNumber) {
     return {
         trunk: function () {
             return Trunk.list();
@@ -2236,6 +2236,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         },
         number: function (type, serverId) {
             return Number.list(type, serverId);
+        },
+        alphaNumber: function () {
+            return AlphaNumber.list();
         },
         numberClearList: function (type) {
             Number.clearList(type);
@@ -2405,6 +2408,42 @@ app.factory('Comment', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('AlphaNumber', function (ApiLoader, $q) {
+    var url = '/json/a2p-alpha-numbers/';
+    var promise = undefined;
+    var list = undefined;
+    return {
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+    };
+});
+
 app.factory('Nnp', function (ApiLoader) {
     var url = '/json/nnp/';
     return {
@@ -2500,15 +2539,6 @@ app.factory('PricelistPrefixPriceHistoryItem', function ($q, ApiLoader, $rootSco
 
 app.factory('PricelistFilterBHistoryItem', function ($q, ApiLoader, $rootScope) {
     var url = '/json/billing/pricelist-filter-b-history-item/';
-    return {
-        read: function (data) {
-            return ApiLoader.post(url + 'read', data);
-        },
-    };
-});
-
-app.factory('PricelistAlphaNumHistoryItem', function ($q, ApiLoader, $rootScope) {
-    var url = '/json/billing/pricelist-alpha-num-history-item/';
     return {
         read: function (data) {
             return ApiLoader.post(url + 'read', data);

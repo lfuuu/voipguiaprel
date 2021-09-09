@@ -52,7 +52,6 @@ use yii\web\HttpException;
  */
 class BaseController extends \yii\web\Controller
 {
-    const ONE_DAY = 86400;
 
     /**
      * @return array
