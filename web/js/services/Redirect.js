@@ -773,10 +773,14 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(SmsTestGroupEditCtrl, '/templates/sms/test_group_edit.html', {id: id});
         },
         alphaNumberCreate: function() {
-            return openModal(AlphaNumberEditCtrl, '/templates/alpha_number_edit.html', {id: null});
+            return openModal(AlphaNumberEditCtrl, '/templates/sms/a2p_alphanumber_edit.html', {id: null});
         },
         alphaNumberEdit: function(id) {
-            return openModal(AlphaNumberEditCtrl, '/templates/alpha_number_edit.html', {id: id});
+            return openModal(AlphaNumberEditCtrl, '/templates/sms/a2p_alphanumber_edit.html', {id: id});
         },
+        alphaNumberList: function() {
+            $cookies.sms_selected_page = 'alphaNumberList';
+            return openTab(AlphaNumberListCtrl, '/templates/sms/a2p_alphanumber_list.html', {});
+        }
     };
 });

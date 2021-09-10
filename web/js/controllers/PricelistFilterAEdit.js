@@ -69,6 +69,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             $scope.item = data;
             $scope.filter_b_replace = false;
             $scope.setNnpFields();
+            $scope.setAlphaNumbers();
 
             if (data.nnp_filter && data.filter_country) {
                 Major.read({country_code: data.filter_country}).then(function (result) {
@@ -89,6 +90,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             nnp_operator: null,
             nnp_ndc_type: null,
             nnp_ndc: null,
+            a2p_alphanumber: null,
             mode_selected: true,
             filter_b_replace: false,
             filter_country: 643
@@ -106,6 +108,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             nnp_operator: null,
             nnp_ndc_type: null,
             nnp_ndc: null,
+            a2p_alphanumber: null,
             mode_selected: true,
             filter_b_replace: false,
             filter_country: 643
@@ -125,6 +128,10 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         $scope.countryList = data;
         countryLoadComplete = true;
         $scope.$watch('item.nnp_country', watchers.nnp_country);
+    });
+
+    AlphaNumber.alphaNumList().then(function (data) {
+        $scope.alphaNumList = data;
     });
 
     Nnp.ndcTypeList().then(function (data) {
@@ -157,13 +164,14 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
 
     $scope.save = function () {
         var data = angular.copy($scope.item);
-
+        
         data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
         data.nnp_region = $scope.stringifyNnpData(data.nnp_region);
         data.nnp_city = $scope.stringifyNnpData(data.nnp_city);
         data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
         data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
+        data.a2p_alphanumber = $scope.stringifyNnpData(data.a2p_alphanumber);
         
         PricelistFilterA.save(data).then(
             function (result) {
@@ -187,6 +195,12 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     {
         $scope.errors[response.field + '_error'] = response.error;
     };
+
+    $scope.setAlphaNumbers = function() {
+        if ($scope.item.a2p_alphanumber !== '{}') {
+            $scope.item.a2p_alphanumber = $scope.parseNnpData($scope.item.a2p_alphanumber);
+        }
+    }
 
     $scope.setNnpFields = function() {
         try {

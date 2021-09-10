@@ -2409,7 +2409,7 @@ app.factory('Comment', function ($q, ApiLoader, $rootScope) {
 });
 
 app.factory('AlphaNumber', function (ApiLoader, $q) {
-    var url = '/json/a2p-alpha-numbers/';
+    var url = '/json/sms/a2p-alpha-numbers/';
     var promise = undefined;
     var list = undefined;
     return {
@@ -2441,6 +2441,13 @@ app.factory('AlphaNumber', function (ApiLoader, $q) {
         save: function (data) {
             return ApiLoader.post(url + 'save', data);
         },
+        alphaNumList: function (data) {
+            return ApiLoader.post(url + 'list', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', {id: id});
+        }
     };
 });
 
