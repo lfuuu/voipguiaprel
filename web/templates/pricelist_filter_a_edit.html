@@ -306,8 +306,12 @@
                 <div class="tab-pane" id="alphanums" ng-if="item.pricelist_group_id == 32">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Альфа номер</label>
-                        <div class="col-sm-10">
-                            <select-box list="alphaNumber" model="item.a2p_alphanumber" default="Любой номер"></select-box>
+                        <div class="col-sm-7">
+                            <select ui-select2 ng-model="item.a2p_alphanumber" multiple="multiple" style="width: 100%">
+                                <option ng-repeat="number in alphaNumList" value="{{::number.id}}">
+                                    {{::number.name}}
+                                </option>
+                            </select>
                         </div>
                     </div>
                 </div>  

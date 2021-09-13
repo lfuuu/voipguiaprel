@@ -47,10 +47,6 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, Redirect, $wind
     $scope.showTestPrimary = function (item) {
         $scope.showTestBasic(item, 'smsTestAuthShowTest');
     };
-    
-    // $scope.showTestReserve = function (item) {
-    //     $scope.showTestBasic(item, 'smsTestAuthShowTestReserve');
-    // };
 
     $scope.showTestBasic = function (item, method) {
         if (window.getSelection().type == 'Range') {
@@ -63,9 +59,9 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, Redirect, $wind
     };
 
     $scope.clickItem = function(item) {
-        // if (!userPermissions['sms_test_auth_edit']) {
-        //     return;
-        // }
+        if (!userPermissions['sms_test_auth_edit']) {
+            return;
+        }
 
         if (window.getSelection().type == 'Range') return;
 
@@ -73,18 +69,6 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, Redirect, $wind
             $scope.init();
         });
     };
-
-    // $scope.cloneTest = function(item) {
-    //     if (!userPermissions['sms_test_auth_create']) {
-    //         return;
-    //     }
-
-    //     if (window.getSelection().type == 'Range') return;
-
-    //     Redirect.smsTestAuthClone(item.id).then(function () {
-    //         $scope.init();
-    //     });
-    // };
 
     $scope.deleteItem = function(item) {
         if (!$window.confirm('Удалить?')) return;
