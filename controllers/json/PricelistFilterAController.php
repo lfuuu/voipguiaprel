@@ -72,12 +72,8 @@ class PricelistFilterAController extends JsonController
             
             $item = PricelistFilterA::create();
             $result['log'] = ['data_before' => []];
-        }
-        
+        }  
         $item->load($this->request, '');
-
-        $item['a2p_alphanumber'] = (int) $this->request['a2p_alphanumber'];
-        
         $transaction = PricelistFilterA::getDb()->beginTransaction();
         try {
             if (!$item->save()) {
