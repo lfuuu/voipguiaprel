@@ -80,13 +80,15 @@ trait PricelistView
             $regionName = self::getNameFromDictionary($item[$prefix . 'nnp_region'], $idArrays['nnp.region']['ids']);
             $cityName = self::getNameFromDictionary($item[$prefix . 'nnp_city'], $idArrays['nnp.city']['ids']);
             $destinationName = self::getNameFromDictionary($item[$prefix . 'nnp_destination'], $idArrays['nnp.destination']['ids']);
-            
+            $alphaName = self::getNameFromDictionary($item[$prefix . 'a2p_alphanumber'], $idArrays['billing_uu.a2p_alphanum_list']['ids']);
+
             $filterText = (empty($countryName) ? '' : ($item[$prefix . 'f_inv_nnp_country'] ? ('Кроме: ' . $countryName) : $countryName)) .
                 (empty($ndcTypeName) ? '' : ($item[$prefix . 'f_inv_nnp_ndc_type'] ? (' Кроме: ' . $ndcTypeName) : (' ' . $ndcTypeName))) .
                 (empty($operatorName) ? '' : ($item[$prefix . 'f_inv_nnp_operator'] ? (' Кроме: ' . $operatorName) : (' ' . $operatorName))) .
                 (empty($regionName) ? '' : ($item[$prefix . 'f_inv_nnp_region'] ? (' Кроме: ' . $regionName) : (' ' . $regionName))) .
                 (empty($cityName) ? '' : ($item[$prefix . 'f_inv_nnp_city'] ? (' Кроме: ' . $cityName) : (' ' . $cityName))) . 
-                (empty($item[$prefix . 'regex']) ? '' : ' Regex: ' . $item[$prefix . 'regex']);
+                (empty($item[$prefix . 'regex']) ? '' : ' Regex: ' . $item[$prefix . 'regex']) .
+                (empty($alphaName) ? '' : ' Альфа: ' . $alphaName);
 
             if (!$filterText) {
                 $filterText = $item[$prefix . 'f_inv_nnp_destination'] ? ('Кроме: ' . $destinationName) : $destinationName;
