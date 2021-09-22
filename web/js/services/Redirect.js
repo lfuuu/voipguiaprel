@@ -781,6 +781,16 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         alphaNumberList: function() {
             $cookies.sms_selected_page = 'alphaNumberList';
             return openTab(AlphaNumberListCtrl, '/templates/sms/a2p_alphanumber_list.html', {});
-        }
+        },
+        alphaNumberGroupList: function() {
+            $cookies.sms_selected_page = 'alphaNumberGroupList';
+            return openTab(AlphaNumberGroupListCtrl, '/templates/sms/a2p_alphanumber_group_list.html', {});
+        },
+        alphaNumberGroupCreate: function() {
+            return openModal(AlphaNumberGroupEditCtrl, '/templates/sms/a2p_alphanumber_group_edit.html', {id: null});
+        },
+        alphaNumberGroupEdit: function(id) {
+            return openModal(AlphaNumberGroupEditCtrl, '/templates/sms/a2p_alphanumber_group_edit.html', {id: id});
+        },
     };
 });

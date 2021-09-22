@@ -2,6 +2,8 @@
 
 namespace app\classes\traits;
 
+use app\models\billing_uu\A2pAlphaNumberListGroup;
+use app\models\billing_uu\A2pAlphaNumbers;
 use app\models\billing_uu\PricelistPrefixPrice;
 use app\models\billing_uu\PricelistLocation;
 use yii\db\Query;
@@ -80,15 +82,44 @@ trait PricelistView
             $regionName = self::getNameFromDictionary($item[$prefix . 'nnp_region'], $idArrays['nnp.region']['ids']);
             $cityName = self::getNameFromDictionary($item[$prefix . 'nnp_city'], $idArrays['nnp.city']['ids']);
             $destinationName = self::getNameFromDictionary($item[$prefix . 'nnp_destination'], $idArrays['nnp.destination']['ids']);
-            $alphaName = self::getNameFromDictionary($item[$prefix . 'a2p_alphanumber'], $idArrays['billing_uu.a2p_alphanum_list']['ids']);
+            $alphaGroup = $item[$prefix . 'a2p_alphanumber'];
+            $alphaNames = A2pAlphaNumbers::find()
+                                    ->select('a.alphanum')
+                                    ->from(A2pAlphaNumbers::tableName() . ' a')
+                                    ->innerJoin(A2pAlphaNumberListGroup::tableName() . ' ag', 'ag.alphanum_list_id = a.id')
+                                    ->where(['ag.group_id' => $alphaGroup])
+                                    ->asArray()
+                                    ->all();
+                            
+            if ($alphaNames) {
+                $isLong = false;
 
+                if (count($alphaNames) > 5){
+                    $isLong = true;
+                }
+
+                $count = 0;
+                $namesArray = [];
+                foreach ($alphaNames as $name) {
+                    if ($isLong && ++$count > 5) {
+                        break;
+                    }
+                    $namesArray[] = $name['alphanum'];
+                }
+
+                $alphaNames = implode(', ', $namesArray);
+                if ($isLong) {
+                    $alphaNames = $alphaNames . '...';
+                }
+            }
+            
             $filterText = (empty($countryName) ? '' : ($item[$prefix . 'f_inv_nnp_country'] ? ('Кроме: ' . $countryName) : $countryName)) .
                 (empty($ndcTypeName) ? '' : ($item[$prefix . 'f_inv_nnp_ndc_type'] ? (' Кроме: ' . $ndcTypeName) : (' ' . $ndcTypeName))) .
                 (empty($operatorName) ? '' : ($item[$prefix . 'f_inv_nnp_operator'] ? (' Кроме: ' . $operatorName) : (' ' . $operatorName))) .
                 (empty($regionName) ? '' : ($item[$prefix . 'f_inv_nnp_region'] ? (' Кроме: ' . $regionName) : (' ' . $regionName))) .
                 (empty($cityName) ? '' : ($item[$prefix . 'f_inv_nnp_city'] ? (' Кроме: ' . $cityName) : (' ' . $cityName))) . 
                 (empty($item[$prefix . 'regex']) ? '' : ' Regex: ' . $item[$prefix . 'regex']) .
-                (empty($alphaName) ? '' : ' Альфа: ' . $alphaName);
+                (empty($alphaNames) ? '' : ' Альфа: ' . $alphaNames);
 
             if (!$filterText) {
                 $filterText = $item[$prefix . 'f_inv_nnp_destination'] ? ('Кроме: ' . $destinationName) : $destinationName;

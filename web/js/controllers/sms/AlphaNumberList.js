@@ -1,4 +1,4 @@
-var AlphaNumberListCtrl = function($scope, AlphaNumber, Redirect, $window) {
+var AlphaNumberListCtrl = function($scope, AlphaNumber, AlphaNumberGroup, Redirect, $window) {
 
 
     $scope.sortType = 'name';
@@ -6,7 +6,7 @@ var AlphaNumberListCtrl = function($scope, AlphaNumber, Redirect, $window) {
     $scope.searchQuery = '';
 
     $scope.filterFields = [
-        'id', 'name'
+        'id', 'name', 'group_id'
     ];
 
     $scope.init = function(tab) {
@@ -16,7 +16,7 @@ var AlphaNumberListCtrl = function($scope, AlphaNumber, Redirect, $window) {
 
     $scope.refreshList = function() {
         AlphaNumber.list().then(function(data){
-            $scope.list = data;
+            $scope.list = data;            
         });
     };
 
@@ -39,5 +39,4 @@ var AlphaNumberListCtrl = function($scope, AlphaNumber, Redirect, $window) {
             $scope.init()
         });
     };
-   
 };

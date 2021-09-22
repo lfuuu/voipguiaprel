@@ -47,6 +47,8 @@ class AppSmsAsset extends AssetBundle
         'js/controllers/sms/SmsAuthShowTest.js',
         'js/controllers/sms/AlphaNumberEdit.js',
         'js/controllers/sms/AlphaNumberList.js',
+        'js/controllers/sms/AlphaNumberGroupList.js',
+        'js/controllers/sms/AlphaNumberGroupEdit.js',
     ];
 
     public $templates = [
@@ -76,5 +78,7 @@ class AppSmsAsset extends AssetBundle
         'templates/sms/test_group_edit.html',
         'templates/sms/test_auth_show_test.html',
         'templates/sms/a2p_alphanumber_edit.html',
+        'templates/sms/a2p_alphanumber_group_edit.html',
+        'templates/sms/a2p_alphanumber_group_list.html',
     ];
 }

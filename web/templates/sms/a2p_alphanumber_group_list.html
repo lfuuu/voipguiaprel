@@ -2,7 +2,7 @@
     <div class="pull-right">
         <a class="btn btn-primary btn-sm" ng-click="clickCreate()">Создать</a>
 </div>
-<h4>Альфа номера</h4>
+<h4>Группы альфа номеров</h4>
 
 <form>
     <div class="form-group">
@@ -30,14 +30,6 @@
                     <span ng-show="sortType == 'name' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th>
-                <a href="#" ng-click="sortType = 'group_id'; sortReverse = !sortReverse">
-                    ID группы
-                    <span ng-show="sortType == 'group_id' && sortReverse" class="caret-down"></span>
-                    <span ng-show="sortType == 'group_id' && !sortReverse" class="caret-up"></span>
-                </a>
-            </th>
-            <th width="1%"></th>
             <th width="1%"></th>
             <th width="1%"></th>
         </tr>
@@ -46,8 +38,11 @@
         <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
-            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.group_id}}</td>
+            <td>
+                <button type="button" class="btn btn-default btn-sm"
+                        ng-click="copyItem(item)">Копировать</button>
+            </td>
             <td><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
         </tr>
     </tbody>
-</table>
+</table> -->
