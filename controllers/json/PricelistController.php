@@ -70,14 +70,15 @@ class PricelistController extends JsonController
             $query->where(['p.pricelist_group_id' => $searchArray['group_id']]);
             $countQuery->where(['pricelist_group_id' => $searchArray['group_id']]);
         }
-        if (isset($searchArray['currency']) && $searchArray['currency']) {
-            $query->where(['p.currency_id' => $searchArray['currency']]);
-            $countQuery->where(['currency_id' => $searchArray['currency']]);
-        }
-
+        
         if (isset($searchArray['service_type_id']) && $searchArray['service_type_id']) {
             $query->andWhere(['p.service_type_id' => $searchArray['service_type_id']]);
             $countQuery->andWhere(['service_type_id' => $searchArray['service_type_id']]);
+        }
+
+        if (isset($searchArray['currency']) && $searchArray['currency']) {
+            $query->andWhere(['p.currency_id' => $searchArray['currency']]);
+            $countQuery->andWhere(['currency_id' => $searchArray['currency']]);
         }
 
         if (isset($searchArray['is_active']) && is_bool($searchArray['is_active'])) {
