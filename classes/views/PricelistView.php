@@ -198,7 +198,6 @@ class PricelistView
         $nnpRegionIdArray = [];
         $nnpCityIdArray = [];
         $nnpNdcTypeIdArray = [];
-        $alphaIdArray = [];
         
         $idArrays = [
             'nnp.mcc' => ['ids' => &$mccIdArray, 'name_field' => 'country', 'id_field' => 'mcc'],
@@ -210,7 +209,6 @@ class PricelistView
             'nnp.region' => ['ids' => &$nnpRegionIdArray, 'name_field' => 'name', 'id_field' => 'id'],
             'nnp.city' => ['ids' => &$nnpCityIdArray, 'name_field' => 'name', 'id_field' => 'id'],
             'nnp.ndc_type' => ['ids' => &$nnpNdcTypeIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-            'billing_uu.a2p_alphanum_list' => ['ids' => &$alphaIdArray, 'name_field' => 'alphanum', 'id_field' => 'id']
         ];
         
         foreach ($queryResult as $queryItem) {
@@ -229,7 +227,6 @@ class PricelistView
                 self::processQueryArray($nnpRegionIdArray, $queryItem['pfa__nnp_region']);
                 self::processQueryArray($nnpCityIdArray, $queryItem['pfa__nnp_city']);
                 self::processQueryArray($nnpNdcTypeIdArray, $queryItem['pfa__nnp_ndc_type']);
-                self::processQueryArray($alphaIdArray, $queryItem['pfa__a2p_alphanumber']);
                 
                 $filtersAProcessed[] = $queryItem['pfa__id'];
             }

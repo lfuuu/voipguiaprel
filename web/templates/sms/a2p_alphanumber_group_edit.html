@@ -1,0 +1,41 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">Группа {{item.group_name}}</h3>
+        <h3 ng-if="!item.id">Создание группы</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.group_name" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Импорт альфа номеров</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" placeholder="Альфа номера" ng-model="item.alphanums"></textarea>
+            </div>
+        </div>
+        <div class="form-group" style="padding-left: 18%; padding-right: 35%;">
+            <div ng-if="alphaNumList.length > 0">
+                <table class="table table-bordered table-condensed">
+                    <thead>
+                        <tr >
+                            <th style="text-align: center;">#</th>
+                            <th>Номер</th>
+                        </tr>
+                    </thead>
+                    <tr ng-repeat="(index,val) in alphaNumList">
+                        <th style="width: 50px; text-align: center;">{{index+1}}</th>
+                        <td>{{val.alphanum}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+    </div>
+</form>

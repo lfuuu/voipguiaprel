@@ -126,7 +126,6 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
         },
         listByServer: function (server_id) {
             var data = { server_id: $rootScope.server.id };
-            console.log(data);
             return ApiLoader.post(url + 'list', data);
         },
         save: function (data) {
@@ -2196,7 +2195,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     Attribute, Server, FmcTrunk, Cpc, Hub,
     PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
     MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-    User, ServerOcs, SimImsi, LegType, AlphaNumber) {
+    User, ServerOcs, SimImsi, LegType, AlphaNumber,AlphaNumberGroup) {
     return {
         trunk: function () {
             return Trunk.list();
@@ -2239,6 +2238,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         },
         alphaNumber: function () {
             return AlphaNumber.list();
+        },
+        alphaNumberGroup: function () {
+            return AlphaNumberGroup.list();
         },
         numberClearList: function (type) {
             Number.clearList(type);
@@ -2404,6 +2406,55 @@ app.factory('Comment', function ($q, ApiLoader, $rootScope) {
     return {
         save: function (data) {
             return ApiLoader.post(url + 'save', data);
+        }
+    };
+});
+
+app.factory('AlphaNumberGroup', function (ApiLoader, $q) {
+    var url = '/json/sms/a2p-alpha-number-group/';
+    var promise = undefined;
+    var list = undefined;
+    return {
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        copy: function (id, name) {
+            return ApiLoader.post(url + 'copy', { id: id, name: name});
+        },
+        alphaNumGroupList: function (data) {
+            return ApiLoader.post(url + 'list', data);
+        },
+        listAlphaNumbers: function(id) {
+            return ApiLoader.post(url + 'list-alpha-numbers', id);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', {id: id});
         }
     };
 });

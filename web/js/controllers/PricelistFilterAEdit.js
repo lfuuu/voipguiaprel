@@ -1,4 +1,4 @@
-var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterA, Nnp, List, params, $modalInstance, $window, Redirect, PricelistFilterBHistory, AlphaNumber) {
+var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, PricelistFilterA, Nnp, List, params, $modalInstance, $window, Redirect, PricelistFilterBHistory, AlphaNumberGroup) {
 
     $scope.NNP_MODE_FILTER = 1;
     $scope.NNP_MODE_PARAMETERS = 2;
@@ -69,7 +69,6 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             $scope.item = data;
             $scope.filter_b_replace = false;
             $scope.setNnpFields();
-            $scope.setAlphaNumbers();
 
             if (data.nnp_filter && data.filter_country) {
                 Major.read({country_code: data.filter_country}).then(function (result) {
@@ -130,7 +129,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         $scope.$watch('item.nnp_country', watchers.nnp_country);
     });
 
-    AlphaNumber.alphaNumList().then(function (data) {
+    AlphaNumberGroup.alphaNumGroupList().then(function (data) {
         $scope.alphaNumList = data;
     });
 
@@ -171,7 +170,6 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
         data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
-        data.a2p_alphanumber = $scope.stringifyNnpData(data.a2p_alphanumber);
         
         PricelistFilterA.save(data).then(
             function (result) {
@@ -195,12 +193,6 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     {
         $scope.errors[response.field + '_error'] = response.error;
     };
-
-    $scope.setAlphaNumbers = function() {
-        if ($scope.item.a2p_alphanumber !== '{}') {
-            $scope.item.a2p_alphanumber = $scope.parseNnpData($scope.item.a2p_alphanumber);
-        }
-    }
 
     $scope.setNnpFields = function() {
         try {
