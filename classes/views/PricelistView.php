@@ -5,8 +5,11 @@ namespace app\classes\views;
 use app\models\billing_uu\PricelistPrefixPrice;
 use app\models\billing_uu\PricelistLocation;
 use app\classes\traits\PricelistView as PricelistViewTrait;
+use app\models\billing_uu\A2pAlphaNumberListGroup;
+use app\models\billing_uu\A2pAlphaNumbers;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\helpers\ArrayHelper;
 
 class PricelistView
 {
@@ -210,7 +213,16 @@ class PricelistView
             'nnp.city' => ['ids' => &$nnpCityIdArray, 'name_field' => 'name', 'id_field' => 'id'],
             'nnp.ndc_type' => ['ids' => &$nnpNdcTypeIdArray, 'name_field' => 'name', 'id_field' => 'id'],
         ];
-        
+
+        $alphaNames = A2pAlphaNumbers::find()
+                                    ->alias('a')
+                                    ->select('a.alphanum, ag.group_id')
+                                    ->innerJoin(A2pAlphaNumberListGroup::tableName() . ' ag', 'ag.alphanum_list_id = a.id')
+                                    ->asArray()
+                                    ->all();
+
+        $alphaNames = ArrayHelper::index($alphaNames, ['alphanum'], 'group_id');
+
         foreach ($queryResult as $queryItem) {
             if (!in_array($queryItem['pl__id'], $locationsProcessed)) {
                 self::processQueryArray($mccIdArray, $queryItem['pl__mcc']);
@@ -300,7 +312,7 @@ class PricelistView
                 }
                 
                 if ($count > 0) {
-                    $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $realCount);
+                    $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $realCount, $alphaNames);
                     $filterAKey = $counter;
                     $filterBKey = $counter;
                     $counter++;
@@ -468,14 +480,14 @@ class PricelistView
         ];
     }
     
-    private static function createFilterAFilterBPrefixRow($item, $idArrays, $count, $realCount)
+    private static function createFilterAFilterBPrefixRow($item, $idArrays, $count, $realCount, $alphaNames)
     {
         return [
             'is_filter_b_header' => true,
             'is_filter_a_header' => true,
             'has_filter_a_mark' => false,
             'has_filter_b_mark' => false,
-            'filter_a_name' => self::formFilterText($item, 'pfa__', $idArrays),
+            'filter_a_name' => self::formFilterText($item, 'pfa__', $idArrays, $alphaNames),
             'filter_b_name' => self::formFilterText($item, 'pfb__', $idArrays),
             'filter_b_rating' => (($item['pfb__rating'] == 1) ? '' : $item['pfb__rating']),
             'filter_b_use_for_minimum' => $item['pfb__use_for_minimum'],

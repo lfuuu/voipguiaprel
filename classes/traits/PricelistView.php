@@ -64,7 +64,7 @@ trait PricelistView
         return $mnc;
     }
     
-    public static function formFilterText($item, $prefix, $idArrays)
+    public static function formFilterText($item, $prefix, $idArrays, $alpha = null)
     {
         $filterText = '';
 
@@ -82,34 +82,36 @@ trait PricelistView
             $regionName = self::getNameFromDictionary($item[$prefix . 'nnp_region'], $idArrays['nnp.region']['ids']);
             $cityName = self::getNameFromDictionary($item[$prefix . 'nnp_city'], $idArrays['nnp.city']['ids']);
             $destinationName = self::getNameFromDictionary($item[$prefix . 'nnp_destination'], $idArrays['nnp.destination']['ids']);
-            $alphaGroup = $item[$prefix . 'a2p_alphanumber'];
-            $alphaNames = A2pAlphaNumbers::find()
-                                    ->select('a.alphanum')
-                                    ->from(A2pAlphaNumbers::tableName() . ' a')
-                                    ->innerJoin(A2pAlphaNumberListGroup::tableName() . ' ag', 'ag.alphanum_list_id = a.id')
-                                    ->where(['ag.group_id' => $alphaGroup])
-                                    ->asArray()
-                                    ->all();
-                            
-            if ($alphaNames) {
-                $isLong = false;
 
-                if (count($alphaNames) > 5){
-                    $isLong = true;
+            if ($alpha) {
+                $alphaGroup = $item[$prefix . 'a2p_alphanumber'];
+                $alpha = $alpha[$alphaGroup];
+
+                $alphaNames = [];
+                foreach ($alpha as $key => $name) {
+                    $alphaNames[] = $key;
                 }
 
-                $count = 0;
-                $namesArray = [];
-                foreach ($alphaNames as $name) {
-                    if ($isLong && ++$count > 5) {
-                        break;
+                if ($alphaNames) {
+                    $isLong = false;
+
+                    if (count($alphaNames) > 5){
+                        $isLong = true;
                     }
-                    $namesArray[] = $name['alphanum'];
-                }
 
-                $alphaNames = implode(', ', $namesArray);
-                if ($isLong) {
-                    $alphaNames = $alphaNames . '...';
+                    $count = 0;
+                    $namesArray = [];
+                    foreach ($alphaNames as $name) {
+                        if ($isLong && ++$count > 5) {
+                            break;
+                        }
+                        $namesArray[] = $name;
+                    }
+
+                    $alphaNames = implode(', ', $namesArray);
+                    if ($isLong) {
+                        $alphaNames = $alphaNames . '...';
+                    }
                 }
             }
             
@@ -119,7 +121,7 @@ trait PricelistView
                 (empty($regionName) ? '' : ($item[$prefix . 'f_inv_nnp_region'] ? (' Кроме: ' . $regionName) : (' ' . $regionName))) .
                 (empty($cityName) ? '' : ($item[$prefix . 'f_inv_nnp_city'] ? (' Кроме: ' . $cityName) : (' ' . $cityName))) . 
                 (empty($item[$prefix . 'regex']) ? '' : ' Regex: ' . $item[$prefix . 'regex']) .
-                (empty($alphaNames) ? '' : ' Альфа: ' . $alphaNames);
+                (isset($alpha) && $alpha ? (empty($alphaNames) ? '' : ' Альфа: ' . $alphaNames) : '');
 
             if (!$filterText) {
                 $filterText = $item[$prefix . 'f_inv_nnp_destination'] ? ('Кроме: ' . $destinationName) : $destinationName;
