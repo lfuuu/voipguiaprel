@@ -60,7 +60,6 @@ class SmsController extends JsonController
         }
 
         $item->load($this->request, '');
-        $item->route_name = (SmsRouteTable::findOne(['id' => $item['a2psms_route_table_id']]))->name;
         $transaction = SmsTrunk::getDb()->beginTransaction();
         try {
             if (!$item->save()) {
