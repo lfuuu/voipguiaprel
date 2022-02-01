@@ -25,7 +25,7 @@ class ApiPricelistItemController extends JsonController
         $items =
             $modelName::find()
                 ->alias('api')
-                ->select(['api.*', 'api_name' => 'a.name', 'api_method_name' => 'am.name', 'pricelist_name' => 'ap.name'])
+                ->select(['api.*', 'api_name' => 'a.name', 'api_method_name' => 'am.name', 'pricelist_name' => 'ap.name', 'is_active' => 'ap.is_active'])
                 ->innerJoin('billing_api.api a', 'a.id = api.api_id')
                 ->innerJoin('billing_api.api_method am', 'am.id = api.api_method_id')
                 ->innerJoin('billing_api.api_pricelist ap', 'ap.id = api.pricelist_id')

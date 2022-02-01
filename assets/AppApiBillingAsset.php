@@ -31,6 +31,7 @@ class AppApiBillingAsset extends AssetBundle
         'js/controllers/api_billing/ApiMethodList.js',
         'js/controllers/api_billing/ApiPricelistEdit.js',
         'js/controllers/api_billing/ApiPricelistList.js',
+        'js/controllers/api_billing/ApiArchivePricelistList.js',
         'js/controllers/api_billing/ApiPricelistItemEdit.js',
         'js/controllers/api_billing/ApiPricelistItemList.js',
     ];

@@ -57,6 +57,13 @@
                     <span ng-show="sortType == 'enabled' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
+            <th width="3%">
+                <a href="#" ng-click="sortType = 'is_active'; sortReverse = !sortReverse">
+                    Архив
+                    <span ng-show="sortType == 'is_active' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'is_active' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
             <th width="1%"></th>
             <th ng-if="userPermissions['api_billing_api_pricelist_item_delete']" width="1%"></th>
         </tr>
@@ -69,6 +76,7 @@
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.price}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.pricelist_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.enabled ? 'Да' : 'Нет'}}</td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.is_active ? 'Да' : 'Нет'}}</td>
             <td>
                 <comment-icon ng-if="item.id" key="{{item.id}}" type="api_billing_api_pricelist_item" comment="item.object_comment"></comment-icon>
             </td>

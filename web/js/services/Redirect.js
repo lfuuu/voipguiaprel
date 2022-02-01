@@ -669,6 +669,10 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             $cookies.api_billing_selected_page = 'apiBillingApiPricelistList';
             return openTab(ApiBillingApiPricelistListCtrl, '/templates/api_billing/api_pricelist_list.html');
         },
+        apiBillingApiArchivePricelistList: function() {
+            $cookies.api_billing_selected_page = 'apiBillingApiArchivePricelistList';
+            return openTab(ApiBillingApiArchivePricelistListCtrl, '/templates/api_billing/api_archive_pricelist_list.html');
+        },
         apiBillingApiPricelistCreate: function() {
             return openModal(ApiBillingApiPricelistEditCtrl, '/templates/api_billing/api_pricelist_edit.html', {id: null});
         },

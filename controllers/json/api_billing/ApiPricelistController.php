@@ -17,6 +17,34 @@ class ApiPricelistController extends JsonController
     protected $editPermission = 'api_billing_api_pricelist_edit';
     protected $deletePermission = 'api_billing_api_pricelist_delete';
 
+    public function actionRead()
+    {
+        if (!\Yii::$app->user->can($this->listPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+
+        $where = [];
+
+        foreach ($this->readWhere as $param) {
+            $where[$param] = $this->request[$param];
+        }
+
+        $items =
+            $modelName::find()
+                ->select($this->readSelect)
+                ->orderBy($this->nameParamName)
+                ->andWhere($where)
+                ->andWhere(['is_active' => true])
+                ->asArray()
+                ->all();
+
+        $items = $this->performAfterReadActions($items);
+
+        return $items;
+    }
+
     public function actionSave()
     {
         if (!\Yii::$app->user->can($this->editPermission) && !\Yii::$app->user->can($this->createPermission)) {
@@ -96,5 +124,62 @@ class ApiPricelistController extends JsonController
         $result['log']['data_after'] = self::getDataForLog($item);
 
         return $result;
+    }
+
+    public function actionReadArchive()
+    {
+        if (!\Yii::$app->user->can($this->listPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+
+        $where = [];
+
+        foreach ($this->readWhere as $param) {
+            $where[$param] = $this->request[$param];
+        }
+
+        $items =
+            $modelName::find()
+                ->select($this->readSelect)
+                ->orderBy($this->nameParamName)
+                ->andWhere($where)
+                ->andWhere(['is_active' => false])
+                ->asArray()
+                ->all();
+
+        $items = $this->performAfterReadActions($items);
+
+        return $items;
+    }
+
+    public function actionDelete()
+    {
+        if (!\Yii::$app->user->can($this->deletePermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+
+        $item = $modelName::findOne($this->request[$this->idParamName]);
+        $item->is_active = false;
+        if (!$item->save()) {
+            throw new FormValidationException($item);
+        }
+    }
+
+    public function actionRestore() {
+        if (!\Yii::$app->user->can($this->editPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+
+        $item = $modelName::findOne($this->request[$this->idParamName]);
+        $item->is_active = true;
+        if (!$item->save()) {
+            throw new FormValidationException($item);
+        }
     }
 }
