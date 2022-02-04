@@ -52,7 +52,7 @@ class PricelistFilterA extends \yii\db\ActiveRecord
             [['pricelist_location_id', 'nnp_filter', 'rn_replacement_probability'], 'integer'],
             [['mode_selected', 'f_inv_nnp_destination', 'f_inv_nnp_country', 'f_inv_nnp_operator',
                 'f_inv_nnp_region', 'f_inv_nnp_city', 'f_inv_nnp_ndc_type', 'f_inv_nnp_ndc',
-                'f_rn_pricelist'], 'boolean']
+                'f_rn_pricelist', 'a2p_invert'], 'boolean']
         ];
     }
 

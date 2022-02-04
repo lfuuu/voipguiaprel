@@ -309,6 +309,11 @@
                         <div class="col-sm-7" >
                             <select-box list="alphaNumberGroup" model="item.a2p_alphanumber"></select-box>
                         </div>
+                        <label class="col-sm-2 control-label">Инвертировать</label>
+                            <div class="btn-group" ng-click="item.a2p_invert = !item.a2p_invert">
+                                    <button type="button" class="btn btn-sm {{item.a2p_invert ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                    <button type="button" class="btn btn-sm {{!item.a2p_invert ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
                     </div>
                 </div>  
             </div>
