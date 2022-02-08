@@ -802,7 +802,7 @@
 
 <div class="modal-footer">
     <div class="pull-left">
-        <button type="submit" class="btn btn-success" ng-disabled="form.$invalid || !item.type_id || !saveEnabled" ng-click="save()">Сохранить</button>
+        <button type="submit" class="btn btn-success" ng-disabled="form.$invalid || !item.type_id || !saveEnabled || $root.isAjaxLoading" ng-click="save()">Сохранить</button>
         <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
         <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/prefixlist"></action-log-view-button>
     </div>
