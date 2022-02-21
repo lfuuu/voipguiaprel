@@ -1,6 +1,8 @@
 <?php
 
 namespace app\models;
+
+use app\models\auth\CamelGtNumberPreprocessing;
 use app\queries\ServerOcsQuery;
 
 /**
@@ -14,6 +16,10 @@ use app\queries\ServerOcsQuery;
  */
 class ServerOcs extends \yii\db\ActiveRecord
 {
+    public $_subitems = [
+        'numberPreprocessing' => 'getNumberPreprocessing'
+    ];
+
     public static function tableName()
     {
         return 'public.server_ocs';
@@ -38,5 +44,13 @@ class ServerOcs extends \yii\db\ActiveRecord
             [['default_routing_server_id'], 'integer'],
             [['active'], 'boolean']
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNumberPreprocessing()
+    {
+        return $this->hasMany(CamelGtNumberPreprocessing::className(), ['camel_server_id' => 'id'])->orderBy('order');
     }
 }
