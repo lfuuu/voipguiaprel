@@ -4,7 +4,10 @@ namespace app\controllers\json\camel;
 
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
+use app\models\auth\CamelGtRule;
 use app\models\auth\CamelTrunkNumberPreprocessing;
+use yii\web\ForbiddenHttpException;
+use yii\web\HttpException;
 
 class TrunkController extends JsonController
 {
@@ -12,7 +15,7 @@ class TrunkController extends JsonController
     protected $idParamName = 'id';
     protected $nameParamName = 'name';
     protected $readWhere = ['server_id'];
-    protected $withDependencies = ['numberPreprocessing'];
+    protected $withDependencies = ['numberPreprocessing', 'camelGtRules'];
     protected $createPermission = 'camel_trunk_create';
     protected $listPermission = 'camel_trunk_list';
     protected $editPermission = 'camel_trunk_edit';
@@ -46,6 +49,19 @@ class TrunkController extends JsonController
             $order = 1;
             foreach ($request['numberPreprocessing'] as $ruleData) {
                 $rule = CamelTrunkNumberPreprocessing::create($item, $ruleData);
+                $rule->order = $order;
+                if (!$rule->save()) {
+                    throw new FormValidationException($rule);
+                }
+                $order++;
+            }
+        }
+
+        CamelGtRule::deleteByTrunk($item);
+        if (isset($request['camelGtRules'])) {
+            $order = 1;
+            foreach ($request['camelGtRules'] as $ruleData) {
+                $rule = CamelGtRule::create($item, $ruleData);
                 $rule->order = $order;
                 if (!$rule->save()) {
                     throw new FormValidationException($rule);

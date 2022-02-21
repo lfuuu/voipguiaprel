@@ -1,4 +1,5 @@
 var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, CamelList, Prefixlist, params, $modalInstance) {
+    $scope.isAllow = true;
     if (params.id) {
         CamelTrunk.get({id: params.id}).then(function (data) {
             $scope.item = data;
@@ -8,7 +9,9 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
             name: '',
             server_id: $scope.server.id,
             numberPreprocessing: [],
-            is_route_incoming_calls: false
+            camelGtRules: [],
+            is_route_incoming_calls: false,
+            allow: false,
         };
     }
     
@@ -61,6 +64,15 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
 
     $scope.removeNumberPreprocessing = function (index) {
         $scope.item.numberPreprocessing.splice(index, 1);
+    };
+
+    $scope.addCamelGtRule = function (isAllow) {
+        console.log(isAllow);
+        $scope.item.camelGtRules.push({prefixlist_id: 1, allow: isAllow});
+    };
+
+    $scope.removeCamelGtRule = function (index) {
+        $scope.item.camelGtRules.splice(index, 1);
     };
 
     $scope.back = function () {

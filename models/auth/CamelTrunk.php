@@ -18,7 +18,8 @@ use app\queries\auth\CamelTrunkQuery;
 class CamelTrunk extends \yii\db\ActiveRecord
 {
     public $_subitems = [
-        'numberPreprocessing' => 'getNumberPreprocessing'
+        'numberPreprocessing' => 'getNumberPreprocessing',
+        'camelGtRules' => 'getCamelGtRules' 
     ];
 
     public static function tableName()
@@ -53,5 +54,13 @@ class CamelTrunk extends \yii\db\ActiveRecord
     public function getNumberPreprocessing()
     {
         return $this->hasMany(CamelTrunkNumberPreprocessing::className(), ['camel_trunk_id' => 'id'])->orderBy('order');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCamelGtRules()
+    {
+        return $this->hasMany(CamelGtRule::className(), ['camel_trunk_id' => 'id'])->orderBy('order');
     }
 }

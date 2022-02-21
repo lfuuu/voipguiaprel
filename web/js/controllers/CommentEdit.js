@@ -28,7 +28,8 @@ var CommentEditCtrl = function ($scope, Comment, params, $modalInstance, $window
         trunk_group_item: 'Связь группы транков',
         route_table_route: 'Маршрут маршрутизации',
         route_table_rule: 'Правило маршрутизации',
-        route_case_trunk: 'Route case транк'
+        route_case_trunk: 'Route case транк',
+        camel_gt_rule: 'Префикс GT'
     };
 
     $scope.item = {
