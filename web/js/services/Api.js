@@ -1822,6 +1822,9 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         copyAndMultiply: function (id, multiplier) {
             return ApiLoader.post(url + 'copy-and-multiply', { id: id, multiplier: multiplier });
         },
+        updatePrefixPrices: function (id, multiplier, dateFrom, dateTo) {
+            return ApiLoader.post(url + 'update-prefix-prices', { id: id, multiplier: multiplier, dateFrom: dateFrom, dateTo: dateTo });
+        },
         get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },

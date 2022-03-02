@@ -99,6 +99,26 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         });
     };
 
+    $scope.updatePrefixPricesItem = function (item) {
+        var multiplier;
+        var dateFrom;
+        var dateTo;
+
+        multiplier = parseFloat($window.prompt('Введите множитель для копирования'));
+        dateFrom = (new String($window.prompt('Введите дату начала'))).toString();
+        dateTo = (new String($window.prompt('Введите дату начала'))).toString();
+
+        if (isNaN(multiplier) || multiplier <= 0 || !dateTo || !dateFrom) return;
+
+        Pricelist.updatePrefixPrices(item.id, multiplier, dateFrom, dateTo).then(function (response) {
+            $scope.init();
+            
+            Redirect.pricelistShortView(item.id, response.service_type_id).then(function () {
+                $scope.init();
+            });
+        });
+    };
+
     $scope.deleteItem = function (item) {
         if (!$window.confirm('Удалить?')) return;
 

@@ -496,6 +496,31 @@ SQL;
         return $result;
     }
 
+    public function actionUpdatePrefixPrices()
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        if (!preg_match('~^\d{4}-\d{2}-\d{2}$~', $this->request['dateFrom']) || !preg_match('~^\d{4}-\d{2}-\d{2}$~', $this->request['dateTo'])) {
+            throw new Exception('Неправильный формат даты');
+        }
+
+        $result = (new Query())
+            ->select(['id' => new Expression('billing_uu.pricelist_update_prefix_prices(:old_pricelist_id, :multiplier, :new_date_from, :new_date_to)')])
+            ->addParams(
+                [
+                    ':old_pricelist_id' => $this->request['id'],
+                    ':multiplier' => $this->request['multiplier'],
+                    ':new_date_from' => $this->request['dateFrom'],
+                    ':new_date_to' => $this->request['dateTo']
+                ]
+            )
+            ->one();
+        
+        return $result;
+    }
+
     public function actionCopyAndMultiply()
     {
         if (!\Yii::$app->user->can('pricelist_create')) {
