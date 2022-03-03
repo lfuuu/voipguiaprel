@@ -11,6 +11,7 @@ use app\classes\views\PricelistView;
 use app\exceptions\FormValidationException;
 use app\models\billing_uu\PricelistFilterA;
 use app\models\billing_uu\PricelistLocation;
+use DateTime;
 use yii\base\Exception;
 use yii\db\Expression;
 use yii\db\IntegrityException;
@@ -502,18 +503,22 @@ SQL;
             throw new ForbiddenHttpException('Access denied');
         }
         
+        $today = (new DateTime())->format('Y-m-d');
+
         if (!preg_match('~^\d{4}-\d{2}-\d{2}$~', $this->request['dateFrom']) || !preg_match('~^\d{4}-\d{2}-\d{2}$~', $this->request['dateTo'])) {
             throw new Exception('Неправильный формат даты');
         }
 
         $result = (new Query())
-            ->select(['id' => new Expression('billing_uu.pricelist_update_prefix_prices(:old_pricelist_id, :multiplier, :new_date_from, :new_date_to)')])
+            ->select(['id' => new Expression('billing_uu.pricelist_update_prefix_prices(:old_pricelist_id, :multiplier, :new_date_from, :new_date_to, :date_today, :new_type)')])
             ->addParams(
                 [
                     ':old_pricelist_id' => $this->request['id'],
                     ':multiplier' => $this->request['multiplier'],
                     ':new_date_from' => $this->request['dateFrom'],
-                    ':new_date_to' => $this->request['dateTo']
+                    ':new_date_to' => $this->request['dateTo'],
+                    ':date_today' => $today,
+                    ':new_type' => $this->request['multiplier'] < 1 ? 'decrease' : 'increase'
                 ]
             )
             ->one();
