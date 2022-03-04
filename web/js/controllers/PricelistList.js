@@ -3,7 +3,6 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
     $scope.sortType = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';
-
     $scope.hideFilter = false;
     $scope.searchArray = {
         group_id: '',
@@ -157,5 +156,27 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
                 $scope.init();
             });
         }
+    };
+
+    Pricelist.isTriggerEnabled().then(function (flag) {
+        $scope.isTrigger = flag;
+
+    });
+
+    $scope.switchTriggerOn = function () {
+        Pricelist.switchTriggerOn().then(function (response){
+            $scope.init();
+        });
+    }
+    
+    $scope.switchTriggerOff = function () {
+        Pricelist.switchTriggerOff().then(function (response) {
+            $scope.init();
+        });
+    }
+
+    $scope.notifyEventToAll = function () {
+        Pricelist.notifyEventToAll().then(function (response) {
+        });
     };
 };

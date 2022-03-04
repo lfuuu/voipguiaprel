@@ -22,7 +22,8 @@ use yii\web\HttpException;
 class PricelistController extends JsonController
 {
     const SEARCH_LIMIT_PER_PRICELIST = 5;
-
+    const DISABLE_TRIGGER = 'disable_trigger';
+    const ENABLE_TRIGGER = 'enable_trigger';
     public function actionList()
     {
         if (!\Yii::$app->user->can('pricelist_list')) {
@@ -689,6 +690,54 @@ SQL;
         }
 
         \Yii::$app->db->createCommand("select event.notify('nnp_pricelist_prefix_price', 0);")->queryAll();
+
+        return ['success' => 1];
+    }
+
+    public function actionIsTriggerEnabled()
+    {
+        return \Yii::$app->db->createCommand("SELECT nnp.is_trigger_enabled('billing_uu.pricelist_prefix_price','notify')")->queryScalar();
+    }
+
+    public function actionSwitchTriggerOn()
+    {
+        if (!\Yii::$app->user->can('pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        \Yii::$app->db->createCommand("SELECT nnp." . self::ENABLE_TRIGGER . "('billing_uu.pricelist_location','notify')")->execute();
+        \Yii::$app->db->createCommand("SELECT nnp." . self::ENABLE_TRIGGER . "('billing_uu.pricelist_filter_a','notify')")->execute();
+        \Yii::$app->db->createCommand("SELECT nnp." . self::ENABLE_TRIGGER . "('billing_uu.pricelist_filter_b','notify')")->execute();
+        \Yii::$app->db->createCommand("SELECT nnp." . self::ENABLE_TRIGGER . "('billing_uu.pricelist_prefix_price','notify')")->execute();
+
+        return ['success' => 1];
+    }
+
+    public function actionSwitchTriggerOff()
+    {
+        if (!\Yii::$app->user->can('pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+
+        \Yii::$app->db->createCommand("SELECT nnp." . self::DISABLE_TRIGGER . "('billing_uu.pricelist_location','notify')")->execute();
+        \Yii::$app->db->createCommand("SELECT nnp." . self::DISABLE_TRIGGER . "('billing_uu.pricelist_filter_a','notify')")->execute();
+        \Yii::$app->db->createCommand("SELECT nnp." . self::DISABLE_TRIGGER . "('billing_uu.pricelist_filter_b','notify')")->execute();
+        \Yii::$app->db->createCommand("SELECT nnp." . self::DISABLE_TRIGGER . "('billing_uu.pricelist_prefix_price','notify')")->execute();
+
+        return ['success' => 1];
+    }
+
+    public function actionNotifyEventToAll()
+    {
+        if (!\Yii::$app->user->can('pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        \Yii::$app->db->createCommand("select event.notify_event_to_all('pricelist_location');")->queryAll();
+        \Yii::$app->db->createCommand("select event.notify_event_to_all('pricelist_filter_a');")->queryAll();
+        \Yii::$app->db->createCommand("select event.notify_event_to_all('pricelist_filter_b');")->queryAll();
+        \Yii::$app->db->createCommand("select event.notify_event_to_all('pricelist_prefix_price');")->queryAll();
 
         return ['success' => 1];
     }
