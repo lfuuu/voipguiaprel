@@ -1889,6 +1889,18 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         },
         synchronize: function (data) {
             return ApiLoader.post(url + 'synchronize', data);
+        },
+        switchTriggerOn: function () {
+            return ApiLoader.post(url + 'switch-trigger-on');
+        },
+        switchTriggerOff: function () {
+            return ApiLoader.post(url + 'switch-trigger-off');
+        },
+        isTriggerEnabled: function () {
+            return ApiLoader.post(url + 'is-trigger-enabled');
+        },
+        notifyEventToAll: function () {
+            return ApiLoader.post(url + 'notify-event-to-all');
         }
     };
 });
