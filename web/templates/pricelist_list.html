@@ -92,18 +92,20 @@
                         <button type="button" class="btn {{isTrigger === true ? 'btn-primary active' : 'btn-default'}}" ng-click="isTrigger = true; switchTriggerOn()">Включены</button>
                         <button type="button" class="btn {{isTrigger === false ? 'btn-danger active' : 'btn-default'}}" ng-click="isTrigger = false; switchTriggerOff()">Выключены</button>
                     </div>
-
                 </div>
-                <button style="margin-top: 10px;" ng-click="notifyEventToAll()" class="btn btn-success">Синхронизировать</button>
-
             </div>
-            
-            
         </div>
     </div>
 </form>
 
 <div>
+    <div class="form-group">
+        <div class="row">
+            <div class="pull-right form-group col-sm-4 search-form-item">
+                <button style="margin-top: 10px;" ng-click="notifyEventToAll()" class="btn btn-success">Синхронизировать</button>
+            </div>
+        </div>
+    </div> 
     <pagination style="display: inline;" total-items="totalItems" max-size="10" previous-text="Предыдущие" next-text="Следующие" first-text="В начало" last-text="В конец" boundary-links="true" items-per-page="limit" page="currentPage" on-select-page="setPagingData(page)"></pagination>
     <button style="margin-left: 30px;" ng-click="synchronize()" class="btn btn-success">Синхронизировать</button>
     

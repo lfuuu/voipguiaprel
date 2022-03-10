@@ -177,6 +177,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
 
     $scope.notifyEventToAll = function () {
         Pricelist.notifyEventToAll().then(function (response) {
+            $window.alert('Синхронизация завершена');
         });
     };
 };
