@@ -467,6 +467,9 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
         listByType: function (data) {
             return ApiLoader.post(url + 'list-by-type', data);
         },
+        listByTypeAndCamelShared: function (data) {
+            return ApiLoader.post(url + 'list-by-type-and-camel-shared', data);
+        },
         save: function (data) {
             list = undefined;
             return ApiLoader.post(url + 'save', data);
@@ -2238,6 +2241,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         },
         prefixlistByType: function (type) {
             return Prefixlist.listByType({ type_id: type });
+        },
+        prefixlistByTypeAndCamelShared: function (type) {
+            return Prefixlist.listByTypeAndCamelShared({type_id: type});
         },
         attribute: function () {
             return Attribute.list();
