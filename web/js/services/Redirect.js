@@ -639,7 +639,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         prefixlistByTypeEdit: function(id) {
             return openModal(PrefixlistEditCtrl, '/templates/prefixlist_edit.html', {id: id});
         },
-        prefixlistByTypeAndCamelSharedEdit: function(id) {
+        prefixlistByCamelSharedEdit: function(id) {
             return openModal(PrefixlistEditCtrl, '/templates/prefixlist_edit.html', {id: id});
         },
         prefixlistByTypeCreate: function() {

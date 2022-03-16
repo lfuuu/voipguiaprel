@@ -76,7 +76,7 @@ class PrefixlistController extends JsonController
      * @return \app\models\Prefixlist[]
      * @throws HttpException
      */
-    public function actionListByTypeAndCamelShared()
+    public function actionListByCamelShared()
     {
         if (!\Yii::$app->user->can('prefixlist_list')) {
             throw new ForbiddenHttpException('Access denied');
@@ -85,8 +85,7 @@ class PrefixlistController extends JsonController
         return
             Prefixlist::find()
                 ->select(['id', 'name'])
-                ->where(['type_id' => $this->request['type_id']])
-                ->andWhere(['sw_share_with_camel' => true])
+                ->where(['sw_share_with_camel' => true])
                 ->orderBy('name')
                 ->asArray()
                 ->all();
