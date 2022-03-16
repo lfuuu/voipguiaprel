@@ -734,10 +734,11 @@ SQL;
             throw new ForbiddenHttpException('Access denied');
         }
 
-        \Yii::$app->db->createCommand("select event.notify_event_to_all('pricelist_location');")->queryAll();
-        \Yii::$app->db->createCommand("select event.notify_event_to_all('pricelist_filter_a');")->queryAll();
-        \Yii::$app->db->createCommand("select event.notify_event_to_all('pricelist_filter_b');")->queryAll();
-        \Yii::$app->db->createCommand("select event.notify_event_to_all('pricelist_prefix_price');")->queryAll();
+        \Yii::$app->db->createCommand("select event.notify_event_to_all('nnp_pricelist');")->queryAll();
+        \Yii::$app->db->createCommand("select event.notify_event_to_all('nnp_pricelist_location');")->queryAll();
+        \Yii::$app->db->createCommand("select event.notify_event_to_all('nnp_pricelist_filter_a');")->queryAll();
+        \Yii::$app->db->createCommand("select event.notify_event_to_all('nnp_pricelist_filter_b');")->queryAll();
+        \Yii::$app->db->createCommand("select event.notify_event_to_all('nnp_pricelist_prefix_price');")->queryAll();
 
         return ['success' => 1];
     }
