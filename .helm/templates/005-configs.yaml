@@ -18,6 +18,15 @@
 
 {{- end }}
 
+{{- if (eq .Values.global.env "euprod") }}
+
+{{ $_ := set . "pg_host" .Values.postgres_euprod.host }}
+{{ $_ := set . "pg_user" .Values.postgres_euprod.user }}
+{{ $_ := set . "pg_password" .Values.postgres_euprod.password }}
+{{ $_ := set . "pg_db" .Values.postgres_euprod.db }}
+{{ $_ := set . "pg_port" .Values.postgres_euprod.port }}
+
+{{- end }}
 
 apiVersion: v1
 kind: ConfigMap
@@ -189,6 +198,7 @@ data:
           "login": {{ .Values.ami.login | quote }},
           "password": {{ .Values.ami.password | quote }}
       },
+{{- if (eq .Values.global.env "prod") }}
       "hubs": {
           "11":"CFO",
           "12":"UFO",
@@ -201,6 +211,13 @@ data:
           "20":"EU",
           "99":"MSK"
       },
+{{- end }}
+{{- if (eq .Values.global.env "euprod") }}
+      "hubs": {
+          "19":"AT",
+          "20":"EU"
+      },
+{{- end }}
       "channel": "Local/s@autocall-out/n",
       "extension": "s",
       "context": "autocall",
@@ -211,6 +228,7 @@ data:
   config.local.php: |
     <?php
     return [
+{{- if (eq .Values.global.env "prod") }}
         'resources' => [
             'http://iberus.mcn.ru:8099/healthcheck',
             'http://reg10.mcntelecom.ru:8032/test/healthcheck',
@@ -233,6 +251,14 @@ data:
             'https://vpbx.mcn.ru/vpbx/health',
             'https://stat.mcn.ru/export/health/health.json',
         ],
+{{- end }}
+{{- if (eq .Values.global.env "euprod") }}
+        'resources' => [
+            'http://reg19.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg20.mcntelecom.ru:8032/test/healthcheck'
+        ],
+{{- end }}
+
     ];
 
 

@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Chart.Name }}-frontend
@@ -20,11 +20,14 @@ spec:
   - host: {{ .Values.ci_url | quote }}
     http:
       paths:
-      - path: /
+      - pathType: Prefix
+        path: /
         backend:
+          service:
 {{- if (eq .Values.global.env "dev") }}
-          serviceName: {{ .Chart.Name }}-backend-dev
+            name: {{ .Chart.Name }}-backend-dev
 {{- else }}
-          serviceName: {{ .Chart.Name }}-backend-prod
+            name: {{ .Chart.Name }}-backend-prod
 {{- end }}
-          servicePort: 80
+            port: 
+              number: 80

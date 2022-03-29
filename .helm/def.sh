@@ -40,3 +40,8 @@ function prod()
 	CI_URL="voipgui.mcn.ru"
 }
 
+function euprod()
+{
+	export ENVNAME=euprod
+	CI_URL="voipgui.mcntele.com"
+}

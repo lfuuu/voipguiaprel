@@ -6,7 +6,7 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-backend-prod
 spec:
-  replicas: {{- if (eq .Values.global.env "dev") }} 1 {{- else }} 1 {{- end }}
+  replicas: {{- if (eq .Values.global.env "dev") }} 1 {{- else }} 3 {{- end }}
   selector:
       matchLabels:
         app: {{ .Chart.Name }}-backend-prod
@@ -129,7 +129,6 @@ metadata:
   labels:
     app: {{ .Chart.Name }}-backend-prod
 spec:
-  clusterIP: None
   selector:
     app: {{ .Chart.Name }}-backend-prod
   ports:
