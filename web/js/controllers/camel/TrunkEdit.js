@@ -1,8 +1,19 @@
-var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, CamelList, Prefixlist, params, $modalInstance) {
+var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, CamelList, params, $modalInstance) {
     if (params.id) {
         CamelTrunk.get({id: params.id}).then(function (data) {
             $scope.item = data;
         });
+    } else if (params.copy_id) {
+       CamelTrunk.copy({id: params.copy_id}).then(function (data) {
+            $scope.item = {
+                name: '',
+                server_id: $scope.server.id,
+                numberPreprocessing: data,
+                camelGtRules: [],
+                is_route_incoming_calls: false,
+                gt_rule_default_allowed: false,
+            }
+       });
     } else {
         $scope.item = {
             name: '',
@@ -28,10 +39,6 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
         {'id': 4, 'name': 'Замена'},
         {'id': 5, 'name': 'Замена если номер'}
     ];
-
-    Prefixlist.listByType({type_id: 14}).then(function (data) {
-        $scope.prefixlistList = data;
-    });
 
     CamelList.routeTable({server_id: $scope.server.id}).then(function (data) {
         $scope.routeTableList = data;

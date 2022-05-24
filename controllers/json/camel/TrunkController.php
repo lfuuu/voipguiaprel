@@ -5,6 +5,7 @@ namespace app\controllers\json\camel;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use app\models\auth\CamelGtRule;
+use app\models\auth\CamelTrunk;
 use app\models\auth\CamelTrunkNumberPreprocessing;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
@@ -32,14 +33,18 @@ class TrunkController extends JsonController
         $items =
             $modelName::find()
                 ->alias('t')
-                ->select(['t.*', 'prefixlist_name' => 'p.name', 'route_table_name' => 'rt.name', 'route_table_id' => 'rt.id'])
-                ->leftJoin('auth.prefixlist p', 'p.id = t.prefixlist_id')
+                ->select(['t.*', 'route_table_name' => 'rt.name', 'route_table_id' => 'rt.id'])
                 ->leftJoin('auth.camel_route_table rt', 'rt.id = t.camel_route_table_id')
                 ->orderBy('t.' . $this->nameParamName)
                 ->asArray()
                 ->all();
 
         return $items;
+    }
+
+    public function actionCopy()
+    {
+        return CamelTrunkNumberPreprocessing::find()->where(['camel_trunk_id' => $this->request['id']])->all();
     }
 
     protected function performAfterSaveActions($item, $request)

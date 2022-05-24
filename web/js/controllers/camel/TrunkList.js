@@ -49,4 +49,11 @@ var CamelTrunkListCtrl = function($scope, CamelTrunk, Redirect, $window) {
             $scope.init()
         });
     };
+
+    $scope.copyItem = function (item) {
+        if (!$window.confirm('Копировать?')) return;
+        Redirect.camelTrunkCreate(item.id).then(function () {
+            $scope.init();
+        });
+    };
 };

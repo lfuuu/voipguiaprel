@@ -539,8 +539,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             $cookies.camel_selected_page = 'camelTrunkList';
             return openTab(CamelTrunkListCtrl, '/templates/camel/trunk_list.html', {});
         },
-        camelTrunkCreate: function() {
-            return openModal(CamelTrunkEditCtrl, '/templates/camel/trunk_edit.html', {id: null});
+        camelTrunkCreate: function(copy_id) {
+            return openModal(CamelTrunkEditCtrl, '/templates/camel/trunk_edit.html', {id: null, copy_id: copy_id});
         },
         camelTrunkEdit: function(id) {
             return openModal(CamelTrunkEditCtrl, '/templates/camel/trunk_edit.html', {id: id});

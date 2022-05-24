@@ -56,6 +56,10 @@
                 <a ng-if="item.route_table_id && userPermissions['camel_route_table_edit']" href="#" ng-click="openRouteTable(item.route_table_id);">{{item.route_table_name}}</a>
                 <span ng-if="item.route_table_id && !userPermissions['camel_route_table_edit']">{{item.route_table_name}}</span>
             </td>
+            <td ng-if="userPermissions['camel_trunk_create']">
+                <button type="button" class="btn btn-default btn-sm"
+                        ng-click="copyItem(item)">Копировать</button>
+            </td>
             <td>
                 <comment-icon ng-if="item.id" key="{{item.id}}" type="camelTrunk" comment="item.object_comment"></comment-icon>
             </td>
