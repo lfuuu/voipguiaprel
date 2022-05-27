@@ -43,5 +43,5 @@ function prod()
 function euprod()
 {
 	export ENVNAME=euprod
-	CI_URL="voipgui.mcntele.com"
+	CI_URL="voipgui.kompaas.tech"
 }
