@@ -21,6 +21,8 @@ use Yii;
  */
 class Hub extends \yii\db\ActiveRecord
 {
+    const EUROPEAN_HUB = 2;
+    const RUSSIAN_HUB = 1;
 
     /**
      * @return string
