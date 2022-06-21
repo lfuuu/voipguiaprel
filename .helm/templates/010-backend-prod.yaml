@@ -88,6 +88,9 @@ spec:
         - name: config-volume
           subPath: db-local.php
           mountPath: /opt/voip_gui/config/db-local.php
+        - name: config-volume
+          subPath: params.php
+          mountPath: /opt/voip_gui/config/params.php
         env:
         - name: TEST_DIAL_URL
           value: "http://127.0.0.1:3000/"

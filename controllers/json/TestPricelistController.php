@@ -13,7 +13,6 @@ use Yii;
 
 class TestPricelistController extends JsonController
 {
-    const API_URL = 'http://reg10.mcntelecom.ru:8032/';
     
     /**
      * @return array|\yii\db\ActiveRecord[]
@@ -300,7 +299,7 @@ class TestPricelistController extends JsonController
         
         $number = preg_replace('~\D~', '', $this->request['number']);
         
-        $apiUrl = self::API_URL;
+        $apiUrl = Yii::$app->params['testNumberLink'];
         
         return [
             'number' => $number,

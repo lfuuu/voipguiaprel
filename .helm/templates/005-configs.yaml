@@ -89,6 +89,34 @@ data:
         'password' => '{{ .pg_password }}'
     ];
 
+  params.php: |
+    <?php
+    return [
+        'adminEmail' => 'admin@example.com',
+        'NnpCalculationApi' => '',
+{{- if (eq .Values.global.env "prod") }}
+        'isEuropean' => false,
+        'testNumberLink' => 'http://reg10.mcntelecom.ru:8032/'
+        'prefixListTypeSevenOpenLink' => 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?cmd=showTypeSeven',
+        'prefixListTypeSevenGenerateLink' => 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?cmd=fillNNPPrefixList&type={type}&id={id}&ndc_token={token}',
+{{- else if (eq .Values.global.env "euprod") }}
+        'isEuropean' => true,
+        'testNumberLink' => 'http://reg10.mcntelecom.hu:8032/'
+        'prefixListTypeSevenOpenLink' => 'http://reg10.mcntelecom.hu:8032/test/nnpcalc?cmd=showTypeSeven',
+        'prefixListTypeSevenGenerateLink' => 'http://reg10.mcntelecom.hu:8032/test/nnpcalc?cmd=fillNNPPrefixList&type={type}&id={id}&ndc_token={token}',
+{{- end }}
+        'commentMaxLength' => 2048,
+        'loggingEnabled' => true,
+        'logReadMethods' => true,
+        's3' => [
+            'access_key' => '0FGDZKFU070KVOGACRUE',
+            'secret_key' => 'UpikFKTR7pmhnenKE1lRWGkhgiCtBDdkTsB30EwT',
+            'host' => 'rados.mcn.ru',
+            'bucket_name' => 'autocaller',
+            'use_ssl' => true,
+        ],
+    ];
+
   nginx.conf: |
 
     user www-data www-data;
@@ -225,10 +253,11 @@ data:
       "waittime": 3000,
       "onlyConsoleLog": 1
     }
-  config.local.php: |
-    <?php
-    return [
+  
 {{- if (eq .Values.global.env "prod") }}
+  config.local.php: |
+      <?php
+      return [
         'resources' => [
             'http://iberus.mcn.ru:8099/healthcheck',
             'http://reg10.mcntelecom.ru:8032/test/healthcheck',
@@ -251,14 +280,19 @@ data:
             'https://vpbx.mcn.ru/vpbx/health',
             'https://stat.mcn.ru/export/health/health.json',
         ],
+      ];
 {{- end }}
 {{- if (eq .Values.global.env "euprod") }}
+  config.local.php: |
+      <?php
+      return [
         'resources' => [
-            'http://reg19.mcntelecom.ru:8032/test/healthcheck',
-            'http://reg20.mcntelecom.ru:8032/test/healthcheck'
+            'http://reg19.mcntelecom.hu:8032/test/healthcheck',
+            'http://reg20.mcntelecom.hu:8032/test/healthcheck',
+            'http://reg10.mcntelecom.hu:8032/test/healthcheck',
+            'https://vpbx.kompaas.tech/vpbx/health',
+            'https://stat.kompaas.tech/export/health/health.json',
         ],
+      ];
 {{- end }}
-
-    ];
-
 

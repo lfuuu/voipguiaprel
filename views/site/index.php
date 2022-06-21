@@ -2,14 +2,14 @@
 use app\models\auth\Hub;
 use app\models\Server;
 use yii\helpers\Url;
-
+use Yii;
 /**
  * @var app\components\View $this
  * @var Server[] $servers
  * @var Hub[] $hubs
  */
 
-$is_eu = strpos(Url::base(true), '.tech');
+$is_eu = Yii::$app->params['isEuropean'];
 ?>
 
 
