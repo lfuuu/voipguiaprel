@@ -96,12 +96,12 @@ data:
         'NnpCalculationApi' => '',
 {{- if (eq .Values.global.env "prod") }}
         'isEuropean' => false,
-        'testNumberLink' => 'http://reg10.mcntelecom.ru:8032/'
+        'testNumberLink' => 'http://reg10.mcntelecom.ru:8032/',
         'prefixListTypeSevenOpenLink' => 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?cmd=showTypeSeven',
         'prefixListTypeSevenGenerateLink' => 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?cmd=fillNNPPrefixList&type={type}&id={id}&ndc_token={token}',
 {{- else if (eq .Values.global.env "euprod") }}
         'isEuropean' => true,
-        'testNumberLink' => 'http://reg10.mcntelecom.hu:8032/'
+        'testNumberLink' => 'http://reg10.mcntelecom.hu:8032/',
         'prefixListTypeSevenOpenLink' => 'http://reg10.mcntelecom.hu:8032/test/nnpcalc?cmd=showTypeSeven',
         'prefixListTypeSevenGenerateLink' => 'http://reg10.mcntelecom.hu:8032/test/nnpcalc?cmd=fillNNPPrefixList&type={type}&id={id}&ndc_token={token}',
 {{- end }}

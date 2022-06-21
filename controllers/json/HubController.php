@@ -5,6 +5,7 @@ namespace app\controllers\json;
 use app\models\auth\Hub;
 use app\classes\JsonController;
 use yii\web\ForbiddenHttpException;
+use Yii;
 
 class HubController extends JsonController
 {
@@ -14,9 +15,11 @@ class HubController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
         
-        $result =
+        $isEu = Yii::$app->params['isEuropean'];
+        $result = 
             Hub::find()
                 ->select(['id', 'name'])
+                ->where(['market_place_id' => $isEu ? Hub::EUROPEAN_HUB : Hub::RUSSIAN_HUB])
                 ->orderBy('id')
                 ->asArray()
                 ->all();

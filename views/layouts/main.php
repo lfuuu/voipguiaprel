@@ -8,13 +8,16 @@ use app\assets\AppCamelAsset;
 use app\assets\AppApiBillingAsset;
 use app\assets\AppLibAsset;
 use app\commands\RbacController;
+use Yii;
 
 /**
  * @var \app\components\View $this
  * @var string $content
  */
-AppLibAsset::register($this);
 
+$isEu = Yii::$app->params['isEuropean'];
+
+AppLibAsset::register($this);
 if ($_SERVER['REQUEST_URI'] == '/routing') {
     AppAsset::register($this);
 } elseif ($_SERVER['REQUEST_URI'] == '/sms' || preg_match("/^\/ms/i", $_SERVER['REQUEST_URI'])){
@@ -121,20 +124,20 @@ if (Yii::$app->user->identity) {
 <?php if ($userHasBilling) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/billing') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/billing'])?>">Билингация</a></li>
 <?php } ?>
-<?php if ($userHasCamel) { ?>
+<?php if ($userHasCamel && !$isEu) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/camel'|| preg_match("/^\/cs/i", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/camel'])?>">Camel</a></li>
 <?php } ?>
 <?php if ($userHasApiBilling) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/api-billing'|| preg_match("/^\/abs/i", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/api-billing'])?>">Биллинг API</a></li>
 <?php } ?>
-<?php if (\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')): ?>
+<?php if ((\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')) && !$isEu): ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace'])?>">Биржа РФ</a></li>
 <?php endif; ?>
-<?php if (\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')): ?>
+<?php if ((\Yii::$app->user->can('marketplace_list') || \Yii::$app->user->can('marketplace_edit')) && $isEu): ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace-eu') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace-eu'])?>">Биржа EU</a></li>
 <?php endif; ?>
                         <li><a href="<?=Url::to(['/health/health.html'])?>" target="_blank">Здоровье биллеров</a></li>
-<?php if ($userHasSms) { ?>
+<?php if ($userHasSms && !$isEu) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/sms') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/sms'])?>">SMS</a></li>
 <?php } ?>
 
