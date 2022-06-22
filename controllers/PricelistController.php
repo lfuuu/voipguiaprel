@@ -216,7 +216,7 @@ class PricelistController extends BaseController
             ->where(['id' => $id])
             ->asArray()
             ->one();
-
+            
         $idStr = sprintf('%s_%s_%s', $id, $minimize ? 'minimize' : 'no-minimize', $use_ranges ? 'ranges' : 'no-ranges');
         $fileName = sprintf('price-list-prefixes_new_%s_%s.xlsx', $idStr, date('Y-m-d_H-i'));
         $this->createExcelPrefixesNewDocument($data, $minimize, $use_ranges, $fileName);
@@ -450,7 +450,8 @@ class PricelistController extends BaseController
      */
     protected function createPricelistFilterBSheet(Spreadsheet $spreadsheet, $pricelist)
     {
-        $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
+        $isEu = \Yii::$app->params['isEuropean'];
+        $apiUrl = 'http://reg10.mcntelecom' . ($isEu ? '.hu' : '.ru') . ':8032/test/nnpcalc?';
         $names = [
             "Source country filter",
             "Destination",
@@ -686,7 +687,8 @@ class PricelistController extends BaseController
 
         $currentRowNumber += 1;
 
-        $apiUrl = 'http://reg10.mcntelecom.ru:8032/';
+        $isEu = \Yii::$app->params['isEuropean'];
+        $apiUrl = 'http://reg10.mcntelecom' . ($isEu ? '.hu' : '.ru') . ':8032/';
         
         $apiParams = [
             'cmd' => 'getPricelistv2Prefix',
@@ -974,7 +976,8 @@ class PricelistController extends BaseController
      */
     protected function createExcelPrefixesNewDocument(array $pricelist, $minimize, $useRanges, $fileName = 'file.xlsx')
     {
-        $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
+        $isEu = \Yii::$app->params['isEuropean'];
+        $apiUrl = 'http://reg10.mcntelecom' . ($isEu ? '.hu' : '.ru') . ':8032/test/nnpcalc?';
         $maxColumnNumber = 4;
         
         $spreadsheet = new Spreadsheet();
@@ -1190,7 +1193,8 @@ class PricelistController extends BaseController
      */
     protected function createExcelPrefixesDocument(array $pricelist, $fileName = 'file.xlsx')
     {
-        $apiUrl = 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?';
+        $isEu = \Yii::$app->params['isEuropean'];
+        $apiUrl = 'http://reg10.mcntelecom' . ($isEu ? '.hu' : '.ru') . ':8032/test/nnpcalc?';
         $maxColumnNumber = 3;
         
         $spreadsheet = new Spreadsheet();
