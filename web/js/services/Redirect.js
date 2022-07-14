@@ -507,8 +507,8 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         cdrReportView: function(mcn_callid) {
             return openModal(CdrReportViewCtrl, '/templates/cdr_report_view.html', {mcn_callid: mcn_callid});
         },
-        callsRawView: function(item) {
-            return openModal(CallsRawViewCtrl, '/templates/calls_raw_view.html', {item: item}, 'calls-raw-modal');
+        callsRawView: function(item, link) {
+            return openModal(CallsRawViewCtrl, '/templates/calls_raw_view.html', {item: item, link: link}, 'calls-raw-modal');
         },
         moneyTree: function() {
             $cookies.routing_selected_page = 'moneyTree';

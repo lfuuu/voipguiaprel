@@ -10,7 +10,7 @@
             </tr>
             <tr ng-repeat="row in list">
                 <td><a href="#" ng-click="openTrunk(row.p_trunk_id, row.p_trunk_server_id)">{{row.p_trunk_name}}</a></td>
-                <td><a target="blank" href="https://stat.mcn.ru/uu/account-tariff/edit?id={{row.l_trunk_id}}">{{row.l_trunk_id}}</a></td>
+                <td><a target="blank" href="{{link}}uu/account-tariff/edit?id={{row.l_trunk_id}}">{{row.l_trunk_id}}</a></td>
             </tr>
         </table>
     </div>

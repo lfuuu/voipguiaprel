@@ -3,7 +3,7 @@ var PricelistInCommerceCtrl = function($scope, $rootScope, Redirect, Pricelist, 
         $scope.item = {
             id: params.id
         };
-        
+        $scope.link = ($window.location.hostname).includes('.tech') ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
         Pricelist.getInCommerce({id: params.id}).then(function(data){
             $scope.list = data;
         });

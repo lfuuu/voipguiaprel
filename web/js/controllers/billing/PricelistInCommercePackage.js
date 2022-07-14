@@ -4,7 +4,7 @@ var PricelistInCommercePackageCtrl = function ($scope, Pricelist, params, $modal
             id: params.id,
             item: params.item
         };
-
+        $scope.link = ($window.location.hostname).includes('.tech') ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
         if (params.item.service_type_id == 1) {
             Pricelist.getInCommercePackage({ id: params.id }).then(function (data) {
                 $scope.list = data;

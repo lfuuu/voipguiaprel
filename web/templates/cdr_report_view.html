@@ -105,12 +105,12 @@
         <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
             <td>
                 <span ng-repeat="subitem in item.callsRaw">
-                    <img style="cursor: pointer" ng-click="clickSubItem(subitem)" ng-if="subitem.orig" src="../img/passed.png">
+                    <img style="cursor: pointer" ng-click="clickSubItem(subitem, link)" ng-if="subitem.orig" src="../img/passed.png">
                 </span>
             </td>
             <td>
                 <span ng-repeat="subitem in item.callsRaw">
-                    <img style="cursor: pointer" ng-click="clickSubItem(subitem)" ng-if="!subitem.orig" src="../img/failed.png">
+                    <img style="cursor: pointer" ng-click="clickSubItem(subitem, link)" ng-if="!subitem.orig" src="../img/failed.png">
                 </span>
             </td>
             <td>{{item.connect_time}}</td>

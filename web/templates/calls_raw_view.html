@@ -50,15 +50,15 @@
 
         <tr>
             <td>
-                <a target="_blank" href="https://stat.mcn.ru/client/view?id={{item.account_id}}">{{item.account_id}}</a>
+                <a target="_blank" href="{{link}}client/view?id={{item.account_id}}">{{item.account_id}}</a>
             </td>
             <td>
-                <a ng-if="item.trunk_service_id < 100000" target="_blank" href="https://stat.mcn.ru/usage/trunk/edit?id={{item.trunk_service_id}}">{{item.trunk_service_id}}</a>
-                <a ng-if="item.trunk_service_id >= 100000" target="_blank" href="https://stat.mcn.ru/uu/account-tariff/edit?id={{item.trunk_service_id}}">{{item.trunk_service_id}}</a>
+                <a ng-if="item.trunk_service_id < 100000" target="_blank" href="{{link}}usage/trunk/edit?id={{item.trunk_service_id}}">{{item.trunk_service_id}}</a>
+                <a ng-if="item.trunk_service_id >= 100000" target="_blank" href="{{link}}uu/account-tariff/edit?id={{item.trunk_service_id}}">{{item.trunk_service_id}}</a>
             </td>
             <td>
-                <a ng-if="item.number_service_id < 100000" target="_blank" href="https://stat.mcn.ru/usage/voip/edit?id={{item.number_service_id}}">{{item.number_service_id}}</a>
-                <a ng-if="item.number_service_id >= 100000" target="_blank" href="https://stat.mcn.ru/uu/account-tariff/edit?id={{item.number_service_id}}">{{item.number_service_id}}</a>
+                <a ng-if="item.number_service_id < 100000" target="_blank" href="{{link}}usage/voip/edit?id={{item.number_service_id}}">{{item.number_service_id}}</a>
+                <a ng-if="item.number_service_id >= 100000" target="_blank" href="{{link}}uu/account-tariff/edit?id={{item.number_service_id}}">{{item.number_service_id}}</a>
             </td>
             <td>{{item.src_number}}</td>
             <td>{{item.dst_number}}</td>

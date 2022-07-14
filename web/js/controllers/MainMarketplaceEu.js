@@ -1,9 +1,9 @@
 app.controller('MainMarketplaceEuCtrl', function ($rootScope, $scope, $window, List, Trunk, ServiceTrunkRouting, $cookies, $timeout, $modal, Redirect) {
     $rootScope.userName = userName;
     $rootScope.userId = userId;
-
     $scope.isEditable = false;
-
+    $scope.link = ($window.location.hostname).includes('.tech') ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
+    
     $scope.closeErrorsPopup = function () {
         $rootScope.popupErrors = false;
     };

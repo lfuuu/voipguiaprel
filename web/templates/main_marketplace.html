@@ -24,7 +24,7 @@
                 <a href="#" ng-click="clickTrunk(item.p_trunk_id, item.region_id)">{{item.p_trunk_name}}</a>
             </td>
             <td ng-if="item.is_l_trunk" ng-hide="item.hidden">
-                <a target="_blank" href="https://stat.mcn.ru/usage/trunk/edit-by?clientAccountId={{item.client_account_id}}&trunkId={{item.p_trunk_id}}">{{item.price_name_basic}}</a>: <a target="_blank" href="https://stat.mcn.ru/client/view?id={{item.client_account_id}}">{{item.client_account_id}}</a>
+                <a target="_blank" href="{{link}}usage/trunk/edit-by?clientAccountId={{item.client_account_id}}&trunkId={{item.p_trunk_id}}">{{item.price_name_basic}}</a>: <a target="_blank" href="{{link}}client/view?id={{item.client_account_id}}">{{item.client_account_id}}</a>
             </td>
             <td ng-if="item.is_l_trunk" ng-hide="item.hidden">
                 <div class="btn-group" ng-if="isEditable" ng-click="toggleUplinkEnabled(item)">

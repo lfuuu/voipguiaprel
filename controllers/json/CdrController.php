@@ -174,7 +174,13 @@ class CdrController extends JsonController
             return $a['connect_time'] < $b['connect_time'] ? 1 : -1;
         });
         
-        return $items;
+        $link = \Yii::$app->params['isEuropean'] ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
+        $result = [
+            'items' => $items,
+            'link' => $link,
+        ];
+
+        return $result;
     }
     
     public function actionDisconnectCauseList()

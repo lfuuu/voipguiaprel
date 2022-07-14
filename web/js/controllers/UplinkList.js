@@ -4,7 +4,7 @@ var UplinkListCtrl = function ($scope, List, Uplink, StatisticsTree, Redirect, $
   $scope.sortReverse = false;
   $scope.searchQuery = '';
   $scope.list = [];
-
+  $scope.link = ($window.location.hostname).includes('.tech') ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
   $scope.treeLoaded = false;
   $scope.activeModeList = List.uplinkActiveMode();
 

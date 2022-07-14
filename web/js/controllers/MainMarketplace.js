@@ -1,6 +1,7 @@
 app.controller('MainMarketplaceCtrl', function ($rootScope, $scope, $window, List, Trunk, ServiceTrunkRouting, $cookies, $timeout, $modal, Redirect) {
     $rootScope.userName = userName;
     $rootScope.userId = userId;
+    $scope.link = ($window.location.hostname).includes('.tech') ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
 
     $scope.isEditable = false;
 
