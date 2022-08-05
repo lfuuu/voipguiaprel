@@ -7,6 +7,7 @@ use app\models\billing_uu\PricelistFilterB;
 use app\models\billing_uu\PricelistPrefixPrice;
 use Yii;
 use app\classes\JsonController;
+use app\controllers\ImporterController;
 use app\exceptions\FormValidationException;
 use app\models\billing_uu\PricelistLocation;
 use app\models\billing_uu\PricelistPrefixPriceHistory;
@@ -288,8 +289,8 @@ class PricelistFilterBController extends JsonController
         }
         
         $key = md5(microtime(true));
-        Yii::$app->cache->set($key, $prefixesToSave);
-        Yii::$app->cache->set($key . '_history', $historyObjectList);
+        Yii::$app->cache->set($key, $prefixesToSave, ImporterController::CACHE_TIMEOUT);
+        Yii::$app->cache->set($key . '_history', $historyObjectList, ImporterController::CACHE_TIMEOUT);
         
         return [
             'key' => $key,

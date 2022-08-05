@@ -11,6 +11,7 @@ use yii\web\ForbiddenHttpException;
 class ImporterController extends BaseController
 {
     const COMMENT = 6;
+    const CACHE_TIMEOUT = 3600;
 
     public function actionImport($id, $key, $is_replace)
     {
