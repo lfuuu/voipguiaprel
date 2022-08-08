@@ -1,0 +1,95 @@
+['auth.a2p_test_auth', 'auth.a2p_testgroup'] -
+['auth.a2p_testgroup'] -
+['auth.a2psms_route', 'auth.a2psms_route_table'] +
+['auth.a2psms_route_table'] -
+['auth.a2psms_route_table_route', 'a2psms_outcome'] -
+['auth.a2psms_route_table_route', 'a2psms_route_table'] -
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.cpc'] -
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.hub'] -
+['auth.a2psms_route_table_route', 'auth.number', 'public.server'] -
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.outcome', 'auth.release_reason'] -
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.outcome', 'auth.route_case'] -
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.prefixlist'] -
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.trunk', 'auth.route_table'] -
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.trunk_group'] -
+['auth.a2psms_route_table_route', 'billing_uu.pricelist'] -
+['auth.attribute_value', 'auth.attribute'] -
+['auth.attribute_value', 'auth.trunk', 'auth.route_table'] +
+['auth.attribute_value', 'auth.trunk_group'] -
+
+['auth.camel_gt_rules', 'auth.camel_trunk', 'auth.camel_route_table'] +
+['auth.camel_test_auth', 'auth.camel_testgroup'] -
+['auth.header_rule_item', 'auth.header'] -
+['auth.header_rule_item', 'auth.header_rule'] - 
+
+['auth.mvno_link', 'billing_uu.sim_imsi_partner'] -
+['auth.route_replace', 'auth.number', 'auth.prefixlist'] +
+['auth.route_replace', 'auth.trunk', 'auth.route_table'] +
+['auth.route_replace', 'auth.trunk_group'] +
+
+['auth.test_auth', 'auth.test_group'] -
+
+
+['auth.uplink', 'billing.instance_settings', 'geo.city'] -
+['auth.uplink', 'billing.instance_settings', 'geo.country'] -
+['auth.uplink', 'billing.service_trunk'] -
+['billing_api.api_method', 'billing_api.api'] -
+
+['billing_uu.a2p_alphanum_list_group', 'billing_uu.a2p_alphanum_group'] -
+['billing_uu.a2p_alphanum_list_group', 'billing_uu.a2p_alphanum_list'] -
+
+['billing_uu.account_tariff_light', 'billing_uu.package'] -
+
+['billing_uu.package_minute', 'nnp.destination', 'nnp.land']  -
+['billing_uu.package_minute', 'nnp.destination', 'nnp.status'] -
+['billing_uu.sim_card', 'billing_uu.sim_card_status'] -
+['billing_uu.sim_card', 'billing_uu.sim_imsi_status'] -
+
+['call_tracking.log', 'call_tracking.account_tariff'] -
+
+['copm.call_type', 'copm.operator'] -
+
+['geo.rossvyaz_raw_geo', 'geo.geo'] -
+['nnp.city', 'nnp.region'] -
+['nnp.region']-
+['nnp.country_files', 'nnp.country']-
+['nnp.country']-
+['nnp.land']-
+['nnp.status']-
+['nnp.destination_major, 'billing_uu.major']-
+['billing_uu.major']-
+['nnp.number_range', 'nnp.ndc_type']-
+['nnp.number_range', 'nnp.operator']-
+['nnp.ndc_type']-
+['nnp.operator']-
+['nnp.number_range_prefix', 'nnp.prefix']-
+['nnp.prefix']-
+['nnp2.city']-
+['nnp2.city', 'nnp2.region']-
+['nnp2.region']-
+['nnp2.geo_place']-
+['nnp2.ndc_type']-
+['nnp2.number_range']-
+['nnp2.number_range', 'nnp2.operator']-
+['nnp2.operator']-
+['pgagent.pga_exception', 'pgagent.pga_schedule', 'pgagent.pga_job', 'pgagent.pga_jobagent']-
+['pgagent.pga_exception', 'pgagent.pga_schedule', 'pgagent.pga_job', 'pgagent.pga_jobclass']-
+['pgagent.pga_jobagent']-
+['pgagent.pga_jobclass']-
+['public.auth_assignment', 'public.auth_item', 'public.auth_rule']-
+['public.auth_rule']-
+['auth.hub']-
+['voip.analyze_pricelist_report_params', 'voip.analyze_pricelist_report']-
+['voip.analyze_pricelist_report']-
+['voip.network', 'voip.network_type']-
+['voip.network_type']-
+['voip.network_file_data', 'voip.network_file']-
+['voip.network_file']-
+['voip.operator', 'voip.operator_group']-
+['voip.operator', 'voip.rossvyaz_operator']-
+['voip.operator_group']-
+['voip.rossvyaz_operator']-
+['voip.pricelist_report_data', 'voip.pricelist_report']-
+['voip.pricelist_report']
+['voip.routing_report_data', 'voip.routing_report']-
+['voip.routing_report']-

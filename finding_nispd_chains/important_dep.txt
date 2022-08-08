@@ -1,0 +1,148 @@
+
+Линейные связи:
+
+1:  Таблицы: auth.a2psms_route -> auth.a2psms_route_table
+2:  Таблицы: auth.trunk -> auth.route_table
+3:  Таблицы: auth.camel_gt_rules -> auth.camel_trunk -> auth.camel_route_table
+4:  Таблицы: auth.route_replace -> auth.number -> auth.prefixlist
+5:  Таблицы: auth.route_replace -> auth.number -> auth.prefixlist
+6:  Таблицы: auth.route_replace -> auth.number -> auth.prefixlist
+7:  Таблицы: auth.route_replace -> auth.trunk -> auth.route_table
+8:  Таблицы: auth.route_replace -> auth.trunk -> auth.route_table
+9:  Таблицы: auth.route_replace -> auth.trunk -> auth.route_table
+10: Таблицы: auth.route_replace -> auth.trunk_group
+11: Таблицы: auth.route_replace -> auth.trunk_group
+12: Таблицы: auth.number -> auth.prefixlist
+13: Таблицы: auth.camel_trunk -> auth.camel_route_table
+14: Таблицы: auth.camel_gt_rules -> auth.camel_trunk -> auth.prefixlist
+15: Таблицы: auth.camel_trunk -> auth.prefixlist
+16: Таблицы: auth.destination -> auth.prefixlist 
+17: Таблицы: auth.outcome -> auth.release_reason 
+18: Таблицы: auth.outcome -> auth.route_case 
+19: Таблицы: auth.outcome -> auth.route_case
+20: Таблицы: auth.outcome -> auth.route_case
+21: Таблицы: auth.outcome_rule -> auth.outcome
+22: Таблицы: auth.outcome_rule -> auth.number (-> auth.prefixlist --- )
+23: Таблицы: auth.outcome_rule -> auth.number (-> auth.prefixlist --- )
+24: Таблицы: auth.outcome_rule -> auth.trunk_group
+
+Таблицы: auth.outcome_rule -> auth.outcome (-> auth.release_reason) ---
+Таблицы: auth.outcome_rule -> auth.outcome (-> auth.route_case) ---
+Таблицы: auth.outcome_rule -> auth.outcome (-> auth.route_case) ---
+Таблицы: auth.outcome_rule -> auth.outcome (-> auth.route_case) ---
+
+Сложные связи:
+1.
+    ['auth.a2psms_route_table_route', 'auth.a2psms_route_table']
+    ['auth.a2psms_route_table_route', 'auth.number']
+    ['auth.a2psms_route_table_route', 'auth.number']
+    ['auth.a2psms_route_table_route', 'auth.a2psms_outcome']
+
+    ['auth.a2psms_route_table_route' --- еще столбец a2psms_outcome_route_table_id, но хз на что ссылается]
+
+2.
+    ['auth.attribute_value', 'auth.trunk']
+    ['auth.attribute_value', 'auth.trunk_group']
+
+3.
+    ['camel_route_table_route', 'auth.camel_route_table']
+    ['camel_route_table_route', 'auth.camel_route_table']
+    ['camel_route_table_route', 'auth.number']
+    ['camel_route_table_route', 'auth.number']
+    ['camel_route_table_route', 'auth.number']
+
+    ['camel_route_table_route' --- еще столбец outcome_id, но хз на что ссылается]
+    ['camel_route_table_route' --- еще столбец outcome_route_table_id, но хз на что ссылается]
+
+4.
+    ['auth.outcome', 'auth.release_reason']
+    ['auth.outcome', 'auth.route_case'] 
+    ['auth.outcome', 'auth.route_case'] 
+    ['auth.outcome', 'auth.route_case']
+
+5.
+    ['auth.route_case_trunk', 'auth.trunk']
+    ['auth.route_case_trunk', 'auth.route_case']
+
+6.
+    ['auth.route_route_rule', 'auth.route_table']
+    ['auth.route_route_rule', 'auth.trunk_group']
+    ['auth.route_route_rule', 'auth.number']
+    ['auth.route_route_rule', 'auth.number']
+    ['auth.route_route_rule', 'auth.header_rule']
+
+7.
+    ['auth.route_table_route', 'auth.route_table']
+    ['auth.route_table_route', 'auth.number']
+    ['auth.route_table_route', 'auth.number']
+    ['auth.route_table_route', 'auth.outcome']
+    ['auth.route_table_route', 'auth.route_table']
+    ['auth.route_table_route', 'auth.number']
+    ['auth.route_table_route', 'auth.header_rule']
+
+8. (имеет связь с 10)
+    ['auth.test_auth', 'auth.test_group']
+    ['auth.test_call', 'auth.test_group']
+    ['auth.test_dial', 'auth.test_group']
+
+    а также вероятно:
+    ['auth.test_result', 'auth.test_pricelist']
+    ['auth.test_result', 'auth.test_call']
+    ['auth.test_result', 'auth.test_auth']
+
+9.
+    ['auth.trunk_abfilters_rule', 'auth.prefixlist']
+    ['auth.trunk_abfilters_rule', 'auth.trunk']
+
+10.
+    ['auth.trunk_group_item', 'auth.trunk_group']
+    ['auth.trunk_group_item', 'auth.trunk_group']
+    ['auth.trunk_group_item', 'auth.trunk']
+
+11.
+    ['auth.trunk_load_limit', 'auth.trunk']
+    ['auth.trunk_load_limit', 'auth.number']
+    ['auth.trunk_load_limit', 'auth.number']
+
+12.
+    ['auth.trunk_priority', 'auth.trunk']
+    ['auth.trunk_priority', 'auth.prefixlist']
+    ['auth.trunk_priority', 'auth.number']
+    ['auth.trunk_priority', 'auth.number']
+    ['auth.trunk_priority', 'auth.number']
+
+13.
+    ['auth.trunk_trunk_rule', 'auth.trunk']
+    ['auth.trunk_trunk_rule', 'auth.trunk_group']
+    ['auth.trunk_trunk_rule', 'auth.number']
+    ['auth.trunk_trunk_rule', 'auth.number']
+    ['auth.trunk_trunk_rule', 'auth.number']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.cpc']
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.hub']
+['auth.a2psms_route_table_route', 'auth.number', 'public.server']
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.outcome', 'auth.release_reason']
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.outcome', 'auth.route_case']
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.prefixlist']
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.trunk', 'auth.route_table']
+['auth.a2psms_route_table_route', 'auth.number', 'public.server', 'auth.trunk_group']

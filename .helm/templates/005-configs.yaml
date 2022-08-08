@@ -212,6 +212,9 @@ data:
           proxy_set_header X-Real-IP $remote_addr;
         }
 
+        location {{ .Values.finding_nispd.host }} {
+          proxy_pass http://127.0.0.1:{{ .Values.finding_nispd.port }};
+        }
       }
     }
 {{- if (eq .Values.global.env "dev") }}
@@ -295,4 +298,11 @@ data:
         ],
       ];
 {{- end }}
-
+  finding_nispd_config.json: |
+    {
+      "pg_user": "{{ .pg_user }}",
+      "pg_password": "{{ .pg_password }}",
+      "pg_hostname": "{{ .pg_host }}",
+      "pg_port": "{{ .pg_port }}",
+      "pg_dbname": "{{ .pg_db }}"
+    }

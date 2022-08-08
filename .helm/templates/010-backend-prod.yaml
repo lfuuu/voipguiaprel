@@ -104,6 +104,18 @@ spec:
         - name: config-volume
           subPath: testdial_cfg.json
           mountPath: /app/testdialer/testdial_cfg.json
+      - name: finding-nispd-chains
+        workingDir: /app/finding_nispd/
+        command: [ "python3", "print_chains.py" ]
+{{ tuple "finding-nispd" . | werf_container_image | indent 8 }}
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - name: config-volume
+          subPath: finding_nispd_config.json
+          mountPath: /app/finding_nispd/finding_nispd_config.json
       volumes:
       - name: config-volume
         configMap:

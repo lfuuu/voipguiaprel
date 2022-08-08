@@ -20,6 +20,9 @@ postgres_prod_env_ci:
   user: voipgui
   password: qwe123
 
+finding_nispd:
+  host: /utils/finding_nispd_chains/
+  port: 8000
 
 ci_url: voip-gui-dev.local
 

@@ -1,0 +1,22 @@
+image: finding-nispd
+from: python:3
+docker:
+  WORKDIR: /app/finding_nispd/
+  EXPOSE: "80"
+  CMD: ["python3","print_chains.py"]
+git:
+- add: /finding_nispd_chains/
+  to: /app/finding_nispd/
+ansible:
+  beforeInstall:
+  - name: beforeInstall
+    shell: |
+        /usr/local/bin/python -m pip install --upgrade pip;
+        pip install sqlalchemy;
+        pip install psycopg2-binary;
+  setup:
+    - name: setup
+      shell: |
+        echo 1;
+      args:
+        chdir: /app/finding_nispd/
