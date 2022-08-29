@@ -46,7 +46,7 @@ ansible:
     shell: |
       mkdir -p /opt/voip_gui/web
       printf "Host github.com\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" >> /etc/ssh/ssh_config
-      ln -s /workspace/voip_gui /opt/voip_gui
+      ln -f -s /workspace/voip_gui /opt/voip_gui
   - name: "Generate en_US.UTF-8 default locale"
     locale_gen:
       name: en_US.UTF-8

@@ -48,7 +48,7 @@ ansible:
     shell: |
       mkdir -p /opt/voip_gui/web
       chown -R www-data. /opt/voip_gui/web
-      echo "Сделай:<br>rm -rf /opt/voip_gui; ln -s /workspace/voip_gui /opt/voip_gui" > /opt/voip_gui/web/index.html
+      echo "Сделай:<br>rm -rf /opt/voip_gui; ln -f -s /workspace/voip_gui /opt/voip_gui" > /opt/voip_gui/web/index.html
       printf "Host github.com\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" >> /etc/ssh/ssh_config
   - name:  Setup composer
     shell: |

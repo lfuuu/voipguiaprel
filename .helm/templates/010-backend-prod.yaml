@@ -40,7 +40,7 @@ spec:
       initContainers:
       - name: busybox-helper
         image: busybox:1.28
-        command:  ['ln', '-s', '/opt/voip_gui/web/assets2/healthData.json', '/opt/voip_gui/web/assets/healthData.json']
+        command:  ['ln', '-f', '-s', '/opt/voip_gui/web/assets2/healthData.json', '/opt/voip_gui/web/assets/healthData.json']
         volumeMounts:
         - name: assets
           mountPath: /opt/voip_gui/web/assets
