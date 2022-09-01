@@ -137,7 +137,7 @@ if (Yii::$app->user->identity) {
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/marketplace-eu') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/marketplace-eu'])?>">Биржа EU</a></li>
 <?php endif; ?>
                         <li><a href="<?=Url::to(['/health/health.html'])?>" target="_blank">Здоровье биллеров</a></li>
-<?php if ($userHasSms && !$isEu) { ?>
+<?php if ($userHasSms) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/sms') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/sms'])?>">SMS</a></li>
 <?php } ?>
 
