@@ -7,7 +7,7 @@ return [
     'password' => '',
     'charset' => 'utf8',
     'tablePrefix' => '',
-    'enableSchemaCache' => true,
+    'enableSchemaCache' => false,
     'schemaMap' => [
         'pgsql' => [
             'class' => \yii\db\pgsql\Schema::class,
