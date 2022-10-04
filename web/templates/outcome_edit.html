@@ -194,14 +194,19 @@
                                 <td>
                                     <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
                                 </td>
-
                                 <td width="3%" style="cursor: ns-resize">
                                     <span ng-if="line.number_id_filter_c !== null">C:</span>
                                 </td>
                                 <td>
                                     <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
                                 </td>
-
+                                <td>
+                                    <select ui-select2 ng-model="line.numbers_replace" multiple="multiple" style="width: 100%">
+                                        <option ng-repeat="number in numberList" value="{{::number.id}}">
+                                            {{::number.name}}
+                                        </option>
+                                    </select>
+                                </td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeOutcomeRule($index)"></button>
                                 </td>

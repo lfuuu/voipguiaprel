@@ -870,6 +870,9 @@ app.factory('Number', function ($q, ApiLoader, $rootScope) {
         listByType: function (data) {
             return ApiLoader.post(url + 'list-by-type', data);
         },
+        listByServerId: function (serverId) {
+            return ApiLoader.post(url + 'list-by-server-id', {server_id: serverId});
+        },
         save: function (data) {
             listA = listB = undefined;
             return ApiLoader.post(url + 'save', data);

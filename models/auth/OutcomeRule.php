@@ -34,6 +34,7 @@ class OutcomeRule extends \yii\db\ActiveRecord
     {
         return [
             [['trunk_group_id', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'server_id'], 'integer'],
+            [['numbers_replace'], 'string'],
             [['allow'], 'boolean'],
         ];
     }

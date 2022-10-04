@@ -1,4 +1,4 @@
-var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $modalInstance, $window) {
+var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $modalInstance, $window, Number) {
 
     $scope.TYPE_ID_AUTOMATIC = 1;
     $scope.TYPE_ID_ROUTE_CASE = 2;
@@ -14,6 +14,7 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
 
     if (params.id) {
         Outcome.get({id: params.id}).then(function (data) {
+            data.outcomeRules = $scope.readOutcomeRules(data.outcomeRules);
             $scope.item = data;
             $scope.item.header = $scope.parseData(data.header);
             $scope.setType($scope.item.type_id);
@@ -82,6 +83,7 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
             $scope.item.calling_station_id = null;
             $scope.item.called_station_id = null;
             $scope.item.header = null;
+            $scope.item.outcomeRules = $scope.saveOutcomeRules($scope.item.outcomeRules);
         }
         if ($scope.item.type_id == $scope.TYPE_ID_MEG_TO_REG ||
             $scope.item.type_id == $scope.TYPE_ID_MEG_TO_MEG ||
@@ -117,6 +119,11 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
         return data.replace('{', '').replace('}', '').split(',');
     };
 
+    Number.listByServerId($scope.server.id).then(function(data){
+        console.log(data);
+		$scope.numberList = data;
+	});
+
     $scope.back = function () {
         $modalInstance.dismiss();
     };
@@ -139,5 +146,47 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
         Redirect.routeTableEdit(item.id).then(function () {
             $scope.init();
         });
+    };
+
+    $scope.readOutcomeRules = function (outcomes) {
+        outcomes.forEach(outcome => {
+            outcome.numbers_replace = $scope.parseNumberReplaceData(outcome.numbers_replace);
+        })
+
+        return outcomes;
+    }
+
+    $scope.saveOutcomeRules = function (outcomes) {
+        outcomes.forEach(outcome => {
+            outcome.numbers_replace = $scope.stringifyNumberReplaceData(outcome.numbers_replace);
+            console.log(outcome);
+        })
+
+        return outcomes;
+    }
+
+
+    $scope.stringifyNumberReplaceData = function (data) {
+        if (!data || data == '{}') {
+            return '{}';
+        }
+
+        if (((typeof data) == 'string') && data.charAt(0) == '{') {
+            return data;
+        }
+
+        return '{' + data.join(',') + '}';
+    };
+
+    $scope.parseNumberReplaceData = function (data) {
+        if (!data) {
+            return [];
+        }
+        
+        if ((typeof data) != 'string') {
+            return data;
+        }
+
+        return data.replace('{', '').replace('}', '').split(',');
     };
 };
