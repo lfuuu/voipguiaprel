@@ -120,9 +120,9 @@ if (Yii::$app->user->identity) {
 <?php if (!Yii::$app->user->isGuest): ?>
                     <ul class="nav navbar-nav navbar-left">
 <?php if ($isEu) { ?>
-                        <li><img src="https://raw.githubusercontent.com/welltime/mcn-ui-components/master/components/Icon/assets/logo/logo-eu.svg?token=GHSAT0AAAAAABRRX6FFVDIVHI62XOQVAEKEYZ3BIOQ" width="100" height="50"></li>
+                        <li><img src="./logos/logo-eu.svg" width="100" height="50"></li>
 <?php } else {?>
-                        <li><img src="https://raw.githubusercontent.com/welltime/mcn-ui-components/master/components/Icon/assets/logo/logo.svg?token=GHSAT0AAAAAABRRX6FE43JYKJIW7M3UKH4WYZ3BNAQ" width="100" height="50"></li>
+                        <li><img src="./logos/logo.svg" width="100" height="50"></li>
 <?php } ?>
 <?php if ($userHasRouting) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/' || preg_match("/^[\/][sS][\d]{1,3}$/", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['site/index'])?>">Маршрутизация</a></li>
