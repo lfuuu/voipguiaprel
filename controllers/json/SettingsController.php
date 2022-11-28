@@ -80,6 +80,7 @@ class SettingsController extends JsonController
             'is_autotest_error_enabled' => $server->is_autotest_error_enabled,
             'is_open_numeric_plan_enabled' => $server->is_open_numeric_plan_enabled,
             'loop_detected_outcome_id' => $server->loop_detected_outcome_id,
+            'reject_outcome_id' => $server->reject_outcome_id,
             'phase1_allow_trunkgroup_id' => $server->phase1_allow_trunkgroup_id,
             'hub_id' => $server->hub_id,
             'hub_id' => $server->hub_id,
