@@ -302,6 +302,7 @@ data:
             'http://reg10.mcntelecom.hu:8032/test/healthcheck',
             'https://vpbx.kompaas.tech/vpbx/health',
             'https://stat.kompaas.tech/export/health/health.json',
+            ['url' => 'http://hubill.kompaas.tech:8099/healthcheck', 'title' => 'pgsync'],
         ],
       ];
 {{- end }}
