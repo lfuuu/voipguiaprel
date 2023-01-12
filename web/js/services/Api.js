@@ -2351,7 +2351,8 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                 { 'id': 'RUB', 'name': 'RUB' },
                 { 'id': 'EUR', 'name': 'EUR' },
                 { 'id': 'HUF', 'name': 'HUF' },
-                { 'id': 'USD', 'name': 'USD' }
+                { 'id': 'USD', 'name': 'USD' },
+                { 'id': 'KZT', 'name': 'KZT' }
             ];
         },
         location: function () {
