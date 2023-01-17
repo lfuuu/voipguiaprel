@@ -44,7 +44,7 @@ class RouteTableRoute extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['a_number_id', 'b_number_id', 'c_number_id', 'outcome_id', 'outcome_route_table_id', 'cpc_id', 'header_rule_id'], 'integer'],
+            [['a_number_id', 'b_number_id', 'c_number_id', 'outcome_id', 'outcome_route_table_id', 'cpc_id', 'header_rule_id', 'ac_mode'], 'integer'],
             [['is_locked'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];

@@ -106,6 +106,11 @@ class RouteTableController extends JsonController
             RouteTableRoute::deleteByRouteTable($routeTable);
             $order = 1;
             foreach ($this->request['routes'] as $routeData) {
+                if ($routeData['ac_mode'] == true) {
+                    $routeData['ac_mode'] = 1;
+                } else {
+                    $routeData['ac_mode'] = 0;
+                }
                 $route = RouteTableRoute::create($routeTable, $routeData);
                 $route->order = $order;
                 if (!$route->save()) {
