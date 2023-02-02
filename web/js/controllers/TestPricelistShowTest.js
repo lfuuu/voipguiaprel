@@ -1,10 +1,10 @@
 var TestPricelistShowTestCtrl = function($scope, TestPricelist, Redirect, params, $modalInstance) {
     
-
     if (params.id) {
         TestPricelist.result({id: params.id}).then(function (data) {
             $scope.item = data;
             $scope.url = data.url;
+            $scope.baseUrl = data.baseUrl;      
         });
     }
 

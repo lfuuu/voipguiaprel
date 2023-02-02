@@ -283,7 +283,8 @@ class TestPricelistController extends JsonController
             'b_number' => $item->b_number,
             'id' => $item->id,
             'name' => $item->name,
-            'url' => $request
+            'url' => $request,
+            'baseUrl' => Yii::$app->params['isEuropean'] ? 'https://voipgui.kompaas.tech/' : 'https://voipgui.mcn.ru/'
         ];
     }
     
