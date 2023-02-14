@@ -518,14 +518,12 @@ class Prefixlist extends \yii\db\ActiveRecord
 
             if (!empty($nnpFilter['token'])) {
                 $token = $nnpFilter['token'];
-                
             }
         }
 
         $filters = [
             'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
-            'use_nnp_ported' => isset($input['nnp_use_nnp_ported']) ? $input['nnp_use_nnp_ported'] : '',
-
+            'use_nnp_ported' => isset($input['rn_use_nnp_ported']) ? $input['rn_use_nnp_ported'] : '',
         ];
 
         if (isset($input['rn_country']) && count($input['rn_country'])) {
@@ -535,9 +533,13 @@ class Prefixlist extends \yii\db\ActiveRecord
         }
 
         if (isset($input['rn_region']) && count($input['rn_region'])) {
-            $filters['region_code_fz'] = $input['rn_region'];
+            $filters['region_code'] = $input['rn_region'];
             $filters['exclude_region_code_fz'] = array_key_exists('rn_is_exclude_region', $input) ?
                 $input['rn_is_exclude_region'] : '';
+        }
+
+        if (isset($input['rn_region_fz']) && count($input['rn_region_fz'])) {
+            $filters['region_code_fz'] = $input['rn_region_fz'];
         }
 
         if (isset($input['rn_operator']) && count($input['rn_operator'])) {
@@ -549,10 +551,11 @@ class Prefixlist extends \yii\db\ActiveRecord
         if (isset($input['rn_route_mnc']) && count($input['rn_route_mnc'])) {
             $filters['mnc'] = $input['rn_route_mnc'];
             $filters['exclude_mnc'] = array_key_exists('rn_is_exclude_mnc', $input) ?
-                $input['rn_is_exclude_operators'] : '';
+                $input['rn_is_exclude_mnc'] : '';
         }
 
         $this->nnp_filter_json = Json::encode($filters);
+        
         return $this;
     }
 

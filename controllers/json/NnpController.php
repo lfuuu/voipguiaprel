@@ -140,18 +140,10 @@ class NnpController extends JsonController
      * @return array
      */
     public function actionRouteMnc()
-    {
-        $operatorCode = $this->request['operator_id'];
-        
-        if (empty($operatorCode)) {
-            return [];
-        }
-
-        
+    {        
         $query = RouteMnc::find()
             ->select(['mnc'])
             ->distinct()
-            ->where(['operator_id' => $operatorCode])
             ->asArray();
         
         return $query->all();

@@ -203,9 +203,9 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Только портированные номера</label>
                         <div class="col-sm-6">
-                            <div class="btn-group" ng-click="item.nnp_use_nnp_ported = !item.nnp_use_nnp_ported">
-                                <button type="button" class="btn btn-sm {{item.nnp_use_nnp_ported? 'btn-success active' : 'btn-default'}}">Да</button>
-                                <button type="button" class="btn btn-sm {{!item.nnp_use_nnp_ported ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            <div class="btn-group" ng-click="item.rn_use_nnp_ported = !item.rn_use_nnp_ported">
+                                <button type="button" class="btn btn-sm {{item.rn_use_nnp_ported? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.rn_use_nnp_ported ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                             </div>
                         </div>
                     </div>  
@@ -228,7 +228,7 @@
                         <label class="col-sm-2 control-label">Регион</label>
                         <div class="col-sm-6">
                             <select ui-select2 ng-model="item.rn_region" multiple="multiple" style="width: 100%" >
-                                <option ng-repeat="region in rnRegionList" value="{{::region.region_code_fz}}">{{::region.name}}</option>
+                                <option ng-repeat="region in rnRegionList" value="{{::region}}">{{::region.name}}</option>
                             </select>
                         </div>
                         <div class="col-sm-4">

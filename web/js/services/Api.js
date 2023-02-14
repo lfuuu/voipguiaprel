@@ -2548,8 +2548,8 @@ app.factory('Nnp', function (ApiLoader) {
         operatorList: function (data) {
             return ApiLoader.post(url + 'operator', data);
         },
-        routeMncList: function(data) {
-            return ApiLoader.post(url + 'route-mnc', data);
+        routeMncList: function() {
+            return ApiLoader.post(url + 'route-mnc');
         },
         ndcTypeList: function () {
             return ApiLoader.post(url + 'ndc-type');

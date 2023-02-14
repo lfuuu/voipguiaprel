@@ -117,7 +117,7 @@ class TrunkGroup extends \yii\db\ActiveRecord
                     'id' => 'trunk_rules.id',
                     'trunk_id' => 'trunk.id',
                     'trunk_name' => 'trunk.name',
-                    'trunk_source_trunk_rule_default_allowed' => 'trunk.source_trunk_rule_default_allowed',
+                    'source_rule_rn_default_allowed' => 'trunk.source_rule_rn_default_allowed',
                     'number_a_id' => 'number_a.id',
                     'number_b_id' => 'number_b.id',
                     'number_c_id' => 'number_c.id',

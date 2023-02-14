@@ -94,10 +94,11 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             default_priority: 0,
             source_rule_default_allowed: false,
             source_trunk_rule_default_allowed: false,
+            source_rule_rn_default_allowed: false,
             destination_rule_default_allowed: false,
             priorities: [],
             trunkRules: [],
-            trunkRulesRoutingNums: [],
+            trunkRulesRn: [],
             numberPreprocessing: [],
             loadLimit: [],
             numbersRules: {},
@@ -234,9 +235,9 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
     };
 
     $scope.addTrunkRuleRoutingNum = function () {
-        $scope.item.trunkRulesRoutingNums.push({
+        $scope.item.trunkRulesRn.push({
             trunk_group_id: '',
-            allow: $scope.item.source_trunk_rule_default_allowed
+            allow: $scope.item.source_rule_rn_default_allowed
         });
     };
 
@@ -245,7 +246,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
     };
 
     $scope.removeTrunkRuleRoutingNum = function (index) {
-        $scope.item.trunkRulesRoutingNums.splice(index, 1);
+        $scope.item.trunkRulesRn.splice(index, 1);
     };
 
     $scope.getNumbersRuleMode = function (mode) {

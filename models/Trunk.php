@@ -56,6 +56,7 @@ use yii\db\Query;
  * @property int $rounding_type
  * @property int $leg_type
  * @property int $rn_enable
+ * @property bool $source_rule_rn_default_allowed
  *
  * @property \yii\db\ActiveQuery rulesSourceOrig
  * @property \yii\db\ActiveQuery rulesDestinationOrig
@@ -67,6 +68,7 @@ class Trunk extends \yii\db\ActiveRecord
     public $_subitems = [
         'priorities' => 'getPriorities',
         'trunkRules' => 'getTrunkRules',
+        'trunkRulesRn' => 'getTrunkRulesRn',
         'numberPreprocessing' => 'getNumberPreprocessing',
         'numbersRules' => 'getNumbersRules',
         'usagesInMarketplace' => 'getUsagesInMarketplace',
@@ -100,7 +102,7 @@ class Trunk extends \yii\db\ActiveRecord
                 'term_afilter_default_allowed', 'term_bfilter_default_allowed', 'term_cfilter_default_allowed',
                 'roaming_orig', 'roaming_term', 'mgmn2_orig', 'mgmn2_term',
                 'transparent_header', 'pbx', 'uplink_trunk', 'internal_trunk', 'no_copy_numc_to_numa',
-                'rn_pricelist', 'autocall'
+                'rn_pricelist', 'autocall', 'source_rule_rn_default_allowed'
             ], 'boolean'],
             [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id', 'rounding_type', 'leg_type', 'rn_enable'], 'integer'],
             [['back_trunk'], 'string', 'max' => 50],
@@ -136,7 +138,7 @@ class Trunk extends \yii\db\ActiveRecord
      */
     public function extraFields()
     {
-        return ['routeTable', 'priorities', 'rules', 'trunkRules', 'numberPreprocessing'];
+        return ['routeTable', 'priorities', 'rules', 'trunkRules', 'numberPreprocessing', 'trunkRulesRn'];
     }
 
     /**
@@ -260,6 +262,14 @@ class Trunk extends \yii\db\ActiveRecord
     public function getTrunkRules()
     {
         return $this->hasMany(TrunkTrunkRule::className(), ['trunk_id' => 'id'])->orderBy('order');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrunkRulesRn()
+    {
+        return $this->hasMany(TrunkTrunkRuleRoutingNum::className(), ['trunk_id' => 'id'])->orderBy('order');
     }
 
     /**

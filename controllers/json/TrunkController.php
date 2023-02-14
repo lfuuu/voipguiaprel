@@ -204,7 +204,7 @@ class TrunkController extends JsonController
         
         $item =
             Trunk::find()
-                ->with(['priorities', 'trunkRules', 'numberPreprocessing', 'numbersRules', 'usagesInMarketplace'])
+                ->with(['priorities', 'trunkRules', 'numberPreprocessing', 'numbersRules', 'usagesInMarketplace', 'trunkRulesRn'])
                 ->with([
                     'trunkSorm' => function($query) use ($regionId) {
                         $query->where(['region_id' => $regionId]);
@@ -480,9 +480,9 @@ class TrunkController extends JsonController
             }
 
             TrunkTrunkRuleRoutingNum::deleteByTrunk($trunk);
-            if (isset($this->request['trunkRulesRoutingNums'])) {
+            if (isset($this->request['trunkRulesRn'])) {
                 $order = 1;
-                foreach ($this->request['trunkRulesRoutingNums'] as $ruleData) {
+                foreach ($this->request['trunkRulesRn'] as $ruleData) {
                     $rule = TrunkTrunkRuleRoutingNum::create($trunk, $ruleData);
                     $rule->order = $order;
                     if (!$rule->save()) {
