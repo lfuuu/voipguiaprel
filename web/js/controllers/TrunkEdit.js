@@ -316,6 +316,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             return;
         }
 
+        $scope.item.rn_enable = $scope.item.rn_enable == true ? 1 : 0;
         $scope.item.region_id = serverId;
 
         Trunk.save($scope.item).then(function () {
