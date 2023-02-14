@@ -470,6 +470,11 @@ class TrunkController extends JsonController
             if (isset($this->request['trunkRules'])) {
                 $order = 1;
                 foreach ($this->request['trunkRules'] as $ruleData) {
+                    if ($ruleData['ac_mode'] == true) {
+                        $ruleData['ac_mode'] = 1;
+                    } else {
+                        $ruleData['ac_mode'] = 0;
+                    }
                     $rule = TrunkTrunkRule::create($trunk, $ruleData);
                     $rule->order = $order;
                     if (!$rule->save()) {
@@ -483,6 +488,11 @@ class TrunkController extends JsonController
             if (isset($this->request['trunkRulesRn'])) {
                 $order = 1;
                 foreach ($this->request['trunkRulesRn'] as $ruleData) {
+                    if ($ruleData['ac_mode'] == true) {
+                        $ruleData['ac_mode'] = 1;
+                    } else {
+                        $ruleData['ac_mode'] = 0;
+                    }
                     $rule = TrunkTrunkRuleRoutingNum::create($trunk, $ruleData);
                     $rule->order = $order;
                     if (!$rule->save()) {
