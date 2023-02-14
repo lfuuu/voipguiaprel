@@ -12,7 +12,7 @@ namespace app\models;
  * @property bool $allow
  * @property string $object_comment
  */
-class TrunkTrunkRule extends \yii\db\ActiveRecord
+class TrunkTrunkRuleRoutingNum extends \yii\db\ActiveRecord
 {
 
     /**
@@ -20,7 +20,7 @@ class TrunkTrunkRule extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'auth.trunk_trunk_rule';
+        return 'auth.trunk_trunk_rule_rn';
     }
 
     /**
@@ -38,7 +38,7 @@ class TrunkTrunkRule extends \yii\db\ActiveRecord
     /**
      * @param Trunk $trunk
      * @param array|null $data
-     * @return TrunkTrunkRule
+     * @return TrunkTrunkRuleRoutingNum
      */
     public static function create(Trunk $trunk, array $data = null)
     {

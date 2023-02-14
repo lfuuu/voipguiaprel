@@ -6,10 +6,9 @@ namespace app\models\nnp;
  * @property int $id
  * @property string $name
  * @property int $country_prefix
- * @property int $cnt
  * @property int $country_code
  */
-class Operator extends \yii\db\ActiveRecord
+class OperatorMncToNnp extends \yii\db\ActiveRecord
 {
 
     /**
@@ -17,12 +16,7 @@ class Operator extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'nnp.operator';
-    }
-
-    public function getMncs()
-    {
-        return $this->hasMany(RouteMnc::className(), ['operator_nnp_id' => 'id']);
+        return 'nnp.operator_mnc_to_nnp';
     }
 
 }

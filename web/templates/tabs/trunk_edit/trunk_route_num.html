@@ -11,8 +11,8 @@
     <label class="col-sm-1 control-label">Правила</label>
     <div class="col-sm-10">
         <table class="table table-striped">
-            <tbody ui-sortable="{axis: 'y'}" ng-model="item.trunkRules">
-            <tr ng-repeat="line in item.trunkRules">
+            <tbody ui-sortable="{axis: 'y'}" ng-model="item.trunkRulesRoutingNums">
+            <tr ng-repeat="line in item.trunkRulesRoutingNums">
                 <td width="5%">
                     <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
                     <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
@@ -57,14 +57,14 @@
                     <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkRule($index)"></button>
+                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkRuleRoutingNum($index)"></button>
                 </td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
                 <td colspan="11">
-                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkRule()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
+                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkRuleRoutingNum()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
                 </td>
             </tr>
             </tfoot>

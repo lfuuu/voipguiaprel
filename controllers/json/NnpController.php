@@ -15,6 +15,7 @@ use app\models\geo\Country as GeoCountry;
 use app\models\geo\City as GeoCity;
 use app\models\materialized_view\Ndc;
 use app\models\materialized_view\Operator;
+use app\models\nnp\RouteMnc;
 use yii\db\Expression;
 use Yii;
 
@@ -59,7 +60,7 @@ class NnpController extends JsonController
         }
 
         $query = Region::find()
-            ->select(['id', new Expression('case when country_code = ' . self::COUNTRY_CODE_RUSSIA . ' then name else name_translit end as name')])
+            ->select(['id', 'region_code_fz', new Expression('case when country_code = ' . self::COUNTRY_CODE_RUSSIA . ' then name else name_translit end as name')])
             ->where(['country_code' => $countryCode])
             ->asArray()
             ->orderBy('name');
@@ -132,6 +133,27 @@ class NnpController extends JsonController
             ->where(['country_code' => $countryCode])
             ->asArray();
 
+        return $query->all();
+    }
+
+    /**
+     * @return array
+     */
+    public function actionRouteMnc()
+    {
+        $operatorCode = $this->request['operator_id'];
+        
+        if (empty($operatorCode)) {
+            return [];
+        }
+
+        
+        $query = RouteMnc::find()
+            ->select(['mnc'])
+            ->distinct()
+            ->where(['operator_id' => $operatorCode])
+            ->asArray();
+        
         return $query->all();
     }
 

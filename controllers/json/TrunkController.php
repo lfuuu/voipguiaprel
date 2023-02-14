@@ -13,6 +13,7 @@ use app\models\TrunkABfiltersRule;
 use app\models\TrunkNumberPreprocessing;
 use app\models\TrunkPriority;
 use app\models\TrunkTrunkRule;
+use app\models\TrunkTrunkRuleRoutingNum;
 use yii\base\ErrorException;
 use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
@@ -470,6 +471,19 @@ class TrunkController extends JsonController
                 $order = 1;
                 foreach ($this->request['trunkRules'] as $ruleData) {
                     $rule = TrunkTrunkRule::create($trunk, $ruleData);
+                    $rule->order = $order;
+                    if (!$rule->save()) {
+                        throw new FormValidationException($rule);
+                    }
+                    $order++;
+                }
+            }
+
+            TrunkTrunkRuleRoutingNum::deleteByTrunk($trunk);
+            if (isset($this->request['trunkRulesRoutingNums'])) {
+                $order = 1;
+                foreach ($this->request['trunkRulesRoutingNums'] as $ruleData) {
+                    $rule = TrunkTrunkRuleRoutingNum::create($trunk, $ruleData);
                     $rule->order = $order;
                     if (!$rule->save()) {
                         throw new FormValidationException($rule);

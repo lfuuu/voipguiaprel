@@ -246,6 +246,10 @@ class PrefixlistController extends JsonController
             $prefixlist->setGtFilters($this->request);
         }
 
+        if ($prefixlist->type_id == Prefixlist::PREFIXLIST_TYPE_RN) {
+            $prefixlist->setRnFilters($this->request);
+        }
+
         $transaction = Prefixlist::getDb()->beginTransaction();
         try {
 

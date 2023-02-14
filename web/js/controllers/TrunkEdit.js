@@ -97,6 +97,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             destination_rule_default_allowed: false,
             priorities: [],
             trunkRules: [],
+            trunkRulesRoutingNums: [],
             numberPreprocessing: [],
             loadLimit: [],
             numbersRules: {},
@@ -232,8 +233,19 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
         });
     };
 
+    $scope.addTrunkRuleRoutingNum = function () {
+        $scope.item.trunkRulesRoutingNums.push({
+            trunk_group_id: '',
+            allow: $scope.item.source_trunk_rule_default_allowed
+        });
+    };
+
     $scope.removeTrunkRule = function (index) {
         $scope.item.trunkRules.splice(index, 1);
+    };
+
+    $scope.removeTrunkRuleRoutingNum = function (index) {
+        $scope.item.trunkRulesRoutingNums.splice(index, 1);
     };
 
     $scope.getNumbersRuleMode = function (mode) {

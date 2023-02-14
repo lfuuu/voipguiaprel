@@ -390,6 +390,9 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
         findIntoRules: function (data) {
             return ApiLoader.post(url + 'get-trunks-with-group-into-rules', data);
         },
+        findIntoRulesRoutingNums: function (data) {
+            return ApiLoader.post(url + 'get-trunks-with-group-into-rules-routing-nums', data);
+        },
         findIntoPriorities: function (data) {
             return ApiLoader.post(url + 'get-trunks-with-group-into-priorities', data);
         },
@@ -2544,6 +2547,9 @@ app.factory('Nnp', function (ApiLoader) {
         },
         operatorList: function (data) {
             return ApiLoader.post(url + 'operator', data);
+        },
+        routeMncList: function(data) {
+            return ApiLoader.post(url + 'route-mnc', data);
         },
         ndcTypeList: function () {
             return ApiLoader.post(url + 'ndc-type');

@@ -54,6 +54,7 @@ class Prefixlist extends \yii\db\ActiveRecord
     const PREFIXLIST_TYPE_VOIP_REGISTRY = 12; // Реестр номеров
     const PREFIXLIST_TYPE_VOIP_NUMBER = 13; // Номера
     const PREFIXLIST_TYPE_GT = 14; // GT
+    const PREFIXLIST_TYPE_RN = 15; // Routing Number
 
     public $_subitems = [
         'prefixlistPrefix' => 'getPrefixlistPrefix',
@@ -498,6 +499,57 @@ class Prefixlist extends \yii\db\ActiveRecord
             $filters['operator_id'] = $input['gt_operator'];
             $filters['exclude_operators'] = array_key_exists('gt_is_exclude_operators', $input) ?
                 $input['gt_is_exclude_operators'] : '';
+        }
+
+        $this->nnp_filter_json = Json::encode($filters);
+        return $this;
+    }
+
+    /**
+     * @param array $input
+     * @return $this
+     */
+    public function setRnFilters(array $input)
+    {
+        $token = null;
+
+        if (!empty($this->nnp_filter_json)) {
+            $nnpFilter = json_decode($this->nnp_filter_json, true);
+
+            if (!empty($nnpFilter['token'])) {
+                $token = $nnpFilter['token'];
+                
+            }
+        }
+
+        $filters = [
+            'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
+            'use_nnp_ported' => isset($input['nnp_use_nnp_ported']) ? $input['nnp_use_nnp_ported'] : '',
+
+        ];
+
+        if (isset($input['rn_country']) && count($input['rn_country'])) {
+            $filters['country_code'] = $input['rn_country'];
+            $filters['exclude_country'] = array_key_exists('rn_is_exclude_country', $input) ?
+                $input['rn_is_exclude_country'] : '';
+        }
+
+        if (isset($input['rn_region']) && count($input['rn_region'])) {
+            $filters['region_code_fz'] = $input['rn_region'];
+            $filters['exclude_region_code_fz'] = array_key_exists('rn_is_exclude_region', $input) ?
+                $input['rn_is_exclude_region'] : '';
+        }
+
+        if (isset($input['rn_operator']) && count($input['rn_operator'])) {
+            $filters['operator_id'] = $input['rn_operator'];
+            $filters['exclude_operators'] = array_key_exists('rn_is_exclude_operators', $input) ?
+                $input['rn_is_exclude_operators'] : '';
+        }
+
+        if (isset($input['rn_route_mnc']) && count($input['rn_route_mnc'])) {
+            $filters['mnc'] = $input['rn_route_mnc'];
+            $filters['exclude_mnc'] = array_key_exists('rn_is_exclude_mnc', $input) ?
+                $input['rn_is_exclude_operators'] : '';
         }
 
         $this->nnp_filter_json = Json::encode($filters);

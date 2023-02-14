@@ -50,10 +50,12 @@ use yii\db\Query;
  * @property bool $internal_trunk
  * @property string $object_comment
  * @property bool $no_copy_numc_to_numa
+ * @property bool $no_copy_numc_to_numa
  * @property bool $rn_pricelist
  * @property bool $autocall
  * @property int $rounding_type
  * @property int $leg_type
+ * @property int $rn_enable
  *
  * @property \yii\db\ActiveQuery rulesSourceOrig
  * @property \yii\db\ActiveQuery rulesDestinationOrig
@@ -100,7 +102,7 @@ class Trunk extends \yii\db\ActiveRecord
                 'transparent_header', 'pbx', 'uplink_trunk', 'internal_trunk', 'no_copy_numc_to_numa',
                 'rn_pricelist', 'autocall'
             ], 'boolean'],
-            [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id', 'rounding_type', 'leg_type'], 'integer'],
+            [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id', 'rounding_type', 'leg_type', 'rn_enable'], 'integer'],
             [['back_trunk'], 'string', 'max' => 50],
             [['road_to_regions', 'trace_to_regions'], 'string', 'max' => 100],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],

@@ -94,9 +94,40 @@ class TrunkGroup extends \yii\db\ActiveRecord
                     'number_a_name' => 'number_a.name',
                     'number_b_name' => 'number_b.name',
                     'number_c_name' => 'number_c.name',
-                    'object_comment' => 'trunk_rules.object_comment'
+                    'object_comment' => 'trunk_rules.object_comment',
+                    'ac_mode' => 'trunk_rules.ac_mode'
                 ])
                 ->from(['trunk_rules' => TrunkTrunkRule::tableName()])
+                ->innerJoin(['trunk' => Trunk::tableName()], 'trunk.id = trunk_rules.trunk_id')
+                ->leftJoin(['number_a' => Number::tableName()], 'number_a.id = trunk_rules.number_id_filter_a')
+                ->leftJoin(['number_b' => Number::tableName()], 'number_b.id = trunk_rules.number_id_filter_b')
+                ->leftJoin(['number_c' => Number::tableName()], 'number_c.id = trunk_rules.number_id_filter_c')
+                ->where(['trunk_rules.trunk_group_id' => $this->id])
+                ->all();
+    }
+
+    /**
+     * @return array
+     */
+    public function getTrunksWithGroupIntoRulesRoutingNums()
+    {
+        return
+            (new Query)
+                ->select([
+                    'id' => 'trunk_rules.id',
+                    'trunk_id' => 'trunk.id',
+                    'trunk_name' => 'trunk.name',
+                    'trunk_source_trunk_rule_default_allowed' => 'trunk.source_trunk_rule_default_allowed',
+                    'number_a_id' => 'number_a.id',
+                    'number_b_id' => 'number_b.id',
+                    'number_c_id' => 'number_c.id',
+                    'number_a_name' => 'number_a.name',
+                    'number_b_name' => 'number_b.name',
+                    'number_c_name' => 'number_c.name',
+                    'object_comment' => 'trunk_rules.object_comment',
+                    'ac_mode' => 'trunk_rules.ac_mode'
+                ])
+                ->from(['trunk_rules' => TrunkTrunkRuleRoutingNum::tableName()])
                 ->innerJoin(['trunk' => Trunk::tableName()], 'trunk.id = trunk_rules.trunk_id')
                 ->leftJoin(['number_a' => Number::tableName()], 'number_a.id = trunk_rules.number_id_filter_a')
                 ->leftJoin(['number_b' => Number::tableName()], 'number_b.id = trunk_rules.number_id_filter_b')

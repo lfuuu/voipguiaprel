@@ -29,6 +29,7 @@
                         <button type="button" class="btn {{item.type_id == TYPE_ID_MANUAL ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_MANUAL)">Вручную</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_CSV ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_CSV)">CSV</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_NNP ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_NNP)">ННП</button>
+                        <button type="button" class="btn {{item.type_id == TYPE_ID_RN ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_RN)">Routing Num</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_7800 ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_7800)">7800</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_DID_ON_VPBX ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_DID_ON_VPBX)">Did на ВАТС</button>
                         <button type="button" class="btn {{item.type_id == TYPE_ID_FMC ? 'btn-primary active' : 'btn-default'}}" ng-click="setType(TYPE_ID_FMC)">FMC</button>
@@ -196,6 +197,77 @@
                         <span class="label label-danger" ng-if="generate_error">Ошибка!</span>
                     </div>
                 </div>
+            </div>
+
+            <div ng-if="item.type_id == TYPE_ID_RN">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Только портированные номера</label>
+                        <div class="col-sm-6">
+                            <div class="btn-group" ng-click="item.nnp_use_nnp_ported = !item.nnp_use_nnp_ported">
+                                <button type="button" class="btn btn-sm {{item.nnp_use_nnp_ported? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.nnp_use_nnp_ported ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            </div>
+                        </div>
+                    </div>  
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Страна</label>
+                        <div class="col-sm-6">
+                                <select ui-select2 ng-model="item.rn_country" multiple="multiple" style="width: 100%" >
+                                    <option ng-repeat="country in countryList" value="{{::country.code}}">{{::country.name_rus}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="btn-group">
+                                    <button type="button" class="btn {{!item.rn_is_exclude_country ? 'btn-primary active' : 'btn-default'}}" ng-click="item.rn_is_exclude_country = false">Выбранные</button>
+                                    <button type="button" class="btn {{item.rn_is_exclude_country ? 'btn-danger active' : 'btn-default'}}" ng-click="item.rn_is_exclude_country = true">Кроме выбранных</button>
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="form-group" ng-if="item.rn_country">
+                        <label class="col-sm-2 control-label">Регион</label>
+                        <div class="col-sm-6">
+                            <select ui-select2 ng-model="item.rn_region" multiple="multiple" style="width: 100%" >
+                                <option ng-repeat="region in rnRegionList" value="{{::region.region_code_fz}}">{{::region.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="btn-group">
+                                <button type="button" class="btn {{!item.rn_is_exclude_region ? 'btn-primary active' : 'btn-default'}}" ng-click="item.rn_is_exclude_region = false">Выбранные</button>
+                                <button type="button" class="btn {{item.rn_is_exclude_region ? 'btn-danger active' : 'btn-default'}}" ng-click="item.rn_is_exclude_region = true">Кроме выбранных</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="item.rn_country">
+                        <label class="col-sm-2 control-label">Оператор</label>
+                        <div class="col-sm-6">
+                            <select ui-select2 ng-model="item.rn_operator" multiple="multiple" style="width: 100%" >
+                                <option ng-repeat="operator in rnOperatorList" value="{{::operator.id}}">{{::operator.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="btn-group">
+                                <button type="button" class="btn {{!item.rn_is_exclude_operators ? 'btn-primary active' : 'btn-default'}}" ng-click="item.rn_is_exclude_operators = false">Выбранные</button>
+                                <button type="button" class="btn {{item.rn_is_exclude_operators ? 'btn-danger active' : 'btn-default'}}" ng-click="item.rn_is_exclude_operators = true">Кроме выбранных</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="item.rn_country"></div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">MNC</label>
+                            <div class="col-sm-6">
+                                <select ui-select2 ng-model="item.rn_route_mnc" multiple="multiple" style="width: 100%" >
+                                    <option ng-repeat="mnc in rnRouteMncList" value="{{::mnc.mnc}}">{{::mnc.mnc}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="btn-group">
+                                    <button type="button" class="btn {{!item.rn_is_exclude_mnc ? 'btn-primary active' : 'btn-default'}}" ng-click="item.rn_is_exclude_mnc = false">Выбранные</button>
+                                    <button type="button" class="btn {{item.rn_is_exclude_mnc ? 'btn-danger active' : 'btn-default'}}" ng-click="item.rn_is_exclude_mnc = true">Кроме выбранных</button>
+                                </div>
+                            </div>
+                        </div>
+
             </div>
 
             <div ng-if="item.type_id == TYPE_ID_NNP">

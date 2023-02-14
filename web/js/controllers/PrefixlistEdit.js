@@ -1,4 +1,4 @@
-var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, Nnp, Pbx, List, Server, params, $modalInstance, $window, Redirect) {
+var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, Nnp, Pbx, List, Server, params, $modalInstance, $window, Redirect, Mnc) {
 
     var STATUS_SUCCESS = 'SUCCESS';
     var STATUS_ERROR = 'ERROR';
@@ -14,6 +14,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     $scope.TYPE_ID_VOIP_REGISTRY = 12;
     $scope.TYPE_ID_VOIP_NUMBER = 13;
     $scope.TYPE_ID_GT = 14;
+    $scope.TYPE_ID_RN = 15;
 
     $scope.NNP_MODE_DIRECTION = 1;
     $scope.NNP_MODE_FILTER = 2;
@@ -24,7 +25,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
 
     var typeWithBuffer = [$scope.TYPE_ID_NNP, $scope.TYPE_ID_7800, $scope.TYPE_ID_DID_ON_VPBX, $scope.TYPE_ID_FMC,
         $scope.TYPE_ID_PARTED_NUM, $scope.TYPE_ID_ROAMING, $scope.TYPE_ID_VOIP_REGISTRY, $scope.TYPE_ID_VOIP_NUMBER,
-        $scope.TYPE_ID_GT];
+        $scope.TYPE_ID_GT, $scope.TYPE_ID_RN];
 
     var countryLoadComplete = false;
     var regionLoadComplete = false;
@@ -33,6 +34,10 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     var ndcLoadComplete = false;
     var gtRegionLoadComplete = false;
     var gtOperatorLoadComplete = false;
+    var rnRegionLoadComplete = false;
+    var rnOperatorLoadComplete = false;
+    var rnRouteMncLoadComplete = false;
+
 
     var watchers = {
         nnp_country: function (newValue, oldValue) {
@@ -210,6 +215,63 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                     cityLoadComplete = true;
                 });
             }
+        },
+        rn_country: function (newValue, oldValue) {
+            rnRegionLoadComplete = false;
+            rnOperatorLoadComplete = false;
+            
+
+            if (!newValue || newValue.length == 0) {
+                $scope.item.rn_region = null;
+                $scope.item.rn_operator = null;
+            }
+
+            if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
+                $scope.rnRegionList = null;
+                if (countryLoadComplete) {
+                    var region = $scope.item.rn_region;
+                    var operator = $scope.item.rn_operator;
+                    
+                }
+
+                Nnp.regionList({country_code: newValue}).then(function (data) {
+                    $scope.rnRegionList = data;
+                    if (countryLoadComplete) {
+                        $scope.item.rn_region = region;
+                        rnRegionLoadComplete = true;
+                    }
+                });
+
+                Nnp.operatorList({country_code: newValue}).then(function (data) {
+                    $scope.rnOperatorList = data;
+
+                    if (countryLoadComplete) {
+                        $scope.item.rn_operator = operator;
+                        rnOperatorLoadComplete = true;
+                    }
+                });
+            }
+        },
+        rn_operator: function (newValue, oldValue) {
+            rnRouteMncLoadComplete = false;
+            if (!newValue || newValue.length == 0) {
+                $scope.item.rn_route_mnc = null;
+            }
+
+            if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
+                $scope.rnRouteMncList = null;
+                if (operatorLoadComplete) {
+                    var routeMnc = $scope.item.rn_route_mnc;
+                }
+            }
+            Nnp.routeMncList({operator_id: newValue}).then(function (data) {
+                $scope.rnRouteMncList = data;
+
+                if (operatorLoadComplete) {
+                    $scope.item.rn_route_mnc = routeMnc;
+                    rnRouteMncLoadComplete = true;
+                }
+            });
         }
     };
 
@@ -254,6 +316,8 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             $scope.setVoipRegistryFields(data);
             $scope.setVoipNumberFields(data);
             $scope.setGtFields(data);
+            $scope.setRnFields(data);
+            $scope.setMncField(data);
 
             if ($scope.item.type_id == $scope.TYPE_ID_CSV) {
                 setTimeout(function () {
@@ -283,6 +347,8 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             $scope.$watch('item.number_country', watchers.number_country);
             $scope.$watch('item.number_region', watchers.number_region);
             $scope.$watch('item.gt_country', watchers.gt_country);
+            $scope.$watch('item.rn_country', watchers.rn_country);
+            $scope.$watch('item.rn_operator', watchers.rn_operator)
         });
 
         Prefixlist.findUsagesInNumbers({id: params.id}).then(function (data) {
@@ -330,6 +396,8 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
         $scope.$watch('item.number_country', watchers.number_country);
         $scope.$watch('item.number_region', watchers.number_region);
         $scope.$watch('item.gt_country', watchers.gt_country);
+        $scope.$watch('item.rn_country', watchers.rn_country);
+        $scope.$watch('item.rn_operator', watchers.rn_operator)
     }
 
     Billing.countries().then(function (data) {
@@ -782,6 +850,67 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             }
         }
     };
+
+    $scope.setRnFields = function (data) {
+        if ($scope.item.type_id == $scope.TYPE_ID_RN) {
+            try {
+                var filterData = $.parseJSON($scope.item.nnp_filter_json);
+
+                $scope.item.rn_country = filterData.country_code;
+                $scope.item.rn_is_exclude_country = filterData.exclude_country;
+                $scope.item.rn_is_exclude_region = filterData.exclude_region;
+                $scope.item.rn_is_exclude_operators = filterData.exclude_operators;
+
+                if ($scope.item.rn_country) {
+                    var regionList = Nnp.regionList({country_code: $scope.item.rn_country}).then(function (data) {
+                        rnRegionLoadComplete = true;
+                        $scope.rnRegionList = data;
+                        $scope.item.rn_region = filterData.region_id;
+                    });
+
+                    var operatorList = Nnp.operatorList({country_code: $scope.item.rn_country}).then(function (data) {
+                        $scope.rnOperatorList = data;
+                        $scope.item.rn_operator = filterData.operator_id;
+                    });
+
+                    $q.all([regionList, operatorList]).then(function () {
+                        $scope.saveEnabled = true;
+                    });
+                } else  {
+                    $scope.saveEnabled = true;
+                }
+            } catch (error) {
+                $scope.nnpDataParseError = true;
+            }
+        }
+    };
+
+    $scope.setMncField = function (data) {
+        if ($scope.item.type_id == $scope.TYPE_ID_RN) {
+            console.log(1);
+            try {
+                var filterData = $.parseJSON($scope.item.nnp_filter_json);
+                console.log(filterData);
+
+                $scope.item.rn_operator = filterData.operator_id;
+
+                if ($scope.item.rn_operator) {
+                    var routeMncList = Nnp.routeMncList({operator_id: $scope.item.rn_operator}).then(function (data) {
+                        $scope.rnRouteMncList = data;
+                        $scope.item.rn_route_mnc = filterData.operator_id;
+                    });
+                
+                    $q.all([routeMncList]).then(function () {
+                        $scope.saveEnabled = true;
+                    });
+                } else  {
+                    $scope.saveEnabled = true;
+                }
+            } catch (error) {
+                $scope.nnpDataParseError = true;
+            }
+        }
+    }
 
     $scope.back = function () {
         $modalInstance.close();

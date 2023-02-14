@@ -9,6 +9,7 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#trunk-group-tab-{{pageIdSuffix}}" data-toggle="tab">Группа транков</a></li>
             <li><a href="#rules-with-group-{{pageIdSuffix}}" data-toggle="tab">Правила с группой</a></li>
+            <li><a href="#rules-routing-num-with-group-{{pageIdSuffix}}" data-toggle="tab">Правила Routing Num с группой</a></li>
             <li><a href="#priority-with-group-{{pageIdSuffix}}" data-toggle="tab">Приоритеты с группой</a></li>
             <li><a href="#route-table-with-group-{{pageIdSuffix}}" data-toggle="tab">Таблицы маршрутизации с группой</a></li>
             <li><a href="#outcome-with-group-{{pageIdSuffix}}" data-toggle="tab">Outcome с группой</a></li>
@@ -67,11 +68,12 @@
                 </div>
             </div>
 
-            <div class="tab-pane" id="rules-with-group-{{pageIdSuffix}}">
+            <div class="tab-pane" id="rules-routing-num-with-group-{{pageIdSuffix}}">
                 <table class="table table-striped">
                     <colgroup>
                         <col width="10%" />
                         <col width="*" />
+                        <col width="15%" />
                         <col width="15%" />
                         <col width="15%" />
                         <col width="15%" />
@@ -86,6 +88,71 @@
                             <th>Номер-А</th>
                             <th>Номер-B</th>
                             <th>Номер-C</th>
+                            <th>A || C</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody ng-model="item.findIntoRulesRoutingNums">
+                        <tr ng-repeat="line in item.findIntoRulesRoutingNums">
+                            <td>
+                                {{line.trunk_id}}
+                            </td>
+                            <td style="cursor: pointer" ng-click="clickTrunkItem(line.trunk_id)">
+                                {{line.trunk_name}}
+                            </td>
+                            <td>
+                                <span ng-if="line.source_trunk_rule_default_allowed" class="label label-danger">Запрещено</span>
+                                <span ng-if="!line.source_trunk_rule_default_allowed" class="label label-success">Разрешено</span>
+                            </td>
+                            <td>
+                                <span ng-if="line.number_a_id">
+                                    {{line.number_a_name}}
+                                </span>
+                            </td>
+                            <td>
+                                <span ng-if="line.number_b_id">
+                                    {{line.number_b_name}}
+                                </span>
+                            </td>
+                            <td>
+                                <span ng-if="line.number_c_id">
+                                    {{line.number_c_name}}
+                                </span>
+                            </td>
+                            <td>
+                                <span ng-if="line.ac_mode">
+                                    {{line.ac_mode == 1 ? 'Вкл' : 'Выкл'}} 
+                                </span>
+                            </td>
+                            <td>
+                                <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane" id="rules-with-group-{{pageIdSuffix}}">
+                <table class="table table-striped">
+                    <colgroup>
+                        <col width="10%" />
+                        <col width="*" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="1%" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>ID транка</th>
+                            <th>Название транка</th>
+                            <th>По-умолчанию</th>
+                            <th>Номер-А</th>
+                            <th>Номер-B</th>
+                            <th>Номер-C</th>
+                            <th>A || C</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -114,6 +181,11 @@
                             <td>
                                 <span ng-if="line.number_c_id">
                                     {{line.number_c_name}}
+                                </span>
+                            </td>
+                            <td>
+                                <span >
+                                    {{line.ac_mode == 1 ? 'Вкл' : 'Выкл'}} 
                                 </span>
                             </td>
                             <td>
