@@ -599,7 +599,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             delete data.rn_is_exclude_operators;
             delete data.rn_is_exclude_mnc;
             delete data.rn_use_nnp_ported;
-        } else {
+        } else if ($scope.item.type_id == $scope.TYPE_ID_RN) {
             data.rn_region_fz = [];
             for (let i of data.rn_region) {
                 i = JSON.parse(i);
