@@ -2213,13 +2213,22 @@ app.factory('SimImsi', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('Currency', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/currency/';
+    return {
+        list: function () {
+            return ApiLoader.post(url + 'list');
+        },
+    }
+});
+
 app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     RouteCase, Outcome, Number, NumberAll, Destination,
     Airp, ReleaseReason, RouteTable, Network,
     Attribute, Server, FmcTrunk, Cpc, Hub,
     PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
     MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-    User, ServerOcs, SimImsi, LegType, AlphaNumber,AlphaNumberGroup) {
+    User, ServerOcs, SimImsi, LegType, AlphaNumber,AlphaNumberGroup, Currency) {
     return {
         trunk: function () {
             return Trunk.list();
@@ -2335,6 +2344,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         legType: function () {
             return LegType.list();
         },
+        currency: function () {
+            return Currency.list();
+        },
         testResult: function () {
             return [
                 { 'id': 'not_executed', 'name': 'Не выполнен' },
@@ -2347,15 +2359,6 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
                 { 'id': 1, 'name': 'all' },
                 { 'id': 2, 'name': 'inc' },
                 { 'id': 3, 'name': 'exc' }
-            ];
-        },
-        currency: function () {
-            return [
-                { 'id': 'RUB', 'name': 'RUB' },
-                { 'id': 'EUR', 'name': 'EUR' },
-                { 'id': 'HUF', 'name': 'HUF' },
-                { 'id': 'USD', 'name': 'USD' },
-                { 'id': 'KZT', 'name': 'KZT' }
             ];
         },
         location: function () {

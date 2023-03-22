@@ -46,7 +46,9 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
         $scope.groupList = data;
     });
 
-    $scope.currency = List.currency();
+    List.currency().then(function (data) {
+        $scope.currency = data;
+    })
 
     $scope.clickSearch = function () {
         $scope.refreshList();

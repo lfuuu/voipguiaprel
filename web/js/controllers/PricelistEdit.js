@@ -39,7 +39,9 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
         }
     }
 
-    $scope.currency = List.currency();
+    List.currency().then(function (data) {
+        $scope.currency = data;
+    })
 
     List.pricelistGroup().then(function (data) {
         $scope.pricelistGroupList = data;
