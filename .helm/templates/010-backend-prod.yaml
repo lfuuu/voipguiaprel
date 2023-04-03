@@ -70,6 +70,9 @@ spec:
         - name: shared-healthdata
           mountPath: /app/assets
       - name: php-fpm
+        resources:
+          limits:
+            memory: "18Gi"
 {{ tuple (printf "%s-%s" .Chart.Name "php-fpm-prod") . | werf_container_image | indent 8 }}
         volumeMounts:
         - name: config-volume
