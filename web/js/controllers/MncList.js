@@ -37,7 +37,7 @@ var MncListCtrl = function ($scope, Mnc, Redirect, $window) {
     $scope.deleteItem = function (item) {
         if (!$window.confirm('Удалить?')) return;
 
-        Mnc.delete(item.mnc).then(function (response) {
+        Mnc.delete(item).then(function (response) {
             $scope.init()
         });
     };

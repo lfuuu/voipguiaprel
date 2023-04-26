@@ -137,8 +137,12 @@ class MncController extends JsonController
         if (!\Yii::$app->user->can('mnc_delete')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
-        $item = Mnc::findOne(['mnc' => $this->request['id']]);
+
+        $item = Mnc::findOne([
+            'mnc' => (int)$this->request['id']['mnc'], 
+            'mcc' => $this->request['id']['mcc']
+        ]);
+
         $item->delete();
     }
 }
