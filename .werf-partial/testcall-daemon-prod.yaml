@@ -23,6 +23,7 @@ ansible:
       set -e
       sed -i -e "s/DPkg::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
       sed -i -e "s/APT::Update::Post-Invoke.*//" /etc/apt/apt.conf.d/docker-clean
+      echo "deb http://archive.debian.org/debian stretch main contrib non-free" > /etc/apt/sources.list
   - name: "Install additional packages"
     apt:
       state: present
