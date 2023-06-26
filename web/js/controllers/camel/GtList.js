@@ -23,7 +23,7 @@ var CamelGtListCtrl = function($scope, CamelGt, Redirect, $window) {
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['camel_gt_edit']) {
+        if (!userPermissions['camel_gt_list']) {
             return;
         }
 

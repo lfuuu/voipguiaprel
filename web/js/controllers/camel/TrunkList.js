@@ -23,7 +23,7 @@ var CamelTrunkListCtrl = function($scope, CamelTrunk, Redirect, $window) {
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['camel_trunk_edit']) {
+        if (!userPermissions['camel_trunk_list']) {
             return;
         }
 

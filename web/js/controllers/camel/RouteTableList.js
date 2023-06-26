@@ -23,7 +23,7 @@ var CamelRouteTableListCtrl = function($scope, CamelRouteTable, Redirect, $windo
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['camel_route_table_edit']) {
+        if (!userPermissions['camel_route_table_list']) {
             return;
         }
 
