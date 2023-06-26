@@ -23,7 +23,7 @@ var RouteCaseListCtrl = function($scope, RouteCase, Redirect, $window) {
 	};
 
 	$scope.clickItem = function(item) {
-        if (!userPermissions['route_case_edit']) {
+        if (!userPermissions['route_case_list']) {
             return;
         }
 

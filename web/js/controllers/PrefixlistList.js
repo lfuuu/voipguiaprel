@@ -23,7 +23,7 @@ var PrefixlistListCtrl = function($scope, Prefixlist, Redirect, $window) {
 	};
 
 	$scope.clickItem = function(item) {
-        if (!userPermissions['prefixlist_edit']) {
+        if (!userPermissions['prefixlist_list']) {
             return;
         }
 

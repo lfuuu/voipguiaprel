@@ -35,4 +35,27 @@ class GtController extends JsonController
 
         return $items;
     }
+
+    public function actionGet()
+    {
+        if (!\Yii::$app->user->can($this->listPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $modelName = $this->modelName;
+        $item = $modelName::find()
+            ->select($this->getSelect)
+            ->with($this->withDependencies)
+            ->where([$this->idParamName => $this->request[$this->idParamName]])
+            ->asArray()
+            ->one();
+
+        if ($item === null) {
+            throw new HttpException(404, $modelName . ' не найден');
+        }
+
+        $item = $this->performAfterGetActions($item);
+
+        return $item;
+    }
 }

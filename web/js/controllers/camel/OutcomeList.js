@@ -33,7 +33,7 @@ var CamelOutcomeListCtrl = function($scope, CamelOutcome, CamelList, Redirect, $
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['camel_outcome_edit']) {
+        if (!userPermissions['camel_outcome_list']) {
             return;
         }
 

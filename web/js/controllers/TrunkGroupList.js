@@ -22,7 +22,7 @@ var TrunkGroupListCtrl = function($scope, TrunkGroup, Redirect, $window) {
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['trunk_group_edit']) {
+        if (!userPermissions['trunk_group_list']) {
             return;
         }
 
