@@ -11,7 +11,7 @@ class FmcTrunkController extends JsonController
 {
     public function actionList()
     {
-        if (!\Yii::$app->user->can('prefixlist_edit') && !\Yii::$app->user->can('prefixlist_create')) {
+        if (!\Yii::$app->user->can('prefixlist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

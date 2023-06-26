@@ -52,7 +52,7 @@ class OutcomeController extends JsonController
 
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('outcome_edit')) {
+        if (!\Yii::$app->user->can('outcome_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -143,7 +143,7 @@ class OutcomeController extends JsonController
      */
     public function actionFindUsagesInRouteTables()
     {
-        if (!\Yii::$app->user->can('outcome_edit')) {
+        if (!\Yii::$app->user->can('outcome_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

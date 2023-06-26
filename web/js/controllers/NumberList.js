@@ -23,7 +23,7 @@ var NumberListCtrl = function($scope, Number, Redirect, $window) {
 	};
 
 	$scope.clickItem = function(item) {
-        if (!userPermissions['number_edit']) {
+        if (!userPermissions['number_list']) {
             return;
         }
 

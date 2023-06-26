@@ -154,7 +154,7 @@ class PrefixlistController extends JsonController
      */
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('prefixlist_edit')) {
+        if (!\Yii::$app->user->can('prefixlist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -576,7 +576,7 @@ SQL;
      */
     public function actionFindUsagesInNumbers()
     {
-        if (!\Yii::$app->user->can('prefixlist_edit')) {
+        if (!\Yii::$app->user->can('prefixlist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -591,7 +591,7 @@ SQL;
      */
     public function actionFindUsagesInTrunkABRules()
     {
-        if (!\Yii::$app->user->can('prefixlist_edit')) {
+        if (!\Yii::$app->user->can('prefixlist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

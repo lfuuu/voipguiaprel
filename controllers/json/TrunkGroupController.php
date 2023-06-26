@@ -91,7 +91,7 @@ class TrunkGroupController extends JsonController
      */
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('trunk_group_edit')) {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -117,7 +117,7 @@ class TrunkGroupController extends JsonController
      */
     public function actionGetTrunksWithGroupIntoRules()
     {
-        if (!\Yii::$app->user->can('trunk_group_edit')) {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -132,7 +132,7 @@ class TrunkGroupController extends JsonController
      */
     public function actionGetTrunksWithGroupIntoRulesRoutingNums()
     {
-        if (!\Yii::$app->user->can('trunk_group_edit')) {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -147,7 +147,7 @@ class TrunkGroupController extends JsonController
      */
     public function actionGetTrunksWithGroupIntoPriorities()
     {
-        if (!\Yii::$app->user->can('trunk_group_edit')) {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -162,7 +162,7 @@ class TrunkGroupController extends JsonController
      */
     public function actionGetRouteTablesWithGroup()
     {
-        if (!\Yii::$app->user->can('trunk_group_edit')) {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -177,7 +177,7 @@ class TrunkGroupController extends JsonController
      */
     public function actionGetOutcomesWithGroup()
     {
-        if (!\Yii::$app->user->can('trunk_group_edit')) {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -192,7 +192,7 @@ class TrunkGroupController extends JsonController
      */
     public function actionGetGroupsWithGroup()
     {
-        if (!\Yii::$app->user->can('trunk_group_edit')) {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -207,7 +207,7 @@ class TrunkGroupController extends JsonController
      */
     public function actionGetRouteReplaceWithGroup()
     {
-        if (!\Yii::$app->user->can('trunk_group_edit')) {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

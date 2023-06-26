@@ -53,7 +53,7 @@ class RouteCaseController extends JsonController
 
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('route_case_edit')) {
+        if (!\Yii::$app->user->can('route_case_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -139,7 +139,7 @@ class RouteCaseController extends JsonController
      */
     public function actionFindUsagesInOutcomes()
     {
-        if (!\Yii::$app->user->can('route_case_edit')) {
+        if (!\Yii::$app->user->can('route_case_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

@@ -95,7 +95,7 @@ class NumberController extends JsonController
 
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('number_edit')) {
+        if (!\Yii::$app->user->can('number_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -169,7 +169,7 @@ class NumberController extends JsonController
      */
     public function actionFindUsagesInRouteTables()
     {
-        if (!\Yii::$app->user->can('number_edit')) {
+        if (!\Yii::$app->user->can('number_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -184,7 +184,7 @@ class NumberController extends JsonController
      */
     public function actionFindUsagesInTrunkPriority()
     {
-        if (!\Yii::$app->user->can('number_edit')) {
+        if (!\Yii::$app->user->can('number_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -199,7 +199,7 @@ class NumberController extends JsonController
      */
     public function actionFindUsagesInTrunkRules()
     {
-        if (!\Yii::$app->user->can('number_edit')) {
+        if (!\Yii::$app->user->can('number_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -214,7 +214,7 @@ class NumberController extends JsonController
      */
     public function actionFindUsagesInStatRules()
     {
-        if (!\Yii::$app->user->can('number_edit')) {
+        if (!\Yii::$app->user->can('number_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

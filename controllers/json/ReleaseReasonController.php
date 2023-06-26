@@ -49,7 +49,7 @@ class ReleaseReasonController extends JsonController
 
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('release_reason_edit')) {
+        if (!\Yii::$app->user->can('release_reason_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

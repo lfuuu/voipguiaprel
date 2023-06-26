@@ -51,7 +51,7 @@ class RouteTableController extends JsonController
 
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('route_table_edit')) {
+        if (!\Yii::$app->user->can('route_table_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

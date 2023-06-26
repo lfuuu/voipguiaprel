@@ -25,7 +25,7 @@ var TrunkListCtrl = function($scope, Trunk, Redirect, $window) {
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['trunk_edit']) {
+        if (!userPermissions['trunk_list']) {
             return;
         }
 

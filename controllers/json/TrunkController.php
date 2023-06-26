@@ -196,7 +196,7 @@ class TrunkController extends JsonController
      */
     public function actionGet()
     {
-        if (!\Yii::$app->user->can('trunk_edit')) {
+        if (!\Yii::$app->user->can('trunk_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         
@@ -389,7 +389,7 @@ class TrunkController extends JsonController
      */
     public function actionGetServiceTrunks()
     {
-        if (!\Yii::$app->user->can('trunk_edit') && !\Yii::$app->user->can('trunk_create')) {
+        if (!\Yii::$app->user->can('trunk_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
 
@@ -572,7 +572,7 @@ class TrunkController extends JsonController
      */
     public function actionFindUsagesInTrunkGroups()
     {
-        if (!\Yii::$app->user->can('trunk_edit')) {
+        if (!\Yii::$app->user->can('trunk_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
         

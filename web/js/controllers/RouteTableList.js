@@ -23,7 +23,7 @@ var RouteTableListCtrl = function($scope, RouteTable, Redirect, $window) {
 	};
 
 	$scope.clickItem = function(item) {
-        if (!userPermissions['route_table_edit']) {
+        if (!userPermissions['route_table_list']) {
             return;
         }
 

@@ -23,7 +23,7 @@ var OutcomeListCtrl = function($scope, Outcome, Redirect, $window) {
 	};
 
 	$scope.clickItem = function(item) {
-        if (!userPermissions['outcome_edit']) {
+        if (!userPermissions['outcome_list']) {
             return;
         }
 
