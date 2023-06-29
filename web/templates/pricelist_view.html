@@ -108,7 +108,7 @@
                 <td style="background-color: #AAAABB; border-left: 1px solid grey;" ng-if="item.is_filter_a_header"></td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header" colspan="6"></td>
                 <td style="text-align: center; background-color: #AAAABB" ng-if="item.is_filter_a_header">
-                    <b>Фильтр А</b>
+                    <b style ="cursor: pointer" ng-click="editFilterA(item.fiter_a_header_id)">Фильтр А (#{{item.fiter_a_header_id}})</b>
                 </td>
                 <td style="background-color: #AAAABB" ng-if="item.is_filter_a_header" colspan="13"></td>
                 <!-- Колонки фильтра А -------------------------------------------------->
