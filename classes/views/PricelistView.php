@@ -122,7 +122,7 @@ class PricelistView
             
             if (!isset($result[$filterAKey]['is_filter_a']) || ($result[$filterAKey]['is_filter_a'] && $result[$filterAKey]['id'] != $queryItem['pfa__id'])) {
                 if ($filterAKey != ($counter - 1)) {
-                    $result[$counter] = ['is_filter_a_header' => true];
+                    $result[$counter] = ['is_filter_a_header' => true, 'fiter_a_header_id' => $queryItem['pfa__id']];
                     $counter++;
                     $result[$counter] = ['is_filter_a_header_columns' => true];
                     $counter++;
