@@ -180,6 +180,13 @@
     <thead>
     <tr>
         <th width="5%">
+            <a href="#" ng-click="sortType = 'setup_time'; sortReverse = !sortReverse">
+                Start time
+                <span ng-show="sortType == 'setup_time' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'setup_time' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
+        <th width="5%">
             <a href="#" ng-click="sortType = 'connect_time'; sortReverse = !sortReverse">
                 Connect time
                 <span ng-show="sortType == 'connect_time' && sortReverse" class="caret-down"></span>
@@ -261,6 +268,7 @@
     <tbody>
 
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse">
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.setup_time}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.connect_time}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.src_route}}</td>
