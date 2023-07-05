@@ -32,8 +32,16 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
 
       return function (scope, elm, attrs, controller) {
         // instance-specific options
+        if (attrs.uiSelect2) {
+          options = {
+            matcher: function matchFunction(params,data) {
+              if ((params == data.substring(0, params.length)) && params.length > 0) {
+                return data;
+              }
+            }
+          }
+        }
         var opts = angular.extend({}, options, scope.$eval(attrs.uiSelect2));
-
         /*
         Convert from Select2 view-model to Angular view-model.
         */
