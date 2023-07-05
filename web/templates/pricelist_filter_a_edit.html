@@ -243,7 +243,7 @@
                     <div class="form-group" ng-if="item.nnp_country">
                         <label class="col-sm-2 control-label">NDC</label>
                         <div ng-if="ndcList && ndcList.length > 0" class="col-sm-7">
-                            <select ui-select2 ng-model="item.nnp_ndc" multiple="multiple" style="width: 100%">
+                            <select ui-select2="{ allow: true}" ng-model="item.nnp_ndc" multiple="multiple" style="width: 100%">
                                 <option ng-repeat="ndc in ndcList" value="{{ndc.id}}">{{ndc.name}}
                                 </option>
                             </select>
