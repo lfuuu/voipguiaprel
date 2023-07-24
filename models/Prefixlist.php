@@ -368,22 +368,59 @@ class Prefixlist extends \yii\db\ActiveRecord
                 $token = $nnpFilter['token'];
             }
         }
-        
+
         $filters = [
-            'country_code' => isset($input['number_country']) ? $input['number_country'] : '',
-            'region_id' => isset($input['number_region']) ? $input['number_region'] : '',
-            'city_id' => isset($input['number_city']) ? $input['number_city'] : '',
-            'ndc_type_id' => isset($input['number_ndc_type']) ? $input['number_ndc_type'] : '',
-            'source' => isset($input['number_source']) ? $input['number_source'] : '',
-            'status' => isset($input['number_status']) ? $input['number_status'] : '',
-            'exclude_country_code' => isset($input['number_exclude_country']) ? $input['number_exclude_country'] : '',
-            'exclude_region_id' => isset($input['number_exclude_region']) ? $input['number_exclude_region'] : '',
-            'exclude_city_id' => isset($input['number_exclude_city']) ? $input['number_exclude_city'] : '',
-            'exclude_ndc_type_id' => isset($input['number_exclude_ndc_type']) ? $input['number_exclude_ndc_type'] : '',
-            'exclude_source' => isset($input['number_exclude_source']) ? $input['number_exclude_source'] : '',
-            'exclude_status' => isset($input['number_exclude_status']) ? $input['number_exclude_status'] : '',
             'token' => $token ? $token : bin2hex(openssl_random_pseudo_bytes(16)),
         ];
+        
+        if (isset($input['nnp_operator']) && count($input['nnp_operator'])) {
+            $filters['operator_id'] = $input['nnp_operator'];
+            $filters['exclude_operators'] = array_key_exists('nnp_is_exclude_operators', $input) ?
+                $input['nnp_is_exclude_operators'] :
+                '';
+        }
+    
+        if (isset($input['number_country']) && count($input['number_country'])) {
+            $filters['country_code'] = $input['number_country'];
+            $filters['exclude_country'] = array_key_exists('number_exclude_country', $input) ?
+                $input['number_exclude_country'] :
+                '';
+        }
+    
+        if (isset($input['number_region']) && count($input['number_region'])) {
+            $filters['region_id'] = $input['number_region'];
+            $filters['exclude_region'] = array_key_exists('number_exclude_region', $input) ?
+                $input['number_exclude_region'] :
+                '';
+        }
+    
+        if (isset($input['number_city']) && count($input['number_city'])) {
+            $filters['city_id'] = $input['number_city'];
+            $filters['exclude_city_id'] = array_key_exists('number_exclude_city', $input) ?
+                $input['number_exclude_city'] :
+                '';
+        }
+    
+        if (isset($input['number_ndc_type']) && count($input['number_ndc_type'])) {
+            $filters['ndc_type_id'] = $input['number_ndc_type'];
+            $filters['exclude_ndc_type'] = array_key_exists('number_exclude_ndc_type', $input) ?
+                $input['number_exclude_ndc_type'] :
+                '';
+        }
+
+        if (isset($input['number_source']) && count($input['number_source'])) {
+            $filters['source'] = $input['number_source'];
+            $filters['exclude_source'] = array_key_exists('number_exclude_source', $input) ?
+                $input['number_exclude_source'] :
+                '';
+        }
+    
+        if (isset($input['number_status']) && count($input['number_status'])) {
+            $filters['status'] = $input['number_status'];
+            $filters['exclude_status'] = array_key_exists('number_exclude_status', $input) ?
+                $input['number_exclude_status'] :
+                '';
+        }
         
         $this->nnp_filter_json = Json::encode($filters);
         return $this;

@@ -37,6 +37,9 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     var rnRegionLoadComplete = false;
     var rnOperatorLoadComplete = false;
     var rnRouteMncLoadComplete = false;
+    var vnCountryLoadComplete = false;
+    var vnRegionLoadComplete = false;
+    var vnCityLoadComplete = false;
 
 
     var watchers = {
@@ -151,7 +154,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             }
         },
         number_country: function (newValue, oldValue) {
-            regionLoadComplete = false;
+            vnRegionLoadComplete = false;
             if (!newValue || newValue.length == 0) {
                 $scope.item.number_region = null;
                 $scope.item.number_city = null;
@@ -160,7 +163,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             if (JSON.stringify(newValue) != JSON.stringify(oldValue)) {
                 $scope.regionList = null;
 
-                if (countryLoadComplete) {
+                if (vnCountryLoadComplete) {
                     var region = $scope.item.number_region;
                     var city = $scope.item.number_city;
                 }
@@ -168,10 +171,10 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 Nnp.regionList({country_code: newValue}).then(function (data) {
                     $scope.regionList = data;
 
-                    if (countryLoadComplete) {
+                    if (vnCountryLoadComplete) {
                         $scope.item.number_region = region;
                         $scope.item.number_city = city;
-                        regionLoadComplete = true;
+                        vnRegionLoadComplete = true;
                     }
                 });
             }
@@ -197,7 +200,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             }
         },
         number_region: function (newValue, oldValue) {
-            cityLoadComplete = false;
+            vnCityLoadComplete = false;
             if (!newValue || newValue.length == 0) {
                 $scope.item.number_city = null;
             }
@@ -210,9 +213,9 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 Nnp.cityList({country_code: $scope.item.number_country, region: newValue}).then(function (data) {
                     $scope.cityList = data;
                     $scope.cities = data;
-
+                    // $scope.item.number_region = newValue;
                     $scope.item.number_city = city;
-                    cityLoadComplete = true;
+                    vnCityLoadComplete = true;
                 });
             }
         },
@@ -358,6 +361,18 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             nnp_is_exclude_region: false,
             nnp_is_exclude_ndc_type: false,
             nnp_is_exclude_ndc: false,
+            number_country: null,
+            number_region: null,
+            number_city: null,
+            number_ndc_type: null,
+            number_source: null,
+            number_status: null,
+            number_exclude_country: false,
+            number_exclude_region: false,
+            number_exclude_city: false,
+            number_exclude_ndc_type: false,
+            number_exclude_source: false,
+            number_exclude_status: false,
             rn_region: null,
             rn_region_fz:null,
             rn_country: null,
@@ -813,8 +828,6 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                                 $scope.cities = data;
                                 $scope.saveEnabled = true;
                             });
-                        } else {
-                            $scope.saveEnabled = true;
                         }
                     });
                 } else {
