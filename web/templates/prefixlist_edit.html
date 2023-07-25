@@ -525,7 +525,8 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Страна</label>
                     <div class="col-sm-6">
-                        <select ui-select2 ng-model="item.number_country" multiple="multiple" style="width: 100%" >
+                        <select ui-select2 ng-model="item.number_country" style="width: 100%" >
+                            <option value="">-- Выберите --</option>
                             <option ng-repeat="country in countryList" value="{{::country.code}}">{{::country.name_rus}}</option>
                         </select>
                     </div>
@@ -540,7 +541,8 @@
                 <div class="form-group" ng-if="item.number_country">
                     <label class="col-sm-2 control-label">Регион</label>
                     <div class="col-sm-6">
-                        <select ui-select2 ng-model="item.number_region" multiple="multiple" style="width: 100%" >
+                        <select ui-select2 ng-model="item.number_region" style="width: 100%" >
+                            <option value="">-- Выберите --</option>
                             <option ng-repeat="region in regionList" value="{{::region.id}}">{{::region.name}}</option>
                         </select>
                     </div>
@@ -555,7 +557,8 @@
                 <div class="form-group" ng-if="item.number_country && item.number_region">
                     <label class="col-sm-2 control-label">Город</label>
                     <div class="col-sm-6">
-                        <select ui-select2 ng-model="item.number_city" multiple="multiple" style="width: 100%" >
+                        <select ui-select2 ng-model="item.number_city" style="width: 100%" >
+                            <option value="">-- Выберите --</option>
                             <option ng-repeat="city in cityList" value="{{::city.id}}">{{::city.name}}</option>
                         </select>
                     </div>
@@ -570,7 +573,8 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Тип NDC</label>
                     <div class="col-sm-6">
-                        <select ui-select2 ng-model="item.number_ndc_type" multiple="multiple" style="width: 100%" >
+                        <select ui-select2 ng-model="item.number_ndc_type" style="width: 100%" >
+                            <option value="">-- Выберите --</option>
                             <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}</option>
                         </select>
                     </div>
@@ -585,7 +589,8 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Источник</label>
                     <div class="col-sm-6">
-                        <select ui-select2 ng-model="item.number_source" multiple="multiple" style="width: 100%" >
+                        <select ui-select2 ng-model="item.number_source" style="width: 100%" >
+                            <option value="">-- Выберите --</option>
                             <option ng-repeat="source in numberSourceList" value="{{::source.id}}">{{::source.name}}</option>
                         </select>
                     </div>
@@ -600,7 +605,8 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Статус</label>
                     <div class="col-sm-6">
-                        <select ui-select2 ng-model="item.number_status" multiple="multiple" style="width: 100%" >
+                        <select ui-select2 ng-model="item.number_status" style="width: 100%" >
+                            <option value="">-- Выберите --</option>
                             <option ng-repeat="status in numberStatusList" value="{{::status.id}}">{{::status.name}}</option>
                         </select>
                     </div>
@@ -608,6 +614,21 @@
                         <div class="btn-group">
                             <button type="button" class="btn {{!item.number_exclude_status ? 'btn-primary active' : 'btn-default'}}" ng-click="item.number_exclude_status = false">Выбранные</button>
                             <button type="button" class="btn {{item.number_exclude_status ? 'btn-danger active' : 'btn-default'}}" ng-click="item.number_exclude_status = true">Кроме выбранных</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Статус v2</label>
+                    <div class="col-sm-6">
+                        <select ui-select2 ng-model="item.number_statuses" multiple="multiple" style="width: 100%" >
+                            <option ng-repeat="status in numberStatusList" value="{{::status.id}}">{{::status.name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="btn-group">
+                            <button type="button" class="btn {{!item.number_exclude_statuses ? 'btn-primary active' : 'btn-default'}}" ng-click="item.number_exclude_statuses = false">Выбранные</button>
+                            <button type="button" class="btn {{item.number_exclude_statuses ? 'btn-danger active' : 'btn-default'}}" ng-click="item.number_exclude_statuses = true">Кроме выбранных</button>
                         </div>
                     </div>
                 </div>
