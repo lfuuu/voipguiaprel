@@ -391,6 +391,39 @@ class Prefixlist extends \yii\db\ActiveRecord
                 $input['number_exclude_statuses'] :
                 '';
         }
+
+        if (isset($input['number_countries']) && count($input['number_countries'])) {
+            $filters['country_codes'] = $input['number_countries'];
+            $filters['exclude_country_codes'] = array_key_exists('number_exclude_countries', $input) ?
+                $input['number_exclude_countries'] :
+                '';
+        }
+        if (isset($input['number_regions']) && count($input['number_regions'])) {
+            $filters['region_ids'] = $input['number_regions'];
+            $filters['exclude_region_ids'] = array_key_exists('number_exclude_regions', $input) ?
+                $input['number_exclude_regions'] :
+                '';
+        }
+        if (isset($input['number_cities']) && count($input['number_cities'])) {
+            $filters['city_ids'] = $input['number_cities'];
+            $filters['exclude_city_ids'] = array_key_exists('number_exclude_cities', $input) ?
+                $input['number_exclude_cities'] :
+                '';
+        }
+
+        if (isset($input['number_ndc_types']) && count($input['number_ndc_types'])) {
+            $filters['ndc_type_ids'] = $input['number_ndc_types'];
+            $filters['exclude_ndc_type_ids'] = array_key_exists('number_exclude_ndc_types', $input) ?
+                $input['number_exclude_ndc_types'] :
+                '';
+        }
+        
+        if (isset($input['number_sources']) && count($input['number_sources'])) {
+            $filters['sources'] = $input['number_sources'];
+            $filters['exclude_sources'] = array_key_exists('number_exclude_sources', $input) ?
+                $input['number_exclude_sources'] :
+                '';
+        }
         
         $this->nnp_filter_json = Json::encode($filters);
         return $this;
