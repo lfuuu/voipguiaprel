@@ -906,7 +906,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             try {
                 var filterData = $.parseJSON($scope.item.nnp_filter_json);
 
-                $scope.item.number_countries = filterData.country_codes ? filterData.statuses : null;
+                $scope.item.number_countries = filterData.country_codes ? filterData.country_codes : null;
                 $scope.item.number_ndc_types = filterData.ndc_type_ids ? filterData.ndc_type_ids : null;
                 $scope.item.number_sources = filterData.sources ? filterData.sources : null ;
                 $scope.item.number_statuses = filterData.statuses ? filterData.statuses : null;
@@ -918,11 +918,11 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 $scope.item.number_exclude_sources = filterData.exclude_sources ? filterData.exclude_sources : null;
                 $scope.item.number_exclude_statuses = filterData.exclude_statuses ? filterData.exclude_statuses : null;;
 
-                if ($scope.item.number_country) {
+                if ($scope.item.number_countries) {
                     Nnp.regionList({country_code: $scope.item.number_countries}).then(function (data) {
                         regionLoadCompleteV2 = true;
                         $scope.regionListV2 = data;
-                        $scope.item.number_regions = filterData.region_ids;
+                        $scope.item.number_regions = filterData.region_ids ? filterData.region_ids : null ;
 
                         if ($scope.item.number_regions) {
                             $scope.item.number_cities = filterData.city_ids;
