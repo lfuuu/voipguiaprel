@@ -19,6 +19,7 @@ use yii\web\HttpException;
 class MajorController extends JsonController
 {
     const API_URL = 'http://reg10.mcntelecom.ru:8032/';
+    const API_URL_EU = 'http://reg10.mcntelecom.hu:8032/';
     
     public function actionList()
     {
@@ -222,10 +223,12 @@ class MajorController extends JsonController
         if (!\Yii::$app->user->can('major_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
+
+        $isEu = \Yii::$app->params['isEuropean'];
         
         $item = $this->getMajorOr404($this->request['id']);
     
-        $apiUrl = self::API_URL;
+        $apiUrl = $isEu ? self::API_URL_EU : self::API_URL;
         
         $filter = json_decode($item->nnp_filter_json, true);
         
