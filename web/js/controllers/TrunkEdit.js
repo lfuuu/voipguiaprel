@@ -1,6 +1,10 @@
 var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, $modalInstance, STAT_HOST, $window) {
     var serverId;
 
+    $scope.MTS_ANTIFRAUD = 1;
+    $scope.EPVV_ANTIFRAUD = 2;
+    $scope.nnpMode = $scope.MTS_ANTIFRAUD;
+
     if (params.server_id) {
         serverId = params.server_id;
     } else {
@@ -99,6 +103,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             priorities: [],
             trunkRules: [],
             trunkRulesRn: [],
+            trunkRulesAntifraud: [],
             numberPreprocessing: [],
             loadLimit: [],
             numbersRules: {},
@@ -108,6 +113,10 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             term_afilter_default_allowed: true,
             term_bfilter_default_allowed: true,
             term_cfilter_default_allowed: true,
+            mts_orig: true,
+            epvv_orig: true,
+            mts_term: true,
+            epvv_term: true,
             location_id: 1,
             rounding_type: 2,
             sorm: {
@@ -232,6 +241,25 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             trunk_group_id: '',
             allow: $scope.item.source_trunk_rule_default_allowed
         });
+    };
+
+    $scope.addTrunkAntifraudRule = function (defaultMode, type, is_orig) {
+        antifraudDefaultModes = {
+            "mts_orig": $scope.item.mts_orig,
+            "mts_term": $scope.item.mts_term,
+            "epvv_orig": $scope.item.epvv_orig,
+            "epvv_term": $scope.item.epvv_term
+        }
+        $scope.item.trunkRulesAntifraud.push({
+            trunk_group_id: '',
+            allow: antifraudDefaultModes[defaultMode],
+            antifrod_system_type: type,
+            is_orig: is_orig
+        });
+    };
+
+    $scope.removeTrunkAntifraudRule = function (index) {
+        $scope.item.trunkRulesAntifraud.splice(index, 1);
     };
 
     $scope.addTrunkRuleRoutingNum = function () {
@@ -380,6 +408,10 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
         Redirect.trunkGroupEdit(item.id).then(function () {
             $scope.init();
         });
+    };
+
+    $scope.setAntifraudMode = function(nnpMode) {
+        $scope.nnpMode = nnpMode;
     };
 
     $scope.hasPopover = function () {

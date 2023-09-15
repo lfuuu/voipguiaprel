@@ -13,6 +13,7 @@ use app\models\TrunkABfiltersRule;
 use app\models\TrunkNumberPreprocessing;
 use app\models\TrunkPriority;
 use app\models\TrunkTrunkRule;
+use app\models\TrunkTrunkRuleAntifraud;
 use app\models\TrunkTrunkRuleRoutingNum;
 use yii\base\ErrorException;
 use yii\db\StaleObjectException;
@@ -204,7 +205,7 @@ class TrunkController extends JsonController
         
         $item =
             Trunk::find()
-                ->with(['priorities', 'trunkRules', 'numberPreprocessing', 'numbersRules', 'usagesInMarketplace', 'trunkRulesRn'])
+                ->with(['priorities', 'trunkRules', 'numberPreprocessing', 'numbersRules', 'usagesInMarketplace', 'trunkRulesRn', 'trunkRulesAntifraud'])
                 ->with([
                     'trunkSorm' => function($query) use ($regionId) {
                         $query->where(['region_id' => $regionId]);
@@ -494,6 +495,24 @@ class TrunkController extends JsonController
                         $ruleData['ac_mode'] = 0;
                     }
                     $rule = TrunkTrunkRuleRoutingNum::create($trunk, $ruleData);
+                    $rule->order = $order;
+                    if (!$rule->save()) {
+                        throw new FormValidationException($rule);
+                    }
+                    $order++;
+                }
+            }
+
+            TrunkTrunkRuleAntifraud::deleteByTrunk($trunk);
+            if (isset($this->request['trunkRulesAntifraud'])) {
+                $order = 1;
+                foreach ($this->request['trunkRulesAntifraud'] as $ruleData) {
+                    if ($ruleData['ac_mode'] == true) {
+                        $ruleData['ac_mode'] = 1;
+                    } else {
+                        $ruleData['ac_mode'] = 0;
+                    }
+                    $rule = TrunkTrunkRuleAntifraud::create($trunk, $ruleData);
                     $rule->order = $order;
                     if (!$rule->save()) {
                         throw new FormValidationException($rule);
