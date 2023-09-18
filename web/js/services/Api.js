@@ -393,6 +393,9 @@ app.factory('TrunkGroup', function ($q, ApiLoader, $rootScope) {
         findIntoRulesRoutingNums: function (data) {
             return ApiLoader.post(url + 'get-trunks-with-group-into-rules-routing-nums', data);
         },
+        findIntoRulesAntifraud: function (data) {
+            return ApiLoader.post(url + 'get-trunks-with-group-into-rules-antifraud', data);
+        },
         findIntoPriorities: function (data) {
             return ApiLoader.post(url + 'get-trunks-with-group-into-priorities', data);
         },

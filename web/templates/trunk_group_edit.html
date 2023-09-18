@@ -22,6 +22,7 @@
             <li><a href="#outcome-with-group-{{pageIdSuffix}}" data-toggle="tab">Outcome с группой</a></li>
             <li><a href="#group-with-group-{{pageIdSuffix}}" data-toggle="tab">Группы транков с группой</a></li>
             <li><a href="#route-replace-with-group-{{pageIdSuffix}}" data-toggle="tab">Правила с атрибутами с группой</a></li>
+            <li><a href="#rules-antifraud-with-group-{{pageIdSuffix}}" data-toggle="tab">Правила Верификации с группой</a></li>
         </ul>
 
         <br/>
@@ -138,7 +139,81 @@
                     </tbody>
                 </table>
             </div>
-
+            <div class="tab-pane" id="rules-antifraud-with-group-{{pageIdSuffix}}">
+                <table class="table table-striped">
+                    <colgroup>
+                        <col width="10%" />
+                        <col width="*" />
+                        <col width="10%" />
+                        <col width="10%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="1%" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>ID транка</th>
+                            <th>Название транка</th>
+                            <th>Тип верификации</th>
+                            <th>Оригинация/терминация</th>
+                            <th>По-умолчанию</th>
+                            <th>Номер-А</th>
+                            <th>Номер-B</th>
+                            <th>Номер-C</th>
+                            <th>A || C</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody ng-model="item.findIntoRulesAntifraud">
+                        <tr ng-repeat="line in item.findIntoRulesAntifraud">
+                            <td>
+                                {{line.trunk_id}}
+                            </td>
+                            <td style="cursor: pointer" ng-click="clickTrunkItem(line.trunk_id)">
+                                {{line.trunk_name}}
+                            </td>
+                            <td>
+                                <span ng-if="line.antifrod_system_type == 'mts'">МТС</span>
+                                <span ng-if="line.antifrod_system_type == 'epvv'">EPVV</span>
+                            </td>
+                            <td>
+                                <span ng-if="line.is_orig">Оригинация</span>
+                                <span ng-if="!line.is_orig">Терминация</span>
+                            </td>
+                            <td>
+                                <span ng-if="line.allow == false" class="label label-danger">Запрещено</span>
+                                <span ng-if="line.allow == true" class="label label-success">Разрешено</span>
+                            </td>
+                            <td>
+                                <span ng-if="line.number_a_id">
+                                    {{line.number_a_name}}
+                                </span>
+                            </td>
+                            <td>
+                                <span ng-if="line.number_b_id">
+                                    {{line.number_b_name}}
+                                </span>
+                            </td>
+                            <td>
+                                <span ng-if="line.number_c_id">
+                                    {{line.number_c_name}}
+                                </span>
+                            </td>
+                            <td>
+                                <span ng-if="line.ac_mode">
+                                    {{line.ac_mode == 1 ? 'Вкл' : 'Выкл'}} 
+                                </span>
+                            </td>
+                            <td>
+                                <comment-icon ng-if="line.id" key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="tab-pane" id="rules-with-group-{{pageIdSuffix}}">
                 <table class="table table-striped">
                     <colgroup>
