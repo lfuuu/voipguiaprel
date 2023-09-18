@@ -141,6 +141,21 @@ class TrunkGroupController extends JsonController
         return $group->getTrunksWithGroupIntoRulesRoutingNums();
     }
 
+     /**
+     * @return array
+     * @throws HttpException
+     */
+    public function actionGetTrunksWithGroupIntoRulesAntifraud()
+    {
+        if (!\Yii::$app->user->can('trunk_group_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $group = $this->getTrunkGroupOr404($this->request['id']);
+
+        return $group->getTrunksWithGroupIntoRulesAntifraud();
+    }
+
     /**
      * @return array
      * @throws HttpException

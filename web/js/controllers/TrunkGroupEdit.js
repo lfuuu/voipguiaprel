@@ -34,6 +34,10 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
                 $scope.item.findIntoRulesRoutingNums = data;
             });
 
+            TrunkGroup.findIntoRulesAntifraud({id: params.id}).then(function(data) {
+                $scope.item.findIntoRulesAntifraud = data;
+            });
+
             TrunkGroup.findIntoPriorities({id: params.id}).then(function(data) {
                 $scope.item.findIntoPriorities = data;
             });
