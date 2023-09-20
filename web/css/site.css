@@ -132,7 +132,7 @@ input.ng-invalid {
 
 @media (min-width: 1500px) {
     .modal-dialog {
-        width: 1460px;
+        width: 1480px;
         margin: 30px auto;
     }
 }
