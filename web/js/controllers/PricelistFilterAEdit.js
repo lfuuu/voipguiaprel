@@ -89,6 +89,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             nnp_operator: null,
             nnp_ndc_type: null,
             nnp_ndc: null,
+            nnp_destination: null,
             a2p_alphanumber: null,
             mode_selected: true,
             filter_b_replace: false,
@@ -107,6 +108,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             nnp_operator: null,
             nnp_ndc_type: null,
             nnp_ndc: null,
+            nnp_destination: null,
             a2p_alphanumber: null,
             mode_selected: true,
             filter_b_replace: false,
@@ -170,6 +172,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
         data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
+        data.nnp_destination = $scope.stringifyNnpData(data.nnp_destination);
         
         PricelistFilterA.save(data).then(
             function (result) {
@@ -197,7 +200,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     $scope.setNnpFields = function() {
         try {
             $scope.item.nnp_ndc_type = $scope.parseNnpData($scope.item.nnp_ndc_type);
-
+            $scope.item.nnp_destination = $scope.parseNnpData($scope.item.nnp_destination);
             if ($scope.item.nnp_filter != '') {
                 $scope.nnpMode = $scope.NNP_MODE_FILTER;
             }
@@ -222,6 +225,13 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             });
         }
     };
+
+    $scope.loadDestinations = function () {
+        Nnp.destinationList().then( (data) => {
+            $scope.destinationList = data;
+            $scope.item.nnp_destination = $scope.parseNnpData($scope.item.nnp_destination);
+        }) 
+    }
     
     $scope.loadOperators = function () {
         if ($scope.item.nnp_country && $scope.item.nnp_country.length > 0) {

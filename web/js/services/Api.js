@@ -2577,6 +2577,9 @@ app.factory('Nnp', function (ApiLoader) {
         },
         ndcList: function (data) {
             return ApiLoader.post(url + 'ndc', data);
+        },
+        destinationList: function (data) {
+            return ApiLoader.post(url + 'destination', data);
         }
     };
 });
