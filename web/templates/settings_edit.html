@@ -13,11 +13,75 @@
             <li><a href="#prefixlist_block" data-toggle="tab">Блокировка по номеру</a></li>
             <li><a href="#spc" data-toggle="tab">КПС узла связи</a></li>
             <li><a href="#mvno_link" data-toggle="tab">МВНО</a></li>
+            <li><a href="#antifraud" data-toggle="tab">Верификация</a></li>
         </ul>
 
         <br/>
 
         <div class="tab-content">
+            <br/>
+            <br/>
+            <div class="tab-pane" id="antifraud">
+                <ul class="nav nav-tabs">
+                    <li class="{{(nnpMode == MTS_ANTIFRAUD) ? 'active' : '' }}">
+                        <a href="#mts" data-toggle="tab">МТС</a>
+                    </li>
+                    <li class="{{(nnpMode == EPVV_ANTIFRAUD) ? 'active' : '' }}">
+                        <a href="#epvv" data-toggle="tab">ЕПВВ</a>
+                    </li>
+                </ul>
+                <br/>
+
+                <div style="margin-left: 0.5%;" class="tab-content">
+                    <div id="mts" class="tab-pane{{(nnpMode == MTS_ANTIFRAUD) ? ' active' : '' }}">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Действие:<br/>Timeout API запроса</label>
+                            <div class="col-sm-8">
+                                <select-box list="outcome" param="{{server_id}}" model="item.mts_timeout"
+                                            default="Выберите Outcome"></select-box>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Действие:<br/>Код Error API запроса</label>
+                            <div class="col-sm-8">
+                                <select-box list="outcome" param="{{server_id}}" model="item.mts_error"
+                                            default="Выберите Outcome"></select-box>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Действие:<br/>Код Call Rejected API запроса</label>
+                            <div class="col-sm-8">
+                                <select-box list="outcome" param="{{server_id}}" model="item.mts_reject"
+                                            default="Выберите Outcome"></select-box>
+                            </div>
+                        </div>
+                    </div>  
+                    <div id="epvv" class="tab-pane{{(nnpMode == EPVV_ANTIFRAUD) ? ' active' : '' }}">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Действие:<br/>Timeout API запроса</label>
+                            <div class="col-sm-8">
+                                <select-box list="outcome" param="{{server_id}}" model="item.epvv_timeout"
+                                            default="Выберите Outcome"></select-box>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Действие:<br/>Код Error API запроса</label>
+                            <div class="col-sm-8">
+                                <select-box list="outcome" param="{{server_id}}" model="item.epvv_error"
+                                            default="Выберите Outcome"></select-box>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Действие:<br/>Код Call Rejected API запроса</label>
+                            <div class="col-sm-8">
+                                <select-box list="outcome" param="{{server_id}}" model="item.epvv_reject"
+                                            default="Выберите Outcome"></select-box>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
             <div class="tab-pane active" id="mainsettings">
 
                 <div class="form-group">

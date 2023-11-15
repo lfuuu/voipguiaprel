@@ -7,6 +7,7 @@ use app\exceptions\FormValidationException;
 use app\models\auth\CamelGtRule;
 use app\models\auth\CamelTrunk;
 use app\models\auth\CamelTrunkNumberPreprocessing;
+use app\models\CamelTrunkTrunkRuleAntifraud;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -16,7 +17,7 @@ class TrunkController extends JsonController
     protected $idParamName = 'id';
     protected $nameParamName = 'name';
     protected $readWhere = ['server_id'];
-    protected $withDependencies = ['numberPreprocessing', 'camelGtRules'];
+    protected $withDependencies = ['numberPreprocessing', 'camelGtRules', 'camelTrunkRulesAntifraud'];
     protected $createPermission = 'camel_trunk_create';
     protected $listPermission = 'camel_trunk_list';
     protected $editPermission = 'camel_trunk_edit';
@@ -90,6 +91,24 @@ class TrunkController extends JsonController
             $order = 1;
             foreach ($request['camelGtRules'] as $ruleData) {
                 $rule = CamelGtRule::create($item, $ruleData);
+                $rule->order = $order;
+                if (!$rule->save()) {
+                    throw new FormValidationException($rule);
+                }
+                $order++;
+            }
+        }
+
+        CamelTrunkTrunkRuleAntifraud::deleteByTrunk($item);
+        if (isset($this->request['camelTrunkRulesAntifraud'])) {
+            $order = 1;
+            foreach ($this->request['camelTrunkRulesAntifraud'] as $ruleData) {
+                if ($ruleData['ac_mode'] == true) {
+                    $ruleData['ac_mode'] = 1;
+                } else {
+                    $ruleData['ac_mode'] = 0;
+                }
+                $rule = CamelTrunkTrunkRuleAntifraud::create($item, $ruleData);
                 $rule->order = $order;
                 if (!$rule->save()) {
                     throw new FormValidationException($rule);

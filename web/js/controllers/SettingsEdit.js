@@ -2,6 +2,10 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
   $scope.title = 'Общие настройки';
   $scope.name_changed = false;
 
+  $scope.MTS_ANTIFRAUD = 1;
+  $scope.EPVV_ANTIFRAUD = 2;
+  $scope.nnpMode = $scope.MTS_ANTIFRAUD;
+
   if (params && params.server_id) {
     $scope.server_id = params.server_id;
   } else {

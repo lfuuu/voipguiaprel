@@ -1,6 +1,10 @@
-var CamelSettingsEditCtrl = function ($scope, $window, CamelSettings, List, $modalInstance, params) {
+var CamelSettingsEditCtrl = function ($scope, $window, CamelSettings, List, $modalInstance, CamelList,params) {
     $scope.title = 'Общие настройки';
     $scope.old_name = '';
+
+    $scope.MTS_ANTIFRAUD = 1;
+    $scope.EPVV_ANTIFRAUD = 2;
+    $scope.nnpMode = $scope.MTS_ANTIFRAUD;
 
     CamelSettings.get({id: $scope.server.id}).then(function (data) {
         $scope.item = data;
