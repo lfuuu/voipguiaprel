@@ -2231,7 +2231,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     Attribute, Server, FmcTrunk, Cpc, Hub,
     PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
     MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-    User, ServerOcs, SimImsi, LegType, AlphaNumber,AlphaNumberGroup, Currency) {
+    User, ServerOcs, SimImsi, LegType, AlphaNumber,AlphaNumberGroup, Currency, CamelOutcome) {
     return {
         trunk: function () {
             return Trunk.list();
@@ -2289,6 +2289,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         },
         destination: function () {
             return Destination.list();
+        },
+        camelOutcome: function(serverId) {
+            return CamelOutcome.list(serverId);
         },
         airp: function () {
             return Airp.list();
@@ -2699,4 +2702,41 @@ app.filter('testHasResult', function () {
 
         return filtered;
     };
+});
+
+app.factory('CamelOutcome', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/camel/outcome/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function (serverId) {
+            if (promise !== undefined) return promise;
+
+            if (!serverId) {
+                serverId = $rootScope.server.id;
+            }
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = { server_id: serverId };
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+    }
 });

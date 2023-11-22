@@ -15,12 +15,323 @@
             <li class="active"><a class="trunk-header" href="#trunk" data-toggle="tab">Транк</a></li>
             <li><a class="trunk-header" href="#camel_gt_rule" data-toggle="tab">Перфикс GT</a></li>
             <li><a class="trunk-header" href="#number_preprocessing" data-toggle="tab">Препроцессинг</a></li>
+            <li><a class="trunk-header" href="#trunk_antifraud" data-toggle="tab">Верификация</a></li>
         </ul>
 
         <br />
 
         <!-- Tab panes -->
         <div class="tab-content">
+            <div class="tab-pane" id="trunk_antifraud">
+
+                <ul class="nav nav-tabs">
+                    <li class="{{(camelNnpMode == CAMEL_MTS_ANTIFRAUD) ? 'active' : '' }}">
+                        <a href="#mts" data-toggle="tab">МТС</a>
+                    </li>
+                    <li class="{{(camelNnpMode == CAMEL_EPVV_ANTIFRAUD) ? 'active' : '' }}">
+                        <a href="#epvv" data-toggle="tab">ЕПВВ</a>
+                    </li>
+                </ul>
+                <br/>
+
+                <div style="margin-left: 0.5%;" class="tab-content">
+                    <div id="mts" class="tab-pane{{(camelNnpMode == CAMEL_MTS_ANTIFRAUD) ? ' active' : '' }}">
+                        <div class="form-group">
+                                <div class="col-sm-10">
+                                    <label style="color: rgba(72,143,204,255); font-size: 17px">Правила Оригинации</label>
+                                    <label style="margin-left: 1%; color: rgba(72,143,204,255); font-size: 17px">Действие по умолчанию</label>
+                                    <div style="margin-left: 0.2%" class="btn-group" ng-click="item.mts_orig = !item.mts_orig">
+                                        <button type="button" class="btn {{item.mts_orig ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
+                                        <button type="button" class="btn {{!item.mts_orig ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <table class="table table-striped">
+                                    <tbody ui-sortable="{axis: 'y'}" ng-model="item.camelTrunkRulesAntifraud">
+                                    <tr ng-repeat="line in item.camelTrunkRulesAntifraud" ng-if="line.antifrod_system_type == 'mts' && line.is_orig">
+                                        <td width="5%">
+                                            <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
+                                            <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_a !== null">A:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_b !== null">B:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_c !== null">C:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
+                                        </td>
+                                        <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 40px;">
+                                            <span>A || C</span>
+                                        </td>
+                                        <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%" ">
+                                            <div class="btn-group" ng-click="line.ac_mode = !line.ac_mode">
+                                                <button type="button" class="btn btn-sm {{line.ac_mode ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                                <button type="button" class="btn btn-sm {{!line.ac_mode ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeCamelTrunkAntifraudRule($index)"></button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="11">
+                                            <button type="button" class="btn btn-success btn-xs" ng-click="addCamelTrunkAntifraudRule('mts_orig', 'mts', true)"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <label style="color: rgba(72,143,204,255); font-size: 17px">Правила Терминации</label>
+                                <label style="margin-left: 1%; color: rgba(72,143,204,255); font-size: 17px">Действие по умолчанию</label>
+                                <div style="margin-left: 0.2%" class="btn-group" ng-click="item.mts_term = !item.mts_term">
+                                    <button type="button" class="btn {{item.mts_term ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
+                                    <button type="button" class="btn {{!item.mts_term ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            
+                            <div class="col-sm-10">
+                                <table class="table table-striped">
+                                    <tbody ui-sortable="{axis: 'y'}" ng-model="item.camelTrunkRulesAntifraud">
+                                        <tr ng-repeat="line in item.camelTrunkRulesAntifraud" ng-if="line.antifrod_system_type == 'mts' && !line.is_orig">
+                                        <td width="5%">
+                                            <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
+                                            <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
+                                        </td>
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_a !== null">A:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_b !== null">B:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_c !== null">C:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
+                                        </td>
+                                        <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 40px;">
+                                            <span>A || C</span>
+                                        </td>
+                                        <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%" ">
+                                            <div class="btn-group" ng-click="line.ac_mode = !line.ac_mode">
+                                                <button type="button" class="btn btn-sm {{line.ac_mode ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                                <button type="button" class="btn btn-sm {{!line.ac_mode ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeCamelTrunkAntifraudRule($index)"></button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="11">
+                                            <button type="button" class="btn btn-success btn-xs" ng-click="addCamelTrunkAntifraudRule('mts_term', 'mts', false)"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="epvv" class="tab-pane{{(camelNnpMode == CAMEL_EPVV_ANTIFRAUD) ? ' active' : '' }}">
+                        <div class="form-group">
+                                <div class="col-sm-10">
+                                    <label style="color: rgba(72,143,204,255); font-size: 17px">Правила Оригинации</label>
+                                    <label style="margin-left: 1%; color: rgba(72,143,204,255); font-size: 17px">Действие по умолчанию</label>
+                                    <div style="margin-left: 0.2%" class="btn-group" ng-click="item.epvv_orig = !item.epvv_orig">
+                                        <button type="button" class="btn {{item.epvv_orig ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
+                                        <button type="button" class="btn {{!item.epvv_orig ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <table class="table table-striped">
+                                    <tbody ui-sortable="{axis: 'y'}" ng-model="item.camelTrunkRulesAntifraud">
+                                    <tr ng-repeat="line in item.camelTrunkRulesAntifraud" ng-if="line.antifrod_system_type == 'epvv' && line.is_orig">
+                                        <td width="5%">
+                                            <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
+                                            <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_a !== null">A:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_b !== null">B:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_c !== null">C:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
+                                        </td>
+                                        <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 40px;">
+                                            <span>A || C</span>
+                                        </td>
+                                        <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%" ">
+                                            <div class="btn-group" ng-click="line.ac_mode = !line.ac_mode">
+                                                <button type="button" class="btn btn-sm {{line.ac_mode ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                                <button type="button" class="btn btn-sm {{!line.ac_mode ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeCamelTrunkAntifraudRule($index)"></button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="11">
+                                            <button type="button" class="btn btn-success btn-xs" ng-click="addCamelTrunkAntifraudRule('epvv_orig', 'epvv', true)"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <label style="color: rgba(72,143,204,255); font-size: 17px">Правила Терминации</label>
+                                <label style="margin-left: 1%; color: rgba(72,143,204,255); font-size: 17px">Действие по умолчанию</label>
+                                <div style="margin-left: 0.2%" class="btn-group" ng-click="item.epvv_term = !item.epvv_term">
+                                    <button type="button" class="btn {{item.epvv_term ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
+                                    <button type="button" class="btn {{!item.epvv_term ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <table class="table table-striped">
+                                    <tbody ui-sortable="{axis: 'y'}" ng-model="item.camelTrunkRulesAntifraud">
+                                        <tr ng-repeat="line in item.camelTrunkRulesAntifraud" ng-if="line.antifrod_system_type == 'epvv' && !line.is_orig">
+                                        <td width="5%">
+                                            <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
+                                            <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_a !== null">A:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_b !== null">B:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
+                                        </td>
+
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.number_id_filter_c !== null">C:</span>
+                                        </td>
+                                        <td>
+                                            <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
+                                        </td>
+                                        <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 40px;">
+                                            <span>A || C</span>
+                                        </td>
+                                        <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%" ">
+                                            <div class="btn-group" ng-click="line.ac_mode = !line.ac_mode">
+                                                <button type="button" class="btn btn-sm {{line.ac_mode ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                                <button type="button" class="btn btn-sm {{!line.ac_mode ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkAntifraudRule($index)"></button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="11">
+                                            <button type="button" class="btn btn-success btn-xs" ng-click="addCamelTrunkAntifraudRule('epvv_term', 'epvv', false)"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <div class="tab-pane active" id="trunk">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Название</label>

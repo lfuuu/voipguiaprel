@@ -95,7 +95,13 @@ class SettingsController extends JsonController
             'zone_spc' => $server->zone_spc,
             'mg_spc' => $server->mg_spc,
             'mn_spc' => $server->mn_spc,
-            'mvno_link' => $this->readMvnoLink($mvnoLinkList)
+            'mvno_link' => $this->readMvnoLink($mvnoLinkList),
+            'mts_timeout' => $server->mts_timeout,
+            'mts_error' => $server->mts_error,
+            'mts_reject' => $server->mts_reject,
+            'epvv_timeout' => $server->epvv_timeout,
+            'epvv_error' => $server->epvv_error,
+            'epvv_reject' => $server->epvv_reject,
         ];
     }
 
