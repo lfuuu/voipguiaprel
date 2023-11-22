@@ -139,48 +139,7 @@ app.factory('CamelOutcome', function ($q, ApiLoader, $rootScope) {
     var url = '/json/camel/outcome/';
     var list = undefined;
     var promise = undefined;
-    return {
-        read: function (data) {
-            return ApiLoader.post(url + 'read', data);
-        },
-        get: function (data) {
-            return ApiLoader.post(url + 'get', data);
-        },
-        list: function (serverId) {
-            if (promise !== undefined) return promise;
-
-            if (!serverId) {
-                serverId = $rootScope.server.id;
-            }
-
-            var deferred = $q.defer();
-            if (list !== undefined) {
-                deferred.resolve(list);
-                return deferred.promise;
-            } else {
-                var data = { server_id: serverId };
-                ApiLoader.post(url + 'list', data)
-                    .then(function (data) {
-                        list = data;
-                        promise = undefined;
-                        deferred.resolve(data);
-                    }, function (data) {
-                        promise = undefined;
-                        deferred.reject(data);
-                    });
-                promise = deferred.promise;
-            }
-            return deferred.promise;
-        },
-        save: function (data) {
-            list = undefined;
-            return ApiLoader.post(url + 'save', data);
-        },
-        delete: function (id) {
-            list = undefined;
-            return ApiLoader.post(url + 'delete', { id: id });
-        },
-    }
+    return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
 });
 
 app.factory('CamelSettings', function ($q, ApiLoader, $rootScope) {
