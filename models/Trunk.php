@@ -61,6 +61,7 @@ use yii\db\Query;
  * @property bool $mts_term
  * @property bool $epvv_orig
  * @property bool $epvv_term
+ * @property int $id_src_operator_epvv
  *
  * @property \yii\db\ActiveQuery rulesSourceOrig
  * @property \yii\db\ActiveQuery rulesDestinationOrig
@@ -109,7 +110,7 @@ class Trunk extends \yii\db\ActiveRecord
                 'transparent_header', 'pbx', 'uplink_trunk', 'internal_trunk', 'no_copy_numc_to_numa',
                 'rn_pricelist', 'autocall', 'source_rule_rn_default_allowed', 'mts_orig', 'mts_term', 'epvv_orig', 'epvv_term'
             ], 'boolean'],
-            [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id', 'rounding_type', 'leg_type', 'rn_enable'], 'integer'],
+            [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id', 'rounding_type', 'leg_type', 'rn_enable', 'id_src_operator_epvv'], 'integer'],
             [['back_trunk'], 'string', 'max' => 50],
             [['road_to_regions', 'trace_to_regions'], 'string', 'max' => 100],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
