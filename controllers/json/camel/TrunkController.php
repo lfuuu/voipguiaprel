@@ -7,7 +7,7 @@ use app\exceptions\FormValidationException;
 use app\models\auth\CamelGtRule;
 use app\models\auth\CamelTrunk;
 use app\models\auth\CamelTrunkNumberPreprocessing;
-use app\models\CamelTrunkTrunkRuleAntifraud;
+use app\models\auth\CamelTrunkTrunkRuleAntifraud;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
