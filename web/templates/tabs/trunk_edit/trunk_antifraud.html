@@ -31,6 +31,12 @@
                             <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
                         </td>
                         <td width="5%" style="cursor: ns-resize">
+                            <span ng-if="line.uvr_group_id !== null">Uvr&nbsp;Group:</span>
+                        </td>
+                        <td>
+                            <select-box list="uvrGroup" model="line.uvr_group_id" default="Любая группа"></select-box>
+                        </td>
+                        <td width="5%" style="cursor: ns-resize">
                             <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
                         </td>
                         <td>
@@ -104,6 +110,12 @@
                         <td width="5%">
                             <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
                             <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
+                        </td>
+                        <td width="5%" style="cursor: ns-resize">
+                            <span ng-if="line.uvr_group_id !== null">Uvr&nbsp;Group:</span>
+                        </td>
+                        <td>
+                            <select-box list="uvrGroup" model="line.uvr_group_id" default="Любая группа"></select-box>
                         </td>
                         <td width="5%" style="cursor: ns-resize">
                             <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
@@ -181,6 +193,12 @@
                             <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
                         </td>
                         <td width="5%" style="cursor: ns-resize">
+                            <span ng-if="line.uvr_group_id !== null">Uvr&nbsp;Group:</span>
+                        </td>
+                        <td>
+                            <select-box list="uvrGroup" model="line.uvr_group_id" default="Любая группа"></select-box>
+                        </td>
+                        <td width="5%" style="cursor: ns-resize">
                             <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
                         </td>
                         <td>
@@ -253,6 +271,12 @@
                         <td width="5%">
                             <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
                             <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
+                        </td>
+                        <td width="5%" style="cursor: ns-resize">
+                            <span ng-if="line.uvr_group_id !== null">Uvr&nbsp;Group:</span>
+                        </td>
+                        <td>
+                            <select-box list="uvrGroup" model="line.uvr_group_id" default="Любая группа"></select-box>
                         </td>
                         <td width="5%" style="cursor: ns-resize">
                             <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
