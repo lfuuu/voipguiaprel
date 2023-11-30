@@ -2225,13 +2225,22 @@ app.factory('Currency', function ($q, ApiLoader, $rootScope) {
     }
 });
 
+app.factory('UvrGroup', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/uvr-group/';
+    return {
+        list: function () {
+            return ApiLoader.post(url + 'list');
+        },
+    }
+});
+
 app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     RouteCase, Outcome, Number, NumberAll, Destination,
     Airp, ReleaseReason, RouteTable, Network,
     Attribute, Server, FmcTrunk, Cpc, Hub,
     PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
     MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-    User, ServerOcs, SimImsi, LegType, AlphaNumber,AlphaNumberGroup, Currency) {
+    User, ServerOcs, SimImsi, LegType, AlphaNumber,AlphaNumberGroup, Currency, UvrGroup) {
     return {
         trunk: function () {
             return Trunk.list();
@@ -2296,7 +2305,9 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         releaseReason: function () {
             return ReleaseReason.list();
         },
-
+        uvrGroup: function() {
+            return UvrGroup.list();
+        },
         releaseReasonByServerId: function (serverId) {
             return ReleaseReason.list(serverId);
         },
