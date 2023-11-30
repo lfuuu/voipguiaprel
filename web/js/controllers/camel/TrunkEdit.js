@@ -1,4 +1,4 @@
-var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, CamelList, params, $modalInstance) {
+var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, CamelList, params, $modalInstance, List) {
     $scope.CAMEL_MTS_ANTIFRAUD = 1;
     $scope.CAMEL_EPVV_ANTIFRAUD = 2;
     $scope.camelNnpMode = $scope.CAMEL_MTS_ANTIFRAUD;
@@ -53,6 +53,10 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
         $scope.routeTableList = data;
     });
 
+    List.uvrGroup().then(function (data) {
+        $scope.uvrGroup = data;
+    });
+
     $scope.save = function () {
         CamelTrunk.save($scope.item).then(function () {
             $modalInstance.close();
@@ -67,6 +71,7 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
             "epvv_term": $scope.item.epvv_term
         }
         $scope.item.camelTrunkRulesAntifraud.push({
+            uvr_group_id: $scope.uvrGroup[1].id,
             allow: antifraudDefaultModes[defaultMode],
             antifrod_system_type: type,
             is_orig: is_orig

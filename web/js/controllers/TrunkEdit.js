@@ -136,6 +136,10 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
         $scope.legTypeList = data;
     });
 
+    List.uvrGroup().then(function (data) {
+        $scope.uvrGroup = data;
+    });
+
     $scope.addPriority = function () {
         $scope.item.priorities.push({prefixlist_id: '', priority: 0, priority_with_equal_price: 0});
     };
@@ -251,6 +255,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             "epvv_term": $scope.item.epvv_term
         }
         $scope.item.trunkRulesAntifraud.push({
+            uvr_group_id: $scope.uvrGroup[1].id,
             trunk_group_id: '',
             allow: antifraudDefaultModes[defaultMode],
             antifrod_system_type: type,
