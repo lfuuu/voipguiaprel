@@ -3,7 +3,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
 
     $scope.MTS_ANTIFRAUD = 1;
     $scope.EPVV_ANTIFRAUD = 2;
-    $scope.nnpMode = $scope.MTS_ANTIFRAUD;
+    $scope.nnpMode = $scope.EPVV_ANTIFRAUD;
 
     if (params.server_id) {
         serverId = params.server_id;

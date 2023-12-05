@@ -4,7 +4,7 @@ var CamelSettingsEditCtrl = function ($scope, $window, CamelSettings, List, $mod
 
     $scope.MTS_ANTIFRAUD = 1;
     $scope.EPVV_ANTIFRAUD = 2;
-    $scope.nnpMode = $scope.MTS_ANTIFRAUD;
+    $scope.nnpMode = $scope.EPVV_ANTIFRAUD;
 
     CamelSettings.get({id: $scope.server.id}).then(function (data) {
         $scope.item = data;

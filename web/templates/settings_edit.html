@@ -23,9 +23,9 @@
             <br/>
             <div class="tab-pane" id="antifraud">
                 <ul class="nav nav-tabs">
-                    <li class="{{(nnpMode == MTS_ANTIFRAUD) ? 'active' : '' }}">
+                    <!-- <li class="{{(nnpMode == MTS_ANTIFRAUD) ? 'active' : '' }}">
                         <a href="#mts" data-toggle="tab">МТС</a>
-                    </li>
+                    </li> -->
                     <li class="{{(nnpMode == EPVV_ANTIFRAUD) ? 'active' : '' }}">
                         <a href="#epvv" data-toggle="tab">ЕПВВ</a>
                     </li>
@@ -33,7 +33,7 @@
                 <br/>
 
                 <div style="margin-left: 0.5%;" class="tab-content">
-                    <div id="mts" class="tab-pane{{(nnpMode == MTS_ANTIFRAUD) ? ' active' : '' }}">
+                    <!-- <div id="mts" class="tab-pane{{(nnpMode == MTS_ANTIFRAUD) ? ' active' : '' }}">
                         <div class="form-group">
                             <label class="col-sm-4 control-label">Действие:<br/>Timeout API запроса</label>
                             <div class="col-sm-8">
@@ -55,7 +55,7 @@
                                             default="CALL_ACCEPT"></select-box>
                             </div>
                         </div>
-                    </div>  
+                    </div>   -->
                     <div id="epvv" class="tab-pane{{(nnpMode == EPVV_ANTIFRAUD) ? ' active' : '' }}">
                         <div class="form-group">
                             <label class="col-sm-4 control-label">Действие:<br/>Timeout API запроса</label>
