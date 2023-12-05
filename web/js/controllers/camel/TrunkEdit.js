@@ -1,7 +1,7 @@
 var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, CamelList, params, $modalInstance, List) {
     $scope.CAMEL_MTS_ANTIFRAUD = 1;
     $scope.CAMEL_EPVV_ANTIFRAUD = 2;
-    $scope.camelNnpMode = $scope.CAMEL_MTS_ANTIFRAUD;
+    $scope.camelNnpMode = $scope.CAMEL_EPVV_ANTIFRAUD;
     
     if (params.id) {
         CamelTrunk.get({id: params.id}).then(function (data) {
