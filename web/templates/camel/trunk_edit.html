@@ -205,8 +205,8 @@
                         <div class="form-group">
                             <div class="col-sm-10">
                                 <table class="table table-striped">
-                                    <tbody ui-sortable="{axis: 'y'}" ng-model="item.camelTrunkRulesAntifraud">
-                                    <tr ng-repeat="line in item.camelTrunkRulesAntifraud" ng-if="line.antifrod_system_type == 'epvv' && line.is_orig">
+                                    <tbody ui-sortable="{axis: 'y'}" ng-model="item.camelTrunkRulesAntifraudEpvvOrig">
+                                    <tr ng-repeat="line in item.camelTrunkRulesAntifraudEpvvOrig">
                                         <td width="5%">
                                             <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
                                             <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
@@ -254,7 +254,7 @@
                                             <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeCamelTrunkAntifraudRule($index)"></button>
+                                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeCamelTrunkAntifraudRuleEpvvOrig($index)"></button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -282,8 +282,8 @@
                         <div class="form-group">
                             <div class="col-sm-10">
                                 <table class="table table-striped">
-                                    <tbody ui-sortable="{axis: 'y'}" ng-model="item.camelTrunkRulesAntifraud">
-                                        <tr ng-repeat="line in item.camelTrunkRulesAntifraud" ng-if="line.antifrod_system_type == 'epvv' && !line.is_orig">
+                                    <tbody ui-sortable="{axis: 'y'}" ng-model="item.camelTrunkRulesAntifraudEpvvTerm">
+                                        <tr ng-repeat="line in item.camelTrunkRulesAntifraudEpvvTerm">
                                         <td width="5%">
                                             <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
                                             <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
@@ -331,7 +331,7 @@
                                             <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkAntifraudRule($index)"></button>
+                                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeCamelTrunkAntifraudRuleEpvvTerm($index)"></button>
                                         </td>
                                     </tr>
                                     </tbody>
