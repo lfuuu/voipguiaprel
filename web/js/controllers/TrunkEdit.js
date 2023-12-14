@@ -43,6 +43,18 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
                 });
             });
 
+            $scope.item.trunkRulesAntifraudEpvvOrig = [];
+            $scope.item.trunkRulesAntifraudEpvvTerm = [];
+
+            $.each(data.trunkRulesAntifraud, function () {
+                 if (this.is_orig) {
+                    $scope.item.trunkRulesAntifraudEpvvOrig.push(this);
+                 } else {
+                    $scope.item.trunkRulesAntifraudEpvvTerm.push(this);
+                 }
+            })
+
+
             $scope.item.numbersRules = numbersRules;
 
             if (data.trunkSorm.length > 0) {
@@ -104,6 +116,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             trunkRules: [],
             trunkRulesRn: [],
             trunkRulesAntifraud: [],
+            trunkRulesAntifraudEpvvOrig: [],
+            trunkRulesAntifraudEpvvTerm: [],
             numberPreprocessing: [],
             loadLimit: [],
             numbersRules: {},
@@ -254,17 +268,39 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             "epvv_orig": $scope.item.epvv_orig,
             "epvv_term": $scope.item.epvv_term
         }
-        $scope.item.trunkRulesAntifraud.push({
-            uvr_group_id: $scope.uvrGroup[1].id,
-            trunk_group_id: '',
-            allow: antifraudDefaultModes[defaultMode],
-            antifrod_system_type: type,
-            is_orig: is_orig
-        });
+
+        if (is_orig && type == 'epvv') {
+            $scope.item.trunkRulesAntifraudEpvvOrig.push({
+                uvr_group_id: $scope.uvrGroup[1].id,
+                trunk_group_id: '',
+                allow: antifraudDefaultModes[defaultMode],
+                antifrod_system_type: type,
+                is_orig: is_orig
+            })
+        } else {
+            $scope.item.trunkRulesAntifraudEpvvTerm.push({
+                uvr_group_id: $scope.uvrGroup[1].id,
+                trunk_group_id: '',
+                allow: antifraudDefaultModes[defaultMode],
+                antifrod_system_type: type,
+                is_orig: is_orig
+            })
+        }
+        // $scope.item.trunkRulesAntifraud.push({
+        //     uvr_group_id: $scope.uvrGroup[1].id,
+        //     trunk_group_id: '',
+        //     allow: antifraudDefaultModes[defaultMode],
+        //     antifrod_system_type: type,
+        //     is_orig: is_orig
+        // });
     };
 
-    $scope.removeTrunkAntifraudRule = function (index) {
-        $scope.item.trunkRulesAntifraud.splice(index, 1);
+    $scope.removeTrunkAntifraudRuleOrig = function (index) {
+        $scope.item.trunkRulesAntifraudEpvvOrig.splice(index, 1);
+    };
+
+    $scope.removeTrunkAntifraudRuleTerm = function (index) {
+        $scope.item.trunkRulesAntifraudEpvvTerm.splice(index, 1);
     };
 
     $scope.addTrunkRuleRoutingNum = function () {
@@ -327,6 +363,14 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             if (!$window.confirm('Произойдет синхронизация прайс-листов. Вы уверены?')) return;
         }
 
+        $scope.item.trunkRulesAntifraud = [];
+        $.each($scope.item.trunkRulesAntifraudEpvvOrig, function () {
+            $scope.item.trunkRulesAntifraud.push(this);
+        });
+
+        $.each($scope.item.trunkRulesAntifraudEpvvTerm, function () {
+            $scope.item.trunkRulesAntifraud.push(this);
+        });
         if (
             $scope.item.sorm.enabled && 
             (

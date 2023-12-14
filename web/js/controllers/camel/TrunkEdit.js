@@ -6,7 +6,18 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
     if (params.id) {
         CamelTrunk.get({id: params.id}).then(function (data) {
             $scope.item = data;
+
+            $scope.item.camelTrunkRulesAntifraudEpvvOrig = [];
+            $scope.item.camelTrunkRulesAntifraudEpvvTerm = [];
+            $.each(data.camelTrunkRulesAntifraud, function () {
+                if (this.is_orig) {
+                    $scope.item.camelTrunkRulesAntifraudEpvvOrig.push(this);
+                } else {
+                    $scope.item.camelTrunkRulesAntifraudEpvvTerm.push(this);
+                }
+            })
         });
+
     } else if (params.copy_id) {
        CamelTrunk.copy({id: params.copy_id}).then(function (data) {
             $scope.item = {
@@ -17,6 +28,8 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
                 is_route_incoming_calls: false,
                 gt_rule_default_allowed: false,
                 camelTrunkRulesAntifraud: [],
+                camelTrunkRulesAntifraudEpvvOrig: [],
+                camelTrunkRulesAntifraudEpvvTerm: [],
                 mts_orig: false,
                 epvv_orig: false,
                 mts_term: false,
@@ -58,6 +71,14 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
     });
 
     $scope.save = function () {
+        $scope.item.camelTrunkRulesAntifraud = [];
+        $.each($scope.item.camelTrunkRulesAntifraudEpvvOrig, function () {
+            $scope.item.camelTrunkRulesAntifraud.push(this);
+        });
+
+        $.each($scope.item.camelTrunkRulesAntifraudEpvvTerm, function () {
+            $scope.item.camelTrunkRulesAntifraud.push(this);
+        });
         CamelTrunk.save($scope.item).then(function () {
             $modalInstance.close();
         });
@@ -70,17 +91,40 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
             "epvv_orig": $scope.item.epvv_orig,
             "epvv_term": $scope.item.epvv_term
         }
-        $scope.item.camelTrunkRulesAntifraud.push({
-            uvr_group_id: $scope.uvrGroup[1].id,
-            allow: antifraudDefaultModes[defaultMode],
-            antifrod_system_type: type,
-            is_orig: is_orig
-        });
+
+        if (is_orig && type == 'epvv') {
+            $scope.item.camelTrunkRulesAntifraudEpvvOrig.push({
+                uvr_group_id: $scope.uvrGroup[1].id,
+                allow: antifraudDefaultModes[defaultMode],
+                antifrod_system_type: type,
+                is_orig: is_orig
+            })
+        } else {
+            $scope.item.camelTrunkRulesAntifraudEpvvTerm.push({
+                uvr_group_id: $scope.uvrGroup[1].id,
+                allow: antifraudDefaultModes[defaultMode],
+                antifrod_system_type: type,
+                is_orig: is_orig
+            })
+        }
+        // $scope.item.camelTrunkRulesAntifraud.push({
+        //     uvr_group_id: $scope.uvrGroup[1].id,
+        //     allow: antifraudDefaultModes[defaultMode],
+        //     antifrod_system_type: type,
+        //     is_orig: is_orig
+        // });
     };
 
-    $scope.removeCamelTrunkAntifraudRule = function (index) {
-        $scope.item.camelTrunkRulesAntifraud.splice(index, 1);
+    $scope.removeCamelTrunkAntifraudRuleEpvvTerm = function (index) {
+        $scope.item.camelTrunkRulesAntifraudEpvvTerm.splice(index, 1);
     };
+    $scope.removeCamelTrunkAntifraudRuleEpvvOrig = function (index) {
+        $scope.item.camelTrunkRulesAntifraudEpvvOrig.splice(index, 1);
+    };
+
+    // $scope.removeCamelTrunkAntifraudRule = function (index) {
+    //     $scope.item.camelTrunkRulesAntifraud.splice(index, 1);
+    // };
 
     $scope.setCamelAntifraudMode = function(nnpMode) {
         $scope.camelNnpMode = nnpMode;
