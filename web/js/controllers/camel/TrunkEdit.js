@@ -30,6 +30,7 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
                 camelTrunkRulesAntifraud: [],
                 camelTrunkRulesAntifraudEpvvOrig: [],
                 camelTrunkRulesAntifraudEpvvTerm: [],
+                
                 mts_orig: false,
                 epvv_orig: false,
                 mts_term: false,
@@ -45,6 +46,7 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
             is_route_incoming_calls: false,
             gt_rule_default_allowed: false,
         };
+
     }
     
     $scope.locationIds = [
@@ -64,8 +66,8 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
 
     $scope.antifraudUvrCallType = [
         {'id': 0, 'name': ''},
-        {'id': 1, 'name': 'CallPush'},
-        {'id': 2, 'name': 'CallCheck'},
+        {'id': 1, 'name': 'CALL_PUSH'},
+        {'id': 2, 'name': 'CALL_CHECK'},
     ];
 
     CamelList.routeTable({server_id: $scope.server.id}).then(function (data) {
@@ -103,14 +105,16 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
                 uvr_group_id: $scope.uvrGroup[1].id,
                 allow: antifraudDefaultModes[defaultMode],
                 antifrod_system_type: type,
-                is_orig: is_orig
+                is_orig: is_orig,
+                uvr_call_type: 1
             })
         } else {
             $scope.item.camelTrunkRulesAntifraudEpvvTerm.push({
                 uvr_group_id: $scope.uvrGroup[1].id,
                 allow: antifraudDefaultModes[defaultMode],
                 antifrod_system_type: type,
-                is_orig: is_orig
+                is_orig: is_orig,
+                uvr_call_type: 2
             })
         }
         // $scope.item.camelTrunkRulesAntifraud.push({
