@@ -250,6 +250,16 @@
                                                 <button type="button" class="btn btn-sm {{!line.ac_mode ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                                             </div>
                                         </td>
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.uvr_call_type !== null"></span>
+                                        </td>
+                                        <td>
+                                            <select ui-select2 ng-model="line.uvr_call_type">
+                                                <option ng-repeat="type in antifraudUvrCallType" value="{{type.id}}">
+                                                    {{type.name}}
+                                                </option>
+                                            </select>
+                                        </td>
                                         <td>
                                             <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
                                         </td>
@@ -326,6 +336,16 @@
                                                 <button type="button" class="btn btn-sm {{line.ac_mode ? 'btn-success active' : 'btn-default'}}">Да</button>
                                                 <button type="button" class="btn btn-sm {{!line.ac_mode ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                                             </div>
+                                        </td>
+                                        <td width="3%" style="cursor: ns-resize">
+                                            <span ng-if="line.uvr_call_type !== null"></span>
+                                        </td>
+                                        <td>
+                                            <select ui-select2 ng-model="line.uvr_call_type">
+                                                <option ng-repeat="type in antifraudUvrCallType" value="{{type.id}}">
+                                                    {{type.name}}
+                                                </option>
+                                            </select>
                                         </td>
                                         <td>
                                             <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
