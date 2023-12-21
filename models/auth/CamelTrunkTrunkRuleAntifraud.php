@@ -35,7 +35,7 @@ class CamelTrunkTrunkRuleAntifraud extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'ac_mode', 'uvr_group_id'], 'integer'],
+            [['number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'ac_mode', 'uvr_group_id', 'uvr_call_type'], 'integer'],
             [['allow', 'is_orig'], 'boolean'],
             [['object_comment', 'antifrod_system_type'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];

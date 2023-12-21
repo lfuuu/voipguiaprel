@@ -62,6 +62,12 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
         {'id': 5, 'name': 'Замена если номер'}
     ];
 
+    $scope.antifraudUvrCallType = [
+        {'id': 0, 'name': ''},
+        {'id': 1, 'name': 'CallPush'},
+        {'id': 2, 'name': 'CallCheck'},
+    ];
+
     CamelList.routeTable({server_id: $scope.server.id}).then(function (data) {
         $scope.routeTableList = data;
     });
