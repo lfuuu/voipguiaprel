@@ -5,6 +5,12 @@
         margin: initial;
     }
 </style>
+<script>
+    $(function() {
+        var temp="2"; 
+        $("#test").val(temp);
+    });
+    </script>
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
         <h3 ng-if="item.id">Транк {{item.name}}</h3>
@@ -341,10 +347,12 @@
                                             <span ng-if="line.uvr_call_type !== null"></span>
                                         </td>
                                         <td>
-                                            <select ui-select2 ng-model="line.uvr_call_type">
+                                            <select ui-select2 name="test" ng-model="line.uvr_call_type">
+
                                                 <option ng-repeat="type in antifraudUvrCallType" value="{{type.id}}">
                                                     {{type.name}}
                                                 </option>
+                                               
                                             </select>
                                         </td>
                                         <td>
