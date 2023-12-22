@@ -106,7 +106,7 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
                 allow: antifraudDefaultModes[defaultMode],
                 antifrod_system_type: type,
                 is_orig: is_orig,
-                uvr_call_type: 1
+                uvr_call_type: 2
             })
         } else {
             $scope.item.camelTrunkRulesAntifraudEpvvTerm.push({
@@ -114,7 +114,7 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
                 allow: antifraudDefaultModes[defaultMode],
                 antifrod_system_type: type,
                 is_orig: is_orig,
-                uvr_call_type: 2
+                uvr_call_type: 1
             })
         }
         // $scope.item.camelTrunkRulesAntifraud.push({
