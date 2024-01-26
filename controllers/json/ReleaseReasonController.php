@@ -11,19 +11,27 @@ use yii\web\HttpException;
 
 class ReleaseReasonController extends JsonController
 {
+    const DEFAULT_OCS_SERVER_ID = 9;
+
     public function actionList()
     {
         if (!\Yii::$app->user->can('release_reason_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
-        $server = $this->getServerOr404($this->request['server_id']);
-        $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
-	
+
+        $isOcs = $this->request['server_id'] == self::DEFAULT_OCS_SERVER_ID;
+        $server = $isOcs ? $this->getServerOcsOr404($this->request['server_id']) : $this->getServerOr404($this->request['server_id']);
+
+        $where = "server_id = ".$server->id;
+        if (!$isOcs) {
+            $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+            $where = "( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id;
+        }
+ 
         return
             ReleaseReason::find()
                 ->select(['id', 'name'])
-                ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
+                ->where($where)
                 ->orderBy('name')
                 ->asArray()
                 ->all();
@@ -37,6 +45,7 @@ class ReleaseReasonController extends JsonController
         
         $server = $this->getServerOr404($this->request['server_id']);
         $hub_id = $server->hub_id > 0 ? $server->hub_id : 0 ;
+
 
         return
             ReleaseReason::find()
