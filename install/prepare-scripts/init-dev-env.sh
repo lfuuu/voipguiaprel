@@ -10,6 +10,7 @@ fi
 if ! [ -f /workspace/.gitclone ]; then
 echo "1. Разворачиваем репозиторий"
 git clone git@github.com:welltime/voip_gui.git && touch /workspace/.gitclone
+ln -s /workspace/voip_gui /opt/voip_gui
 fi
 
 if ! [ -f /workspace/.srctune ]; then
@@ -37,8 +38,6 @@ composer install
 touch /workspace/.composer
 fi
 
-echo "### Для разворота база используйте скрипт /workspace/voip_gui/install/db/init_test_db.sh"
+#echo "### Для разворота база используйте скрипт /workspace/voip_gui/install/db/init_test_db.sh"
 
-rm -rf /opt/voip_gui
-ln -s /workspace/voip_gui /opt/voip_gui
 
