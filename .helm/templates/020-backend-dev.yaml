@@ -47,6 +47,10 @@ spec:
         - name: config-volume
           subPath: nginx.conf
           mountPath: /etc/nginx/nginx.conf
+        - mountPath: /workspace
+          name: workspace-voipgui
+        - mountPath: /opt
+          name: opt-voipgui
         livenessProbe:
           httpGet:
             path: /healthz
