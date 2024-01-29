@@ -3,28 +3,16 @@
 #    _default: {{ .Chart.Name }}-{{ .Values.global.env }}.local
 #    production: voip-gui.mcn.ru
 #    stage: voip-gui.k8s-suzanna.mcn.local
-
-postgres_dev:
-  host: db
+postgres_env_ci:
+  host: 172.19.0.2
   port: 5432
   db: nispd_test
   adminuser: postgres
   user: voipgui
   password: qwe123
-
-postgres_prod_env_ci:
-  host: 192.168.49.1
-  port:  43432
-  db: nispd_test
-  adminuser: postgres
-  user: voipgui
-  password: qwe123
-
 finding_nispd:
   host: /utils/finding_nispd_chains/
   port: 8000
-
 ci_url: voip-gui-dev.local
-
 use_ngnix_virtualserver: "no"
 use_network_polices: "no"

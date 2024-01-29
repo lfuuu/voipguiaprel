@@ -7,11 +7,6 @@ docker:
   WORKDIR: /root
   USER: root
   EXPOSE: "80"
-  ENV:
-    POSTGRES_DB: nispd
-    POSTGRES_HOST: localhost
-    POSTGRES_USER:
-    POSTGRES_PASSWORD:
 
 git:
 - add: /install/prepare-scripts
@@ -42,8 +37,6 @@ ansible:
       cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
   - name: Prepare voip_gui dir
     shell: |
-      mkdir -p /opt/voip_gui/web
-      echo "Сделай:<br>rm -rf /opt/voip_gui; ln -f -s /workspace/voip_gui /opt/voip_gui" > /opt/voip_gui/web/index.html
       printf "Host github.com\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" >> /etc/ssh/ssh_config
   - name:  Setup composer
     shell: |
@@ -53,6 +46,20 @@ ansible:
         && mv composer.phar /usr/local/bin/composer \
         && composer self-update --1 \
         && composer global require "fxp/composer-asset-plugin"
+  - name: "Create non-root group for the main application"
+    group:
+      name: www-data
+      state: present
+      gid: 1000
+  - name: "Create non-root user for the main application"
+    user:
+      name: www-data
+      comment: "Create non-root user for the main application"
+      uid: 1000
+      group: www-data
+      shell: /bin/bash
+      home: /home/www-data
+
   install:
 
   setup:

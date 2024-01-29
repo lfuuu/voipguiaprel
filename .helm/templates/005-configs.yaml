@@ -1,10 +1,10 @@
-{{- if (eq .Values.global.env "prod-env-ci") }}
+{{- if (eq .Values.global.env "dev") }}
 
-{{ $_ := set . "pg_host" .Values.postgres_prod_env_ci.host }}
-{{ $_ := set . "pg_user" .Values.postgres_prod_env_ci.user }}
-{{ $_ := set . "pg_password" .Values.postgres_prod_env_ci.password }}
-{{ $_ := set . "pg_db" .Values.postgres_prod_env_ci.db }}
-{{ $_ := set . "pg_port" .Values.postgres_prod_env_ci.port }}
+{{ $_ := set . "pg_host" .Values.postgres_env_ci.host }}
+{{ $_ := set . "pg_user" .Values.postgres_env_ci.user }}
+{{ $_ := set . "pg_password" .Values.postgres_env_ci.password }}
+{{ $_ := set . "pg_db" .Values.postgres_env_ci.db }}
+{{ $_ := set . "pg_port" .Values.postgres_env_ci.port }}
 
 {{- end }}
 
@@ -217,10 +217,6 @@ data:
         }
       }
     }
-{{- if (eq .Values.global.env "dev") }}
-  .pgpass: |
-{{ .Files.Get ".werf/tmp/.pgpass" | indent 8 }}
-{{- end }}
   testdial_cfg.json: |
     {
       "ami": {

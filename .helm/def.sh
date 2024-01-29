@@ -7,20 +7,27 @@ TAG=1.365
 APPNAME=voip-gui
 
 
-function dev()
+
+
+
+function dev_kvm_envci()
 {
-	export ENVNAME=dev
-	CI_URL="$APPNAME-$ENVNAME.local"
-        PGADMIN_IN_DEV="yes"
+    export ENVNAME="dev"
+    CI_URL="$APPNAME.192.168.122.69.nip.io"
+    PGADMIN_IN_DEV="yes"
 }
 
-function prodenvci()
+function dev_minikube_envci()
 {
     MINIKUBE_IP=`minikube ip`
-    export ENVNAME="prod-env-ci"
+    export ENVNAME="dev"
     CI_URL="$APPNAME-$ENVNAME.$MINIKUBE_IP.nip.io"
     PGADMIN_IN_DEV="yes"
 }
+
+
+
+
 
 function stage()
 {
