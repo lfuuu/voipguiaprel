@@ -2,6 +2,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
 
     $scope.NNP_MODE_FILTER = 1;
     $scope.NNP_MODE_PARAMETERS = 2;
+    $scope.NNP_MODE_IMPORT = 3;
 
     $scope.saveEnabled = false;
     $scope.errors = {

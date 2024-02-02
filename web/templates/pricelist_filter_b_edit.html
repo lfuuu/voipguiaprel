@@ -156,8 +156,8 @@
                 <li class="{{(nnpMode == NNP_MODE_PARAMETERS) ? 'active' : '' }}">
                     <a href="#nnp-parameters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_PARAMETERS)">ННП-Параметры</a>
                 </li>
-                <li>
-                    <a href="#prefix-import" data-toggle="tab">Импорт префиксов</a>
+                <li class="{{(nnpMode == NNP_MODE_IMPORT) ? 'active' : '' }}">
+                    <a href="#prefix-import" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_IMPORT)">Импорт префиксов</a>
                 </li>
             </ul>
             <br/>
@@ -350,8 +350,7 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="tab-pane" id="prefix-import">
+                <div class="tab-pane{{(nnpMode == NNP_MODE_IMPORT) ? 'active' : '' }}" id="prefix-import">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Вид операции</label>
                         <div class="col-sm-6">
