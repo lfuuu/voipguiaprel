@@ -11,7 +11,11 @@ if ! [ -f /workspace/.gitclone ]; then
 echo "1. Разворачиваем репозиторий"
 git clone git@github.com:welltime/voip_gui.git && touch /workspace/.gitclone
 ln -s /workspace/voip_gui /opt/voip_gui
+cp -f /db-local.php /workspace/voip_gui/config/db-local.php
+
 fi
+
+
 
 if ! [ -f /workspace/.srctune ]; then
 echo "2. Тюнинг кода"
