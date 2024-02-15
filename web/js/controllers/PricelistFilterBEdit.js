@@ -336,4 +336,23 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
     $scope.back = function () {
         $modalInstance.close();
     };
+    
+    $scope.deleteHistoryItem = function(item) {
+        if (!item || !item.id) {
+            alert("Невозможно удалить: некорректный элемент.");
+            return;
+        }
+    
+        var isConfirmed = $window.confirm("Вы уверены, что хотите удалить эту запись истории с ID " + item.id + "?");
+        if (isConfirmed) {
+            PricelistFilterB.deleteHistoryItem(item.id).then(function(response) {
+                if (response.status === 'success') {
+                    alert(response.message);
+                }
+            }, function(error) {
+                alert("Произошла ошибка при удалении: " + error.message);
+            });
+        }
+    };
+    
 };

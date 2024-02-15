@@ -384,18 +384,23 @@
                                     <th class="col-sm-2">Прайслист</th>
                                     <th class="col-sm-2">Операция</th>
                                     <th class="col-sm-2">Дата операции</th>
-                                    <th class="col-sm-2"></th>
+                                    <th class="col-sm-2">Действия</th>
                                 </tr>
                             </thead>
-                            <tr ng-repeat="val in item.prefixPriceHistory">
-                                <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">{{val.date_from}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
-                                <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">{{val.date_to}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
-                                <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">#{{val.pricelist_id}} ({{val.total_count}})</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
-                                <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">{{val.type=='replace' ? 'Замена' : 'Добавление'}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
-                                <td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">{{val.date_created}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
-                                <td><button type="button" class="btn btn-default btn-sm" ng-if="$last && val.has_backup" ng-click="undoPrefixImport(val)">Отмена</button class="btn btn-default btn-sm"></td>
-                            </tr>
-                        </table>
+                            <tbody>
+                                <tr ng-repeat="val in item.prefixPriceHistory" ng-init="isLastItem = $last">
+                                    <td>{{val.date_from}}</td>
+                                    <td>{{val.date_to}}</td>
+                                    <td>#{{val.id}} ({{val.total_count}})</td>
+                                    <td>{{val.type == 'replace' ? 'Замена' : 'Добавление'}}</td>
+                                    <td>{{val.date_created}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm" ng-if="!isLastItem" ng-click="deleteHistoryItem(val)">Удалить</button>
+                                        <button type="button" class="btn btn-default btn-sm" ng-if="$last && val.has_backup" ng-click="undoPrefixImport(val)">Отмена</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>                   
                     </div>
                 </div>
             </div>

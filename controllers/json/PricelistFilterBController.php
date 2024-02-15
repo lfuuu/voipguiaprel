@@ -176,7 +176,31 @@ class PricelistFilterBController extends JsonController
 
         return $result;
     }
+    public function actionDeleteHistoryItem()
+{
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Доступ запрещен');
+        }
     
+        $id = \Yii::$app->request->post('id');
+        if (!$id) {
+            throw new \yii\web\BadRequestHttpException('Требуется указать ID');
+        }
+    
+        $item = PricelistPrefixPriceHistory::findOne($id);
+        if (!$item) {
+            throw new \yii\web\NotFoundHttpException("Элемент с ID $id не найден");
+        }
+    
+        if ($item->delete() !== false) {
+            return ['status' => 'success', 'message' => "Элемент с ID $id успешно удален"];
+        } else {
+            throw new \yii\web\ServerErrorHttpException('Не удалось удалить элемент');
+        }
+    }
+}
+
     private function validateInput()
     {
         if (preg_match("/[^\d,.\-\s]/", $this->request['prefixes'])) {

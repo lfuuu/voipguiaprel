@@ -2090,6 +2090,9 @@ app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope) {
         },
         delete: function (id) {
             return ApiLoader.post(url + 'delete', { id: id });
+        },
+        deleteHistoryItem: function (id) {
+            return ApiLoader.post(url + 'delete-history-item', { id: id });
         }
     };
 });
