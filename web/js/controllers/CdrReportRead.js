@@ -146,4 +146,9 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
             $scope.init();
         });
     };
+    $scope.exportCDRToExcel = function() {
+        Cdr.ReadAndExport($scope.item).then(function() {
+            $window.alert('Экспорт Excel отчета успешно выполнен!');
+        });
+    };
 };

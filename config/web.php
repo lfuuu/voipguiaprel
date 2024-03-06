@@ -92,6 +92,7 @@ $config = [
                 'json/billing/<controller>/<action>' => 'json/billing/<controller>/<action>',
                 'json/sms/<controller>/<action>' => 'json/sms/<controller>/<action>',
                 'json/<controller>/<action>' => 'json/<controller>/<action>',
+                'json/cdr/export-to-excel' => 'json/cdr/export-to-excel',
                 '<controller>/<action>' => '<controller>/<action>',
             ],
         ],

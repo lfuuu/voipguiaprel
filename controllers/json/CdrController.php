@@ -7,6 +7,9 @@ use app\models\billing\DisconnectCause;
 use app\models\calls_cdr\Cdr;
 use yii\base\Request;
 use yii\db\Expression;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use yii\web\Response;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
@@ -196,4 +199,109 @@ class CdrController extends JsonController
                 ->asArray()
                 ->all();
     }
-}
+    
+    public function actionReadAndExport()
+    {
+        $data = $this->actionRead();
+        if (empty($data)) {
+            throw new HttpException(400, "Нет данных для экспорта.");
+        }
+
+        $fileName = 'CDR_Report_' . date('Ymd_His') . '.xlsx';
+        $filePath = '/workspace/voip_gui/web/files/' . $fileName;
+
+        if (!is_dir(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+
+        $this->createExcelDocument($data, $filePath);
+    }
+
+    protected function createExcelDocument($data, $fileName = 'file.xlsx')
+    {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Определение стиля заголовка
+        $headerStyle = [
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            ],
+            'borders' => [
+                'bottom' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'argb' => 'FFA0A0A0',
+                ],
+                'endColor' => [
+                    'argb' => 'FFFFFFFF',
+                ],
+            ],
+        ];
+
+        $headers = [
+            'Server ID', 'NAS IP', 'SRC Number', 'DST Number', 'Setup Time', 
+            'Session Time', 'Disconnect Cause', 'SRC Route', 'DST Route', 'MCN Callid', 'RedirectNum'
+        ];
+
+        $columnIndex = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue("{$columnIndex}1", $header);
+            $sheet->getStyle("{$columnIndex}1")->applyFromArray($headerStyle);
+            $columnIndex++;
+        }
+
+        $rowIndex = 2;
+        foreach ($data as $item) {
+            $columnIndex = 1;
+            foreach ($headers as $field) {
+                if ($field == 'MCN Callid') {
+                    $key = 'mcn_callid';
+                } elseif ($field == 'RedirectNum') {
+                    $key = 'redirect_number';
+                } else {
+                    $key = strtolower(str_replace(' ', '_', $field));
+                }
+
+                $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $item[$key] ?? 'N/A');
+                $columnIndex++;
+            }
+            $rowIndex++;
+        }
+
+        $lastColumn = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex - 1);
+        foreach (range('A', $lastColumn) as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $allBordersStyle = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+        $sheet->getStyle('A1:' . $lastColumn . ($rowIndex - 1))->applyFromArray($allBordersStyle);
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        try {
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+            $writer->save('php://output');
+            exit;
+        } catch (\PhpOffice\PhpSpreadsheet\Writer\Exception $e) {
+            \Yii::error("Ошибка при создании Excel файла: {$e->getMessage()}", 'export');
+            throw new HttpException(500, "Ошибка при создании Excel файла: {$e->getMessage()}");
+        }
+    }
+}    

@@ -1164,7 +1164,7 @@ app.factory('Cpc', function ($q, ApiLoader, $rootScope) {
     };
 });
 
-app.factory('Cdr', function ($q, ApiLoader) {
+app.factory('Cdr', function ($q,$http, ApiLoader) {
     var url = '/json/cdr/';
     var list = undefined;
     var promise = undefined;
@@ -1197,6 +1197,29 @@ app.factory('Cdr', function ($q, ApiLoader) {
             }
             return deferred.promise;
         },
+        ReadAndExport: function(item) {
+            var deferred = $q.defer();
+            var config = { responseType: 'arraybuffer' }; // Или responseType: 'blob', если вы хотите использовать Blob
+
+            $http.post('/json/cdr/read-and-export', item, config)
+                .then(function(response) {
+                    var blob = new Blob([response.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                    var downloadUrl = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = 'CDR_Report_' + new Date().toISOString() + '.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    URL.revokeObjectURL(downloadUrl);
+                    document.body.removeChild(a);
+                    deferred.resolve();
+                }, function(error) {
+                    console.error('Export failed', error);
+                    deferred.reject(error);
+                });
+
+            return deferred.promise;
+        }
     };
 });
 
