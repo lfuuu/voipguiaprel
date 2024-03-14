@@ -14,6 +14,7 @@ use app\queries\billing_uu\PricelistPrefixPriceQuery;
  * @property int $change_flag
  * @property int $history_id
  * @property string $b_number_connect_price
+ * @property string $object_comment
  */
 class PricelistPrefixPrice extends \yii\db\ActiveRecord
 {
@@ -39,6 +40,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
     {
         return [
             [['prefix_b', 'b_number_price', 'date_from', 'date_to', 'b_number_connect_price'], 'string'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
             [['pricelist_filter_b_id', 'change_flag', 'history_id'], 'integer'],
         ];
     }
@@ -83,7 +85,8 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                         'price_old' => $oldItem->b_number_price,
                         'price_new' => $data['b_number_price'],
                         'date_from' => $data['date_from'],
-                        'date_to' => $data['date_to']
+                        'date_to' => $data['date_to'],
+                        'object_comment' => $data['object_comment']
                     ];
 
                     if ($oldItem->b_number_price < $data['b_number_price']) {
@@ -111,6 +114,7 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                     'price_new' => $data['b_number_price'],
                     'date_from' => $data['date_from'],
                     'date_to' => $data['date_to'],
+                    'object_comment' => $data['object_comment'],
                     'type' => 'new',
                 ];
             }

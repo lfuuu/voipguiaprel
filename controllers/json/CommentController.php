@@ -41,6 +41,7 @@ class CommentController extends JsonController
         'route_table_route' => ['model_name' => '\app\models\RouteTableRoute', 'permissions' => ['route_table_edit']],
         'route_table_rule' => ['model_name' => '\app\models\RouteRouteRule', 'permissions' => ['route_table_edit']],
         'camel_gt_rule' => ['model_name' => '\app\models\CamelGtRule'],
+        'trunk_filter_b' => ['model_name' => '\app\models\billing_uu\PricelistPrefixPrice', 'permissions' => ['pricelist_edit']],
     ];
     
     /**

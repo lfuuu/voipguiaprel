@@ -506,7 +506,8 @@ class PricelistView
                     'b_number_price' => $item['ppp__b_number_price'],
                     'date_from' => $item['ppp__date_from'],
                     'date_to' => $item['ppp__date_to'],
-                    'price_change' => 'none'
+                    'price_change' => 'none',
+                    'object_comment' => $item['ppp__object_comment'],
                 ]
             ]
         ];
@@ -567,7 +568,8 @@ class PricelistView
                     'b_number_price' => $item['ppp__b_number_price'],
                     'date_from' => $item['ppp__date_from'],
                     'date_to' => $item['ppp__date_to'],
-                    'price_change' => 'none'
+                    'price_change' => 'none',
+                    'object_comment' => $item['ppp__object_comment'],
                 ]
             ]
         ];
@@ -625,7 +627,8 @@ class PricelistView
                     'b_number_price' => $item['ppp__b_number_price'],
                     'date_from' => $item['ppp__date_from'],
                     'date_to' => $item['ppp__date_to'],
-                    'price_change' => 'none'
+                    'price_change' => 'none',
+                    'object_comment' => $item['ppp__object_comment'],
                 ]
             ]
         ];
@@ -643,6 +646,7 @@ class PricelistView
             'date_from' => $item['ppp__date_from'],
             'date_to' => $item['ppp__date_to'],
             'has_buttons' => true,
+            'object_comment' => $item['ppp__object_comment'],
         ];
     }
     
@@ -656,7 +660,8 @@ class PricelistView
             'b_number_price' => $item['ppp__b_number_price'],
             'date_from' => $item['ppp__date_from'],
             'date_to' => $item['ppp__date_to'],
-            'price_change' => ($previousPrice > $item['ppp__b_number_price'] ? 'decrease' : ($previousPrice == $item['ppp__b_number_price'] ? 'none' : 'increase'))
+            'price_change' => ($previousPrice > $item['ppp__b_number_price'] ? 'decrease' : ($previousPrice == $item['ppp__b_number_price'] ? 'none' : 'increase')),
+            'object_comment' => $item['ppp__object_comment'],
         ];
     }
     
