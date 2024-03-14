@@ -7,7 +7,7 @@
 </style>
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
-        <h3 ng-if="item.id">Прайслист v2. {{pricelistServiceTypeId == 1 ? 'Голос' : 'СМС'}}. {{pricelistName}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span></h3>
+        <h3 ng-if="item.id">Прайслист v228. {{pricelistServiceTypeId == 1 ? 'Голос' : 'СМС'}}. {{pricelistName}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span></h3>
     </div>
     <div class="modal-body">
         <table class="table table-condensed">
@@ -54,21 +54,18 @@
                 <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
                     И:&nbsp;{{item.interconnect_price}}</span>
                 </td>
-                <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
-                <td style="min-width: 250px;" ng-if="item.is_prefix_price">
-                    <span ng-repeat="prefixItem in item.prefixes track by prefixItem.prefix_price_id">
-                        {{$first ? '' : '|'}}
-                        <span style="cursor: pointer" data-has-mark="{{prefixItem.has_prefix_mark}}">
-                            <span ng-if="$first" ng-click="editPrefixPrice(prefixItem.prefix_price_id)">{{prefixItem.b_number_price}}</span>
-                            <button ng-if="$first" class="btn btn-xs glyphicon glyphicon-list" style="padding-bottom:3px" ng-click="viewPrefixHistory(item.prefix_b, item.filter_b_id)"></button>
-                            <span ng-if="$first && prefixItem.date_from > dateNow" style="color: blue;">+ c {{prefixItem.date_from}}</span>
-                            <span ng-if="!$first && prefixItem.price_change == 'decrease'" style="color: green;">{{prefixItem.b_number_price}} понижение c {{prefixItem.date_from}}</span>
-                            <span ng-if="!$first && prefixItem.price_change == 'increase'" style="color: red;">{{prefixItem.b_number_price}} повышение c {{prefixItem.date_from}}</span>
-                            <span ng-if="!$first && prefixItem.price_change == 'none'" style="color: gray;">{{prefixItem.b_number_price}} продление c {{prefixItem.date_from}}</span>
-                            <span ng-if="$last && prefixItem.date_to != '3000-01-01'" style="color: black; font-weight: bold;">до {{prefixItem.date_to}}</span>
+                    <td ng-if="item.is_prefix_price">
+                        <span ng-repeat="prefixItem in item.prefixes track by prefixItem.prefix_price_id">
+                            <div style="display: flex; align-items: center;">
+                                <span ng-if="$first" ng-click="editPrefixPrice(prefixItem.prefix_price_id)" style="margin-right: 5px;">
+                                    {{prefixItem.b_number_price}}
+                                </span>
+                                <button ng-if="$first" class="btn btn-xs glyphicon glyphicon-list" style="padding-bottom:3px; margin-right: 5px;" ng-click="viewPrefixHistory(item.prefix_b, item.filter_b_id)"></button>
+                                <comment-icon key="{{prefixItem.prefix_price_id}}" type="trunk_filter_b" comment="prefixItem.object_comment"></comment-icon>
+                            </div>
+                            <span ng-if="$first && prefixItem.date_from > dateNow" style="color: blue; margin-left: 10px;">+ c {{prefixItem.date_from}}</span>
                         </span>
-                    </span>
-                </td>
+                    </td>
                 <!----------------------------------------------------->
                 <td ng-if="item.is_prefix_price_footer" colspan="2">
                     <pagination style="display: inline;" max-size="5" rotate="false" total-items="item.totalCount" items-per-page="limit" page="item.currentPage" on-select-page="setPagingData(page, item.filter_b_id)" boundary-links="true"></pagination>
@@ -82,7 +79,7 @@
             <button type="button" class="btn btn-success btn-sm" ng-click="back()">Закрыть</button>
         </div>
         <div class="pull-right">
-            <a href="{{host}}/billing?pricelistShortView&{{item.id}}&{{pricelistServiceTypeId}}">Ссылка на эту форму</a>
+            <a href="{{host}}/billing?pricelistShortView&{{item.id}}&{{pricelistServiceTypeId}}"></a>
         </div>
     </div>
 
