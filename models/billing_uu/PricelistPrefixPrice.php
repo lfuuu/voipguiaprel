@@ -113,7 +113,6 @@ class PricelistPrefixPrice extends \yii\db\ActiveRecord
                     'price_new' => $data['b_number_price'],
                     'date_from' => $data['date_from'],
                     'date_to' => $data['date_to'],
-                    'object_comment' => $data['object_comment'],
                     'type' => 'new',
                 ];
             }
