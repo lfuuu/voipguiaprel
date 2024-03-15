@@ -64,6 +64,10 @@
                                 <comment-icon key="{{prefixItem.prefix_price_id}}" type="trunk_filter_b" comment="prefixItem.object_comment"></comment-icon>
                             </div>
                             <span ng-if="$first && prefixItem.date_from > dateNow" style="color: blue; margin-left: 10px;">+ c {{prefixItem.date_from}}</span>
+                            <span ng-if="!$first && prefixItem.price_change == 'decrease'" style="color: green;">{{prefixItem.b_number_price}} понижение c {{prefixItem.date_from}}</span>
+                            <span ng-if="!$first && prefixItem.price_change == 'increase'" style="color: red;">{{prefixItem.b_number_price}} повышение c {{prefixItem.date_from}}</span>
+                            <span ng-if="!$first && prefixItem.price_change == 'none'" style="color: gray;">{{prefixItem.b_number_price}} продление c {{prefixItem.date_from}}</span>
+                            <span ng-if="$last && prefixItem.date_to != '3000-01-01'" style="color: black; font-weight: bold;">до {{prefixItem.date_to}}</span>
                         </span>
                     </td>
                 <!----------------------------------------------------->
