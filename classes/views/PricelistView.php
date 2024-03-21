@@ -491,6 +491,7 @@ class PricelistView
             'filter_b_name' => self::formFilterText($item, 'pfb__', $idArrays),
             'filter_b_rating' => (($item['pfb__rating'] == 1) ? '' : $item['pfb__rating']),
             'filter_b_use_for_minimum' => $item['pfb__use_for_minimum'],
+            'object_comment' => $item['pfb__object_comment'],
             'filter_a_id' => $item['pfa__id'],
             'filter_b_id' => $item['pfb__id'],
             'is_prefix_price' => true,
@@ -507,7 +508,6 @@ class PricelistView
                     'date_from' => $item['ppp__date_from'],
                     'date_to' => $item['ppp__date_to'],
                     'price_change' => 'none',
-                    'object_comment' => $item['ppp__object_comment'],
                 ]
             ]
         ];
@@ -554,6 +554,7 @@ class PricelistView
             'filter_b_name' => self::formFilterText($item, 'pfb__', $idArrays),
             'filter_b_rating' => (($item['pfb__rating'] == 1) ? '' : $item['pfb__rating']),
             'filter_b_use_for_minimum' => $item['pfb__use_for_minimum'],
+            'object_comment' => $item['pfb__object_comment'],
             'filter_a_id' => $item['pfa__id'],
             'filter_b_id' => $item['pfb__id'],
             'is_prefix_price' => true,
@@ -627,7 +628,6 @@ class PricelistView
                     'date_from' => $item['ppp__date_from'],
                     'date_to' => $item['ppp__date_to'],
                     'price_change' => 'none',
-                    'object_comment' => $item['ppp__object_comment'],
                 ]
             ]
         ];
@@ -645,7 +645,6 @@ class PricelistView
             'date_from' => $item['ppp__date_from'],
             'date_to' => $item['ppp__date_to'],
             'has_buttons' => true,
-            'object_comment' => $item['ppp__object_comment'],
         ];
     }
     

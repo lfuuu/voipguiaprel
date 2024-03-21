@@ -14,7 +14,6 @@ use app\queries\billing_uu\PricelistPrefixPriceQuery;
  * @property int $change_flag
  * @property int $history_id
  * @property string $b_number_connect_price
- * @property string $object_comment
  */
 class PricelistPrefixPrice extends \yii\db\ActiveRecord
 {

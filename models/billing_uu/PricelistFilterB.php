@@ -41,6 +41,7 @@ use yii\db\Expression;
  * @property bool $f_inv_nnp_ndc
  * @property string $regex
  * @property int $consider_porting_mode
+ * @property string $object_comment
  */
 class PricelistFilterB extends \yii\db\ActiveRecord
 {
@@ -64,7 +65,8 @@ class PricelistFilterB extends \yii\db\ActiveRecord
                 'tarification_type', 'tarification_min_paid_seconds', 'nnp_filter', 'rating', 'consider_porting_mode'], 'integer'],
             [['mode_selected', 'f_inv_nnp_destination', 'f_inv_nnp_country', 'f_inv_nnp_operator',
                 'f_inv_nnp_region', 'f_inv_nnp_city', 'f_inv_nnp_ndc_type', 'use_for_minimum',
-                'use_cutoff_for_minimum', 'f_inv_nnp_ndc'], 'boolean']
+                'use_cutoff_for_minimum', 'f_inv_nnp_ndc'], 'boolean'],
+            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 

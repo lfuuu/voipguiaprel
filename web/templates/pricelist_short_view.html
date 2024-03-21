@@ -45,8 +45,9 @@
                 <td ng-if="item.is_prefix_price && item.is_filter_a_header" data-has-mark="{{item.has_filter_a_mark}}" rowspan="{{item.total_prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
                     {{item.filter_a_name}} <span style="color: grey; cursor: pointer" ng-click="editFilterA(item.filter_a_id)">(#{{item.filter_a_id}})</span>
                 </td>
-                <td colspan="3" ng-if="item.is_prefix_price && item.is_filter_b_header" data-has-mark="{{item.has_filter_b_mark}}" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
+                <td colspan="3" ng-if="item.is_prefix_price && item.is_filter_b_header" data-has-mark="{{item.has_filter_b_mark}}" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey; white-space: nowrap;">
                     {{item.filter_b_name}}<span style="color: red;" ng-if="item.filter_b_use_for_minimum" popover="Используется для минималок" data-popover-trigger="mouseenter" popover-placement="bottom"> (MIN)</span> <span style="color: grey; cursor: pointer" ng-click="editFilterB(item.filter_b_id)">(#{{item.filter_b_id}})</span>
+                    <comment-icon key="{{item.filter_b_id}}" type="trunk_filter_b" comment="item.object_comment" style="display: inline-block;"></comment-icon>
                 </td>
                 <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
                     <span ng-if="item.filter_b_rating !== ''">Рейтинг:&nbsp;{{item.filter_b_rating}}</span>
@@ -62,7 +63,6 @@
                                     {{prefixItem.b_number_price}}
                                 </span>
                                 <button ng-if="$first" class="btn btn-xs glyphicon glyphicon-list" style="padding-bottom:3px; margin-right: 5px;" ng-click="viewPrefixHistory(item.prefix_b, item.filter_b_id)"></button>
-                                <comment-icon key="{{prefixItem.prefix_price_id}}" type="trunk_filter_b" comment="prefixItem.object_comment"></comment-icon>
                             </div>
                             <span ng-if="$first && prefixItem.date_from > dateNow" style="color: blue; margin-left: 10px;">+ c {{prefixItem.date_from}}</span>
                             <span ng-if="!$first && prefixItem.price_change == 'decrease'" style="color: green;">{{prefixItem.b_number_price}} понижение c {{prefixItem.date_from}}</span>
