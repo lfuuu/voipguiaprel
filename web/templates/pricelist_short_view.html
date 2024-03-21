@@ -54,6 +54,7 @@
                 <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
                     И:&nbsp;{{item.interconnect_price}}</span>
                 </td>
+                <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
                     <td ng-if="item.is_prefix_price">
                         <span ng-repeat="prefixItem in item.prefixes track by prefixItem.prefix_price_id">
                             <div style="display: flex; align-items: center;">
