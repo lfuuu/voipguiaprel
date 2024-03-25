@@ -45,7 +45,7 @@
                 <td ng-if="item.is_prefix_price && item.is_filter_a_header" data-has-mark="{{item.has_filter_a_mark}}" rowspan="{{item.total_prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
                     {{item.filter_a_name}} <span style="color: grey; cursor: pointer" ng-click="editFilterA(item.filter_a_id)">(#{{item.filter_a_id}})</span>
                 </td>
-                <td colspan="3" ng-if="item.is_prefix_price && item.is_filter_b_header" data-has-mark="{{item.has_filter_b_mark}}" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey; white-space: nowrap;">
+                <td colspan="3" ng-if="item.is_prefix_price && item.is_filter_b_header" data-has-mark="{{item.has_filter_b_mark}}" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey; white-space: normal;">
                     {{item.filter_b_name}}<span style="color: red;" ng-if="item.filter_b_use_for_minimum" popover="Используется для минималок" data-popover-trigger="mouseenter" popover-placement="bottom"> (MIN)</span> <span style="color: grey; cursor: pointer" ng-click="editFilterB(item.filter_b_id)">(#{{item.filter_b_id}})</span>
                     <comment-icon key="{{item.filter_b_id}}" type="trunk_filter_b" comment="item.object_comment" style="display: inline-block;"></comment-icon>
                 </td>
