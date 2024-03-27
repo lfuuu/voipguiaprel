@@ -219,10 +219,10 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
 
     $scope.groupTypes = [
         {id: 1, name: 'МГМН'},
-        {id: 2, name: 'Местный узел'},
+        {id: 2, name: 'КУС'},
         {id: 3, name: 'Точка подключения'},
-        {id: 4, name: 'Специальная'}
-    ];
+        {id: 4, name: 'Специальный'}
+    ];  
 
     $scope.trunkNumberPreprocessingType = [
         {'id': 0, 'name': 'Префикс'},

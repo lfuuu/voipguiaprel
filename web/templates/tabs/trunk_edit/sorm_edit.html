@@ -104,7 +104,7 @@
                     <span>Имя транка:</span>
                 </td>
                 <td width="70%">
-                    <input class="form-control" placeholder="Название" ng-model="line.old_name" ng-disabled="!item.sorm.enabled" required/>
+                    <input class="form-control" placeholder="Название" ng-model="item.trunk_name" ng-disabled="!item.sorm.enabled" required/>
                 </td>
                 <td width="10%">
                     &nbsp;
@@ -119,6 +119,9 @@
             </tbody>
             <tfoot>
             <tr>
+                <div class="special-annotation" style="position: absolute; bottom: 10px; right: 10px; background-color: #f8f9fa; padding: 10px; border-radius: 5px; font-size: 12px; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 1050;">
+                    Узел "Специальный" - в данный момент используется для выгрузки местного транка на хабе во всех регионах этого хаба.
+                </div>
                 <td></td>
                 <td colspan="7">
                     <button type="button" class="btn btn-success btn-xs" ng-click="addSormItem()"><i class="glyphicon glyphicon-plus"></i> СОРМ транк</button>
