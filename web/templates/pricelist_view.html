@@ -297,7 +297,11 @@
                 <td ng-if="item.is_prefix_price_footer" colspan="4"></td>
                 <td ng-if="item.is_prefix_price_footer" colspan="7">
                     <pagination style="display: inline;" max-size="5" rotate="false" total-items="item.totalCount" items-per-page="limit" page="item.currentPage" on-select-page="setPagingData(page, item.filter_b_id)"></pagination>
-                </td>
+                    <div style="margin-top: 35px;">
+                        <input type="text" class="search-input" ng-model="searchPrefixId" placeholder="Введите ID для поиска" />
+                        <button type="button" class="btn btn-primary btn-xs" ng-click="searchPrefixById(searchPrefixId, item.filter_b_id)">Поиск</button>
+                    </div>
+                </td>                
                 <td ng-if="item.is_prefix_price_footer" colspan="5"></td>
             </tr>
             </tbody>

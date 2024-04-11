@@ -200,6 +200,43 @@ var PricelistViewCtrl = function ($scope, Redirect, List, Pricelist, PricelistLo
         });
     };
 
+    $scope.searchPrefixById = function(searchValue, filterBId) {
+        if (!searchValue) {
+            alert('Пожалуйста, введите значение prefix_b для поиска.');
+            return;
+        }
+    
+        var requestData = { pricelist_filter_b_id: filterBId };
+        
+        PricelistPrefixPrice.readAll(requestData).then(function(data) {
+            var index = data.findIndex(function(item) {
+                return item.prefix_b && item.prefix_b.trim() === searchValue.trim();
+            });
+    
+            if (index !== -1) {
+                var pageNumber = Math.floor(index / $scope.limit) + 1;
+    
+                // Обновляем currentPage для конкретного item
+                $scope.list.forEach(function(item) {
+                    if(item.filter_b_id === filterBId) {
+                        item.currentPage = pageNumber;
+                    }
+                });
+    
+                // Обновляем пагинацию и данные на странице
+                $scope.setPagingData(pageNumber, filterBId);
+                
+                // Применяем изменения
+                if (!$scope.$$phase) $scope.$apply();
+            } else {
+                alert('Префикс с таким значением prefix_b не найден.');
+            }
+        }).catch(function(error) {
+            console.error("Произошла ошибка при поиске:", error);
+        });
+    };
+    
+
     $scope.deletePrefixPrice = function (id) {
         if (!$window.confirm('Удалить прайс на префикс?')) return;
 

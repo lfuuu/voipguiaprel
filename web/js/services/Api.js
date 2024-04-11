@@ -2131,6 +2131,9 @@ app.factory('PricelistPrefixPrice', function ($q, ApiLoader, $rootScope) {
         readPage: function (data) {
             return ApiLoader.post(url + 'read-page', data);
         },
+        readAll: function (data) {
+            return ApiLoader.post(url + 'read-all', data);
+        },
         get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },

@@ -4,6 +4,10 @@
         position: initial;
         margin: initial;
     }
+    .search-input {
+    width: 142px;
+    height: 25px;
+}
 </style>
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
@@ -73,8 +77,29 @@
                     </td>
                 <!----------------------------------------------------->
                 <td ng-if="item.is_prefix_price_footer" colspan="2">
-                    <pagination style="display: inline;" max-size="5" rotate="false" total-items="item.totalCount" items-per-page="limit" page="item.currentPage" on-select-page="setPagingData(page, item.filter_b_id)" boundary-links="true"></pagination>
-                </td>
+                <!-- Поле поиска и кнопка -->
+                <div class="search-box">
+                    <input type="text" class="search-input" ng-model="searchPrefixId" placeholder="Введите ID для поиска" />
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="searchPrefixById(searchPrefixId, item.filter_b_id)">Поиск</button>
+                </div>
+                <!-- Результат поиска отображается здесь -->
+                    <div ng-if="searchResults[item.filter_b_id]">
+                        <div style="display: flex; align-items: center; margin-top: 10px;">
+                            <span style="margin-right: 5px;">
+                                {{searchResults[item.filter_b_id].prefix_b}}
+                            </span>
+                            <span style="margin-right: 5px; cursor: pointer;" ng-click="editPrefixPrice(searchResults[item.filter_b_id].prefix_price_id)">
+                                {{searchResults[item.filter_b_id].b_number_price}}
+                            </span>
+                            <button class="btn btn-xs glyphicon glyphicon-list" style="padding-bottom:3px; margin-right: 5px;" ng-click="viewPrefixHistory(searchResults[item.filter_b_id].prefix_b, item.filter_b_id)"></button>
+                            <span ng-if="searchResults[item.filter_b_id].date_from > dateNow" style="color: blue; margin-left: 10px;">С: {{searchResults[item.filter_b_id].date_from}}</span>
+                            <span ng-if="searchResults[item.filter_b_id].price_change == 'decrease'" style="color: green;">Понижение с {{searchResults[item.filter_b_id].date_from}}</span>
+                            <span ng-if="searchResults[item.filter_b_id].price_change == 'increase'" style="color: red;">Повышение с {{searchResults[item.filter_b_id].date_from}}</span>
+                            <span ng-if="searchResults[item.filter_b_id].price_change == 'none'" style="color: gray;">Продление с {{searchResults[item.filter_b_id].date_from}}</span>
+                            <span ng-if="searchResults[item.filter_b_id].date_to != '3000-01-01'" style="color: black; font-weight: bold;">До: {{searchResults[item.filter_b_id].date_to}}</span>
+                        </div>
+                    </div>
+                </td>                        
             </tr>
             </tbody>
         </table>

@@ -78,6 +78,32 @@ SQL;
         
         return $result;
     }
+
+    public function actionReadAll()
+    {
+        if (!\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        
+        $query = <<<SQL
+        select * from billing_uu.pricelist_prefix_price ppp
+        where pricelist_filter_b_id = :b_id
+        and date_to > now()
+        and prefix_b in (
+            select distinct prefix_b from billing_uu.pricelist_prefix_price
+            where pricelist_filter_b_id = :b_id
+            and date_to > now()
+            order by prefix_b
+        );
+    SQL;
+    
+    $result = PricelistPrefixPrice::findBySql($query, [':b_id' => $this->request['pricelist_filter_b_id']])
+        ->asArray()
+        ->all();
+    
+    return $result;
+}
+
     
     public function actionSave()
     {
