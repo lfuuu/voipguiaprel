@@ -27,7 +27,7 @@ ansible:
   beforeInstall:
   - name: install packages for fpm
     shell: |
-      apk add --no-cache mc parallel libc-dev autoconf make gcc g++ bash tar curl procps busybox-extras iputils php7.4-gd \
+      apk add --no-cache mc parallel libc-dev autoconf make gcc g++ bash tar curl procps busybox-extras iputils \
       vim htop wget git openssh postgresql-dev postgresql-client zip \
       lame sox
   - name: setup user
