@@ -255,15 +255,30 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             });
     
             if (foundItem) {
+                var previousItemIndex = data.findIndex((item, index) => {
+                    return item.prefix_b === foundItem.prefix_b && index < data.indexOf(foundItem);
+                });
+                var priceChange = 'none';
+                if (previousItemIndex !== -1) {
+                    var previousItem = data[previousItemIndex];
+                    var currentPrice = parseFloat(foundItem.b_number_price);
+                    var previousPrice = parseFloat(previousItem.b_number_price);
+                    if (previousPrice > currentPrice) {
+                        priceChange = 'decrease';
+                    } else if (previousPrice < currentPrice) {
+                        priceChange = 'increase';
+                    }
+                }
+    
                 $timeout(function() {
                     $scope.searchResults[filterBId] = {
                         filter_b_id: foundItem.filter_b_id,
                         prefix_b: foundItem.prefix_b.trim(),
-                        prefix_price_id: foundItem.id, // Убедитесь, что это правильное поле для ID
+                        prefix_price_id: foundItem.id,
                         b_number_price: foundItem.b_number_price,
                         date_from: foundItem.date_from,
                         date_to: foundItem.date_to,
-                        price_change: foundItem.price_change
+                        price_change: priceChange
                     };
                 });
             } else {
@@ -275,7 +290,6 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         });
     };
     
-
     $scope.printToExcelExpanded = function () {
         window.open('/pricelist/excel?id=' + $scope.item.id, '_blank');
     };
