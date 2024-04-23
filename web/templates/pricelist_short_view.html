@@ -77,30 +77,11 @@
                     </td>
                 <!----------------------------------------------------->
                 <td ng-if="item.is_prefix_price_footer" colspan="2">
-                    <!-- Поле поиска и кнопка -->
-                    <div class="search-box">
-                        <input type="text" class="search-input" ng-model="searchPrefixId" placeholder="Введите ID для поиска" />
-                        <button type="button" class="btn btn-primary btn-xs" ng-click="searchPrefixById(searchPrefixId, item.filter_b_id)">Поиск</button>
-                    </div>
-                    <!-- Результат поиска отображается здесь -->
-                    <div ng-if="searchResults[item.filter_b_id]">
-                        <div style="display: flex; align-items: center; margin-top: 10px;">
-                            <span style="margin-right: 5px;">
-                                {{searchResults[item.filter_b_id].prefix_b}}
-                            </span>
-                            <span style="margin-right: 5px; cursor: pointer;" ng-click="editPrefixPrice(searchResults[item.filter_b_id].prefix_price_id)">
-                                {{searchResults[item.filter_b_id].b_number_price}}
-                            </span>
-                            <button class="btn btn-xs glyphicon glyphicon-list" style="padding-bottom:3px; margin-right: 5px;" ng-click="viewPrefixHistory(searchResults[item.filter_b_id].prefix_b, item.filter_b_id)"></button>
-                        </div>
-                        <div style="display: flex; flex-wrap: wrap; margin-top: 10px;">
-                            <span ng-if="searchResults[item.filter_b_id].date_from > dateNow" style="color: blue; margin-left: 10px;">С: {{searchResults[item.filter_b_id].date_from}}</span>
-                            <span ng-if="searchResults[item.filter_b_id].price_change == 'decrease'" style="color: green;">{{searchResults[item.filter_b_id].b_number_price}} понижение с {{searchResults[item.filter_b_id].date_from}}</span>
-                            <span ng-if="searchResults[item.filter_b_id].price_change == 'increase'" style="color: red;">{{searchResults[item.filter_b_id].b_number_price}} повышение с {{searchResults[item.filter_b_id].date_from}}</span>
-                            <span ng-if="searchResults[item.filter_b_id].price_change == 'none'" style="color: gray;">{{searchResults[item.filter_b_id].b_number_price}} продление с {{searchResults[item.filter_b_id].date_from}}</span>
-                            <span ng-if="searchResults[item.filter_b_id].date_to != '3000-01-01'" style="color: black; font-weight: bold;">До: {{searchResults[item.filter_b_id].date_to}}</span>
-                        </div>
-                    </div>             
+                <!-- Поле поиска и кнопка -->
+                <div class="search-box">
+                    <input type="text" class="search-input" ng-model="searchPrefixId" placeholder="Введите ID для поиска" />
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="searchPrefixById(searchPrefixId, item.filter_b_id)">Поиск</button>
+                </div>
                 </td>                        
             </tr>
             </tbody>

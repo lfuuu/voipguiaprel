@@ -248,48 +248,31 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         }
     
         var requestData = { pricelist_filter_b_id: filterBId };
-    
+        
         PricelistPrefixPrice.readAll(requestData).then(function(data) {
-            var foundItem = data.find(function(item) {
+            var index = data.findIndex(function(item) {
                 return item.prefix_b && item.prefix_b.trim() === searchValue.trim();
             });
+                if (index !== -1) {
+                var pageNumber = Math.floor(index / $scope.limit) + 1;
     
-            if (foundItem) {
-                var previousItemIndex = data.findIndex((item, index) => {
-                    return item.prefix_b === foundItem.prefix_b && index < data.indexOf(foundItem);
-                });
-                var priceChange = 'none';
-                if (previousItemIndex !== -1) {
-                    var previousItem = data[previousItemIndex];
-                    var currentPrice = parseFloat(foundItem.b_number_price);
-                    var previousPrice = parseFloat(previousItem.b_number_price);
-                    if (previousPrice > currentPrice) {
-                        priceChange = 'decrease';
-                    } else if (previousPrice < currentPrice) {
-                        priceChange = 'increase';
+                $scope.list.forEach(function(item) {
+                    if(item.filter_b_id === filterBId) {
+                        item.currentPage = pageNumber;
                     }
-                }
-    
-                $timeout(function() {
-                    $scope.searchResults[filterBId] = {
-                        filter_b_id: foundItem.filter_b_id,
-                        prefix_b: foundItem.prefix_b.trim(),
-                        prefix_price_id: foundItem.id,
-                        b_number_price: foundItem.b_number_price,
-                        date_from: foundItem.date_from,
-                        date_to: foundItem.date_to,
-                        price_change: priceChange
-                    };
                 });
+    
+                $scope.setPagingData(pageNumber, filterBId);
+                
+                if (!$scope.$$phase) $scope.$apply();
             } else {
                 alert('Префикс с таким значением prefix_b не найден.');
-                delete $scope.searchResults[filterBId]; // Удалить результат поиска, если ничего не найдено
             }
         }).catch(function(error) {
             console.error("Произошла ошибка при поиске:", error);
         });
     };
-    
+
     $scope.printToExcelExpanded = function () {
         window.open('/pricelist/excel?id=' + $scope.item.id, '_blank');
     };
