@@ -62,7 +62,6 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 }];
             }
         }
-        
         return {list: simplifiedPrefixList, count: prefixCount};
     };
 
@@ -250,12 +249,21 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         var requestData = { pricelist_filter_b_id: filterBId };
         
         PricelistPrefixPrice.readAll(requestData).then(function(data) {
+          
+            // Сортировка данных по prefix_b в возрастающем порядке
+            data.sort(function(a, b) {
+                if (a.prefix_b < b.prefix_b) return -1;
+                if (a.prefix_b > b.prefix_b) return 1;
+                return 0;
+            });
+    
             var index = data.findIndex(function(item) {
                 return item.prefix_b && item.prefix_b.trim() === searchValue.trim();
             });
                 if (index !== -1) {
                 var pageNumber = Math.floor(index / $scope.limit) + 1;
-    
+                
+                // Обновляем currentPage для конкретного item
                 $scope.list.forEach(function(item) {
                     if(item.filter_b_id === filterBId) {
                         item.currentPage = pageNumber;
@@ -263,7 +271,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 });
     
                 $scope.setPagingData(pageNumber, filterBId);
-                
+
                 if (!$scope.$$phase) $scope.$apply();
             } else {
                 alert('Префикс с таким значением prefix_b не найден.');
