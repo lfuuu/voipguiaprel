@@ -247,31 +247,33 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         }
     
         var requestData = { pricelist_filter_b_id: filterBId };
-        
+    
         PricelistPrefixPrice.readAll(requestData).then(function(data) {
-          
+            // Удаление дубликатов по prefix_b
+            const uniqueData = Array.from(data.reduce((map, item) => map.set(item.prefix_b, item), new Map()).values());
+    
             // Сортировка данных по prefix_b в возрастающем порядке
-            data.sort(function(a, b) {
+            uniqueData.sort(function(a, b) {
                 if (a.prefix_b < b.prefix_b) return -1;
                 if (a.prefix_b > b.prefix_b) return 1;
                 return 0;
             });
     
-            var index = data.findIndex(function(item) {
+            var index = uniqueData.findIndex(function(item) {
                 return item.prefix_b && item.prefix_b.trim() === searchValue.trim();
             });
-                if (index !== -1) {
+    
+            if (index !== -1) {
                 var pageNumber = Math.floor(index / $scope.limit) + 1;
-                
+              
                 // Обновляем currentPage для конкретного item
                 $scope.list.forEach(function(item) {
-                    if(item.filter_b_id === filterBId) {
+                    if (item.filter_b_id === filterBId) {
                         item.currentPage = pageNumber;
                     }
                 });
     
                 $scope.setPagingData(pageNumber, filterBId);
-
                 if (!$scope.$$phase) $scope.$apply();
             } else {
                 alert('Префикс с таким значением prefix_b не найден.');
@@ -280,7 +282,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             console.error("Произошла ошибка при поиске:", error);
         });
     };
-
+    
     $scope.printToExcelExpanded = function () {
         window.open('/pricelist/excel?id=' + $scope.item.id, '_blank');
     };
