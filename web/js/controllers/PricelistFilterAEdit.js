@@ -152,20 +152,19 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     };
 
     $scope.stringifyNnpData = function (data) {
-        if (!data || data == '{}') {
+        if (!data || data.length === 0) {
             return '{}';
         }
-
-        if (((typeof data) == 'string') && data.charAt(0) == '{') {
+        if (typeof data === 'string' && data.charAt(0) === '{') {
             return data;
         }
-
-        return '{' + data.join(',') + '}';
+        var result = '{' + data.join(',') + '}';
+        return result;
     };
 
     $scope.save = function () {
-        var data = angular.copy($scope.item);
-        
+        var data = angular.copy($scope.item); 
+
         data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
         data.nnp_region = $scope.stringifyNnpData(data.nnp_region);
         data.nnp_city = $scope.stringifyNnpData(data.nnp_city);
@@ -173,7 +172,7 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
         data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
         data.nnp_destination = $scope.stringifyNnpData(data.nnp_destination);
-        
+
         PricelistFilterA.save(data).then(
             function (result) {
                 $scope.loading = false;
@@ -263,17 +262,17 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
         }
     };
 
-    $scope.saveAndUpdate = function()
-    {
+    $scope.saveAndUpdate = function() {
         var data = angular.copy($scope.item);
-
+    
         data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
         data.nnp_region = $scope.stringifyNnpData(data.nnp_region);
         data.nnp_city = $scope.stringifyNnpData(data.nnp_city);
         data.nnp_operator = $scope.stringifyNnpData(data.nnp_operator);
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
         data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
-
+        data.nnp_destination = $scope.stringifyNnpData(data.nnp_destination);
+    
         PricelistFilterA.saveAndUpdate(data).then(function(response) {
             $modalInstance.close();
         });
