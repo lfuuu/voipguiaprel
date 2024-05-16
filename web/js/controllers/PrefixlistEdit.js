@@ -20,7 +20,6 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     $scope.NNP_MODE_FILTER = 2;
 
     $scope.saveEnabled = false;
-
     $scope.nnpMode = $scope.NNP_MODE_DIRECTION;
 
     var typeWithBuffer = [$scope.TYPE_ID_NNP, $scope.TYPE_ID_7800, $scope.TYPE_ID_DID_ON_VPBX, $scope.TYPE_ID_FMC,
@@ -41,8 +40,6 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     var countryLoadCompleteV2 = false;
     var cityLoadCompleteV2 = false;
     var regionLoadCompleteV2 = false;
-
-
 
     var watchers = {
         nnp_country: function (newValue, oldValue) {
@@ -282,7 +279,6 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                     var region = $scope.item.rn_region;
                     var region_fz = $scope.item.rn_region_fz;
                     var operator = $scope.item.rn_operator;
-                    
                 }
 
                 Nnp.regionList({country_code: newValue}).then(function (data) {
@@ -314,7 +310,8 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     if (params.id) {
         Prefixlist.get({id: params.id}).then(function (data) {
             $scope.item = data;
-
+            $scope.initialServerId = $scope.item.server_id;
+            
             if (typeWithBuffer.indexOf($scope.item.type_id) != -1) {
                 $scope.hasBuffer = true;
             } else {
@@ -329,7 +326,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             if ($scope.item.type_id == $scope.TYPE_ID_MANUAL) {
                 var manual_list = [];
                 for (var i in $scope.item.manual_list) {
-                    manual_list.push({prefix: $scope.item.manual_list[i]})
+                    manual_list.push({prefix: $scope.item.manual_list[i]});
                 }
                 $scope.item.manual_list = manual_list;
                 $scope.saveEnabled = true;
@@ -346,7 +343,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             $scope.setNnpFields(data);
             $scope.setVoipRegistryFields(data);
             $scope.setVoipNumberFields(data);
-            $scope.setVoipNumberFieldsV2(data)
+            $scope.setVoipNumberFieldsV2(data);
             $scope.setGtFields(data);
             $scope.setRnFields(data);
 
@@ -364,7 +361,6 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                         },
                         onComplete: function (e, result) {
                             $scope.item.count = result.result.data.count;
-                            // $('#upload-csv-file').hide();
                             $scope.$apply('item.id');
                         }
                     });
@@ -425,7 +421,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             number_exclude_sources: false,
             number_exclude_statuses: false,
             rn_region: null,
-            rn_region_fz:null,
+            rn_region_fz: null,
             rn_country: null,
             rn_operator: null,
             rn_use_nnp_ported: false,
@@ -437,7 +433,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             count: 0,
             sw_share_with_camel: ($scope.isCamel ? true : false)
         };
-
+        $scope.initialServerId = $scope.item.server_id;
         if ($scope.isCamel) {
             $scope.item.type_id = $scope.TYPE_ID_GT;
         }
@@ -508,7 +504,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
 
     Nnp.routeMncList().then(function (data) {
         $scope.rnRouteMncList = data;
-    })
+    });
 
     Server.list().then(function (data) {
         $scope.serverList = data;
@@ -628,13 +624,18 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
     };
 
     $scope.save = function () {
+        if ($scope.initialServerId !== $scope.server.id) {
+            alert("Изменения нельзя сохранить, так как вы пытаетесь изменить список префиксов, который находится на другом регионе.");
+            return;
+        }
+
         var data = angular.copy($scope.item);
         data.manual_list = [];
         data.smezhnost_list = [];
 
         if ($scope.item.type_id == $scope.TYPE_ID_MANUAL) {
             for (var i in $scope.item.manual_list) {
-                data.manual_list.push($scope.item.manual_list[i].prefix)
+                data.manual_list.push($scope.item.manual_list[i].prefix);
             }
         }
 
@@ -870,7 +871,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 $scope.item.number_exclude_ndc_type = filterData.exclude_ndc_type_id;
                 $scope.item.number_exclude_source = filterData.exclude_source;
                 $scope.item.number_exclude_status = filterData.exclude_status;
-                $scope.item.number_exclude_statuses = filterData.exclude_statuses ? filterData.exclude_statuses : null;;
+                $scope.item.number_exclude_statuses = filterData.exclude_statuses ? filterData.exclude_statuses : null;
 
                 if ($scope.item.number_country) {
                     Nnp.regionList({country_code: $scope.item.number_country}).then(function (data) {
@@ -916,7 +917,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                 $scope.item.number_exclude_cities = filterData.exclude_city_ids ? filterData.exclude_city_ids : null;
                 $scope.item.number_exclude_ndc_types = filterData.exclude_ndc_type_ids ? filterData.exclude_ndc_type_ids : null;
                 $scope.item.number_exclude_sources = filterData.exclude_sources ? filterData.exclude_sources : null;
-                $scope.item.number_exclude_statuses = filterData.exclude_statuses ? filterData.exclude_statuses : null;;
+                $scope.item.number_exclude_statuses = filterData.exclude_statuses ? filterData.exclude_statuses : null;
 
                 if ($scope.item.number_countries) {
                     Nnp.regionList({country_code: $scope.item.number_countries}).then(function (data) {
@@ -936,7 +937,6 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                             });
                         } else {
                             $scope.saveEnabled = true;
-
                         }
                     });
                 } else {

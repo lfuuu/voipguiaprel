@@ -5,6 +5,7 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
         TrunkGroup.get({id: params.id}).then(function(data){
             $scope.pageIdSuffix = params.id;
             $scope.item = data;
+            $scope.initialServerId = $scope.item.server_id;
             var trunks = [];
             var trunk_groups = [];
 
@@ -64,6 +65,8 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
             trunks: [],
             trunk_groups: []
         };
+        
+        $scope.initialServerId = $scope.item.server_id;
     }
 
     List.trunkGroup().then(function (data) {
@@ -125,6 +128,12 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
     };
 
     $scope.save = function() {
+
+        if ($scope.initialServerId !== $scope.server.id) {
+            alert("Изменения нельзя сохранить, так как вы пытаетесь изменить группу транков, который находится на другом регионе.");
+            return;
+        }
+
         delete $scope.item.findIntoRules;
         delete $scope.item.findIntoPriorities;
 

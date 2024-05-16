@@ -6,6 +6,9 @@ var RouteCaseEditCtrl = function ($scope, Redirect, RouteCase, params, $modalIns
             if ($scope.item.trunks === undefined) {
                 $scope.item.trunks = [];
             }
+
+            $scope.initialServerId = $scope.item.server_id;
+
         });
 
         RouteCase.findUsagesInOutcomes({id: params.id}).then(function (data) {
@@ -16,6 +19,9 @@ var RouteCaseEditCtrl = function ($scope, Redirect, RouteCase, params, $modalIns
             server_id: $scope.server.id,
             trunks: []
         };
+
+        $scope.initialServerId = $scope.item.server_id;
+
     }
 
     $scope.addTrunk = function () {
@@ -26,8 +32,13 @@ var RouteCaseEditCtrl = function ($scope, Redirect, RouteCase, params, $modalIns
         $scope.item.trunks.splice(index, 1);
     };
 
-
     $scope.save = function () {
+
+        if ($scope.initialServerId !== $scope.server.id) {
+            alert("Изменения нельзя сохранить, так как вы пытаетесь изменить Route Case, который находится на другом регионе.");
+            return;
+        }
+
         RouteCase.save($scope.item).then(function (response) {
             $modalInstance.close();
         });
@@ -43,5 +54,5 @@ var RouteCaseEditCtrl = function ($scope, Redirect, RouteCase, params, $modalIns
         Redirect.outcomeEdit(item.id).then(function () {
             $scope.init();
         });
-    }
+    };
 };

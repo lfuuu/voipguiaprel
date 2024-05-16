@@ -3,9 +3,10 @@ var NumberEditCtrl = function ($scope, Number, Redirect, Prefixlist, params, $mo
     if (params.id) {
         Number.get({id: params.id}).then(function (data) {
             $scope.item = data;
+            $scope.initialServerId = $scope.item.server_id;
             var prefixlist_ids = [];
             for (var i in $scope.item.prefixlist_ids) {
-                prefixlist_ids.push({id: $scope.item.prefixlist_ids[i]})
+                prefixlist_ids.push({id: $scope.item.prefixlist_ids[i]});
             }
             $scope.item.prefixlist_ids = prefixlist_ids;
         });
@@ -32,6 +33,8 @@ var NumberEditCtrl = function ($scope, Number, Redirect, Prefixlist, params, $mo
             sw_share_with_camel: ($scope.isCamel ? true : false)
         };
 
+        $scope.initialServerId = $scope.item.server_id;
+
         if (params.type_id) {
             $scope.item.type_id = params.type_id;
         }
@@ -50,10 +53,16 @@ var NumberEditCtrl = function ($scope, Number, Redirect, Prefixlist, params, $mo
     };
 
     $scope.save = function () {
+
+        if ($scope.initialServerId !== $scope.server.id) {
+            alert("Изменения нельзя сохранить, так как вы пытаетесь изменить номер, который находится на другом регионе.");
+            return;
+        }
+
         var data = angular.copy($scope.item);
         data.prefixlist_ids = [];
         for (var i in $scope.item.prefixlist_ids) {
-            data.prefixlist_ids.push($scope.item.prefixlist_ids[i].id)
+            data.prefixlist_ids.push($scope.item.prefixlist_ids[i].id);
         }
 
         Number.save(data).then(function (response) {

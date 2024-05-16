@@ -18,6 +18,8 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
             $scope.item = data;
             $scope.item.header = $scope.parseData(data.header);
             $scope.setType($scope.item.type_id);
+            $scope.initialServerId = $scope.item.server_id;
+            
         });
 
         Outcome.findUsagesInRouteTables({id: params.id}).then(function (data) {
@@ -27,8 +29,11 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
         $scope.item = {
             server_id: $scope.server.id,
             outcome_rule_default_allowed: true,
-            outcomeRules: [],
+            outcomeRules: []
         };
+
+        $scope.initialServerId = $scope.item.server_id;
+
     }
 
     $scope.setType = function (type_id) {
@@ -40,6 +45,12 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
     });
 
     $scope.save = function () {
+
+        if ($scope.initialServerId !== $scope.server.id) {
+            alert("Изменения нельзя сохранить, так как вы пытаетесь изменить outcome, который находится на другом регионе.");
+            return;
+        }
+
         if (!$scope.item.f_setup_cpc) {
             $scope.item.cpc = null;
         }
@@ -151,20 +162,19 @@ var OutcomeEditCtrl = function ($scope, Redirect, Outcome, Header, params, $moda
     $scope.readOutcomeRules = function (outcomes) {
         outcomes.forEach(outcome => {
             outcome.numbers_replace = $scope.parseNumberReplaceData(outcome.numbers_replace);
-        })
+        });
 
         return outcomes;
-    }
+    };
 
     $scope.saveOutcomeRules = function (outcomes) {
         outcomes.forEach(outcome => {
             outcome.numbers_replace = $scope.stringifyNumberReplaceData(outcome.numbers_replace);
             console.log(outcome);
-        })
+        });
 
         return outcomes;
-    }
-
+    };
 
     $scope.stringifyNumberReplaceData = function (data) {
         if (!data || data == '{}') {
