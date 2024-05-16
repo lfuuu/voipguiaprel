@@ -21,9 +21,26 @@ var UserEditCtrl = function($rootScope, $scope, Redirect, User, SettingsList, pa
     });
 
     $scope.save = function () {
-        User.save($scope.item).then(function () {
-            $modalInstance.close();
+        var itemToSave = angular.copy($scope.item);
+    
+        if ($scope.showChangePassword && itemToSave.newPassword && itemToSave.newPassword !== '') {
+            itemToSave.password = itemToSave.newPassword;
+        }
+    
+        if (!itemToSave.password || !$scope.showChangePassword) {
+            delete itemToSave.password;
+        }
+    
+        User.save(itemToSave).then(function (response) {
+        }, function (error) {
+            alert('Error saving changes: ' + error.message);
         });
+    };
+    
+    $scope.showChangePassword = false;
+
+    $scope.toggleChangePassword = function() {
+        $scope.showChangePassword = !$scope.showChangePassword;
     };
 
     $scope.onSelectChange = function () {
@@ -37,4 +54,5 @@ var UserEditCtrl = function($rootScope, $scope, Redirect, User, SettingsList, pa
     $scope.back = function () {
         $modalInstance.dismiss();
     };
+
 };
