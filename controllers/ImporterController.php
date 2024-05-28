@@ -27,143 +27,43 @@ class ImporterController extends BaseController
         $startTime = microtime(true);
         $prefixesToSave = Yii::$app->cache->get($key);
         $historyObjectList = Yii::$app->cache->get($key . '_history');
-
         $maxDateStart = date('Y-m-d');
+
+        $historyItems = [];
+        $oldItemsIdsByDate = [];
 
         foreach ($prefixesToSave as $prefixDateStart => $prefixesToSaveList) {
             if ($maxDateStart < $prefixDateStart) {
                 $maxDateStart = $prefixDateStart;
             }
 
-            $oldItems = PricelistPrefixPrice::find()
-                ->select(['id', 'prefix_b', 'b_number_price', 'date_to'])
-                ->where(['pricelist_filter_b_id' => $id])
-                ->andWhere('date_to > :date_to')
-                ->addParams(['date_to' => $prefixDateStart])
-                ->asArray()
-                ->all();
-
-            $oldItemsKeyValue = [];
-
-            foreach ($oldItems as $oldItemObject) {
-                if (!isset($oldItemsKeyValue[$oldItemObject['prefix_b']])) {
-                    $oldItemsKeyValue[$oldItemObject['prefix_b']] = [];
-                }
-
-                $oldItemsKeyValue[$oldItemObject['prefix_b']][] = $oldItemObject;
-            }
-
-            unset($oldItems);
+            $oldItems = $this->getOldItems($id, $prefixDateStart);
+            $oldItemsKeyValue = $this->groupOldItemsByPrefix($oldItems);
 
             $historyObject = $historyObjectList[$prefixDateStart];
             $historyItemsIds[] = $historyObject->id;
 
-            $historyObject->date_to = '3000-01-01'; //$dateEnd;
+            $historyObject->date_to = '3000-01-01';
             $historyObject->fillDataBefore();
             $oldItemsHistory[$historyObject->id] = [];
 
-            $count = 0;
-            $finalPrefixesList = [];
-            $skippedPrefixesList = [];
+            list($finalPrefixesList, $skippedPrefixesList, $oldItemsIds, $historyItems) = $this->processPrefixesToSave($prefixesToSaveList, $oldItemsKeyValue, $historyObject->id);
 
-            foreach ($prefixesToSaveList as $prefixToSave) {
-                $oldPrefixItems = isset($oldItemsKeyValue[$prefixToSave[1]]) ? $oldItemsKeyValue[$prefixToSave[1]] : [];
-                $updateOldResult = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObject->id, $oldPrefixItems);
-
-                if ($updateOldResult[self::COMMENT] != PricelistPrefixPrice::IMPORT_STATUS_SKIPPED) {
-                    $count += 1;
-                    $finalPrefixesList[] = $prefixToSave;
-                    
-                    if (!isset($oldItemsIds[$prefixDateStart])) {
-                        $oldItemsIds[$prefixDateStart] = [];
-                    }
-    
-                    foreach ($oldPrefixItems as $oldPrefixItem) {
-                        $oldItemsIds[$prefixDateStart][] = $oldPrefixItem['id'];
-                    }
-                } else {
-                    if (!isset($skippedPrefixesList[$prefixDateStart])) {
-                        $skippedPrefixesList[$prefixDateStart] = [];
-                    }
-    
-                    foreach ($oldPrefixItems as $oldPrefixItem) {
-                        $skippedPrefixesList[$prefixDateStart][] = $oldPrefixItem['id'];
-                    }
-                }
-
-                $historyItems[] = $updateOldResult;
-            }
-
-            $historyObject->total_count = $count;
+            $historyObject->total_count = count($finalPrefixesList);
             $historyObject->save();
 
-            if (!empty($oldItemsIds[$prefixDateStart])) {
-                \Yii::$app->db->createCommand()->update(
-                    'billing_uu.pricelist_prefix_price',
-                    ['date_to' => $prefixDateStart, 'history_id' => $historyObject->id],
-                    new Expression('id in (' . implode(',', $oldItemsIds[$prefixDateStart]) . ')')
-                )->execute();
-            }
-            
-            if (!empty($skippedPrefixesList[$prefixDateStart])) {
-                \Yii::$app->db->createCommand()->update(
-                    'billing_uu.pricelist_prefix_price',
-                    ['history_id' => $historyObject->id],
-                    new Expression('id in (' . implode(',', $skippedPrefixesList[$prefixDateStart]) . ')')
-                )->execute();
-            }
+            $this->updateOldItemsDateTo($oldItemsIds, $prefixDateStart, $historyObject->id);
+            $this->updateSkippedItemsHistory($skippedPrefixesList, $historyObject->id);
+            $this->batchInsertNewItems($finalPrefixesList);
 
-            \Yii::$app->db->createCommand()->batchInsert(
-                'billing_uu.pricelist_prefix_price',
-                ['pricelist_filter_b_id', 'prefix_b', 'b_number_price', 'date_from', 'date_to', 'history_id'],
-                $finalPrefixesList
-            )->execute();
+            // Сохраняем oldItemsIds по датам
+            if (!empty($oldItemsIds)) {
+                $oldItemsIdsByDate[] = $oldItemsIds;
+            }
         }
 
-        unset($prefixesToSave);
-        unset($prefixesToSaveList);
-        unset($finalPrefixesList);
-
         if ($is_replace) {
-            $historyWhere = new \yii\db\Expression('history_id is null or history_id not in (' . implode(',', $historyItemsIds) . ')');
-
-            $dataRemovedQuery = PricelistPrefixPrice::find()
-                ->where(['pricelist_filter_b_id' => $id])
-                ->andWhere('date_to > \'' . $maxDateStart . '\'')
-                ->andWhere($historyWhere);
-
-            if (!empty($oldItemsIds)) {
-                foreach ($oldItemsIds as $oldItemsIdsByDate) {
-                    if (!empty($oldItemsIdsByDate)) {
-                        $dataRemovedQuery->andWhere('id not in (' . implode(',', $oldItemsIdsByDate) . ')');
-                    }
-                }
-            }
-
-            $dataRemoved = $dataRemovedQuery->all();
-            $removedItemIds = [];
-
-            foreach ($dataRemoved as $removedItem) {
-                $historyItems[] = [
-                    $historyObject->id,
-                    $removedItem->prefix_b,
-                    $removedItem->b_number_price,
-                    '',
-                    $removedItem->date_from,
-                    $maxDateStart,
-                    'delete'
-                ];
-
-                $removedItemIds[] = $removedItem->id;
-            }
-
-            if (!empty($removedItemIds)) {
-                \Yii::$app->db->createCommand()->update(
-                    'billing_uu.pricelist_prefix_price',
-                    ['date_to' => $maxDateStart, 'history_id' => $historyObject->id],
-                    new Expression('id in (' . implode(',', $removedItemIds) . ')')
-                )->execute();
-            }
+            $this->handleReplaceMode($id, $maxDateStart, $historyItemsIds, $oldItemsIdsByDate);
         }
 
         \Yii::$app->db->createCommand()->batchInsert(
@@ -172,11 +72,128 @@ class ImporterController extends BaseController
             $historyItems
         )->execute();
 
-
         $endTime = microtime(true);
 
         return $this->render('import', [
             'delta_time' => round($endTime - $startTime, 2)
         ]);
+    }
+
+    private function getOldItems($id, $prefixDateStart)
+    {
+        return PricelistPrefixPrice::find()
+            ->select(['id', 'prefix_b', 'b_number_price', 'date_to'])
+            ->where(['pricelist_filter_b_id' => $id])
+            ->andWhere('date_to > :date_to', [':date_to' => $prefixDateStart])
+            ->asArray()
+            ->all();
+    }
+
+    private function groupOldItemsByPrefix($oldItems)
+    {
+        $oldItemsKeyValue = [];
+        foreach ($oldItems as $oldItemObject) {
+            $oldItemsKeyValue[$oldItemObject['prefix_b']][] = $oldItemObject;
+        }
+        return $oldItemsKeyValue;
+    }
+
+    private function processPrefixesToSave($prefixesToSaveList, $oldItemsKeyValue, $historyObjectId)
+    {
+        $finalPrefixesList = [];
+        $skippedPrefixesList = [];
+        $oldItemsIds = [];
+        $historyItems = [];
+
+        foreach ($prefixesToSaveList as $prefixToSave) {
+            $oldPrefixItems = $oldItemsKeyValue[$prefixToSave[1]] ?? [];
+            $updateOldResult = PricelistPrefixPrice::updateOldWithHistory($prefixToSave, $historyObjectId, $oldPrefixItems);
+
+            if ($updateOldResult[self::COMMENT] != PricelistPrefixPrice::IMPORT_STATUS_SKIPPED) {
+                $finalPrefixesList[] = $prefixToSave;
+
+                foreach ($oldPrefixItems as $oldPrefixItem) {
+                    $oldItemsIds[] = $oldPrefixItem['id'];
+                }
+            } else {
+                foreach ($oldPrefixItems as $oldPrefixItem) {
+                    $skippedPrefixesList[] = $oldPrefixItem['id'];
+                }
+            }
+            $historyItems[] = $updateOldResult;
+        }
+
+        return [$finalPrefixesList, $skippedPrefixesList, $oldItemsIds, $historyItems];
+    }
+
+    private function updateOldItemsDateTo($oldItemsIds, $prefixDateStart, $historyObjectId)
+    {
+        if (!empty($oldItemsIds)) {
+            \Yii::$app->db->createCommand()->update(
+                'billing_uu.pricelist_prefix_price',
+                ['date_to' => $prefixDateStart, 'history_id' => $historyObjectId],
+                new Expression('id in (' . implode(',', $oldItemsIds) . ')')
+            )->execute();
+        }
+    }
+
+    private function updateSkippedItemsHistory($skippedPrefixesList, $historyObjectId)
+    {
+        if (!empty($skippedPrefixesList)) {
+            \Yii::$app->db->createCommand()->update(
+                'billing_uu.pricelist_prefix_price',
+                ['history_id' => $historyObjectId],
+                new Expression('id in (' . implode(',', $skippedPrefixesList) . ')')
+            )->execute();
+        }
+    }
+
+    private function batchInsertNewItems($finalPrefixesList)
+    {
+        if (!empty($finalPrefixesList)) {
+            \Yii::$app->db->createCommand()->batchInsert(
+                'billing_uu.pricelist_prefix_price',
+                ['pricelist_filter_b_id', 'prefix_b', 'b_number_price', 'date_from', 'date_to', 'history_id'],
+                array_map(function ($item) {
+                    $item[4] = '3000-01-01'; // Устанавливаем date_to для новых префиксов
+                    return $item;
+                }, $finalPrefixesList)
+            )->execute();
+        }
+    }
+
+    private function handleReplaceMode($id, $maxDateStart, $historyItemsIds, $oldItemsIdsByDate)
+    {
+        $historyWhere = new \yii\db\Expression('history_id is null or history_id not in (' . implode(',', $historyItemsIds) . ')');
+        $dataRemovedQuery = PricelistPrefixPrice::find()
+            ->where(['pricelist_filter_b_id' => $id])
+            ->andWhere('date_to > :maxDateStart', [':maxDateStart' => $maxDateStart])
+            ->andWhere($historyWhere);
+
+        if (!empty($oldItemsIdsByDate)) {
+            foreach ($oldItemsIdsByDate as $oldItemsIds) {
+                if (!empty($oldItemsIds)) {
+                    $dataRemovedQuery->andWhere(new Expression('id not in (' . implode(',', $oldItemsIds) . ')'));
+                }
+            }
+        }
+
+        $dataRemoved = $dataRemovedQuery->all();
+        $removedItemIds = [];
+
+        foreach ($dataRemoved as $removedItem) {
+            $historyItems[] = [
+                $historyObject->id, $removedItem->prefix_b, $removedItem->b_number_price, '', $removedItem->date_from, $maxDateStart, 'delete'
+            ];
+            $removedItemIds[] = $removedItem->id;
+        }
+
+        if (!empty($removedItemIds)) {
+            \Yii::$app->db->createCommand()->update(
+                'billing_uu.pricelist_prefix_price',
+                ['date_to' => $maxDateStart, 'history_id' => $historyObject->id],
+                new Expression('id in (' . implode(',', $removedItemIds) . ')')
+            )->execute();
+        }
     }
 }
