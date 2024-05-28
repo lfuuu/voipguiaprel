@@ -168,7 +168,7 @@ class ImporterController extends BaseController
                 'billing_uu.pricelist_prefix_price',
                 ['pricelist_filter_b_id', 'prefix_b', 'b_number_price', 'date_from', 'date_to', 'history_id'],
                 array_map(function ($item) {
-                    $item[4] = '3000-01-01'; // Устанавливаем date_to для новых префиксов
+                    $item[4] = isset($item[4]) ? $item[4] : '3000-01-01';
                     return $item;
                 }, $finalPrefixesList)
             )->execute();
