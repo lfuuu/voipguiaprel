@@ -27,8 +27,11 @@ function dev_minikube_envci()
 
 
 
-
-
+function stage2()
+{
+	export ENVNAME=stage2
+	CI_URL="$APPNAME-$ENVNAME.mcn.ru"
+}
 function stage()
 {
 	export ENVNAME=stage
