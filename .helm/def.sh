@@ -10,6 +10,7 @@ APPNAME=voip-gui
 
 
 
+
 function dev_kvm_envci()
 {
     export ENVNAME="dev"
@@ -34,6 +35,7 @@ function stage2()
     export TLD="ru"
     export DOMAIN="mcnloc.ru"
     export CI_URL="$APPNAME-$ENVNAME.$DOMAIN"
+	export NAMESPACE=voip-gui
 }
 # function stage2()
 # {
