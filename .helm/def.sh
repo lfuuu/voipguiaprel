@@ -29,9 +29,17 @@ function dev_minikube_envci()
 
 function stage2()
 {
-	export ENVNAME=stage2
-	CI_URL="$APPNAME-$ENVNAME.mcn.ru"
+    export ENVNAME=stage
+    export CLUSTER_IP=$IP_TO_ETCHOST
+    export TLD="ru"
+    export DOMAIN="mcnloc.ru"
+    export CI_URL="$APPNAME-$ENVNAME.$DOMAIN"
 }
+# function stage2()
+# {
+# 	export ENVNAME=stage2
+# 	CI_URL="$APPNAME-$ENVNAME.mcn.ru"
+# }
 function stage()
 {
 	export ENVNAME=stage
