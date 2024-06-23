@@ -23,7 +23,7 @@
 
         <script type="text/ng-template" id="result_renderer.html">
             <div ng-show="full_item.name != 'root'">
-                <table class="table">
+                <table class="table" style="table-layout: fixed; width: 100%;">
                     <tr>
                         <td nowrap width="5%"><span style="font-weight: bold;">{{level}}</span></td>
                         <td nowrap width="35%">
@@ -40,71 +40,72 @@
             </div>
 
             <div collapse="isCollapsed">
-                <table class="table" ng-if="details == 1">
-                    <tr ng-repeat="row in full_item.result track by $index" ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO' || row.type == 'HEADER'">
-                        <td nowrap>{{::row.type}}</td>
-                        <td nowrap>{{::row.action}}</td>
-                        <td ng-if="row.type == 'RESULT' && row.is_params_array && !row.is_not_empty_params" width="100%">&nbsp;</td>
-                        <td ng-if="row.type != 'RESULT' || (row.type == 'RESULT' && !row.is_params_array)" width="100%">{{::row.params}}</td>
-                        <td ng-if="row.type == 'RESULT' && row.is_params_array && row.is_not_empty_params" width="100%">
+                <table class="table" ng-if="details == 1" style="table-layout: fixed; width: 100%;">
+                    <tr ng-repeat="row in full_item.result track by $index" 
+                        ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}" 
+                        ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO' || row.type == 'HEADER'">
+                        <td nowrap style="width: 10%;">{{::row.type}}</td>
+                        <td nowrap style="width: 20%;">
+                            {{::row.action}}
                             <span ng-repeat="param in row.params">
                                 <a ng-if="param.is_url" href="#" ng-click="clickTrunk(param, full_item)">{{param.name}},</a>
-                                <span ng-if="!param.is_url">{{param.name}},</span>
+                                <span ng-if="!param.is_url" style="display:inline-block; white-space:normal; max-width:90%; word-wrap:break-word;">{{param.name}},</span>
                             </span>
-                        </td>
+                        </td>                        
+                        <td ng-if="row.type == 'RESULT' && row.is_params_array && !row.is_not_empty_params" style="width: 70%;">&nbsp;</td>
+                        <td ng-if="row.type != 'RESULT' || (row.type == 'RESULT' && !row.is_params_array)" style="width: 70%; border-bottom: 1px solid #ddd;">{{::row.params}}</td>
                     </tr>
                 </table>
             </div>
+            
+            
 
             <div style="margin-left: 15px;" ng-init="isCollapsed=true;level=level+1" ng-repeat="full_item in full_item.trace track by $index" ng-include="'result_renderer.html'">
-
             </div>
         </script>
 
         <div ng-if="details == 1" ng-init="isCollapsed=false;level=1" ng-include="'result_renderer.html'">
-
         </div>
 
         <script type="text/ng-template" id="nodes_renderer.html">
             <br />
             <div class="tree-container-bordered">
-            <div ng-if="step.name" ui-tree-handle class="tree-node tree-node-content">
-                <a class="btn btn-success btn-xs" ng-disabled="!step.steps" data-nodrag ng-click="toggle(this); descend(step)">
-                    <span class="glyphicon" ng-class="{
-                      'glyphicon-chevron-right': collapsed,
-                      'glyphicon-chevron-down': !collapsed
-                    }"></span>
-                </a>
-                <span ng-if="step.color && step.color == 'red'" class="bg-danger">{{step.name}}</span>
-                <span ng-if="step.color && step.color == 'yellow'" class="bg-warning">{{step.name}}</span>
-                <span ng-if="!step.color || (step.color != 'red' && step.color != 'yellow')">{{step.name}}</span>
-            </div>
-            <div ng-if="!step.name" style="display: inline-block;" ui-tree-handle class="tree-node tree-node-content">
-                <table>
-                    <tr>
-                        <td style="vertical-align:top;">
-                            <span class="label label-primary" ng-if="step.type == 'INFO'">[{{step.type}}]</span>
-                            <span class="label label-info" ng-if="step.type == 'INPUT_DATA'">[{{step.type}}]</span>
-                            <span class="label label-success" ng-if="step.type == 'RESULT_DATA'">[{{step.type}}]</span>
-                            <span class="label label-danger" ng-if="step.type == 'ERROR'">[{{step.type}}]</span>
-                            <span class="label label-warning" ng-if="step.type == 'DEBUG'">[{{step.type}}]</span>
-                        </td>
-                        <td>
-                            &nbsp;
-                            <span ng-if="step.color && step.color == 'red'" class="bg-danger">{{step.trace}}</span>
-                            <span ng-if="step.color && step.color == 'yellow'" class="bg-warning">{{step.trace}}</span>
-                            <span ng-if="!step.color || (step.color != 'red' && step.color != 'yellow')">{{step.trace}}</span>
-                        </td>
-                    </tr>
-                </table>
-                <br />
-            </div>
+                <div ng-if="step.name" ui-tree-handle class="tree-node tree-node-content">
+                    <a class="btn btn-success btn-xs" ng-disabled="!step.steps" data-nodrag ng-click="toggle(this); descend(step)">
+                        <span class="glyphicon" ng-class="{
+                          'glyphicon-chevron-right': collapsed,
+                          'glyphicon-chevron-down': !collapsed
+                        }"></span>
+                    </a>
+                    <span ng-if="step.color && step.color == 'red'" class="bg-danger">{{step.name}}</span>
+                    <span ng-if="step.color && step.color == 'yellow'" class="bg-warning">{{step.name}}</span>
+                    <span ng-if="!step.color || (step.color != 'red' && step.color != 'yellow')">{{step.name}}</span>
+                </div>
+                <div ng-if="!step.name" style="display: inline-block;" ui-tree-handle class="tree-node tree-node-content">
+                    <table>
+                        <tr>
+                            <td style="vertical-align:top;">
+                                <span class="label label-primary" ng-if="step.type == 'INFO'">[{{step.type}}]</span>
+                                <span class="label label-info" ng-if="step.type == 'INPUT_DATA'">[{{step.type}}]</span>
+                                <span class="label label-success" ng-if="step.type == 'RESULT_DATA'">[{{step.type}}]</span>
+                                <span class="label label-danger" ng-if="step.type == 'ERROR'">[{{step.type}}]</span>
+                                <span class="label label-warning" ng-if="step.type == 'DEBUG'">[{{step.type}}]</span>
+                            </td>
+                            <td>
+                                &nbsp;
+                                <span ng-if="step.color && step.color == 'red'" class="bg-danger">{{step.trace}}</span>
+                                <span ng-if="step.color && step.color == 'yellow'" class="bg-warning">{{step.trace}}</span>
+                                <span ng-if="!step.color || (step.color != 'red' && step.color != 'yellow')">{{step.trace}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                </div>
 
-            <ol ui-tree-nodes="" ng-model="step.steps" ng-class="{hidden: collapsed}">
-                <li ng-repeat="step in step.steps" ui-tree-node collapsed="true" class="stripe" ng-include="'nodes_renderer.html'">
-                </li>
-            </ol>
-
+                <ol ui-tree-nodes="" ng-model="step.steps" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="step in step.steps" ui-tree-node collapsed="true" class="stripe" ng-include="'nodes_renderer.html'">
+                    </li>
+                </ol>
             </div>
         </script>
 
@@ -116,7 +117,6 @@
                 </ol>
             </div>
         </div>
-
     </div>
     <div class="modal-footer">
         <div class="pull-left">
@@ -126,5 +126,4 @@
             <a href="{{host}}/s{{server.id}}?testAuthShowTest{{type}}&{{item.id}}">Ссылка на эту форму</a>
         </div>
     </div>
-
 </form>
