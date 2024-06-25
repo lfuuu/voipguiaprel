@@ -45,12 +45,13 @@ var TestDialEditCtrl = function($scope, $http, TestDial, List, params, $modalIns
     
         console.log('$scope.serverList:', $scope.serverList);
     
-        if ($scope.serverList.length > 0) {
+        if ($scope.item.nas_ip_address === null && $scope.serverList.length > 0) {
             $scope.item.nas_ip_address = $scope.serverList[0];
-        }
+        } 
     }).catch(function(error) {
         console.error('Error loading server list:', error);
     });
+    
     
 
     $scope.save = function() {
