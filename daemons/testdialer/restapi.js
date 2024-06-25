@@ -61,7 +61,8 @@ app.get("/docall", function (req, res, next) {
             hub: query.hub,
             troute: query.troute,
             autocall_uuid: uuid,
-            duration: query.duration || 1
+            duration: query.duration || 1,
+            oca_ip: query.nas_ip_address
         };
         console.log(call);
         amiService.doCall(cfg, call);

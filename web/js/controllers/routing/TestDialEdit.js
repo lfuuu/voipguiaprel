@@ -1,5 +1,4 @@
-var TestDialEditCtrl = function($scope, TestDial, List, params, $modalInstance, $window) {
-
+var TestDialEditCtrl = function($scope, $http, TestDial, List, params, $modalInstance, $window) {
     if (params.id) {
         TestDial.get({id: params.id}).then(function (data) {
             $scope.item = data;
@@ -9,30 +8,20 @@ var TestDialEditCtrl = function($scope, TestDial, List, params, $modalInstance, 
             }
         });
     } else {
-        if (params.testGroupId) {
-            $scope.item = {
-                server_id: $scope.server.id,
-                src_noa: 3,
-                dst_noa: 3,
-                redirect_noa: 3,
-                redirect_number: '',
-                testgroup_id: params.testGroupId,
-                orig: false,
-                session_time: 60,
-                with_debug_info: false
-            }
-        } else {
-            $scope.item = {
-                server_id: $scope.server.id,
-                src_noa: 3,
-                dst_noa: 3,
-                redirect_noa: 3,
-                redirect_number: '',
-                orig: false,
-                session_time: 60,
-                with_debug_info: false
-            }
-        }
+        $scope.item = {
+            server_id: {
+                id: $scope.server.id
+            },
+            src_noa: 3,
+            dst_noa: 3,
+            redirect_noa: 3,
+            redirect_number: '',
+            testgroup_id: params.testGroupId || undefined,
+            orig: false,
+            session_time: 60,
+            with_debug_info: false,
+            nas_ip_address: null
+        };
     }
 
     List.trunk().then(function (data) {
@@ -43,15 +32,37 @@ var TestDialEditCtrl = function($scope, TestDial, List, params, $modalInstance, 
         $scope.testGroupList = data;
     });
 
-    $scope.save = function()
-    {
-        TestDial.save($scope.item).then(function(response) {
+    var requestData = {
+        server_id: {
+            id: $scope.item.server_id.id
+        }
+    };
+    
+    $http.post('/json/settings/get', requestData).then(function(response) {
+        var nasIpAddresses = response.data.nas_ip_address;
+    
+        $scope.serverList = nasIpAddresses.split(',');
+    
+        console.log('$scope.serverList:', $scope.serverList);
+    
+        if ($scope.serverList.length > 0) {
+            $scope.item.nas_ip_address = $scope.serverList[0];
+        }
+    }).catch(function(error) {
+        console.error('Error loading server list:', error);
+    });
+    
+
+    $scope.save = function() {
+        var itemToSave = angular.copy($scope.item);
+        itemToSave.server_id = itemToSave.server_id.id || itemToSave.server_id;
+    
+        TestDial.save(itemToSave).then(function(response) {
             $modalInstance.close();
         });
     };
 
-    $scope.back = function()
-    {
+    $scope.back = function() {
         $modalInstance.dismiss();
     };
 
