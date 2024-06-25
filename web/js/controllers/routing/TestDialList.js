@@ -128,10 +128,11 @@ var TestDialListCtrl = function($scope, TestDial, List, Redirect, $window) {
             $("#call_button_" + callItem.id).prop('disabled', false);
         }
         setTimeout(enableCall, 5000, item);
-        TestDial.call(item.id).then(function (result) {
+
+        TestDial.call({ id: item.id, nas_ip_address: item.nas_ip_address }).then(function (result) {
             // do_nothing
         });
-    };
+    }; 
 
     $scope.deleteItem = function(item)
     {
