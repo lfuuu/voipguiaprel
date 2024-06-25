@@ -34,7 +34,7 @@ var TestDialEditCtrl = function($scope, $http, TestDial, List, params, $modalIns
 
     var requestData = {
         server_id: {
-            id: $scope.item.server_id.id
+            id: $scope.server.id
         }
     };
     
