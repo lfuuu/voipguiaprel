@@ -10,7 +10,7 @@ const doOriginate = (cfg, call) => {
         ActionID: 123,
         Variable: `a_number=${call.num_a}\nVariable: b_number=${call.num_b}\n` + ((call.num_c !== undefined) ? `Variable: c_number=${call.num_c}\n` : '') +
             `Variable: autocall_duration=${call.duration}\nVariable: hub_id=${call.hub}\nVariable: id_troute=${call.troute}\n` +
-            `Variable: autocall_uuid=${call.autocall_uuid}`,
+            `Variable: autocall_uuid=${call.autocall_uuid}\nVariable: oca_ip=${call.oca_ip}`,
         channel: cfg.channel,
         exten: cfg.extension,
         context: cfg.context,
