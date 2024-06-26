@@ -134,8 +134,6 @@ class TestDialController extends JsonController
             throw new HttpException(404, $this->modelName . ' не найден');
         }
 
-        $nasIpAddress = $this->request['nas_ip_address'];
-
         $server = $this->getServerOr404($item->server_id);
 
         $hub = $server->getMinServerOnHub();
@@ -153,7 +151,7 @@ class TestDialController extends JsonController
             'troute' => $item->term_trunk_id,
             'num_c' => $item->redirect_number,
             'duration' => $item->duration,
-            'nas_ip_address' => $nasIpAddress,
+            'nas_ip_address' => $item->nas_ip_address,
         ];
 
         $request = $apiUrl . 'docall/?' . http_build_query($apiParams);
