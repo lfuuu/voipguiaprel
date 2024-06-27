@@ -8,6 +8,8 @@ use app\exceptions\FormValidationException;
 use yii\web\ForbiddenHttpException;
 use app\models\auth\Hub;
 use app\models\auth\MvnoLink;
+use app\models\Server;
+use yii\web\NotFoundHttpException;
 
 class SettingsController extends JsonController
 {
@@ -226,4 +228,35 @@ class SettingsController extends JsonController
         
         return $result;
     }
+    
+    public function actionGetNasIpAddress()
+{
+    if (!\Yii::$app->user->can('test_number_edit')) {
+        throw new ForbiddenHttpException('Access denied');
+    }
+
+    $serverId = Yii::$app->request->getBodyParam('server_id');
+
+    if ($serverId === null) {
+        throw new BadRequestHttpException('Server ID not provided');
+    }
+
+    // Try to find Server with the given server_id
+    $server = Server::findOne($serverId);
+
+    // Check if Server with the given server_id exists
+    if ($server === null) {
+        throw new NotFoundHttpException('Server not found for the provided ID');
+    }
+
+    // Retrieve nas_ip_address from Server
+    $nasIpAddress = $server->nas_ip_address;
+
+    return [
+        'nas_ip_address' => $nasIpAddress,
+    ];
+}
+    
+
+
 }

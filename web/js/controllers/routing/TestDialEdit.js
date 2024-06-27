@@ -1,4 +1,4 @@
-var TestDialEditCtrl = function($scope, $http, TestDial, List, params, $modalInstance, $window) {
+var TestDialEditCtrl = function($scope, $http, TestDial, List, params, $modalInstance, $window, Settings) {
     if (params.id) {
         TestDial.get({id: params.id}).then(function (data) {
             $scope.item = data;
@@ -32,24 +32,14 @@ var TestDialEditCtrl = function($scope, $http, TestDial, List, params, $modalIns
         $scope.testGroupList = data;
     });
 
-    var requestData = {
-        server_id: {
-            id: $scope.server.id
-        }
-    };
-    
-    $http.post('/json/settings/get', requestData).then(function(response) {
-        var nasIpAddresses = response.data.nas_ip_address;
-    
+    Settings.getNasIpAddress($scope.server.id).then(function(response) {
+        var nasIpAddresses = response.nas_ip_address;
         $scope.serverList = nasIpAddresses.split(',');
-    
-        console.log('$scope.serverList:', $scope.serverList);
-    
         if ($scope.item.nas_ip_address === null && $scope.serverList.length > 0) {
             $scope.item.nas_ip_address = $scope.serverList[0];
         } 
     }).catch(function(error) {
-        console.error('Error loading server list:', error);
+            console.error('Error loading NAS IP addresses:', error);
     });
     
     

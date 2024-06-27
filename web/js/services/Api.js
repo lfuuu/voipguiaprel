@@ -993,7 +993,10 @@ app.factory('Settings', function ($q, ApiLoader) {
         },
         save: function (data) {
             return ApiLoader.post(url + 'save', data);
-        }
+        },
+        getNasIpAddress: function (serverId) {
+            return ApiLoader.post(url + 'get-nas-ip-address', { server_id: serverId });
+        }        
     };
 });
 
