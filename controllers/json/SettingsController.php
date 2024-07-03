@@ -104,6 +104,8 @@ class SettingsController extends JsonController
             'epvv_timeout' => $server->epvv_timeout,
             'epvv_error' => $server->epvv_error,
             'epvv_reject' => $server->epvv_reject,
+            'route_case_not_found_nnp' => $server->route_case_not_found_nnp,
+            'route_case_not_found_pricelist' => $server->route_case_not_found_pricelist,
         ];
     }
 

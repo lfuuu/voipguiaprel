@@ -96,7 +96,7 @@ class Server extends \yii\db\ActiveRecord
             [['low_balance_outcome_id', 'blocked_outcome_id', 'hub_id', 'emergency_prefixlist_id',
                 'mcn_prefixlist_id','rc_mgmn_outcome_id','vats_trunk_id', 'ast_trunk_group_id',
                 'fsb_blacklist_id', 'fsb_b_blacklist_id', 'global_replacement_id', 'number_id_filter_b_route_to_class5',
-                'cpc_id', 'loop_detected_outcome_id', 'phase1_allow_trunkgroup_id', 'rn_replace_prefixlist_id', 'reject_outcome_id', 'mts_timeout', 'mts_error', 'mts_reject', 'epvv_timeout', 'epvv_error', 'epvv_reject'], 'integer'],
+                'cpc_id', 'loop_detected_outcome_id', 'phase1_allow_trunkgroup_id', 'rn_replace_prefixlist_id', 'reject_outcome_id', 'mts_timeout', 'mts_error', 'mts_reject', 'epvv_timeout', 'epvv_error', 'epvv_reject', 'route_case_not_found_nnp','route_case_not_found_pricelist'], 'integer'],
             [['is_sormed', 'is_production','rc_mgmn_action_disable','is_route_to_class5',
                 'is_route_to_class5_phase1_enable','is_autotest_error_enabled', 'is_open_numeric_plan_enabled'], 'boolean'],
             [['calling_station_id_for_line_without_number',
