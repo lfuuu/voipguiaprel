@@ -32,6 +32,7 @@ var UserEditCtrl = function($rootScope, $scope, Redirect, User, SettingsList, pa
         }
     
         User.save(itemToSave).then(function (response) {
+            $modalInstance.close();
         }, function (error) {
             alert('Error saving changes: ' + error.message);
         });
