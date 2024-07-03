@@ -14,6 +14,7 @@
             <li><a href="#spc" data-toggle="tab">КПС узла связи</a></li>
             <li><a href="#mvno_link" data-toggle="tab">МВНО</a></li>
             <li><a href="#antifraud" data-toggle="tab">Верификация</a></li>
+            <li><a href="#bnumber" data-toggle="tab">B номер</a></li>
         </ul>
 
         <br/>
@@ -82,6 +83,28 @@
                 </div>
 
             </div>
+
+            <div class="tab-pane" id="bnumber">
+
+                <div style="margin-left: 0.5%;" class="tab-content">
+                    <div id="epvv" class="tab-pane{{(nnpMode == EPVV_ANTIFRAUD) ? ' active' : '' }}">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Действие:<br/>Номер В не найден в ННП</label>
+                            <div class="col-sm-8">
+                                <select-box list="outcome" param="{{server_id}}" model="item.route_case_not_found_nnp" default="Выберите Outcome"></select-box>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Действие:<br/>Номер В не найден в прайс листе</label>
+                            <div class="col-sm-8">
+                                <select-box list="outcome" param="{{server_id}}" model="item.route_case_not_found_pricelist" default="Выберите Outcome"></select-box>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
             <div class="tab-pane active" id="mainsettings">
 
                 <div class="form-group">
