@@ -8,6 +8,7 @@ use app\queries\billing_uu\MajorGroupQuery;
  * @property string $name
  * @property bool $use_for_a
  * @property bool $use_for_b
+ * @property bool $use_for_c
  */
 class MajorGroup extends \yii\db\ActiveRecord
 {
@@ -23,7 +24,7 @@ class MajorGroup extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string'],
-            [['use_for_a', 'use_for_b'], 'boolean']
+            [['use_for_a', 'use_for_b', 'use_for_c'], 'boolean']
         ];
     }
 

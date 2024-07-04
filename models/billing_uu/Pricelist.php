@@ -29,6 +29,7 @@ use yii\db\Query;
  * @property int $minimum_cost
  * @property string $minimum_margin
  * @property int $minimum_margin_type
+ * @property string $num_c_nnp_filter
  */
 class Pricelist extends \yii\db\ActiveRecord
 {
@@ -42,7 +43,7 @@ class Pricelist extends \yii\db\ActiveRecord
     private static function rulesStatic()
     {
         return [
-            [['name', 'currency_id', 'date_created', 'date_start', 'date_end', 'description'], 'string'],
+            [['name', 'currency_id', 'date_created', 'date_start', 'date_end', 'description','num_c_nnp_filter'], 'string'],
             [['pricelist_version', 'pricelist_group_id', 'type_id', 'basic_pricelist_location_id',
                 'default_tarification_free_seconds', 'default_tarification_interval_seconds',
                 'default_tarification_min_paid_seconds', 'service_type_id', 'default_tarification_type',

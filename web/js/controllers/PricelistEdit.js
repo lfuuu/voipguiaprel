@@ -1,4 +1,4 @@
-var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, params, $modalInstance, $window) {
+var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, params, $modalInstance, $window, MajorGroup) {
 
     $scope.round_type = [
         {id: 1, name: 'round'},
@@ -12,6 +12,8 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
             PricelistLocation.listByPricelist({'pricelist_id': $scope.item.id}).then(function (data) {
                 $scope.locations = data;
             });
+            
+            $scope.item.nnp_filter = $scope.item.num_c_nnp_filter;
         });
     } else {
         var date = new Date();
@@ -31,7 +33,8 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
             minimal_minutes: 0,
             minimal_cost: 0,
             minimum_margin: '0',
-            minimum_margin_type: 1
+            minimum_margin_type: 1,
+            nnp_filter: null
         };
 
         if (params.group_id) {
@@ -39,35 +42,45 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
         }
     }
 
+    MajorGroup.read().then(function (data) {
+        $scope.list = data.filter(function(item) {
+            return item.use_for_c === true;
+        });
+        
+        $scope.filterList = $scope.list.map(function(item) {
+            return { id: item.id, name: item.name };
+        });
+    });
+
     List.currency().then(function (data) {
         $scope.currency = data;
-    })
+    });
 
     List.pricelistGroup().then(function (data) {
         $scope.pricelistGroupList = data;
     });
 
-    $scope.save = function()
-    {
+    $scope.save = function() {
+        $scope.item.num_c_nnp_filter = $scope.item.nnp_filter;
+
         Pricelist.save($scope.item).then(function(response) {
             $modalInstance.close();
         });
     };
 
-    $scope.saveAndUpdate = function()
-    {
+    $scope.saveAndUpdate = function() {
+        $scope.item.num_c_nnp_filter = $scope.item.nnp_filter;
+
         Pricelist.saveAndUpdate($scope.item).then(function(response) {
             $modalInstance.close();
         });
     };
 
-    $scope.back = function()
-    {
+    $scope.back = function() {
         $modalInstance.dismiss();
     };
 
-    $scope.createNewVersion = function()
-    {
+    $scope.createNewVersion = function() {
         //do_nothing
     };
 };
