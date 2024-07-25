@@ -188,6 +188,17 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Отключение защиты</label>
+                <div class="col-sm-10">
+                    <div class="btn-group" ng-click="item.is_protection_disabled = !item.is_protection_disabled">
+                        <button type="button" class="btn btn-sm {{item.is_protection_disabled ? 'btn-success active' : 'btn-default'}}">Да</button>
+                        <button type="button" class="btn btn-sm {{!item.is_protection_disabled ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                    </div>
+                    <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" title="При отключенной защите автообновление префикслиста не будет выполняться в случае его обнуления из-за аварийной ситуации." style="margin-left: 10px;"></span>
+                </div>
+            </div>
+            
             <div ng-if="false && hasBuffer">
                 <div class="form-group" ng-if="item.id">
                     <label class="col-sm-2 control-label"></label>

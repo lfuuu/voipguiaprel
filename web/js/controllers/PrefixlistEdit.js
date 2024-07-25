@@ -688,7 +688,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
 
     $scope.applyPrefixlistBuffer = function (id) {
         if (!$window.confirm('Применить буфер?')) return;
-
+    
         Prefixlist.applyBuffer(id).then(function (data) {
             if (data.response == STATUS_ERROR) {
                 $scope.apply_buffer_success = false;
@@ -696,16 +696,17 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             } else {
                 $scope.apply_buffer_success = true;
                 $scope.apply_buffer_error = false;
-
+    
+                /*
                 Prefixlist.get({id: id}).then(function (data) {
                     $scope.item = data;
-
+    
                     var filterData = $.parseJSON($scope.item.nnp_filter_json);
-
+    
                     if (filterData.country_code) {
                         $scope.nnpMode = $scope.NNP_MODE_FILTER;
                     }
-
+    
                     $scope.item.nnp_destination = filterData.nnp_destination_id;
                     $scope.item.nnp_is_exclude_operators = filterData.exclude_operators;
                     $scope.item.nnp_is_default = filterData.is_default;
@@ -723,9 +724,11 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
                     $scope.item.nnp_is_exclude_ndc_type = filterData.exclude_ndc_type;
                     $scope.item.nnp_is_exclude_ndc = filterData.exclude_ndc;
                 });
+                */
             }
         });
     };
+    
 
     $scope.generatePrefixlist = function (id, type) {
         Prefixlist.generatePrefixlist(id, type).then(function (data) {
