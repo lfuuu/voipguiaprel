@@ -2,9 +2,11 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\exceptions\XxxException;
 use app\classes\BaseController;
 use app\models\ServerOcs;
+use app\models\ChangePasswordForm;
 
 class CategoryController extends BaseController
 {
@@ -54,6 +56,20 @@ class CategoryController extends BaseController
     {
         return $this->render('api_billing', [
             'servers' => ServerOcs::find()->where(['type' => 'apibill'])->orderBy('id')->all(),
+        ]);
+    }
+
+    public function actionChangePassword()
+    {
+        $model = new ChangePasswordForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->changePassword()) {
+            Yii::$app->session->setFlash('success', 'Пароль успешно изменен');
+            return $this->redirect(['site/index']);
+        }
+
+        return $this->render('change-password', [
+            'model' => $model,
         ]);
     }
 }

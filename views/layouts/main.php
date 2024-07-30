@@ -150,11 +150,13 @@ if (Yii::$app->user->identity) {
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a>Версия: <?= $version ?></a></li>
-<?php if ($userHasSettings) { ?>
-                        <li<?php if ($_SERVER['REQUEST_URI'] == '/settings') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/settings'])?>">Настройки</a></li>
+                        <?php if ($userHasSettings) { ?>
+    <li<?php if ($_SERVER['REQUEST_URI'] == '/settings') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/settings'])?>">Настройки</a></li>
 <?php } ?>
-                        <li><a><?= Yii::$app->user->identity->name ?></a></li>
-                        <li><a href="<?=Url::to(['site/logout'])?>">Выход</a></li>
+<li<?php if ($_SERVER['REQUEST_URI'] == '/category/change-password') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/change-password'])?>">Сменить пароль</a></li>
+<li><a><?= Yii::$app->user->identity->name ?></a></li>
+<li><a href="<?=Url::to(['site/logout'])?>">Выход</a></li>
+
                     </ul>
 <?php endif; ?>
                 </div>
