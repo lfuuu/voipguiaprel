@@ -13,6 +13,7 @@ use app\models\Server;
  * @property int $location_id
  * @property string $a_number
  * @property string $b_number
+ * @property string $c_number
  * @property int $pricelist_id
  * @property boolean $is_orig
  * @property string $expected_result
@@ -49,7 +50,7 @@ class TestPricelist extends \yii\db\ActiveRecord
         return [
             [['server_id', 'location_id', 'pricelist_id', 'mcc', 'mnc', 'test_pricelist_group_id',
                 'sim_partner_id', 'sim_profile_id'], 'integer'],
-            [['name', 'a_number', 'b_number', 'expected_price', 'mock_current_date'], 'string'],
+            [['name', 'a_number', 'b_number', 'c_number', 'expected_price', 'mock_current_date'], 'string'],
             [['is_orig', 'with_debug_info', 'is_autotest'], 'boolean']
         ];
     }
