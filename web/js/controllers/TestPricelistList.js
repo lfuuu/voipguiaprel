@@ -11,7 +11,7 @@ var TestPricelistListCtrl = function($scope, TestPricelist, Scripts, List, Redir
     $scope.hideFilter = false;
     $scope.filterFields = [
         'id', 'name', 'pricelist_name', 'a_number',
-        'b_number', 'location_name', 'mcc',
+        'b_number', 'с_number', 'location_name', 'mcc',
         'mnc'
     ];
 
