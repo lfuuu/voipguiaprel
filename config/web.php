@@ -71,6 +71,7 @@ $config = [
                 'camel' => 'category/camel',
                 'api-billing' => 'category/api-billing',
                 'sms' => 'category/sms',
+                'change_password' => 'category/change-password',
                 'login' => 'site/login',
                 'logout' => 'site/logout',
                 'gen-passwd' => 'site/gen-passwd',
