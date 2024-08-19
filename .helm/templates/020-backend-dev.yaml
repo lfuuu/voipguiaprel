@@ -31,6 +31,23 @@ spec:
         ingressExternal: "no"
     spec:
       initContainers:
+      - name: init-pod-voip-gui
+{{ tuple (printf "%s-%s" .Chart.Name "php-fpm-dev") . | werf_container_image | indent 8 }}
+        command:  ['sh', '-c', "/root/prepare-scripts/init-dev-env.sh"]
+        volumeMounts:
+        - mountPath: /workspace
+          name: workspace-voipgui
+        - name: secret
+          mountPath: "/root/.ssh/id_rsa"  
+          subPath: "id_rsa"
+        - name: secret
+          mountPath: "/root/.pgpass_b"  
+          subPath: ".pgpass"
+        - name: config-volume
+          subPath: db-local.php
+          mountPath: /db-local.php
+        - mountPath: /opt
+          name: opt-voipgui
       - name: wait-pod-postgres
         image: busybox:1.28
         command:  ['sh', '-c', "until nslookup {{ .Values.postgres_env_ci.host }}; do echo waiting for postgres; sleep 2; done"]
@@ -82,18 +99,10 @@ spec:
         - name: config-volume
           subPath: www.conf
           mountPath: /usr/local/etc/php-fpm.d/www.conf
-        - name: config-volume
-          subPath: db-local.php
-          mountPath: /db-local.php
         - mountPath: /workspace
           name: workspace-voipgui
-        - mountPath: /opt
-          name: opt-voipgui
         - name: secret
-          mountPath: "/root/.ssh/id_rsa"  
-          subPath: "id_rsa"
-        - name: secret
-          mountPath: "/root/.pgpass_b"  
+          mountPath: "/root/.pgpass"  
           subPath: ".pgpass"
       volumes:
       - name: config-volume
