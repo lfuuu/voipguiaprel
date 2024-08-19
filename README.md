@@ -47,3 +47,23 @@ codecept run acceptance
 Если после запуска контейнера не запускается веб-интерфейс, выполнить:
 CONT_PATH=$(docker ps | grep voipgui | head -n1 | awk '{print $1;}');docker exec -it $CONT_PATH bash;
 /usr/sbin/httpd -DFOREGROUND;
+
+# Развёртывание dev окружения
+
+## Подтягивание окружения
+Подтянуть репозиторий с `local_cluster`: https://gitlab.mcnloc.ru/dev-env/local_cluster и установить кластер
+
+## Настройка окружения
+1. В `deploy-v1.1` скопировать `productlist_official` в `productlist` оставить только `[voip_gui]=dev_kvm_envci`
+2. В `deploy-v1.1` заликновать `voip_gui` в папку `products`
+
+## Шифрование значений
+В `voip_gui/.helm/secrets`:
+1. `./show-encrypt-values.sh`
+2. `./save-encrypt-values.sh`
+
+## SSH
+В `~/.ssh` должен находится сгенерированный без пароля файл `id_rsa`, **добавленный в gitlab и github**
+
+## Развёртывание
+Запустить `./build-deploy.sh` в `deploy-v1.1`

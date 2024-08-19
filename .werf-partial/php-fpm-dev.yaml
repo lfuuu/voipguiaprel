@@ -1,7 +1,7 @@
 {{- if (eq .env "dev") }}
 
 image: {{ .project }}-php-fpm-dev
-from: php:7.4-fpm-alpine3.13
+from: php:7.4-fpm-buster
 
 docker:
   WORKDIR: /root
@@ -16,15 +16,37 @@ git:
 
 ansible:
   beforeInstall:
+  - name: "set repos"
+    shell: |
+      echo 'deb [arch=amd64] http://ftp.ru.debian.org/debian/ buster main contrib non-free' > /etc/apt/sources.list
+      echo 'deb [arch=amd64] http://ftp.ru.debian.org/debian/ buster-updates main contrib non-free' >> /etc/apt/sources.list
+      echo 'deb [arch=amd64] http://security.debian.org/ buster/updates main contrib non-free' >> /etc/apt/sources.list
+      echo 'deb [arch=amd64] http://mirror.corbina.net/debian buster main contrib non-free' >> /etc/apt/sources.list
+      echo 'deb [arch=amd64] http://mirrors.powernet.com.ru/debian buster main contrib non-free' >> /etc/apt/sources.list
+      echo 'deb [arch=amd64] http://mirror.docker.ru/debian buster main contrib non-free' >> /etc/apt/sources.list
+      echo 'deb [arch=amd64] http://mirror.hyperdedic.ru/debian buster main contrib non-free' >> /etc/apt/sources.list
+      echo 'deb [arch=amd64] http://mirror.mephi.ru/debian buster main contrib non-free' >> /etc/apt/sources.list
+      echo 'deb [arch=amd64] http://ftp.psn.ru/debian buster main contrib non-free' >> /etc/apt/sources.list
+      echo 'deb [arch=amd64] http://mirror.truenetwork.ru/debian buster main contrib non-free' >> /etc/apt/sources.list
+      echo 'deb [arch=amd64] http://repository.su/debian buster main contrib non-free' >> /etc/apt/sources.list
   - name: install packages for fpm
     shell: |
-      apk add --no-cache mc parallel libc-dev autoconf make gcc g++ bash tar curl procps busybox-extras iputils \
-      vim htop wget git openssh postgresql-dev postgresql-client zip \
-      lame sox
-  - name: setup user
-    shell: |
-      usermod -u 1000 www-data
-      groupmod -g 1000 www-data
+      apt update && apt upgrade -y && apt install -y \
+        mc \
+        parallel \
+        procps \
+        iputils-ping \
+        vim \
+        htop \
+        wget \
+        git \
+        openssh-server \
+        postgresql-server-dev-11 \
+        postgresql-client \
+        zip \
+        lame \
+        sox
+  install:
   - name:  install php-extentions
     shell: |
       cd /tmp/
@@ -32,13 +54,7 @@ ansible:
       mv install-php-extensions /usr/local/bin/
       chmod uga+x /usr/local/bin/install-php-extensions && sync
       install-php-extensions gd mbstring zip mcrypt curl dom xmlrpc readline json pdo_pgsql amqp igbinary mcrypt msgpack redis ssh2 pdo_pgsql sockets zip opcache xmlwriter bcmath
-  - name: install php config
-    shell: |
-      cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-  - name: Prepare voip_gui dir
-    shell: |
-      printf "Host github.com\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" >> /etc/ssh/ssh_config
-  - name:  Setup composer
+  - name:  setup composer
     shell: |
         cd && mkdir temp && cd temp \
         && curl -sS https://getcomposer.org/installer -O \
@@ -46,6 +62,17 @@ ansible:
         && mv composer.phar /usr/local/bin/composer \
         && composer self-update --1 \
         && composer global require "fxp/composer-asset-plugin"
+  beforeSetup:
+  - name: setup user
+    shell: |
+      usermod -u 1000 www-data
+      groupmod -g 1000 www-data
+  - name: install php config
+    shell: |
+      cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+  - name: prepare voip_gui dir
+    shell: |
+      printf "Host gitlab.mcnloc.ru github.com\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" >> /etc/ssh/ssh_config
 
 
 {{- end }}
