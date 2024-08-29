@@ -32,8 +32,8 @@ class CormServerRule extends \yii\db\ActiveRecord
     {
         return [
             [['server_id'], 'required'],
-            [['server_id', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'order', 'trunk_group_id'], 'integer'],
-            [['allow', 'ac_mode'], 'boolean'],
+            [['server_id', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'order', 'trunk_group_id', 'ac_mode'], 'integer'],
+            [['allow'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }

@@ -15,10 +15,7 @@
             <li><a href="#mvno_link" data-toggle="tab">МВНО</a></li>
             <li><a href="#antifraud" data-toggle="tab">Верификация</a></li>
             <li><a href="#bnumber" data-toggle="tab">Специальные действия</a></li>
-<<<<<<< 33ffbf0eed0dc4d70eace67a2b7eece20c96ef84
             <li><a href="#corm" data-toggle="tab">СОРМ-1</a></li>
-=======
->>>>>>> 64a65217c5869c4dcb4e26fbe27987fb883bbd6f
         </ul>
 
         <br/>
@@ -109,7 +106,6 @@
 
             </div>
 
-<<<<<<< 33ffbf0eed0dc4d70eace67a2b7eece20c96ef84
             <div class="tab-pane" id="corm">
                 <!-- Правила Оригинации -->
                 <div class="form-group">
@@ -161,9 +157,9 @@
                                         <span>A || C</span>
                                     </td>
                                     <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%">
-                                        <div class="btn-group" ng-click="line.ac_mode = !line.ac_mode">
-                                            <button type="button" class="btn btn-sm {{line.ac_mode ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                            <button type="button" class="btn btn-sm {{!line.ac_mode ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                                        <div class="btn-group" ng-click="line.ac_mode = line.ac_mode === 1 ? 0 : 1">
+                                            <button type="button" class="btn btn-sm {{line.ac_mode === 1 ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                            <button type="button" class="btn btn-sm {{line.ac_mode === 0 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                                         </div>
                                     </td>
                                     <td>
@@ -235,9 +231,9 @@
                                         <span>A || C</span>
                                     </td>
                                     <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%">
-                                        <div class="btn-group" ng-click="line.ac_mode = !line.ac_mode">
-                                            <button type="button" class="btn btn-sm {{line.ac_mode ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                            <button type="button" class="btn btn-sm {{!line.ac_mode ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                                        <div class="btn-group" ng-click="line.ac_mode = line.ac_mode === 1 ? 0 : 1">
+                                            <button type="button" class="btn btn-sm {{line.ac_mode === 1 ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                            <button type="button" class="btn btn-sm {{line.ac_mode === 0 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                                         </div>
                                     </td>
                                     <td>
@@ -259,8 +255,6 @@
                     </div>
                 </div>                         
             </div>
-=======
->>>>>>> 64a65217c5869c4dcb4e26fbe27987fb883bbd6f
             <div class="tab-pane active" id="mainsettings">
 
                 <div class="form-group">

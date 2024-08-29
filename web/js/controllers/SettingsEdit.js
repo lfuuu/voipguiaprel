@@ -1,4 +1,4 @@
-var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance, params, Server) {
+var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance, params) {
   $scope.title = 'Общие настройки';
   $scope.name_changed = false;
 
@@ -17,6 +17,11 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     $scope.item.trunk_groups = (data.trunk_groups == null) ? [] : data.trunk_groups.replace('{', '').replace('}', '').split(',');
     $scope.item.fsb_numa_blacklist_ids = (data.fsb_numa_blacklist_ids == null) ? [] : data.fsb_numa_blacklist_ids.replace('{', '').replace('}', '').split(',');
     $scope.item.fsb_numb_blacklist_ids = (data.fsb_numb_blacklist_ids == null) ? [] : data.fsb_numb_blacklist_ids.replace('{', '').replace('}', '').split(',');
+
+    $scope.item.trunkRulesOrigination = $scope.item.trunkRulesOrigination || [];
+    $scope.item.trunkRulesTermination = $scope.item.trunkRulesTermination || [];
+    $scope.item.corm_orig = $scope.item.corm_orig !== null ? $scope.item.corm_orig : false;
+    $scope.item.corm_term = $scope.item.corm_term !== null ? $scope.item.corm_term : false;
 
     $scope.item.trunkRulesOrigination = $scope.item.trunkRulesOrigination || [];
     $scope.item.trunkRulesTermination = $scope.item.trunkRulesTermination || [];
@@ -60,21 +65,52 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     });
   };
 
-$scope.addTrunkRuleOrigination = function () {
-  $scope.item.trunkRulesOrigination.push({
-      trunk_group_id: '',
-      allow: $scope.item.corm_orig,
-      is_orig: true
-  });
+  $scope.addTrunkRuleOrigination = function () {
+    $scope.item.trunkRulesOrigination.push({
+        trunk_group_id: '',
+        allow: $scope.item.corm_orig, 
+        is_orig: true,
+        ac_mode: 0
+    });
 };
 
 $scope.addTrunkRuleTermination = function () {
-  $scope.item.trunkRulesTermination.push({
-      trunk_group_id: '',
-      allow: $scope.item.corm_term,
-      is_orig: false
-  });
+    $scope.item.trunkRulesTermination.push({
+        trunk_group_id: '',
+        allow: $scope.item.corm_term, 
+        is_orig: false,
+        ac_mode: 0
+    });
 };
+
+
+$scope.removeTrunkRuleOrigination = function (index) {
+  $scope.item.trunkRulesOrigination.splice(index, 1);
+};
+
+$scope.removeTrunkRuleTermination = function (index) {
+  $scope.item.trunkRulesTermination.splice(index, 1);
+};
+
+
+  $scope.addTrunkRuleOrigination = function () {
+    $scope.item.trunkRulesOrigination.push({
+        trunk_group_id: '',
+        allow: $scope.item.corm_orig, 
+        is_orig: true,
+        ac_mode: 0
+    });
+};
+
+$scope.addTrunkRuleTermination = function () {
+    $scope.item.trunkRulesTermination.push({
+        trunk_group_id: '',
+        allow: $scope.item.corm_term, 
+        is_orig: false,
+        ac_mode: 0
+    });
+};
+
 
 $scope.removeTrunkRuleOrigination = function (index) {
   $scope.item.trunkRulesOrigination.splice(index, 1);
