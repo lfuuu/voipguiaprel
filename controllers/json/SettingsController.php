@@ -197,6 +197,7 @@ class SettingsController extends JsonController
                 foreach ($this->request['trunkRulesOrigination'] as $ruleData) {
                     $rule = new CormServerRule();
                     $rule->load($ruleData, '');
+                    $rule->ac_mode = isset($ruleData['ac_mode']) && $ruleData['ac_mode'] === 1 ? 1 : 0;
                     $rule->server_id = $server->id;
                     $rule->is_orig = true;
                     if (!$rule->save()) {
@@ -209,6 +210,7 @@ class SettingsController extends JsonController
                 foreach ($this->request['trunkRulesTermination'] as $ruleData) {
                     $rule = new CormServerRule();
                     $rule->load($ruleData, '');
+                    $rule->ac_mode = isset($ruleData['ac_mode']) && $ruleData['ac_mode'] === 1 ? 1 : 0;
                     $rule->server_id = $server->id;
                     $rule->is_orig = false;
                     if (!$rule->save()) {
