@@ -56,7 +56,8 @@ use app\models\event\Queue;
  * @property string $apiUrlReserve
  * @property string $apiUrlReserve2
  * @property string $apiUrlDev
- * @property bool $syncInProgress
+ * @property bool $corm_orig
+ * @property bool $corm_term
  *
  * @property int $mcn_prefixlist_id
  * @property int $vats_trunk_id
@@ -98,7 +99,7 @@ class Server extends \yii\db\ActiveRecord
                 'fsb_blacklist_id', 'fsb_b_blacklist_id', 'global_replacement_id', 'number_id_filter_b_route_to_class5',
                 'cpc_id', 'loop_detected_outcome_id', 'phase1_allow_trunkgroup_id', 'rn_replace_prefixlist_id', 'reject_outcome_id', 'mts_timeout', 'mts_error', 'mts_reject', 'epvv_timeout', 'epvv_error', 'epvv_reject', 'route_case_not_found_nnp','route_case_not_found_pricelist'], 'integer'],
             [['is_sormed', 'is_production','rc_mgmn_action_disable','is_route_to_class5',
-                'is_route_to_class5_phase1_enable','is_autotest_error_enabled', 'is_open_numeric_plan_enabled'], 'boolean'],
+                'is_route_to_class5_phase1_enable','is_autotest_error_enabled', 'is_open_numeric_plan_enabled', 'corm_orig', 'corm_term'], 'boolean'],
             [['calling_station_id_for_line_without_number',
                 'h_call_sync_delay', 'h_cdr_sync_delay', 'h_call_save_delay', 'h_cdr_proc_wait_count',
                 'h_call_save_wait_count', 'h_thread_error_count', 'h_radius_request_delay',

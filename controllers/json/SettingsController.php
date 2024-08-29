@@ -9,6 +9,7 @@ use yii\web\ForbiddenHttpException;
 use app\models\auth\Hub;
 use app\models\auth\MvnoLink;
 use app\models\Server;
+use app\models\auth\CormServerRule;
 use yii\web\NotFoundHttpException;
 
 class SettingsController extends JsonController
@@ -22,6 +23,9 @@ class SettingsController extends JsonController
         $server = $this->getServerOr404($this->request['server_id']);
         $hub = Hub::findOne($server->hub_id);
         
+        $trunkRulesOrigination = CormServerRule::findAll(['server_id' => $server->id, 'is_orig' => true]);
+        $trunkRulesTermination = CormServerRule::findAll(['server_id' => $server->id, 'is_orig' => false]);
+
         $hubNumberCapacityFormatted = [];
         $hubExcludedNumberCapacityFormatted = [];
         $prefixlistBlock = [];
@@ -57,6 +61,10 @@ class SettingsController extends JsonController
             'h_call_save_delay' => $server->h_call_save_delay,
             'h_cdr_proc_wait_count' => $server->h_cdr_proc_wait_count,
             'h_call_save_wait_count' => $server->h_call_save_wait_count,
+            'trunkRulesOrigination' => $trunkRulesOrigination,
+            'trunkRulesTermination' => $trunkRulesTermination,
+            'corm_orig' => $server->corm_orig,
+            'corm_term' => $server->corm_term,
             'h_thread_error_count' => $server->h_thread_error_count,
             'h_radius_request_delay' => $server->h_radius_request_delay,
             'h_event_management' => $server->h_event_management,
@@ -181,6 +189,44 @@ class SettingsController extends JsonController
     
             if (!$server->save() || (isset($hub) && !$hub->save())) {
                 throw new FormValidationException($server);
+            }
+
+            CormServerRule::deleteByServer($server);
+
+            if (isset($this->request['trunkRulesOrigination'])) {
+                foreach ($this->request['trunkRulesOrigination'] as $ruleData) {
+                    $rule = new CormServerRule();
+                    $rule->load($ruleData, '');
+                    $rule->server_id = $server->id;
+                    $rule->is_orig = true;
+                    if (!$rule->save()) {
+                        throw new FormValidationException($rule);
+                    }
+                }
+            }
+    
+            if (isset($this->request['trunkRulesTermination'])) {
+                foreach ($this->request['trunkRulesTermination'] as $ruleData) {
+                    $rule = new CormServerRule();
+                    $rule->load($ruleData, '');
+                    $rule->server_id = $server->id;
+                    $rule->is_orig = false;
+                    if (!$rule->save()) {
+                        throw new FormValidationException($rule);
+                    }
+                }
+            }
+
+            if (isset($this->request['corm_term'])) {
+                $server->corm_term = $this->request['corm_term'];
+            } else {
+                $server->corm_term = false;
+            }
+            
+            if (isset($this->request['corm_orig'])) {
+                $server->corm_orig = $this->request['corm_orig'];
+            } else {
+                $server->corm_orig = false;
             }
 
             $transaction->commit();
