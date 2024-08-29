@@ -1,4 +1,4 @@
-var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance, params) {
+var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance, params, Server) {
   $scope.title = 'Общие настройки';
   $scope.name_changed = false;
 
@@ -18,12 +18,17 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     $scope.item.fsb_numa_blacklist_ids = (data.fsb_numa_blacklist_ids == null) ? [] : data.fsb_numa_blacklist_ids.replace('{', '').replace('}', '').split(',');
     $scope.item.fsb_numb_blacklist_ids = (data.fsb_numb_blacklist_ids == null) ? [] : data.fsb_numb_blacklist_ids.replace('{', '').replace('}', '').split(',');
 
+    $scope.item.trunkRulesOrigination = $scope.item.trunkRulesOrigination || [];
+    $scope.item.trunkRulesTermination = $scope.item.trunkRulesTermination || [];
+    $scope.item.corm_orig = $scope.item.corm_orig !== null ? $scope.item.corm_orig : false;
+    $scope.item.corm_term = $scope.item.corm_term !== null ? $scope.item.corm_term : false;
+
     if ($scope.item.ast_trunk_group_id || $scope.item.ast_outcome_id) {
       $scope.vpbx_type_id = 2;
     } else {
       $scope.vpbx_type_id = 1;
     }
-  });
+});
 
   List.prefixlist().then(function (data) {
     $scope.prefixlist_list = data;
@@ -54,6 +59,31 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
       }
     });
   };
+
+$scope.addTrunkRuleOrigination = function () {
+  $scope.item.trunkRulesOrigination.push({
+      trunk_group_id: '',
+      allow: $scope.item.corm_orig,
+      is_orig: true
+  });
+};
+
+$scope.addTrunkRuleTermination = function () {
+  $scope.item.trunkRulesTermination.push({
+      trunk_group_id: '',
+      allow: $scope.item.corm_term,
+      is_orig: false
+  });
+};
+
+$scope.removeTrunkRuleOrigination = function (index) {
+  $scope.item.trunkRulesOrigination.splice(index, 1);
+};
+
+$scope.removeTrunkRuleTermination = function (index) {
+  $scope.item.trunkRulesTermination.splice(index, 1);
+};
+
 
   List.trunkGroup().then(function (data) {
     $scope.trunk_group_list = data;
