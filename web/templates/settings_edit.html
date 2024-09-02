@@ -15,7 +15,7 @@
             <li><a href="#mvno_link" data-toggle="tab">МВНО</a></li>
             <li><a href="#antifraud" data-toggle="tab">Верификация</a></li>
             <li><a href="#bnumber" data-toggle="tab">Специальные действия</a></li>
-            <li><a href="#corm" data-toggle="tab">СОРМ-1</a></li>
+            <li ng-if="userPermissions['corm_edit']"><a href="#corm" data-toggle="tab">СОРМ-1</a></li>
         </ul>
 
         <br/>
