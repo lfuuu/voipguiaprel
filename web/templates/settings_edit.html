@@ -388,6 +388,14 @@
                     <label class="col-sm-4 control-label">Префикслист для подмены номера А на С в пл-в2</label>
                     <div class="col-sm-8">
                         <select-box list="prefixlist" model="item.rn_replace_prefixlist_id" placeholder="Выберите"
+                                    required="false" default="Префикслист не выбран"></select-box>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Префикслист для проверки номера B NNP</label>
+                    <div class="col-sm-8">
+                        <select-box list="prefixlist" model=item.verification_b_in_nnp_prefixlist_id placeholder="Выберите"
                                     required="false" default="Без списка"></select-box>
                     </div>
                 </div>

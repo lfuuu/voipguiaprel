@@ -99,6 +99,7 @@ class SettingsController extends JsonController
             'hub_excluded_number_capacity' => $hubExcludedNumberCapacityFormatted,
             'trunk_groups' => $trunkGroups,
             'rn_replace_prefixlist_id' => $server->rn_replace_prefixlist_id,
+            'verification_b_in_nnp_prefixlist_id' => $server->verification_b_in_nnp_prefixlist_id,
             'fsb_numa_blacklist_ids' => $server->fsb_numa_blacklist_ids,
             'fsb_numb_blacklist_ids' => $server->fsb_numb_blacklist_ids,
             'local_spc' => $server->local_spc,
