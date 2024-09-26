@@ -40,7 +40,11 @@ ansible:
       curl https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions >> install-php-extensions
       mv install-php-extensions /usr/local/bin/
       chmod uga+x /usr/local/bin/install-php-extensions && sync
+      export HTTP_PROXY=p.kompaas.tech:3128
+      export HTTPS_PROXY=p.kompaas.tech:3128
       install-php-extensions gd mbstring zip mcrypt curl dom xmlrpc readline json pdo_pgsql amqp igbinary mcrypt msgpack redis ssh2 pdo_pgsql sockets zip opcache xmlwriter bcmath
+      unset HTTP_PROXY
+      unset HTTPS_PROXY
   - name: install php config
     shell: |
       cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
