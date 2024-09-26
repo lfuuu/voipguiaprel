@@ -14,16 +14,19 @@ class ImporterController extends BaseController
     const CACHE_TIMEOUT = 3600;
 
     public function actionImport($id, $key, $is_replace)
-    {
-        if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
+{
+    if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
+        throw new ForbiddenHttpException('Access denied');
+     }
 
-        $is_replace = ($is_replace === 'true');
+    $is_replace = ($is_replace === 'true');
+    ini_set('memory_limit', '-1');
+    ini_set('max_execution_time', 0);
 
-        ini_set('memory_limit', '-1');
-        ini_set('max_execution_time', 0);
+    $maxAttempts = 5;
+    $attempt = 0;
 
+    while ($attempt < $maxAttempts) {
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
@@ -81,11 +84,24 @@ class ImporterController extends BaseController
             return $this->render('import', [
                 'delta_time' => round($endTime - $startTime, 2)
             ]);
+        } catch (\yii\db\Exception $e) {
+            $transaction->rollBack();
+
+            if ($e->errorInfo[0] == '40001') { // Код ошибки serialization_failure в PostgreSQL
+                $attempt++;
+                if ($attempt >= $maxAttempts) {
+                    throw new \Exception("Deadlock occurred and all attempts to resolve it failed");
+                }
+                usleep(100000); 
+            } else {
+                throw $e; // Если ошибка не связана с deadlock, выбрасываем её
+            }
         } catch (\Exception $e) {
             $transaction->rollBack();
             throw $e;
         }
     }
+}
 
     private function getOldItems($id, $prefixDateStart)
     {
