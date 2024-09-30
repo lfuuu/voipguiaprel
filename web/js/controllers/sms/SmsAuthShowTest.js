@@ -8,6 +8,7 @@ var SmsTestAuthShowTestCtrl = function($scope, SmsTestAuth, params, $modalInstan
             $scope.result = data.result;
             $scope.key = data.key;
             $scope.url = data.url;
+            $scope.formLink = $window.location.origin + '/ms' + $scope.server.id + '?smsTestAuthShowTest&' + $scope.item.id + '&is_reserve=false';
         });
     } else {
         $scope.item = {
