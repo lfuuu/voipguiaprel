@@ -1,7 +1,7 @@
 <?php
 
 namespace app\controllers\json;
-
+use Yii;
 use app\classes\JsonController;
 use app\exceptions\FormValidationException;
 use app\models\sorm\Operator;
@@ -21,6 +21,8 @@ use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\db\Expression;
+use yii\web\Response;
+
 
 class TrunkController extends JsonController
 {
@@ -43,7 +45,7 @@ class TrunkController extends JsonController
 
         return
             Trunk::find()
-                ->select(['id', 'name', 'trunk_name'])
+                ->select(['id', 'name', 'trunk_name', 'sorm_p268_us_type'])
                 ->where("( server_id in( select id from public.server where hub_id = ".$hub_id.") and sw_shared )  or server_id = ".$server->id)
                 ->orderBy('name')
                 ->asArray()
@@ -437,6 +439,13 @@ class TrunkController extends JsonController
 
         $trunk->load($this->request, '');
 
+        if (isset($this->request['sorm_p268'])) {
+            $sormP268 = $this->request['sorm_p268'];
+            $trunk->sorm_p268_enabled = isset($sormP268['enabled']) ? $sormP268['enabled'] : $trunk->sorm_p268_enabled;
+            $trunk->sorm_p268_us_type = isset($sormP268['us_type']) ? $sormP268['us_type'] : $trunk->sorm_p268_us_type;
+            $trunk->sorm_p268_orm_id = isset($sormP268['orm_id']) ? $sormP268['orm_id'] : $trunk->sorm_p268_orm_id;
+        }
+
         $transaction = Trunk::getDb()->beginTransaction();
         try {
             if ($trunk->isAttributeChanged('need_recalc_routing_report')) {
@@ -678,5 +687,41 @@ class TrunkController extends JsonController
         }
         
         return $result;
+    }
+    public function actionCheckOrmId()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $orm_id = Yii::$app->request->post('orm_id');
+        $region_id = Yii::$app->request->post('region_id');
+        $trunk_id = Yii::$app->request->post('trunk_id');
+
+        if (!$orm_id || !$region_id) {
+            return ['error' => 'Недостаточно параметров'];
+        }
+
+        $query = Trunk::find()
+            ->where([
+                'sorm_p268_enabled' => true,
+                'sorm_p268_orm_id' => $orm_id,
+                'server_id' => $region_id,
+            ]);
+
+        if ($trunk_id) {
+            $query->andWhere(['<>', 'id', $trunk_id]);
+        }
+
+        $existingTrunk = $query->one();
+
+        if ($existingTrunk) {
+            return [
+                'exists' => true,
+                'trunk_name' => $existingTrunk->name,
+            ];
+        } else {
+            return [
+                'exists' => false,
+            ];
+        }
     }
 }

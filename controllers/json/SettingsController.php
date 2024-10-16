@@ -10,6 +10,7 @@ use app\models\auth\Hub;
 use app\models\auth\MvnoLink;
 use app\models\Server;
 use app\models\auth\CormServerRule;
+use app\models\auth\DvoServerRule;
 use yii\web\NotFoundHttpException;
 
 class SettingsController extends JsonController
@@ -25,6 +26,7 @@ class SettingsController extends JsonController
         
         $trunkRulesOrigination = CormServerRule::findAll(['server_id' => $server->id, 'is_orig' => true]);
         $trunkRulesTermination = CormServerRule::findAll(['server_id' => $server->id, 'is_orig' => false]);
+        $dvoRules = DvoServerRule::findAll(['server_id' => $server->id]);
 
         $hubNumberCapacityFormatted = [];
         $hubExcludedNumberCapacityFormatted = [];
@@ -115,6 +117,11 @@ class SettingsController extends JsonController
             'epvv_reject' => $server->epvv_reject,
             'route_case_not_found_nnp' => $server->route_case_not_found_nnp,
             'route_case_not_found_pricelist' => $server->route_case_not_found_pricelist,
+            'dvoRules' => $this->formatDvoRules($dvoRules),
+            'call_telemetry_receiver_orig' => $server->call_telemetry_receiver_orig,
+            'call_telemetry_receiver_term' => $server->call_telemetry_receiver_term,
+            'dvo_telemetry_receiver' => $server->dvo_telemetry_receiver,
+            'dvo_enable_default' => $server->dvo_enable_default,
         ];
     }
 
@@ -193,6 +200,7 @@ class SettingsController extends JsonController
             }
 
             CormServerRule::deleteByServer($server);
+            DvoServerRule::deleteByServer($server);
 
             if (isset($this->request['trunkRulesOrigination'])) {
                 foreach ($this->request['trunkRulesOrigination'] as $ruleData) {
@@ -201,6 +209,17 @@ class SettingsController extends JsonController
                     $rule->ac_mode = isset($ruleData['ac_mode']) && $ruleData['ac_mode'] === 1 ? 1 : 0;
                     $rule->server_id = $server->id;
                     $rule->is_orig = true;
+                    if (!$rule->save()) {
+                        throw new FormValidationException($rule);
+                    }
+                }
+            }
+
+            if (isset($this->request['dvoRules'])) {
+                foreach ($this->request['dvoRules'] as $ruleData) {
+                    $rule = new DvoServerRule();
+                    $rule->load($ruleData, '');
+                    $rule->server_id = $server->id;
                     if (!$rule->save()) {
                         throw new FormValidationException($rule);
                     }
@@ -307,7 +326,21 @@ class SettingsController extends JsonController
         'nas_ip_address' => $nasIpAddress,
     ];
 }
-    
+private function formatDvoRules($dvoRules)
+{
+    $result = [];
+    foreach ($dvoRules as $rule) {
+        $result[] = [
+            'id' => $rule->id,
+            'allow' => $rule->allow,
+            'number_id_filter_a' => $rule->number_id_filter_a,
+            'telemetry_reciever_id' => $rule->telemetry_reciever_id,
+            'object_comment' => $rule->object_comment,
+            'order' => $rule->order,
+        ];
+    }
+    return $result;
+}
 
 
 }

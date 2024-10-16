@@ -9,6 +9,9 @@
         <div ng-if="userPermissions['instance_settings_edit']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['instance_settings_edit']" ng-click="Redirect.instanceSettings()">Дополнительные настройки</a>
         </div>
+        <div ng-if="userPermissions['corm_edit']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['corm_edit']" ng-click="Redirect.adapterCorm()" ng-class="{active:tabs.isController('CormAdapterListCtrl')}">Сорм адаптер</a>
+        </div>
         <div ng-if="userPermissions['trunk_list'] || userPermissions['trunk_group_list'] || userPermissions['imsi_partner_list'] || userPermissions['route_table_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['trunk_list']" ng-click="Redirect.trunkList()" ng-class="{active:tabs.isController('TrunkListCtrl')}">Транки</a>
             <a class="list-group-item" ng-if="userPermissions['trunk_group_list']" ng-click="Redirect.trunkGroupList()" ng-class="{active:tabs.isController('TrunkGroupListCtrl')}">Группы транков</a>

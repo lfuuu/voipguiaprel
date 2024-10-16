@@ -2,28 +2,24 @@
 namespace app\models\auth;
 
 /**
- * This is the model class for table "auth.corm_server_rule".
+ * This is the model class for table "auth.dvo_server_rule".
  *
  * @property int $id
  * @property int $server_id
+ * @property int $telemetry_reciever_id
  * @property int|null $number_id_filter_a
- * @property int|null $number_id_filter_b
- * @property int|null $number_id_filter_c
- * @property int|null telemetry_reciever_id
  * @property bool $allow
  * @property string|null $object_comment
  * @property int|null $order
- * @property int|null $trunk_group_id
- * @property bool $ac_mode
  */
-class CormServerRule extends \yii\db\ActiveRecord
+class DvoServerRule extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'auth.corm_server_rule';
+        return 'auth.dvo_server_rule';
     }
 
     /**
@@ -33,7 +29,7 @@ class CormServerRule extends \yii\db\ActiveRecord
     {
         return [
             [['server_id'], 'required'],
-            [['server_id', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'telemetry_reciever_id', 'order', 'trunk_group_id', 'ac_mode'], 'integer'],
+            [['server_id', 'number_id_filter_a', 'order', 'telemetry_reciever_id'], 'integer'],
             [['allow'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
@@ -48,22 +44,19 @@ class CormServerRule extends \yii\db\ActiveRecord
             'id' => 'ID',
             'server_id' => 'Server ID',
             'number_id_filter_a' => 'Number ID Filter A',
-            'number_id_filter_b' => 'Number ID Filter B',
-            'number_id_filter_c' => 'Number ID Filter C',
             'allow' => 'Allow',
             'object_comment' => 'Object Comment',
             'order' => 'Order',
-            'trunk_group_id' => 'Trunk Group ID',
-            'ac_mode' => 'AC Mode',
+            'telemetry_reciever_id' => 'Telemetry Reciever ID',
         ];
     }
 
     /**
-     * Creates a new CormServerRule instance associated with a server.
+     * Creates a new DvoServerRule instance associated with a server.
      *
-     * @param Server $server
+     * @param \app\models\Server $server
      * @param array|null $data
-     * @return CormServerRule
+     * @return DvoServerRule
      */
     public static function create(\app\models\Server $server, array $data = null)
     {
@@ -76,22 +69,12 @@ class CormServerRule extends \yii\db\ActiveRecord
     /**
      * Deletes all rules associated with the given server.
      *
-     * @param Server $server
+     * @param \app\models\Server $server
      * @return int The number of rows deleted.
      */
     public static function deleteByServer(\app\models\Server $server)
     {
         return self::deleteAll(['server_id' => $server->id]);
-    }
-
-    /**
-     * Gets the associated TrunkGroup.
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrunkGroup()
-    {
-        return $this->hasOne(TrunkGroup::className(), ['id' => 'trunk_group_id']);
     }
 
     /**
@@ -102,25 +85,5 @@ class CormServerRule extends \yii\db\ActiveRecord
     public function getNumberA()
     {
         return $this->hasOne(Number::className(), ['id' => 'number_id_filter_a']);
-    }
-
-    /**
-     * Gets the associated Number for filter B.
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNumberB()
-    {
-        return $this->hasOne(Number::className(), ['id' => 'number_id_filter_b']);
-    }
-
-    /**
-     * Gets the associated Number for filter C.
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNumberC()
-    {
-        return $this->hasOne(Number::className(), ['id' => 'number_id_filter_c']);
     }
 }

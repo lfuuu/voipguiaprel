@@ -96,6 +96,7 @@ $config = [
                 'json/cdr/export-to-excel' => 'json/cdr/export-to-excel',
                 '<controller>/<action>' => '<controller>/<action>',
                 'json/settings/get-nas-ip-address' => 'json/settings/get-nas-ip-address',
+                'json/corm-adapter/<action>' => 'json/corm-adapter/<action>',
             ],
         ],
         'authManager' => [

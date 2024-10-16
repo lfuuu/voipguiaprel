@@ -16,32 +16,40 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     $scope.item = data;
     $scope.item.trunk_groups = (data.trunk_groups == null) ? [] : data.trunk_groups.replace('{', '').replace('}', '').split(',');
     $scope.item.fsb_numa_blacklist_ids = (data.fsb_numa_blacklist_ids == null) ? [] : data.fsb_numa_blacklist_ids.replace('{', '').replace('}', '').split(',');
-    $scope.item.fsb_numb_blacklist_ids = (data.fsb_numb_blacklist_ids == null) ? [] : data.fsb_numb_blacklist_ids.replace('{', '').replace('}', '').split(',');
+    $scope.item.fsb_numb_blacklist_ids = (data.fsb_numb_blacklist_ids == null) ? [] : data.fsb_numb_blacklist_ids.replace('{', '').split(',');
 
     $scope.item.trunkRulesOrigination = $scope.item.trunkRulesOrigination || [];
     $scope.item.trunkRulesTermination = $scope.item.trunkRulesTermination || [];
     $scope.item.corm_orig = $scope.item.corm_orig !== null ? $scope.item.corm_orig : false;
     $scope.item.corm_term = $scope.item.corm_term !== null ? $scope.item.corm_term : false;
-
-    $scope.item.trunkRulesOrigination = $scope.item.trunkRulesOrigination || [];
-    $scope.item.trunkRulesTermination = $scope.item.trunkRulesTermination || [];
-    $scope.item.corm_orig = $scope.item.corm_orig !== null ? $scope.item.corm_orig : false;
-    $scope.item.corm_term = $scope.item.corm_term !== null ? $scope.item.corm_term : false;
+    $scope.item.telemetry_reciever_id = $scope.item.telemetry_reciever_id !== null ? $scope.item.telemetry_reciever_id : false;
+    $scope.item.dvoRules = $scope.item.dvoRules || [];
+    $scope.item.dvo_default_action = $scope.item.dvo_default_action !== null ? $scope.item.dvo_default_action : false;
+    $scope.item.call_telemetry_receiver_orig = data.call_telemetry_receiver_orig;
+    $scope.item.call_telemetry_receiver_term = data.call_telemetry_receiver_term;
+    $scope.item.dvo_telemetry_receiver = data.dvo_telemetry_receiver;
+    $scope.item.dvo_enable_default = data.dvo_enable_default;
 
     if ($scope.item.ast_trunk_group_id || $scope.item.ast_outcome_id) {
       $scope.vpbx_type_id = 2;
     } else {
       $scope.vpbx_type_id = 1;
     }
-});
+  });
 
   List.prefixlist().then(function (data) {
     $scope.prefixlist_list = data;
   });
-  
+
   List.mvnoPartner().then(function (data) {
     $scope.mvno_partner_list = data;
   });
+
+  List.adapter($scope.server_id).then(function (data) {
+    $scope.adapters = data;
+});
+
+
 
   $scope.save = function () {
     switch ($scope.vpbx_type_id) {
@@ -72,59 +80,44 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
         is_orig: true,
         ac_mode: 0
     });
+  };
+
+  $scope.addDvoRule = function () {
+    $scope.item.dvoRules.push({
+        allow: $scope.item.dvo_default_action,
+        number_id_filter_a: null,
+        telemetry_reciever_id: null,
+        object_comment: ''
+    });
 };
 
-$scope.addTrunkRuleTermination = function () {
+  $scope.removeDvoRule = function (index) {
+      $scope.item.dvoRules.splice(index, 1);
+  };
+
+  $scope.addTrunkRuleTermination = function () {
     $scope.item.trunkRulesTermination.push({
         trunk_group_id: '',
         allow: $scope.item.corm_term, 
         is_orig: false,
         ac_mode: 0
     });
-};
+  };
 
+  $scope.removeTrunkRuleOrigination = function (index) {
+    $scope.item.trunkRulesOrigination.splice(index, 1);
+  };
 
-$scope.removeTrunkRuleOrigination = function (index) {
-  $scope.item.trunkRulesOrigination.splice(index, 1);
-};
+  $scope.removeTrunkRuleTermination = function (index) {
+    $scope.item.trunkRulesTermination.splice(index, 1);
+  };
 
-$scope.removeTrunkRuleTermination = function (index) {
-  $scope.item.trunkRulesTermination.splice(index, 1);
-};
-
-
-  $scope.addTrunkRuleOrigination = function () {
-    $scope.item.trunkRulesOrigination.push({
-        trunk_group_id: '',
-        allow: $scope.item.corm_orig, 
-        is_orig: true,
-        ac_mode: 0
-    });
-};
-
-$scope.addTrunkRuleTermination = function () {
-    $scope.item.trunkRulesTermination.push({
-        trunk_group_id: '',
-        allow: $scope.item.corm_term, 
-        is_orig: false,
-        ac_mode: 0
-    });
-};
-
-
-$scope.removeTrunkRuleOrigination = function (index) {
-  $scope.item.trunkRulesOrigination.splice(index, 1);
-};
-
-$scope.removeTrunkRuleTermination = function (index) {
-  $scope.item.trunkRulesTermination.splice(index, 1);
-};
-
-
+  // Загрузка списка групп транков
   List.trunkGroup().then(function (data) {
     $scope.trunk_group_list = data;
   });
 
+  // Загрузка номеров
   List.number(2, $scope.server_id).then(function (data) {
     $scope.numbers = data;
   });
@@ -148,10 +141,16 @@ $scope.removeTrunkRuleTermination = function (index) {
   $scope.removePrefixlist = function (index) {
     $scope.item.hub_number_capacity.splice(index, 1);
   };
-  
+
   $scope.addMvnoLink = function () {
-    $scope.item.mvno_link.push({number_capacity: [], mvno_trunk_ids: [], trunk_groups: [],
-        ported_number_prefixes: [], excluded_number_prefixes: [], routing_number: ''});
+    $scope.item.mvno_link.push({
+      number_capacity: [],
+      mvno_trunk_ids: [],
+      trunk_groups: [],
+      ported_number_prefixes: [],
+      excluded_number_prefixes: [],
+      routing_number: ''
+    });
   };
 
   $scope.removeMvnoLink = function (index) {

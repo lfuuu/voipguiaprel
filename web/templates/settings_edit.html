@@ -1,3 +1,34 @@
+<style>
+    /* Для выравнивания элементов формы и увеличения их размеров */
+    .table-striped select,
+    .table-striped input {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    /* Для увеличения высоты строки в таблице */
+    .table-striped tr {
+        height: 45px;
+    }
+
+    /* Выравнивание кнопок по центру */
+    .table-striped .btn {
+        margin-top: 5px;
+    }
+
+    /* Ограничение ширины таблицы, чтобы она не выходила за пределы окна */
+    .table-responsive {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    /* Ограничение ширины для отдельных столбцов */
+    .table-striped td {
+        white-space: nowrap;
+    }
+</style>
+
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
         <h3>Общие настройки</h3>
@@ -106,155 +137,244 @@
 
             </div>
 
-            <div class="tab-pane" id="corm">
-                <!-- Правила Оригинации -->
-                <div class="form-group">
-                    <label style="color: rgba(72,143,204,255); font-size: 17px">Правила Оригинации</label>
-                    <label style="margin-left: 1%; color: rgba(72,143,204,255); font-size: 17px">Действие по умолчанию</label>
-                    <div style="margin-left: 0.2%" class="btn-group" ng-click="item.corm_orig = !item.corm_orig">
-                        <button type="button" class="btn {{item.corm_orig ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
-                        <button type="button" class="btn {{!item.corm_orig ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
+            <div class="tab-content">
+                <div class="tab-pane" id="corm">
+                    <!-- Подкладки Телеметрии -->
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#telemetry-calls" data-toggle="tab">Телеметрия вызовов</a></li>
+                        <li><a href="#telemetry-dvo" data-toggle="tab">Телеметрия ДВО</a></li>
+                    </ul>
+            
+                    <br/>
+            
+                    <div class="tab-content">
+                        <!-- Телеметрия вызовов -->
+                        <div class="tab-pane active" id="telemetry-calls">
+                            <!-- Текущие правила -->
+                            <div class="form-group">
+                                <label style="color: rgba(72,143,204,255); font-size: 17px">Правила Оригинации</label>
+                                <label style="margin-left: 1%; color: rgba(72,143,204,255); font-size: 17px">Действие по умолчанию</label>
+                                <div style="margin-left: 0.2%" class="btn-group" ng-click="item.corm_orig = !item.corm_orig">
+                                    <button type="button" class="btn {{item.corm_orig ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
+                                    <button type="button" class="btn {{!item.corm_orig ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
+                                </div>
+                                <div ng-if="item.corm_orig" style="display: inline-block; margin-left: 10px;">
+                                    <label>СОРМ Адаптер:</label>
+                                    <select-box list="adapter" model="item.call_telemetry_receiver_orig" param="{{server_id}}" default="Любой адаптер"></select-box>
+                                </div>
+                            </div>
+            
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">Правила</label>
+                                <div class="col-sm-10 table-responsive">
+                                    <table class="table table-striped">
+                                        <tbody ui-sortable="{axis: 'y'}" ng-model="item.trunkRulesOrigination">
+                                            <tr ng-repeat="line in item.trunkRulesOrigination">
+                                                <td width="5%">
+                                                    <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
+                                                    <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
+                                                </td>
+                                                <td width="5%" style="cursor: ns-resize">
+                                                    <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="trunkGroup" model="line.trunk_group_id" default="Любая группа"></select-box>
+                                                </td>
+                                                <td width="3%" style="cursor: ns-resize">
+                                                    <span ng-if="line.number_id_filter_a !== null">A:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
+                                                </td>
+                                                <td width="3%" style="cursor: ns-resize">
+                                                    <span ng-if="line.number_id_filter_b !== null">B:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
+                                                </td>
+                                                <td width="3%" style="cursor: ns-resize">
+                                                    <span ng-if="line.number_id_filter_c !== null">C:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
+                                                </td>
+                                                <td width="3%" style="cursor: ns-resize">
+                                                    <span ng-if="line.telemetry_reciever_id !== null">Сорм Адаптер:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="adapter" model="line.telemetry_reciever_id" param="{{server_id}}" default="Любой адаптер"></select-box>
+                                                </td>
+                                                <td style="padding-bottom: 3px; padding-right: 1px; padding-left: 1px; min-width: 40px;">
+                                                    <span>A || C</span>
+                                                </td>
+                                                <td style="padding-bottom: 3px; padding-right: 1px; padding-left: 1px; min-width: 70px;" width="7%">
+                                                    <div class="btn-group" ng-click="line.ac_mode = line.ac_mode === 1 ? 0 : 1">
+                                                        <button type="button" class="btn btn-sm {{line.ac_mode === 1 ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                                        <button type="button" class="btn btn-sm {{line.ac_mode === 0 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkRuleOrigination($index)"></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="11">
+                                                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkRuleOrigination()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+            
+                            <!-- Правила Терминации -->
+                            <div class="form-group">
+                                <label style="color: rgba(72,143,204,255); font-size: 17px">Правила Терминации</label>
+                                <label style="margin-left: 1%; color: rgba(72,143,204,255); font-size: 17px">Действие по умолчанию</label>
+                                <div style="margin-left: 0.2%" class="btn-group" ng-click="item.corm_term = !item.corm_term">
+                                    <button type="button" class="btn {{item.corm_term ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
+                                    <button type="button" class="btn {{!item.corm_term ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
+                                </div>
+                                <div ng-if="item.corm_term" style="display: inline-block; margin-left: 10px;">
+                                    <label>СОРМ Адаптер:</label>
+                                    <select-box list="adapter" model="item.call_telemetry_receiver_term" param="{{server_id}}" default="Любой адаптер"></select-box>
+                                </div>
+                            </div>
+            
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">Правила</label>
+                                <div class="col-sm-10 table-responsive">
+                                    <table class="table table-striped">
+                                        <tbody ui-sortable="{axis: 'y'}" ng-model="item.trunkRulesTermination">
+                                            <tr ng-repeat="line in item.trunkRulesTermination">
+                                                <td width="5%">
+                                                    <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
+                                                    <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
+                                                </td>
+                                                <td width="5%" style="cursor: ns-resize">
+                                                    <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="trunkGroup" model="line.trunk_group_id" default="Любая группа"></select-box>
+                                                </td>
+                                                <td width="3%" style="cursor: ns-resize">
+                                                    <span ng-if="line.number_id_filter_a !== null">A:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
+                                                </td>
+                                                <td width="3%" style="cursor: ns-resize">
+                                                    <span ng-if="line.number_id_filter_b !== null">B:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
+                                                </td>
+                                                <td width="3%" style="cursor: ns-resize">
+                                                    <span ng-if="line.number_id_filter_c !== null">C:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
+                                                </td>
+                                                <td width="3%" style="cursor: ns-resize">
+                                                    <span ng-if="line.telemetry_reciever_id !== null">Сорм Адаптер:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="adapter" model="line.telemetry_reciever_id" param="{{server_id}}" default="Любой адаптер"></select-box>
+                                                </td>
+                                                <td style="padding-bottom: 3px; padding-right: 1px; padding-left: 1px; min-width: 40px;">
+                                                    <span>A || C</span>
+                                                </td>
+                                                <td style="padding-bottom: 3px; padding-right: 1px; padding-left: 1px; min-width: 70px;" width="7%">
+                                                    <div class="btn-group" ng-click="line.ac_mode = line.ac_mode === 1 ? 0 : 1">
+                                                        <button type="button" class="btn btn-sm {{line.ac_mode === 1 ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                                        <button type="button" class="btn btn-sm {{line.ac_mode === 0 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkRuleTermination($index)"></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="11">
+                                                    <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkRuleTermination()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Телеметрия ДВО (пока пустая) -->
+                        <!-- Телеметрия ДВО -->
+                        <div class="tab-pane" id="telemetry-dvo">
+                            <div class="form-group">
+                                <label style="color: rgba(72,143,204,255); font-size: 17px">Правила ДВО</label>
+                                <label style="margin-left: 1%; color: rgba(72,143,204,255); font-size: 17px">Действие по умолчанию</label>
+                                <div style="margin-left: 0.2%" class="btn-group" ng-click="item.dvo_enable_default = !item.dvo_enable_default">
+                                    <button type="button" class="btn" ng-class="{'btn-success active': item.dvo_enable_default, 'btn-default': !item.dvo_enable_default}">Разрешено</button>
+                                    <button type="button" class="btn" ng-class="{'btn-danger active': !item.dvo_enable_default, 'btn-default': item.dvo_enable_default}">Запрещено</button>
+                                </div>
+                                <div ng-if="item.dvo_enable_default" style="display: inline-block; margin-left: 10px;">
+                                    <label>СОРМ Адаптер:</label>
+                                    <select-box list="adapter" model="item.dvo_telemetry_receiver" param="{{server_id}}" default="Любой адаптер"></select-box>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">Правила</label>
+                                <div class="col-sm-10 table-responsive">
+                                    <table class="table table-striped">
+                                        <tbody ui-sortable="{axis: 'y'}" ng-model="item.dvoRules">
+                                            <tr ng-repeat="line in item.dvoRules">
+                                                <td width="5%">
+                                                    <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
+                                                    <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
+                                                </td>
+                                                <td width="3%" style="cursor: ns-resize">
+                                                    <span ng-if="line.number_id_filter_a !== null">A:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
+                                                </td>
+                                                <td width="3%" style="cursor: ns-resize">
+                                                    <span ng-if="line.telemetry_reciever_id !== null">Сорм Адаптер:</span>
+                                                </td>
+                                                <td>
+                                                    <select-box list="adapter" model="line.telemetry_reciever_id" param="{{server_id}}" default="Любой адаптер"></select-box>
+                                                </td>
+                                                <td>
+                                                    <comment-icon key="{{line.id}}" type="dvo_rules" comment="line.object_comment"></comment-icon>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeDvoRule($index)"></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="7">
+                                                    <button type="button" class="btn btn-success btn-xs" ng-click="addDvoRule()"><i class="glyphicon glyphicon-plus"></i> Добавить правило</button>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-1 control-label">Правила</label>
-                    <div class="col-sm-10">
-                        <table class="table table-striped">
-                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.trunkRulesOrigination">
-                                <tr ng-repeat="line in item.trunkRulesOrigination">
-                                    <td width="5%">
-                                        <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
-                                        <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
-                                    </td>
-                                    <td width="5%" style="cursor: ns-resize">
-                                        <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
-                                    </td>
-                                    <td>
-                                        <select-box list="trunkGroup" model="line.trunk_group_id" default="Любая группа"></select-box>
-                                    </td>
-            
-                                    <td width="3%" style="cursor: ns-resize">
-                                        <span ng-if="line.number_id_filter_a !== null">A:</span>
-                                    </td>
-                                    <td>
-                                        <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
-                                    </td>
-            
-                                    <td width="3%" style="cursor: ns-resize">
-                                        <span ng-if="line.number_id_filter_b !== null">B:</span>
-                                    </td>
-                                    <td>
-                                        <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
-                                    </td>
-            
-                                    <td width="3%" style="cursor: ns-resize">
-                                        <span ng-if="line.number_id_filter_c !== null">C:</span>
-                                    </td>
-                                    <td>
-                                        <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
-                                    </td>
-                                    <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 40px;">
-                                        <span>A || C</span>
-                                    </td>
-                                    <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%">
-                                        <div class="btn-group" ng-click="line.ac_mode = line.ac_mode === 1 ? 0 : 1">
-                                            <button type="button" class="btn btn-sm {{line.ac_mode === 1 ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                            <button type="button" class="btn btn-sm {{line.ac_mode === 0 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkRuleOrigination($index)"></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="11">
-                                        <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkRuleOrigination()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            
-                <!-- Правила Терминации -->
-                <div class="form-group">
-                    <label style="color: rgba(72,143,204,255); font-size: 17px">Правила Терминации</label>
-                    <label style="margin-left: 1%; color: rgba(72,143,204,255); font-size: 17px">Действие по умолчанию</label>
-                    <div style="margin-left: 0.2%" class="btn-group" ng-click="item.corm_term = !item.corm_term">
-                        <button type="button" class="btn {{item.corm_term ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
-                        <button type="button" class="btn {{!item.corm_term ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-1 control-label">Правила</label>
-                    <div class="col-sm-10">
-                        <table class="table table-striped">
-                            <tbody ui-sortable="{axis: 'y'}" ng-model="item.trunkRulesTermination">
-                                <tr ng-repeat="line in item.trunkRulesTermination">
-                                    <td width="5%">
-                                        <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
-                                        <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
-                                    </td>
-                                    <td width="5%" style="cursor: ns-resize">
-                                        <span ng-if="line.trunk_group_id !== null">Группа&nbsp;транков:</span>
-                                    </td>
-                                    <td>
-                                        <select-box list="trunkGroup" model="line.trunk_group_id" default="Любая группа"></select-box>
-                                    </td>
-            
-                                    <td width="3%" style="cursor: ns-resize">
-                                        <span ng-if="line.number_id_filter_a !== null">A:</span>
-                                    </td>
-                                    <td>
-                                        <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
-                                    </td>
-            
-                                    <td width="3%" style="cursor: ns-resize">
-                                        <span ng-if="line.number_id_filter_b !== null">B:</span>
-                                    </td>
-                                    <td>
-                                        <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
-                                    </td>
-            
-                                    <td width="3%" style="cursor: ns-resize">
-                                        <span ng-if="line.number_id_filter_c !== null">C:</span>
-                                    </td>
-                                    <td>
-                                        <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
-                                    </td>
-                                    <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 40px;">
-                                        <span>A || C</span>
-                                    </td>
-                                    <td style="padding-bottom: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%">
-                                        <div class="btn-group" ng-click="line.ac_mode = line.ac_mode === 1 ? 0 : 1">
-                                            <button type="button" class="btn btn-sm {{line.ac_mode === 1 ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                            <button type="button" class="btn btn-sm {{line.ac_mode === 0 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <comment-icon key="{{line.id}}" type="trunk_rules" comment="line.object_comment"></comment-icon>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkRuleTermination($index)"></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="11">
-                                        <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkRuleTermination()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>                         
-            </div>
+
             <div class="tab-pane active" id="mainsettings">
 
                 <div class="form-group">

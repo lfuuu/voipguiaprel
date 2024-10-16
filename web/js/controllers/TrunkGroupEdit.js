@@ -1,11 +1,17 @@
 var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstance, Redirect, $window) {
     $scope.pageIdSuffix = 'new';
+    $scope.subTab = 'manual';
+    $scope.selectedTab = 'trunk-group'
+    $scope.usType = null; 
+    $scope.filteredTrunks = [];
+    $scope.isNewGroup = !params.id;
 
     if (params.id) {
-        TrunkGroup.get({id: params.id}).then(function(data){
+        TrunkGroup.get({id: params.id}).then(function(data) {
             $scope.pageIdSuffix = params.id;
             $scope.item = data;
             $scope.initialServerId = $scope.item.server_id;
+
             var trunks = [];
             var trunk_groups = [];
 
@@ -60,6 +66,7 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
             });
         });
     } else {
+
         $scope.item = {
             server_id: $scope.server.id,
             trunks: [],
@@ -69,73 +76,52 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
         $scope.initialServerId = $scope.item.server_id;
     }
 
-    List.trunkGroup().then(function (data) {
-        $scope.trunkGroupList = data;
-    });
-
-    List.trunkByServer($scope.server.id).then(function (data) {
+    List.trunkByServer($scope.server.id).then(function(data) {
         $scope.trunkList = data;
     });
 
-    $scope.clickTrunkItem = function(trunkId) {
-        if (window.getSelection().type == 'Range') {
+    List.trunkGroup().then(function(data) {
+        $scope.trunkGroupList = data;
+    });
+
+    $scope.filterTrunksByUsType = function(usType) {
+        if (!usType) {
+            $scope.filteredTrunks = [];
             return;
         }
 
-        Redirect.trunkEdit(trunkId).then(function () {
-            $scope.init();
-        });
-    };
+        var selectedUsType = parseInt(usType, 10);
 
-    $scope.clickRouteTableItem = function(routeTableId) {
-        if (window.getSelection().type == 'Range') {
-            return;
+        $scope.item.trunks = [];
+
+        $scope.filteredTrunks = $scope.trunkList.filter(function(trunk) {
+            return trunk.sorm_p268_us_type === selectedUsType;
+        });
+
+        if ($scope.filteredTrunks && $scope.filteredTrunks.length > 0) {
+            $scope.filteredTrunks.forEach(function(trunk) {
+                if ($scope.item.trunks.indexOf(trunk.id.toString()) === -1) {
+                    $scope.item.trunks.push(trunk.id.toString());
+                }
+            });
         }
 
-        Redirect.routeTableEdit(routeTableId).then(function () {
-            $scope.init();
-        });
-    };
-
-    $scope.clickOutcomeItem = function(outcomeId) {
-        if (window.getSelection().type == 'Range') {
-            return;
-        }
-
-        Redirect.outcomeEdit(outcomeId).then(function () {
-            $scope.init();
-        });
-    };
-
-    $scope.clickGroupItem = function(trunkGroupId) {
-        if (window.getSelection().type == 'Range') {
-            return;
-        }
-
-        Redirect.trunkGroupEdit(trunkGroupId).then(function () {
-            $scope.init();
-        });
-    };
-    
-    $scope.clickRouteReplaceItem = function(serverId) {
-        if (window.getSelection().type == 'Range') {
-            return;
-        }
-
-        Redirect.routeReplaceEdit(serverId).then(function () {
-            $scope.init();
-        });
     };
 
     $scope.save = function() {
-
         if ($scope.initialServerId !== $scope.server.id) {
-            alert("Изменения нельзя сохранить, так как вы пытаетесь изменить группу транков, который находится на другом регионе.");
+            alert("Изменения нельзя сохранить, так как вы пытаетесь изменить группу транков, которая находится на другом регионе.");
             return;
         }
 
         delete $scope.item.findIntoRules;
         delete $scope.item.findIntoPriorities;
+        delete $scope.item.findIntoRulesRoutingNums;
+        delete $scope.item.findIntoRulesAntifraud;
+        delete $scope.item.findRouteTables;
+        delete $scope.item.findOutcomes;
+        delete $scope.item.findGroups;
+        delete $scope.item.findRouteReplace;
 
         TrunkGroup.save($scope.item).then(function(response) {
             $modalInstance.close();
@@ -146,7 +132,7 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
         $modalInstance.dismiss();
     };
 
-    $scope.hasPopover = function () {
+    $scope.hasPopover = function() {
         return $scope.item.used_in_marketplace ? 'mouseenter' : 'none';
     };
 };

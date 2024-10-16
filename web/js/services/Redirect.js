@@ -152,6 +152,17 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(BlacklistSettingsEditCtrl, '/templates/blacklist_settings_edit.html');
         },
 
+        adapterCorm: function() {
+            $cookies.routing_selected_page = 'adapterCorm';
+            return openTab(CormAdapterListCtrl, '/templates/corm_adapter_list.html');
+        },
+        adapterCreate: function() {
+            return openModal(CormAdapterEditCtrl, '/templates/corm_adapter_edit.html', {id: null});
+        },
+        adapterEdit: function(id) {
+            return openModal(CormAdapterEditCtrl, '/templates/corm_adapter_edit.html', {id: id});
+        },
+
         airpList: function() {
             $cookies.routing_selected_page = 'airpList';
             return openTab(AirpListCtrl, '/templates/airp_list.html');
