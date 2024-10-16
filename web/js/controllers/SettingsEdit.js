@@ -22,7 +22,7 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     $scope.item.trunkRulesTermination = $scope.item.trunkRulesTermination || [];
     $scope.item.corm_orig = $scope.item.corm_orig !== null ? $scope.item.corm_orig : false;
     $scope.item.corm_term = $scope.item.corm_term !== null ? $scope.item.corm_term : false;
-    $scope.item.telemetry_reciever_id = $scope.item.telemetry_reciever_id !== null ? $scope.item.telemetry_reciever_id : false;
+    $scope.item.telemetry_receiver_id = $scope.item.telemetry_receiver_id !== null ? $scope.item.telemetry_receiver_id : false;
     $scope.item.dvoRules = $scope.item.dvoRules || [];
     $scope.item.dvo_default_action = $scope.item.dvo_default_action !== null ? $scope.item.dvo_default_action : false;
     $scope.item.call_telemetry_receiver_orig = data.call_telemetry_receiver_orig;
@@ -86,7 +86,7 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     $scope.item.dvoRules.push({
         allow: $scope.item.dvo_default_action,
         number_id_filter_a: null,
-        telemetry_reciever_id: null,
+        telemetry_receiver_id: null,
         object_comment: ''
     });
 };

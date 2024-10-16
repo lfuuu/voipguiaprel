@@ -334,7 +334,7 @@ private function formatDvoRules($dvoRules)
             'id' => $rule->id,
             'allow' => $rule->allow,
             'number_id_filter_a' => $rule->number_id_filter_a,
-            'telemetry_reciever_id' => $rule->telemetry_reciever_id,
+            'telemetry_receiver_id' => $rule->telemetry_receiver_id,
             'object_comment' => $rule->object_comment,
             'order' => $rule->order,
         ];

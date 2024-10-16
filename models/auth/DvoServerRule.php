@@ -6,7 +6,7 @@ namespace app\models\auth;
  *
  * @property int $id
  * @property int $server_id
- * @property int $telemetry_reciever_id
+ * @property int $telemetry_receiver_id
  * @property int|null $number_id_filter_a
  * @property bool $allow
  * @property string|null $object_comment
@@ -29,7 +29,7 @@ class DvoServerRule extends \yii\db\ActiveRecord
     {
         return [
             [['server_id'], 'required'],
-            [['server_id', 'number_id_filter_a', 'order', 'telemetry_reciever_id'], 'integer'],
+            [['server_id', 'number_id_filter_a', 'order', 'telemetry_receiver_id'], 'integer'],
             [['allow'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
@@ -47,7 +47,7 @@ class DvoServerRule extends \yii\db\ActiveRecord
             'allow' => 'Allow',
             'object_comment' => 'Object Comment',
             'order' => 'Order',
-            'telemetry_reciever_id' => 'Telemetry Reciever ID',
+            'telemetry_receiver_id' => 'Telemetry receiver ID',
         ];
     }
 
