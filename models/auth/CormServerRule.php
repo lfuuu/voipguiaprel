@@ -9,7 +9,7 @@ namespace app\models\auth;
  * @property int|null $number_id_filter_a
  * @property int|null $number_id_filter_b
  * @property int|null $number_id_filter_c
- * @property int|null telemetry_reciever_id
+ * @property int|null telemetry_receiver_id
  * @property bool $allow
  * @property string|null $object_comment
  * @property int|null $order
@@ -33,7 +33,7 @@ class CormServerRule extends \yii\db\ActiveRecord
     {
         return [
             [['server_id'], 'required'],
-            [['server_id', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'telemetry_reciever_id', 'order', 'trunk_group_id', 'ac_mode'], 'integer'],
+            [['server_id', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'telemetry_receiver_id', 'order', 'trunk_group_id', 'ac_mode'], 'integer'],
             [['allow'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
