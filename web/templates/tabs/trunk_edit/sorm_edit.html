@@ -1,133 +1,180 @@
-<div class="form-group">
-    <label class="col-sm-2 control-label">Передать в СОРМ</label>
-    <div class="col-sm-10">
-        <div class="btn-group" ng-click="item.sorm.enabled = !item.sorm.enabled">
-            <button type="button" class="btn btn-sm {{item.sorm.enabled ? 'btn-success active' : 'btn-default'}}">Да</button>
-            <button type="button" class="btn btn-sm {{!item.sorm.enabled ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+<ul class="nav nav-tabs">
+    <li ng-class="{active: selectedTab === 'PP-573'}">
+        <a href="" ng-click="selectedTab = 'PP-573'">ПП-573</a>
+    </li>
+    <li ng-class="{active: selectedTab === 'P-268'}">
+        <a href="" ng-click="selectedTab = 'P-268'">П-268</a>
+    </li>
+</ul>
+<br/>
+
+<div class="sorm-tab-content">
+    <div id="PP-573" class="sorm-tab-pane" ng-show="selectedTab === 'PP-573'">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Передать в СОРМ</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.sorm.enabled = !item.sorm.enabled">
+                    <button type="button" class="btn btn-sm" ng-class="{'btn-success active': item.sorm.enabled, 'btn-default': !item.sorm.enabled}">Да</button>
+                    <button type="button" class="btn btn-sm" ng-class="{'btn-primary active': !item.sorm.enabled, 'btn-default': item.sorm.enabled}">Нет</button>
+                </div>
+            </div>
+        </div>
+        
+        <div ng-hide="!item.sorm.enabled" class="form-group">
+            <label class="col-sm-2 control-label">Оператор</label>
+            <div class="col-sm-10">
+                <select ui-select2 ng-model="item.sorm.sorm_operator_id" style="width: 300px;" multiple="multiple">
+                    <option value="1">НорсиТранс</option>
+                    <option value="2">VAS Expert (Ит-Град)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div ng-hide="!item.sorm.sorm_operator_id.includes('2') || !item.sorm.enabled" class="form-group">
+            <label class="col-sm-2 control-label">Тип транка</label>
+            <div class="col-sm-10">
+                <select ui-select2 ng-model="item.sorm.source_type_id" style="width: 180px;">
+                    <option value="1">Sip-user</option>
+                    <option value="2">trunk-SIP</option>
+                    <option value="3">trunk-SS7</option>
+                </select>
+            </div>
+        </div>
+        
+        <div ng-hide="!item.sorm.enabled" class="form-group">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.sorm.name" ng-disabled="!item.sorm.enabled" ng-required="item.sorm.enabled"/>
+            </div>
+        </div>
+        
+        <div ng-hide="!item.sorm.enabled" class="form-group">
+            <label class="col-sm-2 control-label">IP-адрес</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="IP-адрес" ng-model="item.sorm.ip_addr" ng-disabled="!item.sorm.enabled"/>
+            </div>
+        </div>
+        
+        <div ng-hide="!item.sorm.enabled || item.sorm.source_type_id != 3" class="form-group">
+            <label class="col-sm-2 control-label">SS7 КПС</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="SS7 КПС" ng-model="item.sorm.spc" ng-disabled="!item.sorm.enabled"/>
+            </div>
+        </div>
+        
+        <div ng-hide="!item.sorm.enabled" class="form-group">
+            <label class="col-sm-2 control-label">Узлы</label>
+            <div class="col-sm-10">
+                <select ui-select2 ng-disabled="!item.sorm.enabled" ng-model="item.sorm.groups" multiple="multiple" style="width: 100%">
+                    <option ng-repeat="group in groupTypes" value="{{::group.id}}">{{::group.name}}</option>
+                </select>
+            </div>
+        </div>
+        
+        <div ng-hide="!item.sorm.groups.includes('1')" class="form-group">
+            <label class="col-sm-2 control-label">Access транк</label>
+            <div class="col-sm-2">
+                <input class="form-control" placeholder="Access транк" ng-model="item.sorm.access_trunk" ng-disabled="!item.sorm.enabled"/>
+            </div>
+            <label class="col-sm-1 control-label" style="max-width: 30px">IP</label>
+            <div class="col-sm-2">
+                <input class="form-control" placeholder="IP" ng-model="item.sorm.access_trunk_ip" ng-disabled="!item.sorm.enabled"/>
+            </div>
+            <label class="col-sm-1 control-label" style="max-width: 80px">Название</label>
+            <div class="col-sm-5">
+                <input class="form-control" placeholder="Название" ng-model="item.sorm.access_trunk_name" ng-disabled="!item.sorm.enabled"/>
+            </div>
+        </div>
+        
+        <div ng-hide="!item.sorm.groups.includes('1')" class="form-group">
+            <label class="col-sm-2 control-label">Core транк</label>
+            <div class="col-sm-2">
+                <input class="form-control" placeholder="Core транк" ng-model="item.sorm.core_trunk" ng-disabled="!item.sorm.enabled"/>
+            </div>
+            <label class="col-sm-1 control-label" style="max-width: 30px">IP</label>
+            <div class="col-sm-2">
+                <input class="form-control" placeholder="IP" ng-model="item.sorm.core_trunk_ip" ng-disabled="!item.sorm.enabled"/>
+            </div>
+            <label class="col-sm-1 control-label" style="max-width: 80px">Название</label>
+            <div class="col-sm-5">
+                <input class="form-control" placeholder="Название" ng-model="item.sorm.core_trunk_name" ng-disabled="!item.sorm.enabled"/>
+            </div>
+        </div>
+        
+        <div ng-hide="!item.sorm.enabled" class="form-group">
+            <div class="col-sm-12">
+                <table class="table table-striped">
+                    <tbody ui-sortable="{axis: 'y'}" ng-model="item.sorm.items">
+                    <tr ng-repeat="line in item.sorm.items">
+                        <td width="7%">
+                        </td>
+                        <td width="5%">
+                            <button ng-if="line.is_show" ng-click="line.is_show = !line.is_show" class="btn label label-success">Выгружать</button>
+                            <button ng-if="!line.is_show" ng-click="line.is_show = !line.is_show" class="btn label label-danger">Не выгружать</button>
+                        </td>
+                        <td width="5%" style="cursor: ns-resize">
+                            <span>Имя транка:</span>
+                        </td>
+                        <td width="70%">
+                            <input class="form-control" placeholder="Название" ng-model="line.trunk_name" ng-disabled="!item.sorm.enabled" required/>
+                        </td>
+                        <td width="10%">
+                            &nbsp;
+                        </td>
+                        <td>
+                            <comment-icon key="{{line.id}}" type="trunk_sorm" comment="line.object_comment"></comment-icon>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeSormItem($index)"></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <div class="special-annotation" style="position: absolute; bottom: 10px; right: 10px; background-color: #f8f9fa; padding: 10px; border-radius: 5px; font-size: 12px; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 1050;">
+                            Узел "Специальный" - в данный момент используется для выгрузки местного транка на хабе во всех регионах этого хаба.
+                        </div>
+                        <td></td>
+                        <td colspan="7">
+                            <button type="button" class="btn btn-success btn-xs" ng-click="addSormItem()"><i class="glyphicon glyphicon-plus"></i> СОРМ транк</button>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
         </div>
     </div>
-</div>
 
-<div ng-hide="!item.sorm.enabled" class="form-group">
-    <label class="col-sm-2 control-label">Оператор</label>
-    <div class="col-sm-10">
-        <select ui-select2 ng-model="item.sorm.sorm_operator_id" style="width: 300px;" multiple="multiple">
-            <option value="1">НорсиТранс</option>
-            <option value="2">VAS Expert (Ит-Град)</option>
-        </select>
-    </div>
-</div>
-
-<div ng-hide="!item.sorm.sorm_operator_id.includes('2') || !item.sorm.enabled" class="form-group">
-    <label class="col-sm-2 control-label">Тип транка</label>
-    <div class="col-sm-10">
-        <select ui-select2 ng-model="item.sorm.source_type_id" style="width: 180px;">
-            <option value="1">Sip-user</option>
-            <option value="2">trunk-SIP</option>
-            <option value="3">trunk-SS7</option>
-        </select>
-    </div>
-</div>
-
-<div ng-hide="!item.sorm.enabled" class="form-group">
-    <label class="col-sm-2 control-label">Название</label>
-    <div class="col-sm-10">
-        <input class="form-control" placeholder="Название" ng-model="item.sorm.name" ng-disabled="!item.sorm.enabled" ng-required="item.sorm.enabled"/>
-    </div>
-</div>
-
-<div ng-hide="!item.sorm.enabled" class="form-group">
-    <label class="col-sm-2 control-label">IP-адрес</label>
-    <div class="col-sm-10">
-        <input class="form-control" placeholder="IP-адрес" ng-model="item.sorm.ip_addr" ng-disabled="!item.sorm.enabled"/>
-    </div>
-</div>
-
-<div ng-hide="!item.sorm.enabled || item.sorm.source_type_id != 3" class="form-group">
-    <label class="col-sm-2 control-label">SS7 КПС</label>
-    <div class="col-sm-10">
-        <input class="form-control" placeholder="SS7 КПС" ng-model="item.sorm.spc" ng-disabled="!item.sorm.enabled"/>
-    </div>
-</div>
-
-<div ng-hide="!item.sorm.enabled" class="form-group">
-    <label class="col-sm-2 control-label">Узлы</label>
-    <div class="col-sm-10">
-        <select ui-select2 ng-disabled="!item.sorm.enabled" ng-model="item.sorm.groups" multiple="multiple" style="width: 100%" >
-            <option ng-repeat="group in groupTypes" value="{{::group.id}}">{{::group.name}}</option>
-        </select>
-    </div>
-</div>
-
-<div ng-hide="!item.sorm.groups.includes('1')" class="form-group">
-    <label class="col-sm-2 control-label">Access транк</label>
-    <div class="col-sm-2">
-        <input class="form-control" placeholder="Access транк" ng-model="item.sorm.access_trunk" ng-disabled="!item.sorm.enabled"/>
-    </div>
-    <label class="col-sm-1 control-label" style="max-width: 30px">IP</label>
-    <div class="col-sm-2">
-        <input class="form-control" placeholder="IP" ng-model="item.sorm.access_trunk_ip" ng-disabled="!item.sorm.enabled"/>
-    </div>
-    <label class="col-sm-1 control-label" style="max-width: 80px">Название</label>
-    <div class="col-sm-5">
-        <input class="form-control" placeholder="Название" ng-model="item.sorm.access_trunk_name" ng-disabled="!item.sorm.enabled"/>
-    </div>
-</div>
-
-<div ng-hide="!item.sorm.groups.includes('1')" class="form-group">
-    <label class="col-sm-2 control-label">Core транк</label>
-    <div class="col-sm-2">
-        <input class="form-control" placeholder="Core транк" ng-model="item.sorm.core_trunk" ng-disabled="!item.sorm.enabled"/>
-    </div>
-    <label class="col-sm-1 control-label" style="max-width: 30px">IP</label>
-    <div class="col-sm-2">
-        <input class="form-control" placeholder="IP" ng-model="item.sorm.core_trunk_ip" ng-disabled="!item.sorm.enabled"/>
-    </div>
-    <label class="col-sm-1 control-label" style="max-width: 80px">Название</label>
-    <div class="col-sm-5">
-        <input class="form-control" placeholder=Название ng-model="item.sorm.core_trunk_name" ng-disabled="!item.sorm.enabled"/>
-    </div>
-</div>
-
-<div ng-hide="!item.sorm.enabled" class="form-group">
-    <div class="col-sm-12">
-        <table class="table table-striped">
-            <tbody ui-sortable="{axis: 'y'}" ng-model="item.sorm.items">
-            <tr ng-repeat="line in item.sorm.items">
-                <td width="7%">
-                </td>
-                <td width="5%">
-                    <button ng-if="line.is_show" ng-click="line.is_show = !line.is_show" class="btn label label-success">Выгружать</button>
-                    <button ng-if="!line.is_show" ng-click="line.is_show = !line.is_show" class="btn label label-danger">Не выгружать</button>
-                </td>
-                <td width="5%" style="cursor: ns-resize">
-                    <span>Имя транка:</span>
-                </td>
-                <td width="70%">
-                    <input class="form-control" placeholder="Название" ng-model="item.trunk_name" ng-disabled="!item.sorm.enabled" required/>
-                </td>
-                <td width="10%">
-                    &nbsp;
-                </td>
-                <td>
-                    <comment-icon key="{{line.id}}" type="trunk_sorm" comment="line.object_comment"></comment-icon>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeSormItem($index)"></button>
-                </td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <div class="special-annotation" style="position: absolute; bottom: 10px; right: 10px; background-color: #f8f9fa; padding: 10px; border-radius: 5px; font-size: 12px; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 1050;">
-                    Узел "Специальный" - в данный момент используется для выгрузки местного транка на хабе во всех регионах этого хаба.
+    
+    <div id="P-268" class="sorm-tab-pane" ng-show="selectedTab === 'P-268'">
+         <div class="form-group">
+            <label class="col-sm-2 control-label">Передавать в СОРМ по умолчанию</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.sorm_p268.enabled = !item.sorm_p268.enabled">
+                    <button type="button" class="btn btn-sm" ng-class="{'btn-success active': item.sorm_p268.enabled, 'btn-default': !item.sorm_p268.enabled}">Да</button>
+                    <button type="button" class="btn btn-sm" ng-class="{'btn-primary active': !item.sorm_p268.enabled, 'btn-default': item.sorm_p268.enabled}">Нет</button>
                 </div>
-                <td></td>
-                <td colspan="7">
-                    <button type="button" class="btn btn-success btn-xs" ng-click="addSormItem()"><i class="glyphicon glyphicon-plus"></i> СОРМ транк</button>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
+            </div>
+        </div>
+
+        <div ng-show="item.sorm_p268.enabled">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Принадлежность к УС</label>
+                <div class="col-sm-10">
+                    <select class="form-control" ng-model="item.sorm_p268.us_type" style="width: 180px;">
+                        <option value="1">1 – КУС</option>
+                        <option value="2">2 – МГМН</option>
+                    </select>
+                </div>
+            </div>
+    
+            <div class="form-group">
+                <label class="col-sm-2 control-label">ID в системе ORM</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" placeholder="ID в системе ORM" ng-model="item.sorm_p268.orm_id" required ng-disabled="!item.sorm_p268.enabled"/>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

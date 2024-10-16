@@ -50,7 +50,6 @@ use yii\db\Query;
  * @property bool $internal_trunk
  * @property string $object_comment
  * @property bool $no_copy_numc_to_numa
- * @property bool $no_copy_numc_to_numa
  * @property bool $rn_pricelist
  * @property bool $autocall
  * @property int $rounding_type
@@ -62,6 +61,9 @@ use yii\db\Query;
  * @property bool $epvv_orig
  * @property bool $epvv_term
  * @property int $id_src_operator_epvv
+ * @property bool $sorm_p268_enabled
+ * @property int $sorm_p268_us_type
+ * @property int $sorm_p268_orm_id
  *
  * @property \yii\db\ActiveQuery rulesSourceOrig
  * @property \yii\db\ActiveQuery rulesDestinationOrig
@@ -81,7 +83,7 @@ class Trunk extends \yii\db\ActiveRecord
         'trunkSorm' => 'getTrunkSorm',
         'loadLimit' => 'getLoadLimit'
     ];
-    
+
     /**
      * @return string
      */
@@ -108,12 +110,24 @@ class Trunk extends \yii\db\ActiveRecord
                 'term_afilter_default_allowed', 'term_bfilter_default_allowed', 'term_cfilter_default_allowed',
                 'roaming_orig', 'roaming_term', 'mgmn2_orig', 'mgmn2_term',
                 'transparent_header', 'pbx', 'uplink_trunk', 'internal_trunk', 'no_copy_numc_to_numa',
-                'rn_pricelist', 'autocall', 'source_rule_rn_default_allowed', 'mts_orig', 'mts_term', 'epvv_orig', 'epvv_term'
+                'rn_pricelist', 'autocall', 'source_rule_rn_default_allowed', 'mts_orig', 'mts_term', 'epvv_orig', 'epvv_term',
+                'sorm_p268_enabled'
             ], 'boolean'],
-            [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id', 'rounding_type', 'leg_type', 'rn_enable', 'id_src_operator_epvv'], 'integer'],
+            [['route_table_id', 'capacity', 'load_warning', 'id_pbx', 'location_id', 'rounding_type', 'leg_type', 'rn_enable', 'id_src_operator_epvv',
+              'sorm_p268_us_type', 'sorm_p268_orm_id'
+            ], 'integer'],
             [['back_trunk'], 'string', 'max' => 50],
             [['road_to_regions', 'trace_to_regions'], 'string', 'max' => 100],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
+            [['sorm_p268_us_type'], 'in', 'range' => [1, 2], 'when' => function ($model) {
+                return $model->sorm_p268_enabled;
+            }],
+            [['sorm_p268_orm_id'], 'integer', 'when' => function ($model) {
+                return $model->sorm_p268_enabled;
+            }],
+            [['sorm_p268_orm_id'], 'unique', 'targetAttribute' => ['server_id', 'sorm_p268_orm_id'], 'filter' => ['sorm_p268_enabled' => true],
+                'message' => 'ID в системе ORM используется на другом транке в этом регионе.'
+            ],
         ];
     }
 
@@ -170,7 +184,7 @@ class Trunk extends \yii\db\ActiveRecord
     {
         return $this->hasOne(RouteTable::className(), ['id' => 'route_table_id']);
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -178,7 +192,7 @@ class Trunk extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TrunkSorm::className(), ['code_trunk' => 'id']);
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -206,7 +220,7 @@ class Trunk extends \yii\db\ActiveRecord
             ->orderBy('order');
         return (!is_null($where) ? $link->andWhere($where) : $link);
     }
-    
+
     /**
      * @return array
      */
@@ -285,7 +299,7 @@ class Trunk extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TrunkNumberPreprocessing::className(), ['trunk_id' => 'id'])->orderBy('order');
     }
-    
+
     /**
      * @return array
      */
@@ -307,5 +321,42 @@ class Trunk extends \yii\db\ActiveRecord
     public function getTrunkRulesAntifraud()
     {
         return $this->hasMany(TrunkTrunkRuleAntifraud::className(), ['trunk_id' => 'id'])->orderBy('order');
+    }
+
+    public function actionCheckOrmId()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $orm_id = Yii::$app->request->post('orm_id');
+        $region_id = Yii::$app->request->post('region_id');
+        $trunk_id = Yii::$app->request->post('trunk_id');
+
+        if (!$orm_id || !$region_id) {
+            return ['error' => 'Недостаточно параметров'];
+        }
+
+        $query = Trunk::find()
+            ->where([
+                'sorm_p268_enabled' => true,
+                'sorm_p268_orm_id' => $orm_id,
+                'server_id' => $region_id,
+            ]);
+
+        if ($trunk_id) {
+            $query->andWhere(['<>', 'id', $trunk_id]);
+        }
+
+        $existingTrunk = $query->one();
+
+        if ($existingTrunk) {
+            return [
+                'exists' => true,
+                'trunk_name' => $existingTrunk->name,
+            ];
+        } else {
+            return [
+                'exists' => false,
+            ];
+        }
     }
 }

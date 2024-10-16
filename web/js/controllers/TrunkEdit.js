@@ -5,6 +5,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
     $scope.EPVV_ANTIFRAUD = 2;
     $scope.nnpMode = $scope.EPVV_ANTIFRAUD;
 
+    $scope.selectedTab = 'PP-573';
+
     if (params.server_id) {
         serverId = params.server_id;
     } else {
@@ -16,6 +18,12 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
     if (params.id) {
         Trunk.get({id: params.id, region_id: serverId}).then(function (data) {
             $scope.item = data;
+
+            $scope.item.sorm_p268 = {
+                enabled: data.sorm_p268_enabled || false,
+                us_type: data.sorm_p268_us_type ? data.sorm_p268_us_type.toString() : '1',
+                orm_id: data.sorm_p268_orm_id || null
+            };
 
             Trunk.serviceTrunks(params.id).then(function (serviceTrunks) {
                 $scope.serviceTrunks = serviceTrunks;
@@ -143,6 +151,11 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
                 groups: {},
                 sorm_operator_id: 1,
                 spc: ''
+            },
+            sorm_p268: {
+                enabled: false,
+                us_type: '1',
+                orm_id: null
             }
         };
     }
@@ -287,13 +300,6 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
                 is_orig: is_orig
             });
         }
-                // $scope.item.trunkRulesAntifraud.push({
-        //     uvr_group_id: $scope.uvrGroup[1].id,
-        //     trunk_group_id: '',
-        //     allow: antifraudDefaultModes[defaultMode],
-        //     antifrod_system_type: type,
-        //     is_orig: is_orig
-        // });
     };
 
     $scope.removeTrunkAntifraudRuleOrig = function (index) {
@@ -350,7 +356,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
     };
 
     $scope.validateIPAddress = function (ip, message) {
-        if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
+        if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$){4}$/.test(ip)) {
             alert(message);
             return false;
         } else {
@@ -363,50 +369,83 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
         if ($scope.item.do_sync && $scope.item.auto_routing != $scope.item.default_auto_routing) {
             if (!$window.confirm('Произойдет синхронизация прайс-листов. Вы уверены?')) return;
         }
-
+    
         if ($scope.initialRegionId !== $scope.item.server_id) {
             alert("Изменения нельзя сохранить, так как вы пытаетесь изменить транк, который находится на другом регионе.");
             return;
         }
-
-        $scope.item.trunkRulesAntifraud = [];
-        $.each($scope.item.trunkRulesAntifraudEpvvOrig, function () {
-            $scope.item.trunkRulesAntifraud.push(this);
-        });
-
-        $.each($scope.item.trunkRulesAntifraudEpvvTerm, function () {
-            $scope.item.trunkRulesAntifraud.push(this);
-        });
-
-        if (
-            $scope.item.sorm.enabled && 
-            (
-                ($scope.item.sorm.ip_addr != '' &&
-                $scope.item.sorm.ip_addr != null &&
-                typeof $scope.item.sorm.ip_addr != 'undefined' &&
-                !$scope.validateIPAddress($scope.item.sorm.ip_addr, "Некорректный IP-адрес"))
-                ||
-                ($scope.item.sorm.access_trunk_ip != '' &&
-                $scope.item.sorm.access_trunk_ip != null &&
-                typeof $scope.item.sorm.access_trunk_ip != 'undefined' &&
-                !$scope.validateIPAddress($scope.item.sorm.access_trunk_ip, "Некорректный Access транк IP"))
-                ||
-                ($scope.item.sorm.core_trunk_ip != '' &&
-                $scope.item.sorm.core_trunk_ip != null &&
-                typeof $scope.item.sorm.core_trunk_ip != 'undefined' &&
-                !$scope.validateIPAddress($scope.item.sorm.core_trunk_ip, "Некорректный Core транк IP"))
-            )
-        ) {
-            return;
+    
+        if ($scope.item.sorm_p268 && $scope.item.sorm_p268.enabled && $scope.item.sorm_p268.orm_id) {
+            Trunk.checkOrmId({
+                orm_id: $scope.item.sorm_p268.orm_id,
+                region_id: serverId,
+                trunk_id: $scope.item.id || null
+            }).then(function(response) {
+                if (response.exists) {
+                    alert('ID в системе ORM используется на транке "' + response.trunk_name + '"');
+                    return;
+                } else {
+                    proceedSave();
+                }
+            });
+        } else {
+            proceedSave();
         }
-
-        $scope.item.rn_enable = $scope.item.rn_enable == true ? 1 : 0;
-        $scope.item.region_id = serverId;
-
-        Trunk.save($scope.item).then(function () {
-            $modalInstance.close();
-        });
+    
+        function proceedSave() {
+            $scope.item.trunkRulesAntifraud = [];
+            $.each($scope.item.trunkRulesAntifraudEpvvOrig, function () {
+                $scope.item.trunkRulesAntifraud.push(this);
+            });
+        
+            $.each($scope.item.trunkRulesAntifraudEpvvTerm, function () {
+                $scope.item.trunkRulesAntifraud.push(this);
+            });
+        
+            if (
+                $scope.item.sorm.enabled && 
+                (
+                    ($scope.item.sorm.ip_addr != '' &&
+                    $scope.item.sorm.ip_addr != null &&
+                    typeof $scope.item.sorm.ip_addr != 'undefined' &&
+                    !$scope.validateIPAddress($scope.item.sorm.ip_addr, "Некорректный IP-адрес"))
+                    ||
+                    ($scope.item.sorm.access_trunk_ip != '' &&
+                    $scope.item.sorm.access_trunk_ip != null &&
+                    typeof $scope.item.sorm.access_trunk_ip != 'undefined' &&
+                    !$scope.validateIPAddress($scope.item.sorm.access_trunk_ip, "Некорректный Access транк IP"))
+                    ||
+                    ($scope.item.sorm.core_trunk_ip != '' &&
+                    $scope.item.sorm.core_trunk_ip != null &&
+                    typeof $scope.item.sorm.core_trunk_ip != 'undefined' &&
+                    !$scope.validateIPAddress($scope.item.sorm.core_trunk_ip, "Некорректный Core транк IP"))
+                )
+            ) {
+                return;
+            }
+        
+            $scope.item.rn_enable = $scope.item.rn_enable == true ? 1 : 0;
+            $scope.item.region_id = serverId;
+        
+            if ($scope.item.sorm_p268 && $scope.item.sorm_p268.enabled) {
+                $scope.item.sorm_p268.us_type = parseInt($scope.item.sorm_p268.us_type, 10);
+            }
+        
+            if ($scope.item.sorm_p268) {
+                $scope.item.sorm_p268_enabled = $scope.item.sorm_p268.enabled;
+                $scope.item.sorm_p268_us_type = $scope.item.sorm_p268.us_type;
+                $scope.item.sorm_p268_orm_id = $scope.item.sorm_p268.orm_id;
+            }
+        
+            delete $scope.item.sorm_p268;
+        
+            Trunk.save($scope.item).then(function () {
+                $modalInstance.close();
+            });
+        }
+        
     };
+    
 
     $scope.back = function () {
         $modalInstance.dismiss();

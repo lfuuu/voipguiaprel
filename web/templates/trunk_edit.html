@@ -4,6 +4,7 @@
         <h3 ng-if="!item.id">Создание транка</h3>
     </div>
 
+    
     <div class="modal-body"  >
 
         <!-- Nav tabs -->
@@ -23,7 +24,7 @@
             <li><a class="trunk-header" href="#trunk_route_num" data-toggle="tab">Пр. Routing Num</a></li>
             <li><a class="trunk-header" href="#trunk_antifraud" data-toggle="tab">Верификация</a></li>
             <li><a class="trunk-header" href="#number_preprocessing" data-toggle="tab">Препроцессинг</a></li>
-            <li><a class="trunk-header" href="#sorm_edit" data-toggle="tab">ПП-538</a></li>
+            <li ng-if="userPermissions['corm_edit']"><a class="trunk-header" href="#sorm_edit" data-toggle="tab">СОРМ</a></li>
             <li><a class="trunk-header" href="#load_limit" data-toggle="tab">Огр. загрузки</a></li>
             <li><a class="trunk-header" href="#usage_in_trunk_groups" data-toggle="tab">Группы</a></li>
             <li><a class="trunk-header" href="#object_comment" data-toggle="tab">Комментарий</a></li>

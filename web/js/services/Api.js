@@ -323,7 +323,13 @@ app.factory('Trunk', function ($q, ApiLoader, $rootScope) {
         },
         findUsagesInTrunkGroups: function (id) {
             return ApiLoader.post(url + 'find-usages-in-trunk-groups', { 'id': id });
-        }
+        },
+        checkOrmId: function (params) {
+            return ApiLoader.post(url + 'check-orm-id', params);
+        },
+        getList: function (params) {
+            return ApiLoader.post(url + 'list', params);
+        },
     };
 });
 
@@ -501,6 +507,29 @@ app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
         }
     };
 });
+
+app.factory('TelemetryReceiver', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/corm-adapter/';
+    
+    return {
+        list: function (data) {
+            return ApiLoader.post(url + 'list', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        save: function (data) {
+            return ApiLoader.post(url + 'save', data);
+        },
+        update: function (data) {
+            return ApiLoader.post(url + 'update', data);
+        },
+        delete: function (data) {
+            return ApiLoader.post(url + 'delete', data);
+        },
+    };
+});
+
 
 app.factory('ActionLog', function ($q, ApiLoader, $rootScope) {
     var url = '/json/action-log/';
@@ -2272,7 +2301,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
     Attribute, Server, FmcTrunk, Cpc, Hub,
     PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
     MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-    User, ServerOcs, SimImsi, LegType, AlphaNumber,AlphaNumberGroup, Currency, UvrGroup) {
+    User, ServerOcs, SimImsi, LegType, AlphaNumber,AlphaNumberGroup, Currency, UvrGroup, TelemetryReceiver, $rootScope) {
     return {
         trunk: function () {
             return Trunk.list();
@@ -2391,6 +2420,16 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         },
         mvnoPartner: function () {
             return SimImsi.partner();
+        },
+        adapter: function (serverId) {
+            return TelemetryReceiver.list({ server_id: serverId }).then(function (data) {
+                return data.map(function(adapter) {
+                    return {
+                        id: adapter.id,
+                        name: adapter.name
+                    };
+                });
+            });
         },
         legType: function () {
             return LegType.list();
