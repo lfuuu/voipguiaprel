@@ -5,12 +5,24 @@
     </div>
     <div class="modal-body">
 
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 20px;">
             <label class="col-sm-2 control-label">Название</label>
             <div class="col-sm-10">
                 <input class="form-control" placeholder="Название" ng-model="item.name" required>
             </div>
         </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Режим маршрутизации</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.route_mode = (item.route_mode === 'static' ? 'dynamic' : 'static')">
+                    <button type="button" class="btn btn-sm {{item.route_mode === 'static' ? 'btn-primary active' : 'btn-default'}}">Статический</button>
+                    <button type="button" class="btn btn-sm {{item.route_mode === 'dynamic' ? 'btn-primary active' : 'btn-default'}}">Динамический</button>
+                </div>
+            </div>
+        </div>
+        
+        
 
         <table class="table table-striped" style="font-size: smaller; font-weight: bold;">
             <thead>

@@ -3,19 +3,15 @@ var RouteTableEditCtrl = function ($scope, RouteTable, Outcome, params, $modalIn
     if (params.id) {
         RouteTable.get({id: params.id}).then(function (data) {
             $scope.item = data;
-
             $scope.initialServerId = $scope.item.server_id;
-            
         });
     } else {
         $scope.item = {
             server_id: $scope.server.id,
             routes: [],
-            routeRules: []
+            routeRules: [],
+            route_mode: 'static'
         };
-
-        $scope.initialServerId = $scope.item.server_id;
-
     }
 
     $scope.sortableOptions = {
@@ -49,19 +45,18 @@ var RouteTableEditCtrl = function ($scope, RouteTable, Outcome, params, $modalIn
 
     $scope.removeRoute = function (index) {
         $scope.item.routes.splice(index, 1);
-    };
+    };  
 
     $scope.save = function () {
-
         if ($scope.initialServerId !== $scope.server.id) {
-            alert("Изменения нельзя сохранить, так как вы пытаетесь изменить изменить таблицу маршрутизации, которая находится на другом регионе.");
+            alert("Изменения нельзя сохранить, так как вы пытаетесь изменить таблицу маршрутизации, которая находится на другом регионе.");
             return;
         }
-
+    
         RouteTable.save($scope.item).then(function (response) {
             $modalInstance.close();
         });
-    };
+    }; 
 
     $scope.back = function () {
         $modalInstance.dismiss();
