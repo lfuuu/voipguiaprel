@@ -8,6 +8,7 @@ use app\queries\auth\SmsRouteTableQuery;
  * @property string $name
  * @property string $object_comment
  * @property int $server_id
+ * @property string $route_mode
  */
 class SmsRouteTable extends \yii\db\ActiveRecord
 {
@@ -32,7 +33,8 @@ class SmsRouteTable extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'object_comment'], 'string'],
-            [['server_id', 'id'], 'integer']
+            [['server_id', 'id'], 'integer'],
+            [['route_mode'], 'string', 'max' => 15],
         ];
     }
 
