@@ -125,9 +125,12 @@ class Trunk extends \yii\db\ActiveRecord
             [['sorm_p268_orm_id'], 'integer', 'when' => function ($model) {
                 return $model->sorm_p268_enabled;
             }],
-            [['sorm_p268_orm_id'], 'unique', 'targetAttribute' => ['server_id', 'sorm_p268_orm_id'], 'filter' => ['sorm_p268_enabled' => true],
-                'message' => 'ID в системе ORM используется на другом транке в этом регионе.'
+            [['sorm_p268_orm_id'], 'unique',
+                'targetAttribute' => ['sorm_p268_orm_id', 'server_id', 'sorm_p268_us_type'],
+                'filter' => ['sorm_p268_enabled' => true],
+                'message' => 'ID в системе SORM используется на другом транке с тем же типом УС в этом регионе.'
             ],
+
         ];
     }
 
@@ -324,39 +327,43 @@ class Trunk extends \yii\db\ActiveRecord
     }
 
     public function actionCheckOrmId()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
+{
+    Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $orm_id = Yii::$app->request->post('orm_id');
-        $region_id = Yii::$app->request->post('region_id');
-        $trunk_id = Yii::$app->request->post('trunk_id');
+    $orm_id = Yii::$app->request->post('orm_id');
+    $region_id = Yii::$app->request->post('region_id');
+    $trunk_id = Yii::$app->request->post('trunk_id');
+    $us_type = Yii::$app->request->post('us_type');
 
-        if (!$orm_id || !$region_id) {
-            return ['error' => 'Недостаточно параметров'];
-        }
-
-        $query = Trunk::find()
-            ->where([
-                'sorm_p268_enabled' => true,
-                'sorm_p268_orm_id' => $orm_id,
-                'server_id' => $region_id,
-            ]);
-
-        if ($trunk_id) {
-            $query->andWhere(['<>', 'id', $trunk_id]);
-        }
-
-        $existingTrunk = $query->one();
-
-        if ($existingTrunk) {
-            return [
-                'exists' => true,
-                'trunk_name' => $existingTrunk->name,
-            ];
-        } else {
-            return [
-                'exists' => false,
-            ];
-        }
+    if (!$orm_id || !$region_id) {
+        return ['error' => 'Недостаточно параметров'];
     }
+
+    $query = Trunk::find()
+        ->where([
+            'sorm_p268_enabled' => true,
+            'sorm_p268_orm_id' => $orm_id,
+            'server_id' => $region_id,
+        ]);
+
+    if ($trunk_id) {
+        $query->andWhere(['<>', 'id', $trunk_id]);
+    }
+
+    $existingTrunk = $query->one();
+
+    if ($existingTrunk) {
+        return [
+            'exists' => true,
+            'trunk_name' => $existingTrunk->name,
+            'us_type' => $existingTrunk->sorm_p268_us_type,  // Include us_type in response
+        ];
+    } else {
+        return [
+            'exists' => false,
+        ];
+    }
+}
+
+
 }

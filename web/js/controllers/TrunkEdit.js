@@ -356,7 +356,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
     };
 
     $scope.validateIPAddress = function (ip, message) {
-        if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$){4}$/.test(ip)) {
+        if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
             alert(message);
             return false;
         } else {
@@ -379,11 +379,16 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             Trunk.checkOrmId({
                 orm_id: $scope.item.sorm_p268.orm_id,
                 region_id: serverId,
-                trunk_id: $scope.item.id || null
+                trunk_id: $scope.item.id || null,
+                us_type: $scope.item.sorm_p268.us_type
             }).then(function(response) {
                 if (response.exists) {
-                    alert('ID в системе ORM используется на транке "' + response.trunk_name + '"');
-                    return;
+                    if (response.us_type == $scope.item.sorm_p268.us_type) {
+                        alert('ID в системе SORM используется на транке "' + response.trunk_name + '" с тем же типом УС.');
+                        return;
+                    } else {
+                        proceedSave();
+                    }
                 } else {
                     proceedSave();
                 }
@@ -391,6 +396,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
         } else {
             proceedSave();
         }
+        
     
         function proceedSave() {
             $scope.item.trunkRulesAntifraud = [];
