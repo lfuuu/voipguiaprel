@@ -16,6 +16,7 @@ class CommentController extends JsonController
         'trunk_priority' => ['model_name' => '\app\models\TrunkPriority', 'permissions' => ['trunk_edit']],
         'trunk_numbers_rules' => ['model_name' => '\app\models\TrunkABfiltersRule', 'permissions' => ['trunk_edit']],
         'trunk_rules' => ['model_name' => '\app\models\TrunkTrunkRule', 'permissions' => ['trunk_edit']],
+        'dvo_rules' => ['model_name' => '\app\models\auth\DvoServerRule', 'permissions' => ['corm_edit']],
         'trunk_preprocessing' => ['model_name' => '\app\models\TrunkNumberPreprocessing', 'permissions' => ['trunk_edit']],
         'trunk_sorm' => ['model_name' => '\app\models\sorm\Trunk', 'permissions' => ['trunk_edit']],
         'trunk_load_limit' => ['model_name' => '\app\models\TrunkLoadLimit', 'permissions' => ['trunk_edit']],

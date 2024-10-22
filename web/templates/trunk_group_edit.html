@@ -4,6 +4,14 @@
         position: initial;
         margin: initial;
     }
+    .d-flex {
+    display: flex;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
 </style>
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
@@ -45,35 +53,35 @@
         <br/>
         <div class="tab-content">
             <div class="tab-pane" ng-class="{active: selectedTab === 'trunk-group'}" id="trunk-group-tab-{{pageIdSuffix}}">
-                <ul class="nav nav-tabs">
-                    <li ng-class="{active: subTab === 'manual'}">
-                        <a href="" ng-click="subTab = 'manual'">Вручную</a>
-                    </li>
-                    <li ng-class="{active: subTab === 'us_belonging'}">
-                        <a href="" ng-click="subTab = 'us_belonging'">Принадлежность к УС</a>
-                    </li>
-                </ul>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Тип ввода</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group">
+                            <button type="button" class="btn {{item.input_type == 'manual' ? 'btn-primary active' : 'btn-default'}}" ng-click="setInputType('manual')">Вручную</button>
+                            <button type="button" class="btn {{item.input_type == 'us_belonging' ? 'btn-primary active' : 'btn-default'}}" ng-click="setInputType('us_belonging')">Принадлежность к УС</button>
+                        </div>
+                    </div>
+                </div>
 
                 <br/>
 
                 <div class="tab-content">
-                    <div class="tab-pane" ng-class="{active: subTab === 'manual'}" id="manual-tab-{{pageIdSuffix}}">
+                    <div ng-show="item.input_type == 'manual'">
+                        <!-- Content for Manual Input -->
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Название</label>
                             <div class="col-sm-10">
                                 <input class="form-control" placeholder="Название" ng-model="item.name" maxlength="32" required>
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Транки</label>
                             <div class="col-sm-10">
-                                <select ui-select2 ng-model="item.trunks" multiple="multiple" style="width: 100%">
+                                <select ui-select2 ng-model="item.manual_trunks" multiple="multiple" style="width: 100%">
                                     <option ng-repeat="trunk in trunkList" value="{{::trunk.id}}">{{::trunk.name}}</option>
                                 </select>
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Доступна на хабе</label>
                             <div class="col-sm-10">
@@ -95,25 +103,28 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" ng-class="{active: subTab === 'us_belonging'}" id="us_belonging-tab-{{pageIdSuffix}}">
+                    <div ng-show="item.input_type == 'us_belonging'">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Название</label>
                             <div class="col-sm-10">
                                 <input class="form-control" placeholder="Название" ng-model="item.name" maxlength="32" required>
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Принадлежность к УС</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" ng-model="usType" ng-change="filterTrunksByUsType(usType)" style="width: 180px;">
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <select class="form-control" ng-model="usType" ng-change="filterTrunksByUsType(usType)" style="width: auto; display: inline-block;">
                                     <option value="1">1 – КУС</option>
                                     <option value="2">2 – МГМН</option>
                                 </select>
+                                <a class="btn btn-default" style="margin-left: 10px;" 
+                                    href="/json/corm-adapter/trunks-by-us?id={{item.id}}&usType={{usType}}&server_id={{item.server_id}}"
+                                    target="_blank">
+                                    Открыть
+                                </a>
                             </div>
-                        </div>
-                                                                                           
-
+                        </div>                                          
+                        
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Доступна на хабе</label>
                             <div class="col-sm-10">

@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers\json;
+use app\models\Trunk;
 
 use Yii;
 use app\classes\JsonController;
@@ -24,14 +25,17 @@ class CormAdapterController extends JsonController
     }
 
     $server = $this->getServerOr404($this->request['server_id']);
+    $hub_id = $server->hub_id > 0 ? $server->hub_id : 0;
 
     return TelemetryReceiver::find()
         ->select(['id', 'name'])
-        ->where(['server_id' => $server->id])
+        ->where("server_id in (select id from public.server where hub_id = :hub_id) or server_id = :server_id")
+        ->addParams([':hub_id' => $hub_id, ':server_id' => $server->id])
         ->orderBy('name')
         ->asArray()
         ->all();
 }
+
 
 public function actionGetOne()
 {
@@ -147,4 +151,38 @@ public function actionSave()
 
         $item->delete();
     }
+
+    public function actionTrunksByUs($id)
+{
+    if (!\Yii::$app->user->can('corm_edit')) {
+        throw new ForbiddenHttpException('Access denied');
+    }
+
+    $usType = Yii::$app->request->get('usType');
+    $serverId = Yii::$app->request->get('server_id');
+
+    if ($usType === null) {
+        throw new \yii\web\BadRequestHttpException('Missing usType parameter');
+    }
+
+    if ($serverId === null) {
+        throw new \yii\web\BadRequestHttpException('Missing server_id parameter');
+    }
+
+    $trunks = Trunk::find()
+        ->where(['sorm_p268_us_type' => $usType, 'server_id' => $serverId])
+        ->orderBy('name')
+        ->asArray()
+        ->all();
+
+    header('Content-Type: text/html');
+
+    foreach ($trunks as $trunk) {
+        echo $trunk['name'] . "<br/>";
+    }
+
+    exit();
+}
+
+
 }

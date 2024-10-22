@@ -1,16 +1,40 @@
 var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstance, Redirect, $window) {
     $scope.pageIdSuffix = 'new';
-    $scope.subTab = 'manual';
-    $scope.selectedTab = 'trunk-group'
+    $scope.item = {};
+    $scope.item.input_type = 'manual';
+    $scope.selectedTab = 'trunk-group';
     $scope.usType = null; 
     $scope.filteredTrunks = [];
     $scope.isNewGroup = !params.id;
+
+    $scope.setInputType = function(type) {
+        $scope.item.input_type = type;
+    };
 
     if (params.id) {
         TrunkGroup.get({id: params.id}).then(function(data) {
             $scope.pageIdSuffix = params.id;
             $scope.item = data;
             $scope.initialServerId = $scope.item.server_id;
+            $scope.item.input_type = data.input_type || 'manual';
+
+            // Initialize separate trunks arrays based on input type
+            $scope.item.manual_trunks = [];
+            $scope.item.us_belonging_trunks = [];
+
+            if ($scope.item.input_type == 'manual') {
+                if (data.trunks) {
+                    $scope.item.manual_trunks = data.trunks.map(function(trunk) {
+                        return trunk.trunk_id.toString();
+                    });
+                }
+            } else if ($scope.item.input_type == 'us_belonging') {
+                if (data.trunks) {
+                    $scope.item.us_belonging_trunks = data.trunks.map(function(trunk) {
+                        return trunk.trunk_id.toString();
+                    });
+                }
+            }
 
             var trunks = [];
             var trunk_groups = [];
@@ -61,18 +85,14 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
                 $scope.item.findGroups = data;
             });
             
-            TrunkGroup.findRouteReplaceWithGroup({id: params.id}).then(function(data) {
-                $scope.item.findRouteReplace = data;
-            });
         });
     } else {
-
         $scope.item = {
             server_id: $scope.server.id,
-            trunks: [],
-            trunk_groups: []
+            manual_trunks: [],
+            us_belonging_trunks: [],
+            input_type: 'manual'
         };
-        
         $scope.initialServerId = $scope.item.server_id;
     }
 
@@ -92,7 +112,7 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
 
         var selectedUsType = parseInt(usType, 10);
 
-        $scope.item.trunks = [];
+        $scope.item.us_belonging_trunks = [];
 
         $scope.filteredTrunks = $scope.trunkList.filter(function(trunk) {
             return trunk.sorm_p268_us_type === selectedUsType;
@@ -100,12 +120,11 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
 
         if ($scope.filteredTrunks && $scope.filteredTrunks.length > 0) {
             $scope.filteredTrunks.forEach(function(trunk) {
-                if ($scope.item.trunks.indexOf(trunk.id.toString()) === -1) {
-                    $scope.item.trunks.push(trunk.id.toString());
+                if ($scope.item.us_belonging_trunks.indexOf(trunk.id.toString()) === -1) {
+                    $scope.item.us_belonging_trunks.push(trunk.id.toString());
                 }
             });
         }
-
     };
 
     $scope.save = function() {
@@ -114,16 +133,32 @@ var TrunkGroupEditCtrl = function($scope, List, TrunkGroup, params, $modalInstan
             return;
         }
 
-        delete $scope.item.findIntoRules;
-        delete $scope.item.findIntoPriorities;
-        delete $scope.item.findIntoRulesRoutingNums;
-        delete $scope.item.findIntoRulesAntifraud;
-        delete $scope.item.findRouteTables;
-        delete $scope.item.findOutcomes;
-        delete $scope.item.findGroups;
-        delete $scope.item.findRouteReplace;
+        // Prepare data for saving
+        var dataToSave = angular.copy($scope.item);
 
-        TrunkGroup.save($scope.item).then(function(response) {
+        // Depending on the input type, assign the appropriate trunks
+        if ($scope.item.input_type == 'manual') {
+            dataToSave.trunks = $scope.item.manual_trunks;
+            // Since IDs are unique within their type, ensure correct handling here
+            dataToSave.trunks_type = 'manual';
+        } else if ($scope.item.input_type == 'us_belonging') {
+            dataToSave.trunks = $scope.item.us_belonging_trunks;
+            dataToSave.trunks_type = 'us_belonging';
+        }
+
+        // Clean up properties not needed in the save
+        delete dataToSave.manual_trunks;
+        delete dataToSave.us_belonging_trunks;
+        delete dataToSave.findIntoRules;
+        delete dataToSave.findIntoPriorities;
+        delete dataToSave.findIntoRulesRoutingNums;
+        delete dataToSave.findIntoRulesAntifraud;
+        delete dataToSave.findRouteTables;
+        delete dataToSave.findOutcomes;
+        delete dataToSave.findGroups;
+        delete dataToSave.findRouteReplace;
+
+        TrunkGroup.save(dataToSave).then(function(response) {
             $modalInstance.close();
         });
     };

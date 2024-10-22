@@ -29,7 +29,8 @@
                         <input class="form-control" style="width: 70%;" placeholder="Введите адрес" ng-model="item.address[$index].address" required>
 
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-info" ng-click="adress.showComment = !adress.showComment">
+                            <button type="button" class="btn btn-info" ng-click="adress.showComment = !adress.showComment" 
+                                title="{{adress.object_comment || 'Комментарий отсутствует'}}">
                                 <i class="glyphicon" ng-class="adress.showComment ? 'glyphicon-plus' : 'glyphicon-comment'"></i>
                             </button>
                         </span>

@@ -4,6 +4,7 @@ var CommentEditCtrl = function ($scope, Comment, params, $modalInstance, $window
         trunk_priority: 'Приоритет транка',
         trunk_numbers_rules: 'Правила оригинации/терминации',
         trunk_rules: 'Правила транка',
+        dvo_rules: 'Правила ДВО',
         trunk_preprocessing: 'Препроцессинг',
         trunk_sorm: 'СОРМ транк',
         trunk_load_limit: 'Ограничение загрузки',

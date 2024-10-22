@@ -527,6 +527,9 @@ app.factory('TelemetryReceiver', function ($q, ApiLoader, $rootScope) {
         delete: function (data) {
             return ApiLoader.post(url + 'delete', data);
         },
+        showPrefixes: function (data) {
+            return ApiLoader.get(url + 'show-prefixes', { params: data });
+        },
     };
 });
 
