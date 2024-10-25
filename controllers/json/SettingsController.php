@@ -11,6 +11,7 @@ use app\models\auth\MvnoLink;
 use app\models\Server;
 use app\models\auth\CormServerRule;
 use app\models\auth\DvoServerRule;
+use app\models\auth\EpvvTransitRule;
 use yii\web\NotFoundHttpException;
 
 class SettingsController extends JsonController
@@ -26,6 +27,7 @@ class SettingsController extends JsonController
         
         $trunkRulesOrigination = CormServerRule::findAll(['server_id' => $server->id, 'is_orig' => true]);
         $trunkRulesTermination = CormServerRule::findAll(['server_id' => $server->id, 'is_orig' => false]);
+        $epvvTransitRules = EpvvTransitRule::findAll(['hub_id' => $hub->id]);
         $dvoRules = DvoServerRule::findAll(['server_id' => $server->id]);
 
         $hubNumberCapacityFormatted = [];
@@ -122,6 +124,9 @@ class SettingsController extends JsonController
             'call_telemetry_receiver_term' => $server->call_telemetry_receiver_term,
             'dvo_telemetry_receiver' => $server->dvo_telemetry_receiver,
             'dvo_enable_default' => $server->dvo_enable_default,
+            'epvv_transit_orig' => $hub->epvv_transit_orig,
+            'epvv_transit_term' => $hub->epvv_transit_term,
+            'epvvTransitRules' => $epvvTransitRules,
         ];
     }
 
@@ -133,6 +138,9 @@ class SettingsController extends JsonController
         
         $server = $this->getServerOr404($this->request['server_id']);
         $hub = Hub::findOne($server->hub_id);
+
+        $hub->epvv_transit_orig = isset($this->request['epvv_transit_orig']) ? $this->request['epvv_transit_orig'] : false;
+        $hub->epvv_transit_term = isset($this->request['epvv_transit_term']) ? $this->request['epvv_transit_term'] : false;
 
         $transaction = Yii::$app->db->beginTransaction();
         
@@ -201,6 +209,7 @@ class SettingsController extends JsonController
 
             CormServerRule::deleteByServer($server);
             DvoServerRule::deleteByServer($server);
+            EpvvTransitRule::deleteAll(['hub_id' => $hub->id]);
 
             if (isset($this->request['trunkRulesOrigination'])) {
                 foreach ($this->request['trunkRulesOrigination'] as $ruleData) {
@@ -220,6 +229,17 @@ class SettingsController extends JsonController
                     $rule = new DvoServerRule();
                     $rule->load($ruleData, '');
                     $rule->server_id = $server->id;
+                    if (!$rule->save()) {
+                        throw new FormValidationException($rule);
+                    }
+                }
+            }
+
+            if (isset($this->request['epvvTransitRules'])) {
+                foreach ($this->request['epvvTransitRules'] as $ruleData) {
+                    $rule = new EpvvTransitRule();
+                    $rule->load($ruleData, '');
+                    $rule->hub_id = $hub->id;
                     if (!$rule->save()) {
                         throw new FormValidationException($rule);
                     }

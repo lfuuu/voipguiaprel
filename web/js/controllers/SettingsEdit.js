@@ -4,6 +4,7 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
 
   $scope.MTS_ANTIFRAUD = 1;
   $scope.EPVV_ANTIFRAUD = 2;
+  $scope.EPVV_TRANSIT = 3;
   $scope.nnpMode = $scope.EPVV_ANTIFRAUD;
 
   if (params && params.server_id) {
@@ -29,12 +30,25 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     $scope.item.call_telemetry_receiver_term = data.call_telemetry_receiver_term;
     $scope.item.dvo_telemetry_receiver = data.dvo_telemetry_receiver;
     $scope.item.dvo_enable_default = data.dvo_enable_default;
+    $scope.item.epvvTransitRulesOrigination = $scope.item.epvvTransitRulesOrigination || [];
+    $scope.item.epvvTransitRulesTermination = $scope.item.epvvTransitRulesTermination || [];
+
+    if (data.epvvTransitRules) {
+      data.epvvTransitRules.forEach(function(rule) {
+          if (rule.is_orig) {
+              $scope.item.epvvTransitRulesOrigination.push(rule);
+          } else {
+              $scope.item.epvvTransitRulesTermination.push(rule);
+          }
+      });
+  }
 
     if ($scope.item.ast_trunk_group_id || $scope.item.ast_outcome_id) {
       $scope.vpbx_type_id = 2;
     } else {
       $scope.vpbx_type_id = 1;
     }
+    
   });
 
   List.prefixlist().then(function (data) {
@@ -64,6 +78,8 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
         break;
     }
 
+    $scope.item.epvvTransitRules = $scope.item.epvvTransitRulesOrigination.concat($scope.item.epvvTransitRulesTermination);
+
     Settings.save($scope.item).then(function (response) {
       if ($scope.name_changed) {
         $window.location.reload();
@@ -81,6 +97,39 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
         ac_mode: 0
     });
   };
+
+  $scope.addEpvvTransitRuleOrigination = function () {
+    $scope.item.epvvTransitRulesOrigination.push({
+        trunk_group_id: '',
+        allow: $scope.item.epvv_transit_orig,
+        is_orig: true,
+        number_id_filter_a: null,
+        number_id_filter_b: null,
+        number_id_filter_c: null,
+        ac_mode: 0
+    });
+  };
+
+  $scope.removeEpvvTransitRuleOrigination = function (index) {
+    $scope.item.epvvTransitRulesOrigination.splice(index, 1);
+  };
+
+  $scope.addEpvvTransitRuleTermination = function () {
+    $scope.item.epvvTransitRulesTermination.push({
+        trunk_group_id: '',
+        allow: $scope.item.epvv_transit_term,
+        is_orig: false,
+        number_id_filter_a: null,
+        number_id_filter_b: null,
+        number_id_filter_c: null,
+        ac_mode: 0
+    });
+  };
+
+  $scope.removeEpvvTransitRuleTermination = function (index) {
+    $scope.item.epvvTransitRulesTermination.splice(index, 1);
+  };
+
 
   $scope.addDvoRule = function () {
     $scope.item.dvoRules.push({
@@ -112,12 +161,10 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     $scope.item.trunkRulesTermination.splice(index, 1);
   };
 
-  // Загрузка списка групп транков
   List.trunkGroup().then(function (data) {
     $scope.trunk_group_list = data;
   });
 
-  // Загрузка номеров
   List.number(2, $scope.server_id).then(function (data) {
     $scope.numbers = data;
   });
