@@ -193,7 +193,15 @@ class ImporterController extends BaseController
 
     private function handleReplaceMode($id, $maxDateStart, $historyItemsIds, $oldItemsIdsByDate)
     {
-        $historyWhere = new \yii\db\Expression('history_id is null or history_id not in (' . implode(',', $historyItemsIds) . ')');
+        $historyWhere = new \yii\db\Expression('history_id is null');
+
+        if (!empty($historyItemsIds)) {
+            $historyWhere = new \yii\db\Expression('history_id is null or history_id not in (' . implode(',', $historyItemsIds) . ')');
+        } else {
+            $historyWhere = new \yii\db\Expression('history_id is null');
+        }
+        
+
         $dataRemovedQuery = PricelistPrefixPrice::find()
             ->where(['pricelist_filter_b_id' => $id])
             ->andWhere('date_to > :maxDateStart', [':maxDateStart' => $maxDateStart])
