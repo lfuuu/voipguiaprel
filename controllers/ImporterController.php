@@ -43,7 +43,8 @@ class ImporterController extends BaseController
                     $maxDateStart = $prefixDateStart;
                 }
 
-                $oldItems = $this->getOldItems($id, $prefixDateStart);
+                $prefixes = array_column($prefixesToSaveList, 1);
+                $oldItems = $this->getOldItems($id, $prefixDateStart, $prefixes);
                 $oldItemsKeyValue = $this->groupOldItemsByPrefix($oldItems);
 
                 $historyObject = $historyObjectList[$prefixDateStart];
@@ -103,20 +104,21 @@ class ImporterController extends BaseController
     }
 }
 
-    private function getOldItems($id, $prefixDateStart)
+    private function getOldItems($id, $prefixDateStart, $prefixes)
     {
         $sql = "
             SELECT id, prefix_b, b_number_price, date_to
             FROM billing_uu.pricelist_prefix_price
-            WHERE pricelist_filter_b_id = :id AND date_to > :date_to
-            FOR UPDATE
+            WHERE pricelist_filter_b_id = :id AND date_to > :date_to AND prefix_b IN (:prefixes)
         ";
-        
+
         return Yii::$app->db->createCommand($sql)
             ->bindValue(':id', $id)
             ->bindValue(':date_to', $prefixDateStart)
+            ->bindValue(':prefixes', $prefixes)
             ->queryAll();
     }
+
 
     private function groupOldItemsByPrefix($oldItems)
     {
@@ -160,8 +162,11 @@ class ImporterController extends BaseController
         if (!empty($oldItemsIds)) {
             \Yii::$app->db->createCommand()->update(
                 'billing_uu.pricelist_prefix_price',
-                ['date_to' => $prefixDateStart, 'history_id' => $historyObjectId],
-                new Expression('id in (' . implode(',', $oldItemsIds) . ')')
+                [
+                    'date_to' => $prefixDateStart,
+                    'history_id' => $historyObjectId
+                ],
+                ['id' => $oldItemsIds]
             )->execute();
         }
     }
