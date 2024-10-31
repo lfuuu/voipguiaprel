@@ -48,7 +48,7 @@ var RouteTableEditCtrl = function ($scope, RouteTable, Outcome, params, $modalIn
     };  
 
     $scope.save = function () {
-        if ($scope.initialServerId !== $scope.server.id) {
+        if (params.id && $scope.initialServerId !== $scope.server.id) {
             alert("Изменения нельзя сохранить, так как вы пытаетесь изменить таблицу маршрутизации, которая находится на другом регионе.");
             return;
         }
@@ -56,7 +56,7 @@ var RouteTableEditCtrl = function ($scope, RouteTable, Outcome, params, $modalIn
         RouteTable.save($scope.item).then(function (response) {
             $modalInstance.close();
         });
-    }; 
+    };    
 
     $scope.back = function () {
         $modalInstance.dismiss();
