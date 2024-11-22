@@ -5,6 +5,8 @@ namespace app\controllers\json\api_billing;
 use app\classes\JsonController;
 use app\models\billing_api\ApiPricelist;
 use app\models\billing_api\ApiPricelistItem;
+use yii\db\Query;
+use yii\db\Expression;
 
 class ApiPricelistController extends JsonController
 {
@@ -181,5 +183,41 @@ class ApiPricelistController extends JsonController
         if (!$item->save()) {
             throw new FormValidationException($item);
         }
+    }
+
+    public function actionCopy()
+    {
+        if (!\Yii::$app->user->can('api_billing_api_pricelist_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $result = (new Query())
+            ->select(['id' => new Expression('billing_api.clone_pricelist(:old_pricelist_id)')])
+            ->addParams([':old_pricelist_id' => $this->request['id']])
+            ->one();
+
+            return ['id' => $result['id']];
+    }
+
+    public function actionCopyAndMultiply()
+    {
+        if (!\Yii::$app->user->can('api_billing_api_pricelist_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $multiplier = isset($this->request['multiplier']) ? (float)$this->request['multiplier'] : 1;
+        if ($multiplier <= 0) {
+            throw new Exception('Неверный множитель');
+        }
+
+        $result = (new Query())
+            ->select(['id' => new Expression('billing_api.clone_pricelist(:old_pricelist_id, :multiplier)')])
+            ->addParams([
+                ':old_pricelist_id' => $this->request['id'],
+                ':multiplier' => $multiplier
+            ])
+            ->one();
+
+            return ['id' => $result['id']];
     }
 }
