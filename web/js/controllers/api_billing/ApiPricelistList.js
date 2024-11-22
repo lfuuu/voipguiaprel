@@ -41,4 +41,38 @@ var ApiBillingApiPricelistListCtrl = function($scope, ApiBillingApiPricelist, Re
             $scope.init()
         });
     };
+
+    $scope.copyItem = function(item) {
+        if (!$window.confirm('Копировать?')) return;
+    
+        ApiBillingApiPricelist.copy(item.id).then(function(response) {
+            if (response.id) {
+                Redirect.apiBillingApiPricelistEdit(response.id).then(function() {
+                    $scope.init();
+                });
+            } else {
+                console.error("Не удалось скопировать прайслист, id не получен.");
+            }
+        });
+    };
+    
+    $scope.copyAndMultiplyItem = function(item) {
+        var multiplier = parseFloat($window.prompt('Введите множитель для копирования'));
+    
+        if (isNaN(multiplier) || multiplier <= 0) {
+            console.error('Неверное значение множителя');
+            return;
+        }
+    
+        ApiBillingApiPricelist.copyAndMultiply(item.id, multiplier).then(function(response) {
+            if (response.id) {
+                Redirect.apiBillingApiPricelistEdit(response.id).then(function() {
+                    $scope.init();
+                });
+            } else {
+                console.error("Не удалось скопировать и умножить прайслист, id не получен.");
+            }
+        });
+    };
+    
 };

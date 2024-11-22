@@ -105,6 +105,12 @@ app.factory('ApiBillingApiPricelist', function ($q, ApiLoader, $rootScope) {
             list = undefined;
             return ApiLoader.post(url + 'delete', {id: id});
         },
+        copy: function (id) {
+            return ApiLoader.post(url + 'copy', { id: id });
+        },
+        copyAndMultiply: function (id, multiplier) {
+            return ApiLoader.post(url + 'copy-and-multiply', { id: id, multiplier: multiplier });
+        },
         restore: function(id) {
             list = undefined;
             return ApiLoader.post(url + 'restore', {id: id});
