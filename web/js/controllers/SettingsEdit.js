@@ -14,7 +14,7 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
   }
 
   Settings.get({server_id: $scope.server_id}).then(function (data) {
-    $scope.item = data;
+    $scope.item = data || {};
     $scope.item.trunk_groups = (data.trunk_groups == null) ? [] : data.trunk_groups.replace('{', '').replace('}', '').split(',');
     $scope.item.fsb_numa_blacklist_ids = (data.fsb_numa_blacklist_ids == null) ? [] : data.fsb_numa_blacklist_ids.replace('{', '').replace('}', '').split(',');
     $scope.item.fsb_numb_blacklist_ids = (data.fsb_numb_blacklist_ids == null) ? [] : data.fsb_numb_blacklist_ids.replace('{', '').split(',');
@@ -41,14 +41,22 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
               $scope.item.epvvTransitRulesTermination.push(rule);
           }
       });
-  }
+    }
 
     if ($scope.item.ast_trunk_group_id || $scope.item.ast_outcome_id) {
       $scope.vpbx_type_id = 2;
     } else {
       $scope.vpbx_type_id = 1;
     }
-    
+
+    if ($scope.item) {
+      $scope.item.directionOptions = [
+        { value: 'DIR_TX', label: 'DIR_TX' },
+        { value: 'DIR_RX', label: 'DIR_RX' },
+        { value: 'DIR_DX', label: 'DIR_DX' },
+        { value: 'DIR_LX', label: 'DIR_LX' }
+      ];
+    }
   });
 
   List.prefixlist().then(function (data) {
@@ -61,9 +69,7 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
 
   List.adapter($scope.server_id).then(function (data) {
     $scope.adapters = data;
-});
-
-
+  });
 
   $scope.save = function () {
     switch ($scope.vpbx_type_id) {
@@ -77,6 +83,11 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
       default:
         break;
     }
+    $scope.item.trunkRulesOrigination.forEach(function(rule) {
+      if (!rule.direction) {
+          rule.direction = 'DIR_TX';
+      }
+  });
 
     $scope.item.epvvTransitRules = $scope.item.epvvTransitRulesOrigination.concat($scope.item.epvvTransitRulesTermination);
 
@@ -92,11 +103,12 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
   $scope.addTrunkRuleOrigination = function () {
     $scope.item.trunkRulesOrigination.push({
         trunk_group_id: '',
-        allow: $scope.item.corm_orig, 
+        allow: $scope.item.corm_orig,
         is_orig: true,
-        ac_mode: 0
+        ac_mode: 0,
+        direction: 'DIR_TX'
     });
-  };
+};
 
   $scope.addEpvvTransitRuleOrigination = function () {
     $scope.item.epvvTransitRulesOrigination.push({
@@ -130,7 +142,6 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     $scope.item.epvvTransitRulesTermination.splice(index, 1);
   };
 
-
   $scope.addDvoRule = function () {
     $scope.item.dvoRules.push({
         allow: $scope.item.dvo_default_action,
@@ -138,7 +149,7 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
         telemetry_receiver_id: null,
         object_comment: ''
     });
-};
+  };
 
   $scope.removeDvoRule = function (index) {
       $scope.item.dvoRules.splice(index, 1);
@@ -149,7 +160,8 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
         trunk_group_id: '',
         allow: $scope.item.corm_term, 
         is_orig: false,
-        ac_mode: 0
+        ac_mode: 0,
+        direction: 'DIR_TX' 
     });
   };
 
