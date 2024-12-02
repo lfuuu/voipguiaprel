@@ -12,6 +12,7 @@ namespace app\models\auth;
  * @property int|null telemetry_receiver_id
  * @property bool $allow
  * @property string|null $object_comment
+ * @property string|null $direction
  * @property int|null $order
  * @property int|null $trunk_group_id
  * @property bool $ac_mode
@@ -35,7 +36,7 @@ class CormServerRule extends \yii\db\ActiveRecord
             [['server_id'], 'required'],
             [['server_id', 'number_id_filter_a', 'number_id_filter_b', 'number_id_filter_c', 'telemetry_receiver_id', 'order', 'trunk_group_id', 'ac_mode'], 'integer'],
             [['allow'], 'boolean'],
-            [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
+            [['object_comment', 'direction'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];
     }
 
