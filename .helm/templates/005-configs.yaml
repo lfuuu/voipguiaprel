@@ -168,7 +168,7 @@ data:
       server {
         listen 80;
         server_name {{ .Values.ci_url }};
-        root /workspace/voip_gui/web;
+        root /opt/voip_gui/web;
         index index.php;
 
         charset utf-8;
