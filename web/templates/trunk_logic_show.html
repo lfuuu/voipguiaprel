@@ -4,19 +4,36 @@
     </div>
     <div class="modal-body">
         <table class="table">
-            <tr>
-                <th>Logic trunks</th>
-                <th>Trunk id</th>
-                <th>Client id</th>
-
-            </tr>
-            <tr ng-repeat="row in list">
-                <!-- <td><a href="#" ng-click="openTrunk(row.p_trunk_id, row.p_trunk_server_id)">{{row.p_trunk_name}}</a></td> -->
-                <td><a target="blank" href="{{link}}usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">{{row.description}}</a></td>
-                <td><a target="blank" href="{{link}}usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">{{row.trunk_id}} </a></td>
-                <td><a target="blank" href="{{link}}usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">{{row.client_account_id}} </a></td>
-
-            </tr>
+            <thead>
+                <tr>
+                    <th>Logic Trunks</th>
+                    <th>Contract Type</th> <!-- Новый столбец -->
+                    <th>Trunk ID</th>
+                    <th>Client ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in list">
+                    <td>
+                        {{row.contract_type_name || 'Не указано'}}
+                    </td>
+                    <td>
+                        <a target="_blank" href="{{link}}usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">
+                            {{row.description}}
+                        </a>
+                    </td>
+                    <td>
+                        <a target="_blank" href="{{link}}usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">
+                            {{row.trunk_id}}
+                        </a>
+                    </td>
+                    <td>
+                        <a target="_blank" href="{{link}}usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">
+                            {{row.client_account_id}}
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 
@@ -25,5 +42,4 @@
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
         </div>
     </div>
-
 </form>

@@ -22,6 +22,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\db\Expression;
 use yii\web\Response;
+use app\models\stat\ClientContractType; 
 
 
 class TrunkController extends JsonController
@@ -387,24 +388,50 @@ class TrunkController extends JsonController
         }
     }
 
-    /**
-     * @return \app\models\billing\ServiceTrunk[]
-     */
-    public function actionGetServiceTrunks()
-    {
-        if (!\Yii::$app->user->can('trunk_list')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-
-        if (isset($this->request['trunk_id']) && (int)$this->request['trunk_id']) {
-            $result = ServiceTrunk::findActualByTrunkId($this->request['trunk_id']);
-        }else {
-            $result = [];
-        }
-
-        return $result;
-   
+   /**
+ * Получение сервисных транков с типами контрактов
+ *
+ * @return array
+ * @throws HttpException
+ */
+public function actionGetServiceTrunks()
+{
+    if (!Yii::$app->user->can('trunk_list')) {
+        throw new ForbiddenHttpException('Access denied');
     }
+
+    if (isset($this->request['trunk_id']) && (int)$this->request['trunk_id']) {
+        $serviceTrunks = ServiceTrunk::findActualByTrunkId($this->request['trunk_id']);
+
+        $result = array_map(function($trunk) {
+            return [
+                'id' => $trunk->id,
+                'server_id' => $trunk->server_id,
+                'client_account_id' => $trunk->client_account_id,
+                'trunk_id' => $trunk->trunk_id,
+                'activation_dt' => $trunk->activation_dt,
+                'expire_dt' => $trunk->expire_dt,
+                'orig_enabled' => $trunk->orig_enabled,
+                'term_enabled' => $trunk->term_enabled,
+                'orig_min_payment' => $trunk->orig_min_payment,
+                'term_min_payment' => $trunk->term_min_payment,
+                'operator_id' => $trunk->operator_id,
+                'contract_id' => $trunk->contract_id,
+                'contract_number' => $trunk->contract_number,
+                'contract_type_id' => $trunk->contract_type_id,
+                'contract_type_name' => $trunk->contractType ? $trunk->contractType->name : 'Не указано',
+                'ip' => $trunk->ip,
+                'transit_price' => $trunk->transit_price,
+                'uplink_enabled' => $trunk->uplink_enabled,
+                'description' => $trunk->description,
+            ];
+        }, $serviceTrunks);
+    } else {
+        $result = [];
+    }
+
+    return $result;
+}
 
     /**
      * @throws FormValidationException
