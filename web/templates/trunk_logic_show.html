@@ -15,12 +15,12 @@
             <tbody>
                 <tr ng-repeat="row in list">
                     <td>
-                        {{row.contract_type_name || 'Не указано'}}
-                    </td>
-                    <td>
                         <a target="_blank" href="{{link}}usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">
                             {{row.description}}
                         </a>
+                    </td>
+                    <td>
+                        {{row.contract_type_name || 'Не указано'}}
                     </td>
                     <td>
                         <a target="_blank" href="{{link}}usage/trunk/edit-by?clientAccountId={{row.client_account_id}}&trunkId={{row.trunk_id}}">
