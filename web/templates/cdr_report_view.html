@@ -138,6 +138,33 @@
         </tbody>
     </table>
 </div>
+<hr>
+
+<div class="button-group" ng-if="!is_eu" style="margin-left: 10px;">
+    <button class="btn btn-primary btn-sm" ng-click="get573()">Выгрузка 573</button>
+    <button class="btn btn-secondary btn-sm" ng-click="get573Debug()">Выгрузка 573 в Debug режиме</button>
+    <button class="btn btn-primary btn-sm" ng-click="get86()">Выгрузка 86</button>
+    <button class="btn btn-secondary btn-sm" ng-click="get86Debug()">Выгрузка 86 в Debug режиме</button>
+</div>
+
+<div class="responses-section" style="margin-top: 20px;">
+    <div ng-if="responses['573']">
+        <h5>Выгрузка 573:</h5>
+        <pre>{{responses['573']}}</pre>
+    </div>
+    <div ng-if="responses['573_debug']">
+        <h5>Выгрузка 573 в Debug режиме:</h5>
+        <div ng-bind-html="responses['573_debug']"></div>
+    </div>
+    <div ng-if="responses['86']">
+        <h5>Выгрузка 86:</h5>
+        <pre>{{responses['86']}}</pre>
+    </div>
+    <div ng-if="responses['86_debug']">
+        <h5>Выгрузка 86 в Debug режиме:</h5>
+        <div ng-bind-html="responses['86_debug']"></div>
+    </div>
+</div>
 <div class="modal-footer">
     <div class="pull-left">
         <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
