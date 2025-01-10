@@ -175,6 +175,14 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
         $scope.showTestBasic(item, 'testAuthShowTestReserve');
     };
 
+    $scope.showTest1001 = function (item) {
+        $scope.showTestBasic(item, 'testAuthShowTest1001');
+    };
+
+    $scope.showTest1002 = function (item) {
+        $scope.showTestBasic(item, 'testAuthShowTest1002');
+    };
+
     $scope.showTestReserve2 = function (item) {
         $scope.showTestBasic(item, 'testAuthShowTestReserve2');
     };

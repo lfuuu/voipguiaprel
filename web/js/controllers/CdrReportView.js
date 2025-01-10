@@ -27,7 +27,7 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
     $scope.responses = {};
 
     $scope.executeRequest = function (paramsKey, paramsValue) {
-        var url = 'https://85.94.49.77:8207/pstn.php';
+        var url = 'https://eridanus3-aggr-legs.veles.mcn.ru:8207/pstn.php';
         var params = Object.assign({ mcn_callid: $scope.mcn_callid }, paramsValue);
 
         $scope.responses[paramsKey] = 'Загрузка...';

@@ -153,6 +153,12 @@ var TestCallListCtrl = function($scope, TestCall, List, Redirect, $window) {
     $scope.showTestDev = function (item) {
         $scope.showTestBasic(item, 'testCallShowTestDev');
     };
+    $scope.showTest1001 = function (item) {
+        $scope.showTestBasic(item, 'testCallShowTest1001');
+    };
+    $scope.showTest1002 = function (item) {
+        $scope.showTestBasic(item, 'testCallShowTest1002');
+    };
 
     $scope.showTestBasic = function (item, method) {
         if (window.getSelection().type == 'Range') {

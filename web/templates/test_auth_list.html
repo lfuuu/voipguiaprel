@@ -155,12 +155,13 @@
             </td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.server_id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.name}}</td>
-            <td>
-                <button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">MAIN</button>
-                <button type="button" class="btn btn-default btn-sm" ng-click="showTestReserve(item)">RES</button>
-                <button type="button" class="btn btn-default btn-sm" ng-click="showTestReserve2(item)">RES2</button>
-                <button type="button" class="btn btn-default btn-sm" ng-click="showTestDev(item)">DEV</button>
-            </td>
+            <td style="white-space: nowrap; text-align: left;">
+                <button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)" style="margin-right: 5px; font-size: 12px;">MAIN</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="showTestReserve(item)" style="margin-right: 5px; font-size: 12px;">RES</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="showTestDev(item)" style="margin-right: 5px; font-size: 12px;">DEV</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="showTest1001(item)" style="margin-right: 5px; font-size: 12px;">1001</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="showTest1002(item)" style="margin-right: 5px; font-size: 12px;">1002</button>
+            </td>            
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.trunk_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.src_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.dst_number}}</td>

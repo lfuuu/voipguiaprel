@@ -28,6 +28,8 @@ class TestAuthController extends JsonController
     const TEST_DIRECTION_RESERVE = 2;
     const TEST_DIRECTION_RESERVE_2 = 3;
     const TEST_DIRECTION_DEV = 4;
+    const TEST_DIRECTION_1001 = 5;
+    const TEST_DIRECTION_1002 = 6;
     
     protected $createPermission = 'test_auth_create';
     protected $listPermission = 'test_auth_list';
@@ -294,6 +296,18 @@ class TestAuthController extends JsonController
         if (isset($this->request['isReserve2']) && $item->server->hostname_reserve_2) {
             $direction = self::TEST_DIRECTION_RESERVE_2;
             $apiUrl = $item->server->apiUrlReserve2;
+            $apiParams['server_id'] = $item->server_id;
+        }
+
+        if (isset($this->request['is1001']) && $item->server->hostname_1001) {
+            $direction = self::TEST_DIRECTION_1001;
+            $apiUrl = $item->server->apiUrl1001;
+            $apiParams['server_id'] = $item->server_id;
+        }
+
+        if (isset($this->request['is1002']) && $item->server->hostname_1002) {
+            $direction = self::TEST_DIRECTION_1002;
+            $apiUrl = $item->server->apiUrl1002;
             $apiParams['server_id'] = $item->server_id;
         }
     

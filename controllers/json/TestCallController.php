@@ -270,6 +270,16 @@ class TestCallController extends JsonController
             $apiUrl = $item->server->apiUrlReserve2;
             $apiParams['server_id'] = $item->server_id;
         }
+
+        if (isset($this->request['is1001']) && $item->server->hostname_1001) {
+            $apiUrl = $item->server->apiUrl1001;
+            $apiParams['server_id'] = $item->server_id;
+        }
+
+        if (isset($this->request['is1002']) && $item->server->hostname_1002) {
+            $apiUrl = $item->server->apiUrl1002;
+            $apiParams['server_id'] = $item->server_id;
+        }
     
         if (isset($this->request['isDev']) && $item->server->hostname_dev) {
             $apiUrl = $item->server->apiUrlDev;
