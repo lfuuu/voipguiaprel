@@ -245,6 +245,12 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         testAuthShowTestDev: function(id) {
             return openModal(TestAuthShowTestDevCtrl, '/templates/test_auth_show_test.html', {id: id});
         },
+        testAuthShowTest1001: function(id) {
+            return openModal(TestAuthShowTest1001Ctrl, '/templates/test_auth_show_test.html', {id: id});
+        },
+        testAuthShowTest1002: function(id) {
+            return openModal(TestAuthShowTest1002Ctrl, '/templates/test_auth_show_test.html', {id: id});
+        },
 
         testCallList: function() {
             $cookies.routing_selected_page = 'testCallList';
@@ -273,6 +279,12 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
         testCallShowTestDev: function(id, displayTreeView) {
             return openModal(TestCallShowTestDevCtrl, '/templates/test_call_show_test.html', {id: id, displayTreeView: displayTreeView});
+        },
+        testCallShowTest1001: function(id, displayTreeView) {
+            return openModal(TestCallShowTest1001Ctrl, '/templates/test_call_show_test.html', {id: id, displayTreeView: displayTreeView});
+        },
+        testCallShowTest1002: function(id, displayTreeView) {
+            return openModal(TestCallShowTest1002Ctrl, '/templates/test_call_show_test.html', {id: id, displayTreeView: displayTreeView});
         },
 
         testGroupList: function() {

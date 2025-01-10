@@ -31,6 +31,8 @@ use app\models\event\Queue;
  * @property bool $is_production
  * @property string $hostname_reserve
  * @property string $hostname_reserve_2
+ * @property string $hostname_1001
+ * @property string $hostname_1002
  * @property string $hostname_dev
  * @property string $nas_ip_address
  * @property int $ast_trunk_group_id
@@ -107,7 +109,7 @@ class Server extends \yii\db\ActiveRecord
                 'h_event_management', 'h_local_events'], 'string', 'max' => 100],
             [['min_price_for_autorouting'], 'integer', 'min' => 1],
             [['service_numbers', 'hostname_reserve', 'hostname_reserve_2', 'hostname_dev',
-                'nas_ip_address', 'name_short', 'prefixlist_block', 'fsb_numa_blacklist_ids', 'fsb_numb_blacklist_ids', 'hostname'], 'string'],
+                'nas_ip_address', 'name_short', 'prefixlist_block', 'fsb_numa_blacklist_ids', 'fsb_numb_blacklist_ids', 'hostname', 'hostname_1001', 'hostname_1002',], 'string'],
             [['name_short', 'name'], 'string', 'max' => 30],
             [['local_spc', 'zone_spc', 'mg_spc', 'mn_spc'], 'string', 'max' => 32],
         ];
@@ -135,6 +137,22 @@ class Server extends \yii\db\ActiveRecord
     public function getApiUrlReserve2()
     {
         return $this->hostname_reserve_2;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUrl1001()
+    {
+        return $this->hostname_1001;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUrl1002()
+    {
+        return $this->hostname_1002;
     }
     
     /**
