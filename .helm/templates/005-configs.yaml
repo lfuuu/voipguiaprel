@@ -1,4 +1,4 @@
-{{- if (eq .Values.global.env "dev") }}
+{{- if (eq .Values.werf.env "dev") }}
 
 {{ $_ := set . "pg_host" .Values.postgres_env_ci.host }}
 {{ $_ := set . "pg_user" .Values.postgres_env_ci.user }}
@@ -8,7 +8,7 @@
 
 {{- end }}
 
-{{- if (eq .Values.global.env "prod") }}
+{{- if (eq .Values.werf.env "prod") }}
 
 {{ $_ := set . "pg_host" .Values.postgres_prod.host }}
 {{ $_ := set . "pg_user" .Values.postgres_prod.user }}
@@ -18,7 +18,7 @@
 
 {{- end }}
 
-{{- if (eq .Values.global.env "euprod") }}
+{{- if (eq .Values.werf.env "euprod") }}
 
 {{ $_ := set . "pg_host" .Values.postgres_euprod.host }}
 {{ $_ := set . "pg_user" .Values.postgres_euprod.user }}
@@ -94,12 +94,12 @@ data:
     return [
         'adminEmail' => 'admin@example.com',
         'NnpCalculationApi' => '',
-{{- if (eq .Values.global.env "prod") }}
+{{- if (eq .Values.werf.env "prod") }}
         'isEuropean' => false,
         'testNumberLink' => 'http://reg10.mcntelecom.ru:8032/',
         'prefixListTypeSevenOpenLink' => 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?cmd=showTypeSeven',
         'prefixListTypeSevenGenerateLink' => 'http://reg10.mcntelecom.ru:8032/test/nnpcalc?cmd=fillNNPPrefixList&type={type}&id={id}&ndc_token={token}',
-{{- else if (eq .Values.global.env "euprod") }}
+{{- else if (eq .Values.werf.env "euprod") }}
         'isEuropean' => true,
         'testNumberLink' => 'http://reg10.mcntelecom.hu:8032/',
         'prefixListTypeSevenOpenLink' => 'http://reg10.mcntelecom.hu:8032/test/nnpcalc?cmd=showTypeSeven',
@@ -225,7 +225,7 @@ data:
           "login": {{ .Values.ami.login | quote }},
           "password": {{ .Values.ami.password | quote }}
       },
-{{- if (eq .Values.global.env "prod") }}
+{{- if (eq .Values.werf.env "prod") }}
       "hubs": {
           "11":"CFO",
           "12":"UFO",
@@ -239,7 +239,7 @@ data:
           "99":"MSK"
       },
 {{- end }}
-{{- if (eq .Values.global.env "euprod") }}
+{{- if (eq .Values.werf.env "euprod") }}
       "hubs": {
           "19":"AT",
           "20":"EU"
@@ -253,7 +253,7 @@ data:
       "onlyConsoleLog": 1
     }
   
-{{- if (eq .Values.global.env "prod") }}
+{{- if (eq .Values.werf.env "prod") }}
   config.local.php: |
       <?php
       return [
@@ -288,7 +288,7 @@ data:
         ],
       ];
 {{- end }}
-{{- if (eq .Values.global.env "euprod") }}
+{{- if (eq .Values.werf.env "euprod") }}
   config.local.php: |
       <?php
       return [

@@ -1,4 +1,4 @@
-{{- if (eq .Values.global.env "dev") }}
+{{- if (eq .Values.werf.env "dev") }}
 
 
 ---
@@ -32,7 +32,7 @@ spec:
     spec:
       initContainers:
       - name: init-pod-voip-gui
-{{ tuple (printf "%s-%s" .Chart.Name "php-fpm-dev") . | werf_container_image | indent 8 }}
+        image: {{ .Values.werf.image.voip_gui_php_fpm_dev }}
         command:  ['sh', '-c', "/root/prepare-scripts/init-dev-env.sh"]
         volumeMounts:
         - mountPath: /workspace
@@ -59,7 +59,7 @@ spec:
           - "until pg_isready -h {{ .Values.postgres_env_ci.host }} -U {{ .Values.postgres_env_ci.adminuser }} -p {{ .Values.postgres_env_ci.port }}; do sleep 2; done;"
       containers:
       - name: nginx
-{{ tuple (printf "%s-%s" .Chart.Name "nginx-dev") . | werf_container_image | indent 8 }}
+        image: {{ .Values.werf.image.voip_gui_nginx_dev }}
         volumeMounts:
         - name: config-volume
           subPath: nginx.conf
@@ -78,7 +78,7 @@ spec:
             exec:
               command: ["/usr/sbin/nginx", "-s", "quit"]
       - name: php-fpm
-{{ tuple (printf "%s-%s" .Chart.Name "php-fpm-dev") . | werf_container_image | indent 8 }}
+        image: {{ .Values.werf.image.voip_gui_php_fpm_dev }}
         ports:
         - containerPort: 9000
           name: http

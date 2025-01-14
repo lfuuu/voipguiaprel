@@ -1,13 +1,9 @@
-image: php-health-check-prod
+image: php_health_check_prod
 from: php:7.4-cli
 docker:
 #  CMD: ["/bin/sleep", "infinity"]
   CMD: ["bash","/app/health/run.sh"]
-mount:
-- from: tmp_dir
-  to: /var/lib/apt/lists
-- from: build_dir
-  to: /var/cache/apt
+
 git:
 - add: /web/health
   to: /app/health

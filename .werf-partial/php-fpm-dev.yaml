@@ -1,6 +1,6 @@
-{{- if (eq .env "dev") }}
+{{- if (eq .Env "dev") }}
 
-image: {{ .project }}-php-fpm-dev
+image: voip_gui_php_fpm_dev
 from: php:7.4-fpm-buster
 
 docker:
