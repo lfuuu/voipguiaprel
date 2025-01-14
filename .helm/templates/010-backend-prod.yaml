@@ -1,4 +1,4 @@
-{{- if (eq .Values.global.env "dev") }}
+{{- if (eq .Values.werf.env "dev") }}
 {{- else }}
 
 apiVersion: apps/v1
@@ -6,7 +6,7 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-backend-prod
 spec:
-  replicas: {{- if (eq .Values.global.env "dev") }} 1 {{- else }} 2 {{- end }}
+  replicas: {{- if (eq .Values.werf.env "dev") }} 1 {{- else }} 2 {{- end }}
   selector:
       matchLabels:
         app: {{ .Chart.Name }}-backend-prod
@@ -18,7 +18,7 @@ spec:
         ingressInternal: "yes"
         ingressExternal: "no"
         app: {{ .Chart.Name }}-backend-prod
-{{- if (eq .Values.global.env "prod") }}
+{{- if (eq .Values.werf.env "prod") }}
       annotations:
         scheduler.alpha.kubernetes.io/affinity: >
             {
@@ -48,7 +48,7 @@ spec:
           mountPath: /opt/voip_gui/web/assets2
       containers:
       - name: nginx
-{{ tuple (printf "%s-%s" .Chart.Name "nginx-prod") . | werf_container_image | indent 8 }}
+        image: {{ .Values.werf.image.voip_gui_nginx_prod }}
         volumeMounts:
         - name: config-volume
           subPath: nginx.conf
@@ -62,7 +62,7 @@ spec:
             exec:
               command: ["/usr/sbin/nginx", "-s", "quit"]
       - name: php-health-check-prod
-{{ tuple "php-health-check-prod" . | werf_container_image | indent 8 }}
+        image: {{ .Values.werf.image.php_health_check_prod }}
         volumeMounts:
         - name: config-volume
           subPath: config.local.php
@@ -73,7 +73,7 @@ spec:
         resources:
           limits:
             memory: "18Gi"
-{{ tuple (printf "%s-%s" .Chart.Name "php-fpm-prod") . | werf_container_image | indent 8 }}
+        image: {{ .Values.werf.image.voip_gui_php_fpm_prod }}
         volumeMounts:
         - name: config-volume
           subPath: voipgui.php.ini
@@ -98,7 +98,7 @@ spec:
         - name: TEST_DIAL_URL
           value: "http://127.0.0.1:3000/"
       - name: testcall-daemon-prod
-{{ tuple "testcall-daemon-prod" . | werf_container_image | indent 8 }}
+        image: {{ .Values.werf.image.testcall_daemon_prod }}
         ports:
         - containerPort: 3000
           name: http
@@ -110,7 +110,7 @@ spec:
       - name: finding-nispd-chains
         workingDir: /app/finding_nispd/
         command: [ "python3", "print_chains.py" ]
-{{ tuple "finding-nispd" . | werf_container_image | indent 8 }}
+        image: {{ .Values.werf.image.finding_nispd }}
         ports:
         - containerPort: 8000
           name: http
@@ -127,7 +127,7 @@ spec:
         emptyDir: {}
       - name: assets
         emptyDir: {}
-{{- if (eq .Values.global.env "prod") }}
+{{- if (eq .Values.werf.env "prod") }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

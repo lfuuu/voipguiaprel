@@ -1,9 +1,6 @@
-{{ $_ := set . "project" "voip-gui" }}
-
-project: {{ .project }}
+project: voip-gui
 configVersion: 1
 
-{{ $_ := env "ENVNAME" | set . "env" }}
 ---
 {{ range $path, $content := .Files.Glob ".werf-partial/*.yaml" }}
 {{ tpl $content $ }}

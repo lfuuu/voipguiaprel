@@ -1,4 +1,4 @@
-image: {{ .project }}-nginx-prod
+image: voip_gui_nginx_prod
 from: nginx:stable-alpine
 docker:
   EXPOSE: '80'

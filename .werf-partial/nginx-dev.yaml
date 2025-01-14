@@ -1,6 +1,6 @@
-{{- if (eq .env "dev") }}
+{{- if (eq .Env "dev") }}
 
-image: {{ .project }}-nginx-dev
+image: voip_gui_nginx_dev
 from: nginx:stable-alpine
 docker:
   EXPOSE: '80'

@@ -1,4 +1,4 @@
-image: testcall-daemon-prod
+image: testcall_daemon_prod
 from: node:12
 docker:
   WORKDIR: /app/testdialer

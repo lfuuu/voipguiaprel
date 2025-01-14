@@ -10,7 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: 18000
     nginx.ingress.kubernetes.io/proxy-body-size: 4096m
 spec:
-{{- if (eq .Values.global.env "prod") }}
+{{- if (eq .Values.werf.env "prod") }}
   tls:
     - hosts:
         - {{ .Values.ci_url | quote }}
@@ -24,7 +24,7 @@ spec:
         path: /
         backend:
           service:
-{{- if (eq .Values.global.env "dev") }}
+{{- if (eq .Values.werf.env "dev") }}
             name: {{ .Chart.Name }}-backend-dev
 {{- else }}
             name: {{ .Chart.Name }}-backend-prod

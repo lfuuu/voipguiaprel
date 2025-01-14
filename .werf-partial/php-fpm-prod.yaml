@@ -1,5 +1,5 @@
-{{- if not (eq .env "dev") }}
-image: {{ .project }}-php-fpm-prod
+{{- if not (eq .Env "dev") }}
+image: voip_gui_php_fpm_prod
 from: php:7.4-fpm-alpine3.13
 
 docker:

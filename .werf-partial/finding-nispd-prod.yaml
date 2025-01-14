@@ -1,4 +1,4 @@
-image: finding-nispd
+image: finding_nispd
 from: python:3
 docker:
   WORKDIR: /app/finding_nispd/
