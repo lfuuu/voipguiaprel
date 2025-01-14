@@ -1,0 +1,75 @@
+---
+include:
+  - project: 'ci-cd/templates'
+    ref: master
+    file: 'build.shell.gitlab-ci.yml'
+  - project: 'ci-cd/templates'
+    ref: master
+    file: 'lintv2.shell.gitlab-ci.yml'
+  - project: 'ci-cd/templates'
+    ref: master
+    file: 'deployv2.shell.gitlab-ci.yml'
+  - project: 'ci-cd/templates'
+    ref: master
+    file: 'cleanupv2.shell.gitlab-ci.yml'
+  - project: 'ci-cd/templates'
+    ref: master
+    file: 'dismiss.shell.gitlab-ci.yml'
+
+.before:
+  before_script:
+
+stages:
+  - build
+  - deploy
+  - cleanup
+  - dismiss
+
+
+# PROD
+build_prod:
+  extends: .build_prod
+  rules:
+    - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
+deploy_prod:
+  extends: .deploy_prod
+  rules:
+    - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
+      when: manual
+      allow_failure: true
+cleanup_prod:
+  extends: .cleanup_prod
+  rules:
+    - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
+      when: manual
+      allow_failure: true
+dismiss_prod:
+  extends: .dismiss_prod
+  rules:
+    - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
+      when: manual
+      allow_failure: true
+
+# EUPROD
+build_euprod:
+  extends: .build_euprod
+  rules:
+    - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
+deploy_euprod:
+  extends: .deploy_euprod
+  rules:
+    - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
+      when: manual
+      allow_failure: true
+cleanup_euprod:
+  extends: .cleanup_euprod
+  rules:
+    - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
+      when: manual
+      allow_failure: true
+dismiss_euprod:
+  extends: .dismiss_euprod
+  rules:
+    - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
+      when: manual
+      allow_failure: true
