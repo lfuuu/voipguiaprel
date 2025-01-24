@@ -27,12 +27,11 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
     $scope.responses = {};
 
     $scope.executeRequest = function (paramsKey, paramsValue) {
-        var url = 'https://eridanus3-aggr-legs.veles.mcn.ru:8207/pstn.php';
-        var params = Object.assign({ mcn_callid: $scope.mcn_callid }, paramsValue);
-
+        var url = '/json/pstn';
+        var requestParams = Object.assign({ mcn_callid: $scope.mcn_callid }, paramsValue);
         $scope.responses[paramsKey] = 'Загрузка...';
 
-        $http.get(url, { params: params })
+        $http.get(url, { params: requestParams })
             .then(function (response) {
                 if (paramsValue.is_debug) {
                     $scope.responses[paramsKey] = $sce.trustAsHtml(response.data);
@@ -41,9 +40,10 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
                 }
             })
             .catch(function (error) {
-                $scope.responses[paramsKey] = 'Ошибка: ' + error.statusText;
+                $scope.responses[paramsKey] = 'Ошибка: ' + (error.data.error || error.statusText);
             });
     };
+    
 
     $scope.get573 = function () {
         $scope.executeRequest('573', { is_573: 1 });
