@@ -254,15 +254,13 @@ class TestAuthController extends JsonController
         if (!\Yii::$app->user->can('test_auth_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
+
         $item = TestAuth::findOne($this->request['id']); /** @var TestAuth $item */
-        
         if ($item === null) {
             throw new HttpException(404, 'TestAuth не найден');
         }
-        
-        $direction = self::TEST_DIRECTION_MAIN;
 
+        $direction = self::TEST_DIRECTION_MAIN;
         $apiUrl = $item->server->apiUrl;
         $apiParams = [
             'trunk_name' => $item->trunk_name,
@@ -272,17 +270,18 @@ class TestAuthController extends JsonController
             'src_noa' => $item->src_noa,
             'dst_noa' => $item->dst_noa,
             'router_version' => $item->router_version,
-            'headers' => $item->headers
+            'headers' => $item->headers,
+            'server_id' => $item->server_id
         ];
-        
+
         if ($item->with_debug_info) {
             $apiParams['with_debug_info'] = 1;
         }
-        
+
         if ($item->cpc) {
             $apiParams['cpc'] = $item->cpc;
         }
-        
+
         if ($this->request['displayTreeView']) {
             $apiParams['trace_tree'] = 1;
         }
@@ -290,55 +289,46 @@ class TestAuthController extends JsonController
         if (isset($this->request['isReserve']) && $item->server->hostname_reserve) {
             $direction = self::TEST_DIRECTION_RESERVE;
             $apiUrl = $item->server->apiUrlReserve;
-            $apiParams['server_id'] = $item->server_id;
         }
-    
+
         if (isset($this->request['isReserve2']) && $item->server->hostname_reserve_2) {
             $direction = self::TEST_DIRECTION_RESERVE_2;
             $apiUrl = $item->server->apiUrlReserve2;
-            $apiParams['server_id'] = $item->server_id;
         }
 
         if (isset($this->request['is1001']) && $item->server->hostname_1001) {
             $direction = self::TEST_DIRECTION_1001;
             $apiUrl = $item->server->apiUrl1001;
-            $apiParams['server_id'] = $item->server_id;
         }
 
         if (isset($this->request['is1002']) && $item->server->hostname_1002) {
             $direction = self::TEST_DIRECTION_1002;
             $apiUrl = $item->server->apiUrl1002;
-            $apiParams['server_id'] = $item->server_id;
         }
-    
+
         if (isset($this->request['isDev']) && $item->server->hostname_dev) {
             $direction = self::TEST_DIRECTION_DEV;
             $apiUrl = $item->server->apiUrlDev;
         }
-        
+
         if (isset($this->request['ttl']) && $this->request['ttl'] == 'none') {
             $ttl = 0;
         } else {
             $ttl = $item->ttl;
-    
             if (empty($ttl)) {
                 $ttl = 0;
             }
         }
-        
+
         $request = $apiUrl . 'test/auth?' . http_build_query($apiParams);
-        
         $apiParams['user'] = Yii::$app->user->getId();
         $apiParams['date'] = date('Y-m-d H:i:s');
-        
         $requestForKey = $apiUrl . 'test/auth?' . http_build_query($apiParams);
-        
         $key = md5($requestForKey);
-        
+
         $response = file_get_contents($request);
-    
         list($result, $trace) = $this->generateOldResult($response, $item->server, $apiParams, $direction, $ttl);
-        
+
         return [
             'item' => $item->toArray(),
             'name' => 'root',
@@ -350,7 +340,7 @@ class TestAuthController extends JsonController
             'url' => $request
         ];
     }
-    
+
     public function actionTrace()
     {
         if (!\Yii::$app->user->can('test_auth_list')) {
