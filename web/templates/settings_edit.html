@@ -672,7 +672,14 @@
                                             <th>A-номер</th>
                                             <th>B-номер</th>
                                             <th>C-номер</th>
-                                            <th>Направление</th> <!-- Направление -->
+                                            <th data-toggle="tooltip" data-placement="top"
+                                            title="DIR_TX – исходящий вызов от нашего абонента во внешнюю сеть
+DIR_RX – входящий вызов из внешней сети к нашему абоненту
+DIR_DX – транзитный вызов из сети в сеть
+DIR_LX – локальный вызов между нашими абонентами">
+    Направление
+</th>
+
                                             <th>Сорм адаптер</th>
                                             <th>A || C</th>
                                             <th></th>
@@ -728,91 +735,7 @@
                                 </table>
                             </div>
                         </div>
-                
-                        <!-- Правила Терминации -->
-                        <div class="form-group" style="margin-right: -200px;">
-                            <div class="col-sm-8 d-flex align-items-center">
-                                <label style="color: rgba(72,143,204,255); font-size: 17px">Правила Терминации</label>
-                                <label class="col-sm-2 control-label">Действие по умолчанию:</label>
-                                <div class="btn-group" ng-click="item.corm_term = !item.corm_term">
-                                    <button type="button" class="btn {{item.corm_term ? 'btn-success active' : 'btn-default'}}">Разрешено</button>
-                                    <button type="button" class="btn {{!item.corm_term ? 'btn-danger active' : 'btn-default'}}">Запрещено</button>
-                                </div>
-                                <div ng-if="item.corm_term" class="ml-2 d-flex align-items-center">
-                                    <label class="control-label mr-2">СОРМ Адаптер:</label>
-                                    <select-box class="small-adapter" list="adapter" model="item.call_telemetry_receiver_term" param="{{server_id}}" default="Любой адаптер"></select-box>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group" style="margin-right: -200px;">
-                            <div class="col-sm-10 table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Правило</th>
-                                            <th>Группа транков</th>
-                                            <th>A-номер</th>
-                                            <th>B-номер</th>
-                                            <th>C-номер</th>
-                                            <th>Направление</th>
-                                            <th>Сорм адаптер</th>
-                                            <th>A || C</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody ui-sortable="{axis: 'y'}" ng-model="item.trunkRulesTermination">
-                                        <tr ng-repeat="line in item.trunkRulesTermination">
-                                            <td width="5%">
-                                                <button ng-if="line.allow" ng-click="line.allow = !line.allow" class="btn label label-success">Разрешено</button>
-                                                <button ng-if="!line.allow" ng-click="line.allow = !line.allow" class="btn label label-danger">Запрещено</button>
-                                            </td>
-                                            <td>
-                                                <select-box list="trunkGroup" model="line.trunk_group_id" default="Любая группа"></select-box>
-                                            </td>
-                                            <td>
-                                                <select-box list="number" model="line.number_id_filter_a" param="1" default="Любой номер"></select-box>
-                                            </td>
-                                            <td>
-                                                <select-box list="number" model="line.number_id_filter_b" param="2" default="Любой номер"></select-box>
-                                            </td>
-                                            <td>
-                                                <select-box list="number" model="line.number_id_filter_c" param="3" default="Любой номер"></select-box>
-                                            </td>        
-                                            <td>
-                                                <select ng-model="line.direction" 
-                                                        ng-options="option.value as option.label for option in item.directionOptions" 
-                                                        style="width: 100%; height: 26px; padding: 4px; font-size: 12px; border-radius: 4px; 
-                                                               border: 1px solid #ccc; background-color: white;"
-                                                        ng-init="line.direction = line.direction || 'DIR_TX'">
-                                                </select>
-                                            </td>
-                                                                                   
-                                            <td>
-                                                <select-box list="adapter" model="line.telemetry_receiver_id" param="{{server_id}}" default="Любой адаптер"></select-box>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group" ng-click="line.ac_mode = line.ac_mode === 1 ? 0 : 1">
-                                                    <button type="button" class="btn btn-sm {{line.ac_mode === 1 ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                                    <button type="button" class="btn btn-sm {{line.ac_mode === 0 ? 'btn-primary active' : 'btn-default'}}">Нет</button>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="removeTrunkRuleTermination($index)"></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="11">
-                                                <button type="button" class="btn btn-success btn-xs" ng-click="addTrunkRuleTermination()"><i class="glyphicon glyphicon-plus"></i> Группа транков</button>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </div>                   
+                    </div>
 
                     <div class="tab-pane" id="telemetry-dvo">
                         <div class="form-group">

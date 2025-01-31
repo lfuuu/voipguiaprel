@@ -11,6 +11,8 @@ namespace app\models\sorm;
  * @property bool $sw_shared
  * @property string $name
  * @property string $address
+ * @property bool $add_out_trunk
+ * @property bool $del_in_trunk
  * @property string $created_at
  * @property string $updated_at
  */
@@ -40,7 +42,7 @@ class TelemetryReceiver extends \yii\db\ActiveRecord
         return [
             [['server_id', 'name', 'address'], 'required'],
             [['server_id'], 'integer'],
-            [['sw_shared'], 'boolean'],
+            [['sw_shared', 'add_out_trunk', 'del_in_trunk'], 'boolean'],
             [['name'], 'string', 'max' => 255],
             [['address'], 'safe'],
         ];

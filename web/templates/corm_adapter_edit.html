@@ -49,6 +49,39 @@
                 <button type="button" class="btn btn-success" ng-click="addAddress()">Добавить адрес</button>
             </div>
         </div>
+        <!-- Кнопка "Add Out_Trunk в Call_Start" -->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Add Out_Trunk в Call_Start</label>
+            <div class="col-sm-10">
+            <div class="btn-group" ng-click="item.add_out_trunk = !item.add_out_trunk">
+                <button type="button" 
+                        class="btn btn-sm {{item.add_out_trunk ? 'btn-success active' : 'btn-default'}}">
+                Да
+                </button>
+                <button type="button" 
+                        class="btn btn-sm {{!item.add_out_trunk ? 'btn-primary active' : 'btn-default'}}">
+                Нет
+                </button>
+            </div>
+            </div>
+        </div>
+        
+        <!-- Кнопка "Del In_Trunk в Call_Start" -->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Del In_Trunk в Call_Start</label>
+            <div class="col-sm-10">
+            <div class="btn-group" ng-click="item.del_in_trunk = !item.del_in_trunk">
+                <button type="button" 
+                        class="btn btn-sm {{item.del_in_trunk ? 'btn-success active' : 'btn-default'}}">
+                Да
+                </button>
+                <button type="button" 
+                        class="btn btn-sm {{!item.del_in_trunk ? 'btn-primary active' : 'btn-default'}}">
+                Нет
+                </button>
+            </div>
+            </div>
+        </div>
     </div>
 
     <div class="modal-footer">

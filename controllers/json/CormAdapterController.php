@@ -103,6 +103,8 @@ public function actionUpdate()
     $adapter->name = $request['name'];
     $adapter->address = $request['address'];
     $adapter->sw_shared = $request['sw_shared'];
+    $adapter->add_out_trunk = $request['add_out_trunk'];
+    $adapter->del_in_trunk  = $request['del_in_trunk'];
 
     if ($adapter->save()) {
         return ['success' => true, 'adapter' => $adapter->toArray()];
@@ -110,6 +112,7 @@ public function actionUpdate()
         throw new \yii\web\ServerErrorHttpException('Ошибка при обновлении адаптера.');
     }
 }
+
 
 
 public function actionSave()
@@ -129,6 +132,8 @@ public function actionSave()
     $adapter->name = $request['name'];
     $adapter->address = $request['address'];
     $adapter->sw_shared = $request['sw_shared'];
+    $adapter->add_out_trunk = $request['add_out_trunk'];
+    $adapter->del_in_trunk  = $request['del_in_trunk'];
 
     if ($adapter->save()) {
         return ['success' => true, 'adapter' => $adapter->toArray()];
@@ -136,7 +141,6 @@ public function actionSave()
         throw new \yii\web\ServerErrorHttpException('Ошибка при сохранении адаптера.');
     }
 }
-
 
     public function actionDelete()
     {
