@@ -21,34 +21,6 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Адреса</label>
-            <div class="col-sm-10">
-                <div ng-repeat="adress in item.address track by $index" style="margin-bottom: 10px;">
-                    <div class="input-group">
-                        <input class="form-control" style="width: 70%;" placeholder="Введите адрес" ng-model="item.address[$index].address" required>
-
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-info" ng-click="adress.showComment = !adress.showComment" 
-                                title="{{adress.object_comment || 'Комментарий отсутствует'}}">
-                                <i class="glyphicon" ng-class="adress.showComment ? 'glyphicon-plus' : 'glyphicon-comment'"></i>
-                            </button>
-                        </span>
-
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-danger" ng-click="removeAddress($index)">
-                                <span class="glyphicon glyphicon-minus"></span>
-                            </button>
-                        </span>
-                    </div>
-
-                    <div class="input-group" ng-show="adress.showComment" style="margin-top: 5px;">
-                        <input class="form-control" style="width: 200%;" placeholder="Комментарий" ng-model="item.address[$index].object_comment">
-                    </div>
-                </div>
-                <button type="button" class="btn btn-success" ng-click="addAddress()">Добавить адрес</button>
-            </div>
-        </div>
         <!-- Кнопка "Add Out_Trunk в Call_Start" -->
         <div class="form-group">
             <label class="col-sm-2 control-label">Add Out_Trunk в Call_Start</label>
@@ -84,6 +56,34 @@
         </div>
     </div>
 
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Адреса</label>
+            <div class="col-sm-10">
+                <div ng-repeat="adress in item.address track by $index" style="margin-bottom: 10px;">
+                    <div class="input-group">
+                        <input class="form-control" style="width: 70%;" placeholder="Введите адрес" ng-model="item.address[$index].address" required>
+
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-info" ng-click="adress.showComment = !adress.showComment" 
+                                title="{{adress.object_comment || 'Комментарий отсутствует'}}">
+                                <i class="glyphicon" ng-class="adress.showComment ? 'glyphicon-plus' : 'glyphicon-comment'"></i>
+                            </button>
+                        </span>
+
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-danger" ng-click="removeAddress($index)">
+                                <span class="glyphicon glyphicon-minus"></span>
+                            </button>
+                        </span>
+                    </div>
+
+                    <div class="input-group" ng-show="adress.showComment" style="margin-top: 5px;">
+                        <input class="form-control" style="width: 200%;" placeholder="Комментарий" ng-model="item.address[$index].object_comment">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success" ng-click="addAddress()">Добавить адрес</button>
+            </div>
+        </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="form.$invalid">Сохранить</button>
         <button type="button" class="btn btn-default" ng-click="back()">Закрыть</button>
