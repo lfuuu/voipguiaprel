@@ -1,4 +1,4 @@
-var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance, params) {
+var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance, params, $timeout) {
   $scope.title = 'Общие настройки';
   $scope.name_changed = false;
 
@@ -35,11 +35,11 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
 
     if (data.epvvTransitRules) {
       data.epvvTransitRules.forEach(function(rule) {
-          if (rule.is_orig) {
-              $scope.item.epvvTransitRulesOrigination.push(rule);
-          } else {
-              $scope.item.epvvTransitRulesTermination.push(rule);
-          }
+        if (rule.is_orig) {
+          $scope.item.epvvTransitRulesOrigination.push(rule);
+        } else {
+          $scope.item.epvvTransitRulesTermination.push(rule);
+        }
       });
     }
 
@@ -57,6 +57,10 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
         { value: 'DIR_LX', label: 'DIR_LX' }
       ];
     }
+
+    angular.forEach($scope.item.trunkRulesOrigination, function(rule, index) {
+      rule.order = index + 1;
+    });
   });
 
   List.prefixlist().then(function (data) {
@@ -71,7 +75,22 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     $scope.adapters = data;
   });
 
+  $scope.sortableOptions = {
+    axis: 'y',
+    update: function(e, ui) {
+      $timeout(function() {
+        angular.forEach($scope.item.trunkRulesOrigination, function(rule, index) {
+          rule.order = index + 1;
+        });
+      });
+    }
+  };
+
   $scope.save = function () {
+    angular.forEach($scope.item.trunkRulesOrigination, function(rule, index) {
+      rule.order = index + 1;
+    });
+
     switch ($scope.vpbx_type_id) {
       case 1:
         $scope.item.ast_trunk_group_id = null;
@@ -85,9 +104,9 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
     }
     $scope.item.trunkRulesOrigination.forEach(function(rule) {
       if (!rule.direction) {
-          rule.direction = 'DIR_TX';
+        rule.direction = 'DIR_TX';
       }
-  });
+    });
 
     $scope.item.epvvTransitRules = $scope.item.epvvTransitRulesOrigination.concat($scope.item.epvvTransitRulesTermination);
 
@@ -102,23 +121,24 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
 
   $scope.addTrunkRuleOrigination = function () {
     $scope.item.trunkRulesOrigination.push({
-        trunk_group_id: '',
-        allow: $scope.item.corm_orig,
-        is_orig: true,
-        ac_mode: 0,
-        direction: 'DIR_TX'
+      trunk_group_id: '',
+      allow: $scope.item.corm_orig,
+      is_orig: true,
+      ac_mode: 0,
+      direction: 'DIR_TX',
+      order: $scope.item.trunkRulesOrigination.length + 1
     });
-};
+  };
 
   $scope.addEpvvTransitRuleOrigination = function () {
     $scope.item.epvvTransitRulesOrigination.push({
-        trunk_group_id: '',
-        allow: $scope.item.epvv_transit_orig,
-        is_orig: true,
-        number_id_filter_a: null,
-        number_id_filter_b: null,
-        number_id_filter_c: null,
-        ac_mode: 0
+      trunk_group_id: '',
+      allow: $scope.item.epvv_transit_orig,
+      is_orig: true,
+      number_id_filter_a: null,
+      number_id_filter_b: null,
+      number_id_filter_c: null,
+      ac_mode: 0
     });
   };
 
@@ -128,13 +148,13 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
 
   $scope.addEpvvTransitRuleTermination = function () {
     $scope.item.epvvTransitRulesTermination.push({
-        trunk_group_id: '',
-        allow: $scope.item.epvv_transit_term,
-        is_orig: false,
-        number_id_filter_a: null,
-        number_id_filter_b: null,
-        number_id_filter_c: null,
-        ac_mode: 0
+      trunk_group_id: '',
+      allow: $scope.item.epvv_transit_term,
+      is_orig: false,
+      number_id_filter_a: null,
+      number_id_filter_b: null,
+      number_id_filter_c: null,
+      ac_mode: 0
     });
   };
 
@@ -144,29 +164,32 @@ var SettingsEditCtrl = function ($scope, $window, Settings, List, $modalInstance
 
   $scope.addDvoRule = function () {
     $scope.item.dvoRules.push({
-        allow: $scope.item.dvo_default_action,
-        number_id_filter_a: null,
-        telemetry_receiver_id: null,
-        object_comment: ''
+      allow: $scope.item.dvo_default_action,
+      number_id_filter_a: null,
+      telemetry_receiver_id: null,
+      object_comment: ''
     });
   };
 
   $scope.removeDvoRule = function (index) {
-      $scope.item.dvoRules.splice(index, 1);
+    $scope.item.dvoRules.splice(index, 1);
   };
 
   $scope.addTrunkRuleTermination = function () {
     $scope.item.trunkRulesTermination.push({
-        trunk_group_id: '',
-        allow: $scope.item.corm_term, 
-        is_orig: false,
-        ac_mode: 0,
-        direction: 'DIR_TX' 
+      trunk_group_id: '',
+      allow: $scope.item.corm_term, 
+      is_orig: false,
+      ac_mode: 0,
+      direction: 'DIR_TX' 
     });
   };
 
   $scope.removeTrunkRuleOrigination = function (index) {
     $scope.item.trunkRulesOrigination.splice(index, 1);
+    angular.forEach($scope.item.trunkRulesOrigination, function(rule, index) {
+      rule.order = index + 1;
+    });
   };
 
   $scope.removeTrunkRuleTermination = function (index) {
