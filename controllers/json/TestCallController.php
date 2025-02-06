@@ -246,7 +246,8 @@ class TestCallController extends JsonController
             'redirect_number' => $item->redirect_number,
             'src_noa' => $item->src_noa,
             'dst_noa' => $item->dst_noa,
-            'dst_replace' => $item->dst_replace
+            'dst_replace' => $item->dst_replace,
+            'server_id' => $item->server_id
         ];
 
         if (isset($item->cpc)) {
