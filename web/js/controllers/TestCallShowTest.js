@@ -11,7 +11,7 @@ var TestCallShowTestCtrl = function($scope, TestCall, params, $modalInstance, $w
             $scope.result = data.result;
             $scope.result_new = data.result_new;
             $scope.key = data.key;
-            $scope.url = data.url + '&server_id=' + $scope.server.id;
+            $scope.url = data.url;
         });
     } else {
         $scope.item = {
