@@ -1210,6 +1210,9 @@ app.factory('Cdr', function ($q,$http, ApiLoader) {
         get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
+        getLegs: function (data) {
+            return ApiLoader.post(url + 'get-legs', data);
+        },
         disconnectCauseList: function () {
             if (promise !== undefined) return promise;
 

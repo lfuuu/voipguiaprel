@@ -2,7 +2,7 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
 
     if (params.mcn_callid) {
         $scope.mcn_callid = params.mcn_callid;
-        Cdr.get({mcn_callid: params.mcn_callid}).then(function (data) {
+        Cdr.get({ mcn_callid: params.mcn_callid }).then(function (data) {
             console.log(data);
             $scope.list = data.items;
             $scope.link = data.link;
@@ -43,7 +43,6 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
                 $scope.responses[paramsKey] = 'Ошибка: ' + (error.data.error || error.statusText);
             });
     };
-    
 
     $scope.get573 = function () {
         $scope.executeRequest('573', { is_573: 1 });
@@ -59,5 +58,16 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
 
     $scope.get86Debug = function () {
         $scope.executeRequest('86_debug', { is_86: 1, is_debug: 1 });
+    };
+
+    $scope.getLegs = function() {
+        var url = '/json/cdr/get-legs';
+        $http.get(url, { params: { mcn_callid: $scope.mcn_callid } })
+            .then(function(response) {
+                $scope.legsData = response.data;
+            })
+            .catch(function(error) {
+                $scope.legsData = 'Ошибка: ' + (error.data.error || error.statusText);
+            });
     };
 };
