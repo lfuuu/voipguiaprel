@@ -20,7 +20,6 @@ class CdrController extends JsonController
         if (!\Yii::$app->user->can('cdr_report_read')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
         $srcNumber = $this->request['src_number'];
         $dstNumber = $this->request['dst_number'];
         $redirectNumber = $this->request['redirect_number'];
@@ -40,53 +39,40 @@ class CdrController extends JsonController
         $source = $this->request['source'];
         $sessionTime = $this->request['session_time'];
         $sessionCompare = $this->request['session_compare'];
-        
         $where = [];
-        
         if ($srcNumber) {
             $where['c.src_number'] = $srcNumber;
         }
-        
         if ($dstNumber) {
             $where['c.dst_number'] = $dstNumber;
         }
-    
         if ($redirectNumber) {
             $where['c.redirect_number'] = $redirectNumber;
         }
-
         if ($outRedirectNumber) {
             $where['c.out_redirect_number'] = $outRedirectNumber;
         }
-    
         if ($hubId) {
             $where['s.hub_id'] = $hubId;
         }
-        
         if ($mcnCallid) {
             $where['c.mcn_callid'] = $mcnCallid;
         }
-    
         if ($srcRoute) {
             $where['c.src_route'] = $srcRoute;
         }
-    
         if ($dstRoute) {
             $where['c.dst_route'] = $dstRoute;
         }
-    
         if ($disconnectCauseId) {
             $where['c.disconnect_cause'] = $disconnectCauseId;
         }
-        
         if (empty($where) && (empty($timeFrom) || empty($timeTo))) {
             return [];
         }
-        
         if (empty($limit)) {
             $limit = 100;
         }
-        
         $andWhere = '';
         $params = [];
         if ($isTimeAbsolute) {
@@ -105,7 +91,6 @@ class CdrController extends JsonController
                 $andWhere = 'c.connect_time >= (now() - INTERVAL \'' . (int)$timeRelative . ' seconds\') at time zone \'utc\'';
             }
         }
-        
         $query = Cdr::find()
             ->alias('c')
             ->select([
@@ -118,17 +103,14 @@ class CdrController extends JsonController
             ->where($where)
             ->limit($limit)
             ->orderBy('c.connect_time ' . ($sortAsc ? 'ASC' : 'DESC'));
-        
         if ($andWhere && $params) {
             $query->andWhere($andWhere)->addParams($params);
         } elseif ($andWhere) {
             $query->andWhere($andWhere);
         }
-        
         if (!$showAll) {
             $query->andWhere('c.session_time > 0');
         }
-        
         if ($source) {
             switch ($source) {
                 case 'xml':
@@ -143,11 +125,9 @@ class CdrController extends JsonController
                     break;
             }
         }
-        
         if ($sessionCompare && $sessionTime && in_array($sessionCompare, ['>=', '=', '<=']) && is_numeric($sessionTime)) {
             $query->andWhere('c.session_time ' . $sessionCompare . ' ' . $sessionTime);
         }
-        
         return $query->asArray()->all();
     }
 
@@ -156,50 +136,97 @@ class CdrController extends JsonController
         if (!\Yii::$app->user->can('cdr_report_read')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
         $items = Cdr::find()
-                ->alias('c')
-                ->select([
-                    'c.*',
-                    'server_name' => new Expression("s.id || ': ' || s.name"),
-                    'disconnect_cause_description' => 'dc.description',
-                ])
-                ->with('callsRaw.currency')
-                ->with('callsRaw.legTypeName')
-                ->innerJoin('public.server s', 's.id = c.server_id')
-                ->leftJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
-                ->leftJoin('billing.leg_type lt', 'lt.id = c.disconnect_cause')
-                ->where(['c.mcn_callid' => $this->request['mcn_callid']])
-                ->asArray()
-                ->all();
-        
+            ->alias('c')
+            ->select([
+                'c.*',
+                'server_name' => new Expression("s.id || ': ' || s.name"),
+                'disconnect_cause_description' => 'dc.description',
+            ])
+            ->with('callsRaw.currency')
+            ->with('callsRaw.legTypeName')
+            ->innerJoin('public.server s', 's.id = c.server_id')
+            ->leftJoin('billing.disconnect_cause dc', 'dc.cause_id = c.disconnect_cause')
+            ->leftJoin('billing.leg_type lt', 'lt.id = c.disconnect_cause')
+            ->where(['c.mcn_callid' => $this->request['mcn_callid']])
+            ->asArray()
+            ->all();
         usort($items, function($a, $b) {
             return $a['connect_time'] < $b['connect_time'] ? 1 : -1;
         });
-        
         $link = \Yii::$app->params['isEuropean'] ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
         $result = [
             'items' => $items,
-            'link' => $link,
+            'link'  => $link,
         ];
 
         return $result;
     }
-    
+
+    public function actionGetLegs()
+    {
+        if (!\Yii::$app->user->can('cdr_report_read')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        $mcnCallid = \Yii::$app->request->get('mcn_callid');
+        if (!$mcnCallid) {
+            throw new HttpException(400, "Не указан mcn_callid");
+        }
+        $sql = "WITH callsraw_leg AS (
+                    SELECT r.id,
+                           CASE WHEN r.number_service_id IS NULL THEN r.server_id ELSE sn.server_id END as server_id,
+                           connect_time, orig, trunk_id, t.name as trunk_name, \"numA\", \"numB\", \"numC\", disconnect_cause, session_time, account_id, mcn_callid, contract_type_id, r.leg_type
+                    FROM calls_raw.calls_raw r
+                    JOIN auth.trunk t on (r.trunk_id = t.id)
+                    LEFT JOIN billing.service_number sn on (r.number_service_id = sn.id)
+                    WHERE account_id > 0 and mcn_callid = :mcn_callid
+                    ORDER BY connect_time
+                ),
+                callsraw_leg_origs AS (
+                    SELECT * FROM callsraw_leg WHERE orig ORDER BY connect_time LIMIT 1
+                ),
+                callsraw_leg_term AS (
+                    SELECT * FROM callsraw_leg WHERE NOT orig ORDER BY connect_time
+                )
+                SELECT
+                    o.server_id AS orig_server_id,
+                    o.trunk_name AS orig_trunk,
+                    o.\"numA\" AS orig_numa,
+                    o.\"numB\" AS orig_numb,
+                    o.\"numC\" AS orig_numc,
+                    o.\"account_id\" AS orig_account_id,
+                    o.disconnect_cause AS orig_disconnect_cause,
+                    o.contract_type_id AS orig_contract_type_id,
+                    o.leg_type AS orig_leg_type,
+                    t.server_id AS term_server_id,
+                    t.trunk_name AS term_trunk,
+                    t.\"numA\" AS term_numa,
+                    t.\"numB\" AS term_numb,
+                    t.\"numC\" AS term_numc,
+                    t.\"account_id\" AS term_account_id,
+                    t.disconnect_cause AS term_disconnect_cause,
+                    t.contract_type_id AS term_contract_type_id,
+                    t.leg_type AS term_leg_type
+                FROM callsraw_leg_origs o
+                JOIN callsraw_leg_term t on (o.mcn_callid = t.mcn_callid)";
+        $result = \Yii::$app->db->createCommand($sql)
+                    ->bindValue(':mcn_callid', $mcnCallid)
+                    ->queryAll();
+        return $result;
+    }
+
     public function actionDisconnectCauseList()
     {
         if (!\Yii::$app->user->can('cdr_report_read')) {
             throw new ForbiddenHttpException('Access denied');
         }
-    
-        return
-            DisconnectCause::find()
-                ->select(['id' => 'cause_id', 'name' => new Expression('cause_id || \': \' || value')])
-                ->orderBy('cause_id')
-                ->asArray()
-                ->all();
+        return DisconnectCause::find()
+            ->select(['id' => 'cause_id', 'name' => new Expression('cause_id || \': \' || value')])
+            ->orderBy('cause_id')
+            ->asArray()
+            ->all();
     }
-    
+
     public function actionReadAndExport()
     {
         $data = $this->actionRead();
@@ -270,7 +297,6 @@ class CdrController extends JsonController
                 } else {
                     $key = strtolower(str_replace(' ', '_', $field));
                 }
-
                 $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $item[$key] ?? 'N/A');
                 $columnIndex++;
             }
@@ -304,4 +330,4 @@ class CdrController extends JsonController
             throw new HttpException(500, "Ошибка при создании Excel файла: {$e->getMessage()}");
         }
     }
-}    
+}
