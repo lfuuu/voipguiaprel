@@ -163,55 +163,113 @@ class CdrController extends JsonController
         return $result;
     }
 
-    public function actionGetLegs()
+        public function actionGetLegs()
     {
         if (!\Yii::$app->user->can('cdr_report_read')) {
             throw new ForbiddenHttpException('Access denied');
         }
+        
         $mcnCallid = \Yii::$app->request->get('mcn_callid');
         if (!$mcnCallid) {
             throw new HttpException(400, "Не указан mcn_callid");
         }
-        $sql = "WITH callsraw_leg AS (
-                    SELECT r.id,
-                           CASE WHEN r.number_service_id IS NULL THEN r.server_id ELSE sn.server_id END as server_id,
-                           connect_time, orig, trunk_id, t.name as trunk_name, \"numA\", \"numB\", \"numC\", disconnect_cause, session_time, account_id, mcn_callid, contract_type_id, r.leg_type
-                    FROM calls_raw.calls_raw r
-                    JOIN auth.trunk t on (r.trunk_id = t.id)
-                    LEFT JOIN billing.service_number sn on (r.number_service_id = sn.id)
-                    WHERE account_id > 0 and mcn_callid = :mcn_callid
-                    ORDER BY connect_time
-                ),
-                callsraw_leg_origs AS (
-                    SELECT * FROM callsraw_leg WHERE orig ORDER BY connect_time LIMIT 1
-                ),
-                callsraw_leg_term AS (
-                    SELECT * FROM callsraw_leg WHERE NOT orig ORDER BY connect_time
-                )
-                SELECT
-                    o.server_id AS orig_server_id,
-                    o.trunk_name AS orig_trunk,
-                    o.\"numA\" AS orig_numa,
-                    o.\"numB\" AS orig_numb,
-                    o.\"numC\" AS orig_numc,
-                    o.\"account_id\" AS orig_account_id,
-                    o.disconnect_cause AS orig_disconnect_cause,
-                    o.contract_type_id AS orig_contract_type_id,
-                    o.leg_type AS orig_leg_type,
-                    t.server_id AS term_server_id,
-                    t.trunk_name AS term_trunk,
-                    t.\"numA\" AS term_numa,
-                    t.\"numB\" AS term_numb,
-                    t.\"numC\" AS term_numc,
-                    t.\"account_id\" AS term_account_id,
-                    t.disconnect_cause AS term_disconnect_cause,
-                    t.contract_type_id AS term_contract_type_id,
-                    t.leg_type AS term_leg_type
-                FROM callsraw_leg_origs o
-                JOIN callsraw_leg_term t on (o.mcn_callid = t.mcn_callid)";
+        
+        $sql = "WITH
+            callsraw_leg AS (
+                SELECT 
+                    r.id,
+                    CASE 
+                        WHEN r.number_service_id IS NULL THEN r.server_id 
+                        ELSE sn.server_id 
+                    END AS node_id,
+                    connect_time,
+                    orig,
+                    trunk_id,
+                    t.name AS trunk_name,
+                    \"numA\",
+                    \"numB\",
+                    \"numC\",
+                    disconnect_cause,
+                    session_time,
+                    account_id,
+                    mcn_callid,
+                    contract_type_id,
+                    r.leg_type,
+                    r.trunk_service_id,
+                    r.number_service_id
+                FROM calls_raw.calls_raw r
+                JOIN auth.trunk t ON (r.trunk_id = t.id)
+                LEFT JOIN billing.service_number sn ON (r.number_service_id = sn.id)
+                WHERE account_id > 0 
+                AND mcn_callid = :mcn_callid
+                ORDER BY connect_time
+            ),
+            
+            callsraw_leg_origs AS (
+                SELECT 
+                    cl.*,
+                    ps.name AS node_name,
+                    CASE 
+                        WHEN cl.node_id > 21 THEN 'КУС' 
+                        ELSE 'МГ' 
+                    END AS node_type
+                FROM callsraw_leg cl
+                JOIN public.server ps ON (cl.node_id = ps.id)
+                WHERE cl.orig
+                ORDER BY cl.connect_time
+                LIMIT 1
+            ),
+            
+            callsraw_leg_term AS (
+                SELECT 
+                    cl.*,
+                    ps.name AS node_name,
+                    CASE 
+                        WHEN cl.node_id > 21 THEN 'КУС' 
+                        ELSE 'МГ' 
+                    END AS node_type
+                FROM callsraw_leg cl
+                JOIN public.server ps ON (cl.node_id = ps.id)
+                WHERE NOT orig
+                ORDER BY connect_time
+            )
+            
+            SELECT
+                '-------------- Оригинационное плечо -' AS orig_bar,
+                o.node_id AS orig_server_id,
+                o.node_name AS orig_node_name,
+                o.node_type AS orig_node_type,
+                o.trunk_name AS orig_trunk,
+                o.\"numA\" AS orig_numa,
+                o.\"numB\" AS orig_numb,
+                o.\"numC\" AS orig_numc,
+                o.\"account_id\" AS orig_account_id,
+                o.disconnect_cause AS orig_disconnect_cause,
+                o.contract_type_id AS orig_contract_type_id,
+                o.leg_type AS orig_leg_type,
+                o.trunk_service_id AS orig_trunk_service_id,
+                o.number_service_id AS orig_number_service_id,
+                '-------------- Терминационное плечо -' AS term_bar,
+                t.node_id AS term_server_id,
+                t.node_name AS term_node_name,
+                t.node_type AS term_node_type,
+                t.trunk_name AS term_trunk,
+                t.\"numA\" AS term_numa,
+                t.\"numB\" AS term_numb,
+                t.\"numC\" AS term_numc,
+                t.\"account_id\" AS term_account_id,
+                t.disconnect_cause AS term_disconnect_cause,
+                t.contract_type_id AS term_contract_type_id,
+                t.leg_type AS term_leg_type,
+                t.trunk_service_id AS term_trunk_service_id,
+                t.number_service_id AS term_number_service_id
+            FROM callsraw_leg_origs o
+            JOIN callsraw_leg_term t ON (o.mcn_callid = t.mcn_callid)";
+        
         $result = \Yii::$app->db->createCommand($sql)
                     ->bindValue(':mcn_callid', $mcnCallid)
                     ->queryAll();
+        
         return $result;
     }
 
