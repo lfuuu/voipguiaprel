@@ -22,6 +22,11 @@ class CategoryController extends BaseController
     {
         return $this->render('billing', []);
     }
+
+    public function actionNetwork()
+    {
+        return $this->render('network', []);
+    }
     
     public function actionMarketplace()
     {

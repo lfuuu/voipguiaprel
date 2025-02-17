@@ -1199,6 +1199,72 @@ app.factory('Cpc', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('Node', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/network/node/',
+        list = undefined,
+        promise = undefined;
+    return {
+        read: function () {
+            return ApiLoader.post(url + 'read');
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function () {
+            if (promise !== undefined) return promise;
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                var data = {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        create: function (data) {
+            return this.save(data);
+        },
+
+        update: function (data) {
+            return this.save(data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        },
+        nodeTypes: function () {
+            return ApiLoader.post(url + 'list-node-types');
+        },
+        nodeStatuses: function () {
+            return ApiLoader.post(url + 'list-node-statuses');
+        },
+        russianCities: function () {
+            return ApiLoader.post(url + 'list-russian-cities');
+        },
+        russianDistricts: function () {
+            return ApiLoader.post(url + 'list-russian-districts');
+        },
+        russianSubjects: function () {
+            return ApiLoader.post(url + 'list-russian-subjects');
+        }
+    };
+});
+
+
 app.factory('Cdr', function ($q,$http, ApiLoader) {
     var url = '/json/cdr/';
     var list = undefined;
