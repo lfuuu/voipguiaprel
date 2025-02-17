@@ -130,6 +130,9 @@ if (Yii::$app->user->identity) {
 <?php if ($userHasBilling) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/billing') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/billing'])?>">Билингация</a></li>
 <?php } ?>
+<?php if (1) { ?>
+                        <li<?php if ($_SERVER['REQUEST_URI'] == '/network') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/network'])?>">Сеть</a></li>
+<?php } ?>
 <?php if ($userHasCamel && !$isEu) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/camel'|| preg_match("/^\/cs/i", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/camel'])?>">Camel</a></li>
 <?php } ?>
