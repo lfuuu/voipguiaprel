@@ -44,8 +44,25 @@ class Node extends ActiveRecord
         return [
             [['node_name_id', 'comment', 'address'], 'string'],
             [['node_type_id', 'region_id', 'status', 'node_status_id', 'russian_district_id', 'russian_subject_id', 'russian_city_id', 'graph_id'], 'integer'],
-            [['ipaddress'], 'ip', 'ipv4' => true, 'ipv6' => false, 'skipOnEmpty' => true], // При необходимости можно добавить валидатор ip, например, 'ip'
+            [['ipaddress'], 'string'],
+            // Можно добавить валидатор IP, если нужно:
+            // [['ipaddress'], 'ip', 'ipv4' => true, 'ipv6' => false, 'skipOnEmpty' => true],
         ];
+    }
+
+    /**
+     * Переопределение метода beforeSave для преобразования пустых строк в null для поля ipaddress.
+     */
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            // Если ipaddress пустое (только пробелы или пустая строка), устанавливаем его в null
+            if (trim($this->ipaddress) === '') {
+                $this->ipaddress = null;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

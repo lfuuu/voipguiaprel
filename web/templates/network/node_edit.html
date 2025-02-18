@@ -4,87 +4,120 @@
     <h3 ng-if="!item.node_id">Создание нового узла</h3>
   </div>
   <div class="modal-body">
-    <!-- Название узла -->
+    <!-- Название узла (обязательное) -->
     <div class="form-group">
       <label class="col-sm-2 control-label">Название</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" placeholder="Введите название узла" ng-model="item.node_name_id" required>
+        <input type="text"
+               class="form-control"
+               placeholder="Введите название узла"
+               ng-model="item.node_name_id"
+               required>
       </div>
     </div>
-    <!-- Тип узла -->
+
+    <!-- Тип узла (обязательное) -->
     <div class="form-group">
       <label class="col-sm-2 control-label">Тип</label>
       <div class="col-sm-10">
-        <select class="form-control" ng-model="item.node_type_id"
-                ng-options="type.node_type_id as type.node_type for type in nodeTypes" required>
+        <select class="form-control"
+                ng-model="item.node_type_id"
+                ng-options="type.node_type_id as type.node_type for type in nodeTypes"
+                required>
           <option value="">-- Выберите тип --</option>
         </select>
       </div>
     </div>
-    <!-- Статус узла -->
+
+    <!-- Статус узла (необязательное) -->
     <div class="form-group">
       <label class="col-sm-2 control-label">Статус</label>
       <div class="col-sm-10">
-        <select class="form-control" ng-model="item.node_status_id"
-                ng-options="status.node_status_id as status.node_status for status in nodeStatuses" required>
+        <select class="form-control"
+                ng-model="item.node_status_id"
+                ng-options="status.node_status_id as status.node_status for status in nodeStatuses">
           <option value="">-- Выберите статус --</option>
         </select>
       </div>
     </div>
-    <!-- IP адрес -->
+
+    <!-- IP адрес (необязательное) -->
     <div class="form-group">
       <label class="col-sm-2 control-label">IP адрес</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" placeholder="Введите IP адрес" ng-model="item.ipaddress">
+        <input type="text"
+               class="form-control"
+               placeholder="Введите IP адрес"
+               ng-model="item.ipaddress">
       </div>
     </div>
-    <!-- Адрес -->
+
+    <!-- Адрес (необязательное) -->
     <div class="form-group">
       <label class="col-sm-2 control-label">Адрес</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" placeholder="Введите адрес" ng-model="item.address">
+        <input type="text"
+               class="form-control"
+               placeholder="Введите адрес"
+               ng-model="item.address">
       </div>
     </div>
-    <!-- Федеральный округ -->
+
+    <!-- Федеральный округ (необязательное) -->
     <div class="form-group">
       <label class="col-sm-2 control-label">Фед. округ</label>
       <div class="col-sm-10">
-        <select class="form-control" ng-model="item.russian_district_id"
-                ng-options="district.russian_district_id as district.russian_district for district in russianDistricts" required>
+        <select class="form-control"
+                ng-model="item.russian_district_id"
+                ng-options="district.russian_district_id as district.russian_district for district in russianDistricts">
           <option value="">-- Выберите округ --</option>
         </select>
       </div>
     </div>
-    <!-- Субъект РФ -->
+
+    <!-- Субъект РФ (необязательное) -->
     <div class="form-group">
       <label class="col-sm-2 control-label">Субъект РФ</label>
       <div class="col-sm-10">
-        <select class="form-control" ng-model="item.russian_subject_id"
-                ng-options="subject.russian_subject_id as subject.russian_subject for subject in russianSubjects" required>
+        <select class="form-control"
+                ng-model="item.russian_subject_id"
+                ng-options="subject.russian_subject_id as subject.russian_subject for subject in russianSubjects">
           <option value="">-- Выберите субъект --</option>
         </select>
       </div>
     </div>
-    <!-- Город РФ -->
+
+    <!-- Город РФ (необязательное) -->
     <div class="form-group">
       <label class="col-sm-2 control-label">Город РФ</label>
       <div class="col-sm-10">
-        <select class="form-control" ng-model="item.russian_city_id"
-                ng-options="city.russian_city_id as city.russian_city for city in russianCities" required>
+        <select class="form-control"
+                ng-model="item.russian_city_id"
+                ng-options="city.russian_city_id as city.russian_city for city in russianCities">
           <option value="">-- Выберите город --</option>
         </select>
       </div>
     </div>
-    <!-- Комментарий -->
+
+    <!-- Комментарий (необязательное) -->
     <div class="form-group">
       <label class="col-sm-2 control-label">Комментарий</label>
       <div class="col-sm-10">
-        <textarea class="form-control" placeholder="Введите комментарий" ng-model="item.comment"></textarea>
+        <textarea class="form-control"
+                  placeholder="Введите комментарий"
+                  ng-model="item.comment"></textarea>
       </div>
     </div>
   </div>
+
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="form.$invalid || $root.isAjaxLoading">Сохранить</button>
+    <!-- Кнопка "Сохранить" заблокирована, если форма невалидна (т.е. обязательные поля пусты) -->
+    <button type="submit"
+            class="btn btn-primary"
+            ng-click="save()"
+            ng-disabled="form.$invalid || $root.isAjaxLoading">
+      Сохранить
+    </button>
     <button type="button" class="btn btn-default" ng-click="back()">Закрыть</button>
   </div>
 </form>
