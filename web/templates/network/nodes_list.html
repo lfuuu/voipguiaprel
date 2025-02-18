@@ -175,7 +175,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="item in list | filter:filterObj | orderBy:sortType:sortReverse">
+    <tr ng-repeat="item in list | orderBy:sortType:sortReverse">
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_id}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.region_id}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_name_id}}</td>
