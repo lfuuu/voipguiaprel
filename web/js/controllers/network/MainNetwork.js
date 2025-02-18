@@ -28,28 +28,24 @@ app.controller('MainNetworkCtrl', function ($rootScope, $scope, $cookies, $timeo
         funcName = params[0];
         id = params[1];
         type = params[2];
-    } else if ($cookies.billing_selected_page !== undefined) {
-        // Если cookie установлено, но оно может быть не актуально для сети, можно его игнорировать
-        // funcName = $cookies.billing_selected_page;
+    } else {
+        // В продакшене не используем cookie для перенаправления,
+        // чтобы не затирать раздел "Сеть"
+        console.log('Query string отсутствует. Не выполняем fallback редирект.');
     }
 
-    // Если ни query, ни cookie не заданы, явно задаём раздел сети
-    if (!funcName) {
-        funcName = 'networkNode';
-    }
-
-    // Если есть query, то вызываем Redirect[funcName]
-    if (query) {
+    // Если query-параметры заданы, выполняем редирект согласно ним
+    if (funcName) {
         if (funcName && id && type) {
             Redirect[funcName](id, type);
         } else if (funcName && id) {
             Redirect[funcName](id);
-        } else if (funcName) {
+        } else {
             Redirect[funcName]();
         }
     }
-    // Если query отсутствует, НЕ вызываем fallback редирект, чтобы не перезагружать вкладку
-    // Это позволит сохранить данные, загруженные в рамках текущей инициализации контроллера.
-    // Если вам всё-таки нужен fallback, убедитесь, что он не перезаписывает данные,
-    // например, проверяя текущее состояние вкладки.
+    // Если query отсутствует, ничего не делаем – оставляем текущее содержимое (раздел "Сеть")
+    // Таким образом, если вы заходите напрямую на /network, будет показан основной шаблон без лишних переключений.
+
+    // Остальная логика MainNetworkCtrl может оставаться без изменений
 });
