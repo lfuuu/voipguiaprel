@@ -3,9 +3,7 @@ app.controller('MainNetworkCtrl', function ($rootScope, $scope, $cookies, $timeo
     $rootScope.userId = userId;
     $rootScope.userPermissions = userPermissions;
     $rootScope.billingPermissions = billingPermissions;
-
     $rootScope.Redirect = Redirect;
-
     $rootScope.tabs = [];
     $rootScope.tabsMap = {};
 
@@ -30,29 +28,28 @@ app.controller('MainNetworkCtrl', function ($rootScope, $scope, $cookies, $timeo
         funcName = params[0];
         id = params[1];
         type = params[2];
-    } else if ($cookies.routing_selected_page !== undefined) {
-        funcName = $cookies.routing_selected_page;
-    } else {
-        for (var permissionName in $rootScope.userPermissions) {
-            if (permissionName === 'network_list' || permissionName === 'network_edit') {
-                funcName = permissionName.replace(/_([a-z])/g, function(m, w) {
-                    return w.toUpperCase();
-                });
-                break;
-            }
-        }
-        if (!funcName) {
-            funcName = 'networkNode';
-        }
+    } else if ($cookies.billing_selected_page !== undefined) {
+        // Если cookie установлено, но оно может быть не актуально для сети, можно его игнорировать
+        // funcName = $cookies.billing_selected_page;
     }
 
-    if (funcName && id && type) {
-        Redirect[funcName](id, type);
-    } else if (funcName && id) {
-        Redirect[funcName](id);
-    } else if (funcName) {
-        Redirect[funcName]();
-    } else {
-        Redirect.networkNode();
+    // Если ни query, ни cookie не заданы, явно задаём раздел сети
+    if (!funcName) {
+        funcName = 'networkNode';
     }
+
+    // Если есть query, то вызываем Redirect[funcName]
+    if (query) {
+        if (funcName && id && type) {
+            Redirect[funcName](id, type);
+        } else if (funcName && id) {
+            Redirect[funcName](id);
+        } else if (funcName) {
+            Redirect[funcName]();
+        }
+    }
+    // Если query отсутствует, НЕ вызываем fallback редирект, чтобы не перезагружать вкладку
+    // Это позволит сохранить данные, загруженные в рамках текущей инициализации контроллера.
+    // Если вам всё-таки нужен fallback, убедитесь, что он не перезаписывает данные,
+    // например, проверяя текущее состояние вкладки.
 });
