@@ -175,7 +175,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="item in list | orderBy:sortType:sortReverse">
+    <tr ng-repeat="item in list | filter:customFilter | orderBy:sortType:sortReverse">
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_id}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.region_id}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_name_id}}</td>
@@ -189,6 +189,7 @@
       <td ng-if="userPermissions['network_edit']">
         <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button>
       </td>
+    </tr>    
     </tr>
   </tbody>
 </table>
