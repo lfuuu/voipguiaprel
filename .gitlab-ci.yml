@@ -39,9 +39,11 @@ deploy_prod:
       allow_failure: true
 cleanup_prod:
   extends: .cleanup_prod
+  needs:
+    - job: deploy_prod
   rules:
     - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
-      when: manual
+      when: on_success
       allow_failure: true
 dismiss_prod:
   extends: .dismiss_prod
@@ -63,9 +65,11 @@ deploy_euprod:
       allow_failure: true
 cleanup_euprod:
   extends: .cleanup_euprod
+    needs:
+    - job: deploy_euprod
   rules:
     - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
-      when: manual
+      when: on_success
       allow_failure: true
 dismiss_euprod:
   extends: .dismiss_euprod
