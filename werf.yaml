@@ -1,5 +1,12 @@
 project: voip-gui
 configVersion: 1
+cleanup:
+  disableGitHistoryBasedPolicy: true
+  keepPolicies:
+    - references:
+        branch: /.*/
+      imagesPerReference:
+        last: 2
 
 ---
 {{ range $path, $content := .Files.Glob ".werf-partial/*.yaml" }}
