@@ -65,7 +65,7 @@ deploy_euprod:
       allow_failure: true
 cleanup_euprod:
   extends: .cleanup_euprod
-    needs:
+  needs:
     - job: deploy_euprod
   rules:
     - if: $CI_PROJECT_ID == "249" && $CI_COMMIT_BRANCH == "master" && $STAGE_PIPELINE != "true"
