@@ -1260,7 +1260,10 @@ app.factory('Node', function ($q, ApiLoader, $rootScope) {
         },
         russianSubjects: function () {
             return ApiLoader.post(url + 'list-russian-subjects');
-        }
+        },
+        serverList: function () {
+            return ApiLoader.post(url + 'list-servers');
+        },
     };
 });
 

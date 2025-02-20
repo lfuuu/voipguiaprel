@@ -1,6 +1,6 @@
 var NodesListCtrl = function($scope, Node, Redirect, $window) {
-  $scope.sortType = 'node_name_id';
-  $scope.sortReverse = false;
+  $scope.sortType = 'district_text';
+  $scope.sortReverse = true;
   $scope.searchQuery = '';
   $scope.filterObj = {};
   $scope.filterFields = ['node_id', 'node_name_id', 'node_type_id', 'region_id'];
@@ -47,6 +47,9 @@ var NodesListCtrl = function($scope, Node, Redirect, $window) {
     Node.russianCities().then(function(data) {
       $scope.russianCities = data;
     });
+    Node.serverList().then(function(data) {
+      $scope.serverList = data;
+  });
   };
   $scope.init();
 

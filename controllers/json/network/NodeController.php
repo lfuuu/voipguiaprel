@@ -194,6 +194,23 @@ class NodeController extends BaseController
         return NodeStatus::find()->asArray()->all();
     }
 
+    public function actionListServers()
+{
+    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    
+    // Получаем данные из таблицы public.server. Можно добавить условие по активности, если нужно.
+    $servers = (new \yii\db\Query())
+        ->select([
+            'id',
+            'name',
+            "CONCAT(name, ' - ', id) AS name_display"
+        ])
+        ->from('public.server')
+        ->all();
+        
+    return $servers;
+}
+
     /**
      * Экшен для получения списка городов РФ.
      */
