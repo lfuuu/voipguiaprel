@@ -2,83 +2,50 @@
 
 namespace app\models\calligrapher;
 
-use app\classes\traits\ModelRules;
 use yii\db\ActiveRecord;
+use app\classes\traits\ModelRules;
 
 /**
- * Модель для таблицы "calligrapher.node"
+ * Модель для таблицы "calligrapher.node_link"
  *
- * @property int    $node_id
- * @property string $node_name_id
- * @property int    $node_type_id
- * @property int    $region_id
+ * @property int $node_link_id
+ * @property int $src_node_id
+ * @property int $dst_node_id
+ * @property bool $unidirect
+ * @property int $weight
  * @property string $comment
- * @property string $ipaddress
- * @property string $address
- * @property int    $status
- * @property int    $node_status_id
- * @property int    $russian_district_id
- * @property int    $russian_subject_id
- * @property int    $russian_city_id
- * @property int    $graph_id
+ * @property string $src_trunk_name
+ * @property string $dst_trunk_name
+ * @property string $trunk_name
  */
-class Node extends ActiveRecord
+class NodeLink extends ActiveRecord
 {
     use ModelRules;
 
-    /**
-     * {@inheritdoc}
-     */
     public static function tableName()
     {
-        return 'calligrapher.node';
+        return 'calligrapher.node_link';
     }
 
-    /**
-     * Правила валидации модели.
-     *
-     * @return array
-     */
     private static function rulesStatic()
     {
         return [
-            [['node_name_id', 'comment', 'address'], 'string'],
-            [['node_type_id', 'region_id', 'status', 'node_status_id', 'russian_district_id', 'russian_subject_id', 'russian_city_id', 'graph_id'], 'integer'],
-            [['ipaddress'], 'ip', 'ipv4' => true, 'ipv6' => false, 'skipOnEmpty' => true],
+            [['src_node_id', 'dst_node_id', 'weight'], 'integer'],
+            [['unidirect'], 'boolean'],
+            [['comment', 'src_trunk_name', 'dst_trunk_name', 'trunk_name'], 'string'],
+            [['src_node_id', 'dst_node_id'], 'required'],
         ];
     }
 
-    /**
-     * Создание новой записи модели.
-     *
-     * @param array|null $data Данные для загрузки в модель
-     * @return Node
-     */
     public static function create(array $data = null)
     {
-        $node = new self();
-        $node->load($data, '');
-        return $node;
+        $link = new self();
+        $link->load($data, '');
+        return $link;
     }
 
-    /**
-     * Удаление текущей записи модели.
-     *
-     * @return int|false Количество удалённых строк или false при ошибке
-     */
     public function deleteRecord()
     {
         return $this->delete();
-    }
-
-    /**
-     * Получение записи по первичному ключу.
-     *
-     * @param int $id Идентификатор записи (node_id)
-     * @return Node|null
-     */
-    public static function getNode($id)
-    {
-        return self::findOne($id);
     }
 }

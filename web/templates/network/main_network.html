@@ -3,6 +3,9 @@
         <div ng-if="userPermissions['network_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['network_list']" ng-click="Redirect.networkNode()" ng-class="{active:tabs.isController('NodesListCtrl')}">Узлы</a>
         </div>
+        <div ng-if="userPermissions['network_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['network_list']" ng-click="Redirect.networkLink()" ng-class="{active:tabs.isController('NodesLinkListCtrl')}">Транки</a>
+        </div>
     </div>
 
     <div style="position: fixed; overflow: auto; bottom: 0; right: 0; top: 60px; padding-left: 20px; padding-right: 20px; left: 250px;':'left: 0;">
