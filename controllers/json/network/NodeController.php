@@ -197,8 +197,7 @@ class NodeController extends BaseController
     public function actionListServers()
 {
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-    
-    // Получаем данные из таблицы public.server. Можно добавить условие по активности, если нужно.
+
     $servers = (new \yii\db\Query())
         ->select([
             'id',
@@ -237,6 +236,23 @@ class NodeController extends BaseController
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         return RussianSubject::find()->asArray()->all();
     }
+
+    public function actionListNodesForLink()
+{
+    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+    $nodes = (new \yii\db\Query())
+        ->select([
+            'node_id as id',
+            "CONCAT(node_name_id, ' - ', node_id) as name_display"
+        ])
+        ->from('calligrapher.node')
+        ->orderBy('node_id')
+        ->all();
+
+    return $nodes;
+}
+
 
     /**
      * Экшен для получения списка связей узлов (node_link).

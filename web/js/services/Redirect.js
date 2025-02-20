@@ -166,6 +166,18 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         nodeCreate: function() {
             return openModal(NodeEditCtrl, '/templates/network/node_edit.html', { node_id: null });
         },
+
+        networkLink: function() {
+            $cookies.network_selected_page = 'networkLink';
+            return openTab(NodesLinkListCtrl, '/templates/network/node_link_list.html');
+        },
+
+        linkCreate: function() {
+            return openModal(NodeLinkEditCtrl, '/templates/network/node_link_edit.html', { node_link_id: null });
+        },
+        linkEdit: function(linkId) {
+            return openModal(NodeLinkEditCtrl, '/templates/network/node_link_edit.html', { node_link_id: linkId });
+        },
         
         adapterCreate: function() {
             return openModal(CormAdapterEditCtrl, '/templates/corm_adapter_edit.html', {id: null});

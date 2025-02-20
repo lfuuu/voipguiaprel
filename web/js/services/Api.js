@@ -1264,6 +1264,31 @@ app.factory('Node', function ($q, ApiLoader, $rootScope) {
         serverList: function () {
             return ApiLoader.post(url + 'list-servers');
         },
+        listNodesForLink: function () {
+            return ApiLoader.post(url + 'list-nodes-for-link');
+        }
+    };
+});
+
+app.factory('Link', function($q, ApiLoader, $rootScope) {
+    var url = '/json/network/node-link/',
+        list = undefined,
+        promise = undefined;
+    return {
+        read: function() {
+            return ApiLoader.post(url + 'read');
+        },
+        get: function(data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        save: function(data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function(id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        }
     };
 });
 
