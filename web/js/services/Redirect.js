@@ -178,6 +178,29 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         linkEdit: function(linkId) {
             return openModal(NodeLinkEditCtrl, '/templates/network/node_link_edit.html', { node_link_id: linkId });
         },
+
+        networkType: function() {
+            $cookies.network_selected_page = 'networkType';
+            return openTab(TypesListCtrl, '/templates/network/types_list.html');
+        },
+
+        networkStatus: function() {
+            $cookies.network_selected_page = 'networkStatus';
+            return openTab(StatusListCtrl, '/templates/network/status_list.html');
+        },
+
+        networkCity: function() {
+            $cookies.network_selected_page = 'networkCity';
+            return openTab(RussianCityListCtrl, '/templates/network/city_list.html');
+        },
+
+        networkDistrict: function() {
+            return openTab(RussianDistrictListCtrl, '/templates/network/district_list.html');
+        },
+
+        networkSubject: function() {
+            return openTab(RussianSubjectListCtrl, '/templates/network/subject_list.html');
+        },
         
         adapterCreate: function() {
             return openModal(CormAdapterEditCtrl, '/templates/corm_adapter_edit.html', {id: null});
