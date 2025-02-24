@@ -15,6 +15,10 @@ var NodeEditCtrl = function($rootScope, $scope, Node, params, $modalInstance, $w
         $scope.russianCities = data;
     });
 
+    Node.serverList().then(function(data) {
+        $scope.serverList = data;
+    });
+
     if (params.node_id) {
         Node.get({ id: params.node_id }).then(function(data) {
             $scope.item = data;
