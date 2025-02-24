@@ -1292,6 +1292,54 @@ app.factory('Link', function($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('Type', function($q, ApiLoader, $rootScope) {
+    var url = '/json/network/node-type/';
+    return {
+        read: function() {
+            return ApiLoader.post(url + 'read');
+        }
+    };
+});
+
+app.factory('Status', function($q, ApiLoader, $rootScope) {
+    var url = '/json/network/node-status/';
+    return {
+        // Получение всех статусов (экшен actionRead)
+        read: function() {
+            return ApiLoader.post(url + 'read');
+        }
+    };
+});
+
+app.factory('City', function($q, ApiLoader, $rootScope) {
+    var url = '/json/network/russian-city/';
+    return {
+        // Получение всех городов (экшен actionRead)
+        read: function() {
+            return ApiLoader.post(url + 'read');
+        }
+    };
+});
+
+app.factory('District', function($q, ApiLoader, $rootScope) {
+    var url = '/json/network/russian-district/';
+    return {
+        // Получение списка федеральных округов (экшен actionRead)
+        read: function() {
+            return ApiLoader.post(url + 'read');
+        }
+    };
+});
+
+app.factory('Subject', function($q, ApiLoader, $rootScope) {
+    var url = '/json/network/russian-subject/';
+    return {
+        // Получение всех субъектов РФ (экшен actionRead)
+        read: function() {
+            return ApiLoader.post(url + 'read');
+        }
+    };
+});
 
 app.factory('Cdr', function ($q,$http, ApiLoader) {
     var url = '/json/cdr/';
