@@ -112,6 +112,13 @@
         </a>
       </th>
       <th>
+        <a href="#" ng-click="sortType = 'region_id'; sortReverse = !sortReverse">
+          Server Id
+          <span ng-show="sortType == 'region_id' && sortReverse" class="caret-down"></span>
+          <span ng-show="sortType == 'region_id' && !sortReverse" class="caret-up"></span>
+        </a>
+      </th>
+      <th>
         <a href="#" ng-click="sortType = 'district_text'; sortReverse = !sortReverse">
           Фед. округ
           <span ng-show="sortType == 'district_text' && sortReverse" class="caret-down"></span>
@@ -130,13 +137,6 @@
           Город РФ
           <span ng-show="sortType == 'city_text' && sortReverse" class="caret-down"></span>
           <span ng-show="sortType == 'city_text' && !sortReverse" class="caret-up"></span>
-        </a>
-      </th>
-      <th>
-        <a href="#" ng-click="sortType = 'region_id'; sortReverse = !sortReverse">
-          Регион
-          <span ng-show="sortType == 'region_id' && sortReverse" class="caret-down"></span>
-          <span ng-show="sortType == 'region_id' && !sortReverse" class="caret-up"></span>
         </a>
       </th>
       <th>
@@ -180,10 +180,10 @@
   <tbody>
     <tr ng-repeat="item in list | filter:customFilter | orderBy:sortType:sortReverse">
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_id}}</td>
+      <td style="cursor: pointer" ng-click="clickItem(item)">{{item.region_id}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.district_text}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.subject_text}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.city_text}}</td>
-      <td style="cursor: pointer" ng-click="clickItem(item)">{{item.region_id}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_name_id}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_type_text}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.ipaddress}}</td>
