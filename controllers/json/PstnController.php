@@ -37,34 +37,26 @@ class PstnController extends Controller
         return implode("\n", $lines);
     }
 
-    /**
-     * Новый метод для запроса по графу
-     */
     public function actionGraph()
 {
-    // Получаем параметры из тела запроса (автоматически декодируется из JSON)
-    $decodedBody = Yii::$app->request->getBodyParams();
-    $mcnCallId = isset($decodedBody['mcnCallId']) ? $decodedBody['mcnCallId'] : '';
-
+    $mcnCallId = Yii::$app->request->get('mcnCallId');
     if (empty($mcnCallId)) {
         return 'Ошибка: mcnCallId не передан';
     }
 
-    // Формируем payload для запроса к Calligrapher
     $payload = json_encode(['mcnCallId' => $mcnCallId], JSON_UNESCAPED_UNICODE);
     $url = 'https://calligrapher.mcn.ru/v1/api/callPath';
 
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Content-Length: ' . strlen($payload)
-    ]);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $response = curl_exec($ch);
-    curl_close($ch);
+    $opts = [
+        "http" => [
+            "method"  => "POST",
+            "header"  => "Content-Type: application/json\r\nAccept: text/plain\r\n",
+            "content" => $payload,
+            "ignore_errors" => true
+        ]
+    ];
+    $context = stream_context_create($opts);
+    $response = file_get_contents($url, false, $context);
 
     Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
     return $response;
