@@ -201,6 +201,10 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         networkSubject: function() {
             return openTab(RussianSubjectListCtrl, '/templates/network/subject_list.html');
         },
+
+        networkTrunkNodeLink: function() {
+            return openTab(TrunkNodeLinkListCtrl, '/templates/network/trunk_node_link_list.html');
+        },
         
         adapterCreate: function() {
             return openModal(CormAdapterEditCtrl, '/templates/corm_adapter_edit.html', {id: null});
