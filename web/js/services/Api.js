@@ -1341,6 +1341,16 @@ app.factory('Subject', function($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('TrunkNodeLink', function($q, ApiLoader, $rootScope) {
+    var url = '/json/network/trunk-node-link/';
+    return {
+        read: function() {
+            return ApiLoader.post(url + 'read');
+        }
+    };
+});
+
+
 app.factory('Cdr', function ($q,$http, ApiLoader) {
     var url = '/json/cdr/';
     var list = undefined;

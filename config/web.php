@@ -94,7 +94,6 @@ $config = [
                 'json/billing/<controller>/<action>' => 'json/billing/<controller>/<action>',
                 'json/sms/<controller>/<action>' => 'json/sms/<controller>/<action>',
                 'json/network/<controller:[\w\-]+>/<action:\w+>' => 'json/network/<controller>/<action>',
-                'json/network/<controller:[\w\-]+>/<action:\w+>' => 'json/network/<controller>/<action>',
                 'json/network/node-link/<action:[\w\-]+>' => 'json/network/node-link/<action>',
                 'json/network/node/<action:[\w\-]+>' => 'json/network/node/<action>',
                 'json/<controller>/<action>' => 'json/<controller>/<action>',
