@@ -155,6 +155,8 @@
 
 <div class="button-group" style="margin-left: 10px; margin-top: 10px;">
     <button class="btn btn-info btn-sm" ng-click="getLegs()">Получить данные звонка</button>
+    <!-- Изменяем вызов для прохождения по графу -->
+    <button class="btn btn-primary btn-sm" ng-click="getGraph()">Проход по Графу</button>
 </div>
 
 <div class="responses-section" style="margin-top: 20px;">
@@ -173,6 +175,11 @@
     <div ng-if="responses['86_debug']">
         <h5>Выгрузка 86 в Debug режиме:</h5>
         <div ng-bind-html="responses['86_debug']"></div>
+    </div>
+    <!-- Добавляем блок для отображения данных графа -->
+    <div ng-if="responses['graph']">
+        <h5>Данные графа:</h5>
+        <pre>{{responses['graph']}}</pre>
     </div>
 </div>
 

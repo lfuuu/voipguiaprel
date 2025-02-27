@@ -7,37 +7,53 @@ use yii\web\Controller;
 class PstnController extends Controller
 {
     public function actionIndex()
-{
-    $mcn_callid = Yii::$app->request->get('mcn_callid');
-    $is_573 = Yii::$app->request->get('is_573');
-    $is_86 = Yii::$app->request->get('is_86');
-    $is_debug = Yii::$app->request->get('is_debug');
+    {
+        $mcn_callid = Yii::$app->request->get('mcn_callid');
+        $is_573 = Yii::$app->request->get('is_573');
+        $is_86 = Yii::$app->request->get('is_86');
+        $is_debug = Yii::$app->request->get('is_debug');
 
-    $url = 'https://eridanus3-aggr-legs.veles.mcn.ru:8207/pstn.php?' .
-        http_build_query([
-            'mcn_callid' => $mcn_callid,
-            'is_573' => $is_573,
-            'is_86' => $is_86,
-            'is_debug' => $is_debug
+        $url = 'https://eridanus3-aggr-legs.veles.mcn.ru:8207/pstn.php?' .
+            http_build_query([
+                'mcn_callid' => $mcn_callid,
+                'is_573' => $is_573,
+                'is_86' => $is_86,
+                'is_debug' => $is_debug
+            ]);
+
+        $response = $this->performCurlRequest($url);
+
+        if ($is_debug == 1) {
+            return $response;
+        }
+
+        $data = $this->parseCsvResponse($response);
+
+        $lines = [];
+        foreach ($data as $row) {
+            $lines[] = implode(';', $row);
+        }
+
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Новый метод для запроса по графу
+     */
+    public function actionGraph()
+    {
+        $mcn_callid = Yii::$app->request->get('mcn_callid');
+
+        $url = 'https://calligrapher.mcn.ru/v1/api/graph?' . http_build_query([
+            'mcnCallId' => $mcn_callid,
         ]);
 
-    $response = $this->performCurlRequest($url);
+        $response = $this->performCurlRequest($url);
 
-    if ($is_debug == 1) {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
         return $response;
     }
-
-    $data = $this->parseCsvResponse($response);
-
-    $lines = [];
-    foreach ($data as $row) {
-        $lines[] = implode(';', $row);
-    }
-
-    Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
-
-    return implode("\n", $lines);
-}
 
     /**
      * Выполнение CURL запроса
@@ -67,7 +83,6 @@ class PstnController extends Controller
 
         foreach ($rows as $row) {
             if (empty($row)) continue;
-
             $data[] = str_getcsv($row, ';');
         }
 
