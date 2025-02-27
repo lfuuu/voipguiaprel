@@ -1,3 +1,4 @@
+
 var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance, $window, $http, $sce) {
 
     if (params.mcn_callid) {
@@ -27,6 +28,8 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
     $scope.responses = {};
 
     $scope.executeRequest = function (paramsKey, paramsValue, urlExtension = '') {
+        // Если нужно использовать executeRequest для других эндпоинтов,
+        // по умолчанию передается mcn_callid, но для графа мы не будем его использовать.
         var url = '/json/pstn' + urlExtension;
         var requestParams = Object.assign({ mcn_callid: $scope.mcn_callid }, paramsValue);
         $scope.responses[paramsKey] = 'Загрузка...';
@@ -71,9 +74,29 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
             });
     };
 
-    // Новая функция для запроса по графу
+    // Новая функция для запроса по графу.
+    // Здесь формируем объект параметров с ключом "mcnCallId"
+    // Было
     $scope.getGraph = function () {
-        $scope.executeRequest('graph', {}, '/graph');
+        var url = '/json/pstn/graph';
+        // Отправляем именно ключ mcnCallId с нужным значением
+        var data = {
+            mcnCallId: $scope.mcn_callid
+        };
+    
+        $scope.responses['graph'] = 'Загрузка...';
+    
+        $http.post(url, data, {
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(function (response) {
+            $scope.responses['graph'] = response.data;
+        })
+        .catch(function (error) {
+            $scope.responses['graph'] = 'Ошибка: ' + (error.data.error || error.statusText);
+        });
     };
+    
+
 
 };
