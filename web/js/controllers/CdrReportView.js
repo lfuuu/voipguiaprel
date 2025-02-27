@@ -26,8 +26,8 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
 
     $scope.responses = {};
 
-    $scope.executeRequest = function (paramsKey, paramsValue) {
-        var url = '/json/pstn';
+    $scope.executeRequest = function (paramsKey, paramsValue, urlExtension = '') {
+        var url = '/json/pstn' + urlExtension;
         var requestParams = Object.assign({ mcn_callid: $scope.mcn_callid }, paramsValue);
         $scope.responses[paramsKey] = 'Загрузка...';
 
@@ -70,4 +70,10 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
                 $scope.legsData = 'Ошибка: ' + (error.data.error || error.statusText);
             });
     };
+
+    // Новая функция для запроса по графу
+    $scope.getGraph = function () {
+        $scope.executeRequest('graph', {}, '/graph');
+    };
+
 };
