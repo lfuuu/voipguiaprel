@@ -213,6 +213,13 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(CormAdapterEditCtrl, '/templates/corm_adapter_edit.html', {id: id});
         },
 
+        nodeLinkEdit: function(linkId) {
+            return openModal(TrunkNodeLinkEditCtrl, '/templates/network/trunk_node_link_edit.html', { trunk_node_link_id: linkId });
+          },
+        nodeLinkCreate: function() {
+            return openModal(TrunkNodeLinkEditCtrl, '/templates/network/trunk_node_link_edit.html', { trunk_node_link_id: null });
+        },
+
         airpList: function() {
             $cookies.routing_selected_page = 'airpList';
             return openTab(AirpListCtrl, '/templates/airp_list.html');

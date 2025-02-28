@@ -1,0 +1,38 @@
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+      <h3 ng-if="item.node_link_id">Редактирование связи узла с логическим транком #{{ item.node_link_id }}</h3>
+      <h3 ng-if="!item.node_link_id">Создание новой Связи узлов с логическими транками</h3>
+    </div>
+    <div class="modal-body">
+      <!-- ID логического транка -->
+      <div class="form-group">
+        <label class="col-sm-2 control-label">ID Логического Транка</label>
+        <div class="col-sm-10">
+          <input type="number" class="form-control" placeholder="Введите ID транка" ng-model="item.service_trunk_id" required>
+        </div>
+      </div>
+      <!-- Узел (выпадающий список) -->
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Узел</label>
+        <div class="col-sm-10">
+          <select class="form-control" 
+                  ng-model="item.node_id" 
+                  ng-options="node.id as node.name_display for node in nodesList" required>
+            <option value="">-- Выберите узел --</option>
+          </select>
+        </div>
+      </div>
+      <!-- Комментарий -->
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Комментарий</label>
+        <div class="col-sm-10">
+          <textarea class="form-control" placeholder="Введите комментарий" ng-model="item.comment"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="form.$invalid || $root.isAjaxLoading">Сохранить</button>
+      <button type="button" class="btn btn-default" ng-click="back()">Закрыть</button>
+    </div>
+  </form>
+  
