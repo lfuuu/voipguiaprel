@@ -247,11 +247,12 @@ class NodeController extends BaseController
             "CONCAT(node_name_id, ' - ', node_id) as name_display"
         ])
         ->from('calligrapher.node')
-        ->orderBy('node_id')
+        ->orderBy('node_name_id')
         ->all();
 
     return $nodes;
 }
+
 
 
     /**
