@@ -1,8 +1,11 @@
-var TrunkNodeLinkListCtrl = function($scope, TrunkNodeLink, Node, Redirect, $window) {
+var TrunkNodeLinkListCtrl = function($scope, TrunkNodeLink, Node, Redirect, $window, $rootScope) {
     $scope.links = [];
     $scope.sortType = 'trunk_node_link_id';
     $scope.sortReverse = false;
     $scope.filterObj = {};
+    $rootScope.userName = userName;
+    $rootScope.userId = userId;
+    $scope.baseLink = ($window.location.hostname).includes('.tech') ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
 
     $scope.customFilter = function(item) {
         if ($scope.filterObj.node_id_selected !== undefined &&
@@ -25,14 +28,27 @@ var TrunkNodeLinkListCtrl = function($scope, TrunkNodeLink, Node, Redirect, $win
       };
       
 
-    $scope.init = function() {
+      $scope.init = function() {
         TrunkNodeLink.read().then(function(data) {
             $scope.links = data;
+            // Формируем уникальный список типов контрактов из данных
+            var types = {};
+            angular.forEach(data, function(link) {
+                // Если contract_type_text не пуст и еще не добавлено
+                if (link.contract_type_text !== null && link.contract_type_text !== undefined) {
+                    types[link.contract_type_id] = link.contract_type_text;
+                }
+            });
+            $scope.contractTypes = [];
+            angular.forEach(types, function(text, id) {
+                $scope.contractTypes.push({ id: parseInt(id, 10), name: text });
+            });
         });
         Node.listNodesForLink().then(function(data) {
             $scope.nodesList = data;
         });
     };
+
 
     $scope.init();
 

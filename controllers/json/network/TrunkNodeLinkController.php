@@ -21,23 +21,28 @@ class TrunkNodeLinkController extends BaseController
     public function actionRead()
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-        $links = TrunkNodeLink::find()
+    
+        $links = \app\models\calligrapher\TrunkNodeLink::find()
             ->alias('t')
             ->select([
                 't.trunk_node_link_id',
                 't.service_trunk_id',
                 't.node_id',
-                't.contract_type_id',
                 't.comment',
-                "CONCAT(n.node_name_id, ' - ', n.node_id) AS node_display"
+                "CONCAT(n.node_name_id, ' - ', n.node_id) AS node_display",
+                "COALESCE(cct.name, 'Не задан') AS contract_type_text",
+                't.contract_type_id',
+                'st.client_account_id'
             ])
             ->leftJoin('calligrapher.node n', 'n.node_id = t.node_id')
+            ->leftJoin('billing.service_trunk st', 't.service_trunk_id = st.id')
+            ->leftJoin('stat.client_contract_type cct', 'st.contract_type_id = cct.id')
             ->asArray()
             ->all();
-
+    
         return $links;
     }
+    
 
     /**
      * Экшен для получения одной записи связи транка по ID.
