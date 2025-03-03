@@ -32,6 +32,7 @@ class TrunkNodeLinkController extends BaseController
                 "CONCAT(n.node_name_id, ' - ', n.node_id) AS node_display",
                 "COALESCE(cct.name, 'Не задан') AS contract_type_text",
                 't.contract_type_id',
+                'st.trunk_id',
                 'st.client_account_id'
             ])
             ->leftJoin('calligrapher.node n', 'n.node_id = t.node_id')
