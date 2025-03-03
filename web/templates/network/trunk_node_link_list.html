@@ -79,7 +79,7 @@
       <tr ng-repeat="link in links | filter:customFilter | orderBy:sortType:sortReverse track by link.trunk_node_link_id">
         <td>{{ link.trunk_node_link_id }}</td>
         <td>
-            <a target="_blank" href="{{baseLink}}usage/trunk/edit-by?clientAccountId={{link.client_account_id}}&trunkId={{link.service_trunk_id}}">
+            <a target="_blank" href="{{baseLink}}usage/trunk/edit-by?clientAccountId={{link.client_account_id}}&trunkId={{link.trunk_id}}">
               {{ link.service_trunk_id }}
             </a>
           </td>
