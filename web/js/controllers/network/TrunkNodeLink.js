@@ -8,6 +8,13 @@ var TrunkNodeLinkListCtrl = function($scope, TrunkNodeLink, Node, Redirect, $win
     $scope.baseLink = ($window.location.hostname).includes('.tech') ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
 
     $scope.customFilter = function(item) {
+        if ($scope.filterObj.contract_type_id !== undefined &&
+            $scope.filterObj.contract_type_id !== null &&
+            $scope.filterObj.contract_type_id !== '') {
+          if (item.contract_type_id !== parseInt($scope.filterObj.contract_type_id, 10)) {
+            return false;
+          }
+        }
         if ($scope.filterObj.node_id_selected !== undefined &&
             $scope.filterObj.node_id_selected !== null &&
             $scope.filterObj.node_id_selected !== '') {
