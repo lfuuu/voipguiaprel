@@ -90,43 +90,45 @@ class GlobalSettingsController extends BaseController
     }
 
     /**
-     * Вызывает указанную хранимую процедуру.
-     *
-     * Ожидается, что параметр 'procedure' передаётся методом POST.
-     * Допускаются только определённые хранимые процедуры для безопасности.
-     *
-     * @return array JSON ответ с результатом вызова процедуры.
-     * @throws HttpException
-     */
-    public function actionCallProcedure()
-    {
-        $procedure = Yii::$app->request->post('procedure');
-        if (!$procedure) {
-            throw new HttpException(400, 'Не указан параметр procedure.');
-        }
-
-        $allowedProcedures = [
-            'public.set_antifraud_error_accept',
-            'public.set_antifraud_error_manual',
-            'public.set_antifraud_reject_accept',
-            'public.set_antifraud_reject_manual',
-            'public.set_antifraud_timeout_accept',
-            'public.set_antifraud_timeout_manual',
-        ];
-
-        if (!in_array($procedure, $allowedProcedures)) {
-            throw new HttpException(400, 'Указанная процедура не разрешена.');
-        }
-
-        $sql = "SELECT {$procedure}()";
-
-        try {
-            $result = Yii::$app->db->createCommand($sql)->queryOne();
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            return ['status' => 'success', 'result' => $result];
-        } catch (\Exception $e) {
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            return ['status' => 'error', 'error' => $e->getMessage()];
-        }
+ * Вызывает указанную хранимую процедуру.
+ *
+ * Ожидается, что параметр 'procedure' передаётся методом POST.
+ * Допускаются только определённые хранимые процедуры для безопасности.
+ *
+ * @return array JSON ответ с результатом вызова процедуры.
+ * @throws HttpException
+ */
+public function actionCallProcedure()
+{
+    $procedure = Yii::$app->request->post('procedure');
+    if (!$procedure) {
+        throw new HttpException(400, 'Не указан параметр procedure.');
     }
+
+    // Определяем список разрешённых хранимых процедур
+    $allowedProcedures = [
+        'public.set_antifraud_error_accept',
+        'public.set_antifraud_error_manual',
+        'public.set_antifraud_reject_accept',
+        'public.set_antifraud_reject_manual',
+        'public.set_antifraud_timeout_accept',
+        'public.set_antifraud_timeout_manual',
+    ];
+
+    if (!in_array($procedure, $allowedProcedures)) {
+        throw new HttpException(400, 'Указанная процедура не разрешена.');
+    }
+
+    // Формируем SQL-запрос для вызова хранимой процедуры через CALL
+    $sql = "CALL {$procedure}()";
+
+    try {
+        Yii::$app->db->createCommand($sql)->execute();
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return ['status' => 'success', 'message' => 'Procedure called successfully'];
+    } catch (\Exception $e) {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return ['status' => 'error', 'error' => $e->getMessage()];
+    }
+}
 }
