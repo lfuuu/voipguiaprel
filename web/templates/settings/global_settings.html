@@ -1,0 +1,46 @@
+<form class="form-horizontal" name="form">
+    <div class="modal-header">
+      <h3>Глобальные настройки</h3>
+    </div>
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#mainsettings" data-toggle="tab">Верификация</a></li>
+    </ul>
+    <div class="modal-body">
+      <div class="tab-content">
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Действие: Код Error API запроса</label>
+          <div class="col-sm-8">
+            <div class="btn-group" ng-click="settings.antifraud_error_check = !settings.antifraud_error_check; onAntifraudErrorChange()">
+              <button type="button" class="btn btn-sm {{settings.antifraud_error_check ? 'btn-success active' : 'btn-default'}}">Accept</button>
+              <button type="button" class="btn btn-sm {{!settings.antifraud_error_check ? 'btn-primary active' : 'btn-default'}}">Вручную</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Действие: Код Call Rejected API запроса отказов</label>
+          <div class="col-sm-8">
+            <div class="btn-group" ng-click="settings.antifraud_reject_check = !settings.antifraud_reject_check; onAntifraudRejectChange()">
+              <button type="button" class="btn btn-sm {{settings.antifraud_reject_check ? 'btn-success active' : 'btn-default'}}">Accept</button>
+              <button type="button" class="btn btn-sm {{!settings.antifraud_reject_check ? 'btn-primary active' : 'btn-default'}}">Вручную</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Действие: Timeout API запроса</label>
+          <div class="col-sm-8">
+            <div class="btn-group" ng-click="settings.antifraud_timeout_check = !settings.antifraud_timeout_check; onAntifraudTimeoutChange()">
+              <button type="button" class="btn btn-sm {{settings.antifraud_timeout_check ? 'btn-success active' : 'btn-default'}}">Accept</button>
+              <button type="button" class="btn btn-sm {{!settings.antifraud_timeout_check ? 'btn-primary active' : 'btn-default'}}">Вручную</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="pull-left">
+        <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+      </div>
+    </div>
+  </form>
+  
