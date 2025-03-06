@@ -7,30 +7,51 @@
     </ul>
     <div class="modal-body">
       <div class="tab-content">
+        <!-- Переключатель для Error API запроса -->
         <div class="form-group">
-          <label class="col-sm-4 control-label">Действие: Код Error API запроса</label>
-          <div class="col-sm-8">
-            <div class="btn-group" ng-click="settings.antifraud_error_check = !settings.antifraud_error_check; onAntifraudErrorChange()">
-              <button type="button" class="btn btn-sm {{settings.antifraud_error_check ? 'btn-success active' : 'btn-default'}}">Accept</button>
-              <button type="button" class="btn btn-sm {{!settings.antifraud_error_check ? 'btn-primary active' : 'btn-default'}}">Вручную</button>
+          <div class="col-sm-12 d-flex align-items-center">
+            <label class="col-sm-2 control-label">
+              Действие: Код Error API запроса
+            </label>
+            <div class="btn-group" ng-click="settings.antifraud_error_check = !settings.antifraud_error_check">
+              <button type="button" class="btn {{!settings.antifraud_error_check ? 'btn-success active' : 'btn-default'}}">
+                Вручную
+              </button>
+              <button type="button" class="btn {{settings.antifraud_error_check ? 'btn-danger active' : 'btn-default'}}">
+                Accept
+              </button>
             </div>
           </div>
         </div>
+        <!-- Переключатель для Call Rejected API запроса отказов -->
         <div class="form-group">
-          <label class="col-sm-4 control-label">Действие: Код Call Rejected API запроса отказов</label>
-          <div class="col-sm-8">
-            <div class="btn-group" ng-click="settings.antifraud_reject_check = !settings.antifraud_reject_check; onAntifraudRejectChange()">
-              <button type="button" class="btn btn-sm {{settings.antifraud_reject_check ? 'btn-success active' : 'btn-default'}}">Accept</button>
-              <button type="button" class="btn btn-sm {{!settings.antifraud_reject_check ? 'btn-primary active' : 'btn-default'}}">Вручную</button>
+          <div class="col-sm-12 d-flex align-items-center">
+            <label class="col-sm-2 control-label">
+              Действие: Код Call Rejected API запроса отказов
+            </label>
+            <div class="btn-group" ng-click="settings.antifraud_reject_check = !settings.antifraud_reject_check">
+              <button type="button" class="btn {{!settings.antifraud_reject_check ? 'btn-success active' : 'btn-default'}}">
+                Вручную
+              </button>
+              <button type="button" class="btn {{settings.antifraud_reject_check ? 'btn-danger active' : 'btn-default'}}">
+                Accept
+              </button>
             </div>
           </div>
         </div>
+        <!-- Переключатель для Timeout API запроса -->
         <div class="form-group">
-          <label class="col-sm-4 control-label">Действие: Timeout API запроса</label>
-          <div class="col-sm-8">
-            <div class="btn-group" ng-click="settings.antifraud_timeout_check = !settings.antifraud_timeout_check; onAntifraudTimeoutChange()">
-              <button type="button" class="btn btn-sm {{settings.antifraud_timeout_check ? 'btn-success active' : 'btn-default'}}">Accept</button>
-              <button type="button" class="btn btn-sm {{!settings.antifraud_timeout_check ? 'btn-primary active' : 'btn-default'}}">Вручную</button>
+          <div class="col-sm-12 d-flex align-items-center">
+            <label class="col-sm-2 control-label">
+              Действие: Timeout API запроса
+            </label>
+            <div class="btn-group" ng-click="settings.antifraud_timeout_check = !settings.antifraud_timeout_check">
+              <button type="button" class="btn {{!settings.antifraud_timeout_check ? 'btn-success active' : 'btn-default'}}">
+                Вручную
+              </button>
+              <button type="button" class="btn {{settings.antifraud_timeout_check ? 'btn-danger active' : 'btn-default'}}">
+                Accept
+              </button>
             </div>
           </div>
         </div>
