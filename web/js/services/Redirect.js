@@ -612,9 +612,12 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             $cookies.settings_selected_page = 'actionLogList';
             return openTab(ActionLogListCtrl, '/templates/settings/action_log_list.html', {});
         },
+        globalSettings: function() {
+            return openModal(GlobalSettingsCtrl, '/templates/settings/global_settings.html', {});
+        }, 
         actionLogItemView: function(id) {
             return openModal(ActionLogItemViewCtrl, '/templates/settings/action_log_item_view.html', {id: id});
-        },
+        },         
         camelTrunkList: function() {
             $cookies.camel_selected_page = 'camelTrunkList';
             return openTab(CamelTrunkListCtrl, '/templates/camel/trunk_list.html', {});

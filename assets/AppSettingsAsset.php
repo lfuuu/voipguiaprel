@@ -24,6 +24,7 @@ class AppSettingsAsset extends AssetBundle
         'js/controllers/settings/RoleList.js',
         'js/controllers/settings/UserEdit.js',
         'js/controllers/settings/UserList.js',
+        'js/controllers/settings/GlobalSettings.js',
     ];
 
     public $templates = [
@@ -35,5 +36,6 @@ class AppSettingsAsset extends AssetBundle
         'templates/settings/role_list.html',
         'templates/settings/user_edit.html',
         'templates/settings/user_list.html',
+        'templates/settings/global_settings.html',
     ];
 }

@@ -8,6 +8,9 @@
         <div ng-if="userPermissions['action_log_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['action_log_list']" ng-click="Redirect.actionLogList()" ng-class="{active:tabs.isController('ActionLogListCtrl')}">История</a>
         </div>
+        <div ng-if="userPermissions['action_log_list']" class="list-group">
+            <a class="list-group-item" ng-if="userPermissions['action_log_list']" ng-click="Redirect.globalSettings()">Глобальные настройки</a>
+        </div>
     </div>
 
     <div style="position: fixed; overflow: auto; bottom: 0; right: 0; top: 60px; padding-left: 20px; padding-right: 20px; left: 250px;':'left: 0;">
