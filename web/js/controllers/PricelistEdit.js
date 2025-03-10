@@ -60,6 +60,11 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
         $scope.pricelistGroupList = data;
     });
 
+    Pricelist.list().then(function(data) {
+        $scope.additionalPricelistList = data;
+    });
+    
+
     $scope.save = function() {
         $scope.item.num_c_nnp_filter = $scope.item.nnp_filter;
 
