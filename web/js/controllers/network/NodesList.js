@@ -23,36 +23,61 @@ var NodesListCtrl = function($scope, Node, Redirect, $window) {
   };
 
   $scope.init = function(tab) {
-    console.log('init вызывается');
     if (tab) {
       tab.title = 'Список узлов';
     }
-    // Загрузка списка узлов
     Node.read().then(function(data) {
+      data.sort(function(a, b) {
+        return ('' + a.node_name_id).localeCompare('' + b.node_name_id);
+      });
       $scope.list = data;
     });
-    // Загрузка данных для выпадающих списков
+
     Node.nodeTypes().then(function(data) {
+      data.sort(function(a, b) {
+        return a.node_type.localeCompare(b.node_type);
+      });
       $scope.nodeTypes = data;
     });
+    
     Node.nodeStatuses().then(function(data) {
+      data.sort(function(a, b) {
+        return a.node_status.localeCompare(b.node_status);
+      });
       $scope.nodeStatuses = data;
     });
+    
     Node.russianDistricts().then(function(data) {
+      data.sort(function(a, b) {
+        return a.russian_district.localeCompare(b.russian_district);
+      });
       $scope.russianDistricts = data;
     });
+    
     Node.russianSubjects().then(function(data) {
+      data.sort(function(a, b) {
+        return a.russian_subject.localeCompare(b.russian_subject);
+      });
       $scope.russianSubjects = data;
     });
+    
     Node.russianCities().then(function(data) {
+      data.sort(function(a, b) {
+        return a.russian_city.localeCompare(b.russian_city);
+      });
       $scope.russianCities = data;
     });
+    
     Node.serverList().then(function(data) {
+      data.sort(function(a, b) {
+        return a.name.localeCompare(b.name);
+      });
       $scope.serverList = data;
-  });
+    });
   };
+  
   $scope.init();
-
+  
   $scope.clickCreate = function() {
     Redirect.nodeCreate().then(function() {
       $scope.init();
