@@ -33,11 +33,14 @@ class TrunkNodeLinkController extends BaseController
                 "COALESCE(cct.name, 'Не задан') AS contract_type_text",
                 't.contract_type_id',
                 'st.trunk_id',
-                'st.client_account_id'
+                'st.client_account_id',
+                'st.description AS description',
+                'c.contragent_name AS contragent_name'
             ])
             ->leftJoin('calligrapher.node n', 'n.node_id = t.node_id')
             ->leftJoin('billing.service_trunk st', 't.service_trunk_id = st.id')
             ->leftJoin('stat.client_contract_type cct', 'st.contract_type_id = cct.id')
+            ->leftJoin('billing.clients c', 'st.client_account_id = c.id')
             ->asArray()
             ->all();
     

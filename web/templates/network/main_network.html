@@ -3,7 +3,7 @@
         <div ng-if="userPermissions['network_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['network_list']" ng-click="Redirect.networkNode()" ng-class="{active:tabs.isController('NodesListCtrl')}">Узлы</a>
             <a class="list-group-item" ng-if="userPermissions['network_list']" ng-click="Redirect.networkLink()" ng-class="{active:tabs.isController('NodesLinkListCtrl')}">Транки</a>
-            <a class="list-group-item" ng-if="userPermissions['network_list']" ng-click="Redirect.networkTrunkNodeLink()" ng-class="{active:tabs.isController('TrunkNodeLinkListCtrl')}">Связи узлов с логическими транками</a>
+            <a class="list-group-item" ng-if="userPermissions['network_list']" ng-click="Redirect.networkTrunkNodeLink()" ng-class="{active:tabs.isController('TrunkNodeLinkListCtrl')}">Внешние Транки</a>
         </div>
         <div ng-if="userPermissions['network_list']" class="list-group">
             <a class="list-group-item" ng-if="userPermissions['network_list']" ng-click="Redirect.networkType()" ng-class="{active:tabs.isController('TypesListCtrl')}">Типы</a>

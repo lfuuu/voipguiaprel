@@ -5,13 +5,10 @@ var NodesListCtrl = function($scope, Node, Redirect, $window) {
   $scope.filterObj = {};
   $scope.filterFields = ['node_id', 'node_name_id', 'node_type_id', 'region_id'];
 
-  // Кастомный фильтр для таблицы
   $scope.customFilter = function(item) {
-    // Если filterObj пустой, возвращаем true (отображаем все элементы)
     if (!$scope.filterObj) return true;
     for (var key in $scope.filterObj) {
       if ($scope.filterObj.hasOwnProperty(key) && $scope.filterObj[key]) {
-        // Приводим значение элемента и значение фильтра к строке в нижнем регистре
         var itemValue = (item[key] !== undefined && item[key] !== null) ? item[key].toString().toLowerCase() : "";
         var filterValue = $scope.filterObj[key].toString().toLowerCase();
         if (itemValue.indexOf(filterValue) === -1) {
@@ -58,6 +55,7 @@ var NodesListCtrl = function($scope, Node, Redirect, $window) {
       data.sort(function(a, b) {
         return a.russian_subject.localeCompare(b.russian_subject);
       });
+       
       $scope.russianSubjects = data;
     });
     

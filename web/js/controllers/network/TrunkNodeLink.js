@@ -8,40 +8,53 @@ var TrunkNodeLinkListCtrl = function($scope, TrunkNodeLink, Node, Redirect, $win
     $scope.baseLink = ($window.location.hostname).includes('.tech') ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
 
     $scope.customFilter = function(item) {
-        if ($scope.filterObj.contract_type_id !== undefined &&
-            $scope.filterObj.contract_type_id !== null &&
-            $scope.filterObj.contract_type_id !== '') {
-          if (item.contract_type_id !== parseInt($scope.filterObj.contract_type_id, 10)) {
-            return false;
-          }
+      if ($scope.filterObj.contract_type_id !== undefined &&
+          $scope.filterObj.contract_type_id !== null &&
+          $scope.filterObj.contract_type_id !== '') {
+        if (item.contract_type_id !== parseInt($scope.filterObj.contract_type_id, 10)) {
+          return false;
         }
-        if ($scope.filterObj.node_id_selected !== undefined &&
-            $scope.filterObj.node_id_selected !== null &&
-            $scope.filterObj.node_id_selected !== '') {
-          if (item.node_id !== parseInt($scope.filterObj.node_id_selected, 10)) {
-            return false;
-          }
+      }
+      if ($scope.filterObj.node_id_selected !== undefined &&
+          $scope.filterObj.node_id_selected !== null &&
+          $scope.filterObj.node_id_selected !== '') {
+        if (item.node_id !== parseInt($scope.filterObj.node_id_selected, 10)) {
+          return false;
         }
-        if ($scope.filterObj.service_trunk_id !== undefined &&
-            $scope.filterObj.service_trunk_id !== null &&
-            $scope.filterObj.service_trunk_id !== '') {
-          var filterStr = $scope.filterObj.service_trunk_id.toString();
-          var valueStr = item.service_trunk_id.toString();
-          if (valueStr.indexOf(filterStr) === -1) {
-            return false;
-          }
+      }
+      if ($scope.filterObj.service_trunk_id !== undefined &&
+          $scope.filterObj.service_trunk_id !== null &&
+          $scope.filterObj.service_trunk_id !== '') {
+        var filterStr = $scope.filterObj.service_trunk_id.toString();
+        var valueStr = item.service_trunk_id.toString();
+        if (valueStr.indexOf(filterStr) === -1) {
+          return false;
         }
-        return true;
-      };
-      
+      }
+      if ($scope.filterObj.description !== undefined &&
+          $scope.filterObj.description !== null &&
+          $scope.filterObj.description !== '') {
+        if (!item.description || item.description.toLowerCase().indexOf($scope.filterObj.description.toLowerCase()) === -1) {
+          return false;
+        }
+      }
+      if ($scope.filterObj.contragent_name !== undefined &&
+          $scope.filterObj.contragent_name !== null &&
+          $scope.filterObj.contragent_name !== '') {
+        if (!item.contragent_name || item.contragent_name.toLowerCase().indexOf($scope.filterObj.contragent_name.toLowerCase()) === -1) {
+          return false;
+        }
+      }
+      return true;
+    };
+    
+    
 
       $scope.init = function() {
         TrunkNodeLink.read().then(function(data) {
             $scope.links = data;
-            // Формируем уникальный список типов контрактов из данных
             var types = {};
             angular.forEach(data, function(link) {
-                // Если contract_type_text не пуст и еще не добавлено
                 if (link.contract_type_text !== null && link.contract_type_text !== undefined) {
                     types[link.contract_type_id] = link.contract_type_text;
                 }
