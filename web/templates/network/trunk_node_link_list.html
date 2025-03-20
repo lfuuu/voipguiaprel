@@ -1,5 +1,5 @@
 <div>
-    <h4>Связи узлов с логическими транками!</h4>
+    <h4>Внешние транки</h4>
     <!-- Форма фильтра (ленточная) -->
     <form class="form-inline" ng-hide="hideFilter" style="margin-bottom: 15px;">
       <div class="form-group" style="margin-right: 20px;">
@@ -29,6 +29,21 @@
                placeholder="ID транка" 
                ng-keydown="$event.keyCode === 13 && clickSearch()">
       </div>
+      <div class="form-group" style="margin-right: 20px;">
+        <label>Описание:</label>
+        <input type="text" class="form-control" 
+               ng-model="filterObj.description"
+               placeholder="Поиск по описанию"
+               ng-change="clickSearch()">
+      </div> 
+      <div class="form-group" style="margin-right: 20px;">
+        <label>Контрагент:</label>
+        <input type="text" class="form-control" 
+               ng-model="filterObj.contragent_name"
+               placeholder="Поиск по контрагенту"
+               ng-change="clickSearch()">
+      </div>
+         
       <a class="btn btn-primary search-form-button" ng-click="clickCreate()">Создать</a>
     </form>
 
@@ -52,6 +67,20 @@
           </a>
         </th>
         <th>
+            <a href="#" ng-click="sortType = 'description'; sortReverse = !sortReverse">
+              Описание
+              <span ng-show="sortType == 'description' && sortReverse" class="caret-down"></span>
+              <span ng-show="sortType == 'description' && !sortReverse" class="caret-up"></span>
+            </a>
+          </th>
+          <th>
+            <a href="#" ng-click="sortType = 'contragent_name'; sortReverse = !sortReverse">
+              Контрагент
+              <span ng-show="sortType == 'contragent_name' && sortReverse" class="caret-down"></span>
+              <span ng-show="sortType == 'contragent_name' && !sortReverse" class="caret-up"></span>
+            </a>
+          </th>              
+        <th>
           <a href="#" ng-click="sortType = 'contract_type_text'; sortReverse = !sortReverse">
             Тип контракта
             <span ng-show="sortType == 'contract_type_text' && sortReverse" class="caret-down"></span>
@@ -64,7 +93,7 @@
             <span ng-show="sortType == 'node_display' && sortReverse" class="caret-down"></span>
             <span ng-show="sortType == 'node_display' && !sortReverse" class="caret-up"></span>
           </a>
-        </th>
+        </th>      
         <th>
           <a href="#" ng-click="sortType = 'comment'; sortReverse = !sortReverse">
             Комментарий
@@ -83,7 +112,8 @@
               {{ link.service_trunk_id }}
             </a>
           </td>
-          
+          <td>{{ link.description }}</td>
+          <td>{{ link.contragent_name }}</td>
         <td>{{ link.contract_type_text }}</td>
         <td style="cursor: pointer" ng-click="clickNode(link.node_id)">{{ link.node_display }}</td>
         <td>{{ link.comment }}</td>
