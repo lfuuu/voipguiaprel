@@ -113,7 +113,9 @@
             </a>
           </td>
           <td>{{ link.description }}</td>
-          <td>{{ link.contragent_name }}</td>
+          <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            {{ link.contragent_name }}
+          </td>          
         <td>{{ link.contract_type_text }}</td>
         <td style="cursor: pointer" ng-click="clickNode(link.node_id)">{{ link.node_display }}</td>
         <td>{{ link.comment }}</td>
