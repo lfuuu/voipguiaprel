@@ -862,6 +862,14 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         smsTestGroupEdit: function(id) {
             return openModal(SmsTestGroupEditCtrl, '/templates/sms/test_group_edit.html', {id: id});
         },
+        smsCdrRead: function() {
+            $cookies.sms_selected_page = 'smsCdrList';
+            return openTab(SmsCdrReportReadCtrl, '/templates/sms/sms_cdr_read.html', {});
+        },
+        smsCdrReportView: function(callId) {
+            return openModal(SmsCdrReportViewCtrl, '/templates/sms/sms_cdr_view.html', { call_id: callId });
+        },
+        
         alphaNumberCreate: function() {
             return openModal(AlphaNumberEditCtrl, '/templates/sms/a2p_alphanumber_edit.html', {id: null});
         },

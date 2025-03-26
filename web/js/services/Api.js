@@ -139,6 +139,66 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('SmsCdr', function ($q, ApiLoader, $rootScope) {
+    var url = '/json/sms/sms-cdr/';
+    var list = undefined;
+    var promise = undefined;
+    
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function (data) {
+            if (promise !== undefined) return promise;
+
+            if (!data.server_id) {
+                data.server_id = $rootScope.server.id;
+            }
+
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                data = data || {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function (response) {
+                        list = response;
+                        promise = undefined;
+                        deferred.resolve(response);
+                    }, function (error) {
+                        promise = undefined;
+                        deferred.reject(error);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        listByServer: function (server_id) {
+            var data = { server_id: $rootScope.server.id };
+            return ApiLoader.post(url + 'list', data);
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        },
+        dcOptions: function() {
+            return ApiLoader.post(url + 'dc-options');
+        },
+        protoOptions: function() {
+            return ApiLoader.post(url + 'proto-options');
+        }
+    };
+});
+
+
 app.factory('SmsRouteTable', function ($q, ApiLoader, $rootScope) {
     var url = '/json/sms/sms-route-table/';
     var list = undefined;
@@ -2459,13 +2519,14 @@ app.factory('UvrGroup', function ($q, ApiLoader, $rootScope) {
     }
 });
 
-app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
+app.factory('List', function (
+    Trunk, TrunkGroup, TestGroup, Prefixlist,
     RouteCase, Outcome, Number, NumberAll, Destination,
     Airp, ReleaseReason, RouteTable, Network,
     Attribute, Server, FmcTrunk, Cpc, Hub,
     PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
-    MajorGroup, Header, HeaderRule, Cdr, OldPricelist,
-    User, ServerOcs, SimImsi, LegType, AlphaNumber,AlphaNumberGroup, Currency, UvrGroup, TelemetryReceiver, $rootScope) {
+    MajorGroup, Header, HeaderRule, Cdr, OldPricelist, User, ServerOcs, SimImsi, LegType, AlphaNumber, AlphaNumberGroup, Currency, UvrGroup, TelemetryReceiver, SmsCdr, $rootScope, $http
+) {
     return {
         trunk: function () {
             return Trunk.list();
@@ -2480,7 +2541,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
             return TrunkGroup.listForMarketplace(serverId);
         },
         trunkRoaming: function (servers) {
-            return Trunk.listRoaming(servers)
+            return Trunk.listRoaming(servers);
         },
         testGroup: function () {
             return TestGroup.list();
@@ -2530,13 +2591,12 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         releaseReason: function () {
             return ReleaseReason.list();
         },
-        uvrGroup: function() {
+        uvrGroup: function () {
             return UvrGroup.list();
         },
         releaseReasonByServerId: function (serverId) {
             return ReleaseReason.list(serverId);
         },
-
         routeTable: function () {
             return RouteTable.list();
         },
@@ -2579,6 +2639,12 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         disconnectCause: function () {
             return Cdr.disconnectCauseList();
         },
+        dcOptions: function () {
+            return SmsCdr.dcOptions();
+        },
+        protoOptions: function () {
+            return SmsCdr.protoOptions();
+        },
         user: function () {
             return User.read();
         },
@@ -2587,7 +2653,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         },
         adapter: function (serverId) {
             return TelemetryReceiver.list({ server_id: serverId }).then(function (data) {
-                return data.map(function(adapter) {
+                return data.map(function (adapter) {
                     return {
                         id: adapter.id,
                         name: adapter.name
@@ -2673,7 +2739,7 @@ app.factory('List', function (Trunk, TrunkGroup, TestGroup, Prefixlist,
         },
         hub: function () {
             return Hub.list();
-        }
+        },
     };
 });
 

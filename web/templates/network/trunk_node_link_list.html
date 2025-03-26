@@ -66,13 +66,6 @@
             <span ng-show="sortType == 'service_trunk_id' && !sortReverse" class="caret-up"></span>
           </a>
         </th>
-        <th>
-            <a href="#" ng-click="sortType = 'description'; sortReverse = !sortReverse">
-              Описание
-              <span ng-show="sortType == 'description' && sortReverse" class="caret-down"></span>
-              <span ng-show="sortType == 'description' && !sortReverse" class="caret-up"></span>
-            </a>
-          </th>
           <th>
             <a href="#" ng-click="sortType = 'contragent_name'; sortReverse = !sortReverse">
               Контрагент
@@ -96,7 +89,7 @@
         </th>      
         <th>
           <a href="#" ng-click="sortType = 'comment'; sortReverse = !sortReverse">
-            Комментарий
+            Описание
             <span ng-show="sortType == 'comment' && sortReverse" class="caret-down"></span>
             <span ng-show="sortType == 'comment' && !sortReverse" class="caret-up"></span>
           </a>
@@ -111,16 +104,13 @@
             <a target="_blank" href="{{baseLink}}usage/trunk/edit-by?clientAccountId={{link.client_account_id}}&trunkId={{link.trunk_id}}">
               {{ link.service_trunk_id }}
             </a>
-          </td>
-          <td style="max-width: 350px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ link.description }}">
-            {{ link.description }}
-          </td>          
+          </td>         
           <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ link.contragent_name }} ">
             {{ link.contragent_name }}
           </td>          
         <td>{{ link.contract_type_text }}</td>
         <td style="cursor: pointer" ng-click="clickNode(link.node_id)">{{ link.node_display }}</td>
-        <td>{{ link.comment }}</td>
+        <td>{{ link.description }}</td>
         <td>
           <button type="button" class="btn btn-warning btn-sm glyphicon glyphicon-pencil" ng-click="clickItem(link)"></button>
           <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(link)"></button>
