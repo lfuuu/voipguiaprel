@@ -48,14 +48,17 @@ app.controller('MainSmsCtrl', function ($rootScope, $scope, $cookies, $timeout, 
         }
     }
 
-    if (funcName && id && type) {
-        Redirect[funcName](id, type);
-    } else if (funcName && id) {
-        Redirect[funcName](id);
-    } else if (funcName) {
-        Redirect[funcName]();
+    if (funcName && typeof Redirect[funcName] === 'function') {
+        if (id && type) {
+            Redirect[funcName](id, type);
+        } else if (id) {
+            Redirect[funcName](id);
+        } else {
+            Redirect[funcName]();
+        }
     } else {
         Redirect.smsTrunkList();
     }
+    
 
 });
