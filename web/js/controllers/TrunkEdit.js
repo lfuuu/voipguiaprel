@@ -159,6 +159,14 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
             }
         };
     }
+
+    $scope.$watch('item.trunk_name', function(newVal, oldVal) {
+        if (newVal !== oldVal && $scope.item && $scope.item.sorm && $scope.item.sorm.items) {
+            angular.forEach($scope.item.sorm.items, function(sormItem) {
+                sormItem.old_name = newVal;
+            });
+        }
+    });
     
     List.legType().then(function (data) {
         $scope.legTypeList = data;
