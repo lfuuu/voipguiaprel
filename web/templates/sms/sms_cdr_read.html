@@ -4,7 +4,15 @@
         position: initial;
         margin: initial;
     }
+    .search-form-item .search-field-label {
+        text-align: right;
+        padding-top: 7px;
+    }
+    .search-input {
+        padding-top: 5px;
+    }
 </style>
+
 <h4>
     Отчет по SMS CDR
     <button type="submit" class="btn btn-success search-form-button" ng-click="clickSearch()">Поиск</button>
@@ -14,86 +22,92 @@
 
 <form ng-hide="hideFilter">
     <div class="form-group">
+        <!-- Row 1: Call ID, Limit -->
         <div class="row">
-            <!-- Row 1: Call ID, Server, Limit -->
-            <div class="form-group col-sm-4 search-form-item first-form-item">
+            <div class="form-group col-sm-6 search-form-item">
                 <label class="col-sm-3 search-field-label">Call ID</label>
                 <div class="col-sm-9 search-input">
-                    <input class="form-control" placeholder="Введите Call ID" ng-model="item.call_id">
+                    <input class="form-control" placeholder="Введите Call ID" ng-model="item.call_id" ng-change="clickSearch()">
                 </div>
             </div>
-            <div class="form-group col-sm-4 search-form-item">
+            <div class="form-group col-sm-6 search-form-item">
                 <label class="col-sm-3 search-field-label">Limit</label>
                 <div class="col-sm-9 search-input">
-                    <input class="form-control" placeholder="100" ng-model="item.limit">
+                    <input class="form-control" placeholder="100" ng-model="item.limit" ng-change="clickSearch()">
                 </div>
             </div>
         </div>
+
+        <!-- Row 2: A Number, B Number -->
         <div class="row">
-            <!-- Row 2: A Number, B Number -->
-            <div class="form-group col-sm-6 search-form-item first-form-item">
+            <div class="form-group col-sm-6 search-form-item">
                 <label class="col-sm-3 search-field-label">A Number</label>
                 <div class="col-sm-9 search-input">
-                    <input class="form-control" placeholder="Введите A Number" ng-model="item.a_number">
+                    <input class="form-control" placeholder="Введите A Number" ng-model="item.a_number" ng-change="clickSearch()">
                 </div>
             </div>
             <div class="form-group col-sm-6 search-form-item">
                 <label class="col-sm-3 search-field-label">B Number</label>
                 <div class="col-sm-9 search-input">
-                    <input class="form-control" placeholder="Введите B Number" ng-model="item.b_number">
+                    <input class="form-control" placeholder="Введите B Number" ng-model="item.b_number" ng-change="clickSearch()">
                 </div>
             </div>
         </div>
+
+        <!-- Row 3: Disconnect Cause (DC), Proto -->
         <div class="row">
-            <!-- Row 3: Proto, Disconnect Cause -->
-            <!-- Фильтр Disconnect Cause -->
             <div class="form-group col-sm-6 search-form-item">
-                <label class="col-sm-3 search-field-label" popover="Disconnect Cause" data-popover-trigger="mouseenter" popover-placement="left">DC</label>
+                <label class="col-sm-3 search-field-label">DC</label>
                 <div class="col-sm-9 search-input">
-                    <select class="search-form-select" ui-select2 style="width: 100%" ng-model="item.disconnect_cause" placeholder="Выберите причину">
+                    <select class="form-control" ui-select2 ng-model="item.disconnect_cause" placeholder="Выберите причину" ng-change="clickSearch()">
                         <option value="">-- Выберите --</option>
                         <option ng-repeat="option in dcOptions" value="{{option}}">{{option}}</option>
                     </select>
                 </div>
             </div>
-            <!-- Фильтр Proto -->
-<div class="form-group col-sm-6 search-form-item">
-    <label class="col-sm-3 search-field-label">Proto</label>
-    <div class="col-sm-9 search-input">
-        <select class="search-form-select" ui-select2 style="width: 100%" ng-model="item.proto" placeholder="Выберите Proto">
-            <option value="">-- Выберите --</option>
-            <option ng-repeat="option in protoOptions" value="{{option}}">{{option}}</option>
-        </select>
-    </div>
-</div>
-        </div>
-        <div class="row">
-            <!-- Row 4: Фильтр по времени -->
-            <div class="form-group col-sm-8" style="padding-right: 5px;">
-                <div class="form-group col-sm-2" style="width: 50px; padding-left: 0px;">
-                    <button class="dropdown-toggle btn btn-info" data-toggle="dropdown">
-                        <span class="glyphicon glyphicon-time"></span>
-                        <span class="glyphicon glyphicon-chevron-down"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" ng-click="item.is_time_absolute = true">Absolute</a></li>
-                        <li><a href="#" ng-click="item.is_time_absolute = false">Relative</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-3 search-input" ng-hide="!item.is_time_absolute" style="width: 200px; padding-right: 5px;">
-                    <input class="form-control" ng-model="item.time_from" placeholder="From">
-                </div>
-                <div class="col-sm-1 search-input" ng-hide="!item.is_time_absolute" style="width: 50px; padding-left: 0px; padding-right: 0px; text-align: center; line-height: 34px;">
-                    <span>--</span>
-                </div>
-                <div class="col-sm-3 search-input" ng-hide="!item.is_time_absolute" style="width: 200px; padding-right: 5px;">
-                    <input class="form-control" ng-model="item.time_to" placeholder="To">
-                </div>
-                <div class="col-sm-4 search-input" ng-hide="item.is_time_absolute" style="width: 370px; padding-right: 5px;">
-                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" ng-model="item.time_relative" placeholder="Выберите интервал">
+            <div class="form-group col-sm-6 search-form-item">
+                <label class="col-sm-3 search-field-label">Proto</label>
+                <div class="col-sm-9 search-input">
+                    <select class="form-control" ui-select2 ng-model="item.proto" placeholder="Выберите Proto" ng-change="clickSearch()">
                         <option value="">-- Выберите --</option>
-                        <option ng-repeat="timeInterval in timeIntervals" value="{{timeInterval.id}}">{{timeInterval.name}}</option>
+                        <option ng-repeat="option in protoOptions" value="{{option}}">{{option}}</option>
                     </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 4: Фильтр по времени (Absolute / Relative) в одной строке -->
+        <div class="row">
+            <div class="form-group col-sm-6 search-form-item">
+                <label class="col-sm-3 search-field-label">Время</label>
+                <div class="col-sm-9 search-input">
+                    <!-- Переключатель Absolute/Relative -->
+                    <div class="btn-group" style="margin-right: 10px;">
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                            <span ng-if="item.is_time_absolute">Absolute</span>
+                            <span ng-if="!item.is_time_absolute">Relative</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" ng-click="item.is_time_absolute = true; clickSearch()">Absolute</a></li>
+                            <li><a href="#" ng-click="item.is_time_absolute = false; clickSearch()">Relative</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Absolute mode: поля From и To на одной линии -->
+                    <span ng-if="item.is_time_absolute" style="display:inline-block;">
+                        <input type="text" class="form-control" style="display:inline-block; width:120px;" ng-model="item.time_from" placeholder="From" ng-change="clickSearch()">
+                        <span style="margin: 0 5px;">–</span>
+                        <input type="text" class="form-control" style="display:inline-block; width:120px;" ng-model="item.time_to" placeholder="To" ng-change="clickSearch()">
+                    </span>
+
+                    <!-- Relative mode: выпадающий список интервалов -->
+                    <span ng-if="!item.is_time_absolute" style="display:inline-block; width:auto;">
+                        <select class="form-control" style="display:inline-block; width:180px;" ui-select2 ng-model="item.time_relative" placeholder="Выберите интервал" ng-change="clickSearch()">
+                            <option value="">-- Выберите --</option>
+                            <option ng-repeat="timeInterval in timeIntervals" value="{{timeInterval.id}}">{{timeInterval.name}}</option>
+                        </select>
+                    </span>
                 </div>
             </div>
         </div>
@@ -180,11 +194,7 @@
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.a_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.b_number}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.proto}}</td>
-            <td style="cursor: pointer" ng-click="clickItem(item)">
-                <span popover="{{item.disconnect_cause}}" data-popover-trigger="mouseenter" popover-placement="bottom">
-                    {{item.disconnect_cause}}
-                </span>
-            </td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.disconnect_cause}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.direction}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.login}}</td>
         </tr>
