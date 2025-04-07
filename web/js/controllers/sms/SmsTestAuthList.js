@@ -77,4 +77,20 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, Redirect, $wind
             $scope.init()
         });
     };
+
+    $scope.hasPopover = function(item) {
+        return item.is_autotest ? 'mouseenter' : 'none';
+    };
+
+    $scope.getTestResultIcon = function(passed) {
+        if (passed === true) {
+            return 'passed.png';
+        } else if (passed === false) {
+            return 'failed.png';
+        } else {
+            return 'not_executed.png';
+        }
+    };
+    
+    
 };
