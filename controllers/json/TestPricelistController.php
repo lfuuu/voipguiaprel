@@ -333,16 +333,17 @@ class TestPricelistController extends JsonController
     
     private function getCmdByNum($cmd, $number, $apiUrl, $fields = [])
     {
+        if ($cmd === 'getNumberRangeByNum') {
+            $apiUrl = 'https://api-gw.mcn.ru/voipbilld/reg/';
+        }
+        
         $apiParams = [
             'cmd' => $cmd,
             'num' => $number
         ];
-        
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
-        
         $response = file_get_contents($request);
         $result = json_decode($response, true);
-        
         if (!empty($fields) && !empty($result)) {
             foreach ($result as $key => $value) {
                 if (array_key_exists($key, $fields)) {
@@ -353,11 +354,10 @@ class TestPricelistController extends JsonController
                 }
             }
         }
-        
         if (isset($result) && is_array($result)) {
             ksort($result);
         }
-        
         return $result;
     }
+
 }
