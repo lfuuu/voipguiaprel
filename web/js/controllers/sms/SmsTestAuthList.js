@@ -1,31 +1,34 @@
 var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, Redirect, $window) {
-
     $scope.sortType = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
-    $scope.filterFields = [
-        'id', 'name', 'trunk_name'
-    ];
-    
     $scope.searchArray = {
         id: '',
         name: '',
         group_id: '',
-        trunk_name: '',
+        trunk: '',
+        result: ''
     };
-    
+
+    $scope.filterFields = ['id', 'name', 'trunk_name', 'result'];
+
+    $scope.testResultList = [
+        { id: '', name: 'Все тесты' },
+        { id: 'success', name: 'Успешные' },
+        { id: 'failure', name: 'Неуспешные' }
+    ];
+
     $scope.init = function (tab) {
         if (tab) tab.title = 'Тесты маршрутизации';
-
         $scope.refreshList();
     };
 
     $scope.refreshList = function() {
         SmsTestAuth.read({
-                server_id: $scope.server.id,
-                search_array: $scope.searchArray,
-            }).then(function (data) {
+            server_id: $scope.server.id,
+            search_array: $scope.searchArray,
+        }).then(function (data) {
             $scope.list = data;
         });
     };
@@ -33,7 +36,7 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, Redirect, $wind
     SmsList.testGroup({}).then(function (data) {
         $scope.testGroupList = data;
     });
-    
+
     $scope.clickCreate = function() {
         Redirect.smsTestAuthCreate().then(function () {
             $scope.init();
@@ -49,10 +52,9 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, Redirect, $wind
     };
 
     $scope.showTestBasic = function (item, method) {
-        if (window.getSelection().type == 'Range') {
+        if (window.getSelection().type === 'Range') {
             return;
         }
-
         Redirect[method](item.id).then(function () {
             $scope.init();
         });
@@ -62,9 +64,7 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, Redirect, $wind
         if (!userPermissions['sms_test_auth_edit']) {
             return;
         }
-
-        if (window.getSelection().type == 'Range') return;
-
+        if (window.getSelection().type === 'Range') return;
         Redirect.smsTestAuthEdit(item.id).then(function () {
             $scope.init();
         });
@@ -72,14 +72,9 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, Redirect, $wind
 
     $scope.deleteItem = function(item) {
         if (!$window.confirm('Удалить?')) return;
-
         SmsTestAuth.delete(item.id).then(function(response) {
-            $scope.init()
+            $scope.init();
         });
-    };
-
-    $scope.hasPopover = function(item) {
-        return item.is_autotest ? 'mouseenter' : 'none';
     };
 
     $scope.getTestResultIcon = function(passed) {
@@ -91,6 +86,5 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, Redirect, $wind
             return 'not_executed.png';
         }
     };
-    
-    
+
 };
