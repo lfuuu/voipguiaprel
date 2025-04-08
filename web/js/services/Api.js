@@ -194,6 +194,9 @@ app.factory('SmsCdr', function ($q, ApiLoader, $rootScope) {
         },
         protoOptions: function() {
             return ApiLoader.post(url + 'proto-options');
+        },
+        raw: function(data) {
+            return ApiLoader.get('/json/sms/sms-raw/raw', data);
         }
     };
 });

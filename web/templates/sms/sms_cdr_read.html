@@ -197,6 +197,9 @@
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.disconnect_cause}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.direction}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.login}}</td>
+            <td>
+                <button class="btn btn-xs btn-info" ng-click="openSmsRawModal(item)">Raw</button>
+              </td>
         </tr>
     </tbody>
 </table>
