@@ -26,6 +26,7 @@ class AppSmsAsset extends AssetBundle
         'js/directives/sms-outcome-select-box.js',
         'js/controllers/MainSms.js',
         'js/controllers/sms/SmsTrunkList.js',
+        'js/controllers/sms/SmsRawViewCtrl.js',
         'js/controllers/sms/SmsRouteTableList.js',
         'js/controllers/sms/SmsOutcomeList.js',
         'js/controllers/sms/SmsOutcomeEdit.js',
