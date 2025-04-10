@@ -80,9 +80,13 @@ class SmsCdrController extends JsonController
         }
     }
 
+    // Добавляем подзапрос для raw_count:
     $query = SmscCdr::find()
         ->alias('s')
-        ->select(['s.*'])
+        ->select([
+            's.*',
+            '(SELECT COUNT(*) FROM smsc_raw.smsc_raw r WHERE r.smpp_cdr_id = s.id OR r.orig_cdr_id = s.id OR r.term_cdr_id = s.id) as raw_count'
+        ])
         ->where($where)
         ->limit($limit)
         ->orderBy('s.setup_time ' . ($isTimeAbsolute ? 'ASC' : 'DESC'));
@@ -95,6 +99,7 @@ class SmsCdrController extends JsonController
 
     return $query->asArray()->all();
 }
+
 
 
     /**
