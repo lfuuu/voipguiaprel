@@ -128,4 +128,17 @@ var SmsCdrReportReadCtrl = function($rootScope, $scope, SmsCdr, List, Redirect, 
             $window.alert('Ошибка получения данных raw SMS: ' + error);
         });
     };
+
+    $scope.openA2pSmsModal = function(item) {
+        $modal.open({
+            templateUrl: '/templates/sms/a2p_sms_raw_view.html',
+            controller: A2pSmsRawViewCtrl,
+            resolve: {
+                params: function() {
+                    return { cdr_id: item.id };
+                }
+            }
+        });
+    };
+    
 };

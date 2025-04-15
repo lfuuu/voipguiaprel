@@ -193,6 +193,13 @@
             <span ng-show="sortType == 'raw_count' && !sortReverse" class="caret-up"></span>
           </a>
         </th>
+        <th width="10%">
+            <a href="#" ng-click="sortType = 'raw_count'; sortReverse = !sortReverse">
+              A2P SMS
+              <span ng-show="sortType == 'raw_count' && sortReverse" class="caret-down"></span>
+              <span ng-show="sortType == 'raw_count' && !sortReverse" class="caret-up"></span>
+            </a>
+          </th>
       </tr>
     </thead>
     <tbody>
@@ -209,6 +216,10 @@
         <td>
           <span ng-if="item.raw_count > 0" class="glyphicon glyphicon-ok" style="color:green;" title="Raw SMS данные присутствуют"></span>
           <span ng-if="item.raw_count == 0" class="glyphicon glyphicon-remove" style="color:red;" title="Raw SMS данные отсутствуют"></span>
+        </td>
+        <td>
+            <span ng-if="item.a2p_count > 0" class="glyphicon glyphicon-ok" style="color:green;" title="A2P SMS данные присутствуют"></span>
+            <span ng-if="!item.a2p_count || item.a2p_count == 0" class="glyphicon glyphicon-remove" style="color:red;" title="A2P SMS данные отсутствуют"></span>
         </td>
       </tr>
     </tbody>

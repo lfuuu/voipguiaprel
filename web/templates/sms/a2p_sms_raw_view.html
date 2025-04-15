@@ -1,0 +1,67 @@
+<style>
+    [popover] {
+        display: initial;
+        position: initial;
+        margin: initial;
+    }
+    .modal-header h3 {
+        margin: 0;
+    }
+    .table-condensed > tbody > tr > td,
+    .table-condensed > thead > tr > td,
+    .table-condensed > tbody > tr > th,
+    .table-condensed > thead > tr > th {
+        padding: 5px;
+    }
+</style>
+
+<div class="modal-header">
+    <h3>A2P SMS данные для CDR ID: {{cdrId}}</h3>
+</div>
+<div class="modal-body">
+    <div ng-if="errorMessage">
+        <div class="alert alert-danger">{{errorMessage}}</div>
+    </div>
+    <table class="table table-striped table-hover table-condensed" ng-if="a2pSmsDetails.length > 0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Orig</th>
+                <th>Server ID</th>
+                <th>SMS Call ID</th>
+                <th>Account ID</th>
+                <th>Charge Time</th>
+                <th>Src Number</th>
+                <th>Dst Number</th>
+                <th>Src Route</th>
+                <th>Dst Route</th>
+                <th>Cost</th>
+                <th>Rate</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="sms in a2pSmsDetails track by $index">
+                <td>{{sms.id}}</td>
+                <td>{{sms.orig}}</td>
+                <td>{{sms.server_id}}</td>
+                <td>{{sms.sms_call_id}}</td>
+                <td>{{sms.account_id}}</td>
+                <td>{{sms.charge_time}}</td>
+                <td>{{sms.src_number}}</td>
+                <td>{{sms.dst_number}}</td>
+                <td>{{sms.src_route}}</td>
+                <td>{{sms.dst_route}}</td>
+                <td>{{sms.cost}}</td>
+                <td>{{sms.rate}}</td>
+                <td>{{sms.count}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div ng-if="a2pSmsDetails.length == 0 && !errorMessage">
+        Нет A2P SMS данных для данной записи.
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="back()">Закрыть</button>
+</div>
