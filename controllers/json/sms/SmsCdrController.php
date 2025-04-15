@@ -80,15 +80,15 @@ class SmsCdrController extends JsonController
         }
     }
 
-    $query = SmscCdr::find()
+   // Пример выборки в actionRead:
+        $query = SmscCdr::find()
         ->alias('s')
         ->select([
             's.*',
-            // Подсчет записей в таблице smsc_raw (raw_count), если нужен
             '(SELECT COUNT(*) FROM smsc_raw.smsc_raw r WHERE r.smpp_cdr_id = s.id OR r.orig_cdr_id = s.id OR r.term_cdr_id = s.id) AS raw_count',
-            // Подсчет записей в таблице a2p_sms_raw (a2p_count)
-            '(SELECT COUNT(*) FROM a2p_sms_raw.a2p_sms_raw a2p WHERE a2p.cdr_id = s.id) AS a2p_count'
+            '(SELECT COUNT(*) FROM a2p_sms_raw.a2p_sms_raw a2p WHERE a2p.sms_call_id = s.id) AS a2p_count'
         ])
+
         ->where($where)
         ->limit($limit)
         ->orderBy('s.setup_time ' . ($isTimeAbsolute ? 'ASC' : 'DESC'));
