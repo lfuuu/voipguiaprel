@@ -595,6 +595,18 @@ app.factory('TelemetryReceiver', function ($q, ApiLoader, $rootScope) {
         },
     };
 });
+app.factory('CallsGlue', function($q, $http, $rootScope) {
+    var url = '/json/calls-glue/';
+    return {
+        getJson: function(data) {
+            // Отправляем POST-запрос с данными, указываем JSON-заголовок
+            return $http.post(url + 'get-json', data, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+    };
+});
+
 
 
 app.factory('ActionLog', function ($q, ApiLoader, $rootScope) {

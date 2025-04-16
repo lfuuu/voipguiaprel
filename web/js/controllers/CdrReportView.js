@@ -1,5 +1,5 @@
 
-var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance, $window, $http, $sce) {
+var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance, $window, $http, $sce, CallsGlue) {
 
     if (params.mcn_callid) {
         $scope.mcn_callid = params.mcn_callid;
@@ -86,7 +86,20 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
                 $scope.responses['graph'] = 'Ошибка: ' + (error.data.error || error.statusText);
             });
     };
-    
-    
 
+    
+    $scope.getValJson = function() {
+        var requestParams = { mcn_callid: $scope.mcn_callid };
+        console.log('Sending data:', requestParams);
+
+        CallsGlue.getJson(requestParams)
+            .then(function(response) {
+                console.log('Response:', response);
+                $scope.jsonData = response.data; // JSON данные, полученные от сервера
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                $scope.jsonData = 'Ошибка: ' + (error.data ? error.data.error : error.statusText);
+            });
+    };
 };
