@@ -405,6 +405,16 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="col-sm-2 control-label">ID ЕПВВ</label>
+                    <div class="col-sm-10">
+                      <input class="form-control"
+                             placeholder="ID ЕПВВ"
+                             ng-model="item.id_src_operator_epvv"
+                             type="number" />
+                    </div>
+                  </div>                  
+
+                <div class="form-group">
                     <label class="col-sm-2 control-label">Транслировать в CDR</label>
                     <div class="col-sm-10">
                         <div class="btn-group" ng-click="item.insert_cdr = !item.insert_cdr">
