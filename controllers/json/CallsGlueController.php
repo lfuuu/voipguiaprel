@@ -12,10 +12,7 @@ class CallsGlueController extends Controller
     public $enableCsrfValidation = false;
     public function actionGetJson()
     {
-        // Извлекаем параметр из тела POST-запроса, где данные передаются в формате JSON
         $mcnCallid = Yii::$app->request->getBodyParam('mcn_callid');
-
-        Yii::info('Received mcn_callid: ' . var_export($mcnCallid, true), __METHOD__);
 
         if (!$mcnCallid) {
             throw new HttpException(400, "Не указан mcn_callid");

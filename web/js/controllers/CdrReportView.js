@@ -90,12 +90,10 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
     
     $scope.getValJson = function() {
         var requestParams = { mcn_callid: $scope.mcn_callid };
-        console.log('Sending data:', requestParams);
 
         CallsGlue.getJson(requestParams)
             .then(function(response) {
-                console.log('Response:', response);
-                $scope.jsonData = response.data; // JSON данные, полученные от сервера
+                $scope.jsonData = response.data;
             })
             .catch(function(error) {
                 console.error('Error:', error);
