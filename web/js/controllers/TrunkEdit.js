@@ -25,6 +25,8 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
                 orm_id: data.sorm_p268_orm_id || null
             };
 
+            $scope.item.id_src_operator_epvv = data.id_src_operator_epvv || null;
+
             Trunk.serviceTrunks(params.id).then(function (serviceTrunks) {
                 $scope.serviceTrunks = serviceTrunks;
             });
@@ -117,6 +119,7 @@ var TrunkEditCtrl = function($rootScope, $scope, Redirect, Trunk, List, params, 
         $scope.item = {
             server_id: serverId,
             default_priority: 0,
+            id_src_operator_epvv: null,
             source_rule_default_allowed: false,
             source_trunk_rule_default_allowed: false,
             source_rule_rn_default_allowed: false,
