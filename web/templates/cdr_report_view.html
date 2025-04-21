@@ -164,9 +164,8 @@
 
 <div class="button-group" style="margin-left: 10px; margin-top: 10px;">
     <button class="btn btn-info btn-sm" ng-click="getLegs()">Получить данные звонка</button>
-    <!-- Изменяем вызов для прохождения по графу -->
     <button class="btn btn-primary btn-sm" ng-click="getGraph()">Проход по Графу</button>
-    <button class="btn btn-info btn-sm" ng-click="getValJson()">Вывести JSON</button>
+    <button class="btn btn-info btn-sm" ng-click="getValJson()">Данные из Calls_Detail</button>
 
 </div>
 
@@ -198,7 +197,7 @@
     <pre>{{legsData | json}}</pre>
 </div>
 <div ng-if="jsonData">
-    <h5>Данные JSON для mcn_callid:</h5>
+    <h5>Данные Calls_Detail для mcn_callid:</h5>
     <pre>{{jsonData | json}}</pre>
 </div>
 
