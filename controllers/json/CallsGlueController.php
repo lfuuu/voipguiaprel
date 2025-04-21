@@ -9,6 +9,7 @@ use Yii;
 
 class CallsGlueController extends Controller
 {
+    public $enableCsrfValidation = false;
     public function actionGetJson()
     {
         // Извлекаем параметр из тела POST-запроса, где данные передаются в формате JSON
