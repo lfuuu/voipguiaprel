@@ -73,22 +73,27 @@ app.factory('SettingsList', function (Acl, Role) {
         }
     };
 });
-app.factory('GlobalSettings', function($q, ApiLoader, $rootScope) {
-    var url = '/json/settings/global-settings/';
+
+
+app.factory('GlobalSettings', function(ApiLoader) {
+    var base = '/json/settings/global-settings/';
     return {
-        get: function() {
-            return ApiLoader.post(url + 'get');
-        },
-        update: function(data) {
-            return ApiLoader.post(url + 'update', data);
-        },
-        callProcedure: function(params) {
-            // Предполагается, что на сервере реализован экшен call-procedure,
-            // который принимает параметр procedure и выполняет вызов хранимой процедуры.
-            return ApiLoader.post(url + 'call-procedure', params);
-        }
+      get: function() {
+        return ApiLoader.post(base + 'get');
+      },
+      update: function(data) {
+        return ApiLoader.post(base + 'update', data);
+      },
+      callProcedure: function(data) {
+        return ApiLoader.post(base + 'call-procedure', data);
+      }
     };
-});
+  });
+  
+  
+  
+  
+
 
 
 

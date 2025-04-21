@@ -1,67 +1,81 @@
-<form class="form-horizontal" name="form">
-    <div class="modal-header">
-      <h3>Глобальные настройки</h3>
-    </div>
-    <ul class="nav nav-tabs">
-      <li class="active"><a href="#mainsettings" data-toggle="tab">Верификация</a></li>
-    </ul>
-    <div class="modal-body">
-      <div class="tab-content">
-        <!-- Переключатель для Error API запроса -->
-        <div class="form-group">
-          <div class="col-sm-12 d-flex align-items-center">
-            <label class="col-sm-2 control-label">
-              Действие: Код Error API запроса
-            </label>
-            <div class="btn-group" ng-click="settings.antifraud_error_check = !settings.antifraud_error_check">
-              <button type="button" class="btn {{!settings.antifraud_error_check ? 'btn-success active' : 'btn-default'}}">
-                Вручную
-              </button>
-              <button type="button" class="btn {{settings.antifraud_error_check ? 'btn-danger active' : 'btn-default'}}">
-                Accept
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- Переключатель для Call Rejected API запроса отказов -->
-        <div class="form-group">
-          <div class="col-sm-12 d-flex align-items-center">
-            <label class="col-sm-2 control-label">
-              Действие: Код Call Rejected API запроса отказов
-            </label>
-            <div class="btn-group" ng-click="settings.antifraud_reject_check = !settings.antifraud_reject_check">
-              <button type="button" class="btn {{!settings.antifraud_reject_check ? 'btn-success active' : 'btn-default'}}">
-                Вручную
-              </button>
-              <button type="button" class="btn {{settings.antifraud_reject_check ? 'btn-danger active' : 'btn-default'}}">
-                Accept
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- Переключатель для Timeout API запроса -->
-        <div class="form-group">
-          <div class="col-sm-12 d-flex align-items-center">
-            <label class="col-sm-2 control-label">
-              Действие: Timeout API запроса
-            </label>
-            <div class="btn-group" ng-click="settings.antifraud_timeout_check = !settings.antifraud_timeout_check">
-              <button type="button" class="btn {{!settings.antifraud_timeout_check ? 'btn-success active' : 'btn-default'}}">
-                Вручную
-              </button>
-              <button type="button" class="btn {{settings.antifraud_timeout_check ? 'btn-danger active' : 'btn-default'}}">
-                Accept
-              </button>
-            </div>
-          </div>
+<form class="form-horizontal" name="form" novalidate>
+  <div class="modal-header">
+    <h3>Глобальные настройки</h3>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="col-sm-4 control-label">Действие: Код Error API запроса</label>
+      <div class="col-sm-8">
+        <div class="btn-group">
+          <button type="button"
+                  class="btn"
+                  ng-class="!settings.antifraud_error_check ? 'btn-success active':'btn-default'"
+                  ng-click="setMode('error', false)">
+            Вручную
+          </button>
+          <button type="button"
+                  class="btn"
+                  ng-class=" settings.antifraud_error_check ? 'btn-danger active':'btn-default'"
+                  ng-click="setMode('error', true)">
+            Accept
+          </button>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <div class="pull-left">
-        <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
-        <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+
+    <div class="form-group">
+      <label class="col-sm-4 control-label">Действие: Код Call Rejected API запроса отказов</label>
+      <div class="col-sm-8">
+        <div class="btn-group">
+          <button type="button"
+                  class="btn"
+                  ng-class="!settings.antifraud_reject_check ? 'btn-success active':'btn-default'"
+                  ng-click="setMode('reject', false)">
+            Вручную
+          </button>
+          <button type="button"
+                  class="btn"
+                  ng-class=" settings.antifraud_reject_check ? 'btn-danger active':'btn-default'"
+                  ng-click="setMode('reject', true)">
+            Accept
+          </button>
+        </div>
       </div>
     </div>
-  </form>
-  
+
+    <div class="form-group">
+      <label class="col-sm-4 control-label">Действие: Timeout API запроса</label>
+      <div class="col-sm-8">
+        <div class="btn-group">
+          <button type="button"
+                  class="btn"
+                  ng-class="!settings.antifraud_timeout_check ? 'btn-success active':'btn-default'"
+                  ng-click="setMode('timeout', false)">
+            Вручную
+          </button>
+          <button type="button"
+                  class="btn"
+                  ng-class=" settings.antifraud_timeout_check ? 'btn-danger active':'btn-default'"
+                  ng-click="setMode('timeout', true)">
+            Accept
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit"
+            class="btn btn-success"
+            ng-click="save()"
+            ng-disabled="form.$invalid">
+      Сохранить
+    </button>
+    <button type="button"
+            class="btn btn-default btn-sm"
+            ng-click="close()">
+      Закрыть
+    </button>
+  </div>
+</form>
