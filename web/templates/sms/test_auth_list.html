@@ -75,6 +75,9 @@
             <span ng-show="sortType == 'name' && !sortReverse" class="caret-up"></span>
           </a>
         </th>
+      </th>
+      <th width="1%">
+      </th>
         <th width="20%">
           <a href="#" ng-click="sortType = 'trunk_name'; sortReverse = !sortReverse">
             Транк
@@ -121,6 +124,9 @@
           <img ng-if="item.is_autotest" ng-src="../img/{{ getTestResultIcon(item.passed) }}" alt="Результат теста">
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
+        <td>
+          <button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">MAIN</button>
+      </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.trunk_name_out}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.testgroup_name}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.src_number}}</td>
