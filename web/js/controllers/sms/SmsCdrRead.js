@@ -45,7 +45,7 @@ var SmsCdrReportReadCtrl = function($rootScope, $scope, SmsCdr, List, Redirect, 
 
     // Основная инициализация контроллера
     $scope.init = function(tab) {
-        if (tab) { tab.title = 'Отчет по SMS CDR'; }
+        if (tab) { tab.title = 'Отчет по SMSC CDR'; }
         $scope.list = [];
         $scope.item = {
             call_id: '',
