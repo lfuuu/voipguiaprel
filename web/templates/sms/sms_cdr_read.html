@@ -14,7 +14,7 @@
 </style>
 
 <h4>
-    Отчет по SMS CDR
+    Отчет по SMSС CDR
     <button type="submit" class="btn btn-success search-form-button" ng-click="clickSearch()">Поиск</button>
     <button type="submit" ng-hide="hideFilter" class="btn btn-warning search-form-button" ng-click="hideFilter = true">Скрыть фильтр</button>
     <button type="submit" ng-hide="!hideFilter" class="btn btn-info search-form-button" ng-click="hideFilter = false">Показать фильтр</button>
@@ -75,44 +75,42 @@
                 </div>
             </div>
         </div>
-
         <!-- Row 4: Фильтр по времени (Absolute / Relative) в одной строке -->
-        <div class="row">
-            <div class="form-group col-sm-6 search-form-item">
-                <label class="col-sm-3 search-field-label">Время</label>
-                <div class="col-sm-9 search-input">
-                    <!-- Переключатель Absolute/Relative -->
-                    <div class="btn-group" style="margin-right: 10px;">
-                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-                            <span ng-if="item.is_time_absolute">Absolute</span>
-                            <span ng-if="!item.is_time_absolute">Relative</span>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" ng-click="item.is_time_absolute = true; clickSearch()">Absolute</a></li>
-                            <li><a href="#" ng-click="item.is_time_absolute = false; clickSearch()">Relative</a></li>
-                        </ul>
+              <div class="row">
+                <div class="form-group col-sm-6 search-form-item">
+                    <label class="col-sm-3 search-field-label">Время</label>
+                    <div class="col-sm-9 search-input">
+                        <!-- Переключатель Absolute/Relative -->
+                        <div class="btn-group" style="margin-right: 10px;">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                                <span ng-if="item.is_time_absolute">Absolute</span>
+                                <span ng-if="!item.is_time_absolute">Relative</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" ng-click="item.is_time_absolute = true; clickSearch()">Absolute</a></li>
+                                <li><a href="#" ng-click="item.is_time_absolute = false; clickSearch()">Relative</a></li>
+                            </ul>
+                        </div>
+      
+                          <!-- Absolute mode: поля From и To на одной линии -->
+                        <span ng-if="item.is_time_absolute" style="display:inline-block;">
+                            <input type="text" class="form-control" style="display:inline-block; width:220px;" ng-model="item.time_from" placeholder="From" ng-change="clickSearch()">
+                            <span style="margin: 0 5px;">–</span>
+                            <input type="text" class="form-control" style="display:inline-block; width:220px;" ng-model="item.time_to" placeholder="To" ng-change="clickSearch()">
+                        </span>
+      
+                        <!-- Relative mode: выпадающий список интервалов -->
+                        <span ng-if="!item.is_time_absolute" style="display:inline-block; width:auto;">
+                            <select class="form-control" style="display:inline-block; width:250px;" ui-select2 ng-model="item.time_relative" placeholder="Выберите интервал" ng-change="clickSearch()">
+                                <option value="">-- Выберите --</option>
+                                <option ng-repeat="timeInterval in timeIntervals" value="{{timeInterval.id}}">{{timeInterval.name}}</option>
+                            </select>
+                        </span>
                     </div>
-
-                    <!-- Absolute mode: поля From и To на одной линии -->
-                    <span ng-if="item.is_time_absolute" style="display:inline-block;">
-                        <input type="text" class="form-control" style="display:inline-block; width:120px;" ng-model="item.time_from" placeholder="From" ng-change="clickSearch()">
-                        <span style="margin: 0 5px;">–</span>
-                        <input type="text" class="form-control" style="display:inline-block; width:120px;" ng-model="item.time_to" placeholder="To" ng-change="clickSearch()">
-                    </span>
-
-                    <!-- Relative mode: выпадающий список интервалов -->
-                    <span ng-if="!item.is_time_absolute" style="display:inline-block; width:auto;">
-                        <select class="form-control" style="display:inline-block; width:180px;" ui-select2 ng-model="item.time_relative" placeholder="Выберите интервал" ng-change="clickSearch()">
-                            <option value="">-- Выберите --</option>
-                            <option ng-repeat="timeInterval in timeIntervals" value="{{timeInterval.id}}">{{timeInterval.name}}</option>
-                        </select>
-                    </span>
                 </div>
             </div>
-        </div>
-    </div>
-</form>
+  </form>
 
 <div ng-hide="!isLoading" class="row">
     <div class="form-group col-sm-12" style="text-align: center;">
@@ -193,13 +191,6 @@
             <span ng-show="sortType == 'raw_count' && !sortReverse" class="caret-up"></span>
           </a>
         </th>
-        <th width="10%">
-            <a href="#" ng-click="sortType = 'raw_count'; sortReverse = !sortReverse">
-              A2P SMS
-              <span ng-show="sortType == 'raw_count' && sortReverse" class="caret-down"></span>
-              <span ng-show="sortType == 'raw_count' && !sortReverse" class="caret-up"></span>
-            </a>
-          </th>
       </tr>
     </thead>
     <tbody>
@@ -216,10 +207,6 @@
         <td>
           <span ng-if="item.raw_count > 0" class="glyphicon glyphicon-ok" style="color:green;" title="Raw SMS данные присутствуют"></span>
           <span ng-if="item.raw_count == 0" class="glyphicon glyphicon-remove" style="color:red;" title="Raw SMS данные отсутствуют"></span>
-        </td>
-        <td>
-            <span ng-if="item.a2p_count > 0" class="glyphicon glyphicon-ok" style="color:green;" title="A2P SMS данные присутствуют"></span>
-            <span ng-if="!item.a2p_count || item.a2p_count == 0" class="glyphicon glyphicon-remove" style="color:red;" title="A2P SMS данные отсутствуют"></span>
         </td>
       </tr>
     </tbody>
