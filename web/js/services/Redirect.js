@@ -862,6 +862,10 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         smsTestGroupEdit: function(id) {
             return openModal(SmsTestGroupEditCtrl, '/templates/sms/test_group_edit.html', {id: id});
         },
+        smscCdrRead: function() {
+            $cookies.sms_selected_page = 'smscCdrList';
+            return openTab(SmscCdrReportReadCtrl, '/templates/sms/smsc_cdr_read.html', {});
+        },
         smsCdrRead: function() {
             $cookies.sms_selected_page = 'smsCdrList';
             return openTab(SmsCdrReportReadCtrl, '/templates/sms/sms_cdr_read.html', {});
