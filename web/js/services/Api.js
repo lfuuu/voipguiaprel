@@ -2601,7 +2601,7 @@ app.factory('List', function (
     RouteCase, Outcome, Number, NumberAll, Destination,
     Airp, ReleaseReason, RouteTable, Network,
     Attribute, Server, FmcTrunk, Cpc, Hub,
-    PricelistGroup, Mcc, Pricelist, TestPricelistGroup,
+    PricelistGroup, Mcc, Mnc, Pricelist, TestPricelistGroup,
     MajorGroup, Header, HeaderRule, Cdr, OldPricelist, User, ServerOcs, SimImsi, LegType, AlphaNumber, AlphaNumberGroup, Currency, UvrGroup, TelemetryReceiver, SmscCdr, $rootScope, $http
 ) {
     return {
