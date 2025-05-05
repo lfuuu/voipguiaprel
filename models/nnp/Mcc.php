@@ -42,4 +42,11 @@ class Mcc extends \yii\db\ActiveRecord
         $item->load($data, '');
         return $item;
     }
+    public function actionList()
+{
+    \Yii::$app->response->format = 'json';
+    return \app\models\nnp\Mcc::find()
+             ->select(['mcc','country'])
+             ->orderBy('country')->asArray()->all();
+}
 }

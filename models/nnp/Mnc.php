@@ -41,4 +41,11 @@ class Mnc extends \yii\db\ActiveRecord
         $item->load($data, '');
         return $item;
     }
+    public function actionList()
+{
+    \Yii::$app->response->format = 'json';
+    return \app\models\nnp\Mnc::find()
+             ->select(['mnc','network','mcc'])
+             ->orderBy('network')->asArray()->all();
+}
 }
