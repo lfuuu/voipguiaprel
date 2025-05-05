@@ -31,6 +31,8 @@ class SmsCdrController extends JsonController
         if ($destination) $where['c.destination']= $destination;
         if ($serverId)    $where['c.server_id']  = $serverId;
         if (strlen($direction)) $where['c.direction'] = $direction;
+        if ($mcc)        $where['c.mcc']        = $mcc;
+        if ($mnc)        $where['c.mnc']        = $mnc;
 
         // если нет временного фильтра — пустой ответ
         if (empty($where) && (empty($tFrom) || empty($tTo))) {
