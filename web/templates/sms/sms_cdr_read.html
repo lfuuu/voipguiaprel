@@ -63,10 +63,10 @@
       <label class="col-sm-3 search-field-label">Country</label>
       <div  class="col-sm-9 search-input">
         <select class="form-control" ui-select2
-                ng-model="item.mcc"
-                ng-options="o.mcc as o.country for o in mccOptions track by o.mcc"
-                ng-change="clickSearch()">
-          <option value="">-- Любая страна --</option>
+        ng-model="item.mcc"
+        ng-options="o.mcc as o.name for o in mccOptions | orderBy:'name' track by o.mcc"
+        ng-change="clickSearch()">
+        <option value="">-- Любая страна --</option>
         </select>
       </div>
     </div>
@@ -76,10 +76,13 @@
       <label class="col-sm-3 search-field-label">Network</label>
       <div  class="col-sm-9 search-input">
         <select class="form-control" ui-select2
-                ng-model="item.mnc"
-                ng-options="o.mnc as o.network for o in mncOptions | filter:{mcc:item.mcc} track by o.mnc"
-                ng-change="clickSearch()">
-          <option value="">-- Любая сеть --</option>
+        ng-model="item.mnc"
+        ng-options="o.mnc as o.name for o in mncOptions
+                     | filter:{mcc:item.mcc}
+                     | orderBy:'name'
+                     track by (o.mcc + '-' + o.mnc)"
+                    ng-change="clickSearch()">
+        <option value="">-- Любая сеть --</option>
         </select>
       </div>
     </div>
