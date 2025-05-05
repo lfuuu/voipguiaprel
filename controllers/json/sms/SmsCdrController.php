@@ -36,7 +36,7 @@ class SmsCdrController extends JsonController
             return [];
         }
 
-        $query = SmsCdrNew::find()->alias('c')
+        $query = SmsCdr::find()->alias('c')
         ->select([
             'c.*',
             'mcc_dict.country  AS country',
