@@ -4,6 +4,7 @@ namespace app\controllers\json\sms;
 use app\classes\JsonController;
 use app\models\sms_cdr\SmsCdr;
 use yii\web\HttpException;
+use yii\db\Expression;
 
 class SmsCdrController extends JsonController
 {
@@ -41,7 +42,10 @@ class SmsCdrController extends JsonController
             'c.*',
             'mcc_dict.country  AS country',
             'mnc_dict.network  AS network',
-            new Expression('(SELECT COUNT(*) FROM sms_raw.sms_raw r WHERE r.cdr_id = c.id) AS raw_count')
+            new \yii\db\Expression(
+                '(SELECT COUNT(*) FROM sms_raw.sms_raw r WHERE r.cdr_id = c.id) AS raw_count'
+            )
+            
         ])
         ->leftJoin('nnp.mcc  mcc_dict', 'mcc_dict.mcc = c.mcc')
         ->leftJoin('nnp.mnc  mnc_dict', 'mnc_dict.mcc = c.mcc AND mnc_dict.mnc = c.mnc')
