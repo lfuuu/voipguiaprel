@@ -36,16 +36,18 @@ class SmsCdrController extends JsonController
             return [];
         }
 
-        $query = SmsCdr::find()->alias('c')
-            ->select([
-                'c.*',
-                new \yii\db\Expression(
-                    '(SELECT COUNT(*) FROM sms_raw.sms_raw r WHERE r.cdr_id = c.id) AS raw_count'
-                )
-            ])
-            ->where($where)
-            ->limit($limit)
-            ->orderBy('c.dt_create ' . ($isAbs ? 'ASC' : 'DESC'));
+        $query = SmsCdrNew::find()->alias('c')
+        ->select([
+            'c.*',
+            'mcc_dict.country  AS country',
+            'mnc_dict.network  AS network',
+            new Expression('(SELECT COUNT(*) FROM sms_raw.sms_raw r WHERE r.cdr_id = c.id) AS raw_count')
+        ])
+        ->leftJoin('nnp.mcc  mcc_dict', 'mcc_dict.mcc = c.mcc')
+        ->leftJoin('nnp.mnc  mnc_dict', 'mnc_dict.mcc = c.mcc AND mnc_dict.mnc = c.mnc')
+        ->where($where)
+        ->limit($limit)
+        ->orderBy('c.dt_create ' . ($isAbs ? 'ASC' : 'DESC'));
 
         if ($isAbs) {
             if ($tFrom && $tTo) {

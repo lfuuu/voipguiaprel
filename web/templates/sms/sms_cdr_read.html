@@ -53,6 +53,31 @@
     </div>
   </div>
 </div>
+<!-- ░░░ Фильтр: mcc / mnc ░░░ -->
+<div class="row">
+    <div class="form-group col-sm-6 search-form-item">
+      <label class="col-sm-3 search-field-label">Country</label>
+      <div  class="col-sm-9 search-input">
+        <select class="form-control" ui-select2 ng-model="item.mcc"
+                ng-options="o.mcc as o.country for o in mccOptions"
+                placeholder="Выберите страну" ng-change="clickSearch()">
+          <option value="">-- Любая --</option>
+        </select>
+      </div>
+    </div>
+  
+    <div class="form-group col-sm-6 search-form-item">
+      <label class="col-sm-3 search-field-label">Network</label>
+      <div  class="col-sm-9 search-input">
+        <select class="form-control" ui-select2 ng-model="item.mnc"
+                ng-options="o.mnc as o.network for o in mncOptions | filter:{mcc:item.mcc}"
+                placeholder="Выберите сеть" ng-change="clickSearch()">
+          <option value="">-- Любая --</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  
 
 <!-- Row 4: фильтр времени (как раньше) -->
 <div class="row">
@@ -112,6 +137,8 @@
       <th width="15%"><a href="#" ng-click="sortType = 'msisdn';      sortReverse = !sortReverse">MSISDN
           <span ng-show="sortType=='msisdn'      && sortReverse" class="caret-down"></span>
           <span ng-show="sortType=='msisdn'      && !sortReverse" class="caret-up"></span></a></th>
+          <th><a href="#" ng-click="sort('country')">Country</a></th>
+          <th><a href="#" ng-click="sort('network')">Network</a></th>
       <th width="15%"><a href="#" ng-click="sortType = 'destination'; sortReverse = !sortReverse">Destination
           <span ng-show="sortType=='destination' && sortReverse" class="caret-down"></span>
           <span ng-show="sortType=='destination' && !sortReverse" class="caret-up"></span></a></th>
@@ -128,6 +155,8 @@
       <td>{{item.dt_create}}</td>
       <td>{{item.sessionid}}</td>
       <td>{{item.msisdn}}</td>
+      <td>{{item.country}}</td>
+<td>{{item.network}}</td>
       <td>{{item.destination}}</td>
       <td>{{item.direction}}</td>
       <td>
