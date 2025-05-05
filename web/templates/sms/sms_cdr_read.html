@@ -53,30 +53,20 @@
     </div>
   </div>
 </div>
-<!-- ░░░ Фильтр: mcc / mnc ░░░ -->
-<div class="row">
-    <div class="form-group col-sm-6 search-form-item">
-      <label class="col-sm-3 search-field-label">Country</label>
-      <div  class="col-sm-9 search-input">
-        <select class="form-control" ui-select2 ng-model="item.mcc"
-                ng-options="o.mcc as o.country for o in mccOptions"
-                placeholder="Выберите страну" ng-change="clickSearch()">
-          <option value="">-- Любая --</option>
-        </select>
-      </div>
-    </div>
-  
-    <div class="form-group col-sm-6 search-form-item">
-      <label class="col-sm-3 search-field-label">Network</label>
-      <div  class="col-sm-9 search-input">
-        <select class="form-control" ui-select2 ng-model="item.mnc"
-                ng-options="o.mnc as o.network for o in mncOptions | filter:{mcc:item.mcc}"
-                placeholder="Выберите сеть" ng-change="clickSearch()">
-          <option value="">-- Любая --</option>
-        </select>
-      </div>
-    </div>
-  </div>
+<!-- Country (mcc) -->
+<select class="form-control" ui-select2 ng-model="item.mcc"
+        ng-options="o.mcc as o.country for o in mccOptions"
+        placeholder="Страна" ng-change="clickSearch()">
+  <option value="">-- Любая --</option>
+</select>
+
+<!-- Network (mnc) – зависит от выбранного mcc -->
+<select class="form-control" ui-select2 ng-model="item.mnc"
+        ng-options="o.mnc as o.network for o in mncOptions | filter:{mcc:item.mcc}"
+        placeholder="Сеть" ng-change="clickSearch()">
+  <option value="">-- Любая --</option>
+</select>
+
   
 
 <!-- Row 4: фильтр времени (как раньше) -->
@@ -156,7 +146,7 @@
       <td>{{item.sessionid}}</td>
       <td>{{item.msisdn}}</td>
       <td>{{item.country}}</td>
-<td>{{item.network}}</td>
+        <td>{{item.network}}</td>
       <td>{{item.destination}}</td>
       <td>{{item.direction}}</td>
       <td>

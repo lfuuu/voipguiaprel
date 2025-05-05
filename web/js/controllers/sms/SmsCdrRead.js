@@ -14,11 +14,14 @@ var SmsCdrReportReadCtrl = function ($rootScope, $scope, SmsCdr, List, Redirect,
     $scope.isLoading     = false;
     $scope.noData        = false;
 
-    /* поля, по которым строим LIKE-фильтр в гриде (если нужно) */
     $scope.filterFields = [
-        'sessionid', 'server_id', 'msisdn', 'destination',
-        'mcc', 'mnc', 'imsi', 'type', 'direction', 'quantity', 'timestamp'
+        'sessionid','server_id','msisdn','destination',
+        'mcc','mnc','imsi','type','direction','quantity','timestamp'
       ];
+      
+    List.mccOptions().then(function(d){ $scope.mccOptions = d; });
+    List.mncOptions().then(function(d){ $scope.mncOptions = d; });
+      
       
 
     $scope.timeIntervals = List.timeInterval();          /* «Последние 5 мин» и т. д. */

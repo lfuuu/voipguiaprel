@@ -2641,6 +2641,12 @@ app.factory('List', function (
         routeCase: function () {
             return RouteCase.list();
         },
+        mccOptions: function () {
+            return Mcc.list();
+        },
+        mncOptions: function () {
+            return Mnc.list();
+        },        
         outcome: function (serverId) {
             return Outcome.list(serverId);
         },
