@@ -1,20 +1,19 @@
 var SmsRawViewCtrl = function($scope, $modalInstance, $http, params, $sce) {
-    // Получаем smpp_cdr_id для поиска raw SMS
-    $scope.smscCdrId = params.smpp_cdr_id;
+    // Получаем cdr_id для поиска raw SMS
+    $scope.cdrId = params.cdr_id;
     $scope.smsDetails = [];
     $scope.errorMessage = null;
 
-    // Выполняем запрос для получения данных из таблицы smsc_raw
-    $http.get('/json/sms/sms-raw/raw', { params: { smpp_cdr_id: $scope.smscCdrId } })
+    // Запрос данных из нашего нового контроллера SmsRawController
+    $http.get('/json/sms/sms-raw/raw', { params: { cdr_id: $scope.cdrId } })
         .then(function(response) {
-            // Записываем полученные данные в переменную для отображения
             $scope.smsDetails = response.data;
         })
         .catch(function(error) {
             $scope.errorMessage = 'Ошибка: ' + (error.data.error || error.statusText);
         });
-    
-    // Функция для закрытия модального окна
+
+    // Закрыть модалку
     $scope.back = function() {
         $modalInstance.dismiss();
     };

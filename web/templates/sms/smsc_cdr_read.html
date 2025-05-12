@@ -195,7 +195,7 @@
     </thead>
     <tbody>
       <!-- Вешаем ng-click на всю строку -->
-      <tr ng-repeat="item in list | orderBy:sortType:sortReverse" ng-click="openSmsRawModal(item)">
+      <tr ng-repeat="item in list | orderBy:sortType:sortReverse" ng-click="openSmscRawModal(item)">
         <td>{{item.setup_time}}</td>
         <td>{{item.call_id}}</td>
         <td>{{item.a_number}}</td>

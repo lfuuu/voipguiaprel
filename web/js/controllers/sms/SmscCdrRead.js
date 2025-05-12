@@ -1,4 +1,4 @@
-var SmscCdrReportReadCtrl = function($rootScope, $scope, SmscCdr, List, Redirect, $window, $modal) {
+var SmscCdrReportReadCtrl = function($rootScope, $scope, SmscCdr, List, Redirect, $window, $modal, ) {
     var params = $rootScope.tabs[0].params;
     $scope.sortType = 'setup_time';
     $scope.sortReverse = false;
@@ -97,10 +97,10 @@ var SmscCdrReportReadCtrl = function($rootScope, $scope, SmscCdr, List, Redirect
 
     // Существующий вызов модального окна для raw SMS через $modal.open с использованием контроллера SmsRawViewCtrl,
     // который внутри использует $http.get для запроса данных.
-    $scope.openSmsRawModal = function(item) {
+    $scope.openSmscRawModal = function(item) {
         $modal.open({
-            templateUrl: '/templates/sms/sms_raw_view.html',
-            controller: SmsRawViewCtrl,
+            templateUrl: '/templates/sms/smsc_raw_view.html',
+            controller: SmscRawViewCtrl,
             resolve: {
                 params: function() {
                     return { smpp_cdr_id: item.id };
@@ -110,13 +110,13 @@ var SmscCdrReportReadCtrl = function($rootScope, $scope, SmscCdr, List, Redirect
     };
 
     // Новый вызов модального окна, который использует метод SmsCdr.raw для получения данных
-    $scope.openSmsRawModalFromApi = function(item) {
+    $scope.openSmscRawModalFromApi = function(item) {
         // Вызываем метод raw из SmsCdr, который вернет промис
         SmscCdr.raw({ smpp_cdr_id: item.id }).then(function(rawData) {
             // После получения данных открываем модальное окно и передаем полученные данные через resolve
             $modal.open({
-                templateUrl: '/templates/sms/sms_raw_view.html',
-                controller: SmsRawViewCtrl,
+                templateUrl: '/templates/sms/smsc_raw_view.html',
+                controller: SmscRawViewCtrl,
                 resolve: {
                     params: function() {
                         // Добавляем поле rawData, чтобы в модалке можно было сразу вывести полученные данные
