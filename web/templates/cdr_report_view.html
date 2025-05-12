@@ -157,6 +157,7 @@
 
 <div class="button-group" ng-if="!is_eu" style="margin-left: 10px;">
     <button class="btn btn-primary btn-sm" ng-click="get573()">Выгрузка 573</button>
+    <button class="btn btn-secondary btn-sm" ng-click="getExport5732()">Выгрузка 573 – 2</button>
     <button class="btn btn-secondary btn-sm" ng-click="get573Debug()">Выгрузка 573 в Debug режиме</button>
     <button class="btn btn-primary btn-sm" ng-click="get86()">Выгрузка 86</button>
     <button class="btn btn-secondary btn-sm" ng-click="get86Debug()">Выгрузка 86 в Debug режиме</button>
@@ -174,6 +175,7 @@
         <h5>Выгрузка 573:</h5>
         <pre>{{responses['573']}}</pre>
     </div>
+    <pre ng-if="responses.export5732">{{ responses.export5732 | json }}</pre>
     <div ng-if="responses['573_debug']">
         <h5>Выгрузка 573 в Debug режиме:</h5>
         <div ng-bind-html="responses['573_debug']"></div>
