@@ -87,6 +87,19 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
             });
     };
 
+    $scope.getExport5732 = function() {
+        var url = '/json/calls_detail/report-call';
+        $scope.responses.export5732 = 'Загрузка…';
+    
+        $http.get(url, { params: { mcn_callid: $scope.mcn_callid } })
+          .then(function(response) {
+            $scope.responses.export5732 = response.data;
+          })
+          .catch(function(error) {
+            $scope.responses.export5732 = 
+              'Ошибка: ' + (error.data.error || error.statusText);
+          });
+      };
     
     $scope.getValJson = function() {
         var requestParams = { mcn_callid: $scope.mcn_callid };
