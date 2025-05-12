@@ -1,132 +1,90 @@
-/* controllers/sms/sms_cdr_new.js */
-var SmsCdrReportReadCtrl = function ($rootScope, $scope, SmsCdr, List, Redirect, $window, $modal) {
-
-    /* ------------------------------------------------------------------ */
-    /* 1.  Базовые переменные / сортировка / флаги                         */
-    /* ------------------------------------------------------------------ */
-    var params           = $rootScope.tabs[0].params || {};
-
-    $scope.sortType      = 'dt_create';
-    $scope.sortReverse   = false;
-    $scope.searchQuery   = '';
-
-    $scope.hideFilter    = false;
-    $scope.isLoading     = false;
-    $scope.noData        = false;
-
-    $scope.filterFields = [
-        'sessionid','server_id','msisdn','destination',
-        'mcc','mnc','imsi','type','direction','quantity','timestamp'
-      ];
-      
-    List.mccOptions().then(function(d){ $scope.mccOptions = d; });
-    List.mncOptions().then(function(d){ $scope.mncOptions = d; });
-      
-      
-
-    $scope.timeIntervals = List.timeInterval();          /* «Последние 5 мин» и т. д. */
-
-    /* ------------------------------------------------------------------ */
-    /* 2.  Поиск данных по фильтрам                                       */
-    /* ------------------------------------------------------------------ */
-    $scope.clickSearch = function () {
-        $scope.isLoading = true;
-        $scope.noData    = false;
-
-        SmsCdr.read($scope.item).then(function (data) {
-            $scope.list      = data;
-            $scope.noData    = data.length === 0;
-            $scope.isLoading = false;
-        }, function (err) {
-            $scope.isLoading = false;
-            $window.alert('Ошибка запроса: ' + err);
+var SmsCdrReportReadCtrl = function ($rootScope, $scope, SmsCdr, List, $window, $modal) {
+    var params = $rootScope.tabs[0].params || {};
+  
+    $scope.sortType    = 'dt_create';
+    $scope.sortReverse = false;
+    $scope.hideFilter  = false;
+    $scope.isLoading   = false;
+    $scope.noData      = false;
+  
+    $scope.item = {
+      sessionid: '',
+      server_id: '',
+      limit: 100,
+      msisdn: '',
+      destination: '',
+      direction: '',
+      mcc: '',
+      mnc: '',
+      is_time_absolute: true,
+      time_from: '',
+      time_to: '',
+      time_relative: '',
+      sort_asc: true
+    };
+  
+    $scope.timeIntervals    = List.timeInterval();
+    $scope.countryOptions   = [];
+    $scope.networkOptions   = [];
+  
+    $scope.clickSearch = function() {
+      $scope.isLoading = true;
+      $scope.noData    = false;
+  
+      SmsCdr.read($scope.item).then(function(data) {
+        $scope.list   = data;
+        $scope.noData = (data.length === 0);
+  
+        var cMap = {}, nMap = {};
+        data.forEach(function(r) {
+          if (r.mcc != null)    cMap[r.mcc]     = r.country;
+          if (r.mnc != null)    nMap[r.mnc]     = r.network;
         });
-    };
-
-    /* ------------------------------------------------------------------ */
-    /* 3.  Инициализация                                                   */
-    /* ------------------------------------------------------------------ */
-    /* Заполнить фильтры значениями «по умолчанию»: последние 60 с          */
-    $scope.initDefault = function () {
-        var dTo   = new Date();
-        var dFrom = new Date(dTo.getTime() - 60 * 1000);    /* минута назад */
-
-        $scope.item.time_from = dFrom.toISOString().slice(0,19).replace('T',' ');
-        $scope.item.time_to   = dTo  .toISOString().slice(0,19).replace('T',' ');
-
-        $scope.clickSearch();
-    };
-
-    /* Если вкладка открыта из другого места и пришли параметры —          */
-    /* подставляем их и сразу ищем                                         */
-    $scope.initWithParams = function () {
-        var dTo   = new Date();           /* +3 ч не требуется — dt_create UTC-neutral */
-        var dFrom = new Date(dTo.getTime() - 24*60*60*1000);   /* сутки назад */
-
-        $scope.item.sessionid   = params.sessionid   || '';
-        $scope.item.msisdn      = params.msisdn      || '';
-        $scope.item.destination = params.destination || '';
-        $scope.item.server_id   = params.server_id   || '';
-
-        $scope.item.time_from   = dFrom.toISOString().slice(0,19).replace('T',' ');
-        $scope.item.time_to     = dTo  .toISOString().slice(0,19).replace('T',' ');
-        $scope.item.sort_asc    = false;
-
-        $scope.clickSearch();
-    };
-
-    /* ------------------------------------------------------------------ */
-    /* 4.  Первичная сборка item-объекта и запуск                          */
-    /* ------------------------------------------------------------------ */
-    $scope.init = function (tab) {
-        if (tab) { tab.title = 'Отчёт по SMS CDR (новый)'; }
-
-        $scope.list = [];
-        $scope.item = {
-            sessionid        : '',
-            server_id        : '',
-            limit            : 100,
-            msisdn           : '',
-            destination      : '',
-            direction        : '',
-            is_time_absolute : true,
-            time_from        : '',
-            time_to          : '',
-            time_relative    : '',
-            sort_asc         : true
-        };
-
-        if (params && params.object_type && params.object_id) {
-            $scope.initWithParams();
-        } else {
-            $scope.initDefault();
-        }
-    };
-
-    /* ------------------------------------------------------------------ */
-    /* 5.  Экспорт в Excel                                                */
-    /* ------------------------------------------------------------------ */
-    $scope.exportSmsCdrToExcel = function () {
-        SmsCdr.ReadAndExport($scope.item).then(function () {
-            $window.alert('Экспорт Excel-отчёта выполнен.');
+  
+        $scope.countryOptions = Object.keys(cMap).sort().map(function(code) {
+          return { mcc: code, country: cMap[code] };
         });
-    };
-
-    /* ------------------------------------------------------------------ */
-    /* 6.  Модальные окна raw                                             */
-    /* ------------------------------------------------------------------ */
-    $scope.openSmsRawModal = function (item) {
-        $modal.open({
-            templateUrl : '/templates/sms/sms_raw_view.html',
-            controller  : SmsRawViewCtrl,
-            resolve     : {
-                params : function () {
-                    return { cdr_id: item.id };   /* поле id новой таблицы */
-                }
-            }
+        $scope.networkOptions = Object.keys(nMap).sort().map(function(code) {
+          return { mnc: code, network: nMap[code] };
         });
+  
+        $scope.isLoading = false;
+      }, function(err) {
+        $scope.isLoading = false;
+        $window.alert('Ошибка запроса: ' + err);
+      });
     };
-
-    /* 7.  Старт */
+  
+    $scope.initDefault = function() {
+      var to   = new Date(),
+          from = new Date(to.getTime() - 60 * 1000);
+      $scope.item.time_from = from.toISOString().slice(0,19).replace('T',' ');
+      $scope.item.time_to   = to  .toISOString().slice(0,19).replace('T',' ');
+      $scope.clickSearch();
+    };
+  
+    $scope.init = function(tab) {
+      if (tab) tab.title = 'Отчёт по SMS CDR';
+      $scope.initDefault();
+    };
+  
+    $scope.sort = function(field) {
+      if ($scope.sortType === field) {
+        $scope.sortReverse = !$scope.sortReverse;
+      } else {
+        $scope.sortType    = field;
+        $scope.sortReverse = false;
+      }
+    };
+  
+    $scope.openSmsRawModal = function(item) {
+      $modal.open({
+        templateUrl: '/templates/sms/sms_raw_view.html',
+        controller:  SmsRawViewCtrl,
+        resolve:     { params: function(){ return { cdr_id: item.id }; } }
+      });
+    };
+  
     $scope.init($rootScope.tabs[$rootScope.tabs.length - 1]);
-};
+  };
+  
