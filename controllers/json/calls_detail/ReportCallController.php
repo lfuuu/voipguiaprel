@@ -25,8 +25,8 @@ class ReportCallController extends JsonController
                 'csv_formated',
                 new Expression("
                   concat(
-                    '1-ый Транк: ', outgoing_trunk_debug,
-                    '; 2-ой Транк: ', incoming_trunk_debug,
+                    'Оригинационный Транк: ', incoming_trunk_debug,
+                    '; Терминационный Транк: ', outgoing_trunk_debug,
                     '; Нода: ', switch_name_id_debug
                   ) AS trunks_info
                 ")
