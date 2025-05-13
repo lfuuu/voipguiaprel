@@ -15,45 +15,36 @@ class ReportCallController extends JsonController
      * GET /json/calls-detail/report-call?mcn_callid=...
      */
     public function actionIndex()
-    {
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-        $mcn = \Yii::$app->request->get('mcn_callid');
-        if (!$mcn) {
-            throw new HttpException(400, 'Не указан mcn_callid');
-        }
+{
+    \Yii::$app->response->format = Response::FORMAT_JSON;
+    $mcn = \Yii::$app->request->get('mcn_callid');
+    if (!$mcn) {
+        throw new HttpException(400, 'Не указан mcn_callid');
+    }
+    $isDebug = (bool)\Yii::$app->request->get('is_debug');
 
-        return ReportCall::find()
-            ->select([
-                'call_type_id',
-                'csv_formated',
-                new Expression("
-                    concat(
-                      'Оригинационный Транк: ', incoming_trunk_debug,
-                      '; Терминационный Транк: ', outgoing_trunk_debug,
-                      '; Нода: ', switch_name_id_debug
-                    ) AS trunks_info
-                ")
-            ])
-            ->where(['mcn_callid' => $mcn])
-            ->asArray()
-            ->all();
+    $query = ReportCall::find()->where(['mcn_callid' => $mcn]);
+
+    if ($isDebug) {
+        // вернёт всё
+        return $query->asArray()->all();
     }
 
-    /**
-     * GET /json/calls-detail/report-call/debug?mcn_callid=...
-     * Debug-режим: возвращает ВСЕ поля из таблицы report_call
-     */
-    public function actionDebug()
-    {
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-        $mcn = \Yii::$app->request->get('mcn_callid');
-        if (!$mcn) {
-            throw new HttpException(400, 'Не указан mcn_callid');
-        }
+    // иначе штатный отбор
+    return $query
+        ->select([
+            'call_type_id',
+            'csv_formated',
+            new Expression("
+                concat(
+                  'Оригинационный Транк: ', incoming_trunk_debug,
+                  '; Терминационный Транк: ', outgoing_trunk_debug,
+                  '; Нода: ', switch_name_id_debug
+                ) AS trunks_info
+            ")
+        ])
+        ->asArray()
+        ->all();
+}
 
-        return ReportCall::find()
-            ->where(['mcn_callid' => $mcn])
-            ->asArray()
-            ->all();
-    }
 }
