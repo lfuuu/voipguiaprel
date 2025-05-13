@@ -5,12 +5,12 @@ namespace app\controllers\json\calls_detail;
 use app\classes\JsonController;
 use app\models\calls_detail\ReportCall;
 use yii\web\HttpException;
+use yii\db\Expression;
 
 class ReportCallController extends JsonController
 {
     /**
      * GET /json/calls-detail/report-call?mcn_callid=...
-     * Возвращает все записи call_type_id и csv_formated для заданного mcn_callid
      */
     public function actionIndex()
     {
@@ -20,7 +20,17 @@ class ReportCallController extends JsonController
         }
 
         return ReportCall::find()
-            ->select(['call_type_id', 'csv_formated'])
+            ->select([
+                'call_type_id',
+                'csv_formated',
+                new Expression("
+                  concat(
+                    '1-ый Транк: ', outgoing_trunk_debug,
+                    '; 2-ой Транк: ', incoming_trunk_debug,
+                    '; Нода: ', switch_name_id_debug
+                  ) AS trunks_info
+                ")
+            ])
             ->where(['mcn_callid' => $mcn])
             ->asArray()
             ->all();
