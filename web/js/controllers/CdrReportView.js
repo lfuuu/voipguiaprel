@@ -102,7 +102,7 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
       };
 
       $scope.getExport5732Debug = function() {
-        var url = '/json/calls-detail/report-call';
+        var url = '/json/calls_detail/report-call';
         $scope.responses.export5732_debug = 'Загрузка…';
         $http.get(url, {
           params: { mcn_callid: $scope.mcn_callid, is_debug: 1 }
