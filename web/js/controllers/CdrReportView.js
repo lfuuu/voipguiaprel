@@ -100,6 +100,18 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
               'Ошибка: ' + (error.data.error || error.statusText);
           });
       };
+
+      $scope.getExport5732Debug = function() {
+        var url = '/json/calls_detail/report-call/debug';
+        $scope.responses.export5732_debug = 'Загрузка…';
+        $http.get(url, { params: { mcn_callid: $scope.mcn_callid } })
+          .then(function(response) {
+            $scope.responses.export5732_debug = response.data;
+          })
+          .catch(function(error) {
+            $scope.responses.export5732_debug = 'Ошибка: ' + (error.data.error || error.statusText);
+          });
+      };
     
     $scope.getValJson = function() {
         var requestParams = { mcn_callid: $scope.mcn_callid };
