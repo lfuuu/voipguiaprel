@@ -89,7 +89,7 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window) {
 
         multiplier = parseFloat($window.prompt('Введите множитель для копирования'));
 
-        if (isNaN(multiplier) || multiplier <= 0) return;
+        if (isNaN(multiplier)) return;
 
         Pricelist.copyAndMultiply(item.id, multiplier).then(function (response) {
             $scope.init();
