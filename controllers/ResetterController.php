@@ -32,14 +32,22 @@ class ResetterController extends BaseController
         $startTime = microtime(true);
 
         $item = PricelistPrefixPriceHistory::findOne($id);
-        if (!isset($item)) {
-            throw new Exception('запись не существует');
+        if (!$item) {
+            throw new Exception('Запись истории не существует');
+        }
+
+        $dataBefore = json_decode($item->data_before, true) ?: [];
+        if (empty($dataBefore)) {
+            $item->delete();
+            $delta = round(microtime(true) - $startTime, 2);
+            return $this->render('reset', [
+                'delta_time' => $delta,
+                'message'    => 'Пустой импорт: откат не требуется',
+            ]);
         }
 
         $transaction = PricelistPrefixPriceHistory::getDb()->beginTransaction();
         try {
-            $dataBefore = json_decode($item->data_before, true);
-            $count = count($dataBefore);
 
             $currentData = PricelistPrefixPrice::find()
                 ->where(['pricelist_filter_b_id' => $item->pricelist_filter_b_id])
@@ -51,84 +59,103 @@ class ResetterController extends BaseController
             $dataToDelete = [];
             $dataToInsert = [];
             $beforeIds = [];
-            for ($i = 0; $i < $count; $i++) {
-                $id = $dataBefore[$i]['id'];
-                $itemBefore = $dataBefore[$i];
-                $beforeIds[] = $id;
 
-                if (!isset($currentData[$id])) {
+            foreach ($dataBefore as $beforeRecord) {
+                $beforeId = $beforeRecord['id'];
+                $beforeIds[] = $beforeId;
+
+                if (!isset($currentData[$beforeId])) {
                     $dataToInsert[] = [
-                        $itemBefore['id'], $itemBefore['pricelist_filter_b_id'], $itemBefore['prefix_b'],
-                        $itemBefore['b_number_price'], $itemBefore['change_flag'], $itemBefore['date_from'],
-                        $itemBefore['date_to'], $itemBefore['b_number_connect_price'], $itemBefore['history_id']
+                        $beforeRecord['id'],
+                        $beforeRecord['pricelist_filter_b_id'],
+                        $beforeRecord['prefix_b'],
+                        $beforeRecord['b_number_price'],
+                        $beforeRecord['change_flag'],
+                        $beforeRecord['date_from'],
+                        $beforeRecord['date_to'],
+                        $beforeRecord['b_number_connect_price'],
+                        $beforeRecord['history_id'],
                     ];
                 } else {
-                    $itemCurrent = $currentData[$id];
+                    $current = $currentData[$beforeId];
                     if (
-                        $itemCurrent['prefix_b'] != $itemBefore['prefix_b'] ||
-                        $itemCurrent['b_number_price'] != $itemBefore['b_number_price'] ||
-                        $itemCurrent['change_flag'] != $itemBefore['change_flag'] ||
-                        $itemCurrent['date_from'] != $itemBefore['date_from'] ||
-                        $itemCurrent['date_to'] != $itemBefore['date_to'] ||
-                        $itemCurrent['b_number_connect_price'] != $itemBefore['b_number_connect_price']
+                        $current['prefix_b'] != $beforeRecord['prefix_b'] ||
+                        $current['b_number_price'] != $beforeRecord['b_number_price'] ||
+                        $current['change_flag'] != $beforeRecord['change_flag'] ||
+                        $current['date_from'] != $beforeRecord['date_from'] ||
+                        $current['date_to'] != $beforeRecord['date_to'] ||
+                        $current['b_number_connect_price'] != $beforeRecord['b_number_connect_price']
                     ) {
-                        $dataToDelete[] = $id;
-
+                        $dataToDelete[] = $beforeId;
                         $dataToInsert[] = [
-                            $itemBefore['id'], $itemBefore['pricelist_filter_b_id'], $itemBefore['prefix_b'],
-                            $itemBefore['b_number_price'], $itemBefore['change_flag'], $itemBefore['date_from'],
-                            $itemBefore['date_to'], $itemBefore['b_number_connect_price'], $itemBefore['history_id']
+                            $beforeRecord['id'],
+                            $beforeRecord['pricelist_filter_b_id'],
+                            $beforeRecord['prefix_b'],
+                            $beforeRecord['b_number_price'],
+                            $beforeRecord['change_flag'],
+                            $beforeRecord['date_from'],
+                            $beforeRecord['date_to'],
+                            $beforeRecord['b_number_connect_price'],
+                            $beforeRecord['history_id'],
                         ];
-                    } else if ($itemCurrent['history_id'] != $itemBefore['history_id']) {
-                        $dataToUpdateHistory[$itemCurrent['history_id']][] = $id;
+                    } elseif ($current['history_id'] != $beforeRecord['history_id']) {
+                        $dataToUpdateHistory[$beforeRecord['history_id']][] = $beforeId;
                     }
-
-                    unset($currentData[$id]);
+                    unset($currentData[$beforeId]);
                 }
-
-                unset($dataBefore[$i]);
             }
 
-            $dataToDelete = array_merge($dataToDelete, array_diff(array_keys($currentData), $beforeIds));
-            foreach (array_chunk($dataToDelete, self::CHUNK_SIZE_INSERT) as $chunk) {
+            $toRemove = array_diff(array_keys($currentData), $beforeIds);
+            $dataToDelete = array_merge($dataToDelete, $toRemove);
+
+            foreach (array_chunk($dataToDelete, self::CHUNK_SIZE_DELETE) as $chunk) {
                 PricelistPrefixPrice::deleteAll(['id' => $chunk]);
             }
-            unset($dataToDelete);
 
-            foreach ($dataToUpdateHistory  as $historyId => $ids) {
-                foreach (array_chunk($ids, self::CHUNK_SIZE_DELETE) as $chunk) {
-                    \Yii::$app->db->createCommand()->update(PricelistPrefixPrice::tableName(), [
-                        'history_id' => $historyId,
-                    ], ['id' => $chunk])
+            foreach ($dataToUpdateHistory as $historyId => $ids) {
+                foreach (array_chunk($ids, self::CHUNK_SIZE_UPDATE) as $chunk) {
+                    \Yii::$app->db->createCommand()
+                        ->update(
+                            PricelistPrefixPrice::tableName(),
+                            ['history_id' => $historyId],
+                            ['id' => $chunk]
+                        )
                         ->execute();
                 }
             }
-            unset($dataToUpdateHistory);
 
-            foreach (array_chunk($dataToInsert, self::CHUNK_SIZE_UPDATE, true) as $chunk) {
-                \Yii::$app->db->createCommand()->batchInsert(
-                    PricelistPrefixPrice::tableName(),
-                    [
-                        'id', 'pricelist_filter_b_id', 'prefix_b', 'b_number_price', 'change_flag',
-                        'date_from', 'date_to', 'b_number_connect_price', 'history_id'
-                    ],
-                    $chunk
-                )->execute();
+            foreach (array_chunk($dataToInsert, self::CHUNK_SIZE_INSERT, true) as $chunk) {
+                \Yii::$app->db->createCommand()
+                    ->batchInsert(
+                        PricelistPrefixPrice::tableName(),
+                        [
+                            'id',
+                            'pricelist_filter_b_id',
+                            'prefix_b',
+                            'b_number_price',
+                            'change_flag',
+                            'date_from',
+                            'date_to',
+                            'b_number_connect_price',
+                            'history_id',
+                        ],
+                        $chunk
+                    )
+                    ->execute();
             }
-            unset($dataToInsert);
 
             $item->delete();
 
             $transaction->commit();
         } finally {
-            if ($transaction->getIsActive())
+            if ($transaction->getIsActive()) {
                 $transaction->rollBack();
+            }
         }
 
-        $endTime = microtime(true);
-
+        $delta = round(microtime(true) - $startTime, 2);
         return $this->render('reset', [
-            'delta_time' => round($endTime - $startTime, 2)
+            'delta_time' => $delta,
         ]);
     }
 }
