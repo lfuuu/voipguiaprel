@@ -167,21 +167,26 @@ class TestAuthController extends JsonController
         if (!\Yii::$app->user->can('test_auth_edit')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
+    
         $item = TestAuth::find()
             ->select(['test_auth.*', 'tr.tm', 'tr.received'])
-            ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
+            ->leftJoin(
+                'auth.test_result tr',
+                "tr.type = 'auth' 
+                 AND tr.id_auth = auth.test_auth.id 
+                 AND tr.server_id = tr.instance_id"
+            )
             ->where(['test_auth.id' => $this->request['id']])
             ->asArray()
             ->one();
-
+    
         if ($item === null) {
             throw new HttpException(404, 'TestAuth не найден');
         }
-
+    
         return $item;
     }
-
+    
     /**
      * @throws FormValidationException
      * @throws HttpException
