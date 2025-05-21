@@ -91,7 +91,10 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
         var url = '/json/calls_detail/report-call';
         $scope.responses.export5732 = 'Загрузка…';
     
-        $http.get(url, { params: { mcn_callid: $scope.mcn_callid } })
+        $http.get(url, {
+            params: { mcn_callid: $scope.mcn_callid },
+            responseType: 'text'
+        })
           .then(function(response) {
             $scope.responses.export5732 = response.data;
           })
