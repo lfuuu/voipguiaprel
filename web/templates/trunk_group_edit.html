@@ -82,6 +82,16 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Группы транков</label>
+                            <div class="col-sm-10">
+                                <select ui-select2 ng-model="item.trunk_groups" multiple="multiple" style="width: 100%" >
+                                    <option ng-repeat="trunkGroup in trunkGroupList" value="{{::trunkGroup.id}}">{{::trunkGroup.name}}</option>
+                                </select>
+                            </div>
+                        </div>        
+
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Доступна на хабе</label>
                             <div class="col-sm-10">
