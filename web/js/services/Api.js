@@ -139,6 +139,16 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('A2pSmsCdr', function(ApiLoader) {
+    var url = '/json/sms/a2p-sms-cdr/';
+    return {
+      read: function(params) {
+        return ApiLoader.post(url + 'read', params);
+      }
+    };
+  });
+  
+
 app.factory('SmscCdr', function ($q, ApiLoader, $rootScope) {
     var url = '/json/sms/smsc-cdr/';
     var list = undefined;
@@ -2641,6 +2651,9 @@ app.factory('List', function (
         routeCase: function () {
             return RouteCase.list();
         },
+        a2pSmsCdr: function(params) {
+            return A2pSmsCdr.read(params);
+          },
         mccOptions: function () {
             return Mcc.list();
         },
