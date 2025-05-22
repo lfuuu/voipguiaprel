@@ -873,6 +873,10 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         smsCdrReportView: function(callId) {
             return openModal(SmsCdrReportViewCtrl, '/templates/sms/sms_cdr_view.html', { call_id: callId });
         },
+
+        a2pSmsCdrReportRead: function() {
+            return openTab(A2pSmsCdrReportReadCtrl, '/templates/sms/a2p_sms_cdr_report.html', { });
+        },
         
         alphaNumberCreate: function() {
             return openModal(AlphaNumberEditCtrl, '/templates/sms/a2p_alphanumber_edit.html', {id: null});
