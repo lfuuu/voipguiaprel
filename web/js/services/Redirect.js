@@ -874,7 +874,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             return openModal(SmsCdrReportViewCtrl, '/templates/sms/sms_cdr_view.html', { call_id: callId });
         },
 
-        a2pSmsCdrRead: function() {
+        a2pSmsCdrReportRead: function() {
             return openTab(A2pSmsCdrReportReadCtrl, '/templates/sms/a2p_sms_cdr_report.html', { });
         },
         
