@@ -33,7 +33,7 @@ class AppSmsAsset extends AssetBundle
         'js/controllers/sms/SmsOutcomeEdit.js',
         'js/controllers/sms/SmsTrunkEdit.js',
         'js/controllers/sms/SmsRouteTableEdit.js',
-        'js/controllers/sms/a2pSmsCdrReportReadCtrl.js',
+        'js/controllers/sms/A2pSmsCdrReportReadCtrl.js',
         'js/controllers/ActionLogView.js',
         'js/controllers/CommentEdit.js',
         'js/controllers/PrefixlistEdit.js',
