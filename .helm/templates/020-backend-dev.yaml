@@ -104,6 +104,8 @@ spec:
         - name: secret
           mountPath: "/root/.pgpass"  
           subPath: ".pgpass"
+        - mountPath: /opt
+          name: opt-voipgui
       volumes:
       - name: config-volume
         configMap:
