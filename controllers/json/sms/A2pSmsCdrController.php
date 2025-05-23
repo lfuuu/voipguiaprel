@@ -3,7 +3,6 @@ namespace app\controllers\json\sms;
 
 use app\classes\JsonController;
 use app\models\a2p_sms_cdr\A2pSmsCdr;
-use yii\web\HttpException;
 use yii\web\Response;
 use yii\db\Expression;
 
@@ -15,41 +14,45 @@ class A2pSmsCdrController extends JsonController
     public function actionRead()
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
-        $r      = $this->request;
-        $where  = [];
+        $r = $this->request;
 
-        if ($r['server_id'])   $where['c.server_id']   = $r['server_id'];
-        if ($r['sms_id'])      $where['c.sms_id']      = $r['sms_id'];
-        if ($r['src_number'])  $where['c.src_number']  = $r['src_number'];
-        if ($r['dst_number'])  $where['c.dst_number']  = $r['dst_number'];
-        if ($r['src_route'])   $where['c.src_route']   = $r['src_route'];
-        if ($r['dst_route'])   $where['c.dst_route']   = $r['dst_route'];
-        if ($r['status'])      $where['c.status']      = $r['status'];
+        // Сначала базовый запрос
+        $query = A2pSmsCdr::find()->alias('c')->select(['c.*']);
 
-        $limit  = $r['limit'] ?: 100;
-        $isAbs  = $r['is_time_absolute'];
-        $f      = $r['time_from'];
-        $t      = $r['time_to'];
-        $rel    = $r['time_relative'];
+        // Атрибутные фильтры (если поле не задано — пропустит)
+        $query->andFilterWhere([
+            'c.server_id'  => $r['server_id'],
+            'c.sms_id'     => $r['sms_id'],
+            'c.src_number' => $r['src_number'],
+            'c.dst_number' => $r['dst_number'],
+            'c.src_route'  => $r['src_route'],
+            'c.dst_route'  => $r['dst_route'],
+            'c.status'     => $r['status'],
+        ]);
 
-        if (empty($where) && (!$f || !$t)) {
-            return [];
-        }
-
-        $q = A2pSmsCdr::find()->alias('c')
-            ->select(['c.*'])
-            ->where($where)
-            ->limit($limit)
-            ->orderBy('c.dt_create ' . ($isAbs ? 'ASC' : 'DESC'));
+        // Время
+        $isAbs = $r['is_time_absolute'];
+        $f     = $r['time_from'];
+        $t     = $r['time_to'];
+        $rel   = $r['time_relative'];
 
         if ($isAbs) {
-            if ($f && $t)      $q->andWhere('c.dt_create BETWEEN :f AND :t', [':f'=>$f, ':t'=>$t]);
-            elseif ($f)       $q->andWhere('c.dt_create >= :f', [':f'=>$f]);
-            elseif ($t)       $q->andWhere('c.dt_create <= :t', [':t'=>$t]);
+            if ($f && $t) {
+                $query->andWhere('c.dt_create BETWEEN :f AND :t', [':f'=>$f, ':t'=>$t]);
+            } elseif ($f) {
+                $query->andWhere('c.dt_create >= :f', [':f'=>$f]);
+            } elseif ($t) {
+                $query->andWhere('c.dt_create <= :t', [':t'=>$t]);
+            }
         } elseif ($rel) {
-            $q->andWhere(new Expression("c.dt_create >= (now() - INTERVAL '{$rel} seconds')"));
+            $query->andWhere(new Expression("c.dt_create >= (now() - INTERVAL '{$rel} seconds')"));
         }
 
-        return $q->asArray()->all();
+        // Лимит и сортировка
+        $limit = $r['limit'] ?: 100;
+        $query->limit($limit)
+              ->orderBy('c.dt_create ' . ($isAbs ? 'ASC' : 'DESC'));
+
+        return $query->asArray()->all();
     }
 }
