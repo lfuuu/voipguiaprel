@@ -1,4 +1,4 @@
-var A2pSmsCdrReportReadCtrl = function ($rootScope, $scope, A2pSmsCdr, List, $window) {
+var A2pSmsCdrReportReadCtrl = function ($rootScope, $scope, A2pSmsCdr, List, $window, $modal) {
   var params = $rootScope.tabs[0].params || {};
 
   $scope.sortType    = 'dt_create';
@@ -62,6 +62,16 @@ var A2pSmsCdrReportReadCtrl = function ($rootScope, $scope, A2pSmsCdr, List, $wi
     }
   };
 
-  // Старт
+
+$scope.openA2pSmsRawModal = function(item) {
+  $modal.open({
+    templateUrl: '/templates/sms/a2p_sms_raw_view.html',
+    controller:  A2pSmsRawViewCtrl,
+    resolve: {
+      params: function() { return { cdr_id: item.id }; }
+    }
+  });
+};
+
   $scope.init($rootScope.tabs[$rootScope.tabs.length - 1]);
 };

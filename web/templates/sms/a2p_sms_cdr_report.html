@@ -136,7 +136,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="item in list | orderBy:sortType:sortReverse">
+      <tr ng-repeat="item in list | orderBy:sortType:sortReverse" ng-click="openA2pSmsRawModal(item)" style="cursor: pointer;">
         <td>{{item.id}}</td>
         <td>{{item.server_id}}</td>
         <td>{{item.sms_id}}</td>
@@ -147,6 +147,7 @@
         <td>{{item.dst_route}}</td>
         <td>{{item.status}}</td>
         <td>{{item.props}}</td>
+        
       </tr>
     </tbody>
   </table>
