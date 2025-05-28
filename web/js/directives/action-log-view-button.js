@@ -4,26 +4,23 @@
   actionLogViewButton.$inject = ['Redirect'];
 
   function actionLogViewButton(Redirect) {
-    var directive = {
-      link: link,
-      templateUrl: '/templates/directives/action-log-view-button.html',
+    return {
       restrict: 'E',
+      templateUrl: '/templates/directives/action-log-view-button.html',
       scope: {
-        key: '@',
-        type: '@',
-        comment: '='
+        key:     '@',
+        type:    '@',
+        comment: '=',
+        action:  '@?'
+      },
+      link: function(scope) {
+        scope.viewActionLog = function() {
+          Redirect
+            .actionLogView(scope.key, scope.type, scope.action)
+            .then(function(response) {
+            });
+        };
       }
     };
-    return directive;
-
-    function link(scope) {
-      scope.viewActionLog = viewActionLog;
-
-      function viewActionLog() {
-        Redirect.actionLogView(scope.key, scope.type).then(function (response) {
-          //do_nothing
-        });
-      }
-    }
   }
 })();
