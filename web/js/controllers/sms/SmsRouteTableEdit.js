@@ -45,6 +45,16 @@ var SmsRouteTableEditCtrl = function($rootScope, $scope, Redirect, SmsRouteTable
         $scope.item.routes.splice(index, 1);
     };
 
+    $scope.viewActionLog = function() {
+    if (!$scope.item.id) return;
+    Redirect.actionLogView(
+      $scope.item.id,
+      'json/sms/sms-route-table',
+      'save'
+    ).then(function() {
+    });
+  };
+
     $scope.save = function () {
         var data = angular.copy($scope.item);
 

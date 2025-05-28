@@ -16,16 +16,27 @@ class ActionLogController extends JsonController
         if (!\Yii::$app->user->can('action_log_view')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
-        return
-            ActionLog::find()
-                ->select(['al.*', 'u.name as user_name'])
-                ->alias('al')
-                ->innerJoin('auth.user u', 'u.id = al.user_id')
-                ->where(['object_id' => $this->request['id'], 'controller' => $this->request['type']])
-                ->orderBy('id')
-                ->asArray()
-                ->all();
+
+        $id   = $this->request['id'];
+        $type = $this->request['type'];
+
+        $query = ActionLog::find()
+            ->alias('al')
+            ->select(['al.*', 'u.name AS user_name'])
+            ->innerJoin('auth.user u', 'u.id = al.user_id')
+            ->where([
+                'object_id'  => $id,
+                'controller' => $type,
+            ]);
+
+        if (!empty($this->request['action'])) {
+            $query->andWhere(['al.action' => $this->request['action']]);
+        }
+
+        return $query
+            ->orderBy('al.id')
+            ->asArray()
+            ->all();
     }
 
     public function actionGetOne()

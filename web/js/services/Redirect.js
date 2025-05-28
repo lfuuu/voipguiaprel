@@ -605,8 +605,12 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             $cookies.billing_selected_page = 'oldPricelistSearch';
             return openTab(OldPricelistSearchCtrl, '/templates/billing/old_pricelist_search.html', {});
         },
-        actionLogView: function(id, type) {
-            return openModal(ActionLogViewCtrl, '/templates/action_log_view.html', {id: id, type: type});
+        actionLogView: function(id, type, action) {
+            var params = { id: id, type: type };
+            if (action) {
+                params.action = action;
+            }
+            return openModal(ActionLogViewCtrl, '/templates/action_log_view.html', params);
         },
         actionLogList: function() {
             $cookies.settings_selected_page = 'actionLogList';
