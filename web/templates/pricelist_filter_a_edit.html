@@ -357,7 +357,7 @@
                     ng-disabled="!userPermissions['pricelist_super_edit'] && (form.$invalid || !saveEnabled)"
                     ng-click="saveAndUpdate()">Сохранить и применить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
-            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/pricelist-filter-a"></action-log-view-button>
+            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/pricelist-filter-a" action="save"></action-log-view-button>
         </div>
     </div>
 

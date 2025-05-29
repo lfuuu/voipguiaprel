@@ -426,7 +426,7 @@
                     ng-disabled="form.$invalid || !saveEnabled"
                     ng-click="saveAndUpdate()">Сохранить и применить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
-            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/pricelist-filter-b"></action-log-view-button>
+            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/pricelist-filter-b" action="save"></action-log-view-button>
         </div>
     </div>
 
