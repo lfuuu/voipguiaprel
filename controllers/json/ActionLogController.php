@@ -33,11 +33,20 @@ class ActionLogController extends JsonController
             $query->andWhere(['al.action' => $this->request['action']]);
         }
 
+        if (!empty($this->request['date_from'])) {
+            $query->andWhere(['>=', 'al.request_date', $this->request['date_from']]);
+        }
+        if (!empty($this->request['date_to'])) {
+            $query->andWhere(['<=', 'al.request_date', $this->request['date_to']]);
+        }
+
+        $query->orderBy(['al.request_date' => SORT_DESC]);
+
         return $query
-            ->orderBy('al.id')
             ->asArray()
             ->all();
     }
+
 
     public function actionGetOne()
     {
