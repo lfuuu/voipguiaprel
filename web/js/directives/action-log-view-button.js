@@ -11,13 +11,15 @@
         key:     '@',
         type:    '@',
         comment: '=',
-        action:  '@?'
+        action:  '@?'  // необязательный атрибут
       },
       link: function(scope) {
         scope.viewActionLog = function() {
+          if (!scope.key) return;
           Redirect
             .actionLogView(scope.key, scope.type, scope.action)
-            .then(function(response) {
+            .then(function() {
+              // ничего не делаем
             });
         };
       }
