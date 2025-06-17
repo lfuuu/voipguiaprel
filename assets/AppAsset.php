@@ -149,6 +149,9 @@ class AppAsset extends AssetBundle
         'js/controllers/billing/PricelistFilterBHistoryView.js',
         'js/controllers/TrunkLogic.js',
         'js/controllers/sms/AlphaNumberGroupEdit.js',
+        'js/controllers/billingservers/MainBillingServers.js',
+        'js/controllers/billingservers/BillingServersList.js',
+        'js/controllers/billingservers/BillingServerEdit.js',
     ];
 
     public $templates = [
@@ -273,5 +276,8 @@ class AppAsset extends AssetBundle
         'templates/billing/pricelist_filter_b_history_view.html',
         'templates/trunk_logic_show.html',
         'templates/sms/a2p_alphanumber_group_edit.html',
+        'templates/billingservers/main_billing_servers.html',
+        'templates/billingservers/billing_servers_list.html',
+        'templates/billingservers/billing_server_edit.html',
     ];
 }

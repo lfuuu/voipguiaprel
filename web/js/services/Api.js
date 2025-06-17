@@ -219,7 +219,7 @@ app.factory('SmsCdr', function ($q, ApiLoader, $rootScope) {
     return {
         read: function (data) {
             return ApiLoader.post(url + 'read', data);
-        },
+        },     
         get: function (data) {
             return ApiLoader.post(url + 'get', data);
         },
@@ -317,6 +317,55 @@ app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome, SmsTestGro
         }
     };
 });
+
+app.factory('BillingServer', function ($q, ApiLoader) {
+  var url     = '/json/billingservers/',
+      list    = undefined,
+      promise = undefined;
+
+  return {
+    // Получить все серверы
+    read: function () {
+      return ApiLoader.post(url + 'read');
+    },
+    // Получить один сервер по данным { id: ... }
+    get: function (data) {
+      return ApiLoader.post(url + 'get', data);
+    },
+    // Кешированный список (аналог read, но кешируется)
+    list: function () {
+      if (promise !== undefined) return promise;
+      var deferred = $q.defer();
+      if (list !== undefined) {
+        deferred.resolve(list);
+      } else {
+        ApiLoader.post(url + 'read', {})
+          .then(function (data) {
+            list    = data;
+            promise = undefined;
+            deferred.resolve(data);
+          }, function (err) {
+            promise = undefined;
+            deferred.reject(err);
+          });
+        promise = deferred.promise;
+      }
+      return deferred.promise;
+    },
+    // Сохранить (создать/обновить) — сбрасывает кеш
+    save: function (data) {
+      list = undefined;
+      return ApiLoader.post(url + 'save', data);
+    },
+    // Удалить — сброс кеша
+    delete: function (id) {
+      list = undefined;
+      return ApiLoader.post(url + 'delete', { id: id });
+    }
+  };
+});
+
+
 
 app.factory('SmsTestAuth', function ($q, ApiLoader, $rootScope) {
     var url = '/json/sms/test-auth/';

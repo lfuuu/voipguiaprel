@@ -1,0 +1,132 @@
+<form class="form-horizontal" name="form" ng-if="item">
+  <div class="modal-header">
+    <h3 ng-if="item.id">Редактирование сервера №{{item.id}}</h3>
+    <h3 ng-if="!item.id">Новый сервер</h3>
+  </div>
+
+  <div class="modal-body">
+    <!-- Название -->
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Название</label>
+      <div class="col-sm-10">
+        <input type="text"
+               class="form-control"
+               ng-model="item.name"
+               placeholder="Введите название"
+               required />
+      </div>
+    </div>
+
+    <!-- IP адрес -->
+    <div class="form-group">
+      <label class="col-sm-2 control-label">IP адрес</label>
+      <div class="col-sm-10">
+        <input type="text"
+               class="form-control"
+               ng-model="item.ip"
+               placeholder="Введите IP"
+               required />
+      </div>
+    </div>
+
+    <!-- Контактная информация -->
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Контактная инфо</label>
+      <div class="col-sm-10">
+        <textarea class="form-control"
+                  ng-model="item.contact_info"
+                  placeholder="Контактная информация"></textarea>
+      </div>
+    </div>
+
+    <!-- URL интерфейса -->
+    <div class="form-group">
+      <label class="col-sm-2 control-label">URL интерфейса</label>
+      <div class="col-sm-10">
+        <input type="url"
+               class="form-control"
+               ng-model="item.interface_url"
+               placeholder="Введите URL" />
+      </div>
+    </div>
+
+    <!-- Dashboards (JSON) -->
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Dashboards (JSON)</label>
+      <div class="col-sm-10">
+        <textarea class="form-control"
+                  ng-model="item.dashboards"
+                  placeholder='{"key": "value"}'></textarea>
+      </div>
+    </div>
+
+    <!-- Antifraud incoming accept -->
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox"
+                   ng-model="item.antifraud_incoming_accept" />
+            Принимать входящий трафик
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Antifraud proxy timeout -->
+       <div class="form-group">
+      <label class="col-sm-4 control-label">Действие: Timeout API запроса</label>
+      <div class="col-sm-8">
+        <div class="btn-group">
+          <button type="button"
+                  class="btn"
+                  ng-class="!item.antifraud_proxy_timeout ? 'btn-success active' : 'btn-default'"
+                  ng-click="setMode('timeout', false)">
+            Вручную
+          </button>
+          <button type="button"
+                  class="btn"
+                  ng-class=" item.antifraud_proxy_timeout ? 'btn-danger active' : 'btn-default'"
+                  ng-click="setMode('timeout', true)">
+            Accept
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Antifraud proxy timeout prefixlist ID -->
+    <div class="form-group">
+      <label class="col-sm-2 control-label">ID префикс-листа</label>
+      <div class="col-sm-10">
+        <input type="number"
+               class="form-control"
+               ng-model="item.antifraud_proxy_timeout_prefixlist_id"
+               placeholder="ID префикс-листа" />
+      </div>
+    </div>
+
+    <!-- Ошибки валидации -->
+    <div class="alert alert-danger" ng-if="errors">
+      <ul>
+        <li ng-repeat="(field, msgs) in errors">
+          <span ng-repeat="msg in msgs">{{ msg }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit"
+            class="btn btn-primary"
+            ng-click="save()"
+            ng-disabled="form.$invalid || $root.isAjaxLoading">
+      Сохранить
+    </button>
+    <button type="button"
+            class="btn btn-default"
+            ng-click="back()">
+      Отмена
+    </button>
+  </div>
+</form>
