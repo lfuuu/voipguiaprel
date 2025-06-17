@@ -223,6 +223,8 @@ class RbacController extends Controller {
         ['name' => 'corm_edit', 'description' => 'Доступ к СОРМ-1'],
         ['name' => 'network_edit', 'description' => 'Редактирование узлов'],
         ['name' => 'network_list', 'description' => 'Просмотр раздела узлов'],
+        ['name' => 'billing_servers_list', 'description' => 'Просмотр раздела биллинговых серверов'],
+        ['name' => 'billing_servers_edit', 'description' => 'Редактирование настроек биллинговых серверов'],
     ];
 
     private static $_roles = [
@@ -276,7 +278,7 @@ class RbacController extends Controller {
             'sms_trunk_create', 'sms_trunk_edit', 'sms_trunk_delete',
             'sms_route_table_list', 'sms_route_table_create', 'sms_route_table_edit', 'sms_route_table_delete',
             'sms_outcome_list', 'sms_outcome_create', 'sms_outcome_edit', 'sms_outcome_delete', 'sms_test_group_list', 'sms_test_group_create', 'sms_test_group_edit',
-            'sms_test_group_delete', 'sms_test_auth_list', 'sms_test_auth_create', 'sms_test_auth_edit', 'sms_test_auth_delete',  'corm_edit', 'network_list', 'network_edit'
+            'sms_test_group_delete', 'sms_test_auth_list', 'sms_test_auth_create', 'sms_test_auth_edit', 'sms_test_auth_delete',  'corm_edit', 'network_list', 'network_edit', 'billing_servers_list', 'billing_servers_edit'
         ]],
         ['role' => 'admin_billing', 'permissions' => [
             'pricelist_list', 'pricelist_create', 'pricelist_edit', 'pricelist_delete', 'test_number_edit',
@@ -286,7 +288,7 @@ class RbacController extends Controller {
             'test_pricelist_group_list', 'test_pricelist_group_create', 'test_pricelist_group_edit', 'test_pricelist_group_delete',
             'major_list', 'major_create', 'major_edit', 'major_delete',
             'major_group_list', 'major_group_create', 'major_group_edit', 'major_group_delete', 'cdr_report_read',
-            'pricelist_search', 'old_pricelist_search', 'action_log_view', 'pricelist_filter_b_history_list',
+            'pricelist_search', 'old_pricelist_search', 'action_log_view', 'pricelist_filter_b_history_list', 'billing_servers_list', 'billing_servers_edit'
         ]],
         ['role' => 'admin_routing', 'permissions' => [
             'general_settings_edit', 'instance_settings_edit', 'health_view',

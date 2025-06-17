@@ -28,6 +28,12 @@ class CategoryController extends BaseController
         return $this->render('network', []);
     }
     
+    public function actionBillingServersSettings()
+    {
+        return $this->render('billing_servers_settings', []);
+    }
+    
+
     public function actionMarketplace()
     {
         return $this->render('marketplace', []);

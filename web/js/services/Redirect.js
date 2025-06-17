@@ -902,5 +902,17 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         alphaNumberGroupEdit: function(id) {
             return openModal(AlphaNumberGroupEditCtrl, '/templates/sms/a2p_alphanumber_group_edit.html', {id: id});
         },
+
+       billingServers: function() {
+        $cookies.routing_selected_page = 'billingServers';
+        return openTab(BillingServersListCtrl, 'templates/billingservers/billing_servers_list.html');
+      },
+      billingServerEdit: function(serverId) {
+        return openModal(BillingServerEditCtrl, 'templates/billingservers/billing_server_edit.html', { id: serverId });
+      },
+      billingServerCreate: function() {
+        return openModal(BillingServerEditCtrl, 'templates/billingservers/billing_server_edit.html', { id: null });
+      }
+
     };
 });
