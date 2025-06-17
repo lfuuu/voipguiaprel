@@ -118,7 +118,21 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
             (error.data.error||error.statusText);
         });
       };
-      
+
+    $scope.get86_2 = function() {
+        var url = '/json/calls_detail/report-event';
+        $scope.responses['86_2'] = 'Загрузка…';
+        $http.get(url, {
+            params: { mcn_callid: $scope.mcn_callid },
+            responseType: 'text'
+        })
+        .then(function(response) {
+            $scope.responses['86_2'] = response.data;
+        })
+        .catch(function(error) {
+            $scope.responses['86_2'] = 'Ошибка: ' + (error.data.error || error.statusText);
+        });
+    };
     
     $scope.getValJson = function() {
         var requestParams = { mcn_callid: $scope.mcn_callid };
