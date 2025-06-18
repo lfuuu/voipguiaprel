@@ -9,7 +9,7 @@ use yii\web\Response;
 class ReportEventController extends JsonController
 {
     /**
-     * GET /json/calls-detail/report-event?mcn_callid=…
+     * GET /json/calls_detail/report-event?mcn_callid=…[&is_debug=1]
      */
     public function actionIndex()
     {
@@ -18,20 +18,20 @@ class ReportEventController extends JsonController
             throw new HttpException(400, 'Не указан mcn_callid');
         }
 
-        // Отдаём “сырые” CSV-строки
+        $query = ReportEvent::find()->where(['mcn_callid' => $mcn]);
+
+        // debug‐режим: отдать всю строку(и) как JSON
+        if ((bool)\Yii::$app->request->get('is_debug')) {
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+            return $query->asArray()->all();
+        }
+
+        // обычный режим: возвращаем raw CSV
         \Yii::$app->response->format = Response::FORMAT_RAW;
-
-        $rows = ReportEvent::find()
-            ->select(['csv_formated'])
-            ->where(['mcn_callid' => $mcn])
-            ->orderBy(['dt_create' => SORT_ASC])
-            ->asArray()
-            ->all();
-
+        $rows = $query->select(['csv_formated'])->asArray()->all();
         $lines = array_map(function($r){
             return rtrim($r['csv_formated'], "\r\n");
         }, $rows);
-
         return implode("\n", $lines);
     }
 }

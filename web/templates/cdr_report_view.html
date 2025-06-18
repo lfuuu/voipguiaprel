@@ -163,6 +163,8 @@
     <button class="btn btn-primary btn-sm"   ng-click="get86()">Выгрузка 86</button>
     <button class="btn btn-secondary btn-sm" ng-click="get86Debug()">Выгрузка 86 в Debug режиме</button>
     <button class="btn btn-secondary btn-sm" ng-click="get86_2()"> Выгрузка 86 – 2 </button>
+    <button class="btn btn-secondary btn-sm" ng-click="get86_2_debug()"> Выгрузка 86 – 2 Debug </button>
+
 
   </div>
   
@@ -198,9 +200,13 @@
         <h5>Выгрузка 86 в Debug режиме:</h5>
         <div ng-bind-html="responses['86_debug']"></div>
     </div>
-    <div ng-if="responses['86_2']">
+    <div ng-if="responses.hasOwnProperty('86_2')">
         <h5>Выгрузка 86 – 2:</h5>
-        <pre>{{ responses['86_2'] }}</pre>
+        <pre>{{ responses['86_2'] || 'Нет данных' }}</pre>
+    </div>
+    <div ng-if="responses['86_2_debug']">
+        <h5>Выгрузка 86 – 2 Debug:</h5>
+        <pre>{{ responses['86_2_debug'] | json }}</pre>
     </div>
     <div ng-if="responses['graph']">
         <h5>Данные графа:</h5>
