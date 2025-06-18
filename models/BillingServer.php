@@ -33,9 +33,7 @@ class BillingServer extends ActiveRecord
     public function rules()
     {
         return [
-            // обязательные поля
-            [['id', 'name', 'ip'], 'required'],
-            // валидация IP
+            [['id', 'name'], 'required'],
             ['ip', 'ip'],
             // валидация URL
             ['interface_url', 'url'],
