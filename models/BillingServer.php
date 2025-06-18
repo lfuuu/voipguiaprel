@@ -34,10 +34,8 @@ class BillingServer extends ActiveRecord
     {
         return [
             [['id', 'name'], 'required'],
-            ['ip', 'ip'],
+            ['ip', 'string', 'max' => 255],
             // валидация URL
-            ['interface_url', 'url'],
-
             // текстовые поля и JSON
             [['contact_info'], 'string'],
             [['dashboards'], 'safe'],   // jsonb, оставляем safe (массив/строка)
