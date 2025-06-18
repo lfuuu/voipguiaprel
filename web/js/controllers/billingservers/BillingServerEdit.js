@@ -1,23 +1,31 @@
 var BillingServerEditCtrl = function($scope, BillingServer, params, $modalInstance) {
+  // Сохраняем старый ID для actionSave
+  $scope.oldId = params.old_id;
+
+  // Загрузка при редактировании
   if (params.id) {
     BillingServer.get({ id: params.id }).then(function(data) {
       $scope.item = data;
     });
   } else {
     $scope.item = {
-      name: '',
-      ip: '',
+      id:         null,
+      name:       '',
+      ip:         '',
       contact_info: '',
       interface_url: '',
       dashboards: '',
       antifraud_incoming_accept: false,
-      antifraud_proxy_timeout: 0,
+      antifraud_proxy_timeout:    false,
       antifraud_proxy_timeout_prefixlist_id: null
     };
   }
 
+  // Сохраняем с учётом старого ID
   $scope.save = function() {
-    BillingServer.save($scope.item).then(function(res) {
+    // payload будет содержать оба: новый id и old_id
+    var payload = angular.extend({}, $scope.item, { old_id: $scope.oldId });
+    BillingServer.save(payload).then(function(res) {
       $modalInstance.close(res);
     });
   };

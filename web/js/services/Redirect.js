@@ -908,7 +908,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         return openTab(BillingServersListCtrl, 'templates/billingservers/billing_servers_list.html');
       },
       billingServerEdit: function(serverId) {
-        return openModal(BillingServerEditCtrl, 'templates/billingservers/billing_server_edit.html', { id: serverId });
+        return openModal(BillingServerEditCtrl, 'templates/billingservers/billing_server_edit.html', { id: serverId, old_id: serverId });
       },
       billingServerCreate: function() {
         return openModal(BillingServerEditCtrl, 'templates/billingservers/billing_server_edit.html', { id: null });

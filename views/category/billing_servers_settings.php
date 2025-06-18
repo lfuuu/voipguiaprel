@@ -20,5 +20,5 @@
 </script>
 
 <div ng-controller="MainBillingServersCtrl"
-     ng-include="'templates/billingservers/main_billing_servers.html'">
+     ng-include="'  templates/billingservers/main_billing_servers.html'">
 </div>
