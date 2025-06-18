@@ -904,7 +904,7 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         },
 
        billingServers: function() {
-        $cookies.routing_selected_page = 'billingServers';
+        $cookies.billing_servers_selected_page = 'billingServers';
         return openTab(BillingServersListCtrl, 'templates/billingservers/billing_servers_list.html');
       },
       billingServerEdit: function(serverId) {

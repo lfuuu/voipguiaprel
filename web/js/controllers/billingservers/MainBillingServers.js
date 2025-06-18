@@ -23,7 +23,7 @@ app.controller('MainBillingServersCtrl', function ($rootScope, $scope, $cookies,
     var params = query.split('&');
     funcName = params[0]; id = params[1]; type = params[2];
   } else if ($cookies.routing_selected_page !== undefined) {
-    funcName = $cookies.routing_selected_page;
+    funcName = $cookies.billing_servers_selected_page;
   } else {
     for (var p in userPermissions) {
       if (p === 'billing_servers_list' || p === 'billing_servers_edit') {
