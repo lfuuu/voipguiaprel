@@ -1,10 +1,22 @@
-<form class="form-horizontal" name="form" ng-if="item">
+<form class="form-horizontal" name="form" ng-if="item" novalidate>
   <div class="modal-header">
     <h3 ng-if="item.id">Редактирование сервера №{{item.id}}</h3>
     <h3 ng-if="!item.id">Новый сервер</h3>
   </div>
 
   <div class="modal-body">
+    <!-- ID -->
+    <div class="form-group">
+      <label class="col-sm-2 control-label">ID</label>
+      <div class="col-sm-10">
+        <input type="text"
+               class="form-control"
+               ng-model="item.id"
+               placeholder="Введите ID сервера"
+               required />
+      </div>
+    </div>
+
     <!-- Название -->
     <div class="form-group">
       <label class="col-sm-2 control-label">Название</label>
@@ -59,41 +71,6 @@
                   placeholder='{"key": "value"}'></textarea>
       </div>
     </div>
-
-    <!-- Antifraud incoming accept -->
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"
-                   ng-model="item.antifraud_incoming_accept" />
-            Принимать входящий трафик
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <!-- Antifraud proxy timeout -->
-       <div class="form-group">
-      <label class="col-sm-4 control-label">Действие: Timeout API запроса</label>
-      <div class="col-sm-8">
-        <div class="btn-group">
-          <button type="button"
-                  class="btn"
-                  ng-class="!item.antifraud_proxy_timeout ? 'btn-success active' : 'btn-default'"
-                  ng-click="setMode('timeout', false)">
-            Вручную
-          </button>
-          <button type="button"
-                  class="btn"
-                  ng-class=" item.antifraud_proxy_timeout ? 'btn-danger active' : 'btn-default'"
-                  ng-click="setMode('timeout', true)">
-            Accept
-          </button>
-        </div>
-      </div>
-    </div>
-
 
     <!-- Antifraud proxy timeout prefixlist ID -->
     <div class="form-group">

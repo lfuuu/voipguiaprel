@@ -34,7 +34,7 @@ class BillingServer extends ActiveRecord
     {
         return [
             // обязательные поля
-            [['name', 'ip'], 'required'],
+            [['id', 'name', 'ip'], 'required'],
             // валидация IP
             ['ip', 'ip'],
             // валидация URL
@@ -48,7 +48,7 @@ class BillingServer extends ActiveRecord
             [['antifraud_incoming_accept', 'antifraud_proxy_timeout'], 'boolean'],
 
             // целочисленные поля
-            [['antifraud_proxy_timeout_prefixlist_id'], 'integer'],
+            [['antifraud_proxy_timeout_prefixlist_id', 'id'], 'integer'],
 
             // длина названия
             ['name', 'string', 'max' => 255],
@@ -61,7 +61,7 @@ class BillingServer extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                                   => 'ID',
+            'id' => 'ID сервера',
             'name'                                 => 'Название',
             'ip'                                   => 'IP адрес',
             'contact_info'                         => 'Контактная информация',

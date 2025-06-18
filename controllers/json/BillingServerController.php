@@ -74,28 +74,38 @@ class BillingServerController extends Controller
     /**
      * Создание или обновление сервера
      */
-    public function actionSave()
-    {
-        $data = Yii::$app->request->post();
-        if (!empty($data['id'])) {
-            $model = BillingServer::findOne($data['id']);
-            if (!$model) {
-                throw new NotFoundHttpException('Server not found');
-            }
-        } else {
-            $model = new BillingServer();
-        }
+   public function actionSave()
+{
+    $data = Yii::$app->request->post();
 
-        $model->attributes = $data;
-        if ($model->save()) {
-            return $model;
+    // 1) Если явно передан old_id — обновляем именно её
+    if (isset($data['old_id'])) {
+        $model = BillingServer::findOne($data['old_id']);
+        if (!$model) {
+            throw new NotFoundHttpException("Server not found (old_id={$data['old_id']})");
         }
-
-        return [
-            'success' => false,
-            'errors'  => $model->errors,
-        ];
     }
+    // 2) Иначе если передан id и такая запись уже есть — обычное обновление
+    elseif (!empty($data['id']) && BillingServer::findOne($data['id'])) {
+        $model = BillingServer::findOne($data['id']);
+    }
+    // 3) Иначе — создаём новую запись
+    else {
+        $model = new BillingServer();
+    }
+
+    // 4) Присваиваем все атрибуты (включая id, если был указан)
+    $model->attributes = $data;
+
+    // 5) Сохраняем и сразу возвращаем полный массив с id
+    if ($model->save()) {
+        return ['success' => true, 'data' => $model->toArray()];
+    } else {
+        return ['success' => false, 'errors' => $model->errors];
+    }
+}
+
+
 
     /**
      * Удаление сервера
