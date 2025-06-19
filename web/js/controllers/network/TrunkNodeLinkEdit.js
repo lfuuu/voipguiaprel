@@ -11,7 +11,8 @@ var TrunkNodeLinkEditCtrl = function($rootScope, $scope, Link, Node, params, $mo
       $scope.item = {
         service_trunk_id: '',
         node_id: '',
-        comment: ''
+        comment: '',
+        id_phys_trunk: ''
       };
     }
     

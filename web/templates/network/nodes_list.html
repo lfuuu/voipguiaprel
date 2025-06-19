@@ -112,13 +112,6 @@
         </a>
       </th>
       <th>
-        <a href="#" ng-click="sortType = 'region_id'; sortReverse = !sortReverse">
-          Server ID
-          <span ng-show="sortType == 'region_id' && sortReverse" class="caret-down"></span>
-          <span ng-show="sortType == 'region_id' && !sortReverse" class="caret-up"></span>
-        </a>
-      </th>
-      <th>
         <a href="#" ng-click="sortType = 'district_text'; sortReverse = !sortReverse">
           Фед. округ
           <span ng-show="sortType == 'district_text' && sortReverse" class="caret-down"></span>
@@ -154,17 +147,17 @@
         </a>
       </th>
       <th>
-        <a href="#" ng-click="sortType = 'ipaddress'; sortReverse = !sortReverse">
-          IP адрес
-          <span ng-show="sortType == 'ipaddress' && sortReverse" class="caret-down"></span>
-          <span ng-show="sortType == 'ipaddress' && !sortReverse" class="caret-up"></span>
+        <a href="#" ng-click="sortType = 'net_type'; sortReverse = !sortReverse">
+          Тип сети
+          <span ng-show="sortType=='net_type' && sortReverse" class="caret-down"></span>
+          <span ng-show="sortType=='net_type' && !sortReverse" class="caret-up"></span>
         </a>
       </th>
       <th>
-        <a href="#" ng-click="sortType = 'address'; sortReverse = !sortReverse">
-          Адрес
-          <span ng-show="sortType == 'address' && sortReverse" class="caret-down"></span>
-          <span ng-show="sortType == 'address' && !sortReverse" class="caret-up"></span>
+        <a href="#" ng-click="sortType = 'ss7_spc'; sortReverse = !sortReverse">
+          SS7 код
+          <span ng-show="sortType=='ss7_spc' && sortReverse" class="caret-down"></span>
+          <span ng-show="sortType=='ss7_spc' && !sortReverse" class="caret-up"></span>
         </a>
       </th>
       <th>
@@ -180,14 +173,13 @@
   <tbody>
     <tr ng-repeat="item in list | filter:customFilter | orderBy:sortType:sortReverse">
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_id}}</td>
-      <td style="cursor: pointer" ng-click="clickItem(item)">{{item.region_id}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.district_text}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.subject_text}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.city_text}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_name_id}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_type_text}}</td>
-      <td style="cursor: pointer" ng-click="clickItem(item)">{{item.ipaddress}}</td>
-      <td style="cursor: pointer" ng-click="clickItem(item)">{{item.address}}</td>
+      <td style="cursor: pointer" ng-click="clickItem(item)">{{ item.net_type=='border' ? 'Пограничный' : 'Внутренний' }}</td>
+      <td style="cursor: pointer" ng-click="clickItem(item)">{{ item.ss7_spc }}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_status_text}}</td>
       <td ng-if="userPermissions['network_edit']">
         <button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button>
