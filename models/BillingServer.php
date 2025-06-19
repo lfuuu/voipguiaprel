@@ -42,7 +42,8 @@ class BillingServer extends ActiveRecord
 
             // логические флаги
             [['antifraud_incoming_accept', 'antifraud_proxy_timeout'], 'boolean'],
-
+            
+            ['interface_url', 'string', 'max' => 255],
             // целочисленные поля
             [['antifraud_proxy_timeout_prefixlist_id', 'id'], 'integer'],
 
