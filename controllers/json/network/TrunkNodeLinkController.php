@@ -27,6 +27,7 @@ class TrunkNodeLinkController extends BaseController
             ->select([
                 't.trunk_node_link_id',
                 't.service_trunk_id',
+                't.id_phys_trunk',
                 't.node_id',
                 't.comment',
                 "CONCAT(n.node_name_id, ' - ', n.node_id) AS node_display",

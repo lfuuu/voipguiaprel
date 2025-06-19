@@ -95,7 +95,9 @@ class NodeController extends BaseController
                 'ns.node_status AS node_status_text',
                 'rd.russian_district AS district_text',
                 'rs.russian_subject AS subject_text',
-                'rc.russian_city AS city_text'
+                'rc.russian_city AS city_text',
+                'n.net_type',
+                'n.ss7_spc',
             ])
             ->leftJoin('calligrapher.node_type nt', 'n.node_type_id = nt.node_type_id')
             ->leftJoin('calligrapher.node_status ns', 'n.node_status_id = ns.node_status_id')

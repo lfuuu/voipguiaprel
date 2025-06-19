@@ -45,6 +45,14 @@ var TrunkNodeLinkListCtrl = function($scope, TrunkNodeLink, Node, Redirect, $win
           return false;
         }
       }
+       if ($scope.filterObj.id_phys_trunk !== undefined &&
+        $scope.filterObj.id_phys_trunk !== null &&
+        $scope.filterObj.id_phys_trunk !== '') {
+      var val = item.id_phys_trunk==null?'':item.id_phys_trunk.toString();
+      if (val.indexOf($scope.filterObj.id_phys_trunk.toString()) === -1) {
+        return false;
+      }
+    }
       return true;
     };
     

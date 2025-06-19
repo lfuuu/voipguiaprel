@@ -8,19 +8,25 @@ use yii\db\ActiveRecord;
 /**
  * Модель для таблицы "calligrapher.node"
  *
- * @property int    $node_id
- * @property string $node_name_id
- * @property int    $node_type_id
- * @property int    $region_id
- * @property string $comment
- * @property string $ipaddress
- * @property string $address
- * @property int    $status
- * @property int    $node_status_id
- * @property int    $russian_district_id
- * @property int    $russian_subject_id
- * @property int    $russian_city_id
- * @property int    $graph_id
+ * @property int          $node_id
+ * @property string       $node_name_id
+ * @property int|null     $node_type_id
+ * @property int|null     $region_id
+ * @property string|null  $comment
+ * @property string|null  $ipaddress
+ * @property string|null  $address
+ * @property int|null     $status
+ * @property int|null     $node_status_id
+ * @property int|null     $russian_district_id
+ * @property int|null     $russian_subject_id
+ * @property int|null     $russian_city_id
+ * @property int|null     $graph_id
+ * @property string|null  $type
+ * @property string|null  $net_type
+ * @property string|null  $phone_idx
+ * @property string|null  $ss7_spc
+ * @property string|null  $start_date   // формат TIMESTAMP
+ * @property string|null  $end_date     // формат TIMESTAMP
  */
 class Node extends ActiveRecord
 {
@@ -42,24 +48,45 @@ class Node extends ActiveRecord
     private static function rulesStatic()
     {
         return [
-            [['node_name_id', 'comment', 'address'], 'string'],
+            // Текстовые поля
+            [['node_name_id', 'comment', 'address', 'type', 'net_type', 'phone_idx', 'ss7_spc'], 'string'],
+            // Целочисленные поля
             [['node_type_id', 'region_id', 'status', 'node_status_id', 'russian_district_id', 'russian_subject_id', 'russian_city_id', 'graph_id'], 'integer'],
-            [['ipaddress'], 'string'],
-            // Можно добавить валидатор IP, если нужно:
-            // [['ipaddress'], 'ip', 'ipv4' => true, 'ipv6' => false, 'skipOnEmpty' => true],
+            // IP-адрес
+            [['ipaddress'], 'ip', 'ipv4' => true, 'ipv6' => true, 'skipOnEmpty' => true],
+            // Даты
+            [['start_date', 'end_date'], 'safe'],
         ];
     }
 
     /**
-     * Переопределение метода beforeSave для преобразования пустых строк в null для поля ipaddress.
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return self::rulesStatic();
+    }
+
+    /**
+     * Переопределение метода beforeSave для преобразования пустых строк в null.
+     *
+     * @param bool $insert
+     * @return bool
      */
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            // Если ipaddress пустое (только пробелы или пустая строка), устанавливаем его в null
-            if (trim($this->ipaddress) === '') {
+            // Если ipaddress пустое (только пробелы или пустая строка), устанавливаем null
+            if ($this->ipaddress !== null && trim($this->ipaddress) === '') {
                 $this->ipaddress = null;
             }
+            // Преобразование пустых строк в null для остальных nullable-полей
+            foreach (['comment', 'address', 'type', 'net_type', 'phone_idx', 'ss7_spc'] as $attr) {
+                if ($this->$attr !== null && trim($this->$attr) === '') {
+                    $this->$attr = null;
+                }
+            }
+
             return true;
         }
         return false;
@@ -68,7 +95,7 @@ class Node extends ActiveRecord
     /**
      * Создание новой записи модели.
      *
-     * @param array|null $data Данные для загрузки в модель
+     * @param array|null $data
      * @return Node
      */
     public static function create(array $data = null)
@@ -81,7 +108,7 @@ class Node extends ActiveRecord
     /**
      * Удаление текущей записи модели.
      *
-     * @return int|false Количество удалённых строк или false при ошибке
+     * @return int|false
      */
     public function deleteRecord()
     {
@@ -91,7 +118,7 @@ class Node extends ActiveRecord
     /**
      * Получение записи по первичному ключу.
      *
-     * @param int $id Идентификатор записи (node_id)
+     * @param int $id
      * @return Node|null
      */
     public static function getNode($id)

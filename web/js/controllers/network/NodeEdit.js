@@ -1,4 +1,8 @@
 var NodeEditCtrl = function($rootScope, $scope, Node, params, $modalInstance, $window) {
+     $scope.netTypeOptions = [
+      { value: 'border',   label: 'Пограничный' },
+      { value: 'internal', label: 'Внутренний' }
+    ];
     Node.nodeTypes().then(function(data) {
         $scope.nodeTypes = data;
     });
@@ -20,10 +24,12 @@ var NodeEditCtrl = function($rootScope, $scope, Node, params, $modalInstance, $w
     });
 
     if (params.node_id) {
+        // При редактировании берём из бэка и уже будут net_type и ss7_spc
         Node.get({ id: params.node_id }).then(function(data) {
             $scope.item = data;
         });
     } else {
+        // При создании инициализируем новые поля
         $scope.item = {
             node_name_id: '',
             node_type_id: '',
@@ -33,7 +39,9 @@ var NodeEditCtrl = function($rootScope, $scope, Node, params, $modalInstance, $w
             russian_district_id: '',
             russian_subject_id: '',
             russian_city_id: '',
-            comment: ''
+            comment: '',
+           net_type: '',
+           ss7_spc: ''
         };
     }
 
