@@ -178,7 +178,7 @@
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.city_text}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_name_id}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_type_text}}</td>
-      <td style="cursor: pointer" ng-click="clickItem(item)">{{ item.net_type=='border' ? 'Пограничный' : 'Внутренний' }}</td>
+      <td style="cursor: pointer" ng-click="clickItem(item)">{{ item.net_type=='internal' ? 'Внутренний' : 'Пограничный' }}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{ item.ss7_spc }}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_status_text}}</td>
       <td ng-if="userPermissions['network_edit']">
