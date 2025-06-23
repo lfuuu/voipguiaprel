@@ -361,6 +361,15 @@ app.factory('BillingServer', function ($q, ApiLoader) {
     delete: function (id) {
       list = undefined;
       return ApiLoader.post(url + 'delete', { id: id });
+    },
+     enable: function(id) {
+      list = undefined;
+      return ApiLoader.post(url + 'enable-antifraud', { id: id });
+    },
+    // Отключить antifraud
+    disable: function(id) {
+      list = undefined;
+      return ApiLoader.post(url + 'disable-antifraud', { id: id });
     }
   };
 });

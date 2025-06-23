@@ -38,11 +38,12 @@ class BillingServer extends ActiveRecord
             // валидация URL
             // текстовые поля и JSON
             [['contact_info'], 'string'],
+            [['address'], 'string'],   
             [['dashboards'], 'safe'],   // jsonb, оставляем safe (массив/строка)
 
             // логические флаги
             [['antifraud_incoming_accept', 'antifraud_proxy_timeout'], 'boolean'],
-            
+
             ['interface_url', 'string', 'max' => 255],
             // целочисленные поля
             [['antifraud_proxy_timeout_prefixlist_id', 'id'], 'integer'],
@@ -62,6 +63,7 @@ class BillingServer extends ActiveRecord
             'name'                                 => 'Название',
             'ip'                                   => 'IP адрес',
             'contact_info'                         => 'Контактная информация',
+            'address'                              => 'Физический адрес',
             'interface_url'                        => 'URL интерфейса',
             'dashboards'                           => 'Dashboards (JSON)',
             'antifraud_incoming_accept'            => 'Принимать входящий антифрод',
