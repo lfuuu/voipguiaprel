@@ -26,7 +26,7 @@ var BillingServersListCtrl = function($scope, BillingServer, Redirect, $window) 
       data.sort(function(a,b){
         return (''+a.name).localeCompare(''+b.name);
       });
-      $scope.list = data;
+      $scope.list = data;  // каждый item должен содержать поле disable_antifraud
     });
   };
   $scope.init();
@@ -47,6 +47,20 @@ var BillingServersListCtrl = function($scope, BillingServer, Redirect, $window) 
     if (!userPermissions['billing_servers_edit']) return;
     if (!$window.confirm('Удалить?')) return;
     BillingServer.delete(item.id).then(function(){ $scope.init(); });
+  };
+
+  // Переключение antifraud (добавлено)
+  // disable = true → отключить antifraud; false → включить
+  $scope.setAntifraud = function(item, disable) {
+    var action = disable ? 'disable' : 'enable';
+    BillingServer[action](item.id)
+      .then(function(updated) {
+        // обновляем флаг в списке
+        item.disable_antifraud = updated.disable_antifraud;
+      })
+      .catch(function(err) {
+        console.error('Ошибка при переключении antifraud:', err);
+      });
   };
 };
 

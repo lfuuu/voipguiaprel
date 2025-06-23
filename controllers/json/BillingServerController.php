@@ -123,5 +123,30 @@ class BillingServerController extends Controller
         $model->delete();
         return ['success' => true];
     }
+    
+     public function actionEnableAntifraud()
+    {
+        $id = Yii::$app->request->post('id');
+        if (empty($id)) {
+            throw new BadRequestHttpException('ID не передан');
+        }
+        Yii::$app->db
+            ->createCommand('CALL public.enable_antifraud(:id)', [':id' => $id])
+            ->execute();
+        return BillingServer::findOne($id);
+    }
+
+     public function actionDisableAntifraud()
+    {
+        $id = Yii::$app->request->post('id');
+        if (empty($id)) {
+            throw new BadRequestHttpException('ID не передан');
+        }
+        Yii::$app->db
+            ->createCommand('CALL public.disable_antifraud(:id)', [':id' => $id])
+            ->execute();
+        return BillingServer::findOne($id);
+    }
+
 }
 

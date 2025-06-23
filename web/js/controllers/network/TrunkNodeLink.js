@@ -109,6 +109,13 @@ var TrunkNodeLinkListCtrl = function($scope, TrunkNodeLink, Node, Redirect, $win
     $scope.clickNode = function(nodeId) {
         Redirect.nodeEdit(nodeId);
     };
+
+    $scope.clickTrunk = function(trunkId) {
+  Redirect.trunkEdit({
+    params: { id: trunkId }
+  }).then($scope.init);
+};
+
 };
 
 app.controller('TrunkNodeLinkListCtrl', TrunkNodeLinkListCtrl);

@@ -13,6 +13,7 @@ var BillingServerEditCtrl = function($scope, BillingServer, params, $modalInstan
       name:       '',
       ip:         '',
       contact_info: '',
+      address:      '',
       interface_url: '',
       dashboards: '',
       antifraud_incoming_accept: false,

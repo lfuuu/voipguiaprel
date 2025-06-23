@@ -15,7 +15,9 @@
       </a></th>
       <th>IP</th>
       <th>Контакты</th>
+      <th>Физический адрес</th>
       <th>URL интерфейса</th>
+      <th>Антифрод</th>
       <th>&nbsp;</th>
       <th>&nbsp;</th>
     </tr>
@@ -26,7 +28,24 @@
       <td ng-click="clickItem(item)">{{item.name}}</td>
       <td>{{item.ip}}</td>
       <td>{{item.contact_info}}</td>
+      <td>{{item.address}}</td>
       <td>{{item.interface_url}}</td>
+     <td>
+    <div class="btn-group">
+      <button type="button"
+              class="btn btn-sm"
+              ng-class="item.disable_antifraud ? 'btn-default' : 'btn-success active'"
+              ng-click="setAntifraud(item, false)">
+        Вкл
+      </button>
+      <button type="button"
+              class="btn btn-sm"
+              ng-class="item.disable_antifraud ? 'btn-danger active' : 'btn-default'"
+              ng-click="setAntifraud(item, true)">
+        Откл
+      </button>
+    </div>
+  </td>
       <td>
         <button class="btn btn-sm btn-default"
                 ng-click="clickItem(item)">Изменить</button>
