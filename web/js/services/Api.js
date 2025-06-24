@@ -633,73 +633,90 @@ app.factory('ServiceTrunkRouting', function ($q, ApiLoader, $rootScope) {
     };
 });
 
-app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
+    app.factory('Prefixlist', function ($q, ApiLoader, $rootScope) {
     var url = '/json/prefixlist/';
     var list = undefined;
     var promise = undefined;
     return {
         read: function (data) {
-            return ApiLoader.post(url + 'read', data);
+        return ApiLoader.post(url + 'read', data);
         },
         get: function (data) {
-            return ApiLoader.post(url + 'get', data);
+        return ApiLoader.post(url + 'get', data);
         },
         listBlocked: function (data) {
-            return ApiLoader.post(url + 'list-blocked', data);
+        return ApiLoader.post(url + 'list-blocked', data);
         },
         list: function () {
-            if (promise !== undefined) return promise;
+        if (promise !== undefined) return promise;
 
-            var deferred = $q.defer();
-            if (list !== undefined) {
-                deferred.resolve(list);
-                return deferred.promise;
-            } else {
-                var data = { server_id: ($rootScope.isSms ? 99 : ($rootScope.server.id ? $rootScope.server.id : $rootScope.serverId))};
-                ApiLoader.post(url + 'list', data)
-                    .then(function (data) {
-                        list = data;
-                        promise = undefined;
-                        deferred.resolve(data);
-                    }, function (data) {
-                        promise = undefined;
-                        deferred.reject(data);
-                    });
-                promise = deferred.promise;
-            }
-            return deferred.promise;
+        var deferred = $q.defer();
+        if (list !== undefined) {
+            deferred.resolve(list);
+        } else {
+            var data = {
+            server_id: ($rootScope.isSms
+                ? 99
+                : ($rootScope.server.id
+                ? $rootScope.server.id
+                : $rootScope.serverId))
+            };
+            ApiLoader.post(url + 'list', data)
+            .then(function (data) {
+                list = data;
+                promise = undefined;
+                deferred.resolve(data);
+            }, function (err) {
+                promise = undefined;
+                deferred.reject(err);
+            });
+            promise = deferred.promise;
+        }
+        return deferred.promise;
         },
+
+        listEmergency: function () {
+        return ApiLoader.post(url + 'list-emergency', {});
+        },
+
         listByType: function (data) {
-            return ApiLoader.post(url + 'list-by-type', data);
+        return ApiLoader.post(url + 'list-by-type', data);
         },
         listByCamelShared: function (data) {
-            return ApiLoader.post(url + 'list-by-camel-shared', data);
+        return ApiLoader.post(url + 'list-by-camel-shared', data);
         },
         save: function (data) {
-            list = undefined;
-            return ApiLoader.post(url + 'save', data);
+        list = undefined;
+        return ApiLoader.post(url + 'save', data);
         },
         delete: function (id) {
-            list = undefined;
-            return ApiLoader.post(url + 'delete', { id: id });
+        list = undefined;
+        return ApiLoader.post(url + 'delete', { id: id });
         },
         nnpCalculation: function (id) {
-            return ApiLoader.post(url + 'nnp-calculation', { id: id });
+        return ApiLoader.post(url + 'nnp-calculation', { id: id });
         },
         applyBuffer: function (id) {
-            return ApiLoader.post(url + 'apply-buffer', { id: id });
+        return ApiLoader.post(url + 'apply-buffer', { id: id });
         },
         generatePrefixlist: function (id, type) {
-            return ApiLoader.post(url + 'prefixlist-generation', { id: id, type: type });
+        return ApiLoader.post(url + 'prefixlist-generation', {
+            id: id,
+            type: type
+        });
         },
         findUsagesInNumbers: function (id) {
-            return ApiLoader.post(url + 'find-usages-in-numbers', { id: id });
+        return ApiLoader.post(url + 'find-usages-in-numbers', { id: id });
         },
         findUsagesInTrunkABRules: function (id) {
-            return ApiLoader.post(url + 'find-usages-in-trunk-a-b-rules', { id: id });
+        return ApiLoader.post(
+            url + 'find-usages-in-trunk-a-b-rules',
+            { id: id }
+        );
         }
     };
-});
+    });
+
 
 app.factory('TelemetryReceiver', function ($q, ApiLoader, $rootScope) {
     var url = '/json/corm-adapter/';

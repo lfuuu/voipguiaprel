@@ -94,6 +94,7 @@
             <span class="label label-warning" ng-if="item.sw_shared">ОБЩИЙ</span>
             <span class="label label-success" ng-if="item.is_global">Глобальный</span>
             <span class="label label-danger" ng-if="item.is_auto_update">Автообновление</span>
+            <span class="label label-danger" ng-if="item.is_emergency">Аварийный</span>
         </td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
         <td>
