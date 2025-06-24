@@ -33,6 +33,7 @@ use yii\db\Query;
  * @property bool $normalization_disabled
  * @property string $object_comment
  * @property bool $sw_share_with_camel
+ * @property bool $is_emergency
  * @property bool $strong_matching
  * @property bool $is_use_ported
  *
@@ -86,6 +87,7 @@ class Prefixlist extends \yii\db\ActiveRecord
             ['nnp_filter_json', 'string'],
             [['is_global', 'is_use_ported'], 'boolean'],
             [['is_auto_update', 'is_protection_disabled'], 'boolean'],
+            [['is_emergency'], 'boolean'],
             [['invert'], 'boolean'],
             [['object_comment'], 'string', 'max' => \Yii::$app->params['commentMaxLength']],
         ];

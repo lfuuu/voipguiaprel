@@ -431,6 +431,7 @@ var PrefixlistEditCtrl = function ($scope, $rootScope, $q, Prefixlist, Billing, 
             rn_is_exclude_region: false,
             rn_is_exclude_mnc: false,
             count: 0,
+            is_emergency: false,
             sw_share_with_camel: ($scope.isCamel ? true : false)
         };
         $scope.initialServerId = $scope.item.server_id;

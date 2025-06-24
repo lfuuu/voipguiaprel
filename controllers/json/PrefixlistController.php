@@ -76,6 +76,24 @@ class PrefixlistController extends JsonController
      * @return \app\models\Prefixlist[]
      * @throws HttpException
      */
+    public function actionListEmergency()
+    {
+        if (!\Yii::$app->user->can('prefixlist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        return Prefixlist::find()
+            ->select(['id', 'name'])
+            ->where(['is_emergency' => true])
+            ->orderBy('name')
+            ->asArray()
+            ->all();
+    }
+
+    /**
+     * @return \app\models\Prefixlist[]
+     * @throws HttpException
+     */
     public function actionListByCamelShared()
     {
         if (!\Yii::$app->user->can('prefixlist_list')) {
@@ -138,7 +156,7 @@ class PrefixlistController extends JsonController
         return
             Prefixlist::find()
                 ->select([
-                    'id', 'name', 'type_id','server_id','sw_shared', 'is_global',
+                    'id', 'name', 'type_id','server_id','sw_shared', 'is_global', 'is_emergency',
                     'to_char(dt_update, \'YYYY-MM-DD HH24:MI:SS\') as dt_update',
                     'to_char(dt_prepare, \'YYYY-MM-DD HH24:MI:SS\') as dt_prepare', 'is_auto_update', 'object_comment'
                 ])
