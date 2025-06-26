@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  * @property string|null $ip
  * @property string|null $contact_info
  * @property string|null $interface_url
+ * @property string|null $description
  * @property array|null  $dashboards
  * @property bool|null   $antifraud_incoming_accept
  * @property bool|null   $antifraud_proxy_timeout
@@ -38,6 +39,7 @@ class BillingServer extends ActiveRecord
             // валидация URL
             // текстовые поля и JSON
             [['contact_info'], 'string'],
+            [['description'], 'string'],
             [['address'], 'string'],   
             [['dashboards'], 'safe'],   // jsonb, оставляем safe (массив/строка)
 

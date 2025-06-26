@@ -25,6 +25,7 @@ var BillingServerEditCtrl = function($scope, BillingServer, Prefixlist, params, 
       address:                             '',
       interface_url:                      '',
       dashboards:                         '',
+      description:                        '',
       antifraud_incoming_accept:          false,
       antifraud_proxy_timeout:            false,
       antifraud_proxy_timeout_prefixlist_id: null
