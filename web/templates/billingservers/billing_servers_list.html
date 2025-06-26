@@ -15,7 +15,7 @@
       </a></th>
       <th>IP</th>
       <th>Контакты</th>
-      <th>Физический адрес</th>
+      <th>Описание</th>
       <th>URL интерфейса</th>
       <th>Антифрод</th>
       <th>&nbsp;</th>
@@ -28,8 +28,16 @@
       <td ng-click="clickItem(item)">{{item.name}}</td>
       <td>{{item.ip}}</td>
       <td>{{item.contact_info}}</td>
-      <td>{{item.address}}</td>
-      <td>{{item.interface_url}}</td>
+      <td>{{item.description}}</td>
+      <td>
+        <a ng-if="item.interface_url"
+          ng-href="{{item.interface_url}}"
+          target="_blank"
+          ng-click="$event.stopPropagation()">
+          {{item.interface_url}}
+        </a>
+        <span ng-if="!item.interface_url">—</span>
+      </td>
      <td ng-if="userPermissions['billing_servers_edit']">
     <div class="btn-group">
       <button type="button"

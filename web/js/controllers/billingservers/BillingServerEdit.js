@@ -5,6 +5,7 @@ var BillingServerEditCtrl = function($scope, BillingServer, Prefixlist, params, 
   function loadEmergencyPrefixlists() {
     Prefixlist.listEmergency().then(function(data) {
       $scope.prefixlistList = data;
+      console.log('EMERGENCY PREFIXLISTS:', $scope.prefixlistList);
     }, function(err) {
       console.error('Ошибка при получении аварийных префикс-листов', err);
       $scope.prefixlistList = [];

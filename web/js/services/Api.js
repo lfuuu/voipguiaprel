@@ -2807,6 +2807,9 @@ app.factory('List', function (
         headerRule: function () {
             return HeaderRule.list();
         },
+          listEmergency: function () {
+            return Prefixlist.listEmergency();
+        },
         disconnectCause: function () {
             return Cdr.disconnectCauseList();
         },
