@@ -105,7 +105,8 @@
     <button type="submit"
             class="btn btn-primary"
             ng-click="save()"
-            ng-disabled="form.$invalid || $root.isAjaxLoading">
+            ng-disabled="form.$invalid || $root.isAjaxLoading"
+            ng-if="userPermissions['billing_servers_edit']">
       Сохранить
     </button>
     <button type="button"

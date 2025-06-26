@@ -3,11 +3,13 @@
   <div style="position: fixed; left: 15px; bottom: 0; top: 60px; width: 230px; overflow-y: auto">
     <div class="list-group">
       <a class="list-group-item"
+         ng-if="userPermissions['billing_servers_list']"
          ng-click="Redirect.billingServersList()"
          ng-class="{active: tabs.isController('BillingServersListCtrl')}">
         Список серверов
       </a>
       <a class="list-group-item"
+         ng-if="userPermissions['billing_servers_edit']"
          ng-click="Redirect.billingServerCreate()"
          ng-class="{active: tabs.isController('BillingServerCreateCtrl')}">
         Добавить сервер

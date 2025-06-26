@@ -133,11 +133,10 @@ if (Yii::$app->user->identity) {
 <?php if ((\Yii::$app->user->can('network_list') || \Yii::$app->user->can('network_edit')) && !$isEu): ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/network') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/network'])?>">Сеть</a></li>
 <?php endif; ?>
-<?php if (1): ?>
-                        <li<?php if ($_SERVER['REQUEST_URI'] == '/billing-servers-settings') { ?> style="text-decoration: underline;" <?php } ?>>
-  <a href="<?= Url::to(['category/billing-servers-settings']) ?>">Биллинговые сервера</a>
-</li>
-
+<?php if ((\Yii::$app->user->can('billing_servers_list') || \Yii::$app->user->can('billing_servers_edit'))): ?>
+    <li<?php if ($_SERVER['REQUEST_URI'] == '/billing-servers-settings') { ?> style="text-decoration: underline;" <?php } ?>>
+        <a href="<?= Url::to(['category/billing-servers-settings']) ?>">Биллинговые сервера</a>
+    </li>
 <?php endif; ?>
 <?php if ($userHasCamel && !$isEu) { ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/camel'|| preg_match("/^\/cs/i", $_SERVER['REQUEST_URI'])) { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/camel'])?>">Camel</a></li>
