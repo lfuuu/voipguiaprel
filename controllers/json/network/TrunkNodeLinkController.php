@@ -50,6 +50,7 @@ SELECT
     COALESCE(cct.name, 'Не задан') AS contract_type_text,
     t.contract_type_id,
     st.trunk_id       AS trunk_id,
+    st.server_id      AS server_id,
     serv.ip_addr      AS ip_address,
     tr.name           AS phys_trunk_name,
     st.client_account_id,
@@ -107,6 +108,7 @@ service_trunks AS (
 SELECT
     t.*,
     st.trunk_id   AS trunk_id,
+    st.server_id  AS server_id,
     serv.ip_addr  AS ip_address
 FROM calligrapher.trunk_node_link AS t
 LEFT JOIN billing.service_trunk AS st    ON st.id     = t.service_trunk_id

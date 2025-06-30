@@ -110,10 +110,15 @@ var TrunkNodeLinkListCtrl = function($scope, TrunkNodeLink, Node, Redirect, $win
         Redirect.nodeEdit(nodeId);
     };
 
-    $scope.clickTrunk = function(trunkId) {
-  Redirect.trunkEdit({
-    params: { id: trunkId }
-  }).then($scope.init);
+    $scope.clickTrunk = function(trunkId, serverId) {
+  if (window.getSelection().type === 'Range') return;
+
+  $rootScope.server = { id: serverId };
+
+  Redirect.trunkEditByServer(trunkId, serverId)
+    .then(function() {
+      $scope.init();
+    });
 };
 
 };
