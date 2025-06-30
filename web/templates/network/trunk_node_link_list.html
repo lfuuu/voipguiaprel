@@ -1,3 +1,13 @@
+<style>
+  a.clickable-link {
+    color: #337ab7;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  a.clickable-link:hover {
+    text-decoration: underline;
+  }
+</style>
 <div>
     <h4>Внешние транки</h4>
     <!-- Форма фильтра (ленточная) -->
@@ -135,11 +145,12 @@
         </a>
       </td>
       <td>{{ link.description }}</td>
-       <td style="cursor:pointer"
-    ng-click="clickTrunk(link.trunk_id, link.server_id)">
-  {{ link.trunk_id }}
-</td>
-
+        <td>
+        <a class="clickable-link"
+           ng-click="clickTrunk(link.trunk_id, link.server_id)">
+          {{ link.trunk_id }}
+        </a>
+      </td>
       <td>{{ link.ip_address }}</td>
       <td>{{ link.phys_trunk_name }}</td>
       <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"
