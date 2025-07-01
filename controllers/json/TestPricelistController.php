@@ -333,30 +333,45 @@ class TestPricelistController extends JsonController
     
     private function getCmdByNum($cmd, $number, $apiUrl, $fields = [])
     {
+
         if ($cmd === 'getNumberRangeByNum') {
             $apiUrl = 'https://api-gw.mcn.ru/voipbilld/reg/';
         }
-        
+
         $apiParams = [
             'cmd' => $cmd,
-            'num' => $number
+            'num' => $number,
         ];
+
+
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
-        $response = file_get_contents($request);
+        $response = @file_get_contents($request);
+
+        if ($response === false) {
+            $fallbackUrl = 'https://api-gw.kompaas.tech/voipbilld/reg/';
+            $request = $fallbackUrl . 'test/nnpcalc?' . http_build_query($apiParams);
+            $response = @file_get_contents($request);
+        }
+
         $result = json_decode($response, true);
+        if (!is_array($result)) {
+
+            $result = [];
+        }
+
         if (!empty($fields) && !empty($result)) {
             foreach ($result as $key => $value) {
                 if (array_key_exists($key, $fields)) {
                     $newItem = $fields[$key]::findOne(['id' => $value]);
                     if ($newItem) {
-                        $result[$key.'_name'] = $newItem->name;
+                        $result[$key . '_name'] = $newItem->name;
                     }
                 }
             }
         }
-        if (isset($result) && is_array($result)) {
-            ksort($result);
-        }
+
+        ksort($result);
+
         return $result;
     }
 
