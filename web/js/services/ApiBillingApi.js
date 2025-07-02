@@ -57,7 +57,7 @@ app.factory('ApiBillingApiMethod', function ($q, ApiLoader, $rootScope) {
     return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
 });
 
-app.factory('ApiBillingApiPricelist', function ($q, ApiLoader, $rootScope) {
+app.factory('ApiBillingApiPricelist', function ($q, ApiLoader, $http, $rootScope) {
     var url = '/json/api_billing/api-pricelist/';
     var list = undefined;
     var promise = undefined;
@@ -65,6 +65,9 @@ app.factory('ApiBillingApiPricelist', function ($q, ApiLoader, $rootScope) {
         read: function (data) {
             return ApiLoader.post(url + 'read', data);
         },
+         exportToExcel: function(data) {
+        return $http.post(url + 'export-to-excel', data, { responseType: 'arraybuffer' });
+    },
         readArchive: function (data) {
             return ApiLoader.post(url + 'read-archive', data);
         },
