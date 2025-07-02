@@ -58,6 +58,9 @@
     </div>
     <div class="modal-footer">
         <div class="pull-left">
+             <button type="button" class="btn btn-primary btn-sm" ng-click="exportToExcel()" ng-disabled="!item.id">
+        <i class="glyphicon glyphicon-export"></i> Экспорт в Excel
+    </button>
             <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
             <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/billing-api/api-pricelist"></action-log-view-button>

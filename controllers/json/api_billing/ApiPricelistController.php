@@ -8,6 +8,12 @@ use app\models\billing_api\ApiPricelistItem;
 use yii\db\Query;
 use yii\db\Expression;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use yii\web\HttpException;
+use yii\web\Response;
+use yii\web\ForbiddenHttpException;
+
 class ApiPricelistController extends JsonController
 {
     protected $modelName = 'app\models\billing_api\ApiPricelist';
@@ -219,5 +225,105 @@ class ApiPricelistController extends JsonController
             ->one();
 
             return ['id' => $result['id']];
+    }
+
+      public function actionExportToExcel()
+    {
+        // Проверка прав на чтение
+        if (!\Yii::$app->user->can($this->listPermission)) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        // Загрузить сам прайс-лист вместе с элементами
+        $item = $this->modelName::find()
+            ->with([
+                'items.api',        // связь ApiPricelistItem → Api
+                'items.apiMethod'   // связь ApiPricelistItem → ApiMethod
+            ])
+            ->andWhere(['id' => $this->request['id']])
+            ->one();
+
+        if (!$item || empty($item->items)) {
+            throw new HttpException(400, 'Нет строк для экспорта.');
+        }
+
+        $rows = [];
+        foreach ($item->items as $line) {
+            $rows[] = [
+                $line->api->name ?? '—',
+                $line->apiMethod->name ?? '—',
+                $line->price,
+                $line->enabled ? 'Да' : 'Нет',
+            ];
+        }
+
+        $fileName = 'Pricelist_' . $item->name . '_' . date('Ymd_His') . '.xlsx';
+        $filePath = \Yii::getAlias('@webroot/files/') . $fileName;
+        if (!is_dir(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+
+        $this->createPricelistExcelDocument($rows, $filePath, $item->name);
+    }
+
+    /**
+     * Генерация Excel-документа для прайс-листа
+     */
+    protected function createPricelistExcelDocument(array $data, string $fileName, string $title)
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Заголовки
+        $headers = ['API', 'Метод API', 'Цена', 'Включено'];
+
+        // Стили для заголовка (как в CDR)
+        $headerStyle = [
+            'font'      => ['bold' => true],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+            'borders'   => ['bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+        ];
+
+        // Записать заголовки
+        $col = 'A';
+        foreach ($headers as $hdr) {
+            $sheet->setCellValue("{$col}1", $hdr);
+            $sheet->getStyle("{$col}1")->applyFromArray($headerStyle);
+            $col++;
+        }
+
+        // Данные
+        $rowNum = 2;
+        foreach ($data as $row) {
+            $colNum = 1;
+            foreach ($row as $value) {
+                $sheet->setCellValueByColumnAndRow($colNum, $rowNum, $value);
+                $colNum++;
+            }
+            $rowNum++;
+        }
+
+        // Автоподбор ширины
+        $lastCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(count($headers));
+        foreach (range('A', $lastCol) as $c) {
+            $sheet->getColumnDimension($c)->setAutoSize(true);
+        }
+
+        // Границы ячеек
+        $sheet->getStyle("A1:{$lastCol}{$rowNum}")->applyFromArray([
+            'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+        ]);
+
+        // Отдать файл
+        try {
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+            exit;
+        } catch (\Exception $e) {
+            \Yii::error("Excel export error: {$e->getMessage()}", __METHOD__);
+            throw new HttpException(500, 'Ошибка создания Excel-файла.');
+        }
     }
 }

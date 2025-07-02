@@ -57,4 +57,23 @@ var ApiBillingApiPricelistEditCtrl = function($rootScope, $scope, ApiBillingApiP
     $scope.removePricelistItem = function (index) {
         $scope.item.items.splice(index, 1);
     };
+    $scope.exportToExcel = function() {
+        ApiBillingApiPricelist.exportToExcel({ id: $scope.item.id })
+            .then(function(response) {
+                var blob = new Blob([response.data], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'Pricelist_' + $scope.item.name + '.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }, function(err) {
+                console.error('Export error', err);
+                $window.alert('Не удалось экспортировать прайс-лист.');
+            });
+    };
 };

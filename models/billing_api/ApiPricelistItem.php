@@ -1,7 +1,9 @@
 <?php
 
 namespace app\models\billing_api;
+
 use app\queries\billing_api\ApiPricelistItemQuery;
+use yii\db\ActiveQuery;
 
 /**
  * @property int $id
@@ -10,6 +12,9 @@ use app\queries\billing_api\ApiPricelistItemQuery;
  * @property int $api_method_id
  * @property bool $enabled
  * @property string $price
+ *
+ * @property Api $api
+ * @property ApiMethod $apiMethod
  */
 class ApiPricelistItem extends \yii\db\ActiveRecord
 {
@@ -38,6 +43,22 @@ class ApiPricelistItem extends \yii\db\ActiveRecord
             [['price'], 'string'],
             [['enabled'], 'boolean'],
         ];
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getApi(): ActiveQuery
+    {
+        return $this->hasOne(Api::class, ['id' => 'api_id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getApiMethod(): ActiveQuery
+    {
+        return $this->hasOne(ApiMethod::class, ['id' => 'api_method_id']);
     }
 
     /**
