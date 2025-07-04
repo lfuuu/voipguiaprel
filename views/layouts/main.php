@@ -133,7 +133,7 @@ if (Yii::$app->user->identity) {
 <?php if ((\Yii::$app->user->can('network_list') || \Yii::$app->user->can('network_edit')) && !$isEu): ?>
                         <li<?php if ($_SERVER['REQUEST_URI'] == '/network') { ?> style="text-decoration: underline;" <?php } ?>><a href="<?=Url::to(['category/network'])?>">Сеть</a></li>
 <?php endif; ?>
-<?php if ((\Yii::$app->user->can('billing_servers_list') || \Yii::$app->user->can('billing_servers_edit'))): ?>
+<?php if (\Yii::$app->user->can('billing_servers_list')) ?>
     <li<?php if ($_SERVER['REQUEST_URI'] == '/billing-servers-settings') { ?> style="text-decoration: underline;" <?php } ?>>
         <a href="<?= Url::to(['category/billing-servers-settings']) ?>">Биллинговые сервера</a>
     </li>
