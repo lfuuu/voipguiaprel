@@ -28,6 +28,20 @@
                required />
       </div>
     </div>
+<!-- Тип сервера (аналогично статусу узла) -->
+<div class="form-group">
+  <label class="col-sm-2 control-label">Тип сервера</label>
+  <div class="col-sm-10">
+    <select class="form-control"
+            ng-model="item.type"
+            ng-options="t.value as t.label for t in serverTypes"
+            required>
+      <option value="">-- Выберите тип сервера --</option>
+    </select>
+  </div>
+</div>
+
+
 
     <!-- IP адрес -->
     <div class="form-group">
