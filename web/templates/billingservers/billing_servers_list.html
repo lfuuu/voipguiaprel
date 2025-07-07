@@ -3,16 +3,27 @@
 <table class="table table-striped table-condensed">
   <thead>
     <tr>
-      <th><a href="#" ng-click="sortType='id';sortReverse=!sortReverse">
-        ID
-        <span ng-show="sortType=='id' && sortReverse" class="caret-down"></span>
-        <span ng-show="sortType=='id' && !sortReverse" class="caret-up"></span>
-      </a></th>
-      <th><a href="#" ng-click="sortType='name';sortReverse=!sortReverse">
-        Название
-        <span ng-show="sortType=='name' && sortReverse" class="caret-down"></span>
-        <span ng-show="sortType=='name' && !sortReverse" class="caret-up"></span>
-      </a></th>
+      <th>
+        <a href="#" ng-click="sortType='id'; sortReverse=!sortReverse">
+          ID
+          <span ng-show="sortType=='id' && sortReverse" class="caret-down"></span>
+          <span ng-show="sortType=='id' && !sortReverse" class="caret-up"></span>
+        </a>
+      </th>
+      <th>
+        <a href="#" ng-click="sortType='name'; sortReverse=!sortReverse">
+          Название
+          <span ng-show="sortType=='name' && sortReverse" class="caret-down"></span>
+          <span ng-show="sortType=='name' && !sortReverse" class="caret-up"></span>
+        </a>
+      </th>
+      <th>
+        <a href="#" ng-click="sortType='type'; sortReverse=!sortReverse">
+          Тип сервера
+          <span ng-show="sortType=='type' && sortReverse" class="caret-down"></span>
+          <span ng-show="sortType=='type' && !sortReverse" class="caret-up"></span>
+        </a>
+      </th>
       <th>IP</th>
       <th>Контакты</th>
       <th>Описание</th>
@@ -26,37 +37,40 @@
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
       <td ng-click="clickItem(item)">{{item.id}}</td>
       <td ng-click="clickItem(item)">{{item.name}}</td>
+      <td>{{ item.type }}</td>
       <td>{{item.ip}}</td>
       <td>{{item.contact_info}}</td>
       <td>{{item.description}}</td>
       <td>
         <a ng-if="item.interface_url"
-          ng-href="{{item.interface_url}}"
-          target="_blank"
-          ng-click="$event.stopPropagation()">
+           ng-href="{{item.interface_url}}"
+           target="_blank"
+           ng-click="$event.stopPropagation()">
           {{item.interface_url}}
         </a>
         <span ng-if="!item.interface_url">—</span>
       </td>
-     <td ng-if="userPermissions['billing_servers_edit']">
-    <div class="btn-group">
-      <button type="button"
-              class="btn btn-sm"
-              ng-class="item.disable_antifraud ? 'btn-default' : 'btn-success active'"
-              ng-click="setAntifraud(item, false)">
-        Вкл
-      </button>
-      <button type="button"
-              class="btn btn-sm"
-              ng-class="item.disable_antifraud ? 'btn-danger active' : 'btn-default'"
-              ng-click="setAntifraud(item, true)">
-        Откл
-      </button>
-    </div>
-  </td>
+      <td ng-if="userPermissions['billing_servers_edit']">
+        <div class="btn-group">
+          <button type="button"
+                  class="btn btn-sm"
+                  ng-class="item.disable_antifraud ? 'btn-default' : 'btn-success active'"
+                  ng-click="setAntifraud(item, false)">
+            Вкл
+          </button>
+          <button type="button"
+                  class="btn btn-sm"
+                  ng-class="item.disable_antifraud ? 'btn-danger active' : 'btn-default'"
+                  ng-click="setAntifraud(item, true)">
+            Откл
+          </button>
+        </div>
+      </td>
       <td ng-if="userPermissions['billing_servers_edit']">
         <button class="btn btn-sm btn-default"
-                ng-click="clickItem(item)">Изменить</button>
+                ng-click="clickItem(item)">
+          Изменить
+        </button>
       </td>
     </tr>
   </tbody>
