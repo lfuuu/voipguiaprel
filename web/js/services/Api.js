@@ -139,6 +139,58 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
     };
 });
 
+app.factory('SmsGate', function ($q, ApiLoader) {
+    var url = '/json/sms/sms-gate/';
+    var list = undefined;
+    var promise = undefined;
+
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+
+        list: function (data) {
+            if (promise !== undefined) return promise;
+
+            data = data || {};
+            var deferred = $q.defer();
+
+            if (list !== undefined) {
+                deferred.resolve(list);
+                promise = undefined;
+            } else {
+                ApiLoader.post(url + 'read', data)
+                    .then(function (response) {
+                        list = response;
+                        promise = undefined;
+                        deferred.resolve(response);
+                    }, function (error) {
+                        promise = undefined;
+                        deferred.reject(error);
+                    });
+                promise = deferred.promise;
+            }
+
+            return deferred.promise;
+        },
+
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+
+         get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', { id: id });
+        }
+    };
+});
+
+
 app.factory('A2pSmsCdr', function(ApiLoader) {
     var url = '/json/sms/a2p-sms-cdr/';
     return {

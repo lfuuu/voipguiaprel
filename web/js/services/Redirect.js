@@ -823,6 +823,16 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         smsTrunkEdit: function(id) {
             return openModal(SmsTrunkEditCtrl, '/templates/sms/sms_trunk_edit.html', {id: id});
         },
+        smsGateList: function() {
+            $cookies.sms_selected_page = 'smsGateList';
+            return openTab(SmsGateListCtrl, '/templates/sms/sms_gate_list.html');
+        },
+        smsGateCreate: function() {
+            return openModal(SmsGateEditCtrl, '/templates/sms/sms_gate_edit.html', { id: null });
+        },
+        smsGateEdit: function(id) {
+            return openModal(SmsGateEditCtrl, '/templates/sms/sms_gate_edit.html', { id: id });
+        },
         smsRouteTableList: function() {
             $cookies.sms_selected_page = 'smsRouteTableList';
             return openTab(SmsRouteTableListCtrl, '/templates/sms/sms_route_table_list.html');
