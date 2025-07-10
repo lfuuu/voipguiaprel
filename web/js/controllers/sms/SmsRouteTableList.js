@@ -1,17 +1,16 @@
 var SmsRouteTableListCtrl = function($scope, SmsRouteTable, Redirect, $window) {
+    // жёстко фиксируем server_id = 9
+    var SERVER_ID = 9;
 
-    $scope.sortType = 'name';
+    $scope.sortType    = 'name';
     $scope.sortReverse = false;
     $scope.searchQuery = '';
 
-    $scope.filterFields = [
-
-    ];
+    $scope.filterFields = [];
 
     $scope.init = function(tab) {
         if (tab) tab.title = 'Таблицы маршрутизации';
-
-        SmsRouteTable.read({server_id: $scope.server.id}).then(function(data){
+        SmsRouteTable.read({ server_id: SERVER_ID }).then(function(data){
             $scope.list = data;
         });
     };
@@ -23,12 +22,8 @@ var SmsRouteTableListCtrl = function($scope, SmsRouteTable, Redirect, $window) {
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['sms_route_table_edit']) {
-            return;
-        }
-
-        if (window.getSelection().type == 'Range') return;
-
+        if (!userPermissions['sms_route_table_edit']) return;
+        if (window.getSelection().type === 'Range') return;
         Redirect.smsRouteTableEdit(item.id).then(function () {
             $scope.init();
         });
@@ -36,9 +31,8 @@ var SmsRouteTableListCtrl = function($scope, SmsRouteTable, Redirect, $window) {
 
     $scope.deleteItem = function(item) {
         if (!$window.confirm('Удалить?')) return;
-
-        SmsRouteTable.delete(item.id).then(function(response) {
-            $scope.init()
+        SmsRouteTable.delete(item.id).then(function() {
+            $scope.init();
         });
     };
 };

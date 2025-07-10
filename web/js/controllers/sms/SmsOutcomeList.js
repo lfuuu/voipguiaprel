@@ -1,8 +1,10 @@
 var SmsOutcomeListCtrl = function($scope, SmsOutcome, SmsList, Redirect, $window) {
+    // жёстко фиксируем server_id = 9
+    var SERVER_ID = 9;
 
-    $scope.sortType = 'name';
-    $scope.sortReverse = false;
-    $scope.searchQuery = '';
+    $scope.sortType     = 'name';
+    $scope.sortReverse  = false;
+    $scope.searchQuery  = '';
 
     $scope.filterFields = [
         'id', 'name', 'type_id'
@@ -11,35 +13,32 @@ var SmsOutcomeListCtrl = function($scope, SmsOutcome, SmsList, Redirect, $window
     $scope.init = function(tab) {
         if (tab) tab.title = 'Sms Outcomes';
 
-        SmsOutcome.read({server_id: $scope.server.id}).then(function(data){
+        SmsOutcome.read({ server_id: SERVER_ID }).then(function(data) {
             $scope.list = data;
         });
     };
 
     $scope.outcomeTypeList = SmsList.outcomeType();
 
-    $scope.getTypeName = function (typeId) {
+    $scope.getTypeName = function(typeId) {
         for (var i in $scope.outcomeTypeList) {
-            if ($scope.outcomeTypeList[i]['id'] == typeId) {
-                return $scope.outcomeTypeList[i]['name'];
+            if ($scope.outcomeTypeList[i].id == typeId) {
+                return $scope.outcomeTypeList[i].name;
             }
         }
     };
 
     $scope.clickCreate = function() {
-        Redirect.smsOutcomeCreate().then(function () {
+        Redirect.smsOutcomeCreate().then(function() {
             $scope.init();
         });
     };
 
     $scope.clickItem = function(item) {
-        if (!userPermissions['sms_outcome_edit']) {
-            return;
-        }
+        if (!userPermissions['sms_outcome_edit']) return;
+        if (window.getSelection().type === 'Range') return;
 
-        if (window.getSelection().type == 'Range') return;
-
-        Redirect.smsOutcomeEdit(item.id).then(function () {
+        Redirect.smsOutcomeEdit(item.id).then(function() {
             $scope.init();
         });
     };
@@ -47,8 +46,8 @@ var SmsOutcomeListCtrl = function($scope, SmsOutcome, SmsList, Redirect, $window
     $scope.deleteItem = function(item) {
         if (!$window.confirm('Удалить?')) return;
 
-        SmsOutcome.delete(item.id).then(function(response) {
-            $scope.init()
+        SmsOutcome.delete(item.id).then(function() {
+            $scope.init();
         });
     };
 };
