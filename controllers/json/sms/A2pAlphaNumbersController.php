@@ -25,37 +25,34 @@ class A2pAlphaNumbersController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
 
-        $modelName = $this->modelName;
-
-        $where = [];
-
-        foreach ($this->readWhere as $param) {
-            $where[$param] = $this->request[$param];
-        }
-
-        $alphaNums = $modelName::find()
-            ->select(['id' => $this->idParamName, 'name' => $this->nameParamName])
-            ->orderBy($this->nameParamName)
-            ->andWhere($where)
+        $alphaNums = A2pAlphaNumbers::find()
+            ->select(['id','alphanum'])
+            ->orderBy('alphanum')
             ->asArray()
             ->all();
-        
+
+        $ids = array_column($alphaNums, 'id');
+
+        $groups = A2pAlphaNumberListGroup::find()
+            ->select(['alphanum_list_id','group_id'])
+            ->where(['alphanum_list_id' => $ids])
+            ->asArray()
+            ->all();
+
+        $map = [];
+        foreach ($groups as $g) {
+            $map[$g['alphanum_list_id']][] = $g['group_id'];
+        }
+
         $result = [];
         foreach ($alphaNums as $alpha) {
-            $groups = A2pAlphaNumberListGroup::find()
-                                    ->select('group_id')
-                                    ->where(['alphanum_list_id' => $alpha['id']])
-                                    ->asArray()
-                                    ->all();
-            
-            if ($groups) {
-                foreach ($groups as $group) {
-                    $alpha['group_id'][] = $group['group_id'];
-                }
-                $alpha['group_id'] = implode(',', $alpha['group_id']);
-            }
-
-            $result[] = $alpha;
+            $result[] = [
+                'id'       => $alpha['id'],
+                'name'     => $alpha['alphanum'],
+                'group_id' => isset($map[$alpha['id']])
+                                ? implode(',', $map[$alpha['id']])
+                                : '',
+            ];
         }
         return $result;
     }
