@@ -102,7 +102,7 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
             if (promise !== undefined) return promise;
 
             if (!data.server_id) {
-                data.server_id = $rootScope.server.id;
+                data.server_id = 9;
             }
 
             var deferred = $q.defer();
