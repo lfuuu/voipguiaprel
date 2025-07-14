@@ -1,5 +1,6 @@
 
 var SmsTrunkEditCtrl = function($rootScope, $scope, Redirect, SmsTrunk, SmsRouteTable, SmsList, params, $modalInstance) {
+var SERVER_ID = 9;
 
     if (params.id) {
         SmsTrunk.get({id: params.id}).then(function (data) {
@@ -14,7 +15,7 @@ var SmsTrunkEditCtrl = function($rootScope, $scope, Redirect, SmsTrunk, SmsRoute
         };
     }
 
-    SmsList.routeTable({server_id: $scope.server.id}).then(function (data) {
+    SmsList.routeTable({server_id: SERVER_ID}).then(function (data) {
         $scope.routeTableList = data;
 
     });
