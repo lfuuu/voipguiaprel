@@ -119,4 +119,42 @@ class SmsController extends JsonController
 
         return ['status' => 'ok'];
     }
+
+    // GET /json/sms/sms/get_configuration_trunks_smpp
+    public function actionGetConfigurationTrunksSmpp()
+    {
+        $ch = curl_init('http://10.252.0.87:8085/v1/get_configuration_trunks_smpp');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => ['Accept: application/json'],
+            CURLOPT_TIMEOUT        => 5,
+        ]);
+        $body = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($body === false || $code !== 200) {
+            throw new \Exception("Cannot fetch SMPP configs (HTTP {$code}): {$body}");
+        }
+        return json_decode($body, true);
+    }
+
+    // GET /json/sms/sms/get_configuration_trunks_api
+    public function actionGetConfigurationTrunksApi()
+    {
+        $ch = curl_init('http://10.252.0.87:8085/v1/get_configuration_trunks_api');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => ['Accept: application/json'],
+            CURLOPT_TIMEOUT        => 5,
+        ]);
+        $body = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($body === false || $code !== 200) {
+            throw new \Exception("Cannot fetch REST configs (HTTP {$code}): {$body}");
+        }
+        return json_decode($body, true);
+    }
 }
