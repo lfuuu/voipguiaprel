@@ -37,7 +37,7 @@
   <div class="col-sm-10">
     <select ui-select2 style="width: 100%" placeholder="SMS транк" ng-model="item.trunk_name">
       <option value="">-- Выберите транк --</option>
-      <option ng-repeat="trunk in trunkFiltered" value="{{trunk.name}}">
+      <option ng-repeat="trunk in trunkFiltered" value="{{trunk.id}}">
         {{trunk.name}}
       </option>
     </select>
