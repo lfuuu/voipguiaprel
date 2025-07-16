@@ -8,16 +8,18 @@ class PstnController extends Controller
 {
     public function actionIndex()
     {
-        $mcn_callid = Yii::$app->request->get('mcn_callid');
-        $is_573    = Yii::$app->request->get('is_573');
-        $is_86     = Yii::$app->request->get('is_86');
-        $is_debug  = Yii::$app->request->get('is_debug');
+        $mcn_callid  = Yii::$app->request->get('mcn_callid');
+        $is_573      = Yii::$app->request->get('is_573');
+        $is_86       = Yii::$app->request->get('is_86');
+        $is_573_86   = Yii::$app->request->get('is_573_86');
+        $is_debug    = Yii::$app->request->get('is_debug');
 
-        $url = 'https://eridanus3-aggr-legs.veles.mcn.ru:8207/pstn.php?' .
-            http_build_query([
+        $url = 'https://eridanus3-aggr-legs.veles.mcn.ru:8207/pstn.php?'
+            . http_build_query([
                 'mcn_callid' => $mcn_callid,
                 'is_573'     => $is_573,
                 'is_86'      => $is_86,
+                'is_573_86'  => $is_573_86,
                 'is_debug'   => $is_debug,
             ]);
 
@@ -38,36 +40,30 @@ class PstnController extends Controller
     }
 
     public function actionGraph()
-{
-    $mcnCallId = Yii::$app->request->get('mcnCallId');
-    if (empty($mcnCallId)) {
-        return 'Ошибка: mcnCallId не передан';
+    {
+        $mcnCallId = Yii::$app->request->get('mcnCallId');
+        if (empty($mcnCallId)) {
+            return 'Ошибка: mcnCallId не передан';
+        }
+
+        $payload = json_encode(['mcnCallId' => $mcnCallId], JSON_UNESCAPED_UNICODE);
+        $url = 'https://calligrapher.mcn.ru/v1/api/callPath';
+
+        $opts = [
+            "http" => [
+                "method"        => "POST",
+                "header"        => "Content-Type: application/json\r\nAccept: text/plain\r\n",
+                "content"       => $payload,
+                "ignore_errors" => true,
+            ]
+        ];
+        $context  = stream_context_create($opts);
+        $response = file_get_contents($url, false, $context);
+
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        return $response;
     }
 
-    $payload = json_encode(['mcnCallId' => $mcnCallId], JSON_UNESCAPED_UNICODE);
-    $url = 'https://calligrapher.mcn.ru/v1/api/callPath';
-
-    $opts = [
-        "http" => [
-            "method"  => "POST",
-            "header"  => "Content-Type: application/json\r\nAccept: text/plain\r\n",
-            "content" => $payload,
-            "ignore_errors" => true
-        ]
-    ];
-    $context = stream_context_create($opts);
-    $response = file_get_contents($url, false, $context);
-
-    Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
-    return $response;
-}
-
-
-    /**
-     * Выполнение CURL запроса
-     * @param string $url
-     * @return string
-     */
     protected function performCurlRequest($url)
     {
         $ch = curl_init();
@@ -75,21 +71,17 @@ class PstnController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($ch);
         curl_close($ch);
-
         return $response;
     }
 
-    /**
-     * Парсинг CSV ответа
-     * @param string $csv
-     * @return array
-     */
     protected function parseCsvResponse($csv)
     {
         $data = [];
         $rows = explode("\n", $csv);
         foreach ($rows as $row) {
-            if (empty($row)) continue;
+            if (empty($row)) {
+                continue;
+            }
             $data[] = str_getcsv($row, ';');
         }
         return $data;

@@ -164,6 +164,8 @@
     <button class="btn btn-secondary btn-sm" ng-click="get86Debug()">Выгрузка 86 в Debug режиме</button>
     <button class="btn btn-secondary btn-sm" ng-click="get86_2()"> Выгрузка 86 – 2 </button>
     <button class="btn btn-secondary btn-sm" ng-click="get86_2_debug()"> Выгрузка 86 – 2 Debug </button>
+     <button class="btn btn-primary btn-sm" ng-click="get57386()">Выгрузка 573+86</button>
+    <button class="btn btn-secondary btn-sm" ng-click="get57386Debug()">Выгрузка 573+86 в Debug режиме</button>
 
 
   </div>
@@ -207,6 +209,14 @@
     <div ng-if="responses['86_2_debug']">
         <h5>Выгрузка 86 – 2 Debug:</h5>
         <pre>{{ responses['86_2_debug'] | json }}</pre>
+    </div>
+        <div ng-if="responses['57386']">
+        <h5>Выгрузка 573+86:</h5>
+        <pre>{{ responses['57386'] }}</pre>
+    </div>
+    <div ng-if="responses['57386_debug']">
+        <h5>Выгрузка 573+86 в Debug режиме:</h5>
+        <pre>{{ responses['57386_debug'] | json }}</pre>
     </div>
     <div ng-if="responses['graph']">
         <h5>Данные графа:</h5>

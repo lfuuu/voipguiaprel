@@ -150,6 +150,15 @@ var CdrReportViewCtrl = function ($scope, Redirect, Cdr, params, $modalInstance,
         });
 };
 
+    $scope.get57386 = function () {
+        $scope.executeRequest('57386', { is_573_86: 1 });
+    };
+
+    $scope.get57386Debug = function () {
+        $scope.executeRequest('57386_debug', { is_573_86: 1, is_debug: 1 });
+    };
+
+
     
     $scope.getValJson = function() {
         var requestParams = { mcn_callid: $scope.mcn_callid };
