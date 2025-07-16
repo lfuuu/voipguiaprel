@@ -24,13 +24,45 @@
 
         <!-- 2. Тип коннектора -->
         <div class="form-group" ng-if="item.sms_gate_id">
-          <label class="col-sm-2 control-label">Тип коннектора</label>
+          <label class="col-sm-2 control-label">Тип</label>
           <div class="col-sm-10">
             <select class="form-control"
                     ng-model="item.connector_type_id"
                     ng-options="t.id as t.name for t in connectorTypeList"
                     required>
               <option value="" disabled>— Выберите тип —</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Название</label>
+          <div class="col-sm-10">
+            <input class="form-control"
+                   placeholder="Название"
+                   ng-model="item.name"
+                   required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Название маршрута</label>
+          <div class="col-sm-10">
+            <input class="form-control"
+                   placeholder="Название маршрута"
+                   ng-model="item.route_name"
+                   required>
+          </div>
+        </div>
+
+        <!-- 7. Таблица маршрутизации -->
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Таблица маршрутизации</label>
+          <div class="col-sm-10">
+            <select class="form-control"
+                    ng-model="item.a2psms_route_table_id"
+                    ng-options="r.id as r.name for r in routeTableList"
+                    required>
+              <option value="" disabled>— Выберите таблицу —</option>
             </select>
           </div>
         </div>
@@ -148,37 +180,7 @@
 
 
         <!-- 6. Название и маршрут -->
-        <div class="form-group">
-          <label class="col-sm-2 control-label">Название</label>
-          <div class="col-sm-10">
-            <input class="form-control"
-                   placeholder="Название"
-                   ng-model="item.name"
-                   required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-2 control-label">Название маршрута</label>
-          <div class="col-sm-10">
-            <input class="form-control"
-                   placeholder="Название маршрута"
-                   ng-model="item.route_name"
-                   required>
-          </div>
-        </div>
-
-        <!-- 7. Таблица маршрутизации -->
-        <div class="form-group">
-          <label class="col-sm-2 control-label">Таблица маршрутизации</label>
-          <div class="col-sm-10">
-            <select class="form-control"
-                    ng-model="item.a2psms_route_table_id"
-                    ng-options="r.id as r.name for r in routeTableList"
-                    required>
-              <option value="" disabled>— Выберите таблицу —</option>
-            </select>
-          </div>
-        </div>
+        
 
       </div>
     </div>
