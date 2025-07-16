@@ -136,14 +136,14 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
             list = undefined;
             return ApiLoader.post(url + 'delete', {id: id});
         },
-       // 1. Получить текущий SMPP-конфиг
-    getSmppConfig: function (data) {
-      return ApiLoader.post(url + 'get-configuration-trunks-smpp', data);
-    },
 
-    // 2. Получить текущий REST-конфиг
-    getApiConfig: function (data) {
-      return ApiLoader.post(url + 'get-configuration-trunks-api', data);
+       getSmppConfig: function () {
+      // обращаемся по правильному URL: get-configuration-trunks-smpp
+      return ApiLoader.post(url + 'get-configuration-trunks-smpp', {});
+    },
+    getApiConfig: function () {
+      // обращаемся по правильному URL: get-configuration-trunks-api
+      return ApiLoader.post(url + 'get-configuration-trunks-api', {});
     },
 
     // 3. Сохранить/добавить SMPP-конфиг

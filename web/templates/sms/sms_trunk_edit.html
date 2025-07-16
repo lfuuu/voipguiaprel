@@ -22,7 +22,7 @@
           </div>
         </div>
 
-        <!-- 2. Тип коннектора -->
+        <!-- 2. Тип -->
         <div class="form-group" ng-if="item.sms_gate_id">
           <label class="col-sm-2 control-label">Тип</label>
           <div class="col-sm-10">
@@ -35,6 +35,7 @@
           </div>
         </div>
 
+        <!-- 3. Название -->
         <div class="form-group">
           <label class="col-sm-2 control-label">Название</label>
           <div class="col-sm-10">
@@ -44,6 +45,8 @@
                    required>
           </div>
         </div>
+
+        <!-- 4. Название маршрута -->
         <div class="form-group">
           <label class="col-sm-2 control-label">Название маршрута</label>
           <div class="col-sm-10">
@@ -54,7 +57,7 @@
           </div>
         </div>
 
-        <!-- 7. Таблица маршрутизации -->
+        <!-- 5. Таблица маршрутизации -->
         <div class="form-group">
           <label class="col-sm-2 control-label">Таблица маршрутизации</label>
           <div class="col-sm-10">
@@ -67,7 +70,7 @@
           </div>
         </div>
 
-        <!-- 3. Тип протокола (только после выбора Message Center + агрегатор) -->
+        <!-- 6. Тип протокола -->
         <div class="form-group"
              ng-if="item.sms_gate_id==MCMCN_ID && item.connector_type_id==AGG_ID">
           <label class="col-sm-2 control-label">Тип протокола</label>
@@ -81,106 +84,83 @@
           </div>
         </div>
 
-        <!-- 4. Параметры SMPP -->
-        <div class="form-group"
-            ng-if="item.sms_gate_id==MCMCN_ID 
-                    && item.connector_type_id==AGG_ID 
-                    && item.connector_proto_id===1">
+        <!-- 7. Параметры SMPP -->
+        <div ng-if="item.sms_gate_id==MCMCN_ID 
+                   && item.connector_type_id==AGG_ID 
+                   && item.connector_proto_id===1">
 
-        <div class="form-group">
+          <div class="form-group">
             <label class="col-sm-2 control-label">Host</label>
             <div class="col-sm-10">
-            <input type="text"
-                    class="form-control"
-                    ng-model="smpp.url"
-                    required>
+              <input type="text" class="form-control"
+                     ng-model="smpp.url" required>
             </div>
-        </div>
+          </div>
 
-        <div class="form-group">
+          <div class="form-group">
             <label class="col-sm-2 control-label">Port</label>
             <div class="col-sm-10">
-            <input type="text"
-                    class="form-control"
-                    ng-model="smpp.port"
-                    required>
+              <input type="text" class="form-control"
+                     ng-model="smpp.port" required>
             </div>
-        </div>
+          </div>
 
-        <div class="form-group">
+          <div class="form-group">
             <label class="col-sm-2 control-label">SMSC Username</label>
             <div class="col-sm-10">
-            <input type="text"
-                    class="form-control"
-                    ng-model="smpp.smsc_username"
-                    required>
+              <input type="text" class="form-control"
+                     ng-model="smpp.smsc_username" required>
             </div>
-        </div>
+          </div>
 
-        <div class="form-group">
+          <div class="form-group">
             <label class="col-sm-2 control-label">SMSC Password</label>
             <div class="col-sm-10">
-            <input type="text"
-                    class="form-control"
-                    ng-model="smpp.smsc_password"
-                    required>
+              <input type="text" class="form-control"
+                     ng-model="smpp.smsc_password" required>
             </div>
-        </div>
+          </div>
 
         </div>
 
+        <!-- 8. Параметры REST -->
+        <div ng-if="item.sms_gate_id==MCMCN_ID 
+                   && item.connector_type_id==AGG_ID 
+                   && item.connector_proto_id===2">
 
-        <!-- 5. REST-поля -->
-        <!-- 5. Параметры REST -->
-<div class="form-group"
-     ng-if="item.sms_gate_id==MCMCN_ID 
-            && item.connector_type_id==AGG_ID 
-            && item.connector_proto_id===2">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">URL</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"
+                     ng-model="rest.url" required>
+            </div>
+          </div>
 
-  <div class="form-group">
-    <label class="col-sm-2 control-label">URL</label>
-    <div class="col-sm-10">
-      <input type="text"
-             class="form-control"
-             ng-model="rest.url"
-             required>
-    </div>
-  </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Method</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"
+                     ng-model="rest.method" required>
+            </div>
+          </div>
 
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Method</label>
-    <div class="col-sm-10">
-      <input type="text"
-             class="form-control"
-             ng-model="rest.method"
-             required>
-    </div>
-  </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Content-Type</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"
+                     ng-model="rest.contentType" required>
+            </div>
+          </div>
 
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Content-Type</label>
-    <div class="col-sm-10">
-      <input type="text"
-             class="form-control"
-             ng-model="rest.contentType"
-             required>
-    </div>
-  </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Authorization-Token</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"
+                     ng-model="rest.authToken">
+            </div>
+          </div>
 
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Authorization-Token</label>
-    <div class="col-sm-10">
-      <input type="text"
-             class="form-control"
-             ng-model="rest.authToken">
-    </div>
-  </div>
-
-</div>
-
-
-        <!-- 6. Название и маршрут -->
-        
+        </div>
 
       </div>
     </div>
