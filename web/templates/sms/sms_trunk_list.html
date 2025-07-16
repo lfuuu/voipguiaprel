@@ -42,13 +42,6 @@
                     <span ng-show="sortType == 'a2psms_route_table_id' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
-            <th width="20%">
-                <a href="#" ng-click="sortType = 'route_name'; sortReverse = !sortReverse">
-                    Название маршрута
-                    <span ng-show="sortType == 'route_name' && sortReverse" class="caret-down"></span>
-                    <span ng-show="sortType == 'route_name' && !sortReverse" class="caret-up"></span>
-                </a>
-            </th>
             <th width="1%"></th>
             <th ng-if="userPermissions['sms_trunk_delete']" width="1%"></th>
         </tr>
@@ -59,7 +52,6 @@
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.server_id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.a2psms_route_table_id}}</td>
-            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.route_name}}</td>
 
             <td ng-if="userPermissions['sms_trunk_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
         </tr>
