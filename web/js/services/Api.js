@@ -135,7 +135,26 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
         delete: function (id) {
             list = undefined;
             return ApiLoader.post(url + 'delete', {id: id});
-        }
+        },
+       // 1. Получить текущий SMPP-конфиг
+    getSmppConfig: function (data) {
+      return ApiLoader.post(url + 'get-configuration-trunks-smpp', data);
+    },
+
+    // 2. Получить текущий REST-конфиг
+    getApiConfig: function (data) {
+      return ApiLoader.post(url + 'get-configuration-trunks-api', data);
+    },
+
+    // 3. Сохранить/добавить SMPP-конфиг
+    addSmppConfiguration: function (data) {
+      return ApiLoader.post(url + 'add-configuration-trunk-smpp', data);
+    },
+
+    // 4. Сохранить/добавить REST-конфиг
+    addApiConfiguration: function (data) {
+      return ApiLoader.post(url + 'add-configuration-trunk-api', data);
+    }
     };
 });
 
@@ -340,7 +359,71 @@ app.factory('SmsOutcome', function ($q, ApiLoader, $rootScope) {
     return basicApiFunctions($q, ApiLoader, $rootScope, url, list, promise);
 });
 
-app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome, SmsTestGroup) {
+app.factory('SmsConnectorType', function ($q, ApiLoader) {
+  var url     = '/json/sms/connector-type/';
+  var list    = undefined;
+  var promise = undefined;
+
+  return {
+    read: function (data) {
+      return ApiLoader.post(url + 'read', data);
+    },
+
+    list: function (data) {
+      if (promise) return promise;
+      data = data || {};
+      var deferred = $q.defer();
+
+      if (list) {
+        deferred.resolve(list);
+        promise = undefined;
+      } else {
+        ApiLoader.post(url + 'read', data)
+          .then(function (response) {
+            list    = response;
+            promise = undefined;
+            deferred.resolve(response);
+          }, function (error) {
+            promise = undefined;
+            deferred.reject(error);
+          });
+        promise = deferred.promise;
+      }
+      return deferred.promise;
+    }
+  };
+});
+
+    app.factory('SmsConnectorProto', function($q, ApiLoader) {
+    var url     = '/json/sms/connector-proto/';
+    var list    = undefined;
+    var promise = undefined;
+
+    return {
+        list: function() {
+        if (promise) return promise;
+        var deferred = $q.defer();
+        if (list) {
+            deferred.resolve(list);
+            promise = undefined;
+        } else {
+            ApiLoader.post(url + 'read').then(function(response) {
+            list    = response;
+            promise = undefined;
+            deferred.resolve(response);
+            }, function(err) {
+            promise = undefined;
+            deferred.reject(err);
+            });
+            promise = deferred.promise;
+        }
+        return deferred.promise;
+        }
+    };
+    });
+
+
+app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome, SmsTestGroup,SmsTestAuth,SmsGate,SmsConnectorType, SmsConnectorProto) {
     return {
         trunk: function (data) {
             return SmsTrunk.list(data);
@@ -366,7 +449,50 @@ app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome, SmsTestGro
                 { id: 2, name: 'REJECT' },
                 { id: 3, name: 'TEMP NAME' },
             ];
+        },
+        gateways: function (data) {
+            return SmsGate.list(data);
+        },
+        
+
+    connectorTypes: function(data) {
+      data = data || {};                        
+      return SmsConnectorType.list().then(function(types) {
+        var gate = data.sms_gate_id;
+        var filtered;
+        if (gate === 1) {                  
+          filtered = types.filter(function(t){
+            return t.type === 'operator' || t.type === 'internal';
+          });
         }
+        else if (gate === 2) {               
+          filtered = types.filter(function(t){
+            return t.type === 'agregat' || t.type === 'client';
+          });
+        }
+        else {
+          filtered = types;
+        }
+        return filtered.map(function(t){
+          return {
+            id:          t.id,
+            name:        t.description,
+            type:        t.type
+          };
+        });
+      });
+    },
+    connectorProtos: function() {
+  return SmsConnectorProto.list().then(function(protos) {
+    return protos.map(function(p) {
+      return {
+        id:   p.id,
+        name: p.description,
+        type: p.type
+      };
+    });
+  });
+},
     };
 });
 
