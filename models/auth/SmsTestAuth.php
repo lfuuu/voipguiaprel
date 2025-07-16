@@ -41,7 +41,7 @@ class SmsTestAuth extends \yii\db\ActiveRecord
         return [
             [['name', 'trunk_name', 'src_number', 'dst_number',
                 'correct_answer', 'note', 'object_comment'], 'string'],
-            [['server_id', 'a2p_testgroup_id'], 'integer'],
+            [['server_id', 'a2p_testgroup_id','gate_id'], 'integer'],
             [['is_autotest', 'with_debug_info'], 'boolean']
         ];
     }
