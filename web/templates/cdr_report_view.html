@@ -216,7 +216,8 @@
     </div>
     <div ng-if="responses['57386_debug']">
         <h5>Выгрузка 573+86 в Debug режиме:</h5>
-        <pre>{{ responses['57386_debug'] | json }}</pre>
+        <!-- тут HTML-таблица от сервера -->
+        <div ng-bind-html="responses['57386_debug']"></div>
     </div>
     <div ng-if="responses['graph']">
         <h5>Данные графа:</h5>
