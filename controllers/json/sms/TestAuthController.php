@@ -75,9 +75,9 @@ class TestAuthController extends JsonController
             $query->andWhere('auth.a2p_test_auth.name ilike :name');
             $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
         }
-        if (!empty($s['trunk'])) {
-                $query->andWhere(['like', 'trunk_name_out', $s['trunk']]);
-            }
+        if (!empty($searchArray['trunk'])) {
+    $query->andWhere(['like', 'r.name', $searchArray['trunk']]);
+}
         if (!empty($searchArray['id'])) {
             $query->andWhere('auth.a2p_test_auth.id = :id');
             $query->addParams([':id' => $searchArray['id']]);
