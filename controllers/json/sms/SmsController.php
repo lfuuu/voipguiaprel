@@ -23,6 +23,21 @@ class SmsController extends JsonController
         return SmsTrunk::find()->all();
     }
 
+    public function actionReadByGate()
+    {
+        $gateId = $this->request['sms_gate_id'] ?? null;
+        if ($gateId === null) {
+            return [
+                'success' => 0,
+                'error'   => 'Parameter sms_gate_id is required'
+            ];
+        }
+
+        return SmsTrunk::find()
+            ->where(['sms_gate_id' => (int)$gateId])
+            ->all();
+    }
+
     public function actionSave()
     {
         if (isset($this->request['id'])) {

@@ -39,49 +39,60 @@ class TestAuthController extends JsonController
         if (!\Yii::$app->user->can('sms_test_auth_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        $modelName = $this->modelName;
-        $searchArray = $this->request['search_array'];
-        $testGroupId = isset($searchArray['group_id']) ? $searchArray['group_id'] : '';
-        if ($testGroupId == '') {
-            $groupWhere = 'true';
-        } else {
-            $groupWhere = ['auth.a2p_test_auth.a2p_testgroup_id' => $testGroupId];
-        }
+
+        $modelName    = $this->modelName;
+        $searchArray  = $this->request['search_array'];
+        $testGroupId  = $searchArray['group_id'] ?? '';
+        $gateId       = $searchArray['gate_id']      ?? '';
+
+        $groupWhere = $testGroupId === '' 
+            ? 'true' 
+            : ['auth.a2p_test_auth.a2p_testgroup_id' => $testGroupId];
         
+        $gateWhere = $gateId === ''
+            ? [] 
+            : ['auth.a2p_test_auth.gate_id' => $gateId];
+
         $query = $modelName::find()
             ->select([
                 'auth.a2p_test_auth.*',
-                'testgroup_name'   => 'tg.group_name',
-                'trunk_name_out'   => 'r.name',
-                'passed'           => 'trs.passed'
+                'testgroup_name' => 'tg.group_name',
+                'trunk_name_out' => 'r.name',
+                'passed'         => 'trs.passed',
+                'gate_id',
+                'gate_name'      => 'g.name',
             ])
             ->leftJoin('auth.a2p_testgroup tg', 'tg.id = auth.a2p_test_auth.a2p_testgroup_id')
-            ->leftJoin('auth.a2psms_route r', 'cast(r.id as varchar(10)) = auth.a2p_test_auth.trunk_name')
+            ->leftJoin('auth.a2psms_route r',   'cast(r.id as varchar(10)) = auth.a2p_test_auth.trunk_name')
             ->leftJoin('auth.a2p_test_result trs', 'trs.id_auth = auth.a2p_test_auth.id')
+            ->leftJoin('auth.sms_gate g',        'g.id = auth.a2p_test_auth.gate_id')  // <-- связь на шлюзы
             ->where($groupWhere)
-            ->orderBy('name')
+            ->andWhere($gateWhere)
+            ->orderBy('auth.a2p_test_auth.name')
             ->asArray();
 
-        if (isset($searchArray['name']) && $searchArray['name']) {
-            $query->andWhere('name ilike :name');
+        if (!empty($searchArray['name'])) {
+            $query->andWhere('auth.a2p_test_auth.name ilike :name');
             $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
         }
-        if (isset($searchArray['id']) && $searchArray['id']) {
+        if (!empty($s['trunk'])) {
+                $query->andWhere(['like', 'trunk_name_out', $s['trunk']]);
+            }
+        if (!empty($searchArray['id'])) {
             $query->andWhere('auth.a2p_test_auth.id = :id');
             $query->addParams([':id' => $searchArray['id']]);
         }
-        if (isset($searchArray['result']) && $searchArray['result'] !== '') {
+        if ($searchArray['result'] !== '') {
             if ($searchArray['result'] == 'success') {
                 $query->andWhere(['trs.passed' => true]);
             } elseif ($searchArray['result'] == 'failure') {
                 $query->andWhere(['trs.passed' => false]);
             }
         }
-        
-        $data = $query->all();
 
-        return $data;
+        return $query->all();
     }
+
 
     public function actionResult()
     {

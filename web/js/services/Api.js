@@ -151,6 +151,19 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
       return ApiLoader.post(url + 'add-configuration-trunk-smpp', data);
     },
 
+    readByGate: function (params) {
+      // params = { sms_gate_id: <id> } или {}
+      var gateId = params && params.sms_gate_id;
+
+      if (gateId == null || gateId === '') {
+        // шлюз не указан — возвращаем всё
+        return this.read({});
+      } else {
+        // есть sms_gate_id — только его транки
+        return ApiLoader.post(url + 'read-by-gate', { sms_gate_id: gateId });
+      }
+    },
+
     // 4. Сохранить/добавить REST-конфиг
     addApiConfiguration: function (data) {
       return ApiLoader.post(url + 'add-configuration-trunk-api', data);
@@ -441,8 +454,10 @@ app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome, SmsTestGro
             return SmsTestAuth.list(data);
         },
         trunkByServer: function (serverId) {
-            return SmsTrunk.listByServer(serverId);
-        },
+      // если serverId === null или undefined — подставляем константу
+      var sid = (serverId != null ? serverId : SERVER_ID);
+      return SmsTrunk.listByServer(sid);
+    },
         outcomeType: function () {
             return [
                 { id: 1, name: 'ACCEPT' },

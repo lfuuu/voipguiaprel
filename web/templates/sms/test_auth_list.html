@@ -32,26 +32,37 @@
         </div>
       </div>
       
-      <div class="row">
+       <div class="row">
         <div class="form-group col-sm-4 search-form-item">
-          <label class="col-sm-2 search-field-label">Транк</label>
-          <div class="col-sm-10 search-input">
-            <select class="search-form-select" ui-select2 style="width: 100%" placeholder="Транк" ng-model="searchArray.trunk" ng-change="refreshList()" required>
-              <option value="">-- Выберите транк --</option>
-              <option ng-repeat="trunk in trunkList" value="{{trunk.name}}">{{trunk.name}}</option>
-            </select>
-          </div>
+        <label class="col-sm-2 search-field-label">Шлюз</label>
+        <div class="col-sm-10 search-input">
+          <select class="search-form-select" ui-select2 style="width: 100%"
+                  placeholder="Шлюз"
+                  ng-model="searchArray.gate_id"
+                  ng-change="refreshList()">
+            <option value="">-- Выберите шлюз --</option>
+            <option ng-repeat="gate in gateList" value="{{gate.id}}">
+              {{gate.name}}
+            </option>
+          </select>
         </div>
       </div>
-      <div class="row">
         <div class="form-group col-sm-4 search-form-item">
-          <label class="col-sm-2 search-field-label">Результат</label>
-          <div class="col-sm-10 search-input">
-            <select class="search-form-select" ui-select2 style="width: 100%" placeholder="Результат" ng-model="searchArray.result" ng-change="refreshList()" required>
-              <option ng-repeat="res in testResultList" value="{{res.id}}">{{res.name}}</option>
-            </select>
+                <label class="col-sm-2 search-field-label">SMS Коннектор</label>
+                <div class="col-sm-10 search-input">
+                  <select class="search-form-select" ui-select2 style="width: 100%"
+              placeholder="Транк"
+              ng-model="searchArray.trunk"
+              ng-change="refreshList()">
+        <option value="">-- Выберите транк --</option>
+        <option ng-repeat="trunk in trunkFiltered" value="{{trunk.name}}">
+          {{trunk.name}}
+        </option>
+        </select>
+
           </div>
         </div>
+        
       </div>
     </div>
   </form>
