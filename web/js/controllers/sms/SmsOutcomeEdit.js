@@ -7,31 +7,29 @@ var SmsOutcomeEditCtrl = function(
   params,
   $modalInstance
 ) {
+  // Если редактируем существующий — подгружаем его
   if (params.id) {
-    // Редактируем существующий
-    SmsOutcome.get({id: params.id}).then(function (data) {
+    SmsOutcome.get({ id: params.id }).then(function(data) {
       $scope.item = data;
     });
   } else {
-    // Новый – сразу ставим server_id = 9
+    // Новый — сразу захардкодить server_id = 9
     $scope.item = {
       name: '',
       server_id: 9
     };
   }
 
-  // Загружаем справочник типов исходов
-  SmsList.outcomeType().then(function(list) {
-    $scope.outcomeTypeList = list;
-  });
+  // Справочник типов исходов сразу (не промис)
+  $scope.outcomeTypeList = SmsList.outcomeType();
 
-  $scope.save = function () {
-    SmsOutcome.save($scope.item).then(function () {
+  $scope.save = function() {
+    SmsOutcome.save($scope.item).then(function() {
       $modalInstance.close();
     });
   };
 
-  $scope.back = function () {
+  $scope.back = function() {
     $modalInstance.dismiss();
   };
 };
