@@ -441,12 +441,17 @@ app.factory('SmsList', function (SmsTrunk, SmsRouteTable, SmsOutcome, SmsTestGro
         trunk: function (data) {
             return SmsTrunk.list(data);
         },
-        routeTable: function (data) {
-            return SmsRouteTable.list(data);
-        },
-        outcome: function (data) {
-            return SmsOutcome.list(data);
-        },
+        routeTable: function(data) {
+      data = data || {};
+      data.server_id = 9;
+      return SmsRouteTable.list(data);
+    },
+
+    outcome: function(data) {
+      data = data || {};
+      data.server_id = 9;
+      return SmsOutcome.list(data);
+    },
         testGroup: function (data) {
             return SmsTestGroup.list(data);
         },
