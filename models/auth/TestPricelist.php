@@ -16,6 +16,7 @@ use app\models\Server;
  * @property string $c_number
  * @property int $pricelist_id
  * @property boolean $is_orig
+ * @property int    $type_id  
  * @property string $expected_result
  * @property int $test_pricelist_group_id
  * @property string $mock_current_date
@@ -49,7 +50,7 @@ class TestPricelist extends \yii\db\ActiveRecord
     {
         return [
             [['server_id', 'location_id', 'pricelist_id', 'mcc', 'mnc', 'test_pricelist_group_id',
-                'sim_partner_id', 'sim_profile_id'], 'integer'],
+                'sim_partner_id', 'sim_profile_id', 'type_id'], 'integer'],
             [['name', 'a_number', 'b_number', 'c_number', 'expected_price', 'mock_current_date'], 'string'],
             [['is_orig', 'with_debug_info', 'is_autotest'], 'boolean']
         ];

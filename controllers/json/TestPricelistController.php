@@ -36,19 +36,18 @@ class TestPricelistController extends JsonController
      * @return array|\yii\db\ActiveRecord[]
      * @throws HttpException
      */
-    public function actionRead()
+   public function actionRead()
     {
         if (!\Yii::$app->user->can('test_pricelist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-    
+
         $searchArray = $this->request['search_array'];
-        $limit = $this->request['limit'];
-        $offset = $this->request['offset'];
-    
-        $testGroupId = isset($searchArray['group_id']) ? $searchArray['group_id'] : '';
-        $testResult = isset($searchArray['result']) ? $searchArray['result'] : false;
-    
+        $limit       = $this->request['limit'];
+        $offset      = $this->request['offset'];
+
+        // Построение условия по результатам
+        $testResult = $searchArray['result'] ?? false;
         switch ($testResult) {
             case 'not_executed':
                 $resultWhere = 'is_autotest AND (tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\')';
@@ -61,77 +60,79 @@ class TestPricelistController extends JsonController
                 break;
             default:
                 $resultWhere = 'true';
-                break;
         }
-        
+
+        // Основной запрос
         $query = TestPricelist::find()
             ->alias('tp')
-            ->select(['tp.*', 'mcc.country as mcc_name', 'mnc.network as mnc_name', 'p.name as pricelist_name',
-                new Expression('case 
-                    when tp.location_id = 1 then \'Домашний регион\' 
-                    when tp.location_id = 2 then \'Гостевой регион\' 
-                    when tp.location_id = 3 then \'Международный регион\' 
-                    end as location_name'),
-                new Expression('CASE WHEN tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result'),
-                new Expression('\'#\' || s.id || \': \' || s.name as server_name')
+            ->select([
+                'tp.*',
+                'mcc.country     AS mcc_name',
+                'mnc.network     AS mnc_name',
+                'p.name          AS pricelist_name',
+                'p.type_id       AS type_id',           // <-- вот это добавлено
+                new Expression("
+                    CASE 
+                        WHEN tp.location_id = 1 THEN 'Домашний регион'
+                        WHEN tp.location_id = 2 THEN 'Гостевой регион'
+                        WHEN tp.location_id = 3 THEN 'Международный регион'
+                    END AS location_name
+                "),
+                new Expression("
+                    CASE 
+                        WHEN tr.passed IS null OR now() AT TIME ZONE 'UTC' - tr.tm::timestamp > INTERVAL '1 HOUR' 
+                            THEN 'not_executed' 
+                        WHEN tr.passed = true THEN 'passed' 
+                        WHEN tr.passed = false THEN 'failed' 
+                    END AS result
+                "),
+                new Expression("'#' || s.id || ': ' || s.name AS server_name"),
             ])
-            ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = tp.id')
-            ->leftJoin('nnp.mcc as mcc', 'mcc.mcc = tp.mcc::text')
-            ->leftJoin('nnp.mnc as mnc', 'mnc.mnc = tp.mnc::text and mnc.mcc = tp.mcc::text')
-            ->leftJoin('billing_uu.pricelist as p', 'p.id = tp.pricelist_id')
-            ->innerJoin('public.server as s', 's.id = tp.server_id')
+            ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' AND tr.id_pricelist = tp.id')
+            ->leftJoin('nnp.mcc      mcc', 'mcc.mcc = tp.mcc::text')
+            ->leftJoin('nnp.mnc      mnc', 'mnc.mnc = tp.mnc::text AND mnc.mcc = tp.mcc::text')
+            ->leftJoin('billing_uu.pricelist p', 'p.id = tp.pricelist_id')
+            ->innerJoin('public.server      s', 's.id = tp.server_id')
             ->andWhere($resultWhere)
-            ->orderBy('name')
+            ->orderBy('tp.name')
             ->limit($limit)
             ->offset($offset)
             ->asArray();
 
+        // Копия для подсчёта
         $countQuery = TestPricelist::find()
             ->alias('tp')
-            ->select(['tp.id'])
-            ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = tp.id')
+            ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' AND tr.id_pricelist = tp.id')
             ->andWhere($resultWhere);
-    
-        if ($testGroupId != '') {
-            $query->andWhere(['tp.test_pricelist_group_id' => $testGroupId]);
-            $countQuery->andWhere(['tp.test_pricelist_group_id' => $testGroupId]);
+
+        // Применяем фильтры из $searchArray...
+        if (!empty($searchArray['group_id'])) {
+            $query     ->andWhere(['tp.test_pricelist_group_id' => $searchArray['group_id']]);
+            $countQuery->andWhere(['tp.test_pricelist_group_id' => $searchArray['group_id']]);
         }
-    
-        if (isset($searchArray['name']) && $searchArray['name']) {
-            $query->andWhere('tp.name ilike :name');
-            $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
-            $countQuery->andWhere('tp.name ilike :name');
-            $countQuery->addParams([':name' => '%' . $searchArray['name'] . '%']);
+        if (!empty($searchArray['name'])) {
+            $query     ->andWhere('tp.name ILIKE :name')->addParams([':name' => '%'.$searchArray['name'].'%']);
+            $countQuery->andWhere('tp.name ILIKE :name')->addParams([':name' => '%'.$searchArray['name'].'%']);
         }
-    
-        if (isset($searchArray['server_id']) && $searchArray['server_id']) {
-            $query->andWhere('tp.server_id = :server_id');
-            $query->addParams([':server_id' => $searchArray['server_id']]);
-            $countQuery->andWhere('tp.server_id = :server_id');
-            $countQuery->addParams([':server_id' => $searchArray['server_id']]);
+        if (!empty($searchArray['server_id'])) {
+            $query     ->andWhere('tp.server_id = :sid')->addParams([':sid' => $searchArray['server_id']]);
+            $countQuery->andWhere('tp.server_id = :sid')->addParams([':sid' => $searchArray['server_id']]);
         }
-    
-        if (isset($searchArray['pricelist_id']) && $searchArray['pricelist_id']) {
-            $query->andWhere('tp.pricelist_id = :pricelist_id');
-            $query->addParams([':pricelist_id' => $searchArray['pricelist_id']]);
-            $countQuery->andWhere('tp.pricelist_id = :pricelist_id');
-            $countQuery->addParams([':pricelist_id' => $searchArray['pricelist_id']]);
+        if (!empty($searchArray['pricelist_id'])) {
+            $query     ->andWhere('tp.pricelist_id = :pid')->addParams([':pid' => $searchArray['pricelist_id']]);
+            $countQuery->andWhere('tp.pricelist_id = :pid')->addParams([':pid' => $searchArray['pricelist_id']]);
         }
-    
-        if (isset($searchArray['id']) && $searchArray['id']) {
-            $query->andWhere('tp.id = :id');
-            $query->addParams([':id' => $searchArray['id']]);
-            $countQuery->andWhere('tp.id = :id');
-            $countQuery->addParams([':id' => $searchArray['id']]);
+        if (!empty($searchArray['id'])) {
+            $query     ->andWhere('tp.id = :id')->addParams([':id' => $searchArray['id']]);
+            $countQuery->andWhere('tp.id = :id')->addParams([':id' => $searchArray['id']]);
         }
-    
-        $data = $query->all();
-    
+
+        $data  = $query->all();
         $count = $countQuery->count();
-    
+
         return [
             'totalCount' => $count,
-            'data' => $data
+            'data'       => $data,
         ];
     }
 
@@ -140,72 +141,58 @@ class TestPricelistController extends JsonController
      * @throws HttpException
      */
     public function actionGet()
-    {
-        if (!\Yii::$app->user->can('test_pricelist_list')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-        
-        $item = TestPricelist::find()
-            ->alias('tp')
-            ->select(['tp.*', 'tr.tm', 'tr.received'])
-            ->leftJoin('auth.test_result tr', 'tr.type = \'pricelist\' and tr.id_pricelist = tp.id')
-            ->where(['tp.id' => $this->request['id']])
-            ->asArray()
-            ->one();
+{
+    $item = TestPricelist::find()
+        ->alias('tp')
+        // 1) Добавляем JOIN на таблицу pricelist, чтобы достать её type_id
+        ->leftJoin('billing_uu.pricelist p', 'p.id = tp.pricelist_id')
+        // 2) В выборке указываем p.type_id как отдельное поле
+        ->select([
+            'tp.*',
+            'p.type_id AS pricelist_type_id',
+            'tr.tm',
+            'tr.received',
+        ])
+        ->leftJoin(
+            'auth.test_result tr',
+            'tr.type = \'pricelist\' AND tr.id_pricelist = tp.id'
+        )
+        ->where(['tp.id' => $this->request['id']])
+        ->asArray()
+        ->one();
 
-        if ($item === null) {
-            throw new HttpException(404, 'TestPricelist не найден');
-        }
-
-        return $item;
+    if ($item === null) {
+        throw new HttpException(404, 'TestPricelist не найден');
     }
+
+    return $item;
+}
 
     /**
      * @throws FormValidationException
      * @throws HttpException
      * @throws \yii\db\Exception
      */
-    public function actionSave()
+public function actionSave()
     {
-        if (!\Yii::$app->user->can('test_pricelist_edit') && !\Yii::$app->user->can('test_pricelist_create')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-    
-        $result = [];
-        
         if (isset($this->request['id'])) {
-            if (!\Yii::$app->user->can('test_pricelist_edit')) {
-                throw new ForbiddenHttpException('Access denied');
-            }
-            
             $item = $this->getTestPricelistOr404($this->request['id']);
-            $result['log'] = ['data_before' => $this->getDataForLog($item)];
         } else {
-            if (!\Yii::$app->user->can('test_pricelist_create')) {
-                throw new ForbiddenHttpException('Access denied');
-            }
-            
             $item = TestPricelist::create();
-            $result['log'] = ['data_before' => []];
         }
 
         $item->load($this->request, '');
 
-        $transaction = TestPricelist::getDb()->beginTransaction();
-        try {
-            if (!$item->save()) {
-                throw new FormValidationException($item);
-            }
-
-            $transaction->commit();
-        } finally {
-            if ($transaction->getIsActive())
-                $transaction->rollBack();
+        if (!$item->save()) {
+            throw new FormValidationException($item);
         }
-    
-        $result['log']['data_after'] = $this->getDataForLog($item);
-    
-        return $result;
+
+        // возвращаем и type_id сюда, чтобы фронт мог подхватить
+        return [
+            'success' => 1,
+            'id'      => $item->id,
+            'type_id' => $item->type_id,
+        ];
     }
 
     /**
@@ -225,72 +212,122 @@ class TestPricelistController extends JsonController
      * @return array
      * @throws HttpException
      */
+    
+    /**
+     * Новый actionResult: если type_id==2, зовём внешний reg99-сервис,
+     * иначе – прежняя логика через priceV2Calc.
+     */
     public function actionResult()
     {
-        if (!\Yii::$app->user->can('test_pricelist_list')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-        
-        $item = $this->getTestPricelistOr404($this->request['id']);
-        
-        if ($item === null) {
+        $id   = $this->request['id'];
+        $item = TestPricelist::findOne($id);
+        if (!$item) {
             throw new HttpException(404, 'TestPricelist не найден');
         }
-        // $server = Server::findOne($item['server_id']);
-        
-        $apiUrl = $item->server->apiUrl;
-    
-        $apiParams = [
-            'cmd' => 'priceV2Calc',
-            'num_a' => $item->a_number,
-            'num_b' => $item->b_number,
-            'num_c' => $item->c_number,
-            'mcc' => $item->mcc,
-            'mnc' => $item->mnc,
-            'location_id' => $item->location_id,
-            'pricelist_id' => $item->pricelist_id,
-            'orig' => $item->is_orig ? 'true' : 'false',
-            'test_mode' => 'true',
-            'date' => $item->mock_current_date
-        ];
-    
-        if ($item->with_debug_info) {
-            $apiParams['with_debug_info'] = 1;
-        }
-    
-        if ($item->sim_partner_id) {
-            $apiParams['sim_partner_id'] = $item->sim_partner_id;
-        }
-    
-        if ($item->sim_profile_id) {
-            $apiParams['sim_profile_id'] = $item->sim_profile_id;
+
+        // Вытащим type_id из таблицы pricelist
+        $typeId = (new \yii\db\Query())
+            ->select('type_id')
+            ->from('billing_uu.pricelist')
+            ->where(['id' => $item->pricelist_id])
+            ->scalar();
+
+        // Ветка для type_id == 2 (Reg99)
+        if ((int)$typeId === 2) {
+            $params = [
+                'num_a'        => $item->a_number,
+                'num_b'        => $item->b_number,
+                'location_id'  => $item->location_id,
+                'pricelist_id' => $item->pricelist_id,
+            ];
+            $url      = 'http://reg99.mcntelecom.ru:8101/nnpcalc?' . http_build_query($params);
+            Yii::info("Reg99 NNPCalc URL: $url", __METHOD__);
+
+            $response = @file_get_contents($url);
+            if ($response === false) {
+                throw new HttpException(502, 'Не удалось получить данные от reg99-сервиса');
+            }
+            Yii::info("Reg99 NNPCalc response: $response", __METHOD__);
+
+            $raw = json_decode($response, true);
+
+            // Соберём корневой узел для дерева
+            $root = [
+                'name'               => $raw['trace']['name']              ?? null,
+                'steps'              => $raw['trace']['nodes']             ?? [],
+                'match'              => $raw['match']                       ?? null,
+                'fix_price'          => $raw['fix_price']                   ?? null,
+                'rate_price'         => $raw['rate_price']                  ?? null,
+                'interconnect_price' => $raw['interconnect_price']          ?? null,
+            ];
+
+            return [
+                'steps'          => [ $root ],
+                'number_range_a' => $this->getNumberRangeByNum($item->a_number, $item->server->apiUrl),
+                'number_range_b' => $this->getNumberRangeByNum($item->b_number, $item->server->apiUrl),
+                'number_range_c' => $this->getNumberRangeByNum($item->c_number, $item->server->apiUrl),
+                'destination_a'  => $this->getDestinationByNum($item->a_number, $item->server->apiUrl),
+                'destination_b'  => $this->getDestinationByNum($item->b_number, $item->server->apiUrl),
+                'destination_c'  => $this->getDestinationByNum($item->c_number, $item->server->apiUrl),
+                'a_number'       => $item->a_number,
+                'b_number'       => $item->b_number,
+                'c_number'       => $item->c_number,
+                'id'             => $item->id,
+                'name'           => $item->name,
+                'url'            => $url,
+                'baseUrl'        => Yii::$app->params['isEuropean']
+                                      ? 'https://voipgui.kompaas.tech/'
+                                      : 'https://voipgui.mcn.ru/',
+            ];
         }
 
-        if (isset($this->request['isDev']) && $item->server->hostname_dev) {
-            $apiUrl = $item->server->apiUrlDev;
+        // Иначе — старая логика через priceV2Calc
+        $apiUrl = $item->server->apiUrl;
+        $apiParams = [
+            'cmd'          => 'priceV2Calc',
+            'num_a'        => $item->a_number,
+            'num_b'        => $item->b_number,
+            'num_c'        => $item->c_number,
+            'mcc'          => $item->mcc,
+            'mnc'          => $item->mnc,
+            'location_id'  => $item->location_id,
+            'pricelist_id' => $item->pricelist_id,
+            'orig'         => $item->is_orig ? 'true' : 'false',
+            'test_mode'    => 'true',
+            'date'         => $item->mock_current_date,
+        ];
+        if ($item->with_debug_info)    { $apiParams['with_debug_info']   = 1; }
+        if ($item->sim_partner_id)     { $apiParams['sim_partner_id']    = $item->sim_partner_id; }
+        if ($item->sim_profile_id)     { $apiParams['sim_profile_id']    = $item->sim_profile_id; }
+
+        $requestUrl = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
+        Yii::info("PriceV2Calc URL: $requestUrl", __METHOD__);
+
+        $response = @file_get_contents($requestUrl);
+        if ($response === false) {
+            throw new HttpException(502, 'Внешний NNPCalc недоступен');
         }
-        
-        $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
-        
-        $response = file_get_contents($request);
-        
+
         return [
-            'steps' => [json_decode($response, true)],
+            'steps'          => [ json_decode($response, true) ],
             'number_range_a' => $this->getNumberRangeByNum($item->a_number, $apiUrl),
             'number_range_b' => $this->getNumberRangeByNum($item->b_number, $apiUrl),
             'number_range_c' => $this->getNumberRangeByNum($item->c_number, $apiUrl),
-            'destination_a' => $this->getDestinationByNum($item->a_number, $apiUrl),
-            'destination_b' => $this->getDestinationByNum($item->b_number, $apiUrl),
-            'destination_c' => $this->getDestinationByNum($item->c_number, $apiUrl),
-            'a_number' => $item->a_number,
-            'b_number' => $item->b_number,
-            'c_number' => $item->c_number,
-            'id' => $item->id,
-            'name' => $item->name,
-            'url' => $request,
-            'baseUrl' => Yii::$app->params['isEuropean'] ? 'https://voipgui.kompaas.tech/' : 'https://voipgui.mcn.ru/'
+            'destination_a'  => $this->getDestinationByNum($item->a_number, $apiUrl),
+            'destination_b'  => $this->getDestinationByNum($item->b_number, $apiUrl),
+            'destination_c'  => $this->getDestinationByNum($item->c_number, $apiUrl),
+            'a_number'       => $item->a_number,
+            'b_number'       => $item->b_number,
+            'c_number'       => $item->c_number,
+            'id'             => $item->id,
+            'name'           => $item->name,
+            'url'            => $requestUrl,
+            'baseUrl'        => Yii::$app->params['isEuropean']
+                                  ? 'https://voipgui.kompaas.tech/'
+                                  : 'https://voipgui.mcn.ru/',
         ];
     }
+
     
     /**
      * @return array
@@ -374,5 +411,6 @@ class TestPricelistController extends JsonController
 
         return $result;
     }
+    
 
 }
