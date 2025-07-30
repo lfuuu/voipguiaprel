@@ -113,12 +113,14 @@ class TestAuthController extends JsonController
         }
         $isReserve = (isset($this->request['is_reserve']) && $this->request['is_reserve']) ? true : false;
         $apiUrl = $isReserve ? $server->camel_reserve : $server->camel_gw;
+        $apiUrl = str_replace(':8101', ':8103', $apiUrl);
+
 
         $trunk = SmsTrunk::findOne(['id' => $item->trunk_name]);
         if ($trunk === null) {
             throw new HttpException(404, 'Транк не найден');
         }
-        $request = $apiUrl . 'api/get.dst_route?' 
+        $request = $apiUrl . 'api/get.dst_route_smsc?' 
             . 'a_num=' . $item->src_number 
             . '&b_num=' . $item->dst_number 
             . '&src_route=' . $trunk->name;
@@ -145,17 +147,18 @@ class TestAuthController extends JsonController
     }
 
     private function generateNewResult($resultString, $key)
-    {
-        $resultString = str_replace(["\r", "\n", "\t"], "", $resultString);
-        $resultArray = explode(self::TEST_RESULT_DIVIDER_START, $resultString);
-
-        $tempResult = json_decode($resultArray[0], true);
+{
+    $resultString = str_replace(["\r", "\n", "\t"], "", $resultString);
+    $tempResult   = json_decode($resultString, true);
+    
+    // Если trace — строка, раскодируем её, иначе оставляем как есть
+    if (isset($tempResult['trace']) && is_string($tempResult['trace'])) {
         $tempResult['trace'] = json_decode($tempResult['trace'], true);
-
-        $result = $this->processResult($tempResult['trace'], true);
-        \Yii::$app->cache->set($key, $result);
-        $finalResult = $this->findByPath($result, '', 4);
-
-        return $finalResult;
     }
+
+    $result = $this->processResult($tempResult['trace'] ?? [], true);
+    \Yii::$app->cache->set($key, $result);
+    return $this->findByPath($result, '', 4);
+}
+
 }

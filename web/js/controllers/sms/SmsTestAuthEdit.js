@@ -30,7 +30,7 @@ var SmsTestAuthEditCtrl = function(
         loadGates($scope.item.server_id);
       });
     } else {
-      $scope.item = { name: '', server_id: $scope.server.id };
+      $scope.item = { name: '', server_id: 9 };
       loadGates($scope.item.server_id);
     }
 
