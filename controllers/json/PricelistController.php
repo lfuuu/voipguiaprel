@@ -32,7 +32,7 @@ class PricelistController extends JsonController
 
         return
             Pricelist::find()
-            ->select(['id', 'name', 'type_id'])
+            ->select(['id', 'name', 'service_type_id'])
             ->orderBy('name')
             ->asArray()
             ->all();
