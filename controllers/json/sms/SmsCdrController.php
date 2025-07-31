@@ -26,7 +26,7 @@ class SmsCdrController extends JsonController
         $where = [];
 
         if ($sessionid)    $where['c.sessionid']   = $sessionid;
-        if ($msisdn)       $where['c.a_number']    = $msisdn;
+        if ($msisdn)       $where['c.msisdn']    = $msisdn;
         if ($destination)  $where['c.destination'] = $destination;
         if ($serverId)     $where['c.server_id']   = $serverId;
         if (strlen($direction)) $where['c.direction'] = (int)$direction;
