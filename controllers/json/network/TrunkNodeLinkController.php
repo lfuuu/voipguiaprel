@@ -57,12 +57,12 @@ SELECT
     st.description    AS description,
     c.contragent_name AS contragent_name
 FROM calligrapher.trunk_node_link AS t
-LEFT JOIN calligrapher.node             AS n   ON n.node_id = t.node_id
-LEFT JOIN billing.service_trunk         AS st  ON st.id      = t.service_trunk_id
-LEFT JOIN calligrapher.type_connection  AS tc ON tc.id = t.type_connection_id
-LEFT JOIN billing.clients               AS c   ON c.id       = st.client_account_id
-LEFT JOIN service_trunks                AS serv ON serv.id  = t.service_trunk_id
-LEFT JOIN auth.trunk                    AS tr  ON tr.id      = st.trunk_id
+LEFT JOIN calligrapher.node             AS n    ON n.node_id = t.node_id
+LEFT JOIN billing.service_trunk         AS st   ON st.id     = t.service_trunk_id
+LEFT JOIN calligrapher.type_connection  AS tc   ON tc.type_connection_id = t.type_connection_id
+LEFT JOIN billing.clients               AS c    ON c.id      = st.client_account_id
+LEFT JOIN service_trunks                AS serv ON serv.id   = t.service_trunk_id
+LEFT JOIN auth.trunk                    AS tr   ON tr.id     = st.trunk_id
 ORDER BY t.trunk_node_link_id
 SQL;
 
@@ -81,6 +81,7 @@ SQL;
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $id = Yii::$app->request->post('id');
+
         if (empty($id)) {
             throw new HttpException(400, 'Не передан ID связи транка');
         }
@@ -148,6 +149,7 @@ SQL;
         }
 
         $model->load($postData, '');
+
         if ($model->save()) {
             return [
                 'success'            => true,
