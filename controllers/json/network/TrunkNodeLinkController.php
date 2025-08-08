@@ -47,8 +47,8 @@ SELECT
     t.node_id,
     t.comment,
     CONCAT(n.node_name_id, ' - ', n.node_id) AS node_display,
-    COALESCE(cct.name, 'Не задан') AS contract_type_text,
-    t.contract_type_id,
+    COALESCE(tc.type_connection, 'Не задан') AS connection_type_text,
+    t.type_connection_id,
     st.trunk_id       AS trunk_id,
     st.server_id      AS server_id,
     serv.ip_addr      AS ip_address,
@@ -59,7 +59,7 @@ SELECT
 FROM calligrapher.trunk_node_link AS t
 LEFT JOIN calligrapher.node             AS n   ON n.node_id = t.node_id
 LEFT JOIN billing.service_trunk         AS st  ON st.id      = t.service_trunk_id
-LEFT JOIN stat.client_contract_type     AS cct ON cct.id     = st.contract_type_id
+LEFT JOIN calligrapher.type_connection  AS tc ON tc.id = t.type_connection_id
 LEFT JOIN billing.clients               AS c   ON c.id       = st.client_account_id
 LEFT JOIN service_trunks                AS serv ON serv.id  = t.service_trunk_id
 LEFT JOIN auth.trunk                    AS tr  ON tr.id      = st.trunk_id
