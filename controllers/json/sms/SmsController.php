@@ -47,6 +47,9 @@ class SmsController extends JsonController
         }
 
         $item->load($this->request, '');
+        if (empty($item->route_name)) {
+            $item->route_name = $item->name;
+        }
         if (!$item->save()) {
             throw new FormValidationException($item);
         }

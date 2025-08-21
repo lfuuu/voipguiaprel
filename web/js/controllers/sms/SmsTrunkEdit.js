@@ -157,6 +157,8 @@ var SmsTrunkEditCtrl = function(
 
   // сохранение
   $scope.save = function() {
+    $scope.item.route_name = $scope.item.name;
+    
     SmsTrunk.save($scope.item).then(function(res){
       var trunkId = res.id || $scope.item.id;
       var isMC    = $scope.item.sms_gate_id === $scope.MCMCN_ID;
