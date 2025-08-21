@@ -229,16 +229,4 @@ class SmsController extends JsonController
         $this->callExternal('reload_configuration', [], 'POST');
         return ['status' => 'ok'];
     }
-
-    // -------------------------------------------------
-    // Вспомогательное
-    // -------------------------------------------------
-    private function getSmsOr404($id): SmsTrunk
-    {
-        $m = SmsTrunk::findOne((int)$id);
-        if (!$m) {
-            throw new \yii\web\NotFoundHttpException('SmsTrunk not found');
-        }
-        return $m;
-    }
 }
