@@ -88,93 +88,88 @@ app.factory('Attribute', function ($q, ApiLoader, $rootScope) {
 });
 
 app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
-  var url = '/json/sms/sms/';
-  var list;
-  var promise;
+    var url = '/json/sms/sms/';
+    var list = undefined;
+    var promise = undefined;
+    return {
+        read: function (data) {
+            return ApiLoader.post(url + 'read', data);
+        },
+        get: function (data) {
+            return ApiLoader.post(url + 'get', data);
+        },
+        list: function (data) {
+            if (promise !== undefined) return promise;
 
-  function ensureData(d){ return d || {}; }
+            if (!data.server_id) {
+                data.server_id = 9;
+            }
 
-  return {
-    read: function (data) {
-      return ApiLoader.post(url + 'read', data);
-    },
-    get: function (data) {
-      return ApiLoader.post(url + 'get', data);
-    },
-    list: function (data) {
-      if (promise !== undefined) return promise;
+            var deferred = $q.defer();
+            if (list !== undefined) {
+                deferred.resolve(list);
+                return deferred.promise;
+            } else {
+                data = data || {};
+                ApiLoader.post(url + 'list', data)
+                    .then(function (data) {
+                        list = data;
+                        promise = undefined;
+                        deferred.resolve(data);
+                    }, function (data) {
+                        promise = undefined;
+                        deferred.reject(data);
+                    });
+                promise = deferred.promise;
+            }
+            return deferred.promise;
+        },
+        listByServer: function (server_id) {
+            var data = { server_id: $rootScope.server.id };
+            return ApiLoader.post(url + 'list', data);
+        },
+        save: function (data) {
+            list = undefined;
+            return ApiLoader.post(url + 'save', data);
+        },
+        delete: function (id) {
+            list = undefined;
+            return ApiLoader.post(url + 'delete', {id: id});
+        },
 
-      data = ensureData(data);
-      if (!data.server_id) data.server_id = 9;
-
-      var deferred = $q.defer();
-      if (list !== undefined) {
-        deferred.resolve(list);
-        return deferred.promise;
-      } else {
-        ApiLoader.post(url + 'list', data)
-          .then(function (resp) {
-            list = resp;
-            promise = undefined;
-            deferred.resolve(resp);
-          }, function (err) {
-            promise = undefined;
-            deferred.reject(err);
-          });
-        promise = deferred.promise;
-      }
-      return deferred.promise;
-    },
-    listByServer: function (server_id) {
-      var data = { server_id: ($rootScope.server && $rootScope.server.id) || server_id || 9 };
-      return ApiLoader.post(url + 'list', data);
-    },
-    save: function (data) {
-      list = undefined;
-      return ApiLoader.post(url + 'save', data);
-    },
-    delete: function (id) {
-      list = undefined;
-      return ApiLoader.post(url + 'delete', { id: id });
-    },
-
-    // ---- Конфиги SMPP ----
-    getSmppConfig: function () {
+       getSmppConfig: function () {
+      // обращаемся по правильному URL: get-configuration-trunks-smpp
       return ApiLoader.post(url + 'get-configuration-trunks-smpp', {});
     },
+    getApiConfig: function () {
+      // обращаемся по правильному URL: get-configuration-trunks-api
+      return ApiLoader.post(url + 'get-configuration-trunks-api', {});
+    },
+
+    // 3. Сохранить/добавить SMPP-конфиг
     addSmppConfiguration: function (data) {
       return ApiLoader.post(url + 'add-configuration-trunk-smpp', data);
     },
-    modifySmppConfiguration: function (data) {
-      return ApiLoader.post(url + 'modify-configuration-trunk-smpp', data);
-    },
-    deleteSmppConfiguration: function (data) {
-      // спецификация требует JSON-тело с полями, включая name
-      return ApiLoader.post(url + 'delete-configuration-trunk-smpp', data);
+
+    readByGate: function (params) {
+      // params = { sms_gate_id: <id> } или {}
+      var gateId = params && params.sms_gate_id;
+
+      if (gateId == null || gateId === '') {
+        // шлюз не указан — возвращаем всё
+        return this.read({});
+      } else {
+        // есть sms_gate_id — только его транки
+        return ApiLoader.post(url + 'read-by-gate', { sms_gate_id: gateId });
+      }
     },
 
-    // ---- Конфиги REST/API ----
-    getApiConfig: function () {
-      return ApiLoader.post(url + 'get-configuration-trunks-api', {});
-    },
+    // 4. Сохранить/добавить REST-конфиг
     addApiConfiguration: function (data) {
       return ApiLoader.post(url + 'add-configuration-trunk-api', data);
-    },
-    modifyApiConfiguration: function (data) {
-      return ApiLoader.post(url + 'modify-configuration-trunk-api', data);
-    },
-    deleteApiConfiguration: function (data) {
-      // спецификация требует JSON-тело с полями, включая name
-      return ApiLoader.post(url + 'delete-configuration-trunk-api', data);
-    },
-
-    // ---- Перечитать конфигурацию на стороне сервиса ----
-    reloadConfig: function () {
-      return ApiLoader.post(url + 'reload-configuration', {});
     }
-  };
+    };
 });
-
 
 app.factory('SmsGate', function ($q, ApiLoader) {
     var url = '/json/sms/sms-gate/';
