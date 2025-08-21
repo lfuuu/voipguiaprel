@@ -1,6 +1,7 @@
 var SmsTestAuthShowTestCtrl = function($scope, SmsTestAuth, params, $modalInstance, $window) {
 
     $scope.details = 1;
+    $scope.server = { id: 9 };
 
     if (params.id) {
         SmsTestAuth.result({id: params.id, is_reserve: params.is_reserve}).then(function(data){
