@@ -95,56 +95,151 @@ class TestAuthController extends JsonController
 
 
     public function actionResult()
-    {
-        if (!\Yii::$app->user->can($this->listPermission)) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-
-        $modelName = $this->modelName;
-        $item = $modelName::findOne($this->request['id']);
-
-        if ($item === null) {
-            throw new HttpException(404, $this->modelName . ' не найден');
-        }
-        $server = ServerOcs::findOne($item->server_id);
-
-        if ($server === null) {
-            throw new HttpException(404, 'Сервер для ' . $this->modelName . ' не найден');
-        }
-        $isReserve = (isset($this->request['is_reserve']) && $this->request['is_reserve']) ? true : false;
-        $apiUrl = $isReserve ? $server->camel_reserve : $server->camel_gw;
-        $apiUrl = str_replace(':8101', ':8103', $apiUrl);
-
-
-        $trunk = SmsTrunk::findOne(['id' => $item->trunk_name]);
-        if ($trunk === null) {
-            throw new HttpException(404, 'Транк не найден');
-        }
-        $request = $apiUrl . 'api/get.dst_route_smsc?' 
-            . 'a_num=' . $item->src_number 
-            . '&b_num=' . $item->dst_number 
-            . '&src_route=' . $trunk->name;
-        $request = str_replace(' ', '+', $request);
-
-        $context = stream_context_create([
-            'http' => ['ignore_errors' => true],
-        ]);
-        $response = file_get_contents($request, false, $context);
-
-        $apiParams['user'] = \Yii::$app->user->getId();
-        $apiParams['date'] = date('Y-m-d H:i:s');
-
-        $requestForKey = $apiUrl . 'test/auth?' . http_build_query($apiParams);
-        $key = md5($requestForKey);
-
-        return [
-            'item'   => $item->toArray(),
-            'name'   => 'root',
-            'key'    => $key,
-            'result' => $this->generateNewResult($response, $key),
-            'url'    => $request
-        ];
+{
+    if (!\Yii::$app->user->can($this->listPermission)) {
+        throw new \yii\web\ForbiddenHttpException('Access denied');
     }
+
+    $modelName = $this->modelName;
+    $item = $modelName::findOne($this->request['id']);
+    if ($item === null) {
+        throw new \yii\web\HttpException(404, $this->modelName . ' не найден');
+    }
+
+    $server = \app\models\ServerOcs::findOne($item->server_id);
+    if ($server === null) {
+        throw new \yii\web\HttpException(404, 'Сервер для ' . $this->modelName . ' не найден');
+    }
+
+    // 1) Готовим endpoint: http://<host>:8103/api/get.dst_route_smsc
+    $isReserve = (!empty($this->request['is_reserve']) && $this->request['is_reserve'] === true);
+    $baseUrl   = $isReserve ? $server->camel_reserve : $server->camel_gw;
+    $parsed    = parse_url($baseUrl);
+    $host      = $parsed['host'] ?? ($parsed['path'] ?? $baseUrl);
+    $host      = preg_replace('~^https?://~i', '', (string)$host);
+    $host      = preg_replace('~/.*$~', '', $host);
+    $endpoint  = 'http://' . $host . ':8103/api/get.dst_route_smsc';
+
+    // 2) Транк
+    $trunk = \app\models\auth\SmsTrunk::findOne(['id' => $item->trunk_name]);
+    if ($trunk === null) {
+        throw new \yii\web\HttpException(404, 'Транк не найден');
+    }
+
+    // 3) Основная полезная нагрузка
+    $payloadArr = [
+        'trunk'  => $trunk->name,       // напр. "API_102231"
+        'caller' => $item->src_number,  // напр. "79059035669"
+        'called' => $item->dst_number,  // напр. "79933994014"
+        'trace'  => "true",             // ВАЖНО: строка, а не boolean
+    ];
+    $payloadJson = json_encode($payloadArr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+    // 4) Отправка через cURL с явными заголовками и таймаутами
+    $send = function (string $body, array $headers) use ($endpoint) {
+        $ch = curl_init($endpoint);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $body,
+            CURLOPT_HTTPHEADER     => $headers,
+            CURLOPT_HEADER         => true,   // чтобы вытащить заголовки/код
+            CURLOPT_TIMEOUT        => 15,
+            CURLOPT_CONNECTTIMEOUT => 5,
+        ]);
+        $raw      = curl_exec($ch);
+        $errno    = curl_errno($ch);
+        $errstr   = curl_error($ch);
+        $status   = 0;
+        $hdrSize  = 0;
+        if ($raw !== false) {
+            $status  = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+            $hdrSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        }
+        curl_close($ch);
+        if ($raw === false) {
+            return [null, $status, [], $errno . ':' . $errstr];
+        }
+        $headersRaw = substr($raw, 0, $hdrSize);
+        $bodyRaw    = substr($raw, $hdrSize);
+        $headersArr = preg_split("/\r\n|\n|\r/", trim($headersRaw));
+        return [$bodyRaw, $status, $headersArr, null];
+    };
+
+    // Попытка №1: обычный JSON-объект
+    [$resp1, $code1, $hdrs1, $err1] = $send($payloadJson, [
+        'Content-Type: application/json',
+        'Accept: application/json',
+    ]);
+
+    $requestDebug = [
+        'endpoint'     => $endpoint,
+        'payload_mode' => 'json-object',
+        'payload'      => $payloadArr,
+        'http_code'    => $code1,
+        'headers'      => $hdrs1,
+    ];
+
+    $bodyUsed  = $resp1;
+    $codeUsed  = $code1;
+    $headersUsed = $hdrs1;
+
+    // Если сервер вернул 500 c типичной json-ошибкой парсинга — ретрай «JSON-как-строку»
+    $oatppParseFail =
+        (is_string($resp1) && stripos($resp1, 'preparseString') !== false)
+        || (is_string($resp1) && stripos($resp1, 'expected') !== false);
+
+    if ($code1 >= 400 && $oatppParseFail) {
+        // Попытка №2: двукратная сериализация — тело это строка, в которой лежит JSON
+        $payloadStringified = json_encode($payloadJson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        [$resp2, $code2, $hdrs2, $err2] = $send($payloadStringified, [
+            'Content-Type: application/json',
+            'Accept: application/json',
+        ]);
+
+        $requestDebug = [
+            'endpoint'       => $endpoint,
+            'payload_mode'   => 'json-string',      // ВАЖНО: "JSON как строка"
+            'payload_string' => $payloadJson,       // что именно завернули в строку
+            'http_code'      => $code2,
+            'headers'        => $hdrs2,
+            'first_attempt'  => [
+                'http_code' => $code1,
+                'body'      => mb_strimwidth((string)$resp1, 0, 500, '…'),
+            ],
+        ];
+        $bodyUsed    = $resp2;
+        $codeUsed    = $code2;
+        $headersUsed = $hdrs2;
+    }
+
+    if ($bodyUsed === null) {
+        throw new \yii\web\HttpException(502, 'Ошибка сети при обращении к внешнему API');
+    }
+    if ($codeUsed >= 400) {
+        throw new \yii\web\HttpException(502, 'Внешний API вернул ошибку: HTTP ' . $codeUsed . ' — ' . mb_strimwidth($bodyUsed, 0, 800, '…'));
+    }
+
+    // Ключ кэша результата (как и раньше)
+    $apiParams = [
+        'user' => \Yii::$app->user->getId(),
+        'date' => date('Y-m-d H:i:s'),
+    ];
+    $requestForKey = rtrim($endpoint, '/') . '?' . http_build_query($apiParams);
+    $key = md5($requestForKey);
+
+    // Парсим и сохраняем результат
+    $result = $this->generateNewResult($bodyUsed, $key);
+
+    return [
+        'item'         => $item->toArray(),
+        'name'         => 'root',
+        'key'          => $key,
+        'result'       => $result,
+        'debug'        => $requestDebug, // очень полезно на стенде
+    ];
+}
+
 
     private function generateNewResult($resultString, $key)
 {

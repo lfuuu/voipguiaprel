@@ -22,6 +22,17 @@ var BillingServerEditCtrl = function($scope, BillingServer, Prefixlist, params, 
   if (params.id) {
     BillingServer.get({ id: params.id }).then(function(data) {
       $scope.item = data;
+
+      // нормализуем dashboards, если пришло строкой
+      if (typeof $scope.item.dashboards === 'string') {
+        if ($scope.item.dashboards.trim() === '') {
+          $scope.item.dashboards = {};
+        } else {
+          try { $scope.item.dashboards = JSON.parse($scope.item.dashboards); }
+          catch (e) { $scope.item.dashboards = {}; }
+        }
+      }
+
       loadEmergencyPrefixlists();
     });
   } else {
@@ -32,7 +43,7 @@ var BillingServerEditCtrl = function($scope, BillingServer, Prefixlist, params, 
       contact_info: '',
       address:       '',
       interface_url: '',
-      dashboards:    '',
+      dashboards:    {},        // << было '' — поставили пустой объект JSON
       description:   '',
       antifraud_incoming_accept:          false,
       antifraud_proxy_timeout:            false,
@@ -43,7 +54,25 @@ var BillingServerEditCtrl = function($scope, BillingServer, Prefixlist, params, 
   }
 
   $scope.save = function() {
-    var payload = angular.extend({}, $scope.item, { old_id: $scope.oldId });
+    // гарантируем корректный json для dashboards
+    var dash = $scope.item.dashboards;
+    if (dash === null || dash === undefined) {
+      dash = null;
+    } else if (typeof dash === 'string') {
+      dash = dash.trim();
+      if (dash === '') {
+        dash = null;         // можно и {}, на усмотрение — БД всё равно имеет DEFAULT
+      } else {
+        try { dash = JSON.parse(dash); }
+        catch (e) { dash = null; }
+      }
+    }
+    // формируем payload без мутаций item
+    var payload = angular.extend({}, $scope.item, {
+      dashboards: dash,
+      old_id: $scope.oldId
+    });
+
     BillingServer.save(payload).then(function(res) {
       $modalInstance.close(res);
     });
