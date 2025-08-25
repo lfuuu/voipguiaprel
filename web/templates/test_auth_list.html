@@ -148,7 +148,7 @@
     </thead>
     <tbody>
 
-        <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
+        <tr ng-repeat="item in list | orderBy:sortType:sortReverse">
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>{{item.id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
                 <img ng-if="item.is_autotest" src="../img/{{item.result}}.png">

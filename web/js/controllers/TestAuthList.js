@@ -7,11 +7,6 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
     $scope.searchQuery = '';
 
     $scope.hideFilter = false;
-    $scope.filterFields = [
-        'name', 'trunk_name', 'src_number',
-        'dst_number', 'redirect_number', 'cpc',
-        'result_online'
-    ];
 
     $scope.searchArray = {
         id: '',
@@ -31,19 +26,19 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
 
     $scope.init = function (tab) {
         if (tab) tab.title = 'Test auth';
-
         $scope.refreshList();
     };
 
     $scope.refreshList = function() {
         $scope.displayOnlineResult = false;
+        $scope.offset = (($scope.currentPage - 1) * $scope.limit);
 
         TestAuth.read({
-                server_id: $scope.server.id,
-                search_array: $scope.searchArray,
-                offset: $scope.offset,
-                limit: $scope.limit
-            }).then(function (data) {
+            server_id: $scope.server.id,
+            search_array: $scope.searchArray,
+            offset: $scope.offset,
+            limit: $scope.limit
+        }).then(function (data) {
             $scope.list = data.data;
             $scope.totalItems = data.totalCount;
         });
@@ -60,6 +55,7 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
     $scope.testResultList = List.testResult();
 
     $scope.clickSearch = function() {
+        $scope.currentPage = 1;
         $scope.refreshList();
     };
 
@@ -71,13 +67,13 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
 
     $scope.testGroupChanged = function(testGroupId) {
         $scope.testGroupId = testGroupId;
-
+        $scope.currentPage = 1;
         $scope.refreshList();
     };
 
     $scope.testResultChanged = function(testResult) {
         $scope.testResult = testResult;
-
+        $scope.currentPage = 1;
         $scope.refreshList();
     };
 
@@ -216,6 +212,7 @@ var TestAuthListCtrl = function($scope, TestAuth, Scripts, List, Redirect, $wind
     };
 
     $scope.setPagingData = function (page) {
+        $scope.currentPage = page;
         $scope.offset = ((page - 1) * $scope.limit);
         $scope.refreshList();
     }
