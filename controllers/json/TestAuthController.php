@@ -69,21 +69,19 @@ class TestAuthController extends JsonController
         if (!\Yii::$app->user->can('test_auth_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-    
         $server = $this->getServerOr404($this->request['server_id']);
         $searchArray = $this->request['search_array'];
         $limit = $this->request['limit'];
         $offset = $this->request['offset'];
-        
         $testGroupId = isset($searchArray['group_id']) ? $searchArray['group_id'] : '';
         $testResult = isset($searchArray['result']) ? $searchArray['result'] : false;
-        
+
         if ($testGroupId == '') {
             $groupWhere = 'true';
         } else {
             $groupWhere = ['auth.test_auth.testgroup_id' => $testGroupId];
         }
-        
+
         switch ($testResult) {
             case 'not_executed':
                 $resultWhere = 'is_autotest AND (tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\')';
@@ -99,59 +97,64 @@ class TestAuthController extends JsonController
                 break;
         }
 
+        $lastTrSql = "
+        (
+          SELECT DISTINCT ON (id_auth)
+                 id_auth, passed, tm
+          FROM auth.test_result
+          WHERE type = 'auth'
+          ORDER BY id_auth, tm DESC
+        ) tr";
+
         $query = TestAuth::find()
-                ->select(
-                    [
-                        'test_auth.*',
-                        new Expression('CASE WHEN tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result'),
-                        'tg.id as testgroup_id'
-                    ])
-                ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
-                ->leftJoin('auth.test_group tg', 'tg.id = auth.test_auth.testgroup_id')
-                ->where($groupWhere)
-                ->andWhere($resultWhere)
-                ->orderBy('name')
-                ->limit($limit)
-                ->offset($offset)
-                ->asArray();
-    
+            ->select(
+                [
+                    'test_auth.*',
+                    new Expression('CASE WHEN tr.passed IS null OR now() AT TIME ZONE \'UTC\' - tr.tm::timestamp > INTERVAL \'1 HOUR\' THEN \'not_executed\' WHEN tr.passed = true THEN \'passed\' WHEN tr.passed = false THEN \'failed\' END as result'),
+                    'tg.id as testgroup_id'
+                ])
+            ->leftJoin($lastTrSql, 'tr.id_auth = auth.test_auth.id') // ← было: 'auth.test_result tr' ...
+            ->leftJoin('auth.test_group tg', 'tg.id = auth.test_auth.testgroup_id')
+            ->where($groupWhere)
+            ->andWhere($resultWhere)
+            ->orderBy('name')
+            ->limit($limit)
+            ->offset($offset)
+            ->asArray();
+
         $countQuery = TestAuth::find()
             ->select(['id'])
-            ->leftJoin('auth.test_result tr', 'tr.type = \'auth\' and tr.id_auth = auth.test_auth.id')
+            ->leftJoin($lastTrSql, 'tr.id_auth = auth.test_auth.id') // ← симметрично
             ->where($groupWhere)
             ->andWhere($resultWhere);
-        
+
         if (isset($searchArray['ignore_region']) && $searchArray['ignore_region'] === false) {
             $query->andWhere('test_auth.server_id = :server_id');
             $query->addParams([':server_id' => $server->id]);
             $countQuery->andWhere('test_auth.server_id = :server_id');
             $countQuery->addParams([':server_id' => $server->id]);
         }
-    
         if (isset($searchArray['trunk_name']) && $searchArray['trunk_name']) {
             $query->andWhere('test_auth.trunk_name = :trunk_name');
             $query->addParams([':trunk_name' => $searchArray['trunk_name']]);
             $countQuery->andWhere('trunk_name = :trunk_name');
             $countQuery->addParams([':trunk_name' => $searchArray['trunk_name']]);
         }
-    
         if (isset($searchArray['name']) && $searchArray['name']) {
             $query->andWhere('test_auth.name ilike :name');
             $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
             $countQuery->andWhere('name ilike :name');
             $countQuery->addParams([':name' => '%' . $searchArray['name'] . '%']);
         }
-    
         if (isset($searchArray['id']) && $searchArray['id']) {
             $query->andWhere('test_auth.id = :id');
             $query->addParams([':id' => $searchArray['id']]);
             $countQuery->andWhere('test_auth.id = :id');
             $countQuery->addParams([':id' => $searchArray['id']]);
         }
-        
         $data = $query->all();
         $count = $countQuery->count();
-        
+
         return [
             'totalCount' => $count,
             'data' => $data
