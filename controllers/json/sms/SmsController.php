@@ -18,6 +18,54 @@ class SmsController extends JsonController
     protected $editPermission   = 'sms_trunk_edit';
     protected $deletePermission = 'sms_trunk_delete';
 
+    /** Базовый адрес внешнего сервиса */
+    private const EXT_BASE = 'http://kannel2.mcn.ru:8085';
+
+    /** Универсальный вызов внешнего HTTP JSON API */
+    private function httpCall(string $method, string $path, ?array $payload = null): array
+    {
+        $url = rtrim(self::EXT_BASE, '/') . '/' . ltrim($path, '/');
+
+        $ch  = curl_init($url);
+        $hdr = ['Accept: application/json', 'Content-Type: application/json'];
+
+        $opts = [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_HTTPHEADER     => $hdr,
+            CURLOPT_CUSTOMREQUEST  => strtoupper($method),
+        ];
+
+        if ($payload !== null) {
+            $opts[CURLOPT_POSTFIELDS] = json_encode($payload, JSON_UNESCAPED_UNICODE);
+        }
+
+        curl_setopt_array($ch, $opts);
+
+        $body = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $err  = curl_error($ch);
+        curl_close($ch);
+
+        Yii::info(sprintf('[EXT %s] %s %s%s -> %s %s',
+            $method,
+            $url,
+            $payload ? ' ' : '',
+            $payload ? json_encode($payload, JSON_UNESCAPED_UNICODE) : '',
+            $code,
+            (string)$body
+        ), __METHOD__);
+
+        if ($body === false || $code < 200 || $code >= 300) {
+            throw new \Exception("External API error (HTTP {$code}) at {$url}: " . ($err ?: $body));
+        }
+
+        $decoded = json_decode((string)$body, true);
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    // -------------------- CRUD локальной модели --------------------
+
     public function actionRead()
     {
         return SmsTrunk::find()->all();
@@ -27,29 +75,27 @@ class SmsController extends JsonController
     {
         $gateId = $this->request['sms_gate_id'] ?? null;
         if ($gateId === null) {
-            return [
-                'success' => 0,
-                'error'   => 'Parameter sms_gate_id is required'
-            ];
+            return ['success' => 0, 'error' => 'Parameter sms_gate_id is required'];
         }
 
-        return SmsTrunk::find()
-            ->where(['sms_gate_id' => (int)$gateId])
-            ->all();
+        return SmsTrunk::find()->where(['sms_gate_id' => (int)$gateId])->all();
     }
 
     public function actionSave()
     {
         if (isset($this->request['id'])) {
-            $item = $this->getSmsOr404($this->request['id']);
+            $item = $this->getSmsOr404($this->request['id']); // наследуется из BaseController
         } else {
             $item = SmsTrunk::create();
         }
 
         $item->load($this->request, '');
+
+        // дублируем route_name из name, если не передан
         if (empty($item->route_name)) {
             $item->route_name = $item->name;
         }
+
         if (!$item->save()) {
             throw new FormValidationException($item);
         }
@@ -57,122 +103,220 @@ class SmsController extends JsonController
         return ['success' => 1, 'id' => $item->id];
     }
 
-   public function actionAddConfigurationTrunkSmpp()
-{
-    $post    = Yii::$app->request->post();
-    $trunkId = $post['trunk_id'];
-    $name    = $post['name'] ?? SmsTrunk::findOne($trunkId)->name;
+    // -------------------- Внешние API: SMPP --------------------
 
-    $payload = [
-        'name'            => $name,
-        'host'            => $post['host'],
-        'port'            => $post['port'],
-        'smsc-username'   => $post['smsc-username'],
-        'smsc-password'   => $post['smsc-password'],
-    ];
-
-    Yii::info("SMPP proxy payload: " . json_encode($payload), __METHOD__);
-
-    $ch = curl_init('http://10.252.0.87:8085/v1/add_configuration_trunk_smpp');
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST           => true,
-        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-        CURLOPT_POSTFIELDS     => json_encode($payload),
-        CURLOPT_TIMEOUT        => 5,
-    ]);
-
-    $responseBody = curl_exec($ch);
-    $httpCode     = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $error        = curl_error($ch);
-    curl_close($ch);
-
-    Yii::info("SMPP proxy response {$httpCode}: {$responseBody}", __METHOD__);
-
-    if ($responseBody === false || $httpCode !== 200) {
-        throw new \Exception(
-            "External SMPP API error (HTTP {$httpCode}): " .
-            ($error ?: $responseBody)
-        );
+    /** GET список SMPP транков */
+    public function actionGetConfigurationTrunksSmpp()
+    {
+        // /v1/trunks/smpp (GET)
+        return $this->httpCall('GET', '/v1/trunks/smpp');
     }
 
-    return ['status' => 'ok'];
-}
-
-
-
-    /**
-     * Проксирует конфигурацию REST на внешний сервис через cURL
-     */
-    public function actionAddConfigurationTrunkApi()
+    /** POST создать SMPP транк */
+    public function actionAddConfigurationTrunkSmpp()
     {
-        $post   = Yii::$app->request->post();
-        $config = $post['config'];
-        $trunk  = SmsTrunk::findOne($post['trunk_id']);
+        $post    = Yii::$app->request->post();
+        $trunkId = $post['trunk_id'] ?? null;
+        $name    = $post['name'] ?? ($trunkId ? (SmsTrunk::findOne($trunkId)->name ?? null) : null);
 
-        $payload = json_encode([
-'name' => $post['name'] ?? SmsTrunk::findOne($trunkId)->name,
-            'url'                 => $config['url'],
-            'method'              => $config['method'],
-            'contentType'         => $config['contentType'],
-            'autorization-token'  => $config['authToken'],
-        ]);
+        $payload = [
+            'name'           => (string)$name,
+            'host'           => $post['host'] ?? '',
+            'port'           => $post['port'] ?? '',
+            'smsc-username'  => $post['smsc-username'] ?? '',
+            'smsc-password'  => $post['smsc-password'] ?? '',
+        ];
 
-        $url = 'http://10.252.0.87:8085/v1/add_configuration_trunk_api';
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST,         true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER,   ['Content-Type: application/json']);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,   $payload);
-        curl_setopt($ch, CURLOPT_TIMEOUT,      5);
-
-        $response = curl_exec($ch);
-        $code     = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $err      = curl_error($ch);
-        curl_close($ch);
-
-        if ($response === false || $code !== 200) {
-            throw new \Exception("External REST API error (HTTP $code): $err");
-        }
-
+        $this->httpCall('POST', '/v1/trunks/smpp', $payload);
         return ['status' => 'ok'];
     }
 
-    // GET /json/sms/sms/get_configuration_trunks_smpp
-    public function actionGetConfigurationTrunksSmpp()
-    {
-        $ch = curl_init('http://10.252.0.87:8085/v1/get_configuration_trunks_smpp');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER     => ['Accept: application/json'],
-            CURLOPT_TIMEOUT        => 5,
-        ]);
-        $body = curl_exec($ch);
-        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+    /** PUT изменить SMPP транк по trunk_id */
+    public function actionModifyConfigurationTrunkSmpp()
+{
+    $post      = Yii::$app->request->post();
+    $configId  = $post['config_id'] ?? $post['id'] ?? null;
+    $name      = $post['name'] ?? null;
 
-        if ($body === false || $code !== 200) {
-            throw new \Exception("Cannot fetch SMPP configs (HTTP {$code}): {$body}");
+    if (empty($configId)) {
+        // если нет config_id → ищем по name
+        if (empty($name) && !empty($post['trunk_id'])) {
+            $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
+            $name  = $trunk ? $trunk->name : null;
         }
-        return json_decode($body, true);
+        if (empty($name)) {
+            throw new \InvalidArgumentException('modify SMPP: provide config_id or name.');
+        }
+
+        $list = $this->httpCall('GET', '/v1/trunks/smpp');
+        foreach ((array)$list as $row) {
+            if (isset($row['name']) && (string)$row['name'] === (string)$name) {
+                $configId = $row['id'] ?? null;
+                break;
+            }
+        }
+        if (empty($configId)) {
+            throw new \RuntimeException("modify SMPP: config id not found by name '{$name}'.");
+        }
     }
 
-    // GET /json/sms/sms/get_configuration_trunks_api
+    // формируем тело без id/trunk_id
+    $payload = [
+        'name'           => $post['name'],
+        'host'           => $post['host'],
+        'port'           => $post['port'],
+        'smsc-username'  => $post['smsc-username'],
+        'smsc-password'  => $post['smsc-password'],
+    ];
+
+    $this->httpCall('PUT', "/v1/trunks/smpp/{$configId}", $payload);
+    return ['status' => 'ok', 'config_id' => (int)$configId];
+}
+
+
+    /** DELETE удалить SMPP транк по trunk_id */
+    public function actionDeleteConfigurationTrunkSmpp()
+{
+    $post      = Yii::$app->request->post();
+    $configId  = $post['config_id'] ?? $post['id'] ?? null; // предпочтительно
+    $name      = $post['name'] ?? null;
+
+    // если нет config_id — пробуем вычислить по name
+    if (empty($configId)) {
+        // если нет name, но есть trunk_id — возьмём name из локальной БД
+        if (empty($name) && !empty($post['trunk_id'])) {
+            $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
+            if ($trunk && $trunk->name) {
+                $name = $trunk->name;
+            }
+        }
+        if (empty($name)) {
+            throw new \InvalidArgumentException('delete SMPP: provide config_id (preferred) or name (or trunk_id to resolve name).');
+        }
+
+        // тянем список и ищем id по name
+        $list = $this->httpCall('GET', '/v1/trunks/smpp');
+        foreach ((array)$list as $row) {
+            if (isset($row['name']) && (string)$row['name'] === (string)$name) {
+                $configId = $row['id'] ?? null;
+                break;
+            }
+        }
+        if (empty($configId)) {
+            throw new \RuntimeException("delete SMPP: config id not found by name '{$name}'.");
+        }
+    }
+
+    // DELETE без тела
+    $this->httpCall('DELETE', "/v1/trunks/smpp/{$configId}", null);
+    return ['status' => 'ok', 'config_id' => (int)$configId];
+}
+
+
+    // -------------------- Внешние API: REST(API) --------------------
+
+    /** GET список REST/API транков */
     public function actionGetConfigurationTrunksApi()
     {
-        $ch = curl_init('http://10.252.0.87:8085/v1/get_configuration_trunks_api');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER     => ['Accept: application/json'],
-            CURLOPT_TIMEOUT        => 5,
-        ]);
-        $body = curl_exec($ch);
-        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($body === false || $code !== 200) {
-            throw new \Exception("Cannot fetch REST configs (HTTP {$code}): {$body}");
-        }
-        return json_decode($body, true);
+        // /v1/trunks/api (GET)
+        return $this->httpCall('GET', '/v1/trunks/api');
     }
+
+    /** POST создать REST/API транк */
+    public function actionAddConfigurationTrunkApi()
+    {
+        $post    = Yii::$app->request->post();
+        $trunkId = $post['trunk_id'] ?? null;
+        $name    = $post['name'] ?? ($trunkId ? (SmsTrunk::findOne($trunkId)->name ?? null) : null);
+
+        // данные могут прийти как в корне, так и внутри config
+        $cfg = $post['config'] ?? $post;
+
+        $payload = [
+            'name'               => (string)$name,
+            'url'                => $cfg['url'] ?? '',
+            'method'             => $cfg['method'] ?? '',
+            'contentType'        => $cfg['contentType'] ?? '',
+            'autorization-token' => $cfg['authToken'] ?? ($cfg['autorization-token'] ?? ''),
+        ];
+
+        $this->httpCall('POST', '/v1/trunks/api', $payload);
+        return ['status' => 'ok'];
+    }
+
+    /** PUT изменить REST/API транк по trunk_id */
+    public function actionModifyConfigurationTrunkApi()
+{
+    $post      = Yii::$app->request->post();
+    $configId  = $post['config_id'] ?? $post['id'] ?? null;
+    $name      = $post['name'] ?? null;
+
+    if (empty($configId)) {
+        if (empty($name) && !empty($post['trunk_id'])) {
+            $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
+            $name  = $trunk ? $trunk->name : null;
+        }
+        if (empty($name)) {
+            throw new \InvalidArgumentException('modify API: provide config_id or name.');
+        }
+
+        $list = $this->httpCall('GET', '/v1/trunks/api');
+        foreach ((array)$list as $row) {
+            if (isset($row['name']) && (string)$row['name'] === (string)$name) {
+                $configId = $row['id'] ?? null;
+                break;
+            }
+        }
+        if (empty($configId)) {
+            throw new \RuntimeException("modify API: config id not found by name '{$name}'.");
+        }
+    }
+
+    $payload = [
+        'name'                => $post['name'],
+        'url'                 => $post['url'],
+        'method'              => $post['method'],
+        'contentType'         => $post['contentType'],
+        'autorization-token'  => $post['autorization-token'],
+    ];
+
+    $this->httpCall('PUT', "/v1/trunks/api/{$configId}", $payload);
+    return ['status' => 'ok', 'config_id' => (int)$configId];
+}
+
+
+    /** DELETE удалить REST/API транк по trunk_id */
+    public function actionDeleteConfigurationTrunkApi()
+{
+    $post      = Yii::$app->request->post();
+    $configId  = $post['config_id'] ?? $post['id'] ?? null; // предпочтительно
+    $name      = $post['name'] ?? null;
+
+    if (empty($configId)) {
+        if (empty($name) && !empty($post['trunk_id'])) {
+            $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
+            if ($trunk && $trunk->name) {
+                $name = $trunk->name;
+            }
+        }
+        if (empty($name)) {
+            throw new \InvalidArgumentException('delete API: provide config_id (preferred) or name (or trunk_id to resolve name).');
+        }
+
+        $list = $this->httpCall('GET', '/v1/trunks/api');
+        foreach ((array)$list as $row) {
+            if (isset($row['name']) && (string)$row['name'] === (string)$name) {
+                $configId = $row['id'] ?? null;
+                break;
+            }
+        }
+        if (empty($configId)) {
+            throw new \RuntimeException("delete API: config id not found by name '{$name}'.");
+        }
+    }
+
+    $this->httpCall('DELETE', "/v1/trunks/api/{$configId}", null);
+    return ['status' => 'ok', 'config_id' => (int)$configId];
+}
+
 }
