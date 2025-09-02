@@ -42,7 +42,7 @@
   <div collapse="isCollapsed">
     <table class="table" ng-if="details == 1" style="table-layout: fixed; width: 100%;">
 
-      <!-- ВАЖНО: используем ng-repeat-start / ng-repeat-end -->
+      <!-- базовая строка результата -->
       <tr ng-repeat-start="row in full_item.result track by $index"
           ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),
                      'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}"
@@ -60,19 +60,17 @@
             style="width: 70%; border-bottom: 1px solid #ddd;">{{::row.params}}</td>
       </tr>
 
-      <!-- ДОП. СТРОКА: выводим ТОЛЬКО нужный INFO из RouteTableProcessor под RESULT/ROUTE CASE -->
-      <tr ng-if="row.type=='RESULT' && getMsTeamsDomainInfoForResult(row)"
-          style="background: #f0fff0;">
+      <!-- доп. строка под RESULT/ROUTE CASE: выводим только нужный INFO из RouteTableProcessor -->
+      <tr ng-if="row.type=='RESULT' && getMsTeamsDomainInfoForResult(row)">
         <td></td>
-        <!-- colspan=3, чтобы занять все оставшиеся колонки таблицы -->
-        <td colspan="3" style="border-bottom: 1px solid #ddd;">
-          <span class="label label-info">[INFO]</span>
+        <td colspan="2" style="border-bottom: 1px solid #ddd; padding-top: 6px; padding-bottom: 6px;">
+          <span class="label label-primary">[INFO]</span>
           &nbsp;{{ getMsTeamsDomainInfoForResult(row) }}
         </td>
       </tr>
 
+      <!-- завершение пары repeat-start/end -->
       <tr ng-repeat-end class="ng-hide"></tr>
-      <!-- пустой завершающий tr обязателен синтаксически для пары repeat-start/end -->
 
     </table>
   </div>
