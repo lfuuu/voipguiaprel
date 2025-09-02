@@ -2,37 +2,86 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
 
     $scope.details = 1;
     $scope.type = 'Primary';
+    $scope.outcomeHeaders = {};
+
+    $scope._isOutcomeNode = function(node) {
+        return node && node.name && node.name.indexOf('Выполнение outcome-действия') === 0 && node.path;
+    };
+
+    $scope._extractOutcomeNameFromSteps = function(steps) {
+        if (!steps || !steps.length) return null;
+        for (var i = 0; i < steps.length; i++) {
+            var s = steps[i];
+            if (s.type === 'INFO' && typeof s.trace === 'string') {
+                var m = s.trace.match(/^INFO\|OUTCOME\|(.+?)\s*\(\d+\)\s*$/);
+                if (m) return m[1].trim();
+            }
+        }
+        return null;
+    };
+
+    $scope._collectOutcomeNodes = function(root) {
+        var nodes = [];
+        (function dfs(n){
+            if (!n) return;
+            if ($scope._isOutcomeNode(n)) nodes.push(n);
+            if (n.steps && n.steps.length) {
+                for (var i=0;i<n.steps.length;i++) dfs(n.steps[i]);
+            }
+        })(root);
+        return nodes;
+    };
+
+    $scope._preloadOutcomeHeaders = function(key, root) {
+        var nodes = $scope._collectOutcomeNodes(root);
+        if (!nodes.length) return;
+
+        nodes.forEach(function(node){
+            if (node._headersLoaded) return;
+            TestAuth.descend({ path: node.path, key: key }).then(function(result){
+                node._headersLoaded = true;
+                node.steps = result.steps || [];
+                var name = $scope._extractOutcomeNameFromSteps(node.steps);
+                if (name) {
+                    $scope.outcomeHeaders[name] = node.steps;
+                }
+            });
+        });
+    };
+
+    $scope.getOutcomeHeaderSteps = function(row) {
+        try {
+            if (!row || !row.params || !row.params.length) return null;
+            var outcomeName = row.params[0].name;
+            return $scope.outcomeHeaders[outcomeName] || null;
+        } catch(e) { return null; }
+    };
 
     if (params.id) {
         TestAuth.result({id: params.id, displayTreeView: true}).then(function (data) {
             $scope.item = data.item;
-            $scope.isStageRowType = function (row) {
-                return row.type == 'STAGE';
-            };
+            $scope.isStageRowType = function (row) { return row.type == 'STAGE'; };
             $scope.result_new = data.result_new;
             $scope.full_item = data;
             $scope.key = data.key;
             $scope.url = data.url;
+
+            $scope._preloadOutcomeHeaders($scope.key, $scope.result_new);
         });
     } else {
-        $scope.item = {
-            server_id: $scope.server.id
-        };
+        $scope.item = { server_id: $scope.server.id };
     }
 
     $scope.descend = function (item) {
         if (item.steps && item.steps.length == 0) {
             TestAuth.descend({'path': item.path, 'key': $scope.key}).then(function (result) {
                 var pathArray = item.path.split(',');
-
                 $scope.updateItemRecursively($scope.result_new, pathArray, result.steps);
             });
         }
     };
 
-    $scope.isObject = function (item) {
-        return (typeof item === 'object');
-    };
+    $scope.isObject = function (item) { return (typeof item === 'object'); };
 
     $scope.updateItemRecursively = function (item, path, steps) {
         if (path.length > 0) {
@@ -52,10 +101,7 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
             testgroup_id: $scope.item.testgroup_id,
             headers: item.headers
         };
-
-        Redirect.testAuthCreateAndFill(params).then(function () {
-            $scope.init();
-        });
+        Redirect.testAuthCreateAndFill(params).then(function () { $scope.init(); });
     };
 
     $scope.clickTrunk = function (item, full_item) {
@@ -74,29 +120,16 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
             ttl: full_item.item.ttl - 1,
             headers: full_item.item.headers,
         };
-
         TestAuth.trace(params).then(function (result) {
             full_item.trace[result.key] = result;
         });
     };
 
-    $scope.back = function () {
-        $modalInstance.dismiss();
-    };
+    $scope.back = function () { $modalInstance.dismiss(); };
 
-    $scope.collapseAll = function () {
-        $scope.$broadcast('angular-ui-tree:collapse-all');
-    };
+    $scope.collapseAll = function () { $scope.$broadcast('angular-ui-tree:collapse-all'); };
+    $scope.expandAll   = function () { $scope.$broadcast('angular-ui-tree:expand-all'); };
 
-    $scope.expandAll = function () {
-        $scope.$broadcast('angular-ui-tree:expand-all');
-    };
-
-    $scope.$on('angular-ui-tree:collapse-all', function () {
-        $scope.collapsed = true;
-    });
-
-    $scope.$on('angular-ui-tree:expand-all', function () {
-        $scope.collapsed = false;
-    });
+    $scope.$on('angular-ui-tree:collapse-all', function () { $scope.collapsed = true;  });
+    $scope.$on('angular-ui-tree:expand-all',   function () { $scope.collapsed = false; });
 };
