@@ -60,12 +60,12 @@
             style="width: 70%; border-bottom: 1px solid #ddd;">{{::row.params}}</td>
       </tr>
 
-      <!-- доп. строка под RESULT/ROUTE CASE: выводим только нужный INFO из RouteTableProcessor -->
-      <tr ng-if="row.type=='RESULT' && getMsTeamsDomainInfoForResult(row)">
-        <td></td>
-        <td colspan="2" style="border-bottom: 1px solid #ddd; padding-top: 6px; padding-bottom: 6px;">
-          <span class="label label-primary">[INFO]</span>
-          &nbsp;{{ getMsTeamsDomainInfoForResult(row) }}
+      <!-- дополнительная строка под RESULT/ROUTE CASE: выводим зеленым как сам RESULT -->
+      <tr ng-if="row.type=='RESULT' && getMsTeamsDomainInfoForResult(row)"
+          ng-style="{'color':'green','font-weight':'bold'}">
+        <td nowrap style="width: 10%;">INFO</td>
+        <td colspan="2" style="border-bottom: 1px solid #ddd;">
+          {{ getMsTeamsDomainInfoForResult(row) }}
         </td>
       </tr>
 
@@ -79,7 +79,6 @@
        ng-repeat="full_item in full_item.trace track by $index" ng-include="'result_renderer.html'">
   </div>
 </script>
-
 
 
         <div ng-if="details == 1" ng-init="isCollapsed=false;level=1" ng-include="'result_renderer.html'">
