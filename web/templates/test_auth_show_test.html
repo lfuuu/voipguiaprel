@@ -22,79 +22,59 @@
         </div>
 
         <script type="text/ng-template" id="result_renderer.html">
-        <div ng-show="full_item.name != 'root'">
-            <table class="table" style="table-layout: fixed; width: 100%;">
-            <tr>
-                <td nowrap width="5%"><span style="font-weight: bold;">{{level}}</span></td>
-                <td nowrap width="35%">
-                <span>Ушел в регион {{full_item.server_id}}.</span><br />
-                <span>{{full_item.orig_server_name}} [{{full_item.orig_name}}] : {{full_item.server_name}} [{{full_item.name}}] : TTL {{full_item.ttl}}</span><br />
-                </td>
-                <td nowrap width="15%"><button class="btn btn-warning" ng-click="isCollapsed = !isCollapsed">Результаты теста</button></td>
-                <td nowrap><button class="btn btn-info" ng-click="createTest(full_item)">Создать тест</button></td>
-                <td nowrap width="5%">
-                <span><a href="{{full_item.url}}">Ссылка</a></span>
-                </td>
-            </tr>
-            </table>
-        </div>
+  <div ng-show="full_item.name != 'root'">
+    <table class="table" style="table-layout: fixed; width: 100%;">
+      <tr>
+        <td nowrap width="5%"><span style="font-weight: bold;">{{level}}</span></td>
+        <td nowrap width="35%">
+          <span>Ушел в регион {{full_item.server_id}}.</span><br />
+          <span>{{full_item.orig_server_name}} [{{full_item.orig_name}}] : {{full_item.server_name}} [{{full_item.name}}] : TTL {{full_item.ttl}}</span><br />
+        </td>
+        <td nowrap width="15%"><button class="btn btn-warning" ng-click="isCollapsed = !isCollapsed">Результаты теста</button></td>
+        <td nowrap><button class="btn btn-info" ng-click="createTest(full_item)">Создать тест</button></td>
+        <td nowrap width="5%">
+          <span><a href="{{full_item.url}}">Ссылка</a></span>
+        </td>
+      </tr>
+    </table>
+  </div>
 
-        <div collapse="isCollapsed">
-            <table class="table" ng-if="details == 1" style="table-layout: fixed; width: 100%;">
-            <tr ng-repeat="row in full_item.result track by $index"
-                ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),
-                            'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}"
-                ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO' || row.type == 'HEADER'">
-                <td nowrap style="width: 10%;">{{::row.type}}</td>
-                <td nowrap style="width: 20%;">
-                {{::row.action}}
-                <span ng-repeat="param in row.params">
-                    <a ng-if="param.is_url" href="#" ng-click="clickTrunk(param, full_item)">{{param.name}},</a>
-                    <span ng-if="!param.is_url" style="display:inline-block; white-space:normal; max-width:90%; word-wrap:break-word;">{{param.name}},</span>
-                </span>
-                </td>
-                <td ng-if="row.type == 'RESULT' && row.is_params_array && !row.is_not_empty_params" style="width: 70%;">&nbsp;</td>
-                <td ng-if="row.type != 'RESULT' || (row.type == 'RESULT' && !row.is_params_array)"
-                    style="width: 70%; border-bottom: 1px solid #ddd;">{{::row.params}}</td>
-            </tr>
+  <div collapse="isCollapsed">
+    <table class="table" ng-if="details == 1" style="table-layout: fixed; width: 100%;">
+      <tr ng-repeat="row in full_item.result track by $index"
+          ng-style="{'color': (row.type=='RESULT' ? 'green' : 'black'),
+                     'font-weight':(row.type == 'ERROR' || row.type == 'RESULT'? 'bold' : 'normal')}"
+          ng-if="row.type == 'ERROR' || row.type == 'RESULT' || row.type == 'INFO' || row.type == 'HEADER'">
+        <td nowrap style="width: 10%;">{{::row.type}}</td>
+        <td nowrap style="width: 20%;">
+          {{::row.action}}
+          <span ng-repeat="param in row.params">
+            <a ng-if="param.is_url" href="#" ng-click="clickTrunk(param, full_item)">{{param.name}},</a>
+            <span ng-if="!param.is_url" style="display:inline-block; white-space:normal; max-width:90%; word-wrap:break-word;">{{param.name}},</span>
+          </span>
+        </td>
+        <td ng-if="row.type == 'RESULT' && row.is_params_array && !row.is_not_empty_params" style="width: 70%;">&nbsp;</td>
+        <td ng-if="row.type != 'RESULT' || (row.type == 'RESULT' && !row.is_params_array)"
+            style="width: 70%; border-bottom: 1px solid #ddd;">{{::row.params}}</td>
+      </tr>
 
-            <!-- (Опционально) Хедер OUTCOME под зелёным RESULT -->
-            <tr ng-if="row.type=='RESULT' && getOutcomeHeaderSteps(row)"
-                style="background: #f9fff9;">
-                <td></td>
-                <td colspan="2" style="border-bottom: 1px solid #ddd;">
-                <div style="font-weight: normal;">
-                    <div ng-repeat="s in getOutcomeHeaderSteps(row) track by $index">
-                    <span class="label"
-                            ng-class="{'label-primary': s.type=='INFO',
-                                    'label-danger': s.type=='ERROR',
-                                    'label-success': s.type=='RESULT_DATA',
-                                    'label-warning': s.type=='DEBUG',
-                                    'label-info': s.type=='INPUT_DATA'}">
-                        [{{s.type}}]
-                    </span>
-                    &nbsp;<span>{{s.trace}}</span>
-                    </div>
-                </div>
-                </td>
-            </tr>
+      <!-- ВАЖНО: под RESULT / ROUTE CASE выводим ТОЛЬКО нужный INFO из RouteTableProcessor -->
+      <tr ng-if="row.type=='RESULT' && getMsTeamsDomainInfoForResult(row)"
+          style="background: #f0fff0;">
+        <td></td>
+        <td colspan="2" style="border-bottom: 1px solid #ddd;">
+          <span class="label label-info">[INFO]</span>
+          &nbsp;{{ getMsTeamsDomainInfoForResult(row) }}
+        </td>
+      </tr>
+    </table>
+  </div>
 
-            <!-- ВАЖНОЕ ДОБАВЛЕНИЕ: конкретная INFO из RouteTableProcessor -->
-            <tr ng-if="row.type=='RESULT' && getRouteTableDomainInfo(row)"
-                style="background: #f0fff0;">
-                <td></td>
-                <td colspan="2" style="border-bottom: 1px solid #ddd;">
-                <span class="label label-info">[INFO]</span>
-                &nbsp;{{ getRouteTableDomainInfo(row) }}
-                </td>
-            </tr>
-            </table>
-        </div>
+  <div style="margin-left: 15px;" ng-init="isCollapsed=true;level=level+1"
+       ng-repeat="full_item in full_item.trace track by $index" ng-include="'result_renderer.html'">
+  </div>
+</script>
 
-        <div style="margin-left: 15px;" ng-init="isCollapsed=true;level=level+1"
-            ng-repeat="full_item in full_item.trace track by $index" ng-include="'result_renderer.html'">
-        </div>
-        </script>
 
         <div ng-if="details == 1" ng-init="isCollapsed=false;level=1" ng-include="'result_renderer.html'">
         </div>

@@ -3,26 +3,21 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
     $scope.details = 1;
     $scope.type = 'Primary';
 
-    // Кэши предзагруженных данных
-    $scope.outcomeHeaders = {};             // { outcomeName: [steps] }
-    $scope.routeTableInfoByOutcomeId = {};  // { outcomeId: "Найден домен MS Teams: ..." }
+    // Храним только доменные INFO из RouteTableProcessor
+    // В простейшем варианте — массив строк; если понадобится связь 1:1 с outcome_id, расширим структуру.
+    $scope.msTeamsDomainInfos = []; // ["Найден домен MS Teams: mcntele.sbc.kompaas.tel для номера B", ...]
 
-    // ===== Helpers: определение типов узлов дерева =====
-    $scope._isOutcomeNode = function(node) {
-        return node && node.name && node.name.indexOf('Выполнение outcome-действия') === 0 && node.path;
-    };
-
+    // ===== Helpers: определяем узлы "RouteTableProcessor" =====
     $scope._isRouteTableNode = function(node) {
         return node && node.name && node.name.indexOf('Отрабатываем таблицу маршрутизации') === 0 && node.path;
     };
 
-    // Собрать интересующие узлы разом
-    $scope._collectSpecialNodes = function(root) {
-        var out = { outcome: [], routeTables: [] };
+    // Собираем нужные узлы из дерева
+    $scope._collectRouteTableNodes = function(root) {
+        var out = [];
         (function dfs(n){
             if (!n) return;
-            if ($scope._isOutcomeNode(n)) out.outcome.push(n);
-            if ($scope._isRouteTableNode(n)) out.routeTables.push(n);
+            if ($scope._isRouteTableNode(n)) out.push(n);
             if (n.steps && n.steps.length) {
                 for (var i=0;i<n.steps.length;i++) dfs(n.steps[i]);
             }
@@ -30,106 +25,47 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
         return out;
     };
 
-    // ===== Парсеры содержимого шагов =====
-    // Из OUTCOME-steps: INFO|OUTCOME|EU_MS_Teams (1376) -> имя
-    $scope._extractOutcomeNameFromSteps = function(steps) {
-        if (!steps || !steps.length) return null;
-        for (var i = 0; i < steps.length; i++) {
-            var s = steps[i];
-            if (s.type === 'INFO' && typeof s.trace === 'string') {
-                var m = s.trace.match(/^INFO\|OUTCOME\|(.+?)\s*\(\d+\)\s*$/);
-                if (m) return m[1].trim();
-            }
-        }
-        return null;
-    };
-
-    // Из RouteTableProcessor-steps: последняя INFO "Выходим по строке [...] outcome_id=1376" -> 1376
-    $scope._extractOutcomeIdFromRouteTableSteps = function(steps) {
-        if (!steps) return null;
-        // идём с конца — ближе к "Выходим по строке ..."
-        for (var i = steps.length - 1; i >= 0; i--) {
-            var s = steps[i];
-            if (s && s.trace && typeof s.trace === 'string') {
-                var m = s.trace.match(/outcome_id\s*=\s*(\d+)/i);
-                if (m) return m[1];
-            }
-        }
-        return null;
-    };
-
     // Из RouteTableProcessor-steps вытащить нужную строку "Найден домен MS Teams: ..."
-    $scope._extractDomainInfo = function(steps) {
+    $scope._extractMsTeamsDomainInfo = function(steps) {
         if (!steps) return null;
         for (var i=0;i<steps.length;i++) {
             var s = steps[i];
-            if (s.type === 'INFO' && typeof s.trace === 'string' &&
+            if (s && s.type === 'INFO' && typeof s.trace === 'string' &&
                 s.trace.indexOf('Найден домен MS Teams:') === 0) {
-                return s.trace;
+                return s.trace; // возвращаем первую найденную
             }
         }
         return null;
     };
 
-    // ===== Предзагрузка: после получения дерева, вызвать descend у нужных узлов =====
-    $scope._preloadSpecial = function(key, root) {
-        var nodes = $scope._collectSpecialNodes(root);
+    // ===== Предзагрузка: вызвать descend ТОЛЬКО для RouteTableProcessor узлов и извлечь доменные INFO =====
+    $scope._preloadRouteTableInfos = function(key, root) {
+        var nodes = $scope._collectRouteTableNodes(root);
+        if (!nodes || !nodes.length) return;
 
-        // OUTCOME узлы — сохраняем steps по имени (опционально)
-        nodes.outcome.forEach(function(node){
-            if (node._headersLoaded) return;
-            TestAuth.descend({ path: node.path, key: key }).then(function(result){
-                node._headersLoaded = true;
-                node.steps = result.steps || [];
-                var name = $scope._extractOutcomeNameFromSteps(node.steps);
-                if (name) $scope.outcomeHeaders[name] = node.steps;
-            });
-        });
-
-        // ROUTE TABLE узлы — достаём outcome_id и строку "Найден домен MS Teams: ..."
-        nodes.routeTables.forEach(function(node){
+        nodes.forEach(function(node){
             if (node._rtLoaded) return;
             TestAuth.descend({ path: node.path, key: key }).then(function(result){
                 node._rtLoaded = true;
                 node.steps = result.steps || [];
-                var outcomeId = $scope._extractOutcomeIdFromRouteTableSteps(node.steps);
-                var domainInfo = $scope._extractDomainInfo(node.steps);
-                if (outcomeId && domainInfo) {
-                    $scope.routeTableInfoByOutcomeId[outcomeId] = domainInfo;
+                var info = $scope._extractMsTeamsDomainInfo(node.steps);
+                if (info && $scope.msTeamsDomainInfos.indexOf(info) === -1) {
+                    $scope.msTeamsDomainInfos.push(info);
                 }
             });
         });
     };
 
-    // ===== API получения данных для шаблона =====
-    // steps «хедера» OUTCOME по строке RESULT (опционально)
-    $scope.getOutcomeHeaderSteps = function(row) {
-        try {
-            if (!row || !row.params || !row.params.length) return null;
-            var outcomeName = row.params[0].name; // напр., EU_MS_Teams
-            return $scope.outcomeHeaders[outcomeName] || null;
-        } catch(e) { return null; }
-    };
+    // ===== API для шаблона: получить текст домена под RESULT / ROUTE CASE =====
+    $scope.getMsTeamsDomainInfoForResult = function(row) {
+        // Показ под "ROUTE CASE ...". Если нашли несколько — берём первую (обычно она одна).
+        if (!row || row.type !== 'RESULT') return null;
+        if (!$scope.msTeamsDomainInfos.length) return null;
 
-    // outcomeId из шагов OUTCOME по строке RESULT
-    $scope.getOutcomeIdFromResult = function(row) {
-        var steps = $scope.getOutcomeHeaderSteps(row);
-        if (!steps) return null;
-        for (var i=0;i<steps.length;i++){
-            var s = steps[i];
-            if (s.type === 'INFO' && typeof s.trace === 'string') {
-                var m = s.trace.match(/^INFO\|OUTCOME\|.+?\s*\((\d+)\)\s*$/);
-                if (m) return m[1];
-            }
-        }
-        return null;
-    };
-
-    // Конкретная строка "Найден домен MS Teams: ..." по строке RESULT
-    $scope.getRouteTableDomainInfo = function(row) {
-        var outcomeId = $scope.getOutcomeIdFromResult(row);
-        if (outcomeId && $scope.routeTableInfoByOutcomeId[outcomeId]) {
-            return $scope.routeTableInfoByOutcomeId[outcomeId];
+        // Если нужен жёсткий фильтр по имени кейса — можно проверять row.action/row.params.
+        // Здесь выводим для любого RESULT с action "ROUTE CASE".
+        if (row.action && row.action.indexOf('ROUTE CASE') === 0) {
+            return $scope.msTeamsDomainInfos[0];
         }
         return null;
     };
@@ -146,14 +82,14 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
             $scope.key = data.key;
             $scope.url = data.url;
 
-            // Предзагрузка специальных узлов (OUTCOME + ROUTE TABLE)
-            $scope._preloadSpecial($scope.key, $scope.result_new);
+            // ВАЖНО: грузим ТОЛЬКО RouteTableProcessor (никаких OutcomeProcessor)
+            $scope._preloadRouteTableInfos($scope.key, $scope.result_new);
         });
     } else {
         $scope.item = { server_id: $scope.server.id };
     }
 
-    // ===== Остальной существующий функционал =====
+    // ===== Остальной существующий функционал (без изменений) =====
     $scope.descend = function (item) {
         if (item.steps && item.steps.length == 0) {
             TestAuth.descend({'path': item.path, 'key': $scope.key}).then(function (result) {
@@ -187,7 +123,7 @@ var TestAuthShowTestPrimaryCtrl = function($scope, TestAuth, Redirect, params, $
         };
 
         Redirect.testAuthCreateAndFill(params).then(function () {
-            $scope.init && $scope.init();
+            if ($scope.init) $scope.init();
         });
     };
 
