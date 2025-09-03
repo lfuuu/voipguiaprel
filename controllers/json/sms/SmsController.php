@@ -46,10 +46,13 @@ class SmsController extends JsonController
 
         $opts = [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_TIMEOUT        => 15,   // общий таймаут, пусть остаётся 15 секунд
+            CURLOPT_CONNECTTIMEOUT => 1,    // 1 секунда = 1000 мс
             CURLOPT_HTTPHEADER     => $hdr,
             CURLOPT_CUSTOMREQUEST  => strtoupper($method),
+            CURLOPT_HEADER         => false,
         ];
+
 
         if ($payload !== null) {
             $opts[CURLOPT_POSTFIELDS] = json_encode($payload, JSON_UNESCAPED_UNICODE);
