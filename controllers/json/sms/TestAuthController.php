@@ -115,7 +115,7 @@ class TestAuthController extends JsonController
 
     if ($isEuropean) {
     // Жёсткий EU endpoint
-    $endpoint = 'http://ocslte1.kompaas.tech:8103/api/get.dst_route_smsc';
+    $endpoint = 'http://10.250.30.48:8103/api/get.dst_route_smsc';
 
     // ЛОГИРОВАНИЕ ДЛЯ ЕВРОПЕЙСКОГО СЛУЧАЯ
     \Yii::info(sprintf(
