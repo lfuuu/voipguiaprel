@@ -18,13 +18,28 @@ class SmsController extends JsonController
     protected $editPermission   = 'sms_trunk_edit';
     protected $deletePermission = 'sms_trunk_delete';
 
-    /** Базовый адрес внешнего сервиса */
-    private const EXT_BASE = 'http://kannel2.mcn.ru:8085';
+    /**
+     * База внешнего сервиса с учётом региона:
+     *   EU  → http://eukannel3.kompaas.tech:8085
+     *   RU  → http://kannel2.mcn.ru:8085
+     */
+    private function getExtBase(): string
+    {
+        $isEu = Yii::$app->params['isEuropean'] ?? false;
+
+        // Если вдруг захотите переопределять через params:
+        // return Yii::$app->params['kannelBase'] ?? ($isEu ? 'http://eukannel3.kompaas.tech:8085' : 'http://kannel2.mcn.ru:8085');
+
+        return $isEu
+            ? 'http://eukannel3.kompaas.tech:8085'
+            : 'http://kannel2.mcn.ru:8085';
+    }
 
     /** Универсальный вызов внешнего HTTP JSON API */
     private function httpCall(string $method, string $path, ?array $payload = null): array
     {
-        $url = rtrim(self::EXT_BASE, '/') . '/' . ltrim($path, '/');
+        $base = $this->getExtBase();
+        $url  = rtrim($base, '/') . '/' . ltrim($path, '/');
 
         $ch  = curl_init($url);
         $hdr = ['Accept: application/json', 'Content-Type: application/json'];
@@ -47,7 +62,7 @@ class SmsController extends JsonController
         $err  = curl_error($ch);
         curl_close($ch);
 
-        Yii::info(sprintf('[EXT %s] %s %s%s -> %s %s',
+        Yii::info(sprintf('[EXT %s] %s%s%s -> %s %s',
             $method,
             $url,
             $payload ? ' ' : '',
@@ -133,85 +148,83 @@ class SmsController extends JsonController
 
     /** PUT изменить SMPP транк по trunk_id */
     public function actionModifyConfigurationTrunkSmpp()
-{
-    $post      = Yii::$app->request->post();
-    $configId  = $post['config_id'] ?? $post['id'] ?? null;
-    $name      = $post['name'] ?? null;
+    {
+        $post      = Yii::$app->request->post();
+        $configId  = $post['config_id'] ?? $post['id'] ?? null;
+        $name      = $post['name'] ?? null;
 
-    if (empty($configId)) {
-        // если нет config_id → ищем по name
-        if (empty($name) && !empty($post['trunk_id'])) {
-            $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
-            $name  = $trunk ? $trunk->name : null;
-        }
-        if (empty($name)) {
-            throw new \InvalidArgumentException('modify SMPP: provide config_id or name.');
-        }
+        if (empty($configId)) {
+            // если нет config_id → ищем по name
+            if (empty($name) && !empty($post['trunk_id'])) {
+                $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
+                $name  = $trunk ? $trunk->name : null;
+            }
+            if (empty($name)) {
+                throw new \InvalidArgumentException('modify SMPP: provide config_id or name.');
+            }
 
-        $list = $this->httpCall('GET', '/v1/trunks/smpp');
-        foreach ((array)$list as $row) {
-            if (isset($row['name']) && (string)$row['name'] === (string)$name) {
-                $configId = $row['id'] ?? null;
-                break;
+            $list = $this->httpCall('GET', '/v1/trunks/smpp');
+            foreach ((array)$list as $row) {
+                if (isset($row['name']) && (string)$row['name'] === (string)$name) {
+                    $configId = $row['id'] ?? null;
+                    break;
+                }
+            }
+            if (empty($configId)) {
+                throw new \RuntimeException("modify SMPP: config id not found by name '{$name}'.");
             }
         }
-        if (empty($configId)) {
-            throw new \RuntimeException("modify SMPP: config id not found by name '{$name}'.");
-        }
+
+        // формируем тело без id/trunk_id
+        $payload = [
+            'name'           => $post['name'],
+            'host'           => $post['host'],
+            'port'           => $post['port'],
+            'smsc-username'  => $post['smsc-username'],
+            'smsc-password'  => $post['smsc-password'],
+        ];
+
+        $this->httpCall('PUT', "/v1/trunks/smpp/{$configId}", $payload);
+        return ['status' => 'ok', 'config_id' => (int)$configId];
     }
-
-    // формируем тело без id/trunk_id
-    $payload = [
-        'name'           => $post['name'],
-        'host'           => $post['host'],
-        'port'           => $post['port'],
-        'smsc-username'  => $post['smsc-username'],
-        'smsc-password'  => $post['smsc-password'],
-    ];
-
-    $this->httpCall('PUT', "/v1/trunks/smpp/{$configId}", $payload);
-    return ['status' => 'ok', 'config_id' => (int)$configId];
-}
-
 
     /** DELETE удалить SMPP транк по trunk_id */
     public function actionDeleteConfigurationTrunkSmpp()
-{
-    $post      = Yii::$app->request->post();
-    $configId  = $post['config_id'] ?? $post['id'] ?? null; // предпочтительно
-    $name      = $post['name'] ?? null;
+    {
+        $post      = Yii::$app->request->post();
+        $configId  = $post['config_id'] ?? $post['id'] ?? null; // предпочтительно
+        $name      = $post['name'] ?? null;
 
-    // если нет config_id — пробуем вычислить по name
-    if (empty($configId)) {
-        // если нет name, но есть trunk_id — возьмём name из локальной БД
-        if (empty($name) && !empty($post['trunk_id'])) {
-            $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
-            if ($trunk && $trunk->name) {
-                $name = $trunk->name;
-            }
-        }
-        if (empty($name)) {
-            throw new \InvalidArgumentException('delete SMPP: provide config_id (preferred) or name (or trunk_id to resolve name).');
-        }
-
-        // тянем список и ищем id по name
-        $list = $this->httpCall('GET', '/v1/trunks/smpp');
-        foreach ((array)$list as $row) {
-            if (isset($row['name']) && (string)$row['name'] === (string)$name) {
-                $configId = $row['id'] ?? null;
-                break;
-            }
-        }
+        // если нет config_id — пробуем вычислить по name
         if (empty($configId)) {
-            throw new \RuntimeException("delete SMPP: config id not found by name '{$name}'.");
+            // если нет name, но есть trunk_id — возьмём name из локальной БД
+            if (empty($name) && !empty($post['trunk_id'])) {
+                $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
+                if ($trunk && $trunk->name) {
+                    $name = $trunk->name;
+                }
+            }
+            if (empty($name)) {
+                throw new \InvalidArgumentException('delete SMPP: provide config_id (preferred) or name (or trunk_id to resolve name).');
+            }
+
+            // тянем список и ищем id по name
+            $list = $this->httpCall('GET', '/v1/trunks/smpp');
+            foreach ((array)$list as $row) {
+                if (isset($row['name']) && (string)$row['name'] === (string)$name) {
+                    $configId = $row['id'] ?? null;
+                    break;
+                }
+            }
+            if (empty($configId)) {
+                throw new \RuntimeException("delete SMPP: config id not found by name '{$name}'.");
+            }
         }
+
+        // DELETE без тела
+        $this->httpCall('DELETE', "/v1/trunks/smpp/{$configId}", null);
+        return ['status' => 'ok', 'config_id' => (int)$configId];
     }
-
-    // DELETE без тела
-    $this->httpCall('DELETE', "/v1/trunks/smpp/{$configId}", null);
-    return ['status' => 'ok', 'config_id' => (int)$configId];
-}
-
 
     // -------------------- Внешние API: REST(API) --------------------
 
@@ -246,77 +259,75 @@ class SmsController extends JsonController
 
     /** PUT изменить REST/API транк по trunk_id */
     public function actionModifyConfigurationTrunkApi()
-{
-    $post      = Yii::$app->request->post();
-    $configId  = $post['config_id'] ?? $post['id'] ?? null;
-    $name      = $post['name'] ?? null;
+    {
+        $post      = Yii::$app->request->post();
+        $configId  = $post['config_id'] ?? $post['id'] ?? null;
+        $name      = $post['name'] ?? null;
 
-    if (empty($configId)) {
-        if (empty($name) && !empty($post['trunk_id'])) {
-            $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
-            $name  = $trunk ? $trunk->name : null;
-        }
-        if (empty($name)) {
-            throw new \InvalidArgumentException('modify API: provide config_id or name.');
-        }
+        if (empty($configId)) {
+            if (empty($name) && !empty($post['trunk_id'])) {
+                $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
+                $name  = $trunk ? $trunk->name : null;
+            }
+            if (empty($name)) {
+                throw new \InvalidArgumentException('modify API: provide config_id or name.');
+            }
 
-        $list = $this->httpCall('GET', '/v1/trunks/api');
-        foreach ((array)$list as $row) {
-            if (isset($row['name']) && (string)$row['name'] === (string)$name) {
-                $configId = $row['id'] ?? null;
-                break;
+            $list = $this->httpCall('GET', '/v1/trunks/api');
+            foreach ((array)$list as $row) {
+                if (isset($row['name']) && (string)$row['name'] === (string)$name) {
+                    $configId = $row['id'] ?? null;
+                    break;
+                }
+            }
+            if (empty($configId)) {
+                throw new \RuntimeException("modify API: config id not found by name '{$name}'.");
             }
         }
-        if (empty($configId)) {
-            throw new \RuntimeException("modify API: config id not found by name '{$name}'.");
-        }
+
+        $payload = [
+            'name'               => $post['name'],
+            'url'                => $post['url'],
+            'method'             => $post['method'],
+            'contentType'        => $post['contentType'],
+            'autorization-token' => $post['autorization-token'],
+        ];
+
+        $this->httpCall('PUT', "/v1/trunks/api/{$configId}", $payload);
+        return ['status' => 'ok', 'config_id' => (int)$configId];
     }
-
-    $payload = [
-        'name'                => $post['name'],
-        'url'                 => $post['url'],
-        'method'              => $post['method'],
-        'contentType'         => $post['contentType'],
-        'autorization-token'  => $post['autorization-token'],
-    ];
-
-    $this->httpCall('PUT', "/v1/trunks/api/{$configId}", $payload);
-    return ['status' => 'ok', 'config_id' => (int)$configId];
-}
-
 
     /** DELETE удалить REST/API транк по trunk_id */
     public function actionDeleteConfigurationTrunkApi()
-{
-    $post      = Yii::$app->request->post();
-    $configId  = $post['config_id'] ?? $post['id'] ?? null; // предпочтительно
-    $name      = $post['name'] ?? null;
+    {
+        $post      = Yii::$app->request->post();
+        $configId  = $post['config_id'] ?? $post['id'] ?? null; // предпочтительно
+        $name      = $post['name'] ?? null;
 
-    if (empty($configId)) {
-        if (empty($name) && !empty($post['trunk_id'])) {
-            $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
-            if ($trunk && $trunk->name) {
-                $name = $trunk->name;
-            }
-        }
-        if (empty($name)) {
-            throw new \InvalidArgumentException('delete API: provide config_id (preferred) or name (or trunk_id to resolve name).');
-        }
-
-        $list = $this->httpCall('GET', '/v1/trunks/api');
-        foreach ((array)$list as $row) {
-            if (isset($row['name']) && (string)$row['name'] === (string)$name) {
-                $configId = $row['id'] ?? null;
-                break;
-            }
-        }
         if (empty($configId)) {
-            throw new \RuntimeException("delete API: config id not found by name '{$name}'.");
+            if (empty($name) && !empty($post['trunk_id'])) {
+                $trunk = \app\models\auth\SmsTrunk::findOne((int)$post['trunk_id']);
+                if ($trunk && $trunk->name) {
+                    $name = $trunk->name;
+                }
+            }
+            if (empty($name)) {
+                throw new \InvalidArgumentException('delete API: provide config_id (preferred) or name (or trunk_id to resolve name).');
+            }
+
+            $list = $this->httpCall('GET', '/v1/trunks/api');
+            foreach ((array)$list as $row) {
+                if (isset($row['name']) && (string)$row['name'] === (string)$name) {
+                    $configId = $row['id'] ?? null;
+                    break;
+                }
+            }
+            if (empty($configId)) {
+                throw new \RuntimeException("delete API: config id not found by name '{$name}'.");
+            }
         }
+
+        $this->httpCall('DELETE', "/v1/trunks/api/{$configId}", null);
+        return ['status' => 'ok', 'config_id' => (int)$configId];
     }
-
-    $this->httpCall('DELETE', "/v1/trunks/api/{$configId}", null);
-    return ['status' => 'ok', 'config_id' => (int)$configId];
-}
-
 }
