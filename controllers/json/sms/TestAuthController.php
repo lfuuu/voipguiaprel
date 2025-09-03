@@ -226,7 +226,7 @@ class TestAuthController extends JsonController
     if ($bodyUsed === null) {
         throw new \yii\web\HttpException(502, 'Ошибка сети при обращении к внешнему API');
     }
-    if ($codeUsed >= 400) {
+    if ($codeUsed >= 407) {
         throw new \yii\web\HttpException(502, 'Внешний API вернул ошибку: HTTP ' . $codeUsed . ' — ' . mb_strimwidth($bodyUsed, 0, 800, '…'));
     }
 
