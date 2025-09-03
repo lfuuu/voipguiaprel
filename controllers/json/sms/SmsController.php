@@ -25,14 +25,20 @@ class SmsController extends JsonController
      */
     private function getExtBase(): string
     {
-        $isEu = Yii::$app->params['isEuropean'] ?? false;
+    // 1) Жёсткое переопределение через params, если нужно
+    if (!empty(Yii::$app->params['kannelBase'])) {
+        return rtrim(Yii::$app->params['kannelBase'], '/');
+    }
 
-        // Если вдруг захотите переопределять через params:
-        // return Yii::$app->params['kannelBase'] ?? ($isEu ? 'http://eukannel3.kompaas.tech:8085' : 'http://kannel2.mcn.ru:8085');
+    // 2) Автовыбор по isEuropean (или ручной флаг)
+    $isEu = is_bool($eu) ? $eu : (Yii::$app->params['isEuropean'] ?? false);
 
-        return $isEu
-            ? 'http://eukannel3.kompaas.tech:8085'
-            : 'http://kannel2.mcn.ru:8085';
+    if ($isEu) {
+        // Используем IP напрямую
+        return 'http://10.250.30.44:8085';
+    }
+
+    return 'http://kannel2.mcn.ru:8085';
     }
 
     /** Универсальный вызов внешнего HTTP JSON API */
