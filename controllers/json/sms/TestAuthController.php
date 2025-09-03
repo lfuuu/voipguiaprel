@@ -111,14 +111,21 @@ class TestAuthController extends JsonController
         throw new \yii\web\HttpException(404, 'Сервер для ' . $this->modelName . ' не найден');
     }
 
-    // ---- ЕВРОПЕЙСКИЙ/НЕ ЕВРОПЕЙСКИЙ endpoint --------------------------------
     $isEuropean = \Yii::$app->params['isEuropean'] ?? false;
 
     if ($isEuropean) {
-        // Жёстко заданный EU endpoint
-        $endpoint = 'http://ocslte1.kompaas.tech:8103/api/get.dst_route_smsc';
+    // Жёсткий EU endpoint
+    $endpoint = 'http://ocslte1.kompaas.tech:8103/api/get.dst_route_smsc';
+
+    // ЛОГИРОВАНИЕ ДЛЯ ЕВРОПЕЙСКОГО СЛУЧАЯ
+    \Yii::info(sprintf(
+        '[SmsTestAuth][EU] endpoint resolved: %s | server_id=%s | test_id=%s | is_reserve=%s',
+        $endpoint,
+        (string)$server->id,
+        (string)$item->id,
+        var_export($this->request['is_reserve'] ?? null, true)
+    ), __METHOD__);
     } else {
-        // Старая логика: строим по camel_gw / camel_reserve
         $isReserve = (!empty($this->request['is_reserve']) && $this->request['is_reserve'] === true);
         $baseUrl   = $isReserve ? $server->camel_reserve : $server->camel_gw;
         $parsed    = parse_url($baseUrl);
@@ -127,15 +134,12 @@ class TestAuthController extends JsonController
         $host      = preg_replace('~/.*$~', '', $host);
         $endpoint  = 'http://' . $host . ':8103/api/get.dst_route_smsc';
     }
-    // -------------------------------------------------------------------------
 
-    // 2) Транк
     $trunk = \app\models\auth\SmsTrunk::findOne(['id' => $item->trunk_name]);
     if ($trunk === null) {
         throw new \yii\web\HttpException(404, 'Транк не найден');
     }
 
-    // 3) Основная полезная нагрузка
     $payloadArr = [
         'trunk'  => $trunk->name,
         'caller' => $item->src_number,
@@ -144,7 +148,6 @@ class TestAuthController extends JsonController
     ];
     $payloadJson = json_encode($payloadArr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-    // 4) Отправка через cURL с таймаутами (connect = 1000 мс)
     $send = function (string $body, array $headers) use ($endpoint) {
         $ch = curl_init($endpoint);
         curl_setopt_array($ch, [
@@ -175,7 +178,6 @@ class TestAuthController extends JsonController
         return [$bodyRaw, $status, $headersArr, null];
     };
 
-    // Попытка №1: обычный JSON-объект
     [$resp1, $code1, $hdrs1, $err1] = $send($payloadJson, [
         'Content-Type: application/json',
         'Accept: application/json',
@@ -193,7 +195,6 @@ class TestAuthController extends JsonController
     $codeUsed  = $code1;
     $headersUsed = $hdrs1;
 
-    // Если сервер вернул 500 c типичной json-ошибкой парсинга — ретрай «JSON-как-строку»
     $oatppParseFail =
         (is_string($resp1) && stripos($resp1, 'preparseString') !== false)
         || (is_string($resp1) && stripos($resp1, 'expected') !== false);
