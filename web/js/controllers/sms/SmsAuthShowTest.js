@@ -8,19 +8,23 @@ var SmsTestAuthShowTestCtrl = function($scope, SmsTestAuth, params, $modalInstan
             $scope.item = data.item;
             $scope.result = data.result;
             $scope.key = data.key;
+
             $scope.url = data.url || ($window.location.origin + '/ms' + 9 + '?smsTestAuthShowTest&' + $scope.item.id + '&is_reserve=false');
             $scope.formLink = $window.location.origin + '/ms' + $scope.server.id + '?smsTestAuthShowTest&' + $scope.item.id + '&is_reserve=false';
+
+            console.log('[SmsTestAuthShowTestCtrl] url =', $scope.url);
+            console.log('[SmsTestAuthShowTestCtrl] formLink =', $scope.formLink);
         });
     } else {
         $scope.item = {
             server_id: $scope.server.id
         };
     }
+
     $scope.descend = function (item) {
         if (item.nodes && item.nodes.length == 0) {
             SmsTestAuth.descend({'path': item.path, 'key': $scope.key}).then(function (result) {
                 var pathArray = item.path.split(',');
-
                 $scope.updateItemRecursively($scope.result, pathArray, result.nodes);
             });
         }
