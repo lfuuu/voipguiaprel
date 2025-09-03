@@ -111,14 +111,23 @@ class TestAuthController extends JsonController
         throw new \yii\web\HttpException(404, 'Сервер для ' . $this->modelName . ' не найден');
     }
 
-    // 1) Готовим endpoint: http://<host>:8103/api/get.dst_route_smsc
-    $isReserve = (!empty($this->request['is_reserve']) && $this->request['is_reserve'] === true);
-    $baseUrl   = $isReserve ? $server->camel_reserve : $server->camel_gw;
-    $parsed    = parse_url($baseUrl);
-    $host      = $parsed['host'] ?? ($parsed['path'] ?? $baseUrl);
-    $host      = preg_replace('~^https?://~i', '', (string)$host);
-    $host      = preg_replace('~/.*$~', '', $host);
-    $endpoint  = 'http://' . $host . ':8103/api/get.dst_route_smsc';
+    // ---- ЕВРОПЕЙСКИЙ/НЕ ЕВРОПЕЙСКИЙ endpoint --------------------------------
+    $isEuropean = \Yii::$app->params['isEuropean'] ?? false;
+
+    if ($isEuropean) {
+        // Жёстко заданный EU endpoint
+        $endpoint = 'http://ocslte1.kompaas.tech:8103/api/get.dst_route_smsc';
+    } else {
+        // Старая логика: строим по camel_gw / camel_reserve
+        $isReserve = (!empty($this->request['is_reserve']) && $this->request['is_reserve'] === true);
+        $baseUrl   = $isReserve ? $server->camel_reserve : $server->camel_gw;
+        $parsed    = parse_url($baseUrl);
+        $host      = $parsed['host'] ?? ($parsed['path'] ?? $baseUrl);
+        $host      = preg_replace('~^https?://~i', '', (string)$host);
+        $host      = preg_replace('~/.*$~', '', $host);
+        $endpoint  = 'http://' . $host . ':8103/api/get.dst_route_smsc';
+    }
+    // -------------------------------------------------------------------------
 
     // 2) Транк
     $trunk = \app\models\auth\SmsTrunk::findOne(['id' => $item->trunk_name]);
@@ -128,24 +137,24 @@ class TestAuthController extends JsonController
 
     // 3) Основная полезная нагрузка
     $payloadArr = [
-        'trunk'  => $trunk->name,       // напр. "API_102231"
-        'caller' => $item->src_number,  // напр. "79059035669"
-        'called' => $item->dst_number,  // напр. "79933994014"
-        'trace'  => "true",             // ВАЖНО: строка, а не boolean
+        'trunk'  => $trunk->name,
+        'caller' => $item->src_number,
+        'called' => $item->dst_number,
+        'trace'  => "true",
     ];
     $payloadJson = json_encode($payloadArr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-    // 4) Отправка через cURL с явными заголовками и таймаутами
+    // 4) Отправка через cURL с таймаутами (connect = 1000 мс)
     $send = function (string $body, array $headers) use ($endpoint) {
         $ch = curl_init($endpoint);
         curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $body,
-            CURLOPT_HTTPHEADER     => $headers,
-            CURLOPT_HEADER         => true,   // чтобы вытащить заголовки/код
-            CURLOPT_TIMEOUT        => 15,
-            CURLOPT_CONNECTTIMEOUT => 5,
+            CURLOPT_RETURNTRANSFER    => true,
+            CURLOPT_POST              => true,
+            CURLOPT_POSTFIELDS        => $body,
+            CURLOPT_HTTPHEADER        => $headers,
+            CURLOPT_HEADER            => true,   // чтобы вытащить заголовки/код
+            CURLOPT_TIMEOUT_MS        => 15000,  // общий таймаут = 15 сек
+            CURLOPT_CONNECTTIMEOUT_MS => 1000,   // коннект = 1000 мс
         ]);
         $raw      = curl_exec($ch);
         $errno    = curl_errno($ch);
