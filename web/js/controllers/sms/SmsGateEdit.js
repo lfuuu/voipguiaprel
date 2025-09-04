@@ -8,8 +8,8 @@ var SmsGateEditCtrl = function($rootScope, $scope, Redirect, SmsGate, params, $m
             name:        '',
             description: '',
             ip:          '',
-            host:        ''
-        };
+            host:        '',
+            type:        'MCMCN'
     }
 
     $scope.save = function() {

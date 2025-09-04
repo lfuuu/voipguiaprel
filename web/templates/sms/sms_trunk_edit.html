@@ -23,14 +23,14 @@
           <div class="col-sm-10">
             <select class="form-control"
                     ng-model="item.sms_gate_id"
-                    ng-options="g.id as g.name for g in gatewayList"
+                    ng-options="g.id as (g.name + ' (' + g.type + ')') for g in gatewayList"
                     required>
               <option value="" disabled>— Выберите шлюз —</option>
             </select>
           </div>
         </div>
 
-        <!-- 2. Тип -->
+        <!-- 2. Тип (коннектора) -->
         <div class="form-group" ng-if="item.sms_gate_id">
           <label class="col-sm-2 control-label">Тип</label>
           <div class="col-sm-10">
@@ -67,9 +67,11 @@
           </div>
         </div>
 
-        <!-- 6. Тип протокола -->
+        <!-- 6. Тип протокола
+             РАНЬШЕ: ng-if="item.sms_gate_id==MCMCN_ID && item.connector_type_id==AGG_ID"
+             ТЕПЕРЬ: опора на тип шлюза -->
         <div class="form-group"
-             ng-if="item.sms_gate_id==MCMCN_ID && item.connector_type_id==AGG_ID">
+             ng-if="isMCMCN && item.connector_type_id==AGG_ID">
           <label class="col-sm-2 control-label">Тип протокола</label>
           <div class="col-sm-10">
             <select class="form-control"
@@ -81,8 +83,10 @@
           </div>
         </div>
 
-        <!-- === Блок 2. Внешняя конфигурация (API) === -->
-        <div class="form-group" ng-if="item.sms_gate_id==MCMCN_ID && item.connector_type_id==AGG_ID">
+        <!-- === Блок 2. Внешняя конфигурация (API)
+             РАНЬШЕ: ng-if="item.sms_gate_id==MCMCN_ID && item.connector_type_id==AGG_ID"
+             ТЕПЕРЬ: опора на тип шлюза -->
+        <div class="form-group" ng-if="isMCMCN && item.connector_type_id==AGG_ID">
           <div class="col-sm-12">
             <div class="panel panel-default" style="border-color:#cfd8dc;">
               <div class="panel-heading" style="background:#f7f9fa;border-color:#cfd8dc;">
@@ -97,100 +101,80 @@
 
                 <!-- 7. Параметры SMPP -->
                 <div ng-if="item.connector_proto_id===1">
-
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Host</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control"
-                             ng-model="smpp.url" required>
+                      <input type="text" class="form-control" ng-model="smpp.url" required>
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Port</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control"
-                             ng-model="smpp.port" required>
+                      <input type="text" class="form-control" ng-model="smpp.port" required>
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label class="col-sm-2 control-label">SMSC Username</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control"
-                             ng-model="smpp.smsc_username" required>
+                      <input type="text" class="form-control" ng-model="smpp.smsc_username" required>
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label class="col-sm-2 control-label">SMSC Password</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control"
-                             ng-model="smpp.smsc_password" required>
+                      <input type="text" class="form-control" ng-model="smpp.smsc_password" required>
                     </div>
                   </div>
 
-                  <!-- Кнопки действий SMPP -->
                   <div class="form-group">
                     <div class="col-sm-10 col-sm-offset-2">
                       <button type="button" class="btn btn-info btn-sm"
-                              ng-click="modifyConfig()" ng-disabled="form.$invalid">
-                        Modify SMPP
-                      </button>
+                              ng-click="modifyConfig()" ng-disabled="form.$invalid">Modify SMPP</button>
                       <button type="button" class="btn btn-danger btn-sm"
-                              ng-click="deleteConfig()">
-                        Delete SMPP
-                      </button>
+                              ng-click="deleteConfig()">Delete SMPP</button>
                     </div>
                   </div>
                 </div>
 
                 <!-- 8. Параметры REST -->
                 <div ng-if="item.connector_proto_id===2">
-
                   <div class="form-group">
                     <label class="col-sm-2 control-label">URL</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control"
-                             ng-model="rest.url" required>
+                      <input type="text" class="form-control" ng-model="rest.url" required>
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Method</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control"
-                             ng-model="rest.method" required>
+                      <input type="text" class="form-control" ng-model="rest.method" required>
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Content-Type</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control"
-                             ng-model="rest.contentType" required>
+                      <input type="text" class="form-control" ng-model="rest.contentType" required>
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Authorization-Token</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control"
-                             ng-model="rest.authToken">
+                      <input type="text" class="form-control" ng-model="rest.authToken">
                     </div>
                   </div>
 
-                  <!-- Кнопки действий REST -->
                   <div class="form-group">
                     <div class="col-sm-10 col-sm-offset-2">
                       <button type="button" class="btn btn-info btn-sm"
-                              ng-click="modifyConfig()" ng-disabled="form.$invalid">
-                        Modify API
-                      </button>
+                              ng-click="modifyConfig()" ng-disabled="form.$invalid">Modify API</button>
                       <button type="button" class="btn btn-danger btn-sm"
-                              ng-click="deleteConfig()">
-                        Delete API
-                      </button>
+                              ng-click="deleteConfig()">Delete API</button>
                     </div>
                   </div>
                 </div>

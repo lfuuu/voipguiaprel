@@ -10,12 +10,10 @@ use yii\db\ActiveRecord;
  * @property string $description
  * @property string $ip
  * @property string $host
+ * @property string $type
  */
 class SmsGate extends ActiveRecord
 {
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return 'auth.sms_gate';
@@ -34,15 +32,13 @@ class SmsGate extends ActiveRecord
         return $item;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
             [['id'], 'integer'],
-            [['name', 'description', 'ip', 'host'], 'string'],
+            [['name', 'description', 'ip', 'host', 'type'], 'string'],
             [['name'], 'required'],
+            ['type', 'in', 'range' => ['MCMCN', 'Yate']],
         ];
     }
 }

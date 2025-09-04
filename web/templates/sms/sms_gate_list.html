@@ -32,6 +32,14 @@
         </a>
         </th>
         <th>
+        <a href="#" ng-click="sortType = 'type'; sortReverse = !sortReverse">
+            Тип
+            <span ng-show="sortType=='type' && sortReverse" class="caret-down"></span>
+            <span ng-show="sortType=='type' && !sortReverse" class="caret-up"></span>
+        </a>
+        </th>
+
+        <th>
         <a href="#" ng-click="sortType = 'ip'; sortReverse = !sortReverse">
             IP
             <span ng-show="sortType=='ip' && sortReverse" class="caret-down"></span>
@@ -62,6 +70,7 @@
                     | trunkFilter:searchQuery:filterFields">
         <td style="cursor:pointer" ng-click="clickItem(item)">{{item.id}}</td>
         <td style="cursor:pointer" ng-click="clickItem(item)">{{item.name}}</td>
+        <td style="cursor:pointer" ng-click="clickItem(item)">{{item.type}}</td>
         <td style="cursor:pointer" ng-click="clickItem(item)">{{item.ip}}</td>
         <td style="cursor:pointer" ng-click="clickItem(item)">{{item.host}}</td>
         <td style="cursor:pointer" ng-click="clickItem(item)">{{item.description}}</td>
