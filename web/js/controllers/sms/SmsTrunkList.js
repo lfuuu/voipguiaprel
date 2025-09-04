@@ -32,7 +32,6 @@ var SmsTrunkListCtrl = function($scope, SmsTrunk, Redirect, $window, SmsList) {
       var smppList = results[0] || [];
       var apiList  = results[1] || [];
       var routeList = results[2] || [];
-e
       routeTableById = {};
       routeList.forEach(function(r){
         if (r && r.id != null) routeTableById[r.id] = r;
