@@ -13,6 +13,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use yii\web\HttpException;
 use yii\web\Response;
 use yii\web\ForbiddenHttpException;
+use app\exceptions\FormValidationException; // <-- добавлено
 
 class ApiPricelistController extends JsonController
 {
@@ -34,7 +35,6 @@ class ApiPricelistController extends JsonController
         $modelName = $this->modelName;
 
         $where = [];
-
         foreach ($this->readWhere as $param) {
             $where[$param] = $this->request[$param];
         }
@@ -84,7 +84,6 @@ class ApiPricelistController extends JsonController
             } else {
                 $result['log'] = ['data_before' => self::getDataForLog($item)];
             }
-
         } else {
             if (!\Yii::$app->user->can($this->createPermission)) {
                 throw new ForbiddenHttpException('Access denied');
@@ -104,9 +103,25 @@ class ApiPricelistController extends JsonController
                 throw new FormValidationException($item);
             }
 
+            // ---- СОХРАНЕНИЕ/ОБНОВЛЕНИЕ ПУНКТОВ + СБОР ИХ ID ----
+            $incomingIds = [];
+
             if (isset($this->request['items'])) {
                 foreach ($this->request['items'] as $apiItem) {
-                    if (!$currentApiItem = ApiPricelistItem::findOne(['id' => $apiItem['id']])) {
+
+                    if (!empty($apiItem['id'])) {
+                        $incomingIds[] = (int)$apiItem['id'];
+                    }
+
+                    // Гарантируем привязку к текущему прайс-листу
+                    $apiItem['pricelist_id'] = $item->id;
+
+                    $currentApiItem = null;
+                    if (!empty($apiItem['id'])) {
+                        $currentApiItem = ApiPricelistItem::findOne(['id' => $apiItem['id']]);
+                    }
+
+                    if ($currentApiItem === null) {
                         $currentApiItem = ApiPricelistItem::create($apiItem, $item);
                     } else {
                         foreach ($apiItem as $field => $value) {
@@ -117,9 +132,21 @@ class ApiPricelistController extends JsonController
                     if (!$currentApiItem->save()) {
                         throw new FormValidationException($currentApiItem);
                     }
-        
+                }
+
+                // ---- СИНХРОНИЗАЦИЯ (УДАЛЕНИЕ ОТСУТСТВУЮЩИХ) ----
+                if (count($incomingIds) > 0) {
+                    ApiPricelistItem::deleteAll([
+                        'and',
+                        ['pricelist_id' => $item->id],
+                        ['not in', 'id', $incomingIds],
+                    ]);
+                } else {
+                    // Пришёл пустой список — удалить все строки прайс-листа
+                    ApiPricelistItem::deleteAll(['pricelist_id' => $item->id]);
                 }
             }
+            // -----------------------------------------------
 
             $this->performAfterSaveActions($item, $this->request);
 
@@ -143,7 +170,6 @@ class ApiPricelistController extends JsonController
         $modelName = $this->modelName;
 
         $where = [];
-
         foreach ($this->readWhere as $param) {
             $where[$param] = $this->request[$param];
         }
@@ -177,7 +203,8 @@ class ApiPricelistController extends JsonController
         }
     }
 
-    public function actionRestore() {
+    public function actionRestore()
+    {
         if (!\Yii::$app->user->can($this->editPermission)) {
             throw new ForbiddenHttpException('Access denied');
         }
@@ -202,7 +229,7 @@ class ApiPricelistController extends JsonController
             ->addParams([':old_pricelist_id' => $this->request['id']])
             ->one();
 
-            return ['id' => $result['id']];
+        return ['id' => $result['id']];
     }
 
     public function actionCopyAndMultiply()
@@ -213,7 +240,7 @@ class ApiPricelistController extends JsonController
 
         $multiplier = isset($this->request['multiplier']) ? (float)$this->request['multiplier'] : 1;
         if ($multiplier <= 0) {
-            throw new Exception('Неверный множитель');
+            throw new \Exception('Неверный множитель');
         }
 
         $result = (new Query())
@@ -224,10 +251,10 @@ class ApiPricelistController extends JsonController
             ])
             ->one();
 
-            return ['id' => $result['id']];
+        return ['id' => $result['id']];
     }
 
-      public function actionExportToExcel()
+    public function actionExportToExcel()
     {
         // Проверка прав на чтение
         if (!\Yii::$app->user->can($this->listPermission)) {

@@ -1,6 +1,13 @@
-var ApiBillingApiPricelistEditCtrl = function($rootScope, $scope, ApiBillingApiPricelist, params, $modalInstance) {
+var ApiBillingApiPricelistEditCtrl = function (
+    $rootScope,
+    $scope,
+    ApiBillingApiPricelist,
+    params,
+    $modalInstance,
+    $window // <-- добавлено, т.к. используется в exportToExcel
+) {
     if (params.id) {
-        ApiBillingApiPricelist.get({id: params.id}).then(function (data) {
+        ApiBillingApiPricelist.get({ id: params.id }).then(function (data) {
             $scope.item = data;
         });
     } else {
@@ -14,16 +21,26 @@ var ApiBillingApiPricelistEditCtrl = function($rootScope, $scope, ApiBillingApiP
         update: function (e, ui) {
             var sortBlocked = false;
 
+            var dropMin, dropMax;
             if (ui.item.sortable.index < ui.item.sortable.dropindex) {
-                var dropMin = ui.item.sortable.index;
-                var dropMax = ui.item.sortable.dropindex;
+                dropMin = ui.item.sortable.index;
+                dropMax = ui.item.sortable.dropindex;
             } else {
-                var dropMin = ui.item.sortable.dropindex;
-                var dropMax = ui.item.sortable.index;
+                dropMin = ui.item.sortable.dropindex;
+                dropMax = ui.item.sortable.index;
+            }
+
+            // Безопасность: routes может не быть у прайс-листа
+            if (!$scope.item.routes) {
+                return;
             }
 
             for (var routeKey in $scope.item.routes) {
-                if (routeKey >= dropMin && routeKey <= dropMax && $scope.item.routes[routeKey]['is_locked']) {
+                if (
+                    routeKey >= dropMin &&
+                    routeKey <= dropMax &&
+                    $scope.item.routes[routeKey]['is_locked']
+                ) {
                     sortBlocked = true;
                 }
             }
@@ -51,15 +68,17 @@ var ApiBillingApiPricelistEditCtrl = function($rootScope, $scope, ApiBillingApiP
             api_id: '',
             api_method_id: '',
             enabled: true
+            // id не задаём — сервер различит новые/старые по наличию id
         });
     };
 
     $scope.removePricelistItem = function (index) {
         $scope.item.items.splice(index, 1);
     };
-    $scope.exportToExcel = function() {
-        ApiBillingApiPricelist.exportToExcel({ id: $scope.item.id })
-            .then(function(response) {
+
+    $scope.exportToExcel = function () {
+        ApiBillingApiPricelist.exportToExcel({ id: $scope.item.id }).then(
+            function (response) {
                 var blob = new Blob([response.data], {
                     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 });
@@ -71,9 +90,11 @@ var ApiBillingApiPricelistEditCtrl = function($rootScope, $scope, ApiBillingApiP
                 a.click();
                 URL.revokeObjectURL(url);
                 document.body.removeChild(a);
-            }, function(err) {
+            },
+            function (err) {
                 console.error('Export error', err);
                 $window.alert('Не удалось экспортировать прайс-лист.');
-            });
+            }
+        );
     };
 };
