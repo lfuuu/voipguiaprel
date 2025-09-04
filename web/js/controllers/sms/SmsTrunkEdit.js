@@ -1,8 +1,5 @@
-var SmsTrunkEditCtrl = function(
-  $scope, SmsTrunk, SmsList, params, $modalInstance
-) {
-  $scope.MCMCN_ID = 2;
-  $scope.AGG_ID   = null;
+var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstance) {
+  $scope.AGG_ID = null;
 
   $scope.smpp = {};
   $scope.rest = {};
@@ -12,11 +9,22 @@ var SmsTrunkEditCtrl = function(
   $scope.protocolList      = [];
   $scope.routeTableList    = [];
 
-  // 1) Загружаем шлюзы
   SmsList.gateways().then(function(gates) {
-    $scope.gatewayList = gates.map(function(g){ return { id: g.id, name: g.name }; });
+    $scope.gatewayList = gates.map(function(g){
+      return { id: g.id, name: g.name, type: g.type };
+    });
     initItem();
   });
+
+  function findGate(id) {
+    return $scope.gatewayList.find(function(g){ return g.id === id; }) || null;
+  }
+
+  function recalcFlags() {
+    var gate = findGate($scope.item.sms_gate_id);
+    $scope.selectedGate = gate;
+    $scope.isMCMCN      = !!(gate && gate.type === 'MCMCN');
+  }
 
   function initItem() {
     if (!params.id) {
@@ -30,6 +38,7 @@ var SmsTrunkEditCtrl = function(
       };
       SmsList.routeTable({ server_id: 9 }).then(function(rt){ $scope.routeTableList = rt; });
       setupWatchers();
+      recalcFlags();
       return;
     }
 
@@ -44,6 +53,7 @@ var SmsTrunkEditCtrl = function(
           connector_proto_id:      data.connector_proto_id,
           a2psms_route_table_id:   data.a2psms_route_table_id
         };
+        recalcFlags();
         return SmsList.routeTable({ server_id: data.server_id });
       })
       .then(function(rt) {
@@ -53,7 +63,7 @@ var SmsTrunkEditCtrl = function(
       .then(function(types) {
         $scope.connectorTypeList = types;
         types.forEach(function(t){ if (t.type === 'agregat') $scope.AGG_ID = t.id; });
-        if ($scope.item.sms_gate_id === $scope.MCMCN_ID && $scope.item.connector_type_id === $scope.AGG_ID) {
+        if ($scope.isMCMCN && $scope.item.connector_type_id === $scope.AGG_ID) {
           return SmsList.connectorProtos().then(function(plist){ $scope.protocolList = plist; });
         }
       })
@@ -65,6 +75,7 @@ var SmsTrunkEditCtrl = function(
 
   function setupWatchers() {
     $scope.$watch('item.sms_gate_id', function(gateId) {
+      recalcFlags();
       if (!gateId) {
         $scope.connectorTypeList = [];
         $scope.AGG_ID = null;
@@ -78,8 +89,9 @@ var SmsTrunkEditCtrl = function(
     });
 
     $scope.$watchGroup(['item.sms_gate_id','item.connector_type_id'], function(vals) {
-      var gate = vals[0], type = vals[1];
-      if (gate === $scope.MCMCN_ID && type === $scope.AGG_ID) {
+      recalcFlags();
+      var isAgg = ($scope.item.connector_type_id === $scope.AGG_ID);
+      if ($scope.isMCMCN && isAgg) {
         SmsList.connectorProtos().then(function(plist){
           $scope.protocolList = plist;
           loadExistingConfig();
@@ -126,12 +138,12 @@ var SmsTrunkEditCtrl = function(
     $scope.item.route_name = $scope.item.name;
     SmsTrunk.save($scope.item).then(function(res){
       var trunkId  = res.id || $scope.item.id;
-      var isMC     = $scope.item.sms_gate_id === $scope.MCMCN_ID;
       var isAgg    = $scope.item.connector_type_id === $scope.AGG_ID;
       var protoObj = $scope.protocolList.find(function(p){ return p.id === $scope.item.connector_proto_id; });
       var pt       = protoObj && protoObj.type;
 
-      if (isMC && isAgg && pt === 'smpp') {
+      // вместо сравнения по ID — опора на тип шлюза:
+      if ($scope.isMCMCN && isAgg && pt === 'smpp') {
         return SmsTrunk.addSmppConfiguration({
           trunk_id:        trunkId,
           name:            $scope.item.name,
@@ -142,7 +154,7 @@ var SmsTrunkEditCtrl = function(
         }).then(function(){ $modalInstance.close(); });
       }
 
-      if (isMC && isAgg && pt === 'rest') {
+      if ($scope.isMCMCN && isAgg && pt === 'rest') {
         return SmsTrunk.addApiConfiguration({
           trunk_id:             trunkId,
           name:                 $scope.item.name,
@@ -157,7 +169,6 @@ var SmsTrunkEditCtrl = function(
     });
   };
 
-  // --- новые действия: Modify/Delete по текущему типу протокола ---
   function currentProtoType() {
     var p = $scope.protocolList.find(function(x){ return x.id === $scope.item.connector_proto_id; });
     return p ? p.type : null;
@@ -165,7 +176,7 @@ var SmsTrunkEditCtrl = function(
 
   $scope.modifyConfig = function() {
     var t = currentProtoType();
-    var trunkId = $scope.item.id; // для modify/delete нужен существующий trunk
+    var trunkId = $scope.item.id;
     if (!trunkId) return;
 
     if (t === 'smpp') {
