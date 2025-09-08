@@ -6,30 +6,28 @@ use app\classes\JsonController;
 use app\classes\traits\TestResult;
 use app\models\auth\SmsTrunk;
 use app\models\ServerOcs;
-use app\models\auth\SmsGate;
+use yii\db\Expression;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 
 class TestAuthController extends JsonController
 {
     use TestResult;
+    const TEST_RESULT_DEFAULT_DEPTH = 1;
+    const TEST_RESULT_INITIAL_DEPTH = 2;
 
-    const TEST_RESULT_DEFAULT_DEPTH  = 1;
-    const TEST_RESULT_INITIAL_DEPTH  = 2;
+    const TEST_RESULT_DIVIDER_START = '2B2EKSTARTJSON';
+    const TEST_RESULT_DIVIDER_STOP  = '2B2EKSTOPJSON';
+    protected $modelName            = 'app\models\auth\SmsTestAuth';
+    protected $idParamName          = 'id';
+    protected $nameParamName        = 'name';
+    protected $readWhere            = ['server_id'];
+    protected $createPermission     = 'sms_test_auth_create';
+    protected $listPermission       = 'sms_test_auth_list';
+    protected $editPermission       = 'sms_test_auth_edit';
+    protected $deletePermission     = 'sms_test_auth_delete';
+    private   $stepParamName        = 'nodes';
 
-    const TEST_RESULT_DIVIDER_START  = '2B2EKSTARTJSON';
-    const TEST_RESULT_DIVIDER_STOP   = '2B2EKSTOPJSON';
-
-    protected $modelName        = 'app\models\auth\SmsTestAuth';
-    protected $idParamName      = 'id';
-    protected $nameParamName    = 'name';
-    protected $readWhere        = ['server_id'];
-    protected $createPermission = 'sms_test_auth_create';
-    protected $listPermission   = 'sms_test_auth_list';
-    protected $editPermission   = 'sms_test_auth_edit';
-    protected $deletePermission = 'sms_test_auth_delete';
-
-    private $stepParamName      = 'nodes';
     private $_oldTestResultTypes = ['ERROR', 'RESULT', 'INFO', 'HEADER'];
 
     /**
@@ -47,8 +45,13 @@ class TestAuthController extends JsonController
         $testGroupId = $searchArray['group_id'] ?? '';
         $gateId      = $searchArray['gate_id']  ?? '';
 
-        $groupWhere = $testGroupId === '' ? 'true' : ['auth.a2p_test_auth.a2p_testgroup_id' => $testGroupId];
-        $gateWhere  = $gateId      === '' ? []     : ['auth.a2p_test_auth.gate_id'           => $gateId];
+        $groupWhere = $testGroupId === ''
+            ? 'true'
+            : ['auth.a2p_test_auth.a2p_testgroup_id' => $testGroupId];
+
+        $gateWhere = $gateId === ''
+            ? []
+            : ['auth.a2p_test_auth.gate_id' => $gateId];
 
         $query = $modelName::find()
             ->select([
@@ -69,20 +72,20 @@ class TestAuthController extends JsonController
             ->asArray();
 
         if (!empty($searchArray['name'])) {
-            $query->andWhere('auth.a2p_test_auth.name ilike :name')
-                  ->addParams([':name' => '%' . $searchArray['name'] . '%']);
+            $query->andWhere('auth.a2p_test_auth.name ilike :name');
+            $query->addParams([':name' => '%' . $searchArray['name'] . '%']);
         }
         if (!empty($searchArray['trunk'])) {
             $query->andWhere(['like', 'r.name', $searchArray['trunk']]);
         }
         if (!empty($searchArray['id'])) {
-            $query->andWhere('auth.a2p_test_auth.id = :id')
-                  ->addParams([':id' => $searchArray['id']]);
+            $query->andWhere('auth.a2p_test_auth.id = :id');
+            $query->addParams([':id' => $searchArray['id']]);
         }
-        if (($searchArray['result'] ?? '') !== '') {
-            if ($searchArray['result'] === 'success') {
+        if ($searchArray['result'] !== '') {
+            if ($searchArray['result'] == 'success') {
                 $query->andWhere(['trs.passed' => true]);
-            } elseif ($searchArray['result'] === 'failure') {
+            } elseif ($searchArray['result'] == 'failure') {
                 $query->andWhere(['trs.passed' => false]);
             }
         }
@@ -93,66 +96,133 @@ class TestAuthController extends JsonController
     public function actionResult()
     {
         if (!\Yii::$app->user->can($this->listPermission)) {
-            throw new ForbiddenHttpException('Access denied');
+            throw new \yii\web\ForbiddenHttpException('Access denied');
         }
 
         $modelName = $this->modelName;
-        $item = $modelName::findOne($this->request['id']);
+        $item      = $modelName::findOne($this->request['id']);
         if ($item === null) {
-            throw new HttpException(404, $this->modelName . ' не найден');
+            throw new \yii\web\HttpException(404, $this->modelName . ' не найден');
         }
 
-        $server = ServerOcs::findOne($item->server_id);
+        $server = \app\models\ServerOcs::findOne($item->server_id);
         if ($server === null) {
-            throw new HttpException(404, 'Сервер для ' . $this->modelName . ' не найден');
+            throw new \yii\web\HttpException(404, 'Сервер для ' . $this->modelName . ' не найден');
         }
 
-        $gate = $item->gate_id ? SmsGate::findOne($item->gate_id) : null;
-        $gateType = strtoupper(trim((string)($gate->type ?? ''))); // 'MCMCN' или 'YATE' и т.п.
+        // тип шлюза (MCMCN -> /api/get.dst_route как GET; иначе /api/get.dst_route_smsc как POST JSON)
+        $gate     = \app\models\auth\SmsGate::findOne($item->gate_id);
+        $isMCMCN  = $gate && strtoupper((string)$gate->type) === 'MCMCN';
 
-        $isReserve = (!empty($this->request['is_reserve']) && $this->request['is_reserve'] === true);
-        $baseUrl   = $isReserve ? $server->camel_reserve : $server->camel_gw;
+        $isEuropean = \Yii::$app->params['isEuropean'] ?? false;
 
-        // Достаём host и принудительно уходим на порт 8103
-        $parsed = parse_url($baseUrl);
-        $host   = $parsed['host'] ?? ($parsed['path'] ?? $baseUrl);
-        $host   = preg_replace('~^https?://~i', '', (string)$host);
-        $host   = preg_replace('~/.*$~', '', $host);
-        $base   = 'http://' . $host . ':8103';
+        // Базовый host:EU или из camel_gw/reserve
+        if ($isEuropean) {
+            $base = 'http://10.250.30.48:8103';
+            \Yii::info(sprintf(
+                '[SmsTestAuth][EU] endpoint base: %s | server_id=%s | test_id=%s | is_reserve=%s | gate_type=%s',
+                $base,
+                (string)$server->id,
+                (string)$item->id,
+                var_export($this->request['is_reserve'] ?? null, true),
+                $gate->type ?? '(null)'
+            ), __METHOD__);
+        } else {
+            $isReserve = (!empty($this->request['is_reserve']) && $this->request['is_reserve'] === true);
+            $baseUrl   = $isReserve ? $server->camel_reserve : $server->camel_gw;
+            $parsed    = parse_url($baseUrl);
+            $host      = $parsed['host'] ?? ($parsed['path'] ?? $baseUrl);
+            $host      = preg_replace('~^https?://~i', '', (string)$host);
+            $host      = preg_replace('~/.*$~', '', $host);
+            $base      = 'http://' . $host . ':8103';
+        }
 
-        $trunk = SmsTrunk::findOne(['id' => $item->trunk_name]);
+        // Конечный endpoint по типу
+        $endpoint = $base . ($isMCMCN ? '/api/get.dst_route' : '/api/get.dst_route_smsc');
+
+        $trunk = \app\models\auth\SmsTrunk::findOne(['id' => $item->trunk_name]);
         if ($trunk === null) {
-            throw new HttpException(404, 'Транк не найден');
+            throw new \yii\web\HttpException(404, 'Транк не найден');
         }
 
-        // --- HTTP helpers (GET / POST) ---
-        $sendGet = function (string $fullUrl, array $headers = []) {
+        // --- Ветки: MCMCN -> GET query; иначе POST JSON ---
+        if ($isMCMCN) {
+            // GET /api/get.dst_route?a_num=...&b_num=...&src_route=...
+            $query = [
+                'a_num'    => (string)$item->src_number,
+                'b_num'    => (string)$item->dst_number,
+                'src_route'=> (string)$trunk->name,
+            ];
+            $fullUrl = $endpoint . '?' . http_build_query($query);
+
             $ch = curl_init($fullUrl);
             curl_setopt_array($ch, [
                 CURLOPT_RETURNTRANSFER    => true,
                 CURLOPT_HTTPGET           => true,
-                CURLOPT_HTTPHEADER        => $headers,
                 CURLOPT_HEADER            => true,
                 CURLOPT_TIMEOUT_MS        => 15000,
                 CURLOPT_CONNECTTIMEOUT_MS => 1000,
             ]);
-            $raw    = curl_exec($ch);
-            $status = 0;
-            $hdrSz  = 0;
+            $raw      = curl_exec($ch);
+            $status   = 0;
+            $hdrSize  = 0;
             if ($raw !== false) {
-                $status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-                $hdrSz  = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+                $status  = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+                $hdrSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
             }
             curl_close($ch);
-            if ($raw === false) {
-                return [null, 0, []];
-            }
-            $hdrs = preg_split("/\r\n|\n|\r/", trim(substr($raw, 0, $hdrSz)));
-            $body = substr($raw, $hdrSz);
-            return [$body, $status, $hdrs];
-        };
 
-        $sendPost = function (string $endpoint, string $body, array $headers) {
+            if ($raw === false) {
+                throw new \yii\web\HttpException(502, 'Ошибка сети при обращении к внешнему API');
+            }
+
+            $headersRaw = substr($raw, 0, $hdrSize);
+            $bodyRaw    = substr($raw, $hdrSize);
+            $hdrsArr    = preg_split("/\r\n|\n|\r/", trim($headersRaw));
+
+            if ($status >= 407) {
+                throw new \yii\web\HttpException(502, 'Внешний API вернул ошибку: HTTP ' . $status . ' — ' . mb_strimwidth($bodyRaw, 0, 800, '…'));
+            }
+
+            $requestDebug = [
+                'endpoint'     => $endpoint,
+                'http_code'    => $status,
+                'headers'      => $hdrsArr,
+                'payload_mode' => 'query',
+                'query'        => $query,
+                'full_url'     => $fullUrl,
+            ];
+
+            // Ключ кэша
+            $apiParams = [
+                'user' => \Yii::$app->user->getId(),
+                'date' => date('Y-m-d H:i:s'),
+            ];
+            $requestForKey = rtrim($endpoint, '/') . '?' . http_build_query($apiParams);
+            $key = md5($requestForKey);
+
+            // Парсим и сохраняем результат
+            $result = $this->generateNewResult($bodyRaw, $key);
+
+            return [
+                'item'   => $item->toArray(),
+                'name'   => 'root',
+                'key'    => $key,
+                'result' => $result,
+                'debug'  => $requestDebug,
+            ];
+        }
+
+        // --- Обычный POST JSON на /api/get.dst_route_smsc ---
+        $payloadArr = [
+            'trunk'  => $trunk->name,
+            'caller' => $item->src_number,
+            'called' => $item->dst_number,
+            'trace'  => "true",
+        ];
+        $payloadJson = json_encode($payloadArr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        $send = function (string $body, array $headers) use ($endpoint) {
             $ch = curl_init($endpoint);
             curl_setopt_array($ch, [
                 CURLOPT_RETURNTRANSFER    => true,
@@ -163,79 +233,72 @@ class TestAuthController extends JsonController
                 CURLOPT_TIMEOUT_MS        => 15000,
                 CURLOPT_CONNECTTIMEOUT_MS => 1000,
             ]);
-            $raw    = curl_exec($ch);
-            $status = 0;
-            $hdrSz  = 0;
+            $raw      = curl_exec($ch);
+            $errno    = curl_errno($ch);
+            $errstr   = curl_error($ch);
+            $status   = 0;
+            $hdrSize  = 0;
             if ($raw !== false) {
-                $status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-                $hdrSz  = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+                $status  = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+                $hdrSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
             }
             curl_close($ch);
             if ($raw === false) {
-                return [null, 0, []];
+                return [null, $status, [], $errno . ':' . $errstr];
             }
-            $hdrs = preg_split("/\r\n|\n|\r/", trim(substr($raw, 0, $hdrSz)));
-            $resp = substr($raw, $hdrSz);
-            return [$resp, $status, $hdrs];
+            $headersRaw = substr($raw, 0, $hdrSize);
+            $bodyRaw    = substr($raw, $hdrSize);
+            $headersArr = preg_split("/\r\n|\n|\r/", trim($headersRaw));
+            return [$bodyRaw, $status, $headersArr, null];
         };
 
-        // --- Ветки по типу шлюза ---
-        $debug = [];
-        if ($gateType === 'MCMCN') {
-            // MCN → GET /api/get.dst_route?a_num=&b_num=&src_route=
-            $endpoint = $base . '/api/get.dst_route';
-            $query = [
-                'a_num'    => $item->src_number,
-                'b_num'    => $item->dst_number,
-                'src_route'=> $trunk->name,
-            ];
-            $fullUrl = $endpoint . '?' . http_build_query($query);
+        [$resp1, $code1, $hdrs1, $err1] = $send($payloadJson, [
+            'Content-Type: application/json',
+            'Accept: application/json',
+        ]);
 
-            list($bodyUsed, $codeUsed, $headersUsed) = $sendGet($fullUrl, [
-                'Accept: application/json',
-            ]);
+        $requestDebug = [
+            'endpoint'     => $endpoint,
+            'payload_mode' => 'json-object',
+            'payload'      => $payloadArr,
+            'http_code'    => $code1,
+            'headers'      => $hdrs1,
+        ];
 
-            $debug = [
-                'endpoint'     => $endpoint,
-                'http_code'    => $codeUsed,
-                'headers'      => $headersUsed,
-                'payload_mode' => 'query',
-                'query'        => $query,
-                'full_url'     => $fullUrl,
-                'body_sample'  => mb_strimwidth((string)$bodyUsed, 0, 600, '…'),
-            ];
-        } else {
-            // Yate/другие → POST JSON в /api/get.dst_route_smsc
-            $endpoint = $base . '/api/get.dst_route_smsc';
-            $payloadArr = [
-                'trunk'  => $trunk->name,
-                'caller' => $item->src_number,
-                'called' => $item->dst_number,
-                'trace'  => "true",
-            ];
-            $payloadJson = json_encode($payloadArr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $bodyUsed    = $resp1;
+        $codeUsed    = $code1;
 
-            list($bodyUsed, $codeUsed, $headersUsed) = $sendPost($endpoint, $payloadJson, [
+        $oatppParseFail =
+            (is_string($resp1) && stripos($resp1, 'preparseString') !== false)
+            || (is_string($resp1) && stripos($resp1, 'expected') !== false);
+
+        if ($code1 >= 400 && $oatppParseFail) {
+            $payloadStringified = json_encode($payloadJson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            [$resp2, $code2, $hdrs2, $err2] = $send($payloadStringified, [
                 'Content-Type: application/json',
                 'Accept: application/json',
             ]);
 
-            $debug = [
-                'endpoint'     => $endpoint,
-                'http_code'    => $codeUsed,
-                'headers'      => $headersUsed,
-                'payload_mode' => 'json-object',
-                'payload'      => $payloadArr,
-                'body_sample'  => mb_strimwidth((string)$bodyUsed, 0, 600, '…'),
+            $requestDebug = [
+                'endpoint'       => $endpoint,
+                'payload_mode'   => 'json-string',
+                'payload_string' => $payloadJson,
+                'http_code'      => $code2,
+                'headers'        => $hdrs2,
+                'first_attempt'  => [
+                    'http_code' => $code1,
+                    'body'      => mb_strimwidth((string)$resp1, 0, 500, '…'),
+                ],
             ];
+            $bodyUsed = $resp2;
+            $codeUsed = $code2;
         }
 
         if ($bodyUsed === null) {
-            throw new HttpException(502, 'Ошибка сети при обращении к внешнему API');
+            throw new \yii\web\HttpException(502, 'Ошибка сети при обращении к внешнему API');
         }
-        // Не валим на 406: CAMEL иногда так отвечает, но тело годное.
         if ($codeUsed >= 407) {
-            throw new HttpException(502, 'Внешний API вернул ошибку: HTTP ' . $codeUsed . ' — ' . mb_strimwidth($bodyUsed, 0, 800, '…'));
+            throw new \yii\web\HttpException(502, 'Внешний API вернул ошибку: HTTP ' . $codeUsed . ' — ' . mb_strimwidth($bodyUsed, 0, 800, '…'));
         }
 
         // Ключ кэша
@@ -243,7 +306,7 @@ class TestAuthController extends JsonController
             'user' => \Yii::$app->user->getId(),
             'date' => date('Y-m-d H:i:s'),
         ];
-        $requestForKey = rtrim($debug['endpoint'] ?? $base, '/') . '?' . http_build_query($apiParams);
+        $requestForKey = rtrim($endpoint, '/') . '?' . http_build_query($apiParams);
         $key = md5($requestForKey);
 
         // Парсим и сохраняем результат
@@ -254,102 +317,41 @@ class TestAuthController extends JsonController
             'name'   => 'root',
             'key'    => $key,
             'result' => $result,
-            'debug'  => $debug,
+            'debug'  => $requestDebug,
         ];
     }
 
-    /**
-     * Устойчивый парсер JSON-ответа CAMEL:
-     *  - поддерживает trace-как-строку (в т.ч. двойное экранирование);
-     *  - добавляет верхний RESULT из dst_route/result, даже если нет дерева trace;
-     *  - есть фолбэк извлечения dst_route/result регекспом из сырого тела.
-     */
     private function generateNewResult($resultString, $key)
     {
-        $raw = trim(str_replace(["\r", "\t"], "", (string)$resultString));
+        $resultString = str_replace(["\r", "\n", "\t"], "", (string)$resultString);
+        $tempResult   = json_decode($resultString, true);
 
-        // Попытка №1: обычный JSON
-        $temp = json_decode(str_replace("\n", "", $raw), true);
-
-        // Фолбэк: если вообще не JSON
-        if (!is_array($temp)) {
-            $nodes = [];
-            $dst = null; $res = null;
-            if (preg_match('~"dst_route"\s*:\s*"([^"]*)"~u', $raw, $m)) $dst = $m[1];
-            if (preg_match('~"result"\s*:\s*"([^"]*)"~u',    $raw, $m)) $res = strtoupper($m[1]);
-            if ($dst !== null || $res !== null) {
-                $nodes[] = [
-                    'type'    => 'RESULT',
-                    'message' => sprintf('RESULT|%s|: %s', $res ?: '', $dst ?: ''),
-                    'color'   => 'green',
-                    'path'    => 0,
-                ];
-            }
-            $result = $this->processResult($nodes, true);
-            \Yii::$app->cache->set($key, $result);
-            return $this->findByPath($result, '', 4);
-        }
-
-        // trace может быть объектом/массивом/строкой JSON
-        $trace = $temp['trace'] ?? [];
-        $decodeOnce = function ($s) {
-            $d = json_decode($s, true);
-            return (json_last_error() === JSON_ERROR_NONE) ? $d : null;
-        };
-        if (is_string($trace)) {
-            $t1 = $decodeOnce($trace);
-            if (is_array($t1)) {
-                $trace = $t1;
-            } else {
-                $t2 = $decodeOnce(stripslashes($trace));
-                if (is_array($t2)) {
-                    $trace = $t2;
-                }
+        // Если trace — строка, раскодируем её, иначе оставляем как есть
+        if (isset($tempResult['trace']) && is_string($tempResult['trace'])) {
+            $decoded = json_decode($tempResult['trace'], true);
+            if (is_array($decoded)) {
+                $tempResult['trace'] = $decoded;
             }
         }
 
-        $extractNodes = function ($t) {
-            if (is_array($t)) {
-                if (isset($t['nodes']) && is_array($t['nodes'])) return $t['nodes'];
-                if (array_key_exists(0, $t) && is_array($t[0]))  return $t;
-            }
-            return [];
-        };
+        // Фолбэк: если trace пустой (как у /api/get.dst_route), добавим верхний RESULT.
+        $trace = $tempResult['trace'] ?? [];
+        $isEmptyTrace = (empty($trace) || (is_array($trace) && isset($trace['nodes']) && empty($trace['nodes'])));
 
-        $nodes = [];
-
-        // Добавим «шапку»-RESULT, если в корне есть dst_route/result
-        if (array_key_exists('dst_route', $temp) || array_key_exists('result', $temp)) {
-            $dst = isset($temp['dst_route']) ? (string)$temp['dst_route'] : '';
-            $res = isset($temp['result'])    ? strtoupper((string)$temp['result']) : '';
+        if ($isEmptyTrace) {
+            $dst = isset($tempResult['dst_route']) ? (string)$tempResult['dst_route'] : '';
+            $res = isset($tempResult['result'])    ? strtoupper((string)$tempResult['result']) : '';
             if ($dst !== '' || $res !== '') {
-                $nodes[] = [
-                    'type'    => 'RESULT',
+                $trace = [[
+                    'color'   => '',
                     'message' => sprintf('RESULT|%s|: %s', $res, $dst),
-                    'color'   => 'green',
-                    'path'    => 0,
-                ];
-            }
-        }
-
-        $nodes = array_merge($nodes, $extractNodes($trace));
-
-        // Фолбэк, если узлов нет — достаём из сырого тела
-        if (!$nodes) {
-            $dst = null; $res = null;
-            if (preg_match('~"dst_route"\s*:\s*"([^"]*)"~u', $raw, $m)) $dst = $m[1];
-            if (preg_match('~"result"\s*:\s*"([^"]*)"~u',    $raw, $m)) $res = strtoupper($m[1]);
-            if ($dst !== null || $res !== null) {
-                $nodes[] = [
                     'type'    => 'RESULT',
-                    'message' => sprintf('RESULT|%s|: %s', $res ?: '', $dst ?: ''),
-                    'color'   => 'green',
                     'path'    => 0,
-                ];
+                ]];
             }
         }
 
-        $result = $this->processResult($nodes, true);
+        $result = $this->processResult($trace, true);
         \Yii::$app->cache->set($key, $result);
         return $this->findByPath($result, '', 4);
     }
