@@ -319,76 +319,54 @@ class TestAuthController extends JsonController
 
     private function generateNewResult($resultString, $key)
 {
-    // Убираем мусор и декодируем
     $resultString = str_replace(["\r", "\n", "\t"], "", (string)$resultString);
-    $tempResult   = json_decode($resultString, true);
+    $temp = json_decode($resultString, true);
 
-    // --- 1) Построим «шапку» из dst_route/result (если есть) ---
-    $headerNodes = [];
-    if (is_array($tempResult)) {
-        $dstRoute = isset($tempResult['dst_route']) ? (string)$tempResult['dst_route'] : null;
-        $resText  = isset($tempResult['result'])    ? (string)$tempResult['result']    : null;
+    // 1) Шапка из dst_route/result
+    $nodes = [];
+    if (is_array($temp)) {
+        $dst = isset($temp['dst_route']) ? (string)$temp['dst_route'] : null;
+        $res = isset($temp['result'])    ? strtoupper((string)$temp['result']) : null;
 
-        if ($dstRoute !== null || $resText !== null) {
-            // INFO-заголовок
-            $headerNodes[] = [
-                'type'    => 'INFO',
-                'color'   => '',
-                'message' => 'A2P SMS Routing (normalized from /api/get.dst_route)',
-                'path'    => 0,
+        if ($dst !== null || $res !== null) {
+            $nodes[] = [
+                'type' => 'INFO',
+                'color' => '',
+                'message' => 'A2P SMS Routing (/api/get.dst_route)',
+                'path' => 0,
             ];
-
-            // RESULT-строка как в старом стиле
-            $resUp = strtoupper($resText ?? '');
-            if ($resUp === 'ACCEPT' || $resUp === 'REJECT') {
-                $headerNodes[] = [
-                    'type'    => 'RESULT',
-                    'color'   => '',
-                    'message' => sprintf('RESULT|%s|: %s', $resUp, $dstRoute ?? ''),
-                    'path'    => 1,
-                ];
-            } elseif ($resText !== null) {
-                // если пришло что-то иное (например "error"), всё равно отобразим
-                $headerNodes[] = [
-                    'type'    => 'RESULT',
-                    'color'   => '',
-                    'message' => sprintf('RESULT|%s|: %s', strtoupper($resText), $dstRoute ?? ''),
-                    'path'    => 1,
+            if ($res) {
+                $nodes[] = [
+                    'type' => 'RESULT',
+                    'color' => '',
+                    'message' => sprintf('RESULT|%s|: %s', $res, $dst ?? ''),
+                    'path' => 1,
                 ];
             }
         }
     }
 
-    // --- 2) Достаём «узлы» трейса, если они есть в виде массива ---
-    $nodesFromTrace = [];
-    if (isset($tempResult['trace'])) {
-        $trace = $tempResult['trace'];
-        // Если trace пришёл строкой — пробуем декодировать
+    // 2) Достаем подробный трейc, если он есть
+    if (isset($temp['trace'])) {
+        $trace = $temp['trace'];
         if (is_string($trace)) {
-            $decoded = json_decode($trace, true);
-            if (is_array($decoded)) {
-                $trace = $decoded;
-            }
+            $dec = json_decode($trace, true);
+            if (is_array($dec)) $trace = $dec;
         }
-        // Если это объект с полем nodes — берём nodes
         if (is_array($trace) && isset($trace['nodes']) && is_array($trace['nodes'])) {
-            $nodesFromTrace = $trace['nodes'];
-        }
-        // Иногда встречается плоский массив узлов прямо в trace
-        elseif (is_array($trace) && isset($trace[0])) {
-            $nodesFromTrace = $trace;
+            $nodes = array_merge($nodes, $trace['nodes']);
+        } elseif (is_array($trace) && isset($trace[0])) {
+            $nodes = array_merge($nodes, $trace);
         }
     }
 
-    // --- 3) Склеиваем «шапку» и реальные узлы, кормим нашему обработчику ---
-    $toProcess = array_values(array_merge($headerNodes, $nodesFromTrace));
+    // 3) Если ничего не насобирали — не падаем, даем пустой массив
+    $result = $this->processResult($nodes, true);
 
-    $result = $this->processResult($toProcess, true);
-
-    // Кэшируем и возвращаем верхний уровень для дерева
     \Yii::$app->cache->set($key, $result);
     return $this->findByPath($result, '', 4);
 }
+
 
 
 }
