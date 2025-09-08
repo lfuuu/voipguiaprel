@@ -317,56 +317,108 @@ class TestAuthController extends JsonController
 
 
 
-    private function generateNewResult($resultString, $key)
+   private function generateNewResult($resultString, $key)
 {
-    $resultString = str_replace(["\r", "\n", "\t"], "", (string)$resultString);
-    $temp = json_decode($resultString, true);
+    // Нормализация
+    $raw = trim(str_replace(["\r", "\t"], "", (string)$resultString));
 
-    // 1) Шапка из dst_route/result
-    $nodes = [];
-    if (is_array($temp)) {
-        $dst = isset($temp['dst_route']) ? (string)$temp['dst_route'] : null;
-        $res = isset($temp['result'])    ? strtoupper((string)$temp['result']) : null;
+    // Попытка №1: обычный JSON
+    $temp = json_decode($raw, true);
+
+    // Фолбэк: если почему-то не распарсилось — попробуем вынуть dst/result регекспом
+    if (!is_array($temp)) {
+        $nodes = [];
+
+        // Поиском достанем dst_route/result из сырой строки
+        $dst = null; $res = null;
+        if (preg_match('~"dst_route"\s*:\s*"([^"]*)"~u', $raw, $m)) $dst = $m[1];
+        if (preg_match('~"result"\s*:\s*"([^"]*)"~u',    $raw, $m)) $res = strtoupper($m[1]);
 
         if ($dst !== null || $res !== null) {
             $nodes[] = [
-                'type' => 'INFO',
-                'color' => '',
-                'message' => 'A2P SMS Routing (/api/get.dst_route)',
-                'path' => 0,
+                'type'    => 'RESULT',
+                'message' => sprintf('RESULT|%s|: %s', $res ?: '', $dst ?: ''),
+                'color'   => 'green',
+                'path'    => 0,
             ];
-            if ($res) {
-                $nodes[] = [
-                    'type' => 'RESULT',
-                    'color' => '',
-                    'message' => sprintf('RESULT|%s|: %s', $res, $dst ?? ''),
-                    'path' => 1,
-                ];
+        }
+
+        $result = $this->processResult($nodes, true);
+        \Yii::$app->cache->set($key, $result);
+        return $this->findByPath($result, '', 4);
+    }
+
+    // ---- trace может быть объектом, массивом или строкой JSON (иногда дважды) ----
+    $trace = $temp['trace'] ?? [];
+
+    // Если trace — строка: декодируем 1 или 2 раза
+    $decodeOnce = function($s) {
+        $d = json_decode($s, true);
+        return (json_last_error() === JSON_ERROR_NONE) ? $d : null;
+    };
+    if (is_string($trace)) {
+        $t1 = $decodeOnce($trace);
+        if (is_array($t1)) {
+            $trace = $t1;
+        } else {
+            // бывает двойное экранирование
+            $t2 = $decodeOnce(stripslashes($trace));
+            if (is_array($t2)) {
+                $trace = $t2;
             }
         }
     }
 
-    // 2) Достаем подробный трейc, если он есть
-    if (isset($temp['trace'])) {
-        $trace = $temp['trace'];
-        if (is_string($trace)) {
-            $dec = json_decode($trace, true);
-            if (is_array($dec)) $trace = $dec;
+    // Функция извлечения узлов
+    $extractNodes = function ($t) {
+        if (is_array($t)) {
+            if (isset($t['nodes']) && is_array($t['nodes'])) {
+                return $t['nodes'];
+            }
+            if (array_key_exists(0, $t) && is_array($t[0])) {
+                return $t;
+            }
         }
-        if (is_array($trace) && isset($trace['nodes']) && is_array($trace['nodes'])) {
-            $nodes = array_merge($nodes, $trace['nodes']);
-        } elseif (is_array($trace) && isset($trace[0])) {
-            $nodes = array_merge($nodes, $trace);
+        return [];
+    };
+
+    $nodes = [];
+
+    // Если API дал dst_route/result — добавим «шапку»-RESULT (полезно, даже если нет трейс-дерева)
+    if (array_key_exists('dst_route', $temp) || array_key_exists('result', $temp)) {
+        $dst = isset($temp['dst_route']) ? (string)$temp['dst_route'] : '';
+        $res = isset($temp['result'])    ? strtoupper((string)$temp['result']) : '';
+        if ($dst !== '' || $res !== '') {
+            $nodes[] = [
+                'type'    => 'RESULT',
+                'message' => sprintf('RESULT|%s|: %s', $res, $dst),
+                'color'   => 'green',
+                'path'    => 0,
+            ];
         }
     }
 
-    // 3) Если ничего не насобирали — не падаем, даем пустой массив
-    $result = $this->processResult($nodes, true);
+    // Приклеим детальный trace, если есть
+    $nodes = array_merge($nodes, $extractNodes($trace));
 
+    // Если и здесь пусто — возможно, trace в другом поле или не прислали; попробуем ещё из «сырого» тела достать
+    if (!$nodes) {
+        $dst = null; $res = null;
+        if (preg_match('~"dst_route"\s*:\s*"([^"]*)"~u', $raw, $m)) $dst = $m[1];
+        if (preg_match('~"result"\s*:\s*"([^"]*)"~u',    $raw, $m)) $res = strtoupper($m[1]);
+        if ($dst !== null || $res !== null) {
+            $nodes[] = [
+                'type'    => 'RESULT',
+                'message' => sprintf('RESULT|%s|: %s', $res ?: '', $dst ?: ''),
+                'color'   => 'green',
+                'path'    => 0,
+            ];
+        }
+    }
+
+    $result = $this->processResult($nodes, true);
     \Yii::$app->cache->set($key, $result);
     return $this->findByPath($result, '', 4);
 }
-
-
 
 }
