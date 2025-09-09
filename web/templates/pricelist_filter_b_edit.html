@@ -300,11 +300,59 @@
           </div>
         </div>
 
-        <!-- Импорт префиксов (как было) -->
         <div class="tab-pane{{(nnpMode == NNP_MODE_IMPORT) ? 'active' : '' }}" id="prefix-import">
-          <!-- … существующее содержимое вкладки импорта префиксов … -->
-          <!-- (оставьте ваш текущий код без изменений) -->
-        </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Вид операции</label>
+                        <div class="col-sm-6">
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn {{!item.prefixes_replace ? 'btn-primary active' : 'btn-default'}}"
+                                        ng-click="item.prefixes_replace = false">Добавление
+                                </button>
+                                <button type="button"
+                                        class="btn {{item.prefixes_replace ? 'btn-danger active' : 'btn-default'}}"
+                                        ng-click="item.prefixes_replace = true">Полная замена
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Список префиксов <span class="glyphicon glyphicon-question-sign" popover="Дата должна быть в формате ДД.ММ.ГГГГ" data-popover-trigger="mouseenter" popover-placement="left"></span></label>
+                        <div class="col-sm-6">
+                            <textarea class="form-control" placeholder="Префиксы" ng-model="item.prefixes"></textarea>
+                        </div>
+                        <div ng-hide="!errors.prefixes_error" class="col-sm-4">
+                            <span style="color: red;">{{errors.prefixes_error}}</span>
+                        </div>
+                    </div>
+                    <div ng-if="item.prefixPriceHistory[0]">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="col-sm-2">Дата начала действия</th>
+                                    <th class="col-sm-2">Дата окончания действия</th>
+                                    <th class="col-sm-2">Прайслист</th>
+                                    <th class="col-sm-2">Операция</th>
+                                    <th class="col-sm-2">Дата операции</th>
+                                    <th class="col-sm-2">Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="val in item.prefixPriceHistory" ng-init="isLastItem = $last">
+                                    <td>{{val.date_from}}</td>
+                                    <td>{{val.date_to}}</td>
+                                    <td>#{{val.id}} ({{val.total_count}})</td>
+                                    <td>{{val.type == 'replace' ? 'Замена' : 'Добавление'}}</td>
+                                    <td>{{val.date_created}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm" ng-if="!isLastItem" ng-click="deleteHistoryItem(val)">Удалить</button>
+                                        <button type="button" class="btn btn-default btn-sm" ng-if="$last && val.has_backup" ng-click="undoPrefixImport(val)">Отмена</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>                   
+                    </div>
+                </div>
 
         <!-- Новая вкладка: Массовый импорт -->
         <div class="tab-pane{{(nnpMode == NNP_MODE_BULK) ? ' active' : '' }}" id="bulk-import">
