@@ -3,19 +3,16 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
     $scope.NNP_MODE_FILTER = 1;
     $scope.NNP_MODE_PARAMETERS = 2;
     $scope.NNP_MODE_IMPORT = 3;
+    $scope.NNP_MODE_BULK = 4; // новая вкладка: Массовый импорт
 
     $scope.saveEnabled = false;
-    $scope.errors = {
-        error: false
-    };
+    $scope.errors = { error: false };
 
     $scope.round_type = [
         {id: 1, name: 'round'},
         {id: 2, name: 'ceil'}
     ];
-    
     $scope.porting_type = List.considerPortingMode();
-    
     $scope.loading = false;
     $scope.saveError = false;
 
@@ -28,9 +25,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
             }
         },
         nnp_country: function (newValue, oldValue) {
-            if ((typeof $scope.item) == 'undefined') {
-                return;
-            }
+            if ((typeof $scope.item) == 'undefined') return;
 
             if (!newValue || newValue.length == 0 || (oldValue && newValue.length < oldValue.length)) {
                 $scope.item.nnp_region = null;
@@ -48,9 +43,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
             }
         },
         nnp_region: function (newValue, oldValue) {
-            if ((typeof $scope.item) == 'undefined') {
-                return;
-            }
+            if ((typeof $scope.item) == 'undefined') return;
 
             if (!newValue || newValue.length == 0 || (oldValue && newValue.length < oldValue.length)) {
                 $scope.item.nnp_city = null;
@@ -175,26 +168,14 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
     });
 
     $scope.parseNnpData = function (data) {
-        if (!data) {
-            return [];
-        }
-        
-        if ((typeof data) != 'string') {
-            return data;
-        }
-
+        if (!data) return [];
+        if ((typeof data) != 'string') return data;
         return data.replace('{', '').replace('}', '').split(',');
     };
 
     $scope.stringifyNnpData = function (data) {
-        if (!data || data == '{}') {
-            return '{}';
-        }
-        
-        if (((typeof data) == 'string') && data.charAt(0) == '{') {
-            return data;
-        }
-
+        if (!data || data == '{}') return '{}';
+        if (((typeof data) == 'string') && data.charAt(0) == '{') return data;
         return '{' + data.join(',') + '}';
     };
 
@@ -202,7 +183,6 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
         $scope.loading = true;
         $scope.saveError = false;
         $scope.errors = [];
-        
         var data = angular.copy($scope.item);
 
         data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
@@ -229,16 +209,13 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
                     $modalInstance.close();
                 }
             }
-        ).catch(
-            function (error) {
-                $scope.loading = false;
-                $scope.saveError = true;
-            }
-        );
+        ).catch(function () {
+            $scope.loading = false;
+            $scope.saveError = true;
+        });
     };
 
-    $scope.displayError = function(response)
-    {
+    $scope.displayError = function(response) {
         $scope.errors[response.field + '_error'] = response.error;
     };
 
@@ -263,7 +240,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
             $scope.nnpDataParseError = true;
         }
     };
-    
+
     $scope.loadRegions = function () {
         if ($scope.item.nnp_country && $scope.item.nnp_country.length > 0) {
             Nnp.regionList({country_code: $scope.item.nnp_country}).then(function (data) {
@@ -272,7 +249,6 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
             });
         }
     };
-    
     $scope.loadOperators = function () {
         if ($scope.item.nnp_country && $scope.item.nnp_country.length > 0) {
             Nnp.operatorList({country_code: $scope.item.nnp_country}).then(function (data) {
@@ -281,7 +257,6 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
             });
         }
     };
-    
     $scope.loadCities = function () {
         if ($scope.item.nnp_region && $scope.item.nnp_region.length > 0) {
             Nnp.cityList({
@@ -293,7 +268,6 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
             });
         }
     };
-    
     $scope.loadNdcs = function () {
         if ($scope.item.nnp_country && $scope.item.nnp_country.length > 0) {
             Nnp.ndcList({country_code: $scope.item.nnp_country}).then(function (data) {
@@ -303,8 +277,7 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
         }
     };
 
-    $scope.saveAndUpdate = function()
-    {
+    $scope.saveAndUpdate = function() {
         var data = angular.copy($scope.item);
 
         data.nnp_country = $scope.stringifyNnpData(data.nnp_country);
@@ -314,35 +287,33 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
         data.nnp_ndc_type = $scope.stringifyNnpData(data.nnp_ndc_type);
         data.nnp_ndc = $scope.stringifyNnpData(data.nnp_ndc);
 
-        PricelistFilterB.saveAndUpdate(data).then(function(response) {
+        PricelistFilterB.saveAndUpdate(data).then(function() {
             $modalInstance.close();
         });
     };
-    
+
     $scope.openPrefixPriceHistory = function(item) {
         Redirect.pricelistPrefixPriceHistoryView(item.id).then(function () {
             $scope.init();
         });
-    }
-    
+    };
+
     $scope.undoPrefixImport = function(item) {
-        if (!$window.confirm("Вы уверены, что хотите отменить эту операцию?\n" + 
-         "Будут отменены ВСЕ действия, произведенные с прайсами префиксов\n" +
-         "выбранного в данный момент фильтра Б!")) return;
-        
-         window.open('/resetter.php?id=' + item.id, '_blank');
-    }
+        if (!$window.confirm("Вы уверены, что хотите отменить эту операцию?\n" +
+            "Будут отменены ВСЕ действия, произведенные с прайсами префиксов\n" +
+            "выбранного в данный момент фильтра Б!")) return;
+        window.open('/resetter.php?id=' + item.id, '_blank');
+    };
 
     $scope.back = function () {
         $modalInstance.close();
     };
-    
+
     $scope.deleteHistoryItem = function(item) {
         if (!item || !item.id) {
             alert("Невозможно удалить: некорректный элемент.");
             return;
         }
-    
         var isConfirmed = $window.confirm("Вы уверены, что хотите удалить эту запись истории с ID " + item.id + "?");
         if (isConfirmed) {
             PricelistFilterB.deleteHistoryItem(item.id).then(function(response) {
@@ -354,5 +325,60 @@ var PricelistFilterBEditCtrl = function($scope, $rootScope, $q, List, Major, Pri
             });
         }
     };
-    
+
+    // =========================
+    // Массовый импорт (новое)
+    // =========================
+    $scope.bulk = { rows: '', replace: false, dry_run: true };
+    $scope.bulkLoading = false;
+    $scope.bulkResult = null;
+    $scope.bulkSummary = null;
+
+    function computeBulkSummary(res) {
+    var previewLen = (res && res.preview && res.preview.length) ? res.preview.length : 0;
+    // если сервер дал summary — используем его, иначе fallback
+    var base = (res && res.summary) ? res.summary : ('Обработано ' + previewLen + ' строк');
+    // для dry-run можно подсветить режим замены по состоянию чекбокса
+    if (res && res.dry_run && $scope.bulk && $scope.bulk.replace) {
+        base += ' (режим полной замены фильтров B)';
+    }
+    return base;
+    }
+
+    $scope.bulkPayload = function(dry) {
+        return {
+            pricelist_filter_a_id: $scope.item.pricelist_filter_a_id || params.filter_a_id,
+            template: angular.copy($scope.item), // используем текущие настройки модалки как шаблон
+            rows: $scope.bulk.rows,
+            delimiter: 'auto',
+            replace: !!$scope.bulk.replace,
+            dry_run: !!dry
+        };
+    };
+
+    $scope.bulkCheck = function () {
+  if (!$scope.bulk.rows) return;
+  $scope.nnpMode = $scope.NNP_MODE_BULK;
+  $scope.bulkLoading = true;
+  PricelistFilterB.bulkImport($scope.bulkPayload(true))
+    .then(function (res) {
+      $scope.bulkResult  = res;
+      $scope.bulkSummary = computeBulkSummary(res);   // ← вот это добавили
+    })
+    ["finally"](function () { $scope.bulkLoading = false; });
+};
+
+
+    $scope.bulkImport = function () {
+  if (!$scope.bulk.rows) return;
+  $scope.nnpMode = $scope.NNP_MODE_BULK;
+  $scope.bulkLoading = true;
+  PricelistFilterB.bulkImport($scope.bulkPayload(false))
+    .then(function (res) {
+      $scope.bulkResult  = res;
+      $scope.bulkSummary = computeBulkSummary(res);   // ← и здесь тоже
+      if (res.ok && !res.dry_run) $modalInstance.close();
+    })
+    ["finally"](function () { $scope.bulkLoading = false; });
+};
 };
