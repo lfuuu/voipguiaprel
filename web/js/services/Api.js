@@ -2733,8 +2733,7 @@ app.factory('PricelistFilterA', function ($q, ApiLoader, $rootScope) {
 
 app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope) {
     var url = '/json/pricelist-filter-b/';
-    var list = undefined;
-    var promise = undefined;
+
     return {
         read: function (data) {
             return ApiLoader.post(url + 'read', data);
@@ -2753,9 +2752,14 @@ app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope) {
         },
         deleteHistoryItem: function (id) {
             return ApiLoader.post(url + 'delete-history-item', { id: id });
+        },
+
+        bulkImport: function (payload) {
+            return ApiLoader.post(url + 'bulk-import', payload);
         }
     };
 });
+
 
 app.factory('PricelistPrefixPrice', function ($q, ApiLoader, $rootScope) {
     var url = '/json/pricelist-prefix-price/';

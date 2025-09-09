@@ -5,429 +5,418 @@
         margin: initial;
     }
 </style>
+
 <form class="form-horizontal" name="form" ng-if="item">
-    <div class="modal-header">
-        <h3 ng-if="item.id">Фильтр B, id {{item.id}}</h3>
-        <h3 ng-if="!item.id">Создание фильтра B</h3>
-    </div>
-    <div class="modal-body">
+  <div class="modal-header">
+    <h3 ng-if="item.id">Фильтр B, id {{item.id}}</h3>
+    <h3 ng-if="!item.id">Создание фильтра B</h3>
+  </div>
+
+  <div class="modal-body">
+    <div class="col-sm-10">
+
+      <div class="alert alert-danger text-center" ng-if="nnpDataParseError">
+        Ошибка разбора данных по NNP
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Описание</label>
         <div class="col-sm-10">
-
-            <div class="alert alert-danger text-center" ng-if="nnpDataParseError">
-                Ошибка разбора данных по NNP
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Описание</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="Описание" ng-model="item.description">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Режим работы</label>
-                <div class="col-sm-10">
-                    <div class="btn-group" ng-click="item.mode_selected = !item.mode_selected">
-                        <button type="button" class="btn btn-sm {{item.mode_selected ? 'btn-primary active' : 'btn-default'}}">Выбранные</button>
-                        <button type="button" class="btn btn-sm {{!item.mode_selected ? 'btn-danger active' : 'btn-default'}}">Кроме выбранных</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Цена интерконнекта</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="1.234" ng-model="item.interconnect_price" ng-disabled="item.id && pricelistIsActive" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Цена портированного номера</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="1.234" ng-model="item.ported_num_price" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Цена оператора</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="1.234" ng-model="item.operator_price" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Цена транзита</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="1.234" ng-model="item.transit_price" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Бесплатно, секунд</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="1" ng-model="item.tarification_free_seconds" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Интервал билингования, секунд</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="1" ng-model="item.tarification_interval_seconds" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Тип округления</label>
-                <div class="col-sm-10">
-                    <select ui-select2 ng-model="item.tarification_type" placeholder="round" style="width: 100%" >
-                        <option ng-repeat="roundItem in round_type" value="{{roundItem.id}}">{{roundItem.name}}</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Минимальное кол-во платных секунд</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="1" ng-model="item.tarification_min_paid_seconds" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Время с</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="23:59:59" ng-model="item.time_start">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Время по</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="23:59:59" ng-model="item.time_end">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Рейтинг</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="1" ng-model="item.rating">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Использовать для минималок</label>
-                <div class="col-sm-10">
-                    <div class="btn-group" ng-click="item.use_for_minimum = !item.use_for_minimum">
-                        <button type="button" class="btn btn-sm {{item.use_for_minimum ? 'btn-primary active' : 'btn-default'}}">Да</button>
-                        <button type="button" class="btn btn-sm {{!item.use_for_minimum ? 'btn-danger active' : 'btn-default'}}">Нет</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Отсечка после минималок</label>
-                <div class="col-sm-10">
-                    <div class="btn-group" ng-click="item.use_cutoff_for_minimum = !item.use_cutoff_for_minimum">
-                        <button type="button" class="btn btn-sm {{item.use_cutoff_for_minimum ? 'btn-primary active' : 'btn-default'}}">Да</button>
-                        <button type="button" class="btn btn-sm {{!item.use_cutoff_for_minimum ? 'btn-danger active' : 'btn-default'}}">Нет</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Учитывать портированность</label>
-                <div class="col-sm-10">
-                    <select ui-select2 ng-model="item.consider_porting_mode" placeholder="porting" style="width: 100%" >
-                        <option ng-repeat="portingItem in porting_type" value="{{portingItem.id}}">{{portingItem.name}}</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Regex</label>
-                <div class="col-sm-10">
-                    <input class="form-control" placeholder="regex" ng-model="item.regex">
-                </div>
-            </div>
-
-            <ul class="nav nav-tabs">
-                <li class="{{(nnpMode == NNP_MODE_FILTER) ? 'active' : '' }}">
-                    <a href="#nnp-filter" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_FILTER)">ННП-Фильтр</a>
-                </li>
-                <li class="{{(nnpMode == NNP_MODE_PARAMETERS) ? 'active' : '' }}">
-                    <a href="#nnp-parameters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_PARAMETERS)">ННП-Параметры</a>
-                </li>
-                <li class="{{(nnpMode == NNP_MODE_IMPORT) ? 'active' : '' }}">
-                    <a href="#prefix-import" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_IMPORT)">Импорт префиксов</a>
-                </li>
-            </ul>
-            <br/>
-
-            <div class="tab-content">
-                <div class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filter">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Страна</label>
-                        <div class="col-sm-10">
-                            <select ui-select2 ng-model="item.filter_country" style="width: 100%">
-                                <option ng-repeat="country in countryList" value="{{::country.code}}">
-                                    {{::country.name_rus}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">ННП-фильтр</label>
-                        <div class="col-sm-10">
-                            <select ui-select2 ng-model="item.nnp_filter" style="width: 100%">
-                                <option value="">-- Выберите --</option>
-                                <option ng-repeat="filter in filterList" value="{{filter.id}}">
-                                    {{filter.name}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane{{(nnpMode == NNP_MODE_PARAMETERS) ? ' active' : '' }}" id="nnp-parameters">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Страна</label>
-                        <div class="col-sm-7">
-                            <select ui-select2 ng-model="item.nnp_country" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="country in countryList" value="{{::country.code}}">
-                                    {{::country.name_rus}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn {{!item.f_inv_nnp_country ? 'btn-primary active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_country = false">Выбранные
-                                </button>
-                                <button type="button"
-                                        class="btn {{item.f_inv_nnp_country ? 'btn-danger active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_country = true">Кроме выбранных
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group" ng-if="item.nnp_country">
-                        <label class="col-sm-2 control-label">Регион</label>
-                        <div ng-if="regionList && regionList.length > 0" class="col-sm-7">
-                            <select ui-select2 ng-model="item.nnp_region" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="region in regionList" value="{{::region.id}}">{{::region.name}}
-                                </option>
-                            </select>
-                        </div>
-                        <div ng-if="!regionList || regionList.length == 0" class="col-sm-7">
-                            <button type="button"
-                                    class="btn btn-primary info"
-                                    ng-click="loadRegions()">Загрузить данные
-                            </button>
-                            <span ng-if="item.nnp_region && item.nnp_region != {}">Текущее значение: {{item.nnp_region}}</span>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn {{!item.f_inv_nnp_region ? 'btn-primary active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_region = false">Выбранные
-                                </button>
-                                <button type="button"
-                                        class="btn {{item.f_inv_nnp_region ? 'btn-danger active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_region = true">Кроме выбранных
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group" ng-if="item.nnp_country && item.nnp_region">
-                        <label class="col-sm-2 control-label">Город</label>
-                        <div ng-if="cityList && cityList.length > 0" class="col-sm-7">
-                            <select ui-select2 ng-model="item.nnp_city" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="city in cityList" value="{{::city.id}}">{{::city.name}}</option>
-                            </select>
-                        </div>
-                        <div ng-if="!cityList || cityList.length == 0" class="col-sm-7">
-                            <button type="button"
-                                    class="btn btn-primary info"
-                                    ng-click="loadCities()">Загрузить данные
-                            </button>
-                            <span ng-if="item.nnp_city && item.nnp_city != {}">Текущее значение: {{item.nnp_city}}</span>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn {{!item.f_inv_nnp_city ? 'btn-primary active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_city = false">Выбранные
-                                </button>
-                                <button type="button"
-                                        class="btn {{item.f_inv_nnp_city ? 'btn-danger active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_city = true">Кроме выбранных
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group" ng-if="item.nnp_country">
-                        <label class="col-sm-2 control-label">Оператор</label>
-                        <div ng-if="operatorList && operatorList.length > 0" class="col-sm-7">
-                            <select ui-select2 ng-model="item.nnp_operator" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="operator in operatorList" value="{{::operator.id}}">
-                                    {{::operator.name}}
-                                </option>
-                            </select>
-                        </div>
-                        <div ng-if="!operatorList || operatorList.length == 0" class="col-sm-7">
-                            <button type="button"
-                                    class="btn btn-primary info"
-                                    ng-click="loadOperators()">Загрузить данные
-                            </button>
-                            <span ng-if="item.nnp_operator && item.nnp_operator != {}">Текущее значение: {{item.nnp_operator}}</span>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn {{!item.f_inv_nnp_operator ? 'btn-primary active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_operator = false">Выбранные
-                                </button>
-                                <button type="button"
-                                        class="btn {{item.f_inv_nnp_operator ? 'btn-danger active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_operator = true">Кроме выбранных
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Тип NDC</label>
-                        <div class="col-sm-7">
-                            <select ui-select2 ng-model="item.nnp_ndc_type" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn {{!item.f_inv_nnp_ndc_type ? 'btn-primary active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_ndc_type = false">Выбранные
-                                </button>
-                                <button type="button"
-                                        class="btn {{item.f_inv_nnp_ndc_type ? 'btn-danger active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_ndc_type = true">Кроме выбранных
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group" ng-if="item.nnp_country">
-                        <label class="col-sm-2 control-label">NDC</label>
-                        <div ng-if="ndcList && ndcList.length > 0" class="col-sm-7">
-                            <select ui-select2="{ allow: true }" ng-model="item.nnp_ndc" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="ndc in ndcList" value="{{ndc.id}}">{{ndc.name}}
-                                </option>
-                            </select>
-                        </div>
-                        <div ng-if="!ndcList || ndcList.length == 0" class="col-sm-7">
-                            <button type="button"
-                                    class="btn btn-primary info"
-                                    ng-click="loadNdcs()">Загрузить данные
-                            </button>
-                            <span ng-if="item.nnp_ndc && item.nnp_ndc != {}">Текущее значение: {{item.nnp_ndc}}</span>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn {{!item.f_inv_nnp_ndc ? 'btn-primary active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_ndc = false">Выбранные
-                                </button>
-                                <button type="button"
-                                        class="btn {{item.f_inv_nnp_ndc ? 'btn-danger active' : 'btn-default'}}"
-                                        ng-click="item.f_inv_nnp_ndc = true">Кроме выбранных
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane{{(nnpMode == NNP_MODE_IMPORT) ? 'active' : '' }}" id="prefix-import">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Вид операции</label>
-                        <div class="col-sm-6">
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn {{!item.prefixes_replace ? 'btn-primary active' : 'btn-default'}}"
-                                        ng-click="item.prefixes_replace = false">Добавление
-                                </button>
-                                <button type="button"
-                                        class="btn {{item.prefixes_replace ? 'btn-danger active' : 'btn-default'}}"
-                                        ng-click="item.prefixes_replace = true">Полная замена
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Список префиксов <span class="glyphicon glyphicon-question-sign" popover="Дата должна быть в формате ДД.ММ.ГГГГ" data-popover-trigger="mouseenter" popover-placement="left"></span></label>
-                        <div class="col-sm-6">
-                            <textarea class="form-control" placeholder="Префиксы" ng-model="item.prefixes"></textarea>
-                        </div>
-                        <div ng-hide="!errors.prefixes_error" class="col-sm-4">
-                            <span style="color: red;">{{errors.prefixes_error}}</span>
-                        </div>
-                    </div>
-                    <div ng-if="item.prefixPriceHistory[0]">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th class="col-sm-2">Дата начала действия</th>
-                                    <th class="col-sm-2">Дата окончания действия</th>
-                                    <th class="col-sm-2">Прайслист</th>
-                                    <th class="col-sm-2">Операция</th>
-                                    <th class="col-sm-2">Дата операции</th>
-                                    <th class="col-sm-2">Действия</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="val in item.prefixPriceHistory" ng-init="isLastItem = $last">
-                                    <td>{{val.date_from}}</td>
-                                    <td>{{val.date_to}}</td>
-                                    <td>#{{val.id}} ({{val.total_count}})</td>
-                                    <td>{{val.type == 'replace' ? 'Замена' : 'Добавление'}}</td>
-                                    <td>{{val.date_created}}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-default btn-sm" ng-if="!isLastItem" ng-click="deleteHistoryItem(val)">Удалить</button>
-                                        <button type="button" class="btn btn-default btn-sm" ng-if="$last && val.has_backup" ng-click="undoPrefixImport(val)">Отмена</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>                   
-                    </div>
-                </div>
-            </div>
+          <input class="form-control" placeholder="Описание" ng-model="item.description">
         </div>
-        <div ng-if=loading class="col-sm-10">
-            <span style="color: green">Идет сохранение/импорт данных!</span>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Режим работы</label>
+        <div class="col-sm-10">
+          <div class="btn-group" ng-click="item.mode_selected = !item.mode_selected">
+            <button type="button" class="btn btn-sm {{item.mode_selected ? 'btn-primary active' : 'btn-default'}}">Выбранные</button>
+            <button type="button" class="btn btn-sm {{!item.mode_selected ? 'btn-danger active' : 'btn-default'}}">Кроме выбранных</button>
+          </div>
         </div>
-        <div ng-if="saveError" class="col-sm-10">
-            <span style="color: red">Произошла ошибка сохранения данных!</span>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Цена интерконнекта</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="1.234" ng-model="item.interconnect_price" ng-disabled="item.id && pricelistIsActive" required>
         </div>
-        <div class="clearfix"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Цена портированного номера</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="1.234" ng-model="item.ported_num_price" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Цена оператора</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="1.234" ng-model="item.operator_price" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Цена транзита</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="1.234" ng-model="item.transit_price" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Бесплатно, секунд</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="1" ng-model="item.tarification_free_seconds" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Интервал билингования, секунд</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="1" ng-model="item.tarification_interval_seconds" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Тип округления</label>
+        <div class="col-sm-10">
+          <select ui-select2 ng-model="item.tarification_type" placeholder="round" style="width: 100%">
+            <option ng-repeat="roundItem in round_type" value="{{roundItem.id}}">{{roundItem.name}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Мин. платные секунды</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="1" ng-model="item.tarification_min_paid_seconds" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Время с</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="23:59:59" ng-model="item.time_start">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Время по</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="23:59:59" ng-model="item.time_end">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Рейтинг</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="1" ng-model="item.rating">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Использовать для минималок</label>
+        <div class="col-sm-10">
+          <div class="btn-group" ng-click="item.use_for_minimum = !item.use_for_minimum">
+            <button type="button" class="btn btn-sm {{item.use_for_minimum ? 'btn-primary active' : 'btn-default'}}">Да</button>
+            <button type="button" class="btn btn-sm {{!item.use_for_minimum ? 'btn-danger active' : 'btn-default'}}">Нет</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Отсечка после минималок</label>
+        <div class="col-sm-10">
+          <div class="btn-group" ng-click="item.use_cutoff_for_minimum = !item.use_cutoff_for_minimum">
+            <button type="button" class="btn btn-sm {{item.use_cutoff_for_minimum ? 'btn-primary active' : 'btn-default'}}">Да</button>
+            <button type="button" class="btn btn-sm {{!item.use_cutoff_for_minimum ? 'btn-danger active' : 'btn-default'}}">Нет</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Учитывать портированность</label>
+        <div class="col-sm-10">
+          <select ui-select2 ng-model="item.consider_porting_mode" placeholder="porting" style="width: 100%">
+            <option ng-repeat="portingItem in porting_type" value="{{portingItem.id}}">{{portingItem.name}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Regex</label>
+        <div class="col-sm-10">
+          <input class="form-control" placeholder="regex" ng-model="item.regex">
+        </div>
+      </div>
+
+      <ul class="nav nav-tabs">
+        <li class="{{(nnpMode == NNP_MODE_FILTER) ? 'active' : '' }}">
+          <a href="#nnp-filter" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_FILTER)">ННП-Фильтр</a>
+        </li>
+        <li class="{{(nnpMode == NNP_MODE_PARAMETERS) ? 'active' : '' }}">
+          <a href="#nnp-parameters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_PARAMETERS)">ННП-Параметры</a>
+        </li>
+        <li class="{{(nnpMode == NNP_MODE_IMPORT) ? 'active' : '' }}">
+          <a href="#prefix-import" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_IMPORT)">Импорт префиксов</a>
+        </li>
+        <!-- Новая вкладка -->
+        <li class="{{(nnpMode == NNP_MODE_BULK) ? 'active' : '' }}">
+          <a href="#bulk-import" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_BULK)">Массовый импорт</a>
+        </li>
+      </ul>
+      <br/>
+
+      <div class="tab-content">
+        <!-- ННП-Фильтр -->
+        <div class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filter">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Страна</label>
+            <div class="col-sm-10">
+              <select ui-select2 ng-model="item.filter_country" style="width: 100%">
+                <option ng-repeat="country in countryList" value="{{::country.code}}">{{::country.name_rus}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">ННП-фильтр</label>
+            <div class="col-sm-10">
+              <select ui-select2 ng-model="item.nnp_filter" style="width: 100%">
+                <option value="">-- Выберите --</option>
+                <option ng-repeat="filter in filterList" value="{{filter.id}}">{{filter.name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ННП-Параметры -->
+        <div class="tab-pane{{(nnpMode == NNP_MODE_PARAMETERS) ? ' active' : '' }}" id="nnp-parameters">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Страна</label>
+            <div class="col-sm-7">
+              <select ui-select2 ng-model="item.nnp_country" multiple="multiple" style="width: 100%">
+                <option ng-repeat="country in countryList" value="{{::country.code}}">{{::country.name_rus}}</option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <div class="btn-group">
+                <button type="button" class="btn {{!item.f_inv_nnp_country ? 'btn-primary active' : 'btn-default'}}" ng-click="item.f_inv_nnp_country = false">Выбранные</button>
+                <button type="button" class="btn {{item.f_inv_nnp_country ? 'btn-danger active' : 'btn-default'}}" ng-click="item.f_inv_nnp_country = true">Кроме выбранных</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="item.nnp_country">
+            <label class="col-sm-2 control-label">Регион</label>
+            <div ng-if="regionList && regionList.length > 0" class="col-sm-7">
+              <select ui-select2 ng-model="item.nnp_region" multiple="multiple" style="width: 100%">
+                <option ng-repeat="region in regionList" value="{{::region.id}}">{{::region.name}}</option>
+              </select>
+            </div>
+            <div ng-if="!regionList || regionList.length == 0" class="col-sm-7">
+              <button type="button" class="btn btn-primary info" ng-click="loadRegions()">Загрузить данные</button>
+              <span ng-if="item.nnp_region && item.nnp_region != {}">Текущее значение: {{item.nnp_region}}</span>
+            </div>
+            <div class="col-sm-3">
+              <div class="btn-group">
+                <button type="button" class="btn {{!item.f_inv_nnp_region ? 'btn-primary active' : 'btn-default'}}" ng-click="item.f_inv_nnp_region = false">Выбранные</button>
+                <button type="button" class="btn {{item.f_inv_nnp_region ? 'btn-danger active' : 'btn-default'}}" ng-click="item.f_inv_nnp_region = true">Кроме выбранных</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="item.nnp_country && item.nnp_region">
+            <label class="col-sm-2 control-label">Город</label>
+            <div ng-if="cityList && cityList.length > 0" class="col-sm-7">
+              <select ui-select2 ng-model="item.nnp_city" multiple="multiple" style="width: 100%">
+                <option ng-repeat="city in cityList" value="{{::city.id}}">{{::city.name}}</option>
+              </select>
+            </div>
+            <div ng-if="!cityList || cityList.length == 0" class="col-sm-7">
+              <button type="button" class="btn btn-primary info" ng-click="loadCities()">Загрузить данные</button>
+              <span ng-if="item.nnp_city && item.nnp_city != {}">Текущее значение: {{item.nnp_city}}</span>
+            </div>
+            <div class="col-sm-3">
+              <div class="btn-group">
+                <button type="button" class="btn {{!item.f_inv_nnp_city ? 'btn-primary active' : 'btn-default'}}" ng-click="item.f_inv_nnp_city = false">Выбранные</button>
+                <button type="button" class="btn {{item.f_inv_nnp_city ? 'btn-danger active' : 'btn-default'}}" ng-click="item.f_inv_nnp_city = true">Кроме выбранных</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="item.nnp_country">
+            <label class="col-sm-2 control-label">Оператор</label>
+            <div ng-if="operatorList && operatorList.length > 0" class="col-sm-7">
+              <select ui-select2 ng-model="item.nnp_operator" multiple="multiple" style="width: 100%">
+                <option ng-repeat="operator in operatorList" value="{{::operator.id}}">{{::operator.name}}</option>
+              </select>
+            </div>
+            <div ng-if="!operatorList || operatorList.length == 0" class="col-sm-7">
+              <button type="button" class="btn btn-primary info" ng-click="loadOperators()">Загрузить данные</button>
+              <span ng-if="item.nnp_operator && item.nnp_operator != {}">Текущее значение: {{item.nnp_operator}}</span>
+            </div>
+            <div class="col-sm-3">
+              <div class="btn-group">
+                <button type="button" class="btn {{!item.f_inv_nnp_operator ? 'btn-primary active' : 'btn-default'}}" ng-click="item.f_inv_nnp_operator = false">Выбранные</button>
+                <button type="button" class="btn {{item.f_inv_nnp_operator ? 'btn-danger active' : 'btn-default'}}" ng-click="item.f_inv_nnp_operator = true">Кроме выбранных</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Тип NDC</label>
+            <div class="col-sm-7">
+              <select ui-select2 ng-model="item.nnp_ndc_type" multiple="multiple" style="width: 100%">
+                <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}</option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <div class="btn-group">
+                <button type="button" class="btn {{!item.f_inv_nnp_ndc_type ? 'btn-primary active' : 'btn-default'}}" ng-click="item.f_inv_nnp_ndc_type = false">Выбранные</button>
+                <button type="button" class="btn {{item.f_inv_nnp_ndc_type ? 'btn-danger active' : 'btn-default'}}" ng-click="item.f_inv_nnp_ndc_type = true">Кроме выбранных</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="item.nnp_country">
+            <label class="col-sm-2 control-label">NDC</label>
+            <div ng-if="ndcList && ndcList.length > 0" class="col-sm-7">
+              <select ui-select2="{ allow: true }" ng-model="item.nnp_ndc" multiple="multiple" style="width: 100%">
+                <option ng-repeat="ndc in ndcList" value="{{ndc.id}}">{{ndc.name}}</option>
+              </select>
+            </div>
+            <div ng-if="!ndcList || ndcList.length == 0" class="col-sm-7">
+              <button type="button" class="btn btn-primary info" ng-click="loadNdcs()">Загрузить данные</button>
+              <span ng-if="item.nnp_ndc && item.nnp_ndc != {}">Текущее значение: {{item.nnp_ndc}}</span>
+            </div>
+            <div class="col-sm-3">
+              <div class="btn-group">
+                <button type="button" class="btn {{!item.f_inv_nnp_ndc ? 'btn-primary active' : 'btn-default'}}" ng-click="item.f_inv_nnp_ndc = false">Выбранные</button>
+                <button type="button" class="btn {{item.f_inv_nnp_ndc ? 'btn-danger active' : 'btn-default'}}" ng-click="item.f_inv_nnp_ndc = true">Кроме выбранных</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Импорт префиксов (как было) -->
+        <div class="tab-pane{{(nnpMode == NNP_MODE_IMPORT) ? 'active' : '' }}" id="prefix-import">
+          <!-- … существующее содержимое вкладки импорта префиксов … -->
+          <!-- (оставьте ваш текущий код без изменений) -->
+        </div>
+
+        <!-- Новая вкладка: Массовый импорт -->
+        <div class="tab-pane{{(nnpMode == NNP_MODE_BULK) ? ' active' : '' }}" id="bulk-import">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Данные</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" rows="8"
+                placeholder="КодСтраны  КодОператора  Цена  ДатаНачала  ДатаОкончания"
+                ng-model="bulk.rows"></textarea>
+              <p class="help-block">
+                Разделители: таб / ; / , / несколько пробелов. Даты: DD.MM.YYYY или YYYY-MM-DD.
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Режим</label>
+            <div class="col-sm-10">
+              <div class="checkbox">
+                <label><input type="checkbox" ng-model="bulk.replace"> Полная замена (пересоздать B у этого A)</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" ng-model="bulk.dry_run" checked> Предпросмотр (dry-run)</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button class="btn btn-default" ng-click="bulkCheck()" ng-disabled="!bulk.rows || bulkLoading">Проверить и посчитать</button>
+              <button class="btn btn-primary" ng-click="bulkImport()" ng-disabled="!bulk.rows || bulkLoading">Импортировать</button>
+              <span ng-if="bulkLoading" class="text-info" style="margin-left:10px;">Идёт обработка…</span>
+            </div>
+          </div>
+
+          <!-- Результат проверки / импорта -->
+          <div class="form-group" ng-if="bulkResult">
+            <div class="col-sm-12">
+              <div class="alert" ng-class="{'alert-success': bulkResult.ok, 'alert-warning': !bulkResult.ok}" ng-bind="bulkSummary"></div>
+
+              <div ng-if="bulkResult.preview && bulkResult.preview.length">
+                <div class="table-responsive" style="max-height:300px; overflow:auto;">
+                  <table class="table table-condensed table-striped">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Страна</th>
+                        <th>Оператор</th>
+                        <th>Цена</th>
+                        <th>С даты</th>
+                        <th>По дату</th>
+                        <th>Примечание</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="r in bulkResult.preview track by $index">
+                        <td>{{$index + 1}}</td>
+                        <td>{{r.country_code}}</td>
+                        <td>{{r.operator_code}}</td>
+                        <td>{{r.price | number:6}}</td>
+                        <td>{{r.date_from}}</td>
+                        <td>{{r.date_to}}</td>
+                        <td>{{r.note}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="help-block">
+                  Показано {{bulkResult.preview.length}} строк.
+                  <span ng-if="bulkResult.total">Всего: {{bulkResult.total}}.</span>
+                  <span ng-if="bulkResult.dry_run">Режим: предварительный просмотр.</span>
+                </p>
+              </div>
+
+              <div ng-if="bulkResult.errors && bulkResult.errors.length">
+                <h5>Ошибки</h5>
+                <ul>
+                  <li ng-repeat="e in bulkResult.errors track by $index">
+                    Строка {{e.line}}: {{e.message}}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /Массовый импорт -->
+      </div> <!-- /tab-content -->
+
+    </div> <!-- /col-sm-10 -->
+
+    <div ng-if=loading class="col-sm-10">
+      <span style="color: green">Идет сохранение/импорт данных!</span>
     </div>
-
-    <div class="modal-footer">
-        <div class="pull-left">
-            <button type="submit" class="btn btn-success"
-                    ng-if="(item.id && userPermissions['pricelist_edit']) || (!item.id && userPermissions['pricelist_create'])"
-                    ng-disabled="form.$invalid || (!userPermissions['pricelist_super_edit'] && !saveEnabled)"
-                    ng-click="save()">Сохранить
-            </button>
-            <button type="submit" class="btn btn-warning"
-                    ng-hide="!userPermissions['pricelist_edit'] || !item.nnp_filter"
-                    ng-disabled="form.$invalid || !saveEnabled"
-                    ng-click="saveAndUpdate()">Сохранить и применить</button>
-            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
-            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/pricelist-filter-b" action="save"></action-log-view-button>
-        </div>
+    <div ng-if="saveError" class="col-sm-10">
+      <span style="color: red">Произошла ошибка сохранения данных!</span>
     </div>
+    <div class="clearfix"></div>
+  </div> <!-- /modal-body -->
 
+  <div class="modal-footer">
+    <div class="pull-left">
+      <button type="submit" class="btn btn-success"
+              ng-if="(item.id && userPermissions['pricelist_edit']) || (!item.id && userPermissions['pricelist_create'])"
+              ng-disabled="form.$invalid || (!userPermissions['pricelist_super_edit'] && !saveEnabled)"
+              ng-click="save()">Сохранить</button>
+
+      <button type="submit" class="btn btn-warning"
+              ng-hide="!userPermissions['pricelist_edit'] || !item.nnp_filter"
+              ng-disabled="form.$invalid || !saveEnabled"
+              ng-click="saveAndUpdate()">Сохранить и применить</button>
+
+      <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+      <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/pricelist-filter-b" action="save"></action-log-view-button>
+    </div>
+  </div>
 </form>
