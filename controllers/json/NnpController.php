@@ -42,7 +42,7 @@ class NnpController extends JsonController
     public function actionCountry()
     {
         return Country::find()
-            ->select(['code', 'name_rus'])
+            ->select(['code', 'name_rus', 'mcc'])
             ->orderBy('name_rus')
             ->asArray()
             ->all();
