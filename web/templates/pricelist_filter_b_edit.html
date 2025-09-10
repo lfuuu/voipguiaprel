@@ -354,94 +354,93 @@
                     </div>
                 </div>
 
+<div class="tab-content">
         <!-- Новая вкладка: Массовый импорт -->
         <div class="tab-pane{{(nnpMode == NNP_MODE_BULK) ? ' active' : '' }}" id="bulk-import">
           <div class="form-group">
             <label class="col-sm-2 control-label">Данные</label>
             <div class="col-sm-10">
               <textarea class="form-control" rows="8"
-                placeholder="КодСтраны  КодОператора  Цена  ДатаНачала  ДатаОкончания"
-                ng-model="bulk.rows"></textarea>
-              <p class="help-block">
-                Разделители: таб / ; / , / несколько пробелов. Даты: DD.MM.YYYY или YYYY-MM-DD.
-              </p>
+                        placeholder="КодСтраны  КодОператора  Цена  ДатаНачала  ДатаОкончания"
+                        ng-model="bulk.rows"></textarea>
+              <p class="help-block">Разделители: таб / ; / , / несколько пробелов. Даты: DD.MM.YYYY или YYYY-MM-DD.</p>
             </div>
           </div>
 
           <div class="form-group">
             <label class="col-sm-2 control-label">Режим</label>
             <div class="col-sm-10">
-              <div class="checkbox">
-                <label><input type="checkbox" ng-model="bulk.replace"> Полная замена (пересоздать B у этого A)</label>
-              </div>
-              <div class="checkbox">
-                <label><input type="checkbox" ng-model="bulk.dry_run" checked> Предпросмотр (dry-run)</label>
-              </div>
+              <div class="checkbox"><label><input type="checkbox" ng-model="bulk.replace"> Полная замена (пересоздать B у этого A)</label></div>
+              <div class="checkbox"><label><input type="checkbox" ng-model="bulk.dry_run" checked> Предпросмотр (dry-run)</label></div>
             </div>
           </div>
 
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-              <button class="btn btn-default" ng-click="bulkCheck()" ng-disabled="!bulk.rows || bulkLoading">Проверить и посчитать</button>
+              <button class="btn btn-default" ng-click="bulkCheck()"  ng-disabled="!bulk.rows || bulkLoading">Проверить и посчитать</button>
               <button class="btn btn-primary" ng-click="bulkImport()" ng-disabled="!bulk.rows || bulkLoading">Импортировать</button>
               <span ng-if="bulkLoading" class="text-info" style="margin-left:10px;">Идёт обработка…</span>
             </div>
           </div>
 
           <!-- Результат проверки / импорта -->
-          <div class="form-group" ng-if="bulkResult">
-            <div class="col-sm-12">
-              <div class="alert" ng-class="{'alert-success': bulkResult.ok, 'alert-warning': !bulkResult.ok}" ng-bind="bulkSummary"></div>
+<div class="form-group" ng-show="bulkResult">
+  <div class="col-sm-12">
+    <div class="alert"
+         ng-class="{'alert-success': bulkResult.ok, 'alert-warning': !bulkResult.ok}"
+         ng-bind="bulkSummary"></div>
 
-              <div ng-if="bulkResult.preview && bulkResult.preview.length">
-                <div class="table-responsive" style="max-height:300px; overflow:auto;">
-                  <table class="table table-condensed table-striped">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Страна</th>
-                        <th>Оператор</th>
-                        <th>Цена</th>
-                        <th>С даты</th>
-                        <th>По дату</th>
-                        <th>Примечание</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr ng-repeat="r in bulkResult.preview track by $index">
-                        <td>{{$index + 1}}</td>
-                        <td>{{r.country_code}}</td>
-                        <td>{{r.operator_code}}</td>
-                        <td>{{r.price | number:6}}</td>
-                        <td>{{r.date_from}}</td>
-                        <td>{{r.date_to}}</td>
-                        <td>{{r.note}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <p class="help-block">
-                  Показано {{bulkResult.preview.length}} строк.
-                  <span ng-if="bulkResult.total">Всего: {{bulkResult.total}}.</span>
-                  <span ng-if="bulkResult.dry_run">Режим: предварительный просмотр.</span>
-                </p>
-              </div>
+    <!-- Табличный предпросмотр -->
+    <div ng-show="getPreview().length">
+      <div class="table-responsive" style="max-height:300px; overflow:auto;">
+        <table class="table table-condensed table-striped">
+          <thead>
+            <tr>
+              <th>#</th><th>Страна</th><th>Оператор</th><th>Цена</th><th>С даты</th><th>По дату</th><th>Примечание</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="r in getPreview() track by $index">
+              <td>{{$index + 1}}</td>
+              <td>{{r.country_code}}</td>
+              <td>{{r.operator_code}}</td>
+              <td>{{(+r.price) | number:6}}</td>
+              <td>{{r.date_from}}</td>
+              <td>{{r.date_to}}</td>
+              <td>{{r.note}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="help-block">
+        Показано {{getPreview().length}} строк.
+        <span ng-if="bulkResult.total">Всего: {{bulkResult.total}}.</span>
+        <span ng-if="bulkResult.dry_run">Режим: предварительный просмотр.</span>
+      </p>
+    </div>
 
-              <div ng-if="bulkResult.errors && bulkResult.errors.length">
-                <h5>Ошибки</h5>
-                <ul>
-                  <li ng-repeat="e in bulkResult.errors track by $index">
-                    Строка {{e.line}}: {{e.message}}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+    <!-- Fallback: сырой JSON одной строкой (на случай экзотики) -->
+    <div class="well well-sm" ng-show="!getPreview().length">
+      <div><strong>Сырой ответ:</strong></div>
+      <pre style="white-space:pre-wrap;">{{bulkResult | json}}</pre>
+    </div>
+
+    <!-- Ошибки -->
+    <div ng-show="(bulkResult.errors || []).length">
+      <h5>Ошибки</h5>
+      <ul>
+        <li ng-repeat="e in bulkResult.errors track by $index">
+          Строка {{e.line}}: {{e.message}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
         </div> <!-- /Массовый импорт -->
       </div> <!-- /tab-content -->
-
     </div> <!-- /col-sm-10 -->
-
+    
     <div ng-if=loading class="col-sm-10">
       <span style="color: green">Идет сохранение/импорт данных!</span>
     </div>
