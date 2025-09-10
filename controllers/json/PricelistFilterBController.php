@@ -418,137 +418,177 @@ class PricelistFilterBController extends JsonController
      * Массовый импорт фильтров B и прайсов префикса ('') по формату:
      * country_code  operator_code  price  date_from  date_to
      */
-    public function actionBulkImport()
-    {
-        if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+   /**
+ * Массовый импорт фильтров B и прайсов префикса ('') по формату:
+ * mcc  operator_code  price  date_from  date_to
+ *
+ * ВАЖНО: первая колонка — ТОЛЬКО MCC. Резолвим MCC → внутренний nnp.country.code.
+ * Если MCC не найден — строка идёт в ошибки.
+ */
+public function actionBulkImport()
+{
+    if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
+        throw new ForbiddenHttpException('Access denied');
+    }
 
-        $body = $this->request;
-        $aId = (int)($body['pricelist_filter_a_id'] ?? 0);
-        $template = $body['template'] ?? [];
-        $rows = trim((string)($body['rows'] ?? ''));
-        $delimiter = $body['delimiter'] ?? 'auto';
-        $replace = !empty($body['replace']);
-        $dryRun = !empty($body['dry_run']);
+    Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        if (!$aId || $rows === '') {
-            return ['ok' => false, 'errors' => [['line' => 0, 'message' => 'pricelist_filter_a_id и rows обязательны']]];
-        }
+    $body      = $this->request;
+    $aId       = (int)($body['pricelist_filter_a_id'] ?? 0);
+    $template  = $body['template'] ?? [];
+    $rows      = trim((string)($body['rows'] ?? ''));
+    $delimiter = $body['delimiter'] ?? 'auto';
+    $replace   = !empty($body['replace']);
+    $dryRun    = !empty($body['dry_run']);
 
-        // Парсинг строк
-        $parsed = $this->bulkParseRows($rows, $delimiter);
-        if (!$parsed['ok']) return $parsed;
+    if (!$aId || $rows === '') {
+        return ['ok' => false, 'errors' => [['line' => 0, 'message' => 'pricelist_filter_a_id и rows обязательны']]];
+    }
 
-        $preview = [];
-        $errors = [];
-        $normRows = [];
-        $lineNo = 0;
+    // --- Предзагрузка соответствий MCC → внутренний code ---
+    $countryRows = (new Query())
+        ->select(['code', 'mcc'])
+        ->from('nnp.country')
+        ->all();
 
-        foreach ($parsed['rows'] as $r) {
-            $lineNo++;
-
-            if (count($r) < 5) {
-                $errors[] = ['line' => $lineNo, 'message' => 'Ожидалось 5 полей: country operator price date_from date_to'];
-                continue;
-            }
-            list($countryCode, $operatorCode, $priceRaw, $dfRaw, $dtRaw) = $r;
-
-            $countryCode = trim($countryCode);
-            $operatorCode = trim($operatorCode);
-
-            // цена
-            $priceStr = str_replace(',', '.', trim($priceRaw));
-            if (!is_numeric($priceStr)) {
-                $errors[] = ['line' => $lineNo, 'message' => 'Некорректная цена'];
-                continue;
-            }
-            $price = (float)$priceStr;
-
-            // даты: допускаем DD.MM.YYYY и YYYY-MM-DD
-            $prepared = $this->prepareDates($dfRaw, $dtRaw);
-            if (isset($prepared['error'])) {
-                $errors[] = ['line' => $lineNo, 'message' => $prepared['error']];
-                continue;
-            }
-            $dateFrom = $prepared['date_start'];
-            $dateTo   = $prepared['date_end'];
-
-            $normRows[] = [
-                'line' => $lineNo,
-                'country_code' => $countryCode,
-                'operator_code' => $operatorCode,
-                'price' => $price,
-                'date_from' => $dateFrom,
-                'date_to' => $dateTo
-            ];
-
-            if (count($preview) < 50) {
-                $preview[] = [
-                    'country_code' => $countryCode,
-                    'operator_code' => $operatorCode,
-                    'price' => $price,
-                    'date_from' => $dateFrom,
-                    'date_to' => $dateTo,
-                    'note' => ''
-                ];
-            }
-        }
-
-        if ($dryRun) {
-            $summary = "Готово к обработке " . count($normRows) . " строк" . ($replace ? " (режим полной замены фильтров B)" : "");
-            return ['ok' => empty($errors), 'dry_run' => true, 'preview' => $preview, 'errors' => $errors, 'summary' => $summary];
-        }
-
-        if (!empty($errors)) {
-            return ['ok' => false, 'dry_run' => false, 'preview' => $preview, 'errors' => $errors, 'summary' => 'Исправьте ошибки и повторите'];
-        }
-
-        $tx = PricelistFilterB::getDb()->beginTransaction();
-        try {
-            if ($replace) {
-                Yii::$app->db->createCommand("
-                    DELETE FROM billing_uu.pricelist_filter_b WHERE pricelist_filter_a_id = :aId
-                ")->bindValue(':aId', $aId)->execute();
-            }
-
-            $created = 0; $updated = 0; $pricesUpserted = 0;
-
-            // получаем pricelist_id для истории прайсов
-            $pl = PricelistLocation::find()
-                ->alias('pl')
-                ->select(['pl.pricelist_id'])
-                ->innerJoin('billing_uu.pricelist_filter_a a', 'a.pricelist_location_id = pl.id')
-                ->where(['a.id' => $aId])
-                ->asArray()
-                ->one();
-            if (!$pl) {
-                throw new \RuntimeException('Не найден прайс-лист для фильтра A');
-            }
-            $pricelistId = (int)$pl['pricelist_id'];
-
-            foreach ($normRows as $row) {
-                // Найти/создать/обновить фильтр B под пару (country, operator)
-                $res = $this->findOrCreateFilterBForPair($aId, $row['country_code'], $row['operator_code'], $template);
-                if ($res['action'] === 'create') $created++; else $updated++;
-                /** @var PricelistFilterB $b */
-                $b = $res['model'];
-
-                // Upsert прайса префикса для пустого prefix_b на заданный интервал и цену
-                $pricesUpserted += $this->upsertBlankPrefixPrice($b, $row['price'], $row['date_from'], $row['date_to'], $pricelistId);
-            }
-
-            $tx->commit();
-
-            $summary = "Фильтры B: создано $created, обновлено $updated. Прайсов префикса (''): $pricesUpserted.";
-            return ['ok' => true, 'dry_run' => false, 'summary' => $summary];
-
-        } catch (\Throwable $e) {
-            if ($tx->getIsActive()) $tx->rollBack();
-            return ['ok' => false, 'dry_run' => false, 'errors' => [['line' => 0, 'message' => $e->getMessage()]], 'summary' => 'Ошибка транзакции'];
+    $countryByMcc = []; // '412' => 4
+    foreach ($countryRows as $cr) {
+        $code = isset($cr['code']) ? (int)$cr['code'] : null;
+        if ($code === null) continue;
+        $mcc = isset($cr['mcc']) ? trim((string)$cr['mcc']) : '';
+        if ($mcc !== '') {
+            $countryByMcc[$mcc] = $code;
         }
     }
+    // ------------------------------------------------------
+
+    // Парсинг строк
+    $parsed = $this->bulkParseRows($rows, $delimiter);
+    if (!$parsed['ok']) return $parsed;
+
+    $preview  = [];
+    $errors   = [];
+    $normRows = [];
+    $lineNo   = 0;
+
+    foreach ($parsed['rows'] as $r) {
+        $lineNo++;
+
+        if (count($r) < 5) {
+            $errors[] = ['line' => $lineNo, 'message' => 'Ожидалось 5 полей: country(operator MCC) operator price date_from date_to'];
+            continue;
+        }
+
+        list($mccRaw, $operatorCode, $priceRaw, $dfRaw, $dtRaw) = $r;
+        $mccRaw       = trim((string)$mccRaw);
+        $operatorCode = trim((string)$operatorCode);
+
+        // --- Резолв MCC → внутренний code (без фолбэка на code) ---
+        $resolvedCountryCode = ($mccRaw !== '' && isset($countryByMcc[$mccRaw])) ? $countryByMcc[$mccRaw] : null;
+        if ($resolvedCountryCode === null) {
+            $errors[] = [
+                'line'    => $lineNo,
+                'message' => "Страна не найдена по MCC '{$mccRaw}'"
+            ];
+            continue;
+        }
+        // -----------------------------------------------------------
+
+        // цена
+        $priceStr = str_replace(',', '.', trim((string)$priceRaw));
+        if (!is_numeric($priceStr)) {
+            $errors[] = ['line' => $lineNo, 'message' => 'Некорректная цена'];
+            continue;
+        }
+        $price = (float)$priceStr;
+
+        // даты: допускаем DD.MM.YYYY и YYYY-MM-DD
+        $prepared = $this->prepareDates($dfRaw, $dtRaw);
+        if (isset($prepared['error'])) {
+            $errors[] = ['line' => $lineNo, 'message' => $prepared['error']];
+            continue;
+        }
+        $dateFrom = $prepared['date_start'];
+        $dateTo   = $prepared['date_end'];
+
+        // Нормализованная строка — теперь country_code всегда ВНУТРЕННИЙ code (из nnp.country.code)
+        $normRows[] = [
+            'line'          => $lineNo,
+            'country_code'  => (string)$resolvedCountryCode,
+            'operator_code' => $operatorCode,
+            'price'         => $price,
+            'date_from'     => $dateFrom,
+            'date_to'       => $dateTo
+        ];
+
+        if (count($preview) < 50) {
+            $preview[] = [
+                'country_code'  => (string)$resolvedCountryCode,
+                'operator_code' => $operatorCode,
+                'price'         => $price,
+                'date_from'     => $dateFrom,
+                'date_to'       => $dateTo,
+                'note'          => ''
+            ];
+        }
+    }
+
+    if ($dryRun) {
+        $summary = "Готово к обработке " . count($normRows) . " строк" . ($replace ? " (режим полной замены фильтров B)" : "");
+        return ['ok' => empty($errors), 'dry_run' => true, 'preview' => $preview, 'errors' => $errors, 'summary' => $summary];
+    }
+
+    if (!empty($errors)) {
+        return ['ok' => false, 'dry_run' => false, 'preview' => $preview, 'errors' => $errors, 'summary' => 'Исправьте ошибки и повторите'];
+    }
+
+    $tx = PricelistFilterB::getDb()->beginTransaction();
+    try {
+        if ($replace) {
+            Yii::$app->db->createCommand("
+                DELETE FROM billing_uu.pricelist_filter_b WHERE pricelist_filter_a_id = :aId
+            ")->bindValue(':aId', $aId)->execute();
+        }
+
+        $created = 0; $updated = 0; $pricesUpserted = 0;
+
+        // получаем pricelist_id для истории прайсов
+        $pl = PricelistLocation::find()
+            ->alias('pl')
+            ->select(['pl.pricelist_id'])
+            ->innerJoin('billing_uu.pricelist_filter_a a', 'a.pricelist_location_id = pl.id')
+            ->where(['a.id' => $aId])
+            ->asArray()
+            ->one();
+
+        if (!$pl) {
+            throw new \RuntimeException('Не найден прайс-лист для фильтра A');
+        }
+
+        $pricelistId = (int)$pl['pricelist_id'];
+
+        foreach ($normRows as $row) {
+            // Найти/создать/обновить фильтр B под пару (country, operator)
+            $res = $this->findOrCreateFilterBForPair($aId, $row['country_code'], $row['operator_code'], $template);
+            if ($res['action'] === 'create') $created++; else $updated++;
+
+            /** @var PricelistFilterB $b */
+            $b = $res['model'];
+
+            // Upsert прайса префикса для пустого prefix_b на заданный интервал и цену
+            $pricesUpserted += $this->upsertBlankPrefixPrice($b, $row['price'], $row['date_from'], $row['date_to'], $pricelistId);
+        }
+
+        $tx->commit();
+
+        $summary = "Фильтры B: создано $created, обновлено $updated. Прайсов префикса (''): $pricesUpserted.";
+        return ['ok' => true, 'dry_run' => false, 'summary' => $summary];
+
+    } catch (\Throwable $e) {
+        if ($tx->getIsActive()) $tx->rollBack();
+        return ['ok' => false, 'dry_run' => false, 'errors' => [['line' => 0, 'message' => $e->getMessage()]], 'summary' => 'Ошибка транзакции'];
+    }
+}
 
     /**
      * Удаление фильтра B
@@ -738,4 +778,46 @@ SQL;
             return 1;
         }
     }
+
+    // Внутри класса PricelistFilterBController, рядом с другими private-методами:
+
+/**
+ * Разрешает входной "код страны" в внутренний code из nnp.country:
+ *  - сначала пытается как MCC (nnp.country.mcc),
+ *  - затем как прямой code (nnp.country.code).
+ * Возвращает int code или null, если не найдено.
+ */
+private function resolveCountryCode($input)
+{
+    if ($input === null || $input === '') {
+        return null;
+    }
+    // нормализуем строковое/числовое
+    $val = trim((string)$input);
+
+    // 1) Поиск по MCC
+    $row = (new Query())
+        ->select(['code'])
+        ->from('nnp.country')
+        ->where(['mcc' => $val])
+        ->limit(1)
+        ->one();
+    if ($row && isset($row['code'])) {
+        return (int)$row['code'];
+    }
+
+    // 2) Фолбэк: попробовать как прямой code
+    $row2 = (new Query())
+        ->select(['code'])
+        ->from('nnp.country')
+        ->where(['code' => (int)$val])
+        ->limit(1)
+        ->one();
+    if ($row2 && isset($row2['code'])) {
+        return (int)$row2['code'];
+    }
+
+    return null;
+}
+
 }
