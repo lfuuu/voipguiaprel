@@ -6,6 +6,13 @@ var TrunkNodeLinkListCtrl = function($scope, TrunkNodeLink, Node, Redirect, $win
     $rootScope.userName = userName;
     $rootScope.userId = userId;
     $scope.baseLink = ($window.location.hostname).includes('.tech') ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
+  $scope.searchArray = {
+    onlyPhysical: false   // false = показываем все (по умолчанию)
+};
+$scope.setPhysicalFilter = function(value) {
+    $scope.searchArray.onlyPhysical = value;
+    $scope.clickSearch();   // запускаем фильтрацию
+};
 
     $scope.customFilter = function(item) {
       if ($scope.filterObj.contract_type_id !== undefined &&
@@ -53,6 +60,11 @@ var TrunkNodeLinkListCtrl = function($scope, TrunkNodeLink, Node, Redirect, $win
           return false;
         }
       }
+      if ($scope.searchArray.onlyPhysical) {
+    var ip = (item.ip_address || '').toString().trim();
+    if (!ip) return false;
+}
+
       return true;
     };
     
