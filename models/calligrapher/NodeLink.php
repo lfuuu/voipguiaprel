@@ -9,6 +9,7 @@ use app\classes\traits\ModelRules;
  * Модель для таблицы "calligrapher.node_link"
  *
  * @property int         $node_link_id
+ * @property int         $sorm_id
  * @property int         $src_node_id
  * @property int         $dst_node_id
  * @property bool        $unidirect
@@ -54,7 +55,7 @@ class NodeLink extends ActiveRecord
             [['src_node_id', 'dst_node_id'], 'required'],
 
             // целочисленные поля
-            [['src_node_id', 'dst_node_id', 'weight'], 'integer'],
+            [['src_node_id', 'dst_node_id', 'weight', 'sorm_id'], 'integer'],
 
             // булево поле
             [['unidirect'], 'boolean'],

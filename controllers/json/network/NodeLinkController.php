@@ -26,6 +26,7 @@ class NodeLinkController extends BaseController
             'l.node_link_id',
             'l.src_node_id',
             'l.dst_node_id',
+            'l.sorm_id',
             'l.weight',
             'l.comment',
             'l.trunk_name',

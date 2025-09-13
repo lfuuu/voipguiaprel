@@ -139,6 +139,13 @@
           <span ng-show="sortType == 'node_name_id' && !sortReverse" class="caret-up"></span>
         </a>
       </th>
+       <th>
+      <a href="#" ng-click="sortType = 'sorm_name'; sortReverse = !sortReverse">
+              Наименование в СОРМ
+        <span ng-show="sortType == 'sorm_name' && sortReverse" class="caret-down"></span>
+        <span ng-show="sortType == 'sorm_name' && !sortReverse" class="caret-up"></span>
+      </a>
+    </th>
       <th>
         <a href="#" ng-click="sortType = 'node_type_text'; sortReverse = !sortReverse">
           Тип
@@ -177,6 +184,7 @@
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.subject_text}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.city_text}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_name_id}}</td>
+      <td style="cursor: pointer" ng-click="clickItem(item)">{{item.sorm_name}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.node_type_text}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{ item.net_type=='internal' ? 'Внутренний' : 'Пограничный' }}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{ item.ss7_spc }}</td>
