@@ -7,84 +7,109 @@
   a.clickable-link:hover {
     text-decoration: underline;
   }
+  /* аккуратные отступы и выравнивание */
+  .filter-row .form-group { margin-bottom: 10px; }
+  .filter-label { white-space: nowrap; margin-right: 8px; min-width: 130px; }
+  .filter-control { width: 100%; }
+  @media (max-width: 991px) { .filter-label { min-width: 110px; } }
 </style>
+
 <div>
-    <h4>Внешние транки</h4>
-    <!-- Форма фильтра (ленточная) -->
-    <form class="form-inline" ng-hide="hideFilter" style="margin-bottom: 15px;">
-      <div class="form-group" style="margin-right: 20px;">
-        <label>Тип присоединения:</label>
-        <select class="form-control" 
-                ng-model="filterObj.contract_type_id" 
-                ng-change="clickSearch()"
-                ui-select2 style="width: 200px;">
-          <option value="">-- Все типы --</option>
-          <option ng-repeat="ct in contractTypes | orderBy:'name'" value="{{ct.id}}">{{ct.name}}</option>
-        </select>
+  <h4>Внешние транки</h4>
+
+  <form ng-hide="hideFilter" style="margin-bottom: 12px;">
+    <!-- Ряд 1 -->
+    <div class="row filter-row">
+      <div class="col-md-3 col-sm-6">
+        <div class="form-group d-flex">
+          <label class="filter-label">Тип присоединения:</label>
+          <select class="form-control filter-control"
+                  ng-model="filterObj.contract_type_id"
+                  ng-change="clickSearch()"
+                  ui-select2>
+            <option value="">-- Все типы --</option>
+            <option ng-repeat="ct in contractTypes | orderBy:'name'" value="{{ct.id}}">{{ct.name}}</option>
+          </select>
+        </div>
       </div>
-      <div class="form-group" style="margin-right: 20px;">
-        <label>Узел:</label>
-        <select class="form-control" 
-                ng-model="filterObj.node_id_selected" 
-                ng-change="clickSearch()"
-                ui-select2 style="width: 250px;">
-          <option value="">-- Все узлы --</option>
-          <option ng-repeat="n in nodesList" value="{{n.id}}">{{n.name_display}}</option>
-        </select>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="form-group d-flex">
+          <label class="filter-label">Узел:</label>
+          <select class="form-control filter-control"
+                  ng-model="filterObj.node_id_selected"
+                  ng-change="clickSearch()"
+                  ui-select2>
+            <option value="">-- Все узлы --</option>
+            <option ng-repeat="n in nodesList" value="{{n.id}}">{{n.name_display}}</option>
+          </select>
+        </div>
       </div>
-      <div class="form-group" style="margin-right: 20px;">
-        <label>ID лог. транка:</label>
-        <input type="number" class="form-control" 
-               ng-model="filterObj.service_trunk_id" 
-               placeholder="ID транка" 
-               ng-keydown="$event.keyCode === 13 && clickSearch()">
+
+      <div class="col-md-3 col-sm-6">
+        <div class="form-group d-flex">
+          <label class="filter-label">ID лог. транка:</label>
+          <input type="number" class="form-control filter-control"
+                 ng-model="filterObj.service_trunk_id"
+                 placeholder="ID транка"
+                 ng-keydown="$event.keyCode === 13 && clickSearch()">
+        </div>
       </div>
-    <div class="form-group" style="margin-right: 20px;">
-      <label>ID физ. транка:</label>
-      <input type="number" class="form-control"
-              ng-model="filterObj.trunk_id"
-              placeholder="ID физ. транка"
-              ng-keydown="$event.keyCode === 13 && clickSearch()">
+
+      <div class="col-md-3 col-sm-6">
+        <div class="form-group d-flex">
+          <label class="filter-label">ID физ. транка:</label>
+          <input type="number" class="form-control filter-control"
+                 ng-model="filterObj.trunk_id"
+                 placeholder="ID физ. транка"
+                 ng-keydown="$event.keyCode === 13 && clickSearch()">
+        </div>
+      </div>
     </div>
-      <div class="form-group" style="margin-right: 20px;">
-        <label>Описание:</label>
-        <input type="text" class="form-control" 
-               ng-model="filterObj.description"
-               placeholder="Поиск по описанию"
-               ng-change="clickSearch()">
-      </div> 
-      <div class="form-group" style="margin-right: 20px;">
-        <label>Контрагент:</label>
-        <input type="text" class="form-control" 
-               ng-model="filterObj.contragent_name"
-               placeholder="Поиск по контрагенту"
-               ng-change="clickSearch()">
+
+    <!-- Ряд 2 -->
+    <div class="row filter-row">
+      <div class="col-md-3 col-sm-6">
+        <div class="form-group d-flex">
+          <label class="filter-label">Описание:</label>
+          <input type="text" class="form-control filter-control"
+                 ng-model="filterObj.description"
+                 placeholder="Поиск по описанию"
+                 ng-change="clickSearch()">
+        </div>
       </div>
-      <div class="form-group col-sm-4 search-form-item">
-  <label class="col-sm-3 search-field-label">Тип транков</label>
-  <div class="col-sm-9 search-input">
-    <div class="btn-group">
-      <!-- Все -->
-      <button type="button"
-              class="btn {{searchArray.onlyPhysical === false ? 'btn-primary active' : 'btn-default'}}"
-              ng-click="setPhysicalFilter(false)">
-        Все
-      </button>
-      <!-- Только физические -->
-      <button type="button"
-              class="btn {{searchArray.onlyPhysical === true ? 'btn-danger active' : 'btn-default'}}"
-              ng-click="setPhysicalFilter(true)">
-        Только физические
-      </button>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="form-group d-flex">
+          <label class="filter-label">Контрагент:</label>
+          <input type="text" class="form-control filter-control"
+                 ng-model="filterObj.contragent_name"
+                 placeholder="Поиск по контрагенту"
+                 ng-change="clickSearch()">
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="form-group d-flex" style="align-items: center;">
+          <label class="filter-label">Тип транков:</label>
+          <div class="btn-group">
+            <button type="button"
+                    class="btn {{searchArray.onlyPhysical === false ? 'btn-primary active' : 'btn-default'}}"
+                    ng-click="setPhysicalFilter(false)">Все</button>
+            <button type="button"
+                    class="btn {{searchArray.onlyPhysical === true ? 'btn-danger active' : 'btn-default'}}"
+                    ng-click="setPhysicalFilter(true)">Только физические</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6" style="display:flex; align-items:center; justify-content:flex-end;">
+        <a class="btn btn-primary" ng-click="clickCreate()">Создать</a>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
 
-         
-      <a class="btn btn-primary search-form-button" ng-click="clickCreate()">Создать</a>
-    </form>
-
-  </div>
   
   <table class="table table-striped table-hover table-condensed">
   <thead>
