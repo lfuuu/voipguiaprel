@@ -60,6 +60,26 @@
                placeholder="Поиск по контрагенту"
                ng-change="clickSearch()">
       </div>
+      <div class="form-group col-sm-4 search-form-item">
+  <label class="col-sm-3 search-field-label">Тип транков</label>
+  <div class="col-sm-9 search-input">
+    <div class="btn-group">
+      <!-- Все -->
+      <button type="button"
+              class="btn {{searchArray.onlyPhysical === false ? 'btn-primary active' : 'btn-default'}}"
+              ng-click="setPhysicalFilter(false)">
+        Все
+      </button>
+      <!-- Только физические -->
+      <button type="button"
+              class="btn {{searchArray.onlyPhysical === true ? 'btn-danger active' : 'btn-default'}}"
+              ng-click="setPhysicalFilter(true)">
+        Только физические
+      </button>
+    </div>
+  </div>
+</div>
+
          
       <a class="btn btn-primary search-form-button" ng-click="clickCreate()">Создать</a>
     </form>
