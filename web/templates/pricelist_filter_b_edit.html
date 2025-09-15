@@ -382,46 +382,61 @@
           </div>
 
           <!-- Результат проверки / импорта -->
-<div class="form-group" ng-show="bulkResult">
-  <div class="col-sm-12">
-    <div class="alert"
-         ng-class="{'alert-success': bulkResult.ok, 'alert-warning': !bulkResult.ok}"
-         ng-bind="bulkSummary"></div>
+<!-- Табличный предпросмотр -->
+<div ng-show="getPreview().length">
+  <div class="table-responsive" style="max-height:300px; overflow:auto;">
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Страна (MCC / имя)</th>
+          <th>Оператор (MNC / имя)</th>
+          <th>Цена</th>
+          <th>С даты</th>
+          <th>По дату</th>
+          <th>Примечание</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="r in getPreview() track by $index">
+          <td>{{$index + 1}}</td>
 
-    <!-- Табличный предпросмотр -->
-    <div ng-show="getPreview().length">
-      <div class="table-responsive" style="max-height:300px; overflow:auto;">
-        <table class="table table-condensed table-striped">
-          <thead>
-            <tr>
-              <th>#</th><th>Страна</th><th>Оператор</th><th>Цена</th><th>С даты</th><th>По дату</th><th>Примечание</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="r in getPreview() track by $index">
-              <td>{{$index + 1}}</td>
-              <td>{{r.country_code}}</td>
-              <td>{{r.operator_code}}</td>
-              <td>{{(+r.price) | number:6}}</td>
-              <td>{{r.date_from}}</td>
-              <td>{{r.date_to}}</td>
-              <td>{{r.note}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="help-block">
-        Показано {{getPreview().length}} строк.
-        <span ng-if="bulkResult.total">Всего: {{bulkResult.total}}.</span>
-        <span ng-if="bulkResult.dry_run">Режим: предварительный просмотр.</span>
-      </p>
-    </div>
+          <!-- Страна: код (MCC) + имя -->
+          <td>
+            <div>{{r.country_code}}</div>
+            <div class="text-muted small" ng-if="r.country_name">{{r.country_name}}</div>
+            <div class="text-muted small" ng-if="!r.country_name">&mdash;</div>
+          </td>
 
-    <!-- Fallback: сырой JSON одной строкой (на случай экзотики) -->
-    <div class="well well-sm" ng-show="!getPreview().length">
-      <div><strong>Сырой ответ:</strong></div>
-      <pre style="white-space:pre-wrap;">{{bulkResult | json}}</pre>
-    </div>
+          <!-- Оператор: код (MNC) + имя -->
+          <td>
+            <div>{{r.operator_code}}</div>
+            <div class="text-muted small" ng-if="r.operator_name">{{r.operator_name}}</div>
+            <div class="text-muted small" ng-if="!r.operator_name">&mdash;</div>
+          </td>
+
+          <td>{{(+r.price) | number:6}}</td>
+          <td>{{r.date_from}}</td>
+          <td>{{r.date_to}}</td>
+          <td>{{r.note}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="help-block">
+    Показано {{getPreview().length}} строк.
+    <span ng-if="bulkResult.total">Всего: {{bulkResult.total}}.</span>
+    <span ng-if="bulkResult.dry_run">Режим: предварительный просмотр.</span>
+  </p>
+</div>
+
+<!-- Fallback: сырой JSON одной строкой (на случай экзотики) -->
+<div class="well well-sm" ng-show="!getPreview().length">
+  <div><strong>Сырой ответ:</strong></div>
+  <pre style="white-space:pre-wrap;">{{bulkResult | json}}</pre>
+</div>
+
 
     <!-- Ошибки -->
     <div ng-show="(bulkResult.errors || []).length">
