@@ -446,7 +446,6 @@ public function actionBulkImport()
     }
 
     // ===== Справочники =====
-
     // MCC(string) -> внутренний nnp.country.code
     $countryRows = (new \yii\db\Query())
         ->select(['code', 'mcc'])
@@ -594,7 +593,7 @@ public function actionBulkImport()
 
         foreach ($normRows as $row) {
             if ($row['operator_id'] === null) {
-                // страна только
+                // страна только → rating = -3
                 $res = $this->findOrCreateFilterBForCountryOnly($aId, $row['country_code'], $template);
             } else {
                 // страна + оператор
@@ -623,9 +622,10 @@ public function actionBulkImport()
     }
 }
 
+
 /**
  * Найти/создать фильтр B по стране без оператора.
- * nnp_operator остаётся NULL/пустым массивом.
+ * Обязательно ставим rating = -3 (перебьёт шаблон).
  */
 private function findOrCreateFilterBForCountryOnly(int $aId, $countryCode, array $template): array
 {
@@ -637,6 +637,7 @@ WHERE pricelist_filter_a_id = :aId
   AND nnp_country = :c::int[]
   AND COALESCE(f_inv_nnp_country,false) = false
   AND (nnp_operator IS NULL OR nnp_operator = '{}')
+  AND COALESCE(f_inv_nnp_operator,false) = false
   AND (nnp_region IS NULL OR nnp_region = '{}')
   AND (nnp_city   IS NULL OR nnp_city   = '{}')
   AND (nnp_ndc    IS NULL OR nnp_ndc    = '{}')
@@ -649,14 +650,20 @@ SQL;
     if ($row && isset($row['id'])) {
         $b = PricelistFilterB::findOne($row['id']);
         $this->applyTemplateToB($b, $template);
+
         $b->nnp_country = $arrCountry;
         $b->f_inv_nnp_country = false;
-        // ВАЖНО: очищаем оператора
+
+        // очищаем оператора
         $b->nnp_operator = null;
         $b->f_inv_nnp_operator = false;
 
+        // ЖЁСТКО: рейтинг -3 для записей без оператора
+        $b->rating = -3;
+
         if (!$b->save()) throw new FormValidationException($b);
         return ['action' => 'update', 'model' => $b];
+
     } else {
         $b = PricelistFilterB::create();
         $b->pricelist_filter_a_id = $aId;
@@ -669,11 +676,13 @@ SQL;
         $b->nnp_operator = null;
         $b->f_inv_nnp_operator = false;
 
+        // ЖЁСТКО: рейтинг -3 для записей без оператора
+        $b->rating = -3;
+
         if (!$b->save()) throw new FormValidationException($b);
         return ['action' => 'create', 'model' => $b];
     }
 }
-
 
 
     /**
