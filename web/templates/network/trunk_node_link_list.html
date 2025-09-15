@@ -181,7 +181,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="link in links | filter:customFilter | orderBy:sortType:sortReverse track by link.trunk_node_link_id">
+    <tr ng-repeat="link in getViewLinks() | orderBy:sortType:sortReverse track by link.trunk_node_link_id">
       <td>{{ link.trunk_node_link_id }}</td>
       <td>
         <a target="_blank"
