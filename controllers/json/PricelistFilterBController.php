@@ -445,36 +445,36 @@ public function actionBulkImport()
         return ['ok' => false, 'errors' => [['line' => 0, 'message' => 'pricelist_filter_a_id и rows обязательны']]];
     }
 
-    // ==== Справочники ====
+    // ===== Справочники =====
 
-    // MCC(string) -> ВНУТРЕННИЙ nnp.country.code (integer)
+    // MCC(string) -> внутренний nnp.country.code
     $countryRows = (new \yii\db\Query())
         ->select(['code', 'mcc'])
         ->from('nnp.country')
         ->all();
 
-    $countryCodeByMcc = []; // '276' => 8 (пример)
+    $countryCodeByMcc = []; // '276' => <internal_code>
     foreach ($countryRows as $cr) {
         $mcc = trim((string)$cr['mcc']);
         if ($mcc === '') continue;
         $countryCodeByMcc[$mcc] = (int)$cr['code'];
     }
 
-    // (country_code ВНУТРЕННИЙ, mnc) -> operator.id
+    // (country_code(внутренний), mnc) -> operator.id
     $opRows = (new \yii\db\Query())
         ->select(['id', 'country_code', 'mnc'])
         ->from('nnp.operator')
         ->all();
 
-    $operatorIdByCountryCodeMnc = []; // [country_code_internal][mnc] = operator_id
+    $operatorIdByCountryCodeMnc = []; // [internal_code][mnc] = operator_id
     foreach ($opRows as $or) {
-        $cc  = (int)$or['country_code'];           // ВНУТРЕННИЙ code из nnp.country
+        $cc  = (int)$or['country_code'];
         $mnc = isset($or['mnc']) ? (int)$or['mnc'] : null;
         if ($mnc === null) continue;
         $operatorIdByCountryCodeMnc[$cc][$mnc] = (int)$or['id'];
     }
 
-    // ==== Парсинг входных строк ====
+    // ===== Парсинг =====
     $parsed = $this->bulkParseRows($rows, $delimiter);
     if (!$parsed['ok']) return $parsed;
 
@@ -487,13 +487,13 @@ public function actionBulkImport()
         $lineNo++;
 
         if (count($r) < 5) {
-            $errors[] = ['line' => $lineNo, 'message' => 'Ожидалось 5 полей: MCC  MNC  price  date_from  date_to'];
+            $errors[] = ['line' => $lineNo, 'message' => 'Ожидалось 5 полей: MCC  MNC(может быть пусто)  price  date_from  date_to'];
             continue;
         }
 
         list($mccRaw, $mncRaw, $priceRaw, $dfRaw, $dtRaw) = $r;
 
-        // --- MCC -> внутренний code страны (для nnp_country)
+        // MCC -> внутренний code страны (для nnp_country)
         $mccStr = trim((string)$mccRaw);
         $countryCodeInternal = $countryCodeByMcc[$mccStr] ?? null;
         if ($countryCodeInternal === null) {
@@ -501,22 +501,25 @@ public function actionBulkImport()
             continue;
         }
 
-        // --- MNC -> int
-        $mncInt = (int)preg_replace('/\D+/', '', (string)$mncRaw);
-        if ($mncInt <= 0) {
-            $errors[] = ['line' => $lineNo, 'message' => "Некорректный MNC '{$mncRaw}'"];
-            continue;
+        // MNC (опционален)
+        $mncTrim = trim((string)$mncRaw);
+        $hasOperator = ($mncTrim !== '');
+        $operatorId = null;
+        if ($hasOperator) {
+            $mncInt = (int)preg_replace('/\D+/', '', $mncTrim);
+            if ($mncInt <= 0) {
+                $errors[] = ['line' => $lineNo, 'message' => "Некорректный MNC '{$mncRaw}'"];
+                continue;
+            }
+            $operatorId = $operatorIdByCountryCodeMnc[$countryCodeInternal][$mncInt] ?? null;
+            if ($operatorId === null) {
+                $errors[] = ['line' => $lineNo,
+                    'message' => "Оператор не найден по паре country_code='{$countryCodeInternal}' (из MCC '{$mccStr}') и MNC='{$mncTrim}'"];
+                continue;
+            }
         }
 
-        // --- (ВНУТРЕННИЙ country_code, MNC) -> operator.id
-        $operatorId = $operatorIdByCountryCodeMnc[$countryCodeInternal][$mncInt] ?? null;
-        if ($operatorId === null) {
-            $errors[] = ['line' => $lineNo,
-                         'message' => "Оператор не найден по паре country_code='{$countryCodeInternal}' (из MCC '{$mccStr}') и MNC='{$mncRaw}'"];
-            continue;
-        }
-
-        // --- цена
+        // цена
         $priceStr = str_replace(',', '.', trim((string)$priceRaw));
         if (!is_numeric($priceStr)) {
             $errors[] = ['line' => $lineNo, 'message' => 'Некорректная цена'];
@@ -524,36 +527,34 @@ public function actionBulkImport()
         }
         $price = (float)$priceStr;
 
-        // --- даты
+        // даты
         $prepared = $this->prepareDates($dfRaw, $dtRaw);
         if (isset($prepared['error'])) {
             $errors[] = ['line' => $lineNo, 'message' => $prepared['error']];
             continue;
         }
-        $dateFrom = $prepared['date_start'];
-        $dateTo   = $prepared['date_end'];
 
-        // --- нормализованная строка для серверной логики
+        // нормализованная строка
         $normRows[] = [
             'line'          => $lineNo,
-            'country_code'  => (string)$countryCodeInternal, // ВНУТРЕННИЙ code → nnp_country
-            'operator_code' => (string)$operatorId,          // id оператора → nnp_operator
+            'country_code'  => (string)$countryCodeInternal,   // ВНУТРЕННИЙ code -> nnp_country
+            'operator_id'   => $operatorId,                    // может быть null
             'price'         => $price,
-            'date_from'     => $dateFrom,
-            'date_to'       => $dateTo,
-            'operator_mnc'  => (string)$mncInt,
+            'date_from'     => $prepared['date_start'],
+            'date_to'       => $prepared['date_end'],
             'input_mcc'     => (string)$mccStr,
+            'input_mnc'     => $hasOperator ? (string)$mncTrim : '',
         ];
 
-        // --- предпросмотр для UI (показываем MCC/MNC, как вводил пользователь)
+        // предпросмотр (для пользователя MCC/MNC, как вводил)
         if (count($preview) < 50) {
             $preview[] = [
-                'country_code'  => (string)$mccStr,  // MCC для пользователя
-                'operator_code' => (string)$mncInt,  // MNC для пользователя
+                'country_code'  => (string)$mccStr,           // MCC
+                'operator_code' => $hasOperator ? (string)$mncTrim : '', // MNC или пусто
                 'price'         => $price,
-                'date_from'     => $dateFrom,
-                'date_to'       => $dateTo,
-                'note'          => ''
+                'date_from'     => $prepared['date_start'],
+                'date_to'       => $prepared['date_end'],
+                'note'          => $hasOperator ? '' : 'без оператора',
             ];
         }
     }
@@ -567,7 +568,7 @@ public function actionBulkImport()
         return ['ok' => false, 'dry_run' => false, 'preview' => $preview, 'errors' => $errors, 'summary' => 'Исправьте ошибки и повторите'];
     }
 
-    // ==== Апдейт в транзакции ====
+    // ===== Сохранение =====
     $tx = PricelistFilterB::getDb()->beginTransaction();
     try {
         if ($replace) {
@@ -592,13 +593,20 @@ public function actionBulkImport()
         $pricelistId = (int)$pl['pricelist_id'];
 
         foreach ($normRows as $row) {
-            // ВНИМАНИЕ: country_code — внутренний (из nnp.country.code), operator_code — operator.id
-            $res = $this->findOrCreateFilterBForPair($aId, $row['country_code'], $row['operator_code'], $template);
+            if ($row['operator_id'] === null) {
+                // страна только
+                $res = $this->findOrCreateFilterBForCountryOnly($aId, $row['country_code'], $template);
+            } else {
+                // страна + оператор
+                $res = $this->findOrCreateFilterBForPair($aId, $row['country_code'], $row['operator_id'], $template);
+            }
+
             if ($res['action'] === 'create') $created++; else $updated++;
 
             /** @var PricelistFilterB $b */
             $b = $res['model'];
 
+            // Прайс префикса '' на интервал
             $pricesUpserted += $this->upsertBlankPrefixPrice(
                 $b, $row['price'], $row['date_from'], $row['date_to'], $pricelistId
             );
@@ -614,6 +622,58 @@ public function actionBulkImport()
         return ['ok' => false, 'dry_run' => false, 'errors' => [['line' => 0, 'message' => $e->getMessage()]], 'summary' => 'Ошибка транзакции'];
     }
 }
+
+/**
+ * Найти/создать фильтр B по стране без оператора.
+ * nnp_operator остаётся NULL/пустым массивом.
+ */
+private function findOrCreateFilterBForCountryOnly(int $aId, $countryCode, array $template): array
+{
+    $arrCountry = '{' . (int)$countryCode . '}';
+
+    $sql = <<<SQL
+SELECT id FROM billing_uu.pricelist_filter_b
+WHERE pricelist_filter_a_id = :aId
+  AND nnp_country = :c::int[]
+  AND COALESCE(f_inv_nnp_country,false) = false
+  AND (nnp_operator IS NULL OR nnp_operator = '{}')
+  AND (nnp_region IS NULL OR nnp_region = '{}')
+  AND (nnp_city   IS NULL OR nnp_city   = '{}')
+  AND (nnp_ndc    IS NULL OR nnp_ndc    = '{}')
+  AND (nnp_ndc_type IS NULL OR nnp_ndc_type = '{}')
+LIMIT 1
+SQL;
+
+    $row = Yii::$app->db->createCommand($sql, [':aId' => $aId, ':c' => $arrCountry])->queryOne();
+
+    if ($row && isset($row['id'])) {
+        $b = PricelistFilterB::findOne($row['id']);
+        $this->applyTemplateToB($b, $template);
+        $b->nnp_country = $arrCountry;
+        $b->f_inv_nnp_country = false;
+        // ВАЖНО: очищаем оператора
+        $b->nnp_operator = null;
+        $b->f_inv_nnp_operator = false;
+
+        if (!$b->save()) throw new FormValidationException($b);
+        return ['action' => 'update', 'model' => $b];
+    } else {
+        $b = PricelistFilterB::create();
+        $b->pricelist_filter_a_id = $aId;
+        $this->applyTemplateToB($b, $template);
+
+        $b->nnp_country = $arrCountry;
+        $b->f_inv_nnp_country = false;
+
+        // без оператора
+        $b->nnp_operator = null;
+        $b->f_inv_nnp_operator = false;
+
+        if (!$b->save()) throw new FormValidationException($b);
+        return ['action' => 'create', 'model' => $b];
+    }
+}
+
 
 
     /**
