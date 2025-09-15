@@ -447,33 +447,31 @@ public function actionBulkImport()
 
     // ==== Справочники ====
 
-    // MCC (строкой) -> ВНУТРЕННИЙ nnp.country.code
+    // MCC(string) -> ВНУТРЕННИЙ nnp.country.code (integer)
     $countryRows = (new \yii\db\Query())
         ->select(['code', 'mcc'])
         ->from('nnp.country')
         ->all();
 
-    $countryInternalByMcc = []; // '276' => 8 (пример)
+    $countryCodeByMcc = []; // '276' => 8 (пример)
     foreach ($countryRows as $cr) {
-        $mcc  = trim((string)$cr['mcc']);
+        $mcc = trim((string)$cr['mcc']);
         if ($mcc === '') continue;
-        $countryInternalByMcc[$mcc] = (int)$cr['code'];
+        $countryCodeByMcc[$mcc] = (int)$cr['code'];
     }
 
-    // (ISO numeric, MNC) -> operator.id
-    // В nnp.operator.country_code хранится именно ISO numeric (в твоём примере 276).
+    // (country_code ВНУТРЕННИЙ, mnc) -> operator.id
     $opRows = (new \yii\db\Query())
         ->select(['id', 'country_code', 'mnc'])
         ->from('nnp.operator')
         ->all();
 
-    $operatorIdByIsoMnc = []; // [iso][mnc] = operator_id
+    $operatorIdByCountryCodeMnc = []; // [country_code_internal][mnc] = operator_id
     foreach ($opRows as $or) {
-        $iso  = (int)$or['country_code'];
-        $mnc  = isset($or['mnc']) ? (int)$or['mnc'] : null;
-        $oid  = (int)$or['id'];
+        $cc  = (int)$or['country_code'];           // ВНУТРЕННИЙ code из nnp.country
+        $mnc = isset($or['mnc']) ? (int)$or['mnc'] : null;
         if ($mnc === null) continue;
-        $operatorIdByIsoMnc[$iso][$mnc] = $oid;
+        $operatorIdByCountryCodeMnc[$cc][$mnc] = (int)$or['id'];
     }
 
     // ==== Парсинг входных строк ====
@@ -495,32 +493,26 @@ public function actionBulkImport()
 
         list($mccRaw, $mncRaw, $priceRaw, $dfRaw, $dtRaw) = $r;
 
-        // --- MCC → внутренний code страны (для nnp_country)
+        // --- MCC -> внутренний code страны (для nnp_country)
         $mccStr = trim((string)$mccRaw);
-        $countryCodeInternal = $countryInternalByMcc[$mccStr] ?? null;
+        $countryCodeInternal = $countryCodeByMcc[$mccStr] ?? null;
         if ($countryCodeInternal === null) {
             $errors[] = ['line' => $lineNo, 'message' => "Страна не найдена по MCC '{$mccStr}'"];
             continue;
         }
 
-        // --- ISO numeric для операторов: используем MCC как ISO (integer)
-        $isoNumeric = (int)preg_replace('/\D+/', '', $mccStr);
-        if ($isoNumeric <= 0) {
-            $errors[] = ['line' => $lineNo, 'message' => "Некорректный MCC '{$mccStr}'"];
-            continue;
-        }
-
-        // --- MNC → int
+        // --- MNC -> int
         $mncInt = (int)preg_replace('/\D+/', '', (string)$mncRaw);
         if ($mncInt <= 0) {
             $errors[] = ['line' => $lineNo, 'message' => "Некорректный MNC '{$mncRaw}'"];
             continue;
         }
 
-        // --- (ISO, MNC) → operator.id
-        $operatorId = $operatorIdByIsoMnc[$isoNumeric][$mncInt] ?? null;
+        // --- (ВНУТРЕННИЙ country_code, MNC) -> operator.id
+        $operatorId = $operatorIdByCountryCodeMnc[$countryCodeInternal][$mncInt] ?? null;
         if ($operatorId === null) {
-            $errors[] = ['line' => $lineNo, 'message' => "Оператор не найден по паре MCC='{$mccStr}' (ISO={$isoNumeric}) и MNC='{$mncRaw}'"];
+            $errors[] = ['line' => $lineNo,
+                         'message' => "Оператор не найден по паре country_code='{$countryCodeInternal}' (из MCC '{$mccStr}') и MNC='{$mncRaw}'"];
             continue;
         }
 
@@ -541,26 +533,23 @@ public function actionBulkImport()
         $dateFrom = $prepared['date_start'];
         $dateTo   = $prepared['date_end'];
 
-        // --- нормализованная строка для сервера
+        // --- нормализованная строка для серверной логики
         $normRows[] = [
             'line'          => $lineNo,
-            // сюда для фильтра B пойдёт ВНУТРЕННИЙ код страны (из nnp.country.code, найденный по MCC)
-            'country_code'  => (string)$countryCodeInternal,
-            // сюда для фильтра B пойдёт id оператора (из nnp.operator.id, найденный по (ISO=MCC, MNC))
-            'operator_code' => (string)$operatorId,
+            'country_code'  => (string)$countryCodeInternal, // ВНУТРЕННИЙ code → nnp_country
+            'operator_code' => (string)$operatorId,          // id оператора → nnp_operator
             'price'         => $price,
             'date_from'     => $dateFrom,
             'date_to'       => $dateTo,
-            // для логов/отладки
             'operator_mnc'  => (string)$mncInt,
-            'country_iso'   => (string)$isoNumeric,
+            'input_mcc'     => (string)$mccStr,
         ];
 
-        // --- предпросмотр для UI (показываем то, что вводит пользователь)
+        // --- предпросмотр для UI (показываем MCC/MNC, как вводил пользователь)
         if (count($preview) < 50) {
             $preview[] = [
-                'country_code'  => (string)$mccStr,  // показываем MCC
-                'operator_code' => (string)$mncInt,  // показываем MNC
+                'country_code'  => (string)$mccStr,  // MCC для пользователя
+                'operator_code' => (string)$mncInt,  // MNC для пользователя
                 'price'         => $price,
                 'date_from'     => $dateFrom,
                 'date_to'       => $dateTo,
@@ -589,7 +578,7 @@ public function actionBulkImport()
 
         $created = 0; $updated = 0; $pricesUpserted = 0;
 
-        // получаем pricelist_id для истории прайсов
+        // pricelist_id для истории прайсов
         $pl = PricelistLocation::find()
             ->alias('pl')
             ->select(['pl.pricelist_id'])
@@ -610,7 +599,6 @@ public function actionBulkImport()
             /** @var PricelistFilterB $b */
             $b = $res['model'];
 
-            // Прайс префикса '' на интервал
             $pricesUpserted += $this->upsertBlankPrefixPrice(
                 $b, $row['price'], $row['date_from'], $row['date_to'], $pricelistId
             );
@@ -626,6 +614,7 @@ public function actionBulkImport()
         return ['ok' => false, 'dry_run' => false, 'errors' => [['line' => 0, 'message' => $e->getMessage()]], 'summary' => 'Ошибка транзакции'];
     }
 }
+
 
     /**
      * Удаление фильтра B
