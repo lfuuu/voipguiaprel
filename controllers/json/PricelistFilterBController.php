@@ -445,35 +445,37 @@ public function actionBulkImport()
         return ['ok' => false, 'errors' => [['line' => 0, 'message' => 'pricelist_filter_a_id и rows обязательны']]];
     }
 
-    // ===== Справочники =====
-    // MCC(string) -> внутренний nnp.country.code
+    /* ---------- Справочники ---------- */
+
+    // MCC -> [code (internal), name_rus]
     $countryRows = (new \yii\db\Query())
-        ->select(['code', 'mcc'])
+        ->select(['code', 'mcc', 'name_rus'])
         ->from('nnp.country')
         ->all();
 
-    $countryCodeByMcc = []; // '276' => <internal_code>
+    $countryByMcc = []; // '276' => ['code'=>8, 'name'=>'Германия']
     foreach ($countryRows as $cr) {
         $mcc = trim((string)$cr['mcc']);
         if ($mcc === '') continue;
-        $countryCodeByMcc[$mcc] = (int)$cr['code'];
+        $countryByMcc[$mcc] = ['code' => (int)$cr['code'], 'name' => (string)$cr['name_rus']];
     }
 
-    // (country_code(внутренний), mnc) -> operator.id
+    // (country_code (INTERNAL, тот же что в nnp.country.code), mnc) -> [id, name]
     $opRows = (new \yii\db\Query())
-        ->select(['id', 'country_code', 'mnc'])
+        ->select(['id', 'country_code', 'mnc', 'name'])
         ->from('nnp.operator')
         ->all();
 
-    $operatorIdByCountryCodeMnc = []; // [internal_code][mnc] = operator_id
+    $operatorByCcMnc = []; // [internal_code][mnc] = ['id'=>.., 'name'=>..]
     foreach ($opRows as $or) {
-        $cc  = (int)$or['country_code'];
-        $mnc = isset($or['mnc']) ? (int)$or['mnc'] : null;
-        if ($mnc === null) continue;
-        $operatorIdByCountryCodeMnc[$cc][$mnc] = (int)$or['id'];
+        if ($or['mnc'] === null) continue;
+        $cc  = (int)$or['country_code'];   // это ВНУТРЕННИЙ code из nnp.country
+        $mnc = (int)$or['mnc'];
+        $operatorByCcMnc[$cc][$mnc] = ['id' => (int)$or['id'], 'name' => (string)$or['name']];
     }
 
-    // ===== Парсинг =====
+    /* ---------- Парсинг ---------- */
+
     $parsed = $this->bulkParseRows($rows, $delimiter);
     if (!$parsed['ok']) return $parsed;
 
@@ -492,33 +494,39 @@ public function actionBulkImport()
 
         list($mccRaw, $mncRaw, $priceRaw, $dfRaw, $dtRaw) = $r;
 
-        // MCC -> внутренний code страны (для nnp_country)
+        // --- страна по MCC
         $mccStr = trim((string)$mccRaw);
-        $countryCodeInternal = $countryCodeByMcc[$mccStr] ?? null;
-        if ($countryCodeInternal === null) {
+        $country = $countryByMcc[$mccStr] ?? null;
+        if ($country === null) {
             $errors[] = ['line' => $lineNo, 'message' => "Страна не найдена по MCC '{$mccStr}'"];
             continue;
         }
+        $countryCodeInternal = $country['code'];
+        $countryNameRus      = $country['name'];
 
-        // MNC (опционален)
-        $mncTrim = trim((string)$mncRaw);
-        $hasOperator = ($mncTrim !== '');
-        $operatorId = null;
+        // --- оператор (опционален)
+        $mncTrim      = trim((string)$mncRaw);
+        $hasOperator  = ($mncTrim !== '');
+        $operatorId   = null;
+        $operatorName = '';
+
         if ($hasOperator) {
             $mncInt = (int)preg_replace('/\D+/', '', $mncTrim);
             if ($mncInt <= 0) {
                 $errors[] = ['line' => $lineNo, 'message' => "Некорректный MNC '{$mncRaw}'"];
                 continue;
             }
-            $operatorId = $operatorIdByCountryCodeMnc[$countryCodeInternal][$mncInt] ?? null;
-            if ($operatorId === null) {
+            if (isset($operatorByCcMnc[$countryCodeInternal][$mncInt])) {
+                $operatorId   = $operatorByCcMnc[$countryCodeInternal][$mncInt]['id'];
+                $operatorName = $operatorByCcMnc[$countryCodeInternal][$mncInt]['name'];
+            } else {
                 $errors[] = ['line' => $lineNo,
-                    'message' => "Оператор не найден по паре country_code='{$countryCodeInternal}' (из MCC '{$mccStr}') и MNC='{$mncTrim}'"];
+                    'message' => "Оператор не найден (country_code='{$countryCodeInternal}', MNC='{$mncTrim}')"];
                 continue;
             }
         }
 
-        // цена
+        // --- цена
         $priceStr = str_replace(',', '.', trim((string)$priceRaw));
         if (!is_numeric($priceStr)) {
             $errors[] = ['line' => $lineNo, 'message' => 'Некорректная цена'];
@@ -526,34 +534,36 @@ public function actionBulkImport()
         }
         $price = (float)$priceStr;
 
-        // даты
+        // --- даты
         $prepared = $this->prepareDates($dfRaw, $dtRaw);
         if (isset($prepared['error'])) {
             $errors[] = ['line' => $lineNo, 'message' => $prepared['error']];
             continue;
         }
+        $dateFrom = $prepared['date_start'];
+        $dateTo   = $prepared['date_end'];
 
-        // нормализованная строка
+        // --- нормализация для сохранения
         $normRows[] = [
             'line'          => $lineNo,
-            'country_code'  => (string)$countryCodeInternal,   // ВНУТРЕННИЙ code -> nnp_country
+            'country_code'  => (string)$countryCodeInternal,   // в nnp_country пойдёт ВНУТРЕННИЙ code
             'operator_id'   => $operatorId,                    // может быть null
             'price'         => $price,
-            'date_from'     => $prepared['date_start'],
-            'date_to'       => $prepared['date_end'],
-            'input_mcc'     => (string)$mccStr,
-            'input_mnc'     => $hasOperator ? (string)$mncTrim : '',
+            'date_from'     => $dateFrom,
+            'date_to'       => $dateTo,
         ];
 
-        // предпросмотр (для пользователя MCC/MNC, как вводил)
+        // --- предпросмотр (добавлены name_rus и operator.name)
         if (count($preview) < 50) {
             $preview[] = [
-                'country_code'  => (string)$mccStr,           // MCC
-                'operator_code' => $hasOperator ? (string)$mncTrim : '', // MNC или пусто
-                'price'         => $price,
-                'date_from'     => $prepared['date_start'],
-                'date_to'       => $prepared['date_end'],
-                'note'          => $hasOperator ? '' : 'без оператора',
+                'country_code'   => (string)$mccStr,         // показываем MCC
+                'country_name'   => $countryNameRus,         // НОВОЕ — name_rus
+                'operator_code'  => $hasOperator ? (string)$mncTrim : '',
+                'operator_name'  => $operatorName,           // НОВОЕ — name (если есть)
+                'price'          => $price,
+                'date_from'      => $dateFrom,
+                'date_to'        => $dateTo,
+                'note'           => $hasOperator ? '' : 'без оператора',
             ];
         }
     }
@@ -567,7 +577,8 @@ public function actionBulkImport()
         return ['ok' => false, 'dry_run' => false, 'preview' => $preview, 'errors' => $errors, 'summary' => 'Исправьте ошибки и повторите'];
     }
 
-    // ===== Сохранение =====
+    /* ---------- Сохранение ---------- */
+
     $tx = PricelistFilterB::getDb()->beginTransaction();
     try {
         if ($replace) {
@@ -578,7 +589,7 @@ public function actionBulkImport()
 
         $created = 0; $updated = 0; $pricesUpserted = 0;
 
-        // pricelist_id для истории прайсов
+        // получаем pricelist_id для истории
         $pl = PricelistLocation::find()
             ->alias('pl')
             ->select(['pl.pricelist_id'])
@@ -593,7 +604,7 @@ public function actionBulkImport()
 
         foreach ($normRows as $row) {
             if ($row['operator_id'] === null) {
-                // страна только → rating = -3
+                // только страна → rating = -3 внутри helper’а
                 $res = $this->findOrCreateFilterBForCountryOnly($aId, $row['country_code'], $template);
             } else {
                 // страна + оператор
@@ -605,7 +616,7 @@ public function actionBulkImport()
             /** @var PricelistFilterB $b */
             $b = $res['model'];
 
-            // Прайс префикса '' на интервал
+            // префикс '' на интервал
             $pricesUpserted += $this->upsertBlankPrefixPrice(
                 $b, $row['price'], $row['date_from'], $row['date_to'], $pricelistId
             );
@@ -618,9 +629,12 @@ public function actionBulkImport()
 
     } catch (\Throwable $e) {
         if ($tx->getIsActive()) $tx->rollBack();
-        return ['ok' => false, 'dry_run' => false, 'errors' => [['line' => 0, 'message' => $e->getMessage()]], 'summary' => 'Ошибка транзакции'];
+        return ['ok' => false, 'dry_run' => false,
+                'errors' => [['line' => 0, 'message' => $e->getMessage()]],
+                'summary' => 'Ошибка транзакции'];
     }
 }
+
 
 
 /**
