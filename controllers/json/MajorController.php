@@ -18,8 +18,8 @@ use yii\web\HttpException;
 
 class MajorController extends JsonController
 {
-    const API_URL = 'http://reg99.mcntelecom.ru:8032/';
-    const API_URL_EU = 'http://reg20.mcntelecom.hu:8032/';
+    const API_URL = 'http://reg1001.mcntelecom.ru:8032/';
+    const API_URL_EU = 'http://reg200.mcntelecom.hu:8032/';
     
     public function actionList()
     {
