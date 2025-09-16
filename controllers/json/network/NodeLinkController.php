@@ -29,7 +29,7 @@ class NodeLinkController extends BaseController
             'l.sorm_id',
             'l.weight',
             'l.comment',
-            'l.trunk_name',
+            'l.sorm_name AS sorm_name',
             "CONCAT(src.node_name_id, ' - ', src.node_id) AS src_node_display",
             "CONCAT(dst.node_name_id, ' - ', dst.node_id) AS dst_node_display",
         ])
