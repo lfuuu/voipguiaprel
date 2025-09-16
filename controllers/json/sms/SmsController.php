@@ -35,7 +35,7 @@ class SmsController extends JsonController
 
     if ($isEu) {
         // Используем IP напрямую
-        return 'http://eukannel3.kompaas.tech:8085';
+        return 'http://10.250.30.44:8085';
     }
 
     return 'http://kannel2.mcn.ru:8085';
