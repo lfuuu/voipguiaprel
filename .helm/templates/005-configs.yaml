@@ -282,7 +282,6 @@ data:
             ['url' => 'http://reg99.mcntelecom.ru:8101/api/health/', 'title' => 'ocslte (Квотирующий биллер)'],
             ['url' => 'http://eridanus5.mcn.ru:8101/api/health/', 'title' => 'ocslte (Квотирующий биллер)'],
             ['url' => 'https://ocslte1.kompaas.tech/api/health/', 'title' => 'ocslte1eu'],
-            ['url' => 'http://reg200.kompaas.tech:8032/test/healthcheck', 'title' => 'reg200'],
             ['url' => 'https://ocslte2.kompaas.tech/api/health/', 'title' => 'ocslte2eu'],
             ['url' => 'http://iberus.mcn.ru:8099/healthcheck', 'title' => 'pgsync'],
             'https://lk.mcn.ru/lk/statistics/index',
