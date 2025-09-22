@@ -18,6 +18,7 @@ use app\classes\traits\ModelRules;
  * @property string|null $src_trunk_name
  * @property string|null $dst_trunk_name
  * @property string|null $trunk_name
+ * @property string|null $sorm_name
  * @property string|null $start_date    // TIMESTAMP без часового пояса
  * @property string|null $end_date      // TIMESTAMP без часового пояса
  */
@@ -59,6 +60,8 @@ class NodeLink extends ActiveRecord
 
             // булево поле
             [['unidirect'], 'boolean'],
+
+            [['sorm_name'], 'string', 'max' => 255],
 
             // текстовые поля
             [['comment', 'src_trunk_name', 'dst_trunk_name', 'trunk_name'], 'string'],
