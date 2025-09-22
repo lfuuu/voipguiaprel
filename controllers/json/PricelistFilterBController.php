@@ -929,4 +929,43 @@ private function resolveCountryCode($input)
     return null;
 }
 
+public function actionDeleteHistoryWithPrefixes()
+{
+    if (!\Yii::$app->user->can('pricelist_edit')) {
+        throw new ForbiddenHttpException('Доступ запрещен');
+    }
+
+    $id = \Yii::$app->request->post('id');
+    if (!$id) {
+        throw new \yii\web\BadRequestHttpException('Требуется указать ID');
+    }
+
+    /** @var PricelistPrefixPriceHistory|null $history */
+    $history = PricelistPrefixPriceHistory::findOne($id);
+    if (!$history) {
+        throw new \yii\web\NotFoundHttpException("История с ID $id не найдена");
+    }
+
+    $tx = Yii::$app->db->beginTransaction();
+    try {
+        // 1) удалить префиксы, созданные этой загрузкой
+        $deleted = (int) Yii::$app->db->createCommand(
+            "DELETE FROM billing_uu.pricelist_prefix_price WHERE history_id = :hid"
+        )->bindValue(':hid', $id)->execute();
+
+        // 2) удалить историю: связанные items удалятся каскадом (ON DELETE CASCADE)
+        $history->delete();
+
+        $tx->commit();
+        return [
+            'status' => 'success',
+            'deleted_prefixes' => $deleted,
+            'message' => "История $id и её префиксы удалены"
+        ];
+    } catch (\Throwable $e) {
+        if ($tx->getIsActive()) $tx->rollBack();
+        throw new \yii\web\ServerErrorHttpException('Не удалось удалить: ' . $e->getMessage());
+    }
+}
+
 }
