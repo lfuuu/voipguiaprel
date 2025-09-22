@@ -12,7 +12,8 @@ var TrunkNodeLinkEditCtrl = function($rootScope, $scope, Link, Node, params, $mo
         service_trunk_id: '',
         node_id: '',
         comment: '',
-        id_phys_trunk: ''
+        id_phys_trunk: '',
+        sorm_id: ''
       };
     }
     
