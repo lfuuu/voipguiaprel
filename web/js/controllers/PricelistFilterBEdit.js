@@ -210,14 +210,25 @@ var PricelistFilterBEditCtrl = function(
     };
     $scope.back = function () { $modalInstance.close(); };
     $scope.deleteHistoryItem = function(item) {
-        if (!item || !item.id) { alert("Невозможно удалить: некорректный элемент."); return; }
-        var ok = $window.confirm("Удалить запись истории с ID " + item.id + "?");
-        if (ok) {
-            PricelistFilterB.deleteHistoryItem(item.id).then(function(response) {
-                if (response.status === 'success') { alert(response.message); }
-            }, function(error) { alert("Произошла ошибка при удалении: " + error.message); });
-        }
-    };
+    if (!item || !item.id) { 
+        alert("Невозможно удалить: некорректный элемент."); 
+        return; 
+    }
+    var ok = $window.confirm(
+        "Удалить запись истории с ID " + item.id + 
+        " и все связанные префиксы?\nЭто действие необратимо!"
+    );
+    if (ok) {
+        PricelistFilterB.deleteHistoryItem(item.id).then(function(response) {
+            if (response.status === 'success') {
+                alert("Удалено: " + response.deleted_prefixes + " префиксов\n" + response.message);
+            }
+        }, function(error) {
+            alert("Произошла ошибка при удалении: " + error.message);
+        });
+    }
+};
+
 
     // =========================
     // Массовый импорт — предпросмотр (через $http)

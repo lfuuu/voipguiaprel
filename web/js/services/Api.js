@@ -2731,20 +2731,22 @@ app.factory('PricelistFilterA', function ($q, ApiLoader, $rootScope) {
     };
 });
 
-app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope) {
+app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope, $http) {
     var url = '/json/pricelist-filter-b/';
 
     function toObject(maybe) {
         if (maybe == null) return {};
         if (typeof maybe === 'string') {
-            // Срежем XSSI-префикс на всякий случай и распарсим
-            try { return JSON.parse(maybe.replace(/^\)\]\}',?\s*/, '')); } catch(e) { return {}; }
+            try { 
+                return JSON.parse(maybe.replace(/^\)\]\}',?\s*/, '')); 
+            } catch(e) { 
+                return {}; 
+            }
         }
         return maybe;
     }
 
     function unwrap(promise) {
-        // Нормализуем любой промис в $q-промис и достаём data/парсим строку
         return $q.when(promise).then(function (res) {
             var data = (res && typeof res === 'object' && 'data' in res) ? res.data : res;
             return toObject(data);
@@ -2757,10 +2759,11 @@ app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope) {
         save: function (data) { return unwrap(ApiLoader.post(url + 'save', data)); },
         saveAndUpdate: function (data) { return unwrap(ApiLoader.post(url + 'save-and-update', data)); },
         delete: function (id) { return unwrap(ApiLoader.post(url + 'delete', { id: id })); },
-        deleteHistoryItem: function (id) { return unwrap(ApiLoader.post(url + 'delete-history-item', { id: id })); },
+        deleteHistoryItem: id  => unwrap(ApiLoader.post(url + 'delete-history-with-prefixes', { id: id })),
         bulkImport: function (payload) { return unwrap(ApiLoader.post(url + 'bulk-import', payload)); }
     };
 });
+
 
 
 app.factory('PricelistPrefixPrice', function ($q, ApiLoader, $rootScope) {
