@@ -149,10 +149,18 @@ class SmsController extends JsonController
             'port'           => $post['port'] ?? '',
             'smsc-username'  => $post['smsc-username'] ?? '',
             'smsc-password'  => $post['smsc-password'] ?? '',
-        ];
+            // новые поля:
+            'use-ssl'        => isset($post['use-ssl']) ? (bool)$post['use-ssl'] : false,
+            ];
 
-        $this->httpCall('POST', '/v1/trunks/smpp', $payload);
-        return ['status' => 'ok'];
+            // system-type только если непустой
+            if (!empty($post['system-type'])) {
+            $payload['system-type'] = (string)$post['system-type'];
+            }
+
+            $this->httpCall('POST', '/v1/trunks/smpp', $payload);
+            return ['status' => 'ok'];
+
     }
 
     /** PUT изменить SMPP транк по trunk_id */
@@ -191,10 +199,15 @@ class SmsController extends JsonController
             'port'           => $post['port'],
             'smsc-username'  => $post['smsc-username'],
             'smsc-password'  => $post['smsc-password'],
-        ];
+            'use-ssl'        => isset($post['use-ssl']) ? (bool)$post['use-ssl'] : false,
+            ];
 
-        $this->httpCall('PUT', "/v1/trunks/smpp/{$configId}", $payload);
-        return ['status' => 'ok', 'config_id' => (int)$configId];
+            if (!empty($post['system-type'])) {
+            $payload['system-type'] = (string)$post['system-type'];
+            }
+
+            $this->httpCall('PUT', "/v1/trunks/smpp/{$configId}", $payload);
+            return ['status' => 'ok', 'config_id' => (int)$configId];
     }
 
     /** DELETE удалить SMPP транк по trunk_id */
