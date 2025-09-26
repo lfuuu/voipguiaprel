@@ -112,7 +112,7 @@ class TestAuthController extends JsonController
 
         // тип шлюза (MCMCN -> /api/get.dst_route как GET; иначе /api/get.dst_route_smsc как POST JSON)
         $gate     = \app\models\auth\SmsGate::findOne($item->gate_id);
-        $isMCMCN  = $gate && strtoupper((string)$gate->type) === 'MCMCN';
+        $isMCMCN  = $gate && strtoupper((string)$gate->type) === 'SMSGATE';
 
         $isEuropean = \Yii::$app->params['isEuropean'] ?? false;
 

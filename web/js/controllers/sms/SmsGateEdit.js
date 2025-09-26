@@ -9,7 +9,7 @@ var SmsGateEditCtrl = function($rootScope, $scope, Redirect, SmsGate, params, $m
             description: '',
             ip:          '',
             host:        '',
-            type:        'MCMCN'
+            type:        'SMSGATE'
         };
     }
 
