@@ -117,14 +117,29 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
       SmsTrunk.getSmppConfig().then(function(list){
         var entry = list.find(function(e){ return e.name === $scope.item.name; });
         if (entry) {
-          $scope.smpp.url           = entry.host;
-          $scope.smpp.port          = entry.port;
-          $scope.smpp.smsc_username = entry['smsc-username'];
-          $scope.smpp.smsc_password = entry['smsc-password'];
-          $scope.smpp.system_type   = entry['system-type'] || '';
-          $scope.smpp.use_ssl       = !!entry['use-ssl'];
+          // базовые
+          $scope.smpp.url  = entry.host || entry.url || '';
+          $scope.smpp.port = entry.port || '';
+
+          // username/password: поддерживаем camelCase и kebab-case
+          $scope.smpp.smsc_username =
+            entry['smsc-username'] != null ? entry['smsc-username'] :
+            (entry.smscUsername != null ? entry.smscUsername : '');
+
+          $scope.smpp.smsc_password =
+            entry['smsc-password'] != null ? entry['smsc-password'] :
+            (entry.smscPassword != null ? entry.smscPassword : '');
+
+          // system-type: camelCase + kebab-case; пустое => ''
+          var st = (entry['system-type'] != null ? entry['system-type'] : entry.systemType);
+          $scope.smpp.system_type = (st == null ? '' : st);
+
+          // use-ssl: camelCase + kebab-case -> boolean
+          var ssl = (entry['use-ssl'] != null ? entry['use-ssl'] : entry.useSsl);
+          $scope.smpp.use_ssl = !!ssl;
         }
       });
+
     } else if (proto.type === 'rest') {
       SmsTrunk.getApiConfig().then(function(list){
         var entry = list.find(function(e){ return e.name === $scope.item.name; });
