@@ -38,7 +38,7 @@ class SmsGate extends ActiveRecord
             [['id'], 'integer'],
             [['name', 'description', 'ip', 'host', 'type'], 'string'],
             [['name'], 'required'],
-            ['type', 'in', 'range' => ['MCMCN', 'Yate']],
+            ['type', 'in', 'range' => ['SMSGATE', 'Yate']],
         ];
     }
 }

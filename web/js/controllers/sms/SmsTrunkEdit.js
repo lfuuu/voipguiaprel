@@ -26,7 +26,7 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
   function recalcFlags() {
     var gate = findGate($scope.item.sms_gate_id);
     $scope.selectedGate = gate;
-    $scope.isMCMCN      = !!(gate && gate.type === 'MCMCN');
+    $scope.isMCMCN      = !!(gate && gate.type === 'SMSGATE');
   }
 
   function initItem() {
