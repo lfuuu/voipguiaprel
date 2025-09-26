@@ -1,7 +1,10 @@
 var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstance) {
   $scope.AGG_ID = null;
 
-  $scope.smpp = {};
+  $scope.smpp = {
+    system_type: '',   // строка или '' (не указывать)
+    use_ssl: false     // boolean
+  };
   $scope.rest = {};
 
   $scope.gatewayList       = [];
@@ -88,7 +91,7 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
       });
     });
 
-    $scope.$watchGroup(['item.sms_gate_id','item.connector_type_id'], function(vals) {
+    $scope.$watchGroup(['item.sms_gate_id','item.connector_type_id'], function() {
       recalcFlags();
       var isAgg = ($scope.item.connector_type_id === $scope.AGG_ID);
       if ($scope.isMCMCN && isAgg) {
@@ -118,6 +121,8 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
           $scope.smpp.port          = entry.port;
           $scope.smpp.smsc_username = entry['smsc-username'];
           $scope.smpp.smsc_password = entry['smsc-password'];
+          $scope.smpp.system_type   = entry['system-type'] || '';
+          $scope.smpp.use_ssl       = !!entry['use-ssl'];
         }
       });
     } else if (proto.type === 'rest') {
@@ -144,14 +149,22 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
 
       // вместо сравнения по ID — опора на тип шлюза:
       if ($scope.isMCMCN && isAgg && pt === 'smpp') {
-        return SmsTrunk.addSmppConfiguration({
+        var payload = {
           trunk_id:        trunkId,
           name:            $scope.item.name,
           host:            $scope.smpp.url,
           port:            $scope.smpp.port,
           'smsc-username': $scope.smpp.smsc_username,
-          'smsc-password': $scope.smpp.smsc_password
-        }).then(function(){ $modalInstance.close(); });
+          'smsc-password': $scope.smpp.smsc_password,
+          'use-ssl':       !!$scope.smpp.use_ssl
+        };
+        // system-type отправляем ТОЛЬКО если непустой
+        if ($scope.smpp.system_type && $scope.smpp.system_type.trim().length > 0) {
+          payload['system-type'] = $scope.smpp.system_type.trim();
+        }
+
+        return SmsTrunk.addSmppConfiguration(payload)
+          .then(function(){ $modalInstance.close(); });
       }
 
       if ($scope.isMCMCN && isAgg && pt === 'rest') {
@@ -180,14 +193,20 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
     if (!trunkId) return;
 
     if (t === 'smpp') {
-      return SmsTrunk.modifySmppConfiguration({
+      var payload = {
         trunk_id:        trunkId,
         name:            $scope.item.name,
         host:            $scope.smpp.url,
         port:            $scope.smpp.port,
         'smsc-username': $scope.smpp.smsc_username,
-        'smsc-password': $scope.smpp.smsc_password
-      });
+        'smsc-password': $scope.smpp.smsc_password,
+        'use-ssl':       !!$scope.smpp.use_ssl
+      };
+      if ($scope.smpp.system_type && $scope.smpp.system_type.trim().length > 0) {
+        payload['system-type'] = $scope.smpp.system_type.trim();
+      }
+
+      return SmsTrunk.modifySmppConfiguration(payload);
     } else if (t === 'rest') {
       return SmsTrunk.modifyApiConfiguration({
         trunk_id:             trunkId,

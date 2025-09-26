@@ -128,7 +128,36 @@
                       <input type="text" class="form-control" ng-model="smpp.smsc_password" required>
                     </div>
                   </div>
+                  <!-- system-type -->
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">system-type</label>
+                    <div class="col-sm-10">
+                      <select class="form-control" ng-model="smpp.system_type">
+                        <!-- пустое значение — ничего не отправляем (для Devino) -->
+                        <option value="">(не указывать)</option>
+                        <option value="smpp">smpp</option>
+                        <option value="VMA">VMA</option>
+                      </select>
+                      <p class="help-block">
+                        Оставьте пустым для Devino; у EUKannel3 используйте <code>smpp</code>.
+                      </p>
+                    </div>
+                  </div>
 
+                  <!-- use-ssl -->
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">use-ssl</label>
+                    <div class="col-sm-10">
+                      <div class="checkbox" style="margin:6px 0;">
+                        <label>
+                          <input type="checkbox" ng-model="smpp.use_ssl"> Использовать SSL/TLS для SMPP
+                        </label>
+                      </div>
+                      <p class="help-block">
+                        Для Mitto включите SSL (true). По умолчанию — false.
+                      </p>
+                    </div>
+                  </div>
                   <div class="form-group">
                     <div class="col-sm-10 col-sm-offset-2">
                       <button type="button" class="btn btn-info btn-sm"
