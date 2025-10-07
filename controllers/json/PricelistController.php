@@ -18,6 +18,7 @@ use yii\db\IntegrityException;
 use yii\db\Query;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
+use yii\web\Response;
 
 class PricelistController extends JsonController
 {
@@ -551,21 +552,77 @@ SQL;
      * @throws HttpException
      * @throws \Exception
      */
-    public function actionDelete()
-    {
-        if (!\Yii::$app->user->can('pricelist_delete')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
 
-        $item = $this->getPricelistOr404($this->request['id']);
-
-        try {
-            $item->delete();
-        } catch (IntegrityException $e) {
-            return ['errors' => [['code' => $e->getCode(), 'message' => $e->getMessage()]]];
-        }
+public function actionDelete()
+{
+    if (!\Yii::$app->user->can('pricelist_delete')) {
+        throw new ForbiddenHttpException('Access denied');
     }
 
+    $id = (int)$this->request['id'];
+    $item = $this->getPricelistOr404($id);
+
+    // ===== helper для простых текстовых 4xx =====
+    $textError = function (int $status, string $message) {
+        $resp = \Yii::$app->response;
+        $resp->statusCode = $status;
+        $resp->format = Response::FORMAT_RAW;
+        $resp->headers->set('Content-Type', 'text/plain; charset=UTF-8');
+        // дублируем в header на случай кастомных интерцепторов
+        $resp->headers->set('X-Error-Message', $message);
+        return $message;
+    };
+
+    // 1) Активность
+    if ((bool)$item->is_active) {
+        return $textError(409, "Прайслист #{$id} активен — удаление запрещено");
+    }
+
+    // 2) is_in_use: есть ли ХОТЯ БЫ ОДИН активный сейчас тариф (voice/SMS/Data)
+    $inUse = (new \yii\db\Query())
+        ->select(new Expression('1'))
+        ->from(['u' =>
+            (new \yii\db\Query())
+                ->select('pp.tariff_id')->from('billing_uu.package_pricelist pp')
+                ->where(['pp.nnp_pricelist_id' => $id])
+                ->union((new \yii\db\Query())->select('sms.tariff_id')->from('billing_uu.package_sms sms')->where(['sms.nnp_pricelist_id' => $id]))
+                ->union((new \yii\db\Query())->select('data.tariff_id')->from('billing_uu.package_data data')->where(['data.nnp_pricelist_id' => $id]))
+        ])
+        ->innerJoin('billing_uu.account_tariff_light atl', 'atl.id = u.tariff_id')
+        ->where(new Expression('now() BETWEEN atl.activate_from AND atl.deactivate_from'))
+        ->limit(1)
+        ->scalar() !== false;
+
+    if ($inUse) {
+        return $textError(409, "Прайслист #{$id} используется в активных тарифах — удаление запрещено");
+    }
+
+    // 3) Удаление родителя (каскад вниз обеспечен FK)
+    try {
+        $deleted = \Yii::$app->db->createCommand(
+            'DELETE FROM "billing_uu"."pricelist" WHERE "id" = :id'
+        )->bindValue(':id', $id)->execute();
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            'status'       => 'ok',
+            'deleted_id'   => $id,
+            'deleted_rows' => (int)$deleted,
+        ];
+
+    } catch (IntegrityException $e) {
+        // FK-вилка: покажем конкретные tariff_id из package_pricelist
+        $tariffIds = (new \yii\db\Query())
+            ->select('tariff_id')
+            ->distinct(true)
+            ->from('billing_uu.package_pricelist')
+            ->where(['nnp_pricelist_id' => $id])
+            ->column();
+
+        $tail = $tariffIds ? ' Тариф(ы): ' . implode(', ', $tariffIds) : '';
+        return $textError(409, "Удаление запрещено: прайслист #{$id} связан с package_pricelist.$tail");
+    }
+}
 
     public function actionSearch()
     {

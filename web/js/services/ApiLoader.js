@@ -31,28 +31,70 @@ app.factory('ApiLoader', function ($q, $http, $rootScope) {
                     decLoaderCount();
                 })
                 .error(function(responseData, status, headers, config) {
-                    deferred.reject([{http: [ status + '. ' + config.method + ' ' + config.url ]}]);
+                    var rejectionPayload = [{
+                        http: [ status + '. ' + config.method + ' ' + config.url ]
+                    }];
+                    rejectionPayload[0].data = responseData;
+
                     $rootScope.popupErrors = {
                         header: false,
                         errors: []
                     };
 
-                    if (responseData.type == 'app\\exceptions\\FormValidationException') {
-                        $rootScope.popupErrors.header = 'Не верные параметры запроса';
-                        for (var i in responseData.errors) {
-                            for (var n in responseData.errors[i]) {
-                                $rootScope.popupErrors.errors.push(responseData.errors[i][n]);
-                            }
+                    var collectMessages = function(messages) {
+                        if (!messages) return;
+                        if (!angular.isArray(messages)) {
+                            messages = [messages];
                         }
-                    } else if (responseData.type == 'yii\\web\\ForbiddenHttpException') {
+                        angular.forEach(messages, function(message) {
+                            if (message === undefined || message === null) return;
+                            var text = ('' + message).replace(/\s+$/, '');
+                            if (text.length) {
+                                $rootScope.popupErrors.errors.push(text);
+                            }
+                        });
+                    };
+
+                    var extractedMessages = [];
+                    var responseType = responseData && responseData.type;
+                    var responseObject = angular.isObject(responseData) ? responseData : {};
+
+                    if (responseType == 'app\\exceptions\\FormValidationException') {
+                        $rootScope.popupErrors.header = 'Не верные параметры запроса';
+                        for (var i in responseObject.errors) {
+                            for (var n in responseObject.errors[i]) {
+                                $rootScope.popupErrors.errors.push(responseObject.errors[i][n]);
+                                }
+                            }
+                    } else if (angular.isString(responseData)) {
+                        $rootScope.popupErrors.header = 'Ошибка ' + status;
+                        extractedMessages.push(responseData);
+                    } else if (responseType == 'yii\\web\\ForbiddenHttpException') {
                         $rootScope.popupErrors.header = 'Отказано в доступе';
                     } else {
                         $rootScope.popupErrors.header = 'Ошибка ' + status;
-                        if (responseData.message) {
-                            $rootScope.popupErrors.errors.push(responseData.message);
+                        if (responseObject.message) {
+                            extractedMessages.push(responseObject.message);
+                        } else if (responseObject.error) {
+                            extractedMessages.push(responseObject.error);
+                        } else if (responseObject.text) {
+                            extractedMessages.push(responseObject.text);
                         }
                     }
 
+                    if (!$rootScope.popupErrors.errors.length) {
+                        collectMessages(extractedMessages);
+                    }
+
+                    if (!$rootScope.popupErrors.errors.length) {
+                        collectMessages('Неизвестная ошибка');
+                    }
+
+                    if (extractedMessages.length) {
+                        rejectionPayload[0].message = extractedMessages.join('\n');
+                    }
+
+                    deferred.reject(rejectionPayload);
                     decLoaderCount();
                 })
             ;
