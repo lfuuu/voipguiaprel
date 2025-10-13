@@ -231,6 +231,11 @@
                 ng-click="toggleActive(item)">Деактивировать</button>
         <button type="button" ng-hide="item.is_active" class="btn btn-default btn-sm"
                 ng-click="toggleActive(item)">Активировать</button>
+        <button type="button" class="btn btn-info btn-sm"
+          style="margin-left:6px"
+          ng-click="openRelations(item)">
+    Связи
+  </button>
       </td>
       <td ng-if="userPermissions['pricelist_delete']">
         <button type="button" ng-hide="item.is_active" class="btn btn-danger btn-sm glyphicon glyphicon-minus"
@@ -239,3 +244,89 @@
     </tr>
   </tbody>
 </table>
+<!-- МОДАЛКА СВЯЗЕЙ -->
+<div class="modal fade in" ng-if="relationsModal.visible" style="display:block; background: rgba(0,0,0,.3);">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" ng-click="closeRelations()"><span>&times;</span></button>
+        <h4 class="modal-title">
+          Связи прайслиста
+          <span ng-if="relationsModal.item">#{{relationsModal.item.id}} — {{relationsModal.item.name}}</span>
+        </h4>
+      </div>
+
+      <div class="modal-body" style="max-height:65vh; overflow:auto;">
+
+        <div ng-if="relationsModal.loading">Загрузка связей...</div>
+
+        <div class="alert alert-danger" ng-if="!relationsModal.loading && relationsModal.error">
+          {{relationsModal.error}}
+        </div>
+
+        <div ng-if="!relationsModal.loading && !relationsModal.error">
+
+          <!-- VOICE -->
+          <h5>Пакеты Voice (package_pricelist)
+            <span class="badge">{{relationsModal.data.package_pricelist.length}}</span>
+          </h5>
+          <div ng-if="relationsModal.data.package_pricelist.length === 0" class="text-muted">Нет связей</div>
+          <ul class="list-unstyled" ng-if="relationsModal.data.package_pricelist.length">
+            <li ng-repeat="id in relationsModal.data.package_pricelist track by $index">
+              <a ng-href="{{buildTariffLink(id)}}" target="_blank">Тариф #{{id}}</a>
+            </li>
+          </ul>
+
+          <hr>
+
+          <!-- SMS -->
+          <h5>Пакеты SMS (package_sms)
+            <span class="badge">{{relationsModal.data.package_sms.length}}</span>
+          </h5>
+          <div ng-if="relationsModal.data.package_sms.length === 0" class="text-muted">Нет связей</div>
+          <ul class="list-unstyled" ng-if="relationsModal.data.package_sms.length">
+            <li ng-repeat="id in relationsModal.data.package_sms track by $index">
+              <a ng-href="{{buildTariffLink(id)}}" target="_blank">Тариф #{{id}}</a>
+            </li>
+          </ul>
+
+          <hr>
+
+          <!-- DATA -->
+          <h5>Пакеты Data (package_data)
+            <span class="badge">{{relationsModal.data.package_data.length}}</span>
+          </h5>
+          <div ng-if="relationsModal.data.package_data.length === 0" class="text-muted">Нет связей</div>
+          <ul class="list-unstyled" ng-if="relationsModal.data.package_data.length">
+            <li ng-repeat="id in relationsModal.data.package_data track by $index">
+              <a ng-href="{{buildTariffLink(id)}}" target="_blank">Тариф #{{id}}</a>
+            </li>
+          </ul>
+
+          <hr>
+
+          <!-- A2P ROUTES -->
+          <h5>A2P-маршруты (auth.a2psms_route_table_route)
+            <span class="badge">{{relationsModal.data.a2p_routes.length}}</span>
+          </h5>
+          <div ng-if="relationsModal.data.a2p_routes.length === 0" class="text-muted">Нет связей</div>
+          <!-- Здесь ссылки тоже ведут на внешний стат, по текущему прайслисту -->
+          <ul class="list-unstyled" ng-if="relationsModal.data.a2p_routes.length">
+            <li ng-repeat="r in relationsModal.data.a2p_routes track by $index">
+              <a ng-href="{{buildTariffLink(r.nnp_pricelist_id || relationsModal.item.id)}}" target="_blank">
+                RouteTable #{{r.a2psms_route_table_id}} / order {{r.ord}}
+              </a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-default" ng-click="closeRelations()">Закрыть</button>
+      </div>
+
+    </div>
+  </div>
+</div>
