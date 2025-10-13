@@ -2477,7 +2477,7 @@ app.factory('ImsiPartner', function ($q, ApiLoader, $rootScope) {
     };
 });
 
-app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
+app.factory('Pricelist', function ($q, ApiLoader, $rootScope,$http) {
     var url = '/json/pricelist/';
     var list = undefined;
     var promise = undefined;
@@ -2496,6 +2496,9 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope) {
         },
         updatePrefixPrices: function (id, multiplier, dateFrom, dateTo) {
             return ApiLoader.post(url + 'update-prefix-prices', { id: id, multiplier: multiplier, dateFrom: dateFrom, dateTo: dateTo });
+        },
+        relations: function(id) {
+            return $http.post('/json/pricelist/relations', { id: id }, { responseType: 'json' }).then(function(res){ return res.data; }, function(err){ return $q.reject(err); });
         },
         get: function (data) {
             return ApiLoader.post(url + 'get', data);

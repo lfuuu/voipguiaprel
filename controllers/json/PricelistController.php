@@ -799,4 +799,54 @@ public function actionDelete()
 
         return ['success' => 1];
     }
+    public function actionRelations()
+{
+    if (!\Yii::$app->user->can('pricelist_list')) {
+        throw new \yii\web\ForbiddenHttpException('Access denied');
+    }
+
+    $id = (int)$this->request['id'];
+
+    // проверим, что прайс существует
+    $exists = (new Query())->from('billing_uu.pricelist')->where(['id' => $id])->exists();
+    if (!$exists) {
+        \Yii::$app->response->statusCode = 404;
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        return ['message' => "Pricelist #{$id} not found"];
+    }
+
+    // Собираем ID тарифов по всем пакетам (DISTINCT)
+    $voice = (new Query())->select('tariff_id')->distinct()
+        ->from('billing_uu.package_pricelist')->where(['nnp_pricelist_id' => $id])->column();
+
+    $sms   = (new Query())->select('tariff_id')->distinct()
+        ->from('billing_uu.package_sms')->where(['nnp_pricelist_id' => $id])->column();
+
+    $data  = (new Query())->select('tariff_id')->distinct()
+        ->from('billing_uu.package_data')->where(['nnp_pricelist_id' => $id])->column();
+
+    // A2P маршруты: вернём ID записей (или нужные поля)
+    // A2P маршруты: выбираем составной ключ и, при желании, дополнительные поля
+$a2p = (new \yii\db\Query())
+    ->select([
+        'a2psms_route_table_id',
+        new \yii\db\Expression('"order" AS ord'), // "order" — зарезервированное слово, берём как alias ord
+        'nnp_pricelist_id'
+        // при необходимости добавь ещё поля, напр. 'a2psms_outcome_id'
+    ])
+    ->from('auth.a2psms_route_table_route')
+    ->where(['nnp_pricelist_id' => $id])
+    ->orderBy(['a2psms_route_table_id' => SORT_ASC, 'ord' => SORT_ASC])
+    ->all();
+
+\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+return [
+    'pricelist_id'      => $id,
+    'package_pricelist' => array_values($voice ?: []),
+    'package_sms'       => array_values($sms ?: []),
+    'package_data'      => array_values($data ?: []),
+    'a2p_routes'        => $a2p, // теперь массив объектов {a2psms_route_table_id, ord, nnp_pricelist_id}
+];
+
+}
 }
