@@ -299,6 +299,65 @@ SQL;
         return $result;
     }
 
+    public function actionGetWithDependentsAll()
+{
+    if (!\Yii::$app->user->can('pricelist_list')) {
+        throw new \yii\web\ForbiddenHttpException('Access denied');
+    }
+
+    // 1) Плоские правила как в actionGetWithDependentsNew()
+    $flatRules = [
+        'p'   => Pricelist::rulesFlat(),
+        'pl'  => PricelistLocation::rulesFlat(),
+        'pfa' => PricelistFilterA::rulesFlat(),
+        'pfb' => PricelistFilterB::rulesFlat(),
+        'ppp' => PricelistPrefixPrice::rulesFlat(),
+    ];
+
+    $select = [];
+    foreach ($flatRules as $tableKey => $rulesArray) {
+        foreach ($rulesArray as $rule) {
+            $select[$tableKey . '__' . $rule] = $tableKey . '.' . $rule;
+        }
+    }
+
+    // 2) Без LIMIT и DISTINCT, аккуратно со скобками для OR prefix_b IS NULL
+    $prefixPriceSelect = <<<SQL
+LATERAL (
+    SELECT *
+    FROM billing_uu.pricelist_prefix_price ppp
+    WHERE ppp.pricelist_filter_b_id = pfb.id
+      AND (
+            ppp.date_to > now()
+            OR ppp.prefix_b IS NULL
+          )
+) 
+SQL;
+
+    // 3) Основной запрос
+    $queryResult = Pricelist::find()
+        ->alias('p')
+        ->select($select)
+        ->leftJoin(PricelistLocation::tableName() . ' as pl',  'pl.pricelist_id = p.id')
+        ->leftJoin(PricelistFilterA::tableName() . ' as pfa',  'pfa.pricelist_location_id = pl.id')
+        ->leftJoin(PricelistFilterB::tableName() . ' as pfb',  'pfb.pricelist_filter_a_id = pfa.id')
+        ->leftJoin(new \yii\db\Expression($prefixPriceSelect) . ' as ppp', 'ppp.pricelist_filter_b_id = pfb.id')
+        ->where(['p.id' => $this->request['id']])
+        ->orderBy('pl.id, pfa.id, pfb.id, ppp.prefix_b, ppp.id')
+        ->asArray()
+        ->all();
+
+    // 4) Формирование ответа как в New-версии
+    if (isset($this->request['type']) && $this->request['type'] === 'short') {
+        $result = PricelistView::getForShortForm($queryResult);
+    } else {
+        $result = PricelistView::getForFullForm($queryResult);
+    }
+
+    return $result;
+}
+
+
     public function actionGetWithDependents()
     {
         if (!\Yii::$app->user->can('pricelist_list')) {
