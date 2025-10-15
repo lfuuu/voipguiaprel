@@ -25,7 +25,7 @@ class SwaggerController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $serverUrl = Url::to('/', true);
+        $serverUrl = Url::to('/', 'https');
 
         return [
             'openapi' => '3.0.3',
