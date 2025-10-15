@@ -14,12 +14,10 @@ class SwaggerController extends Controller
      * @return string
      */
     public function actionIndex(): string
-    {
-        return $this->render('index', [
-            'schemaUrl' => Url::to(['swagger/json'], true),
-        ]);
-    }
-
+{
+    $schemaUrl = Url::to(['swagger/json'], 'https'); // <-- всегда HTTPS
+    return $this->render('index', ['schemaUrl' => $schemaUrl]);
+}
     /**
      * Возвращает OpenAPI спецификацию.
      */
