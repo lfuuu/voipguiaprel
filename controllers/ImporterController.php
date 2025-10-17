@@ -105,19 +105,26 @@ class ImporterController extends BaseController
 }
 
     private function getOldItems($id, $prefixDateStart, $prefixes)
-    {
-        $sql = "
-            SELECT id, prefix_b, b_number_price, date_to
-            FROM billing_uu.pricelist_prefix_price
-            WHERE pricelist_filter_b_id = :id AND date_to > :date_to AND prefix_b IN (:prefixes)
-        ";
-
-        return Yii::$app->db->createCommand($sql)
-            ->bindValue(':id', $id)
-            ->bindValue(':date_to', $prefixDateStart)
-            ->bindValue(':prefixes', $prefixes)
-            ->queryAll();
+{
+    $placeholders = [];
+    $params = [':id' => $id, ':date_to' => $prefixDateStart];
+    foreach ($prefixes as $i => $p) {
+        $ph = ":p{$i}";
+        $placeholders[] = $ph;
+        $params[$ph] = $p;
     }
+
+    $sql = "
+        SELECT id, prefix_b, b_number_price, date_to
+        FROM billing_uu.pricelist_prefix_price
+        WHERE pricelist_filter_b_id = :id
+          AND date_to > :date_to
+          AND prefix_b IN (" . implode(',', $placeholders) . ")
+    ";
+
+    return Yii::$app->db->createCommand($sql, $params)->queryAll();
+}
+
 
 
     private function groupOldItemsByPrefix($oldItems)
