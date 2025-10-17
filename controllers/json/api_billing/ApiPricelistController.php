@@ -13,7 +13,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use yii\web\HttpException;
 use yii\web\Response;
 use yii\web\ForbiddenHttpException;
-use app\exceptions\FormValidationException; // <-- добавлено
+use app\exceptions\FormValidationException;
 
 class ApiPricelistController extends JsonController
 {
@@ -103,22 +103,18 @@ class ApiPricelistController extends JsonController
                 throw new FormValidationException($item);
             }
 
-            // ---- СОХРАНЕНИЕ/ОБНОВЛЕНИЕ ПУНКТОВ + СБОР ИХ ID ----
-            $incomingIds = [];
+            // ---- СОХРАНЕНИЕ/ОБНОВЛЕНИЕ ПУНКТОВ + СБОР ИХ ФАКТИЧЕСКИХ ID ----
+            $savedIds = [];
 
             if (isset($this->request['items'])) {
                 foreach ($this->request['items'] as $apiItem) {
-
-                    if (!empty($apiItem['id'])) {
-                        $incomingIds[] = (int)$apiItem['id'];
-                    }
 
                     // Гарантируем привязку к текущему прайс-листу
                     $apiItem['pricelist_id'] = $item->id;
 
                     $currentApiItem = null;
                     if (!empty($apiItem['id'])) {
-                        $currentApiItem = ApiPricelistItem::findOne(['id' => $apiItem['id']]);
+                        $currentApiItem = ApiPricelistItem::findOne(['id' => (int)$apiItem['id']]);
                     }
 
                     if ($currentApiItem === null) {
@@ -132,14 +128,17 @@ class ApiPricelistController extends JsonController
                     if (!$currentApiItem->save()) {
                         throw new FormValidationException($currentApiItem);
                     }
+
+                    // Важно: добавляем реальный id (включая новые)
+                    $savedIds[] = (int)$currentApiItem->id;
                 }
 
                 // ---- СИНХРОНИЗАЦИЯ (УДАЛЕНИЕ ОТСУТСТВУЮЩИХ) ----
-                if (count($incomingIds) > 0) {
+                if (count($savedIds) > 0) {
                     ApiPricelistItem::deleteAll([
                         'and',
                         ['pricelist_id' => $item->id],
-                        ['not in', 'id', $incomingIds],
+                        ['not in', 'id', $savedIds],
                     ]);
                 } else {
                     // Пришёл пустой список — удалить все строки прайс-листа
@@ -151,9 +150,11 @@ class ApiPricelistController extends JsonController
             $this->performAfterSaveActions($item, $this->request);
 
             $transaction->commit();
-        } finally {
-            if ($transaction->getIsActive())
+        } catch (\Throwable $e) {
+            if ($transaction->getIsActive()) {
                 $transaction->rollBack();
+            }
+            throw $e;
         }
 
         $result['log']['data_after'] = self::getDataForLog($item);
@@ -262,6 +263,7 @@ class ApiPricelistController extends JsonController
         }
 
         // Загрузить сам прайс-лист вместе с элементами
+        /** @var ApiPricelist $item */
         $item = $this->modelName::find()
             ->with([
                 'items.api',        // связь ApiPricelistItem → Api
@@ -285,12 +287,9 @@ class ApiPricelistController extends JsonController
         }
 
         $fileName = 'Pricelist_' . $item->name . '_' . date('Ymd_His') . '.xlsx';
-        $filePath = \Yii::getAlias('@webroot/files/') . $fileName;
-        if (!is_dir(dirname($filePath))) {
-            mkdir(dirname($filePath), 0777, true);
-        }
 
-        $this->createPricelistExcelDocument($rows, $filePath, $item->name);
+        $this->createPricelistExcelDocument($rows, $fileName, $item->name);
+        return null; // поток уже отдан
     }
 
     /**
@@ -311,16 +310,22 @@ class ApiPricelistController extends JsonController
             'borders'   => ['bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
         ];
 
+        // Титул (опционально)
+        $sheet->setCellValue('A1', $title);
+        $sheet->mergeCells('A1:D1');
+        $sheet->getStyle('A1')->getFont()->setBold(true);
+        $sheet->getRowDimension(1)->setRowHeight(20);
+
         // Записать заголовки
         $col = 'A';
         foreach ($headers as $hdr) {
-            $sheet->setCellValue("{$col}1", $hdr);
-            $sheet->getStyle("{$col}1")->applyFromArray($headerStyle);
+            $sheet->setCellValue("{$col}2", $hdr);
+            $sheet->getStyle("{$col}2")->applyFromArray($headerStyle);
             $col++;
         }
 
         // Данные
-        $rowNum = 2;
+        $rowNum = 3;
         foreach ($data as $row) {
             $colNum = 1;
             foreach ($row as $value) {
@@ -337,7 +342,7 @@ class ApiPricelistController extends JsonController
         }
 
         // Границы ячеек
-        $sheet->getStyle("A1:{$lastCol}{$rowNum}")->applyFromArray([
+        $sheet->getStyle("A2:{$lastCol}" . ($rowNum - 1))->applyFromArray([
             'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
         ]);
 

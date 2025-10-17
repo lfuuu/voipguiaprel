@@ -4,7 +4,7 @@ var ApiBillingApiPricelistEditCtrl = function (
     ApiBillingApiPricelist,
     params,
     $modalInstance,
-    $window // <-- добавлено, т.к. используется в exportToExcel
+    $window // используется в exportToExcel
 ) {
     if (params.id) {
         ApiBillingApiPricelist.get({ id: params.id }).then(function (data) {
@@ -55,6 +55,10 @@ var ApiBillingApiPricelistEditCtrl = function (
     $scope.save = function () {
         ApiBillingApiPricelist.save($scope.item).then(function () {
             $modalInstance.close();
+        }).catch(function (err) {
+            console.error('Save error', err);
+            var msg = (err && err.data && (err.data.message || err.data.error)) || 'Ошибка сохранения, подробности в консоли.';
+            $window.alert(msg);
         });
     };
 
@@ -67,6 +71,7 @@ var ApiBillingApiPricelistEditCtrl = function (
             pricelist_id: '',
             api_id: '',
             api_method_id: '',
+            price: 0,
             enabled: true
             // id не задаём — сервер различит новые/старые по наличию id
         });
@@ -77,6 +82,7 @@ var ApiBillingApiPricelistEditCtrl = function (
     };
 
     $scope.exportToExcel = function () {
+        // ВНИМАНИЕ: сервис должен слать { responseType: 'arraybuffer' }
         ApiBillingApiPricelist.exportToExcel({ id: $scope.item.id }).then(
             function (response) {
                 var blob = new Blob([response.data], {
