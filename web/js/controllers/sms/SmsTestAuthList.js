@@ -52,7 +52,10 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, SmsGate, Redire
           });
       }
     }
-
+    $scope.clickSearch = function($event) {
+  if ($event && $event.preventDefault) $event.preventDefault(); // гасим submit формы
+  $scope.refreshList();
+};
     SmsList.testGroup({}).then(function(data) {
       $scope.testGroupList = data;
     });
@@ -109,6 +112,14 @@ var SmsTestAuthListCtrl = function($scope, SmsTestAuth, SmsList, SmsGate, Redire
       if (passed === false) return 'failed.png';
       return 'not_executed.png';
     };
+
+
+  $scope.cloneTest = function(item) {
+  if (!userPermissions['sms_test_auth_create']) return;
+  if (window.getSelection().type === 'Range') return;
+
+  Redirect.smsTestAuthClone(item.id).then($scope.init);
+};
 
     updateFilteredTrunks();
     $scope.init();
