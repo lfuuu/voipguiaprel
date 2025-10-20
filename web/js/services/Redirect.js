@@ -281,6 +281,9 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
         testAuthClone: function(id) {
             return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {id: id, clone: true});
         },
+        smsTestAuthClone: function(id) {
+            return openModal(SmsTestAuthEditCtrl, '/templates/sms/test_auth_edit.html',{ id: id, clone: true });
+        },
         testAuthCloneFromCall: function(id) {
             return openModal(TestAuthEditCtrl, '/templates/test_auth_edit.html', {id: id, cloneFromCall: true});
         },
