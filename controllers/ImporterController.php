@@ -106,24 +106,41 @@ class ImporterController extends BaseController
 
     private function getOldItems($id, $prefixDateStart, $prefixes)
 {
-    $placeholders = [];
-    $params = [':id' => $id, ':date_to' => $prefixDateStart];
-    foreach ($prefixes as $i => $p) {
-        $ph = ":p{$i}";
-        $placeholders[] = $ph;
-        $params[$ph] = $p;
+    $result = [];
+
+    if (empty($prefixes)) {
+        return $result;
     }
 
-    $sql = "
-        SELECT id, prefix_b, b_number_price, date_to
-        FROM billing_uu.pricelist_prefix_price
-        WHERE pricelist_filter_b_id = :id
-          AND date_to > :date_to
-          AND prefix_b IN (" . implode(',', $placeholders) . ")
-    ";
+    $chunkSize = 5000;
 
-    return Yii::$app->db->createCommand($sql, $params)->queryAll();
+    foreach (array_chunk($prefixes, $chunkSize) as $chunk) {
+        $placeholders = [];
+        $params = [':id' => $id, ':date_to' => $prefixDateStart];
+
+        foreach ($chunk as $i => $p) {
+            $ph = ':p' . $i;
+            $placeholders[] = $ph;
+            $params[$ph] = $p;
+        }
+
+        $sql = "
+            SELECT id, prefix_b, b_number_price, date_to
+            FROM billing_uu.pricelist_prefix_price
+            WHERE pricelist_filter_b_id = :id
+              AND date_to > :date_to
+              AND prefix_b IN (" . implode(',', $placeholders) . ")
+        ";
+
+        $res = Yii::$app->db->createCommand($sql, $params)->queryAll();
+        if (!empty($res)) {
+            $result = array_merge($result, $res);
+        }
+    }
+
+    return $result;
 }
+
 
 
 
