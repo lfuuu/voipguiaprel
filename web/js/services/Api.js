@@ -2703,6 +2703,7 @@ app.factory('PricelistLocation', function ($q, ApiLoader, $rootScope) {
     var url = '/json/pricelist-location/';
     var list = undefined;
     var promise = undefined;
+
     return {
         get: function (data) {
             return ApiLoader.post(url + 'get', data);
@@ -2715,6 +2716,9 @@ app.factory('PricelistLocation', function ($q, ApiLoader, $rootScope) {
         },
         delete: function (id) {
             return ApiLoader.post(url + 'delete', { id: id });
+        },
+        bulkImport: function (payload) {
+            return ApiLoader.post(url + 'bulk-import', payload);
         }
     };
 });
