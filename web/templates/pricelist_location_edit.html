@@ -1,86 +1,201 @@
 <form class="form-horizontal" name="form" ng-if="item">
-    <div class="modal-header">
-        <h3 ng-if="item.id">Местоположение, id {{item.id}}</h3>
-        <h3 ng-if="!item.id">Создание местоположения</h3>
-    </div>
-    <div class="modal-body">
+  <div class="modal-header">
+    <h3 ng-if="item.id">Местоположение, id {{item.id}}</h3>
+    <h3 ng-if="!item.id">Создание местоположения</h3>
+  </div>
+
+  <div class="modal-body">
+
+    <!-- Вкладки -->
+    <ul class="nav nav-tabs">
+      <li ng-class="{active: ui.activeTab==='single'}">
+        <a href="" ng-click="ui.activeTab='single'">Одна запись</a>
+      </li>
+      <li ng-class="{active: ui.activeTab==='bulk'}">
+        <a href="" ng-click="ui.activeTab='bulk'">Массовый импорт</a>
+      </li>
+    </ul>
+
+    <div class="tab-content" style="margin-top: 15px">
+
+      <!-- TAB: ОДНА ЗАПИСЬ (как было) -->
+      <div class="tab-pane" ng-class="{active: ui.activeTab==='single'}">
+
         <div class="form-group">
-            <label class="col-sm-2 control-label">Описание</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="Описание" ng-model="item.description">
-            </div>
+          <label class="col-sm-2 control-label">Описание</label>
+          <div class="col-sm-10">
+            <input class="form-control" placeholder="Описание" ng-model="item.description">
+          </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">MCC</label>
-            <div class="col-sm-10">
-                <select ui-select2 ng-model="item.mcc" multiple="multiple" style="width: 100%" >
-                    <option ng-repeat="mcc in mccList" value="{{::mcc.id}}">#{{mcc.mcc}} {{::mcc.name}}</option>
-                </select>
-            </div>
+          <label class="col-sm-2 control-label">MCC</label>
+          <div class="col-sm-10">
+            <select ui-select2 ng-model="item.mcc" multiple="multiple" style="width: 100%">
+              <option ng-repeat="mcc in mccList" value="{{::mcc.id}}">#{{mcc.mcc}} {{::mcc.name}}</option>
+            </select>
+          </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">MNC</label>
-            <div class="col-sm-10">
-                <select ui-select2 ng-model="item.mnc" multiple="multiple" style="width: 100%" >
-                    <option ng-repeat="mnc in mncList" value="{{mnc.id}}">#{{mnc.mnc}} {{mnc.name}}</option>
-                </select>
-            </div>
+          <label class="col-sm-2 control-label">MNC</label>
+          <div class="col-sm-10">
+            <select ui-select2 ng-model="item.mnc" multiple="multiple" style="width: 100%">
+              <option ng-repeat="mnc in mncList" value="{{mnc.id}}">#{{mnc.mnc}} {{mnc.name}}</option>
+            </select>
+          </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">Sim Партнер</label>
-            <div class="col-sm-10">
-                <select ui-select2 ng-model="item.sim_partner" multiple="multiple" style="width: 100%" >
-                    <option ng-repeat="partner in partnerList" value="{{partner.id}}">#{{partner.id}} {{partner.name}}</option>
-                </select>
-            </div>
+          <label class="col-sm-2 control-label">Sim Партнер</label>
+          <div class="col-sm-10">
+            <select ui-select2 ng-model="item.sim_partner" multiple="multiple" style="width: 100%">
+              <option ng-repeat="partner in partnerList" value="{{partner.id}}">#{{partner.id}} {{partner.name}}</option>
+            </select>
+          </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">Sim Профиль</label>
-            <div class="col-sm-10">
-                <select ui-select2 ng-model="item.sim_profile" multiple="multiple" style="width: 100%" >
-                    <option ng-repeat="profile in profileList" value="{{profile.id}}">#{{profile.id}} {{profile.name}}</option>
-                </select>
-            </div>
+          <label class="col-sm-2 control-label">Sim Профиль</label>
+          <div class="col-sm-10">
+            <select ui-select2 ng-model="item.sim_profile" multiple="multiple" style="width: 100%">
+              <option ng-repeat="profile in profileList" value="{{profile.id}}">#{{profile.id}} {{profile.name}}</option>
+            </select>
+          </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">Добавочная цена</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="1.234" ng-model="item.delta_price">
-            </div>
+          <label class="col-sm-2 control-label">Добавочная цена</label>
+          <div class="col-sm-10">
+            <input class="form-control" placeholder="1.234" ng-model="item.delta_price">
+          </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">Местоположение</label>
-            <div class="col-sm-10">
-                <select ui-select2 ng-model="item.location_id" placeholder="Местоположение" style="width: 100%">
-                    <option ng-repeat="locationItem in location" value="{{locationItem.id}}">{{locationItem.name}}</option>
-                </select>
-            </div>
+          <label class="col-sm-2 control-label">Местоположение</label>
+          <div class="col-sm-10">
+            <select ui-select2 ng-model="item.location_id" placeholder="Местоположение" style="width: 100%">
+              <option ng-repeat="locationItem in location" value="{{locationItem.id}}">{{locationItem.name}}</option>
+            </select>
+          </div>
         </div>
 
         <div ng-if="pricelistServiceTypeId == 3" class="form-group">
-            <label class="col-sm-2 control-label">Порог округления</label>
-            <div class="col-sm-10">
-                <input class="form-control" placeholder="1.234" ng-model="item.rounding_threshold">
+          <label class="col-sm-2 control-label">Порог округления</label>
+          <div class="col-sm-10">
+            <input class="form-control" placeholder="1.234" ng-model="item.rounding_threshold">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB: МАССОВЫЙ ИМПОРТ -->
+      <div class="tab-pane" ng-class="{active: ui.activeTab==='bulk'}">
+
+        <div class="alert alert-info">
+          Формат: <code>MCC;MNC;Цена[;Описание]</code>. Разделители: <code>;</code>, запятая, таб, <code>|</code>.<br>
+          Первая строка может быть заголовком: <code>mcc;mnc;delta_price;description</code>.
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Sim Партнер(ы)</label>
+          <div class="col-sm-10">
+            <select ui-select2 multiple ng-model="bulk.sim_partner" style="width:100%">
+              <option ng-repeat="partner in partnerList" value="{{::partner.id}}">#{{::partner.id}} {{::partner.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Sim Профиль(и)</label>
+          <div class="col-sm-10">
+            <select ui-select2 multiple ng-model="bulk.sim_profile" style="width:100%">
+              <option ng-repeat="profile in profileList" value="{{::profile.id}}">#{{::profile.id}} {{::profile.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Местоположение</label>
+          <div class="col-sm-10">
+            <select ui-select2 ng-model="bulk.location_id" style="width:100%">
+              <option ng-repeat="loc in location" value="{{::loc.id}}">{{::loc.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div ng-if="pricelistServiceTypeId == 3" class="form-group">
+          <label class="col-sm-2 control-label">Порог округления</label>
+          <div class="col-sm-10">
+            <input class="form-control" type="number" step="1" ng-model="bulk.rounding_threshold" placeholder="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Данные</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" rows="10"
+                      ng-model="bulk.raw"
+                      ng-change="bulkParse()"
+                      placeholder="mcc;mnc;delta_price;description&#10;250;1;0.120000;MTS Russia&#10;250;2;0.150000;Megafon"></textarea>
+            <div class="help-block">
+              <button type="button" class="btn btn-default btn-sm" ng-click="bulkParse()" ng-disabled="!bulk.raw || !bulk.raw.trim()">Предпросмотр</button>
+              <span class="text-muted" ng-if="bulk.raw"> &nbsp;| {{bulk.preview.rows.length}} строк, {{bulk.preview.errors.length}} ошибок</span>
             </div>
+          </div>
         </div>
 
+        <div ng-if="bulk.preview.rows.length || bulk.preview.errors.length">
+          <h4>Предпросмотр</h4>
+          <table class="table table-condensed table-bordered" ng-if="bulk.preview.rows.length">
+            <thead><tr><th>#</th><th>MCC</th><th>MNC</th><th>Цена</th><th>Описание</th></tr></thead>
+            <tbody>
+              <tr ng-repeat="r in bulk.preview.rows track by $index">
+                <td>{{$index+1}}</td><td>{{r.mcc}}</td><td>{{r.mnc}}</td><td>{{r.delta_price}}</td><td>{{r.description}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="text-danger" ng-if="bulk.preview.errors.length">
+            <h5>Ошибочные строки</h5>
+            <ul><li ng-repeat="e in bulk.preview.errors track by $index">Строка {{e.row}} — {{e.message}}</li></ul>
+          </div>
+        </div>
+
+        <div class="text-danger" ng-if="bulk.error">{{bulk.error}}</div>
+
+      </div>
 
     </div>
-    <div class="modal-footer">
-        <div class="pull-left">
-            <button type="submit" class="btn btn-success"
-                    ng-if="(item.id && userPermissions['pricelist_edit']) || (!item.id && userPermissions['pricelist_create'])"
-                    ng-disabled="form.$invalid || (!userPermissions['pricelist_super_edit'] && pricelistIsActive)"
-                    ng-click="save()">Сохранить</button>
-            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
-            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/pricelist-location"></action-log-view-button>
-        </div>
+  </div>
+
+  <div class="modal-footer">
+
+    <!-- Кнопки для вкладки ОДНА ЗАПИСЬ -->
+    <div class="pull-left" ng-show="ui.activeTab==='single'">
+      <button type="submit" class="btn btn-success"
+              ng-if="(item.id && userPermissions['pricelist_edit']) || (!item.id && userPermissions['pricelist_create'])"
+              ng-disabled="form.$invalid || (!userPermissions['pricelist_super_edit'] && pricelistIsActive)"
+              ng-click="save()">Сохранить</button>
+
+      <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+
+      <action-log-view-button ng-if="item.id && userPermissions['action_log_view']"
+                              key="{{item.id}}" type="json/pricelist-location"></action-log-view-button>
     </div>
+
+    <!-- Кнопки для вкладки МАССОВЫЙ ИМПОРТ -->
+    <div class="pull-left" ng-show="ui.activeTab==='bulk'">
+      <button type="button" class="btn btn-success"
+              ng-if="userPermissions['pricelist_create'] || userPermissions['pricelist_edit']"
+              ng-disabled="!bulk.preview.rows.length || bulk.preview.errors.length || (!userPermissions['pricelist_super_edit'] && pricelistIsActive) || !getPricelistId()"
+              ng-click="bulkImport()">
+        Импортировать {{bulk.preview.rows.length}} строк
+      </button>
+
+      <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+    </div>
+
+  </div>
 
 </form>
