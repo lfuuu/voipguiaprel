@@ -24,15 +24,15 @@ class PricelistController extends JsonController
 {
     const SEARCH_LIMIT_PER_PRICELIST = 5;
     const DISABLE_TRIGGER = 'disable_trigger';
-    const ENABLE_TRIGGER = 'enable_trigger';
+    const ENABLE_TRIGGER  = 'enable_trigger';
+
     public function actionList()
     {
         if (!\Yii::$app->user->can('pricelist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
 
-        return
-            Pricelist::find()
+        return Pricelist::find()
             ->select(['id', 'name', 'service_type_id'])
             ->orderBy('name')
             ->asArray()
@@ -46,7 +46,7 @@ class PricelistController extends JsonController
         }
 
         $searchArray = $this->request['search_array'];
-        $limit = $this->request['limit'];
+        $limit  = $this->request['limit'];
         $offset = $this->request['offset'];
 
         $query = Pricelist::find()
@@ -73,55 +73,48 @@ class PricelistController extends JsonController
             $query->where(['p.pricelist_group_id' => $searchArray['group_id']]);
             $countQuery->where(['pricelist_group_id' => $searchArray['group_id']]);
         }
-        
         if (isset($searchArray['service_type_id']) && $searchArray['service_type_id']) {
             $query->andWhere(['p.service_type_id' => $searchArray['service_type_id']]);
             $countQuery->andWhere(['service_type_id' => $searchArray['service_type_id']]);
         }
-
         if (isset($searchArray['currency']) && $searchArray['currency']) {
             $query->andWhere(['p.currency_id' => $searchArray['currency']]);
             $countQuery->andWhere(['currency_id' => $searchArray['currency']]);
         }
-
         if (isset($searchArray['is_active']) && is_bool($searchArray['is_active'])) {
             $query->andWhere(['p.is_active' => $searchArray['is_active']]);
             $countQuery->andWhere(['is_active' => $searchArray['is_active']]);
         }
-
         if (isset($searchArray['is_orig']) && is_bool($searchArray['is_orig'])) {
             $query->andWhere(['p.orig' => $searchArray['is_orig']]);
             $countQuery->andWhere(['orig' => $searchArray['is_orig']]);
         }
-
         if (isset($searchArray['id']) && $searchArray['id']) {
             $query->andWhere(['p.id' => $searchArray['id']]);
             $countQuery->andWhere(['id' => $searchArray['id']]);
         }
-
         if (isset($searchArray['query']) && $searchArray['query']) {
             $query->andWhere('p.name ilike :name');
             $query->addParams([':name' => '%' . $searchArray['query'] . '%']);
             $countQuery->andWhere('name ilike :name');
             $countQuery->addParams([':name' => '%' . $searchArray['query'] . '%']);
         }
-
         if (isset($searchArray['is_in_use']) && is_bool($searchArray['is_in_use'])) {
-            if($searchArray['is_in_use'] == true){
+            if ($searchArray['is_in_use'] == true) {
                 $query->having('sum(case when atl.tariff_id is not null then 1 else 0 end) > 0');
-            }else { 
+            } else {
                 $query->having('sum(case when atl.tariff_id is not null then 1 else 0 end) = 0');
             }
         }
 
-        $count = $query->count();  
+        $count = $query->count();
         $query->offset($offset);
         $query->limit($limit);
         $data = $query->all();
 
         return [
             'totalCount' => $count,
-            'data' => $data
+            'data'       => $data
         ];
     }
 
@@ -136,11 +129,11 @@ class PricelistController extends JsonController
         $query = Pricelist::find()
             ->alias('p')
             ->select([
-                'pricelist_id' => 'p.id',
-                'p_trunk_id' => 'st.trunk_id',
-                'p_trunk_name' => 't.name',
+                'pricelist_id'      => 'p.id',
+                'p_trunk_id'        => 'st.trunk_id',
+                'p_trunk_name'      => 't.name',
                 'p_trunk_server_id' => 't.server_id',
-                'l_trunk_id' => 'st.id'
+                'l_trunk_id'        => 'st.id'
             ])
             ->innerJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = p.id')
             ->innerJoin(
@@ -152,7 +145,6 @@ class PricelistController extends JsonController
             ->where(['p.id' => $id])
             ->orderBy('l_trunk_id')
             ->asArray();
-            
         return $query->all();
     }
 
@@ -168,9 +160,9 @@ class PricelistController extends JsonController
             ->alias('p')
             ->select([
                 'pricelist_type' => 'p.type_id',
-                'pricelist_id' => 'p.id',
-                'tariff_id' => 'pckg.tariff_id',
-                'package_name' => 'pckg.name',
+                'pricelist_id'   => 'p.id',
+                'tariff_id'      => 'pckg.tariff_id',
+                'package_name'   => 'pckg.name',
             ])
             ->innerJoin('billing_uu.package_pricelist pp', 'pp.nnp_pricelist_id = p.id')
             ->innerJoin(
@@ -196,9 +188,9 @@ class PricelistController extends JsonController
             ->alias('p')
             ->select([
                 'pricelist_type' => 'p.type_id',
-                'pricelist_id' => 'p.id',
-                'tariff_id' => 'pckg.tariff_id',
-                'package_name' => 'pckg.name',
+                'pricelist_id'   => 'p.id',
+                'tariff_id'      => 'pckg.tariff_id',
+                'package_name'   => 'pckg.name',
             ])
             ->innerJoin('billing_uu.package_sms sms', 'sms.nnp_pricelist_id = p.id')
             ->innerJoin(
@@ -224,9 +216,9 @@ class PricelistController extends JsonController
             ->alias('p')
             ->select([
                 'pricelist_type' => 'p.type_id',
-                'pricelist_id' => 'p.id',
-                'tariff_id' => 'pckg.tariff_id',
-                'package_name' => 'pckg.name',
+                'pricelist_id'   => 'p.id',
+                'tariff_id'      => 'pckg.tariff_id',
+                'package_name'   => 'pckg.name',
             ])
             ->innerJoin('billing_uu.package_data data', 'data.nnp_pricelist_id = p.id')
             ->innerJoin(
@@ -240,123 +232,174 @@ class PricelistController extends JsonController
         return $query->all();
     }
 
-
     public function actionGetWithDependentsNew()
     {
         if (!\Yii::$app->user->can('pricelist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
 
+        // Плоские правила (как было)
         $flatRules = [
-            'p' => Pricelist::rulesFlat(),
-            'pl' => PricelistLocation::rulesFlat(),
+            'p'   => Pricelist::rulesFlat(),
+            'pl'  => PricelistLocation::rulesFlat(),
             'pfa' => PricelistFilterA::rulesFlat(),
             'pfb' => PricelistFilterB::rulesFlat(),
             'ppp' => PricelistPrefixPrice::rulesFlat(),
         ];
 
         $select = [];
-
         foreach ($flatRules as $tableKey => $rulesArray) {
             foreach ($rulesArray as $rule) {
                 $select[$tableKey . '__' . $rule] = $tableKey . '.' . $rule;
             }
         }
 
-        $prefixPriceSelect = <<<SQL
-        LATERAL (select * from billing_uu.pricelist_prefix_price ppp
-        where pricelist_filter_b_id = pfb.id
-        and date_to > now()
-        and prefix_b in (
-            select distinct prefix_b from billing_uu.pricelist_prefix_price
-            where pricelist_filter_b_id = pfb.id
-            and date_to > now()
-            order by prefix_b
-            limit :limit
-        ) or prefix_b is null)
+        /**
+         * Ключевая оптимизация:
+         *  - НЕ подгружаем префиксы (ppp) в этом запросе (иначе взрыв строк и 504).
+         *  - Добавляем LATERAL ppp_cnt со счётчиками префиксов (COUNT DISTINCT).
+         *  - Добавляем LATERAL ppp_stub — ровно одна "пустая" строка на каждый Filter B,
+         *    чтобы билдер увидел «узел префиксов», но без данных.
+         */
+        $pppCountSelect = <<<SQL
+LATERAL (
+    SELECT
+        COUNT(DISTINCT ppp2.prefix_b) AS total_prefix_count,
+        CEIL(COUNT(DISTINCT ppp2.prefix_b)::numeric / NULLIF(:page_limit, 0))::int AS total_pagination_count
+    FROM billing_uu.pricelist_prefix_price ppp2
+    WHERE ppp2.pricelist_filter_b_id = pfb.id
+      AND ppp2.date_to > now()
+)
 SQL;
 
-        $queryResult =
-            Pricelist::find()
+        $pppStubSelect = <<<SQL
+LATERAL (
+    SELECT
+        NULL::int      AS id,
+        NULL::varchar  AS prefix_b,
+        NULL::numeric  AS b_number_price,
+        NULL::date     AS date_from,
+        NULL::date     AS date_to,
+        pfb.id::int    AS pricelist_filter_b_id
+)
+SQL;
+
+        // кладём счётчики в pfb-уровень (их ждёт фронт в заголовках B)
+        $select['pfb__total_prefix_count']     = new Expression('COALESCE(ppp_cnt.total_prefix_count, 0)');
+        $select['pfb__total_pagination_count'] = new Expression('COALESCE(ppp_cnt.total_pagination_count, 0)');
+
+        // измерение времени для диагностики
+        $t0 = microtime(true);
+
+        $queryResult = Pricelist::find()
             ->alias('p')
             ->select($select)
-            ->leftJoin(PricelistLocation::tableName() . ' as pl', 'pl.pricelist_id = p.id')
-            ->leftJoin(PricelistFilterA::tableName() . ' as pfa', 'pfa.pricelist_location_id = pl.id')
-            ->leftJoin(PricelistFilterB::tableName() . ' as pfb', 'pfb.pricelist_filter_a_id = pfa.id')
-            ->leftJoin(new Expression($prefixPriceSelect) . ' as ppp', 'ppp.pricelist_filter_b_id = pfb.id')
+            ->leftJoin(PricelistLocation::tableName() . ' as pl',  'pl.pricelist_id = p.id')
+            ->leftJoin(PricelistFilterA::tableName() . ' as pfa',  'pfa.pricelist_location_id = pl.id')
+            ->leftJoin(PricelistFilterB::tableName() . ' as pfb',  'pfb.pricelist_filter_a_id = pfa.id')
+            // быстрый 1-row LATERAL "счётчик"
+            ->leftJoin(new Expression($pppCountSelect) . ' as ppp_cnt', 'TRUE')
+            // пустая заглушка ppp на каждый pfb (без доступа к большой таблице)
+            ->leftJoin(new Expression($pppStubSelect)  . ' as ppp',     'ppp.pricelist_filter_b_id = pfb.id')
             ->where(['p.id' => $this->request['id']])
-            ->orderBy('pl.id, pfa.id, pfb.id, ppp.prefix_b, ppp.id')
-            ->addParams([':limit' => PricelistPrefixPrice::PAGE_LIMIT])
+            ->orderBy('pl.id, pfa.id, pfb.id') // без ppp.* — экономим сортировку
+            ->addParams([':page_limit' => PricelistPrefixPrice::PAGE_LIMIT])
             ->asArray()
             ->all();
 
+        $sqlTime = round(microtime(true) - $t0, 3);
+
+        // Сборка как и раньше
         if (isset($this->request['type']) && $this->request['type'] == 'short') {
             $result = PricelistView::getForShortForm($queryResult);
         } else {
             $result = PricelistView::getForFullForm($queryResult);
         }
 
+        // Диагностические заголовки
+        \Yii::$app->response->headers->set('X-SQL-Time', $sqlTime.'s');
+        \Yii::$app->response->headers->set('X-Rows-Flat', (string)count($queryResult));
+
         return $result;
     }
 
     public function actionGetWithDependentsAll()
-{
-    if (!\Yii::$app->user->can('pricelist_list')) {
-        throw new \yii\web\ForbiddenHttpException('Access denied');
-    }
-
-    // 1) Плоские правила как в actionGetWithDependentsNew()
-    $flatRules = [
-        'p'   => Pricelist::rulesFlat(),
-        'pl'  => PricelistLocation::rulesFlat(),
-        'pfa' => PricelistFilterA::rulesFlat(),
-        'pfb' => PricelistFilterB::rulesFlat(),
-        'ppp' => PricelistPrefixPrice::rulesFlat(),
-    ];
-
-    $select = [];
-    foreach ($flatRules as $tableKey => $rulesArray) {
-        foreach ($rulesArray as $rule) {
-            $select[$tableKey . '__' . $rule] = $tableKey . '.' . $rule;
+    {
+        if (!\Yii::$app->user->can('pricelist_list')) {
+            throw new \yii\web\ForbiddenHttpException('Access denied');
         }
-    }
 
-    // 2) Без LIMIT и DISTINCT, аккуратно со скобками для OR prefix_b IS NULL
-    $prefixPriceSelect = <<<SQL
+        // Плоские правила как в New-версии
+        $flatRules = [
+            'p'   => Pricelist::rulesFlat(),
+            'pl'  => PricelistLocation::rulesFlat(),
+            'pfa' => PricelistFilterA::rulesFlat(),
+            'pfb' => PricelistFilterB::rulesFlat(),
+            'ppp' => PricelistPrefixPrice::rulesFlat(),
+        ];
+        $select = [];
+        foreach ($flatRules as $tableKey => $rulesArray) {
+            foreach ($rulesArray as $rule) {
+                $select[$tableKey . '__' . $rule] = $tableKey . '.' . $rule;
+            }
+        }
+
+        // те же оптимизации: счётчики + пустая заглушка вместо реальных ppp
+        $pppCountSelect = <<<SQL
 LATERAL (
-    SELECT *
-    FROM billing_uu.pricelist_prefix_price ppp
-    WHERE ppp.pricelist_filter_b_id = pfb.id
-      AND (
-            ppp.date_to > now()
-            OR ppp.prefix_b IS NULL
-          )
-) 
+    SELECT
+        COUNT(DISTINCT ppp2.prefix_b) AS total_prefix_count,
+        CEIL(COUNT(DISTINCT ppp2.prefix_b)::numeric / NULLIF(:page_limit, 0))::int AS total_pagination_count
+    FROM billing_uu.pricelist_prefix_price ppp2
+    WHERE ppp2.pricelist_filter_b_id = pfb.id
+      AND ppp2.date_to > now()
+)
 SQL;
 
-    // 3) Основной запрос
-    $queryResult = Pricelist::find()
-        ->alias('p')
-        ->select($select)
-        ->leftJoin(PricelistLocation::tableName() . ' as pl',  'pl.pricelist_id = p.id')
-        ->leftJoin(PricelistFilterA::tableName() . ' as pfa',  'pfa.pricelist_location_id = pl.id')
-        ->leftJoin(PricelistFilterB::tableName() . ' as pfb',  'pfb.pricelist_filter_a_id = pfa.id')
-        ->leftJoin(new \yii\db\Expression($prefixPriceSelect) . ' as ppp', 'ppp.pricelist_filter_b_id = pfb.id')
-        ->where(['p.id' => $this->request['id']])
-        ->orderBy('pl.id, pfa.id, pfb.id, ppp.prefix_b, ppp.id')
-        ->asArray()
-        ->all();
+        $pppStubSelect = <<<SQL
+LATERAL (
+    SELECT
+        NULL::int      AS id,
+        NULL::varchar  AS prefix_b,
+        NULL::numeric  AS b_number_price,
+        NULL::date     AS date_from,
+        NULL::date     AS date_to,
+        pfb.id::int    AS pricelist_filter_b_id
+)
+SQL;
 
-    // 4) Формирование ответа как в New-версии
-    if (isset($this->request['type']) && $this->request['type'] === 'short') {
-        $result = PricelistView::getForShortForm($queryResult);
-    } else {
-        $result = PricelistView::getForFullForm($queryResult);
+        $select['pfb__total_prefix_count']     = new Expression('COALESCE(ppp_cnt.total_prefix_count, 0)');
+        $select['pfb__total_pagination_count'] = new Expression('COALESCE(ppp_cnt.total_pagination_count, 0)');
+
+        $t0 = microtime(true);
+
+        $queryResult = Pricelist::find()
+            ->alias('p')
+            ->select($select)
+            ->leftJoin(PricelistLocation::tableName() . ' as pl',  'pl.pricelist_id = p.id')
+            ->leftJoin(PricelistFilterA::tableName() . ' as pfa',  'pfa.pricelist_location_id = pl.id')
+            ->leftJoin(PricelistFilterB::tableName() . ' as pfb',  'pfb.pricelist_filter_a_id = pfa.id')
+            ->leftJoin(new Expression($pppCountSelect) . ' as ppp_cnt', 'TRUE')
+            ->leftJoin(new Expression($pppStubSelect)  . ' as ppp',     'ppp.pricelist_filter_b_id = pfb.id')
+            ->where(['p.id' => $this->request['id']])
+            ->orderBy('pl.id, pfa.id, pfb.id')
+            ->addParams([':page_limit' => PricelistPrefixPrice::PAGE_LIMIT])
+            ->asArray()
+            ->all();
+
+        $sqlTime = round(microtime(true) - $t0, 3);
+
+        if (isset($this->request['type']) && $this->request['type'] === 'short') {
+            $result = PricelistView::getForShortForm($queryResult);
+        } else {
+            $result = PricelistView::getForFullForm($queryResult);
+        }
+
+        \Yii::$app->response->headers->set('X-SQL-Time', $sqlTime.'s');
+        \Yii::$app->response->headers->set('X-Rows-Flat', (string)count($queryResult));
+
+        return $result;
     }
-
-    return $result;
-}
-
 
     public function actionGetWithDependents()
     {
@@ -364,8 +407,7 @@ SQL;
             throw new ForbiddenHttpException('Access denied');
         }
 
-        return
-            Pricelist::find()
+        return Pricelist::find()
             ->with('location.filterA.filterB.prefixPrice')
             ->with('location.filterA.filterB.prefixPriceCount')
             ->where(['id' => $this->request['id']])
@@ -379,8 +421,7 @@ SQL;
             throw new ForbiddenHttpException('Access denied');
         }
 
-        return
-            Pricelist::find()
+        return Pricelist::find()
             ->where(['id' => $this->request['id']])
             ->asArray()
             ->one();
@@ -459,12 +500,12 @@ SQL;
                 ->all();
 
             foreach ($filterBArray as $filterB) {
-                $filterB->tarification_free_seconds = $item->default_tarification_free_seconds;
+                $filterB->tarification_free_seconds   = $item->default_tarification_free_seconds;
                 $filterB->tarification_interval_seconds = $item->default_tarification_interval_seconds;
                 $filterB->tarification_min_paid_seconds = $item->default_tarification_min_paid_seconds;
-                $filterB->tarification_type = $item->default_tarification_type;
+                $filterB->tarification_type             = $item->default_tarification_type;
 
-                $prefixesToSave = [];
+                $prefixesToSave     = [];
                 $prefixesToSaveFlat = [];
 
                 foreach ($filterB->prefixPriceBasic as $prefixPrice) {
@@ -535,7 +576,7 @@ SQL;
             $result = (new Query())->select(['id' => new Expression('billing_uu.clone_pricelist(:old_pricelist_id, true, :name)')])
                 ->addParams([
                     ':old_pricelist_id' => $this->request['id'],
-                    ':name' => $name
+                    ':name'             => $name
                 ])->one();
         } else {
             $result = (new Query())->select(['id' => new Expression('billing_uu.clone_pricelist(:old_pricelist_id, true)')])
@@ -563,7 +604,6 @@ SQL;
         if (!\Yii::$app->user->can('pricelist_edit')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
         $today = (new DateTime())->format('Y-m-d');
 
         if (!preg_match('~^\d{4}-\d{2}-\d{2}$~', $this->request['dateFrom']) || !preg_match('~^\d{4}-\d{2}-\d{2}$~', $this->request['dateTo'])) {
@@ -575,15 +615,14 @@ SQL;
             ->addParams(
                 [
                     ':old_pricelist_id' => $this->request['id'],
-                    ':multiplier' => $this->request['multiplier'],
-                    ':new_date_from' => $this->request['dateFrom'],
-                    ':new_date_to' => $this->request['dateTo'],
-                    ':date_today' => $today,
-                    ':new_type' => $this->request['multiplier'] < 1 ? 'decrease' : 'increase'
+                    ':multiplier'       => $this->request['multiplier'],
+                    ':new_date_from'    => $this->request['dateFrom'],
+                    ':new_date_to'      => $this->request['dateTo'],
+                    ':date_today'       => $today,
+                    ':new_type'         => $this->request['multiplier'] < 1 ? 'decrease' : 'increase'
                 ]
             )
             ->one();
-        
         return $result;
     }
 
@@ -598,7 +637,7 @@ SQL;
             ->addParams(
                 [
                     ':old_pricelist_id' => $this->request['id'],
-                    ':multiplier' => $this->request['multiplier']
+                    ':multiplier'       => $this->request['multiplier']
                 ]
             )
             ->one();
@@ -611,77 +650,76 @@ SQL;
      * @throws HttpException
      * @throws \Exception
      */
+    public function actionDelete()
+    {
+        if (!\Yii::$app->user->can('pricelist_delete')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
 
-public function actionDelete()
-{
-    if (!\Yii::$app->user->can('pricelist_delete')) {
-        throw new ForbiddenHttpException('Access denied');
+        $id = (int)$this->request['id'];
+        $item = $this->getPricelistOr404($id);
+
+        // ===== helper для простых текстовых 4xx =====
+        $textError = function (int $status, string $message) {
+            $resp = \Yii::$app->response;
+            $resp->statusCode = $status;
+            $resp->format = Response::FORMAT_RAW;
+            $resp->headers->set('Content-Type', 'text/plain; charset=UTF-8');
+            // дублируем в header на случай кастомных интерцепторов
+            $resp->headers->set('X-Error-Message', $message);
+            return $message;
+        };
+
+        // 1) Активность
+        if ((bool)$item->is_active) {
+            return $textError(409, "Прайслист #{$id} активен — удаление запрещено");
+        }
+
+        // 2) is_in_use: есть ли ХОТЯ БЫ ОДИН активный сейчас тариф (voice/SMS/Data)
+        $inUse = (new \yii\db\Query())
+            ->select(new Expression('1'))
+            ->from(['u' =>
+                (new \yii\db\Query())
+                    ->select('pp.tariff_id')->from('billing_uu.package_pricelist pp')
+                    ->where(['pp.nnp_pricelist_id' => $id])
+                    ->union((new \yii\db\Query())->select('sms.tariff_id')->from('billing_uu.package_sms sms')->where(['sms.nnp_pricelist_id' => $id]))
+                    ->union((new \yii\db\Query())->select('data.tariff_id')->from('billing_uu.package_data data')->where(['data.nnp_pricelist_id' => $id]))
+            ])
+            ->innerJoin('billing_uu.account_tariff_light atl', 'atl.id = u.tariff_id')
+            ->where(new Expression('now() BETWEEN atl.activate_from AND atl.deactivate_from'))
+            ->limit(1)
+            ->scalar() !== false;
+
+        if ($inUse) {
+            return $textError(409, "Прайслист #{$id} используется в активных тарифах — удаление запрещено");
+        }
+
+        // 3) Удаление родителя (каскад вниз обеспечен FK)
+        try {
+            $deleted = \Yii::$app->db->createCommand(
+                'DELETE FROM "billing_uu"."pricelist" WHERE "id" = :id'
+            )->bindValue(':id', $id)->execute();
+
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'status'       => 'ok',
+                'deleted_id'   => $id,
+                'deleted_rows' => (int)$deleted,
+            ];
+
+        } catch (IntegrityException $e) {
+            // FK-вилка: покажем конкретные tariff_id из package_pricelist
+            $tariffIds = (new \yii\db\Query())
+                ->select('tariff_id')
+                ->distinct(true)
+                ->from('billing_uu.package_pricelist')
+                ->where(['nnp_pricelist_id' => $id])
+                ->column();
+
+            $tail = $tariffIds ? ' Тариф(ы): ' . implode(', ', $tariffIds) : '';
+            return $textError(409, "Удаление запрещено: прайслист #{$id} связан с package_pricelist.$tail");
+        }
     }
-
-    $id = (int)$this->request['id'];
-    $item = $this->getPricelistOr404($id);
-
-    // ===== helper для простых текстовых 4xx =====
-    $textError = function (int $status, string $message) {
-        $resp = \Yii::$app->response;
-        $resp->statusCode = $status;
-        $resp->format = Response::FORMAT_RAW;
-        $resp->headers->set('Content-Type', 'text/plain; charset=UTF-8');
-        // дублируем в header на случай кастомных интерцепторов
-        $resp->headers->set('X-Error-Message', $message);
-        return $message;
-    };
-
-    // 1) Активность
-    if ((bool)$item->is_active) {
-        return $textError(409, "Прайслист #{$id} активен — удаление запрещено");
-    }
-
-    // 2) is_in_use: есть ли ХОТЯ БЫ ОДИН активный сейчас тариф (voice/SMS/Data)
-    $inUse = (new \yii\db\Query())
-        ->select(new Expression('1'))
-        ->from(['u' =>
-            (new \yii\db\Query())
-                ->select('pp.tariff_id')->from('billing_uu.package_pricelist pp')
-                ->where(['pp.nnp_pricelist_id' => $id])
-                ->union((new \yii\db\Query())->select('sms.tariff_id')->from('billing_uu.package_sms sms')->where(['sms.nnp_pricelist_id' => $id]))
-                ->union((new \yii\db\Query())->select('data.tariff_id')->from('billing_uu.package_data data')->where(['data.nnp_pricelist_id' => $id]))
-        ])
-        ->innerJoin('billing_uu.account_tariff_light atl', 'atl.id = u.tariff_id')
-        ->where(new Expression('now() BETWEEN atl.activate_from AND atl.deactivate_from'))
-        ->limit(1)
-        ->scalar() !== false;
-
-    if ($inUse) {
-        return $textError(409, "Прайслист #{$id} используется в активных тарифах — удаление запрещено");
-    }
-
-    // 3) Удаление родителя (каскад вниз обеспечен FK)
-    try {
-        $deleted = \Yii::$app->db->createCommand(
-            'DELETE FROM "billing_uu"."pricelist" WHERE "id" = :id'
-        )->bindValue(':id', $id)->execute();
-
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-        return [
-            'status'       => 'ok',
-            'deleted_id'   => $id,
-            'deleted_rows' => (int)$deleted,
-        ];
-
-    } catch (IntegrityException $e) {
-        // FK-вилка: покажем конкретные tariff_id из package_pricelist
-        $tariffIds = (new \yii\db\Query())
-            ->select('tariff_id')
-            ->distinct(true)
-            ->from('billing_uu.package_pricelist')
-            ->where(['nnp_pricelist_id' => $id])
-            ->column();
-
-        $tail = $tariffIds ? ' Тариф(ы): ' . implode(', ', $tariffIds) : '';
-        return $textError(409, "Удаление запрещено: прайслист #{$id} связан с package_pricelist.$tail");
-    }
-}
 
     public function actionSearch()
     {
@@ -721,9 +759,9 @@ public function actionDelete()
 
         return [
             'params' => $response['params'],
-            'paths' => $result,
-            'size' => $response['size'],
-            'url' => $request
+            'paths'  => $result,
+            'size'   => $response['size'],
+            'url'    => $request
         ];
     }
 
@@ -752,8 +790,8 @@ public function actionDelete()
 
                 if ($pricelist) {
                     $item['pricelist_name'] = $pricelist->name;
-                    $item['date_created'] = $pricelist->date_created;
-                    $item['date_start'] = $pricelist->date_start;
+                    $item['date_created']   = $pricelist->date_created;
+                    $item['date_start']     = $pricelist->date_start;
                 }
 
                 $result[$item['pricelist_id']][] = $item;
@@ -835,7 +873,6 @@ public function actionDelete()
             throw new ForbiddenHttpException('Access denied');
         }
 
-
         \Yii::$app->db->createCommand("SELECT nnp." . self::DISABLE_TRIGGER . "('billing_uu.pricelist_location','notify')")->execute();
         \Yii::$app->db->createCommand("SELECT nnp." . self::DISABLE_TRIGGER . "('billing_uu.pricelist_filter_a','notify')")->execute();
         \Yii::$app->db->createCommand("SELECT nnp." . self::DISABLE_TRIGGER . "('billing_uu.pricelist_filter_b','notify')")->execute();
@@ -858,55 +895,52 @@ public function actionDelete()
 
         return ['success' => 1];
     }
+
     public function actionRelations()
-{
-    if (!\Yii::$app->user->can('pricelist_list')) {
-        throw new \yii\web\ForbiddenHttpException('Access denied');
+    {
+        if (!\Yii::$app->user->can('pricelist_list')) {
+            throw new \yii\web\ForbiddenHttpException('Access denied');
+        }
+
+        $id = (int)$this->request['id'];
+
+        // проверим, что прайс существует
+        $exists = (new Query())->from('billing_uu.pricelist')->where(['id' => $id])->exists();
+        if (!$exists) {
+            \Yii::$app->response->statusCode = 404;
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+            return ['message' => "Pricelist #{$id} not found"];
+        }
+
+        // Собираем ID тарифов по всем пакетам (DISTINCT)
+        $voice = (new Query())->select('tariff_id')->distinct()
+            ->from('billing_uu.package_pricelist')->where(['nnp_pricelist_id' => $id])->column();
+
+        $sms   = (new Query())->select('tariff_id')->distinct()
+            ->from('billing_uu.package_sms')->where(['nnp_pricelist_id' => $id])->column();
+
+        $data  = (new Query())->select('tariff_id')->distinct()
+            ->from('billing_uu.package_data')->where(['nnp_pricelist_id' => $id])->column();
+
+        // A2P маршруты
+        $a2p = (new \yii\db\Query())
+            ->select([
+                'a2psms_route_table_id',
+                new \yii\db\Expression('"order" AS ord'),
+                'nnp_pricelist_id'
+            ])
+            ->from('auth.a2psms_route_table_route')
+            ->where(['nnp_pricelist_id' => $id])
+            ->orderBy(['a2psms_route_table_id' => SORT_ASC, 'ord' => SORT_ASC])
+            ->all();
+
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return [
+            'pricelist_id'      => $id,
+            'package_pricelist' => array_values($voice ?: []),
+            'package_sms'       => array_values($sms ?: []),
+            'package_data'      => array_values($data ?: []),
+            'a2p_routes'        => $a2p,
+        ];
     }
-
-    $id = (int)$this->request['id'];
-
-    // проверим, что прайс существует
-    $exists = (new Query())->from('billing_uu.pricelist')->where(['id' => $id])->exists();
-    if (!$exists) {
-        \Yii::$app->response->statusCode = 404;
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-        return ['message' => "Pricelist #{$id} not found"];
-    }
-
-    // Собираем ID тарифов по всем пакетам (DISTINCT)
-    $voice = (new Query())->select('tariff_id')->distinct()
-        ->from('billing_uu.package_pricelist')->where(['nnp_pricelist_id' => $id])->column();
-
-    $sms   = (new Query())->select('tariff_id')->distinct()
-        ->from('billing_uu.package_sms')->where(['nnp_pricelist_id' => $id])->column();
-
-    $data  = (new Query())->select('tariff_id')->distinct()
-        ->from('billing_uu.package_data')->where(['nnp_pricelist_id' => $id])->column();
-
-    // A2P маршруты: вернём ID записей (или нужные поля)
-    // A2P маршруты: выбираем составной ключ и, при желании, дополнительные поля
-$a2p = (new \yii\db\Query())
-    ->select([
-        'a2psms_route_table_id',
-        new \yii\db\Expression('"order" AS ord'), // "order" — зарезервированное слово, берём как alias ord
-        'nnp_pricelist_id'
-        // при необходимости добавь ещё поля, напр. 'a2psms_outcome_id'
-    ])
-    ->from('auth.a2psms_route_table_route')
-    ->where(['nnp_pricelist_id' => $id])
-    ->orderBy(['a2psms_route_table_id' => SORT_ASC, 'ord' => SORT_ASC])
-    ->all();
-
-\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-return [
-    'pricelist_id'      => $id,
-    'package_pricelist' => array_values($voice ?: []),
-    'package_sms'       => array_values($sms ?: []),
-    'package_data'      => array_values($data ?: []),
-    'a2p_routes'        => $a2p, // теперь массив объектов {a2psms_route_table_id, ord, nnp_pricelist_id}
-];
-
 }
-}
-
