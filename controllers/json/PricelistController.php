@@ -242,15 +242,70 @@ class PricelistController extends JsonController
 
 
     public function actionGetWithDependentsNew()
-{
-    if (!\Yii::$app->user->can('pricelist_list')) {
-        throw new ForbiddenHttpException('Access denied');
+    {
+        if (!\Yii::$app->user->can('pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $flatRules = [
+            'p' => Pricelist::rulesFlat(),
+            'pl' => PricelistLocation::rulesFlat(),
+            'pfa' => PricelistFilterA::rulesFlat(),
+            'pfb' => PricelistFilterB::rulesFlat(),
+            'ppp' => PricelistPrefixPrice::rulesFlat(),
+        ];
+
+        $select = [];
+
+        foreach ($flatRules as $tableKey => $rulesArray) {
+            foreach ($rulesArray as $rule) {
+                $select[$tableKey . '__' . $rule] = $tableKey . '.' . $rule;
+            }
+        }
+
+        $prefixPriceSelect = <<<SQL
+        LATERAL (select * from billing_uu.pricelist_prefix_price ppp
+        where pricelist_filter_b_id = pfb.id
+        and date_to > now()
+        and prefix_b in (
+            select distinct prefix_b from billing_uu.pricelist_prefix_price
+            where pricelist_filter_b_id = pfb.id
+            and date_to > now()
+            order by prefix_b
+            limit :limit
+        ) or prefix_b is null)
+SQL;
+
+        $queryResult =
+            Pricelist::find()
+            ->alias('p')
+            ->select($select)
+            ->leftJoin(PricelistLocation::tableName() . ' as pl', 'pl.pricelist_id = p.id')
+            ->leftJoin(PricelistFilterA::tableName() . ' as pfa', 'pfa.pricelist_location_id = pl.id')
+            ->leftJoin(PricelistFilterB::tableName() . ' as pfb', 'pfb.pricelist_filter_a_id = pfa.id')
+            ->leftJoin(new Expression($prefixPriceSelect) . ' as ppp', 'ppp.pricelist_filter_b_id = pfb.id')
+            ->where(['p.id' => $this->request['id']])
+            ->orderBy('pl.id, pfa.id, pfb.id, ppp.prefix_b, ppp.id')
+            ->addParams([':limit' => PricelistPrefixPrice::PAGE_LIMIT])
+            ->asArray()
+            ->all();
+
+        if (isset($this->request['type']) && $this->request['type'] == 'short') {
+            $result = PricelistView::getForShortForm($queryResult);
+        } else {
+            $result = PricelistView::getForFullForm($queryResult);
+        }
+
+        return $result;
     }
 
-    $id = (int)$this->request['id'];
-    $isShort = (isset($this->request['type']) && $this->request['type'] === 'short');
-    $debug = !empty($this->request['debug']); // ?debug=1 — лёгкий режим
+    public function actionGetWithDependentsAll()
+{
+    if (!\Yii::$app->user->can('pricelist_list')) {
+        throw new \yii\web\ForbiddenHttpException('Access denied');
+    }
 
+    // 1) Плоские правила как в actionGetWithDependentsNew()
     $flatRules = [
         'p'   => Pricelist::rulesFlat(),
         'pl'  => PricelistLocation::rulesFlat(),
@@ -266,86 +321,38 @@ class PricelistController extends JsonController
         }
     }
 
-    // LATERAL с ограничением по PAGE_LIMIT (как было)
+    // 2) Без LIMIT и DISTINCT, аккуратно со скобками для OR prefix_b IS NULL
     $prefixPriceSelect = <<<SQL
-        LATERAL (
-          SELECT *
-          FROM billing_uu.pricelist_prefix_price ppp
-          WHERE ppp.pricelist_filter_b_id = pfb.id
-            AND ppp.date_to > now()
-            AND (
-              ppp.prefix_b IN (
-                SELECT DISTINCT prefix_b
-                FROM billing_uu.pricelist_prefix_price
-                WHERE pricelist_filter_b_id = pfb.id
-                  AND date_to > now()
-                ORDER BY prefix_b
-                LIMIT :limit
-              )
-              OR ppp.prefix_b IS NULL
-            )
-        )
+LATERAL (
+    SELECT *
+    FROM billing_uu.pricelist_prefix_price ppp
+    WHERE ppp.pricelist_filter_b_id = pfb.id
+      AND (
+            ppp.date_to > now()
+            OR ppp.prefix_b IS NULL
+          )
+) 
 SQL;
 
-    // — измеряем время SQL
-    $t0 = microtime(true);
-    $rows = Pricelist::find()
+    // 3) Основной запрос
+    $queryResult = Pricelist::find()
         ->alias('p')
         ->select($select)
-        ->leftJoin(PricelistLocation::tableName() . ' pl',  'pl.pricelist_id = p.id')
-        ->leftJoin(PricelistFilterA::tableName() . ' pfa',  'pfa.pricelist_location_id = pl.id')
-        ->leftJoin(PricelistFilterB::tableName() . ' pfb',  'pfb.pricelist_filter_a_id = pfa.id')
-        ->leftJoin(new \yii\db\Expression($prefixPriceSelect) . ' ppp', 'ppp.pricelist_filter_b_id = pfb.id')
-        ->where(['p.id' => $id])
+        ->leftJoin(PricelistLocation::tableName() . ' as pl',  'pl.pricelist_id = p.id')
+        ->leftJoin(PricelistFilterA::tableName() . ' as pfa',  'pfa.pricelist_location_id = pl.id')
+        ->leftJoin(PricelistFilterB::tableName() . ' as pfb',  'pfb.pricelist_filter_a_id = pfa.id')
+        ->leftJoin(new \yii\db\Expression($prefixPriceSelect) . ' as ppp', 'ppp.pricelist_filter_b_id = pfb.id')
+        ->where(['p.id' => $this->request['id']])
         ->orderBy('pl.id, pfa.id, pfb.id, ppp.prefix_b, ppp.id')
-        ->addParams([':limit' => PricelistPrefixPrice::PAGE_LIMIT])
         ->asArray()
         ->all();
-    $sqlTime = round(microtime(true) - $t0, 3);
 
-    // Если debug=1 — вернём только агрегаты (без тяжёлой сборки и JSON-объёмов)
-    if ($debug) {
-        // Подсчёты «у источника», чтобы не грузить память:
-        $db = \Yii::$app->db;
-
-        $plCnt  = (int)$db->createCommand('SELECT COUNT(*) FROM billing_uu.pricelist_location WHERE pricelist_id = :id', [':id' => $id])->queryScalar();
-        $faCnt  = (int)$db->createCommand(
-            'SELECT COUNT(*) FROM billing_uu.pricelist_filter_a a JOIN billing_uu.pricelist_location l ON l.id=a.pricelist_location_id WHERE l.pricelist_id=:id',
-            [':id' => $id]
-        )->queryScalar();
-        $fbCnt  = (int)$db->createCommand(
-            'SELECT COUNT(*) FROM billing_uu.pricelist_filter_b b JOIN billing_uu.pricelist_filter_a a ON a.id=b.pricelist_filter_a_id JOIN billing_uu.pricelist_location l ON l.id=a.pricelist_location_id WHERE l.pricelist_id=:id',
-            [':id' => $id]
-        )->queryScalar();
-        $ppCnt  = (int)$db->createCommand(
-            'SELECT COUNT(*) FROM billing_uu.pricelist_prefix_price ppp JOIN billing_uu.pricelist_filter_b b ON b.id=ppp.pricelist_filter_b_id JOIN billing_uu.pricelist_filter_a a ON a.id=b.pricelist_filter_a_id JOIN billing_uu.pricelist_location l ON l.id=a.pricelist_location_id WHERE l.pricelist_id=:id AND (ppp.date_to > now() OR ppp.prefix_b IS NULL)',
-            [':id' => $id]
-        )->queryScalar();
-
-        \Yii::$app->response->headers->set('X-SQL-Time', $sqlTime.'s');
-        return [
-            'debug' => true,
-            'id' => $id,
-            'sql_time_sec' => $sqlTime,
-            'rows_flat' => count($rows),
-            'locations' => $plCnt,
-            'filters_a' => $faCnt,
-            'filters_b' => $fbCnt,
-            'prefix_count' => $ppCnt,
-        ];
+    // 4) Формирование ответа как в New-версии
+    if (isset($this->request['type']) && $this->request['type'] === 'short') {
+        $result = PricelistView::getForShortForm($queryResult);
+    } else {
+        $result = PricelistView::getForFullForm($queryResult);
     }
-
-    // — измеряем время сборки
-    $t1 = microtime(true);
-    $result = $isShort
-        ? PricelistView::getForShortForm($rows)
-        : PricelistView::getForFullForm($rows);
-    $buildTime = round(microtime(true) - $t1, 3);
-
-    // Заголовки, чтобы видеть где тормозит
-    \Yii::$app->response->headers->set('X-SQL-Time', $sqlTime.'s');
-    \Yii::$app->response->headers->set('X-Build-Time', $buildTime.'s');
-    \Yii::$app->response->headers->set('X-Rows-Flat', (string)count($rows));
 
     return $result;
 }
