@@ -51,7 +51,7 @@ class TestPricelistController extends JsonController
         $limit       = $this->request['limit'];
         $offset      = $this->request['offset'];
 
-        // Фильтр по passed/not_executed/passed/failed
+        // Фильтр по passed/not_executed/failed
         $testResult = $searchArray['result'] ?? false;
         switch ($testResult) {
             case 'not_executed':
@@ -156,6 +156,7 @@ class TestPricelistController extends JsonController
                 'tr.tm',
                 'tr.received',
                 'p.service_type_id AS pricelist_service_type_id', // <-- нужное поле
+                'p.orig AS pricelist_orig',                       // <-- добавили, чтобы фронт видел фактическую "оригинацию"
             ])
             ->leftJoin('auth.test_result tr', "tr.type = 'pricelist' AND tr.id_pricelist = tp.id")
             ->where(['tp.id' => $this->request['id']])
@@ -215,99 +216,103 @@ class TestPricelistController extends JsonController
         $item->delete();
     }
 
-   public function actionResult()
-{
-    $id   = $this->request['id'];
-    $item = TestPricelist::findOne($id);
-    if (!$item) {
-        throw new HttpException(404, 'TestPricelist не найден');
-    }
-
-    // узнаём service_type_id из pricelist
-    $serviceTypeId = (new Query())
-        ->select('service_type_id')
-        ->from('billing_uu.pricelist')
-        ->where(['id' => $item->pricelist_id])
-        ->scalar();
-
-    if ((int)$serviceTypeId === 2) {
-        // ----- REG99 ветка: формируем URL и возвращаем ЕДИНУЮ структуру
-        $params = [
-            'num_a'        => $item->a_number,
-            'num_b'        => $item->b_number,
-            'location_id'  => $item->location_id,
-            'pricelist_id' => $item->pricelist_id,
-            'orig'      => $item->is_orig ? 'true' : 'false',
-        ];
-        $url = 'http://reg99.mcntelecom.ru:8101/nnpcalc?' . http_build_query($params);
-        Yii::info("Reg99 NNPCalc URL: $url", __METHOD__);
-        $raw = @file_get_contents($url);
-        if ($raw === false) {
-            throw new HttpException(502, 'Не удалось получить данные от reg99-сервиса');
+    public function actionResult()
+    {
+        $id   = $this->request['id'];
+        $item = TestPricelist::findOne($id);
+        if (!$item) {
+            throw new HttpException(404, 'TestPricelist не найден');
         }
-        $data = json_decode($raw, true) ?: [];
+
+        // --- Берём service_type_id и orig из прайслиста (ЕДИНЫЙ источник)
+        $pl = (new Query())
+            ->select(['service_type_id', 'orig'])
+            ->from('billing_uu.pricelist')
+            ->where(['id' => $item->pricelist_id])
+            ->one();
+
+        $serviceTypeId     = (int)($pl['service_type_id'] ?? 0);
+        $isOrigByPricelist = !empty($pl['orig']); // boolean
+
+        if ($serviceTypeId === 2) {
+            // ----- REG99 ветка: добавляем is_orig в URL
+            $params = [
+                'num_a'        => $item->a_number,
+                'num_b'        => $item->b_number,
+                'location_id'  => $item->location_id,
+                'pricelist_id' => $item->pricelist_id,
+                'is_orig'      => $isOrigByPricelist ? 'true' : 'false', // <<< добавлено
+            ];
+            $url = 'http://reg99.mcntelecom.ru:8101/nnpcalc?' . http_build_query($params);
+            Yii::info("Reg99 NNPCalc URL: $url", __METHOD__);
+
+            $raw = @file_get_contents($url);
+            if ($raw === false) {
+                throw new HttpException(502, 'Не удалось получить данные от reg99-сервиса');
+            }
+            $data = json_decode($raw, true) ?: [];
+
+            return [
+                'steps'           => [ $data ],
+                'a_number'        => $item->a_number,
+                'b_number'        => $item->b_number,
+                'c_number'        => $item->c_number,
+                'id'              => $item->id,
+                'name'            => $item->name,
+                'url'             => $url, // теперь возвращаем и для Reg99
+                'baseUrl'         => Yii::$app->params['isEuropean']
+                                        ? 'https://voipgui.kompaas.tech/'
+                                        : 'https://voipgui.mcn.ru/',
+            ];
+        }
+
+        // ----- PriceV2 ветка: используем orig из прайслиста
+        $apiUrl = $item->server->apiUrl;
+        $apiParams = [
+            'cmd'           => 'priceV2Calc',
+            'num_a'         => $item->a_number,
+            'num_b'         => $item->b_number,
+            'num_c'         => $item->c_number,
+            'mcc'           => $item->mcc,
+            'mnc'           => $item->mnc,
+            'location_id'   => $item->location_id,
+            'pricelist_id'  => $item->pricelist_id,
+            'orig'          => $isOrigByPricelist ? 'true' : 'false', // <<< ключевая замена
+            'test_mode'     => 'true',
+            'date'          => $item->mock_current_date,
+        ];
+        if ($item->with_debug_info) $apiParams['with_debug_info'] = 1;
+        if ($item->sim_partner_id) $apiParams['sim_partner_id']   = $item->sim_partner_id;
+        if ($item->sim_profile_id) $apiParams['sim_profile_id']   = $item->sim_profile_id;
+
+        $requestUrl = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
+        Yii::info("PriceV2Calc URL: $requestUrl", __METHOD__);
+
+        $response = @file_get_contents($requestUrl);
+        if ($response === false) {
+            throw new HttpException(502, 'Внешний NNPCalc недоступен');
+        }
 
         return [
-            'steps'           => [ $data ],
+            'steps'           => [ json_decode($response, true) ],
+            'number_range_a'  => $this->getNumberRangeByNum($item->a_number, $apiUrl),
+            'number_range_b'  => $this->getNumberRangeByNum($item->b_number, $apiUrl),
+            'number_range_c'  => $this->getNumberRangeByNum($item->c_number, $apiUrl),
+            'destination_a'   => $this->getDestinationByNum($item->a_number, $apiUrl),
+            'destination_b'   => $this->getDestinationByNum($item->b_number, $apiUrl),
+            'destination_c'   => $this->getDestinationByNum($item->c_number, $apiUrl),
             'a_number'        => $item->a_number,
             'b_number'        => $item->b_number,
             'c_number'        => $item->c_number,
             'id'              => $item->id,
             'name'            => $item->name,
-            'url'             => $url, // <<< теперь есть
+            'url'             => $requestUrl, // уже было
             'baseUrl'         => Yii::$app->params['isEuropean']
-                                   ? 'https://voipgui.kompaas.tech/'
-                                   : 'https://voipgui.mcn.ru/',
+                                    ? 'https://voipgui.kompaas.tech/'
+                                    : 'https://voipgui.mcn.ru/',
         ];
     }
 
-    // ----- PriceV2 ветка: как у вас, но структура та же (url уже есть)
-    $apiUrl = $item->server->apiUrl;
-    $apiParams = [
-        'cmd'           => 'priceV2Calc',
-        'num_a'         => $item->a_number,
-        'num_b'         => $item->b_number,
-        'num_c'         => $item->c_number,
-        'mcc'           => $item->mcc,
-        'mnc'           => $item->mnc,
-        'location_id'   => $item->location_id,
-        'pricelist_id'  => $item->pricelist_id,
-        'orig'          => $item->is_orig ? 'true' : 'false',
-        'test_mode'     => 'true',
-        'date'          => $item->mock_current_date,
-    ];
-    if ($item->with_debug_info) $apiParams['with_debug_info'] = 1;
-    if ($item->sim_partner_id) $apiParams['sim_partner_id'] = $item->sim_partner_id;
-    if ($item->sim_profile_id) $apiParams['sim_profile_id'] = $item->sim_profile_id;
-
-    $requestUrl = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
-    Yii::info("PriceV2Calc URL: $requestUrl", __METHOD__);
-    $response = @file_get_contents($requestUrl);
-    if ($response === false) {
-        throw new HttpException(502, 'Внешний NNPCalc недоступен');
-    }
-
-    return [
-        'steps'           => [ json_decode($response, true) ],
-        'number_range_a'  => $this->getNumberRangeByNum($item->a_number, $apiUrl),
-        'number_range_b'  => $this->getNumberRangeByNum($item->b_number, $apiUrl),
-        'number_range_c'  => $this->getNumberRangeByNum($item->c_number, $apiUrl),
-        'destination_a'   => $this->getDestinationByNum($item->a_number, $apiUrl),
-        'destination_b'   => $this->getDestinationByNum($item->b_number, $apiUrl),
-        'destination_c'   => $this->getDestinationByNum($item->c_number, $apiUrl),
-        'a_number'        => $item->a_number,
-        'b_number'        => $item->b_number,
-        'c_number'        => $item->c_number,
-        'id'              => $item->id,
-        'name'            => $item->name,
-        'url'             => $requestUrl, // уже было
-        'baseUrl'         => Yii::$app->params['isEuropean']
-                               ? 'https://voipgui.kompaas.tech/'
-                               : 'https://voipgui.mcn.ru/',
-    ];
-}
-
-    
     /**
      * @return array
      * @throws HttpException
@@ -317,18 +322,15 @@ class TestPricelistController extends JsonController
         if (!\Yii::$app->user->can('test_pricelist_list')) {
             throw new ForbiddenHttpException('Access denied');
         }
-        
         $number = preg_replace('~\D~', '', $this->request['number']);
-        
         $apiUrl = Yii::$app->params['testNumberLink'];
-        
         return [
             'number' => $number,
             'number_range' => $this->getNumberRangeByNum($number, $apiUrl),
             'destination' => $this->getDestinationByNum($number, $apiUrl),
         ];
     }
-    
+
     private function getNumberRangeByNum($number, $apiUrl)
     {
         $fields = [
@@ -338,18 +340,17 @@ class TestPricelistController extends JsonController
             'nnp_region_id' => 'app\models\nnp\Region',
             'ported_operator_id' => 'app\models\nnp\Operator',
         ];
-        
         return $this->getCmdByNum('getNumberRangeByNum', $number, $apiUrl, $fields);
     }
-    
+
     private function getDestinationByNum($number, $apiUrl)
     {
         return $this->getCmdByNum('getDestinationByNum', $number, $apiUrl);
     }
-    
+
     private function getCmdByNum($cmd, $number, $apiUrl, $fields = [])
     {
-
+        // Специальный кейс для getNumberRangeByNum
         if ($cmd === 'getNumberRangeByNum') {
             $apiUrl = 'https://api-gw.mcn.ru/voipbilld/reg/';
         }
@@ -358,7 +359,6 @@ class TestPricelistController extends JsonController
             'cmd' => $cmd,
             'num' => $number,
         ];
-
 
         $request = $apiUrl . 'test/nnpcalc?' . http_build_query($apiParams);
         $response = @file_get_contents($request);
@@ -371,7 +371,6 @@ class TestPricelistController extends JsonController
 
         $result = json_decode($response, true);
         if (!is_array($result)) {
-
             $result = [];
         }
 
@@ -390,6 +389,14 @@ class TestPricelistController extends JsonController
 
         return $result;
     }
-    
 
+    // (опционально) Если используется где-то ещё
+    protected function getTestPricelistOr404($id)
+    {
+        $item = TestPricelist::findOne($id);
+        if (!$item) {
+            throw new HttpException(404, 'TestPricelist не найден');
+        }
+        return $item;
+    }
 }
