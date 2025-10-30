@@ -1,0 +1,97 @@
+<form class="form-horizontal" name="form" ng-if="item">
+  <div class="modal-header">
+    <h3 ng-if="item.id">Результаты теста {{item.name}}</h3>
+  </div>
+
+  <div class="modal-body" style="display:block; overflow:auto;">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Ссылка</label>
+      <div class="col-sm-10">
+        {{url}}
+      </div>
+    </div>
+
+    <script type="text/ng-template" id="nodes_renderer.html">
+      <br />
+      <div class="tree-container-bordered">
+        <div ng-if="step.name" ui-tree-handle class="tree-node tree-node-content">
+          <a class="btn btn-success btn-xs" ng-disabled="!step.steps" data-nodrag ng-click="toggle(this)">
+            <span class="glyphicon"
+                  ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}">
+            </span>
+          </a>
+          <span>{{step.name}}</span>
+        </div>
+
+        <div ng-if="!step.name" ui-tree-handle class="tree-node tree-node-content" style="display:inline-block;">
+          <table>
+            <tr>
+              <td style="vertical-align:top;">
+                <span ng-if="step.type" class="label label-primary">[{{step.type}}]</span>
+              </td>
+              <td>
+                &nbsp;
+                <span ng-if="step.message">{{step.message}}</span>
+                <span ng-if="!step.message && step.trace">{{step.trace}}</span>
+                <span ng-if="!step.message && !step.trace">Нет результата</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <ol ui-tree-nodes ng-model="step.steps" ng-class="{hidden: collapsed}">
+          <li ng-repeat="step in step.steps" ui-tree-node collapsed="false" class="stripe"
+              ng-include="'nodes_renderer.html'">
+          </li>
+        </ol>
+
+        <div ng-if="step.match === true || step.match === false">
+          <br />
+          <span ng-if="step.match === true && step.fix_price"
+                class="label-big label-success">[Фиксированная цена звонка: {{step.fix_price}}]</span>
+          <span ng-if="step.match === true && step.rate_price"
+                class="label-big label-success">[Цена за минуту: {{step.rate_price}}]</span>
+          <span ng-if="step.match === true && step.interconnect_price"
+                class="label-big label-success">[Цена интерконнекта: {{step.interconnect_price}}]</span>
+          <span ng-if="step.match === false" class="label-big label-danger">[ПРАЙСЛИСТ НЕ ПОДОШЕЛ]</span>
+        </div>
+      </div>
+    </script>
+
+    <!-- Блоки с Номером A и B оставляем -->
+    <div>
+      <span class="label label-success">Номер А: {{item.a_number}}</span>
+      <br />
+      <b>{{item.number_range_a}}</b>
+      <br />
+      <b>{{item.destination_a}}</b>
+    </div>
+    <br />
+    <div>
+      <span class="label label-danger">Номер B: {{item.b_number}}</span>
+      <br />
+      <b>{{item.number_range_b}}</b>
+      <br />
+      <b>{{item.destination_b}}</b>
+    </div>
+    <br />
+
+    <div>
+      <button ng-click="collapseAll()">Свернуть все<div></div></button>
+      <div ui-tree data-drag-enabled="false" id="tree-root">
+        <ol ui-tree-nodes ng-model="item">
+          <li ng-repeat="step in item.steps" collapsed="true" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <div class="pull-left">
+      <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+    </div>
+    <div class="pull-right">
+     <a href="{{baseUrl}}billing?testSmsPricelistShowTest&{{item.id}}">Ссылка на эту форму</a>
+    </div>
+  </div>
+</form>

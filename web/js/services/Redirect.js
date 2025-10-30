@@ -512,6 +512,49 @@ app.factory('Redirect', function ($window, $rootScope, $modal, $cookies) {
             $cookies.billing_selected_page = 'testPricelistList';
             return openTab(TestPricelistListCtrl, '/templates/test_pricelist_list.html', {}, 'billing');
         },
+        testSmsPricelistList: function() {
+            $cookies.sms_selected_page = 'testSmsPricelistList';
+            return openTab(TestSmsPricelistListCtrl, '/templates/sms/test_sms_pricelist_list.html', {}, 'sms');
+        },
+        testSmsPricelistCreate: function () {
+  return openModal(
+    TestSmsPricelistEditCtrl,
+    '/templates/sms/test_sms_pricelist_edit.html',
+    {}
+  );
+},
+
+testSmsPricelistEdit: function (id) {
+  return openModal(
+    TestSmsPricelistEditCtrl,
+    '/templates/sms/test_sms_pricelist_edit.html',
+    { id: id }
+  );
+},
+
+testSmsPricelistClone: function (id) {
+  return openModal(
+    TestSmsPricelistEditCtrl,
+    '/templates/sms/test_sms_pricelist_edit.html',
+    { id: id, clone: true }
+  );
+},
+
+testSmsPricelistShowTest: function (id) {
+  return openModal(
+    TestSmsPricelistShowTestCtrl,
+    '/templates/sms/test_sms_pricelist_show_test.html',
+    { id: id }
+  );
+},
+
+testSmsPricelistShowTestDev: function (id) {
+  return openModal(
+    TestSmsPricelistShowTestDevCtrl,
+    '/templates/sms/test_sms_pricelist_show_test_dev.html',
+    { id: id }
+  );
+},
         testPricelistEdit: function(id) {
             return openModal(TestPricelistEditCtrl, '/templates/test_pricelist_edit.html', {id: id});
         },
