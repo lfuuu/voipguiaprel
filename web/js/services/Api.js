@@ -191,6 +191,59 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
   };
 });
 
+app.factory('TestSmsPricelist', function ($q, ApiLoader, $rootScope) {
+  var url = '/json/sms/test-sms-pricelist-list/';
+
+  var listCache  = undefined;
+  var listPromise = undefined;
+
+  return {
+    read: function (data) {
+      return ApiLoader.post(url + 'read', data);
+    },
+    get: function (data) {
+      return ApiLoader.post(url + 'get', data);
+    },
+    result: function (data) {
+      return ApiLoader.post(url + 'result', data);
+    },
+    numberResult: function (data) {
+      return ApiLoader.post(url + 'number-result', data);
+    },
+    list: function () {
+      if (listPromise !== undefined) return listPromise;
+
+      var deferred = $q.defer();
+      if (listCache !== undefined) {
+        deferred.resolve(listCache);
+        return deferred.promise;
+      } else {
+        var data = { server_id: $rootScope.server.id };
+        ApiLoader.post(url + 'list', data)
+          .then(function (res) {
+            listCache   = res;
+            listPromise = undefined;
+            deferred.resolve(res);
+          }, function (err) {
+            listPromise = undefined;
+            deferred.reject(err);
+          });
+        listPromise = deferred.promise;
+      }
+      return deferred.promise;
+    },
+    save: function (data) {
+      listCache = undefined;
+      return ApiLoader.post(url + 'save', data);
+    },
+    delete: function (id) {
+      listCache = undefined;
+      return ApiLoader.post(url + 'delete', { id: id });
+    },
+  };
+});
+
+
 
 app.factory('SmsGate', function ($q, ApiLoader) {
     var url = '/json/sms/sms-gate/';

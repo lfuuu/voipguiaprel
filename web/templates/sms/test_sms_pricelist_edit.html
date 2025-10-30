@@ -1,0 +1,161 @@
+<style>
+    [popover] {
+        display: initial;
+        position: initial;
+        margin: initial;
+    }
+</style>
+<form class="form-horizontal" name="form" ng-if="item">
+    <div class="modal-header">
+        <h3 ng-if="item.id">
+            Тест прайслистов {{::item.name}}
+        </h3>
+        <h3 ng-if="!item.id">Создание Теста прайслистов</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Название</label>
+            <div class="col-sm-10">
+                <input class="form-control" placeholder="Название" ng-model="item.name" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Группа</label>
+            <div class="col-sm-6">
+                <select-box-new list="testPricelistGroup" model="item.test_pricelist_group_id" placeholder="Выберите группу" required="true"></select-box-new>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Время (UTC)</label>
+            <div class="col-sm-6">
+                <input popover="Используется текущее время" data-popover-trigger="{{hasPopover()}}" popover-placement="right" class="form-control" placeholder="{{item.is_autotest ? 'Используется текущее время' : 'Время (UTC)'}}" ng-model="item.mock_current_date" ng-required="!item.is_autotest" ng-disabled="item.is_autotest">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Прайслист</label>
+            <div class="col-sm-6">
+                <select-box-new list="pricelist" model="item.pricelist_id" placeholder="Выберите прайслист" required="true"></select-box-new>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Номер А</label>
+            <div class="col-sm-6">
+                <input class="form-control" placeholder="Номер А" ng-model="item.a_number" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Номер B</label>
+            <div class="col-sm-6">
+                <input class="form-control" placeholder="Номер B" ng-model="item.b_number" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Номер С</label>
+            <div class="col-sm-6">
+                <input class="form-control" placeholder="Номер С" ng-model="item.c_number">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Sim Партнер</label>
+            <div class="col-sm-6">
+                <select ui-select2 ng-model="item.sim_partner_id" style="width: 100%" >
+                    <option ng-repeat="partner in partnerList" value="{{partner.id}}">#{{partner.id}} {{partner.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Sim Профиль</label>
+            <div class="col-sm-6">
+                <select ui-select2 ng-model="item.sim_profile_id" style="width: 100%" >
+                    <option ng-repeat="profile in profileList" value="{{profile.id}}">#{{profile.id}} {{profile.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Автотест</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.is_autotest = !item.is_autotest">
+                    <button type="button" class="btn btn-sm {{item.is_autotest ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.is_autotest ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Ожидаемый результат</label>
+            <div class="col-sm-6">
+                <input class="form-control" placeholder="Результат" ng-model="item.expected_price">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Дата тестирования</label>
+            <div class="col-sm-6" style="margin-top: 7px;">
+                <span>{{item.tm}}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Полученный ответ</label>
+            <div class="col-sm-6" style="margin-top: 7px;">
+                <span>{{item.received}}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Местоположение</label>
+            <div class="col-sm-6">
+                <select ui-select2 ng-model="item.location_id" placeholder="Местоположение" style="width: 100%">
+                    <option ng-repeat="locationItem in locationList" value="{{locationItem.id}}">{{locationItem.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div ng-hide="item.location_id != 3 && item.location_id != 4" class="form-group">
+            <label class="col-sm-2 control-label">MCC</label>
+            <div class="col-sm-6">
+                <select ui-select2 ng-model="item.mcc" style="width: 100%">
+                    <option value="">-- Выберите --</option>
+                    <option ng-repeat="mcc in mccList" value="{{::mcc.id}}">#{{::mcc.mcc}} {{::mcc.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div ng-hide="(item.location_id != 3 && item.location_id != 4) || !item.mcc" class="form-group">
+            <label class="col-sm-2 control-label">MNC</label>
+            <div class="col-sm-6">
+                <select ui-select2 ng-model="item.mnc" style="width: 100%">
+                    <option value="">-- Выберите --</option>
+                    <option ng-repeat="mnc in mncList" value="{{::mnc.id}}">#{{::mnc.mnc}} {{::mnc.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Отладочная информация</label>
+            <div class="col-sm-10">
+                <div class="btn-group" ng-click="item.with_debug_info = !item.with_debug_info">
+                    <button type="button" class="btn btn-sm {{item.with_debug_info ? 'btn-success active' : 'btn-default'}}">Да</button>
+                    <button type="button" class="btn btn-sm {{!item.with_debug_info ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="submit" class="btn btn-success" ng-if="(item.id && userPermissions['test_pricelist_edit']) || (!item.id && userPermissions['test_pricelist_create'])" ng-disabled="form.$invalid" ng-click="save()">Сохранить</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
+            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/test-pricelist" action="save"></action-log-view-button>
+        </div>
+    </div>
+
+</form>

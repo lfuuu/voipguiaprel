@@ -243,7 +243,7 @@ class TestPricelistController extends JsonController
                 'pricelist_id' => $item->pricelist_id,
                 'is_orig'      => $isOrigByPricelist ? 'true' : 'false', // <<< добавлено
             ];
-            $url = 'http://reg99.mcntelecom.ru:8101/nnpcalc?' . http_build_query($params);
+            $url = 'http://reg99.mcntelecom.ru:8103/nnpcalc?' . http_build_query($params);
             Yii::info("Reg99 NNPCalc URL: $url", __METHOD__);
 
             $raw = @file_get_contents($url);
