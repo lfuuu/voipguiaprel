@@ -5,11 +5,13 @@
         margin: initial;
     }
 </style>
+
 <form class="form-horizontal" name="form" ng-if="item">
     <div class="modal-header">
         <h3 ng-if="item.id">Фильтр А, id {{item.id}}</h3>
         <h3 ng-if="!item.id">Создание фильтра А</h3>
     </div>
+
     <div class="modal-body">
         <div class="col-sm-10">
 
@@ -64,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <label class="col-sm-2 control-label">Regex</label>
                 <div class="col-sm-10">
@@ -72,24 +74,34 @@
                 </div>
             </div>
 
+            <!-- ВКЛАДКИ -->
             <ul class="nav nav-tabs">
-                <li class="{{(nnpMode == NNP_MODE_FILTER) ? 'active' : '' }}">
+                <!-- ННП-вкладки показываем только при type_id = 4 -->
+                <li ng-if="item.pricelist_type_id == 4" class="{{(nnpMode == NNP_MODE_FILTER) ? 'active' : '' }}">
                     <a href="#nnp-filter" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_FILTER)">ННП-Фильтр</a>
                 </li>
-                <li class="{{(nnpMode == NNP_MODE_PARAMETERS) ? 'active' : '' }}">
+                <li ng-if="item.pricelist_type_id == 4" class="{{(nnpMode == NNP_MODE_PARAMETERS) ? 'active' : '' }}">
                     <a href="#nnp-parameters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_PARAMETERS)">ННП-Параметры</a>
                 </li>
-                <li>
+
+                <!-- Импорт всегда доступен -->
+                <li class="{{ (!item.pricelist_type_id || (item.pricelist_type_id != 2 && item.pricelist_type_id != 4)) ? 'active' : '' }}">
                     <a href="#nnp-filter-import" data-toggle="tab">Импорт NNP-фильтров</a>
                 </li>
-                <li ng-if="item.pricelist_group_id == 32">
+
+                <!-- Альфанумера показываем только при type_id = 2 -->
+                <li ng-if="item.pricelist_type_id == 2">
                     <a href="#alphanums" data-toggle="tab">Альфа номера</a>
                 </li>
             </ul>
             <br/>
 
+            <!-- КОНТЕНТ ВКЛАДОК -->
             <div class="tab-content">
-                <div class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filter">
+
+                <!-- ННП-Фильтр (type_id = 4) -->
+                <div ng-if="item.pricelist_type_id == 4"
+                     class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filter">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Страна</label>
                         <div class="col-sm-10">
@@ -114,7 +126,10 @@
                     </div>
                 </div>
 
-                <div class="tab-pane{{(nnpMode == NNP_MODE_PARAMETERS) ? ' active' : '' }}" id="nnp-parameters">
+                <!-- ННП-Параметры (type_id = 4) -->
+                <div ng-if="item.pricelist_type_id == 4"
+                     class="tab-pane{{(nnpMode == NNP_MODE_PARAMETERS) ? ' active' : '' }}" id="nnp-parameters">
+
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Страна</label>
                         <div class="col-sm-7">
@@ -142,15 +157,11 @@
                         <label class="col-sm-2 control-label">Регион</label>
                         <div ng-if="regionList && regionList.length > 0" class="col-sm-7">
                             <select ui-select2 ng-model="item.nnp_region" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="region in regionList" value="{{::region.id}}">{{::region.name}}
-                                </option>
+                                <option ng-repeat="region in regionList" value="{{::region.id}}">{{::region.name}}</option>
                             </select>
                         </div>
                         <div ng-if="!regionList || regionList.length == 0" class="col-sm-7">
-                            <button type="button"
-                                    class="btn btn-primary info"
-                                    ng-click="loadRegions()">Загрузить данные
-                            </button>
+                            <button type="button" class="btn btn-primary info" ng-click="loadRegions()">Загрузить данные</button>
                             <span ng-if="item.nnp_region && item.nnp_region != {}">Текущее значение: {{item.nnp_region}}</span>
                         </div>
                         <div class="col-sm-3">
@@ -175,10 +186,7 @@
                             </select>
                         </div>
                         <div ng-if="!cityList || cityList.length == 0" class="col-sm-7">
-                            <button type="button"
-                                    class="btn btn-primary info"
-                                    ng-click="loadCities()">Загрузить данные
-                            </button>
+                            <button type="button" class="btn btn-primary info" ng-click="loadCities()">Загрузить данные</button>
                             <span ng-if="item.nnp_city && item.nnp_city != {}">Текущее значение: {{item.nnp_city}}</span>
                         </div>
                         <div class="col-sm-3">
@@ -205,10 +213,7 @@
                             </select>
                         </div>
                         <div ng-if="!operatorList || operatorList.length == 0" class="col-sm-7">
-                            <button type="button"
-                                    class="btn btn-primary info"
-                                    ng-click="loadOperators()">Загрузить данные
-                            </button>
+                            <button type="button" class="btn btn-primary info" ng-click="loadOperators()">Загрузить данные</button>
                             <span ng-if="item.nnp_operator && item.nnp_operator != {}">Текущее значение: {{item.nnp_operator}}</span>
                         </div>
                         <div class="col-sm-3">
@@ -229,8 +234,7 @@
                         <label class="col-sm-2 control-label">Тип NDC</label>
                         <div class="col-sm-7">
                             <select ui-select2 ng-model="item.nnp_ndc_type" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}
-                                </option>
+                                <option ng-repeat="ndcType in ndcTypeList" value="{{::ndcType.id}}">{{::ndcType.name}}</option>
                             </select>
                         </div>
                         <div class="col-sm-3">
@@ -251,15 +255,11 @@
                         <label class="col-sm-2 control-label">NDC</label>
                         <div ng-if="ndcList && ndcList.length > 0" class="col-sm-7">
                             <select ui-select2="{ allow: true}" ng-model="item.nnp_ndc" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="ndc in ndcList" value="{{ndc.id}}">{{ndc.name}}
-                                </option>
+                                <option ng-repeat="ndc in ndcList" value="{{ndc.id}}">{{ndc.name}}</option>
                             </select>
                         </div>
                         <div ng-if="!ndcList || ndcList.length == 0" class="col-sm-7">
-                            <button type="button"
-                                    class="btn btn-primary info"
-                                    ng-click="loadNdcs()">Загрузить данные
-                            </button>
+                            <button type="button" class="btn btn-primary info" ng-click="loadNdcs()">Загрузить данные</button>
                             <span ng-if="item.nnp_ndc && item.nnp_ndc != {}">Текущее значение: {{item.nnp_ndc}}</span>
                         </div>
                         <div class="col-sm-3">
@@ -278,25 +278,30 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Направление</label>
-                        <div ng-if="destinationList && destinationList.length > 0"  class="col-sm-7">
+                        <div ng-if="destinationList && destinationList.length > 0" class="col-sm-7">
                             <select ui-select2 ng-model="item.nnp_destination" multiple="multiple" style="width: 100%">
-                                <option ng-repeat="destination in destinationList" value="{{::destination.id}}">{{::destination.name}}
+                                <option ng-repeat="destination in destinationList" value="{{::destination.id}}">
+                                    {{::destination.name}}
                                 </option>
                             </select>
                         </div>
                         <div ng-if="!destinationList || destinationList.length == 0" class="col-sm-7">
-                            <button type="button"
-                                    class="btn btn-primary info"
-                                    ng-click="loadDestinations()">Загрузить данные
-                            </button>
+                            <button type="button" class="btn btn-primary info" ng-click="loadDestinations()">Загрузить данные</button>
                             <span ng-if="item.nnp_destination && item.nnp_destination != {}">Текущее значение: {{item.nnp_destination}}</span>
                         </div>
                     </div>
-
                 </div>
+
+                <!-- Импорт фильтров (всегда) -->
                 <div class="tab-pane" id="nnp-filter-import">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Список фильтров <span class="glyphicon glyphicon-question-sign" popover="Дата должна быть в формате ДД.ММ.ГГГГ" data-popover-trigger="mouseenter" popover-placement="left"></span></label>
+                        <label class="col-sm-2 control-label">
+                            Список фильтров
+                            <span class="glyphicon glyphicon-question-sign"
+                                  popover="Дата должна быть в формате ДД.ММ.ГГГГ"
+                                  data-popover-trigger="mouseenter"
+                                  popover-placement="left"></span>
+                        </label>
                         <div class="col-sm-6">
                             <textarea class="form-control" placeholder="Фильтры" ng-model="item.filters"></textarea>
                         </div>
@@ -304,43 +309,54 @@
                             <span style="color: red;">{{errors.filters_error}}</span>
                         </div>
                     </div>
+
                     <div ng-if="item.filterBHistory[0]">
                         <table class="table table-striped">
                             <thead>
-                                <tr>
-                                    <th class="col-sm-2">Дата начала действия</th>
-                                    <th class="col-sm-2">Дата окончания действия</th>
-                                    <th class="col-sm-2">Прайслист</th>
-                                    <th class="col-sm-2">Операция</th>
-                                    <th class="col-sm-2">Дата операции</th>
-                                    <th class="col-sm-2"></th>
-                                </tr>
+                            <tr>
+                                <th class="col-sm-2">Дата начала действия</th>
+                                <th class="col-sm-2">Дата окончания действия</th>
+                                <th class="col-sm-2">Прайслист</th>
+                                <th class="col-sm-2">Операция</th>
+                                <th class="col-sm-2">Дата операции</th>
+                                <th class="col-sm-2"></th>
+                            </tr>
                             </thead>
                             <tr ng-repeat="val in item.filterBHistory">
-                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.date_from}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
-                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.date_to}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
-                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">#{{val.pricelist_id}} ({{val.total_count}})</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
-                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.type=='replace' ? 'Замена' : 'Добавление'}}</td style="cursor: pointer" ng-click="openFilterPriceHistory(val)">
-                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.date_created}}</td style="cursor: pointer" ng-click="openPrefixPriceHistory(val)">
-                                <td><button type="button" class="btn btn-default btn-sm" ng-if="$last && val.has_backup" ng-click="undoFilterBImport(val)">Отмена</button class="btn btn-default btn-sm"></td>
+                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.date_from}}</td>
+                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.date_to}}</td>
+                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">#{{val.pricelist_id}} ({{val.total_count}})</td>
+                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.type=='replace' ? 'Замена' : 'Добавление'}}</td>
+                                <td style="cursor: pointer" ng-click="openFilterBHistory(val)">{{val.date_created}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-default btn-sm"
+                                            ng-if="$last && val.has_backup"
+                                            ng-click="undoFilterBImport(val)">Отмена</button>
+                                </td>
                             </tr>
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane" id="alphanums" ng-if="item.pricelist_group_id == 32" >
+
+                <!-- Альфа номера (type_id = 2) -->
+                <div class="tab-pane" id="alphanums" ng-if="item.pricelist_type_id == 2">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Группа номеров</label>
-                        <div class="col-sm-7" >
+                        <div class="col-sm-7">
                             <select-box list="alphaNumberGroup" model="item.a2p_alphanumber" default="Не выбрано"></select-box>
                         </div>
+
                         <label class="col-sm-2 control-label">Инвертировать</label>
+                        <div class="col-sm-1">
                             <div class="btn-group" ng-click="item.a2p_invert = !item.a2p_invert">
-                                    <button type="button" class="btn btn-sm {{item.a2p_invert ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                    <button type="button" class="btn btn-sm {{!item.a2p_invert ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                                <button type="button" class="btn btn-sm {{item.a2p_invert ? 'btn-success active' : 'btn-default'}}">Да</button>
+                                <button type="button" class="btn btn-sm {{!item.a2p_invert ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                             </div>
+                        </div>
                     </div>
-                </div>  
-            </div>
+                </div>
+
+            </div><!-- /.tab-content -->
         </div>
         <div class="clearfix"></div>
     </div>
@@ -352,13 +368,19 @@
                     ng-disabled="form.$invalid || (!userPermissions['pricelist_super_edit'] && !saveEnabled)"
                     ng-click="save()">Сохранить
             </button>
+
             <button type="submit" class="btn btn-warning"
                     ng-hide="!userPermissions['pricelist_edit'] || !item.nnp_filter"
                     ng-disabled="!userPermissions['pricelist_super_edit'] && (form.$invalid || !saveEnabled)"
-                    ng-click="saveAndUpdate()">Сохранить и применить</button>
+                    ng-click="saveAndUpdate()">Сохранить и применить
+            </button>
+
             <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
-            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']" key="{{item.id}}" type="json/pricelist-filter-a" action="save"></action-log-view-button>
+
+            <action-log-view-button ng-if="item.id && userPermissions['action_log_view']"
+                                    key="{{item.id}}"
+                                    type="json/pricelist-filter-a"
+                                    action="save"></action-log-view-button>
         </div>
     </div>
-
 </form>

@@ -11,9 +11,12 @@
       </div>
     </div>
 
+    <!-- Рендерер узлов дерева -->
     <script type="text/ng-template" id="nodes_renderer.html">
       <br />
       <div class="tree-container-bordered">
+
+        <!-- Узел-группа (есть title/name) -->
         <div ng-if="step.name" ui-tree-handle class="tree-node tree-node-content">
           <a class="btn btn-success btn-xs" ng-disabled="!step.steps" data-nodrag ng-click="toggle(this)">
             <span class="glyphicon"
@@ -23,6 +26,7 @@
           <span>{{step.name}}</span>
         </div>
 
+        <!-- Лист (нет name — показываем message/trace) -->
         <div ng-if="!step.name" ui-tree-handle class="tree-node tree-node-content" style="display:inline-block;">
           <table>
             <tr>
@@ -39,26 +43,28 @@
           </table>
         </div>
 
+        <!-- Дети -->
         <ol ui-tree-nodes ng-model="step.steps" ng-class="{hidden: collapsed}">
-          <li ng-repeat="step in step.steps" ui-tree-node collapsed="false" class="stripe"
+          <li ng-repeat="step in step.steps" ui-tree-node collapsed="true" class="stripe"
               ng-include="'nodes_renderer.html'">
           </li>
         </ol>
 
+        <!-- Итоги (match/цены) -->
         <div ng-if="step.match === true || step.match === false">
           <br />
           <span ng-if="step.match === true && step.fix_price"
-                class="label-big label-success">[Фиксированная цена звонка: {{step.fix_price}}]</span>
+                class="label-big label-success">[Фиксированная цена: {{step.fix_price}}]</span>
           <span ng-if="step.match === true && step.rate_price"
                 class="label-big label-success">[Цена за минуту: {{step.rate_price}}]</span>
           <span ng-if="step.match === true && step.interconnect_price"
-                class="label-big label-success">[Цена интерконнекта: {{step.interconnect_price}}]</span>
+                class="label-big label-success">[Интерконнект: {{step.interconnect_price}}]</span>
           <span ng-if="step.match === false" class="label-big label-danger">[ПРАЙСЛИСТ НЕ ПОДОШЕЛ]</span>
         </div>
       </div>
     </script>
 
-    <!-- Блоки с Номером A и B оставляем -->
+    <!-- Хедер по номерам -->
     <div>
       <span class="label label-success">Номер А: {{item.a_number}}</span>
       <br />
@@ -76,10 +82,13 @@
     </div>
     <br />
 
+    <!-- Само дерево -->
     <div>
       <button ng-click="collapseAll()">Свернуть все<div></div></button>
+
       <div ui-tree data-drag-enabled="false" id="tree-root">
-        <ol ui-tree-nodes ng-model="item">
+        <!-- ВАЖНО: корневой ng-model — это item.steps -->
+        <ol ui-tree-nodes ng-model="item.steps">
           <li ng-repeat="step in item.steps" collapsed="true" ui-tree-node ng-include="'nodes_renderer.html'"></li>
         </ol>
       </div>
@@ -91,7 +100,7 @@
       <button type="button" class="btn btn-default btn-sm" ng-click="back()">Закрыть</button>
     </div>
     <div class="pull-right">
-     <a href="{{baseUrl}}billing?testSmsPricelistShowTest&{{item.id}}">Ссылка на эту форму</a>
+      <a href="{{baseUrl}}billing?testSmsPricelistShowTest&{{item.id}}">Ссылка на эту форму</a>
     </div>
   </div>
 </form>

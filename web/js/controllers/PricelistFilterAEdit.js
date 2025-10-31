@@ -69,6 +69,11 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
             $scope.item = data;
             $scope.filter_b_replace = false;
             $scope.setNnpFields();
+             if ($scope.item.pricelist_type_id == 4) {
+            $scope.setNnpMode($scope.NNP_MODE_FILTER);
+        } else if ($scope.item.pricelist_type_id == 2) {
+            $scope.nnpMode = null;
+        }
 
             if (data.nnp_filter && data.filter_country) {
                 Major.read({country_code: data.filter_country}).then(function (result) {
@@ -124,6 +129,15 @@ var PricelistFilterAEditCtrl = function($scope, $rootScope, $q, Major, Pricelist
     $scope.setNnpMode = function(nnpMode) {
         $scope.nnpMode = nnpMode;
     };
+
+    $scope.showNnpTabs = function () {
+  return $scope.item && $scope.item.pricelist_type_id == 4;
+};
+
+$scope.showAlphaTabs = function () {
+  return $scope.item && $scope.item.pricelist_type_id == 2;
+};
+
 
     Nnp.countryList().then(function (data) {
         $scope.countryList = data;
