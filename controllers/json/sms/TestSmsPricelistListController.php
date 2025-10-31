@@ -70,12 +70,14 @@ class TestSmsPricelistListController extends JsonController
                 END AS location_name
             "),
             new Expression("
-                CASE 
-                    WHEN tr.passed IS null OR now() AT TIME ZONE 'UTC' - tr.tm::timestamp > INTERVAL '1 HOUR' THEN 'not_executed' 
-                    WHEN tr.passed = true THEN 'passed' 
-                    WHEN tr.passed = false THEN 'failed' 
-                END AS result
+            CASE
+                WHEN tr.id IS NULL THEN 'not_executed'
+                WHEN now() - tr.tm <= INTERVAL '1 hour' AND tr.passed = true  THEN 'passed'
+                WHEN now() - tr.tm <= INTERVAL '1 hour' AND tr.passed = false THEN 'failed'
+                ELSE 'not_executed'
+            END AS result
             "),
+
             // показываем жёстко привязанный сервер: если есть строка в public.server — используем её, иначе fallback
             new Expression("'#{$forcedServerId}: ' || COALESCE(s.name, 'SMS') AS server_name"),
         ])
