@@ -86,7 +86,7 @@ class TestSmsPricelistListController extends JsonController
         ->leftJoin('nnp.mnc mnc', 'mnc.mnc = tp.mnc::text AND mnc.mcc = tp.mcc::text')
         ->leftJoin('billing_uu.pricelist p', 'p.id = tp.pricelist_id')
         ->leftJoin('public.server s', 's.id = tp.server_id')
-        // фиксируем сервер_id = 9
+        // фиксируем сервер_id = 91
         ->andWhere(['tp.server_id' => $forcedServerId])
         ->andWhere($resultWhere)
         ->orderBy('tp.name')
