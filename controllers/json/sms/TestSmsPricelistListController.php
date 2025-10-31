@@ -81,7 +81,7 @@ class TestSmsPricelistListController extends JsonController
             // показываем жёстко привязанный сервер: если есть строка в public.server — используем её, иначе fallback
             new Expression("'#{$forcedServerId}: ' || COALESCE(s.name, 'SMS') AS server_name"),
         ])
-        ->leftJoin('auth.a2p_test_result tr', "tr.type = 'pricelist' AND tr.id_auth = tp.id")
+        ->leftJoin('auth.a2p_test_result tr', "tr.type = 'pricelist' AND tr.id_pricelist = tp.id")
         ->leftJoin('nnp.mcc mcc', 'mcc.mcc = tp.mcc::text')
         ->leftJoin('nnp.mnc mnc', 'mnc.mnc = tp.mnc::text AND mnc.mcc = tp.mcc::text')
         ->leftJoin('billing_uu.pricelist p', 'p.id = tp.pricelist_id')
@@ -96,7 +96,7 @@ class TestSmsPricelistListController extends JsonController
 
     $countQuery = TestPricelist::find()
         ->alias('tp')
-        ->leftJoin('auth.a2p_test_result tr', "tr.type = 'pricelist' AND tr.id_auth = tp.id")
+        ->leftJoin('auth.a2p_test_result tr', "tr.type = 'pricelist' AND tr.id_pricelist = tp.id")
         ->andWhere($resultWhere)
         ->andWhere(['tp.server_id' => $forcedServerId]);
 
@@ -149,7 +149,7 @@ class TestSmsPricelistListController extends JsonController
                 'p.service_type_id AS pricelist_service_type_id',
                 'p.orig AS pricelist_orig',
             ])
-            ->leftJoin('auth.a2p_test_result tr', "tr.type = 'pricelist' AND tr.id_auth = tp.id")
+            ->leftJoin('auth.a2p_test_result tr', "tr.type = 'pricelist' AND tr.id_pricelist = tp.id")
             ->where(['tp.id' => $this->request['id']])
             ->asArray()
             ->one();
