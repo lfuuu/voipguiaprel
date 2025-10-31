@@ -216,30 +216,38 @@ class TestSmsPricelistListController extends JsonController
         $isOrigByPricelist = !empty($pl['orig']);
 
         if ($serviceTypeId === 2) {
-            $params = [
-                'num_a' => $item->a_number,
-                'num_b' => $item->b_number,
-                'location_id' => $item->location_id,
-                'pricelist_id' => $item->pricelist_id,
-                'is_orig' => $isOrigByPricelist ? 'true' : 'false',
-            ];
-            $url = 'http://reg99.mcntelecom.ru:8103/nnpcalc?' . http_build_query($params);
-            $raw = @file_get_contents($url);
-            $data = json_decode($raw, true) ?: [];
+    $params = [
+        'num_a'        => $item->a_number,
+        'num_b'        => $item->b_number,
+        'location_id'  => $item->location_id,
+        'pricelist_id' => $item->pricelist_id,
+        'is_orig'      => $isOrigByPricelist ? 'true' : 'false',
+    ];
 
-            return [
-                'steps' => [$data],
-                'a_number' => $item->a_number,
-                'b_number' => $item->b_number,
-                'c_number' => $item->c_number,
-                'id' => $item->id,
-                'name' => $item->name,
-                'url' => $url,
-                'baseUrl' => Yii::$app->params['isEuropean']
-                    ? 'https://voipgui.kompaas.tech/'
-                    : 'https://voipgui.mcn.ru/',
-            ];
-        }
+    // NEW: выбираем базовый URL для Европы/России
+    $reg99Base = Yii::$app->params['isEuropean']
+        ? 'http://10.250.30.48:8103/nnpcalc'
+        : 'http://reg99.mcntelecom.ru:8103/nnpcalc';
+
+    $url = $reg99Base . '?' . http_build_query($params);
+
+    $raw  = @file_get_contents($url);
+    $data = json_decode($raw, true) ?: [];
+
+    return [
+        'steps'    => [ $data ],
+        'a_number' => $item->a_number,
+        'b_number' => $item->b_number,
+        'c_number' => $item->c_number,
+        'id'       => $item->id,
+        'name'     => $item->name,
+        'url'      => $url,
+        'baseUrl'  => Yii::$app->params['isEuropean']
+                        ? 'https://voipgui.kompaas.tech/'
+                        : 'https://voipgui.mcn.ru/',
+    ];
+}
+
 
         $apiUrl = $item->server->apiUrl;
         $apiParams = [
