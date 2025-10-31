@@ -39,7 +39,9 @@ class PricelistFilterAController extends JsonController
                     'date_trunc(\'second\', time_end) as time_end',
                     'filter_country' => 'm.country_code',
                     'pricelist_group_id' => 'g.id',
-                    'pricelist_group_name' => 'g.name']
+                    'pricelist_group_name' => 'g.name',
+                    'pricelist_type_id' => 'p.service_type_id',],
+                    
                 )
                 ->with('filterBHistory')
                 ->leftJoin(['m' => Major::tableName()], 'm.id = a.nnp_filter')
