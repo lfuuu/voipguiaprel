@@ -13,20 +13,22 @@ use yii\web\HttpException;
 class TestAuthController extends JsonController
 {
     use TestResult;
+
     const TEST_RESULT_DEFAULT_DEPTH = 1;
     const TEST_RESULT_INITIAL_DEPTH = 2;
 
     const TEST_RESULT_DIVIDER_START = '2B2EKSTARTJSON';
     const TEST_RESULT_DIVIDER_STOP  = '2B2EKSTOPJSON';
-    protected $modelName            = 'app\models\auth\SmsTestAuth';
-    protected $idParamName          = 'id';
-    protected $nameParamName        = 'name';
-    protected $readWhere            = ['server_id'];
-    protected $createPermission     = 'sms_test_auth_create';
-    protected $listPermission       = 'sms_test_auth_list';
-    protected $editPermission       = 'sms_test_auth_edit';
-    protected $deletePermission     = 'sms_test_auth_delete';
-    private   $stepParamName        = 'nodes';
+
+    protected $modelName       = 'app\models\auth\SmsTestAuth';
+    protected $idParamName     = 'id';
+    protected $nameParamName   = 'name';
+    protected $readWhere       = ['server_id'];
+    protected $createPermission= 'sms_test_auth_create';
+    protected $listPermission  = 'sms_test_auth_list';
+    protected $editPermission  = 'sms_test_auth_edit';
+    protected $deletePermission= 'sms_test_auth_delete';
+    private   $stepParamName   = 'nodes';
 
     private $_oldTestResultTypes = ['ERROR', 'RESULT', 'INFO', 'HEADER'];
 
@@ -90,7 +92,70 @@ class TestAuthController extends JsonController
             }
         }
 
-        return $query->all();
+        $rows = $query->all();
+
+        // === Пост-обработка: вычисляем expected_trunk строго из correct_answer.dst_route ===
+        foreach ($rows as &$row) {
+            $row['expected_trunk'] = $this->extractDstRoute($row['correct_answer'] ?? null);
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    /**
+     * Аккуратно вытащить dst_route из correct_answer.
+     * Принимает: null | строка JSON | строка с двойной/тройной сериализацией.
+     * Возвращает: string|null
+     */
+    private function extractDstRoute($correct)
+    {
+        if ($correct === null) {
+            return null;
+        }
+
+        // Быстрый путь: если это уже массив
+        if (is_array($correct)) {
+            $v = $correct['dst_route'] ?? null;
+            return (is_string($v) && $v !== '') ? $v : null;
+        }
+
+        // Если строка — пробуем распаковать до объекта (макс. 3 слоя)
+        if (is_string($correct)) {
+            $s = trim($correct);
+
+            // иногда приходят HTML-сущности (&quot; и пр.) — декодируем
+            $decodedHtml = html_entity_decode($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+            $value = $decodedHtml;
+            for ($i = 0; $i < 3; $i++) {
+                if (is_array($value)) {
+                    $v = $value['dst_route'] ?? null;
+                    return (is_string($v) && $v !== '') ? $v : null;
+                }
+
+                if (!is_string($value)) {
+                    break;
+                }
+
+                $try = trim($value);
+                // Попытка json_decode
+                $obj = json_decode($try, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $value = $obj;
+                    continue;
+                }
+
+                // Если это не JSON — regex по сырой строке
+                if (preg_match('/"dst_route"\s*:\s*"([^"]+)"/u', $try, $m)) {
+                    return $m[1];
+                }
+
+                break; // дальше смысла нет
+            }
+        }
+
+        return null;
     }
 
     public function actionResult()
@@ -149,9 +214,9 @@ class TestAuthController extends JsonController
         if ($isMCMCN) {
             // GET /api/get.dst_route?a_num=...&b_num=...&src_route=...
             $query = [
-                'a_num'    => (string)$item->src_number,
-                'b_num'    => (string)$item->dst_number,
-                'src_route'=> (string)$trunk->name,
+                'a_num'     => (string)$item->src_number,
+                'b_num'     => (string)$item->dst_number,
+                'src_route' => (string)$trunk->name,
             ];
             $fullUrl = $endpoint . '?' . http_build_query($query);
 
