@@ -78,7 +78,6 @@
         </a>
       </th>
 
-      <!-- Результат (иконки, сортировка по passed) -->
       <th width="8%">
         <a href="#" ng-click="sortType = 'passed'; sortReverse = !sortReverse">
           Результат
@@ -95,10 +94,8 @@
         </a>
       </th>
 
-      <!-- Кнопка MAIN -->
       <th width="1%"></th>
 
-      <!-- Перенесённые сразу после MAIN колонки -->
       <th width="10%">
         <a href="#" ng-click="sortType = 'src_number'; sortReverse = !sortReverse">
           А номер
@@ -115,12 +112,20 @@
         </a>
       </th>
 
-      <!-- Остальные поля -->
-      <th width="18%">
+      <th width="16%">
         <a href="#" ng-click="sortType = 'trunk_name'; sortReverse = !sortReverse">
           Транк входящий
           <span ng-show="sortType == 'trunk_name' && sortReverse" class="caret-down"></span>
           <span ng-show="sortType == 'trunk_name' && !sortReverse" class="caret-up"></span>
+        </a>
+      </th>
+
+      <!-- НОВОЕ: Таблица маршрутизации по нашему входящему транку -->
+      <th width="18%">
+        <a href="#" ng-click="sortType = 'route_table_name'; sortReverse = !sortReverse">
+          Таблица маршрутизации
+          <span ng-show="sortType == 'route_table_name' && sortReverse" class="caret-down"></span>
+          <span ng-show="sortType == 'route_table_name' && !sortReverse" class="caret-up"></span>
         </a>
       </th>
 
@@ -140,15 +145,6 @@
         </a>
       </th>
 
-      <!-- Примечание -->
-      <th width="15%">
-        <a href="#" ng-click="sortType = 'note'; sortReverse = !sortReverse">
-          Примечание
-          <span ng-show="sortType == 'note' && sortReverse" class="caret-down"></span>
-          <span ng-show="sortType == 'note' && !sortReverse" class="caret-up"></span>
-        </a>
-      </th>
-
       <th width="1%" ng-if="userPermissions['sms_test_auth_create']">&nbsp;</th>
       <th width="1%" ng-if="userPermissions['sms_test_auth_delete']">&nbsp;</th>
     </tr>
@@ -158,39 +154,30 @@
     <tr ng-repeat="item in list | orderBy:sortType:sortReverse | basicFilter:searchQuery:filterFields">
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.id}}</td>
 
-      <!-- Иконка результата -->
       <td style="cursor: pointer" ng-click="clickItem(item)" nowrap>
         <img ng-if="item.is_autotest" ng-src="../img/{{ getTestResultIcon(item.passed) }}" alt="Результат теста">
       </td>
 
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.name}}</td>
 
-      <!-- Кнопка MAIN -->
       <td>
         <button type="button" class="btn btn-default btn-sm" ng-click="showTestPrimary(item)">MAIN</button>
       </td>
 
-      <!-- Сразу А и B номера -->
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.src_number}}</td>
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.dst_number}}</td>
 
-      <!-- Транки и группа -->
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.trunk_name_out}}</td>
 
-      <!-- Ожидаемый исходящий транк — ТОЛЬКО то, что пришло с бэка -->
-      <td style="cursor: pointer" ng-click="clickItem(item)">
-        {{ item.expected_trunk || '—' }}
+      <!-- НОВОЕ: Таблица маршрутизации (кликабельно, как в экране коннекторов) -->
+      <td style="cursor: pointer" ng-click="openRouteTable(item.route_table_id)">
+        {{ item.route_table_name || (item.route_table_id ? ('ID ' + item.route_table_id) : '—') }}
       </td>
+
+      <td style="cursor: pointer" ng-click="clickItem(item)">{{ item.expected_trunk || '—' }}</td>
 
       <td style="cursor: pointer" ng-click="clickItem(item)">{{item.testgroup_name}}</td>
 
-      <!-- Примечание -->
-      <td style="cursor: pointer" ng-click="clickItem(item)">
-        <span ng-if="item.note">{{item.note}}</span>
-        <span ng-if="!item.note" class="text-muted">—</span>
-      </td>
-
-      <!-- Действия -->
       <td ng-if="userPermissions['sms_test_auth_create']">
         <button type="button" class="btn btn-default btn-sm" ng-click="cloneTest(item)">Клонировать</button>
       </td>
