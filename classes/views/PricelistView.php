@@ -188,9 +188,12 @@ class PricelistView
     
     public static function getForShortForm($queryResult)
 {
+    // ==== быстрые множества вместо in_array ====
     $locationsProcessed = [];
-    $filtersAProcessed = [];
-    $filtersBProcessed = [];
+    $filtersAProcessed  = [];
+    $filtersBProcessed  = [];
+
+    // ==== сбор ID для справочников ====
     $mccIdArray = [];
     $simImsiPartnerIdArray = [];
     $simImsiProfileIdArray = [];
@@ -212,150 +215,206 @@ class PricelistView
         'nnp.ndc_type' => ['ids' => &$nnpNdcTypeIdArray, 'name_field' => 'name', 'id_field' => 'id'],
     ];
 
+    // ==== алфанумерики (как было) ====
     $alphaNames = A2pAlphaNumbers::find()
-                                ->alias('a')
-                                ->select('a.alphanum, ag.group_id')
-                                ->innerJoin(A2pAlphaNumberListGroup::tableName() . ' ag', 'ag.alphanum_list_id = a.id')
-                                ->asArray()
-                                ->all();
-
+        ->alias('a')
+        ->select('a.alphanum, ag.group_id')
+        ->innerJoin(A2pAlphaNumberListGroup::tableName() . ' ag', 'ag.alphanum_list_id = a.id')
+        ->asArray()
+        ->all();
     $alphaNames = ArrayHelper::index($alphaNames, ['alphanum'], 'group_id');
 
+    // ==== первый проход: собираем справочные ID и отмечаем seen-сущности ====
     foreach ($queryResult as $queryItem) {
-        if (!in_array($queryItem['pl__id'], $locationsProcessed)) {
+        $plId  = $queryItem['pl__id']  ?? null;
+        $pfaId = $queryItem['pfa__id'] ?? null;
+        $pfbId = $queryItem['pfb__id'] ?? null;
+
+        if ($plId !== null && !isset($locationsProcessed[$plId])) {
             self::processQueryArray($mccIdArray, $queryItem['pl__mcc']);
             self::processQueryArray($simImsiPartnerIdArray, $queryItem['pl__sim_partner']);
             self::processQueryArray($simImsiProfileIdArray, $queryItem['pl__sim_profile']);
-            $locationsProcessed[] = $queryItem['pl__id'];
+            $locationsProcessed[$plId] = true;
         }
-        if (!in_array($queryItem['pfa__id'], $filtersAProcessed)) {
+        if ($pfaId !== null && !isset($filtersAProcessed[$pfaId])) {
             self::processQueryArray($nnpCountryIdArray, $queryItem['pfa__nnp_country']);
             self::processQueryArray($nnpDestinationIdArray, $queryItem['pfa__nnp_destination']);
             self::processQueryArray($nnpOperatorIdArray, $queryItem['pfa__nnp_operator']);
             self::processQueryArray($nnpRegionIdArray, $queryItem['pfa__nnp_region']);
             self::processQueryArray($nnpCityIdArray, $queryItem['pfa__nnp_city']);
             self::processQueryArray($nnpNdcTypeIdArray, $queryItem['pfa__nnp_ndc_type']);
-            $filtersAProcessed[] = $queryItem['pfa__id'];
+            $filtersAProcessed[$pfaId] = true;
         }
-        if (!in_array($queryItem['pfb__id'], $filtersBProcessed)) {
+        if ($pfbId !== null && !isset($filtersBProcessed[$pfbId])) {
             self::processQueryArray($nnpCountryIdArray, $queryItem['pfb__nnp_country']);
             self::processQueryArray($nnpDestinationIdArray, $queryItem['pfb__nnp_destination']);
             self::processQueryArray($nnpOperatorIdArray, $queryItem['pfb__nnp_operator']);
             self::processQueryArray($nnpRegionIdArray, $queryItem['pfb__nnp_region']);
             self::processQueryArray($nnpCityIdArray, $queryItem['pfb__nnp_city']);
             self::processQueryArray($nnpNdcTypeIdArray, $queryItem['pfb__nnp_ndc_type']);
-            $filtersBProcessed[] = $queryItem['pfb__id'];
+            $filtersBProcessed[$pfbId] = true;
         }
     }
+
+    // ==== подтягиваем наименования справочников одним батчем на таблицу ====
     foreach ($idArrays as $key => &$item) {
-        $item['ids'] = array_unique($item['ids']);
+        $item['ids'] = array_values(array_unique($item['ids']));
         if (count($item['ids'])) {
-            $tempIds = (new Query())->select(['id' => $item['id_field'], 'name' => $item['name_field']])->from($key)->where([$item['id_field'] => $item['ids']])->all();
+            $tempIds = (new Query())
+                ->select(['id' => $item['id_field'], 'name' => $item['name_field']])
+                ->from($key)
+                ->where([$item['id_field'] => $item['ids']])
+                ->all();
             $item['ids'] = [];
             foreach ($tempIds as $tempId) {
                 $item['ids'][$tempId['id']] = $tempId['name'];
             }
         }
     }
+
+    // ==== кэш счётчиков префиксов по pfb_id (чтобы не дергать COUNT() многократно) ====
+    // структура: [pfb_id => ['real' => <int>, 'display' => <int>]]
+    $prefixCountCache = [];
+
+    // вспомогалка для получения realCount/displayCount:
+    $getCounts = static function ($row) use (&$prefixCountCache) {
+        $pfbId = $row['pfb__id'] ?? null;
+        if ($pfbId === null) {
+            return ['real' => 0, 'display' => 0];
+        }
+        if (isset($prefixCountCache[$pfbId])) {
+            return $prefixCountCache[$pfbId];
+        }
+
+        // 1) если пришло из основного запроса (LEFT JOIN LATERAL ppp_cnt)
+        $realCount = null;
+        if (isset($row['pfb__total_prefix_count'])) {
+            // это реальное COUNT(DISTINCT prefix_b) из ppp_cnt
+            $realCount = (int)$row['pfb__total_prefix_count'];
+        }
+
+        // 2) если нет — ONE-SHOT подсчёт и кэш
+        if ($realCount === null) {
+            $realCount = (new Query())
+                ->select(new Expression("CASE WHEN prefix_b IS NOT NULL AND prefix_b <> '' THEN prefix_b ELSE '' END"))
+                ->distinct()
+                ->from('billing_uu.pricelist_prefix_price')
+                ->where('pricelist_filter_b_id = :b_id', [':b_id' => $pfbId])
+                ->andWhere('date_to > now()')
+                ->count();
+        }
+
+        // displayCount: как и раньше — если real >= PAGE_LIMIT => PAGE_LIMIT + 1, иначе real
+        if ($realCount >= PricelistPrefixPrice::PAGE_LIMIT) {
+            $display = PricelistPrefixPrice::PAGE_LIMIT + 1;
+        } else {
+            $display = $realCount;
+        }
+
+        $prefixCountCache[$pfbId] = ['real' => $realCount, 'display' => $display];
+        return $prefixCountCache[$pfbId];
+    };
+
+    // ==== сбор результата ====
     $result = [];
     $counter = 0;
     $locationKey = 0;
     $filterAKey = 0;
     $filterBKey = 0;
+
     self::sortAlphabetically($queryResult, $idArrays);
+
     foreach ($queryResult as $queryItem) {
         if (empty($result)) {
             $result[0] = self::createPricelistRow($queryItem);
             $counter++;
         }
+
         if (empty($queryItem['pl__id'])) {
             continue;
         }
-        if (!isset($result[$locationKey]['is_location']) || ($result[$locationKey]['is_location'] && $result[$locationKey]['id'] != $queryItem['pl__id'])) {
+
+        if (!isset($result[$locationKey]['is_location']) ||
+            ($result[$locationKey]['is_location'] && $result[$locationKey]['id'] != $queryItem['pl__id'])) {
             $result[$counter] = self::createLocationRow($queryItem, $idArrays);
             $locationKey = $counter;
             $counter++;
         }
+
         if (empty($queryItem['pfa__id'])) {
             continue;
         }
-        if (!isset($result[$filterAKey]['is_filter_a_header']) || ($result[$filterAKey]['is_filter_a_header'] && $result[$filterAKey]['filter_a_id'] != $queryItem['pfa__id'])) {
-            $realCount = (new Query())
-                ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
-                ->distinct()
-                ->from('billing_uu.pricelist_prefix_price')
-                ->where('pricelist_filter_b_id = :b_id')
-                ->andWhere('date_to > now()')
-                ->addParams([':b_id' => $queryItem['pfb__id']])
-                ->count();
-            if ($realCount >= PricelistPrefixPrice::PAGE_LIMIT) {
-                $count = PricelistPrefixPrice::PAGE_LIMIT + 1;
-            } else {
-                $count = $realCount;
-            }
-            if ($count > 0) {
-                $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $realCount, $alphaNames);
+
+        // ----- заголовок Filter A + B (совмещенный), как было -----
+        if (!isset($result[$filterAKey]['is_filter_a_header']) ||
+            ($result[$filterAKey]['is_filter_a_header'] && $result[$filterAKey]['filter_a_id'] != $queryItem['pfa__id'])) {
+
+            $counts = $getCounts($queryItem);
+            $displayCount = $counts['display'];
+            $realCount    = $counts['real'];
+
+            if ($displayCount > 0) {
+                $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $displayCount, $realCount, $alphaNames);
                 $filterAKey = $counter;
                 $filterBKey = $counter;
                 $counter++;
             }
         }
+
         if (empty($queryItem['pfb__id'])) {
             continue;
         }
-        if (!isset($result[$filterBKey]['is_filter_b_header']) || ($result[$filterBKey]['is_filter_b_header'] && $result[$filterBKey]['filter_b_id'] != $queryItem['pfb__id'])) {
-            $realCount = (new Query())
-                ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
-                ->distinct()
-                ->from('billing_uu.pricelist_prefix_price')
-                ->where('pricelist_filter_b_id = :b_id')
-                ->andWhere('date_to > now()')
-                ->addParams([':b_id' => $queryItem['pfb__id']])
-                ->count();
-            if ($realCount >= PricelistPrefixPrice::PAGE_LIMIT) {
-                $count = PricelistPrefixPrice::PAGE_LIMIT + 1;
-            } else {
-                $count = $realCount;
-            }
-            if ($count > 0) {
-                $result[$counter] = self::createFilterBPrefixRow($queryItem, $idArrays, $count, $realCount);
+
+        // ----- заголовок Filter B -----
+        if (!isset($result[$filterBKey]['is_filter_b_header']) ||
+            ($result[$filterBKey]['is_filter_b_header'] && $result[$filterBKey]['filter_b_id'] != $queryItem['pfb__id'])) {
+
+            $counts = $getCounts($queryItem);
+            $displayCount = $counts['display'];
+            $realCount    = $counts['real'];
+
+            if ($displayCount > 0) {
+                $result[$counter] = self::createFilterBPrefixRow($queryItem, $idArrays, $displayCount, $realCount);
                 $filterBKey = $counter;
                 $counter++;
-                $result[$filterAKey]['total_prefix_count'] += $count;
+                // важно: как и раньше — суммируем в A
+                $result[$filterAKey]['total_prefix_count'] += $displayCount;
             }
         }
+
         if (empty($queryItem['ppp__id'])) {
             continue;
         }
+
+        // ----- строки префиксов -----
         if ($result[$counter - 1]['prefixes'][0]['prefix_price_id'] != $queryItem['ppp__id']) {
             $isPrefixSet = false;
+
             for ($i = $filterBKey; $i < $counter; $i++) {
-                if ($result[$i]['prefix_b'] == $queryItem['ppp__prefix_b'] . ' ') {
+                if (($result[$i]['prefix_b'] ?? null) === ($queryItem['ppp__prefix_b'] . ' ')) {
                     $result[$i]['prefixes'][] = self::createPrefixItem($queryItem, $result[$i]['prefixes']);
-                    usort($result[$i]['prefixes'], array(self::class, 'sortPrefixes'));
+                    usort($result[$i]['prefixes'], [self::class, 'sortPrefixes']);
                     self::recalcPrefixesDynamics($result[$i]['prefixes']);
                     $isPrefixSet = true;
                     break;
                 }
             }
+
             if (!$isPrefixSet && ($counter - $filterBKey) < PricelistPrefixPrice::PAGE_LIMIT) {
                 $result[$counter] = self::createPrefixRow($queryItem);
                 $counter++;
+
+                // вместо повторного COUNT — берём из кэша
                 if (($counter - $filterBKey) == PricelistPrefixPrice::PAGE_LIMIT) {
-                    $count = (new Query())
-                        ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
-                        ->distinct()
-                        ->from('billing_uu.pricelist_prefix_price')
-                        ->where('pricelist_filter_b_id = :b_id')
-                        ->andWhere('date_to > now()')
-                        ->addParams([':b_id' => $queryItem['pfb__id']])
-                        ->count();
-                    $result[$counter] = self::createPrefixFooterRow($queryItem, $result[$filterBKey]['filter_b_id'], $count);
+                    $counts = $getCounts($queryItem);
+                    $realCount = $counts['real'];
+                    $result[$counter] = self::createPrefixFooterRow($queryItem, $result[$filterBKey]['filter_b_id'], $realCount);
                     $counter++;
                 }
             }
         }
     }
+
     return $result;
 }
 
