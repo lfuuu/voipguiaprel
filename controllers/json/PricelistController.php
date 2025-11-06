@@ -227,7 +227,7 @@ class PricelistController extends JsonController
      * ВОЗВРАЩАЕТ: плоский массив (через PricelistView) — как в образце.
      * ВСЁ по pl / filterA / filterB без ограничений; префиксы постранично.
      */
-    public function actionGetWithDependentsNew()
+    public function actionGetWithDependentsNew1()
     {
         if (!\Yii::$app->user->can('pricelist_list')) {
             throw new ForbiddenHttpException('Access denied');
@@ -324,6 +324,131 @@ SQL;
 
         return $result;
     }
+public function actionGetWithDependentsNew()
+{
+    if (!\Yii::$app->user->can('pricelist_list')) {
+        throw new ForbiddenHttpException('Access denied');
+    }
+
+    $T0 = microtime(true);
+
+    $pageLimit   = (int) PricelistPrefixPrice::PAGE_LIMIT;
+    $pageNumber  = max(1, (int)($this->request['prefix_page'] ?? 1));
+    $pageOffset  = (int)($this->request['prefix_offset'] ?? (($pageNumber - 1) * $pageLimit));
+
+    $flatRules = [
+        'p'   => Pricelist::rulesFlat(),
+        'pl'  => PricelistLocation::rulesFlat(),
+        'pfa' => PricelistFilterA::rulesFlat(),
+        'pfb' => PricelistFilterB::rulesFlat(),
+        'ppp' => PricelistPrefixPrice::rulesFlat(),
+    ];
+
+    $select = [];
+    foreach ($flatRules as $tKey => $rules) {
+        foreach ($rules as $col) {
+            $select[$tKey.'__'.$col] = $tKey.'.'.$col;
+        }
+    }
+
+    $pppCountSql = <<<SQL
+SELECT
+    COUNT(DISTINCT ppp2.prefix_b) AS total_prefix_count,
+    CEIL(COUNT(DISTINCT ppp2.prefix_b)::numeric / NULLIF(:lim, 0))::int AS total_pagination_count
+FROM billing_uu.pricelist_prefix_price ppp2
+WHERE ppp2.pricelist_filter_b_id = pfb.id
+  AND ppp2.date_to > now()
+SQL;
+
+    $pppPageSql = <<<SQL
+SELECT
+    ppp1.id,
+    ppp1.prefix_b,
+    ppp1.b_number_price,
+    ppp1.b_number_connect_price,
+    ppp1.date_from,
+    ppp1.date_to,
+    ppp1.object_comment,
+    ppp1.pricelist_filter_b_id,
+    ppp1.change_flag,
+    ppp1.history_id
+FROM billing_uu.pricelist_prefix_price ppp1
+WHERE ppp1.pricelist_filter_b_id = pfb.id
+  AND ppp1.date_to > now()
+  AND ppp1.prefix_b IN (
+      SELECT s.prefix_b
+      FROM (
+          SELECT DISTINCT pppx.prefix_b
+          FROM billing_uu.pricelist_prefix_price pppx
+          WHERE pppx.pricelist_filter_b_id = pfb.id
+            AND pppx.date_to > now()
+          ORDER BY pppx.prefix_b
+          LIMIT :lim OFFSET :off
+      ) AS s
+  )
+ORDER BY ppp1.prefix_b, ppp1.id
+SQL;
+
+    $select['pfb__total_prefix_count']     = new \yii\db\Expression('COALESCE(ppp_cnt.total_prefix_count, 0)');
+    $select['pfb__total_pagination_count'] = new \yii\db\Expression('COALESCE(ppp_cnt.total_pagination_count, 0)');
+
+    $Tsql0 = microtime(true);
+
+    $query = Pricelist::find()
+        ->alias('p')
+        ->select($select)
+        ->leftJoin(PricelistLocation::tableName().' pl',  'pl.pricelist_id = p.id')
+        ->leftJoin(PricelistFilterA::tableName().' pfa',  'pfa.pricelist_location_id = pl.id')
+        ->leftJoin(PricelistFilterB::tableName().' pfb',  'pfb.pricelist_filter_a_id = pfa.id')
+        ->join('LEFT JOIN LATERAL', '(' . $pppCountSql . ') AS ppp_cnt', 'TRUE')
+        ->join('LEFT JOIN LATERAL', '(' . $pppPageSql  . ') AS ppp',     'TRUE')
+        ->where(['p.id' => $this->request['id']])
+        ->orderBy('pl.id, pfa.id, pfb.id, ppp.prefix_b, ppp.id')
+        ->addParams([
+            ':lim' => $pageLimit,
+            ':off' => $pageOffset,
+        ])
+        ->asArray();
+
+    $queryResult = $query->all();
+
+    $Tsql1 = microtime(true);
+
+    $result = (isset($this->request['type']) && $this->request['type'] === 'short')
+        ? PricelistView::getForShortForm($queryResult)
+        : PricelistView::getForFullForm($queryResult);
+
+    $Tbuild = microtime(true);
+
+    // --- тайминги в заголовки (чтобы не ломать фронт) ---
+    $headers = \Yii::$app->response->headers;
+    $headers->set('X-Perf-Sql-ms',   (string) (int) round(($Tsql1 - $Tsql0) * 1000));
+    $headers->set('X-Perf-Build-ms', (string) (int) round(($Tbuild - $Tsql1) * 1000));
+    $headers->set('X-Perf-Total-ms', (string) (int) round(($Tbuild - $T0) * 1000));
+    $headers->set('X-Perf-Page-Limit',  (string) $pageLimit);
+    $headers->set('X-Perf-Page-Offset', (string) $pageOffset);
+    $headers->set('X-Perf-Page-Number', (string) $pageNumber);
+    $headers->set('X-Perf-Rows-Raw',    (string) (is_array($queryResult) ? count($queryResult) : 0));
+    $headers->set('X-Perf-Rows-Final',  (string) (is_array($result) ? count($result) : 0));
+    $headers->set('X-Perf-Peak-MB',     (string) round(memory_get_peak_usage(true) / 1048576, 1));
+
+    // и в лог на всякий случай
+    \Yii::info([
+        'sql_ms'   => (int) round(($Tsql1 - $Tsql0) * 1000),
+        'build_ms' => (int) round(($Tbuild - $Tsql1) * 1000),
+        'total_ms' => (int) round(($Tbuild - $T0) * 1000),
+        'limit'    => $pageLimit,
+        'offset'   => $pageOffset,
+        'page'     => $pageNumber,
+        'rows_raw' => is_array($queryResult) ? count($queryResult) : 0,
+        'rows_fin' => is_array($result) ? count($result) : 0,
+        'peak_mb'  => round(memory_get_peak_usage(true) / 1048576, 1),
+    ], 'perf.pricelist');
+
+    // ВОЗВРАЩАЕМ СТАРЫЙ ФОРМАТ, чтобы фронт не падал
+    return $result;
+}
+
 
     /**
      * Вариант «all» — та же логика, что и New: все pl/A/B без лимитов,
