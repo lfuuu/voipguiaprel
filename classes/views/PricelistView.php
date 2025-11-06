@@ -187,188 +187,162 @@ class PricelistView
     }
     
     public static function getForShortForm($queryResult)
-    {
-        $locationsProcessed = [];
-        $filtersAProcessed = [];
-        $filtersBProcessed = [];
-        
-        $mccIdArray = [];
-        $simImsiPartnerIdArray = [];
-        $simImsiProfileIdArray = [];
-        $nnpCountryIdArray = [];
-        $nnpDestinationIdArray = [];
-        $nnpOperatorIdArray = [];
-        $nnpRegionIdArray = [];
-        $nnpCityIdArray = [];
-        $nnpNdcTypeIdArray = [];
-        
-        $idArrays = [
-            'nnp.mcc' => ['ids' => &$mccIdArray, 'name_field' => 'country', 'id_field' => 'mcc'],
-            'billing_uu.sim_imsi_profile' => ['ids' => &$simImsiProfileIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-            'billing_uu.sim_imsi_partner' => ['ids' => &$simImsiPartnerIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-            'nnp.country' => ['ids' => &$nnpCountryIdArray, 'name_field' => 'name_rus', 'id_field' => 'code'],
-            'nnp.destination' => ['ids' => &$nnpDestinationIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-            'nnp.operator' => ['ids' => &$nnpOperatorIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-            'nnp.region' => ['ids' => &$nnpRegionIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-            'nnp.city' => ['ids' => &$nnpCityIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-            'nnp.ndc_type' => ['ids' => &$nnpNdcTypeIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-        ];
+{
+    $locationsProcessed = [];
+    $filtersAProcessed = [];
+    $filtersBProcessed = [];
+    $mccIdArray = [];
+    $simImsiPartnerIdArray = [];
+    $simImsiProfileIdArray = [];
+    $nnpCountryIdArray = [];
+    $nnpDestinationIdArray = [];
+    $nnpOperatorIdArray = [];
+    $nnpRegionIdArray = [];
+    $nnpCityIdArray = [];
+    $nnpNdcTypeIdArray = [];
+    $idArrays = [
+        'nnp.mcc' => ['ids' => &$mccIdArray, 'name_field' => 'country', 'id_field' => 'mcc'],
+        'billing_uu.sim_imsi_profile' => ['ids' => &$simImsiProfileIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+        'billing_uu.sim_imsi_partner' => ['ids' => &$simImsiPartnerIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+        'nnp.country' => ['ids' => &$nnpCountryIdArray, 'name_field' => 'name_rus', 'id_field' => 'code'],
+        'nnp.destination' => ['ids' => &$nnpDestinationIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+        'nnp.operator' => ['ids' => &$nnpOperatorIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+        'nnp.region' => ['ids' => &$nnpRegionIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+        'nnp.city' => ['ids' => &$nnpCityIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+        'nnp.ndc_type' => ['ids' => &$nnpNdcTypeIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+    ];
 
-        $alphaNames = A2pAlphaNumbers::find()
-                                    ->alias('a')
-                                    ->select('a.alphanum, ag.group_id')
-                                    ->innerJoin(A2pAlphaNumberListGroup::tableName() . ' ag', 'ag.alphanum_list_id = a.id')
-                                    ->asArray()
-                                    ->all();
+    $alphaNames = A2pAlphaNumbers::find()
+                                ->alias('a')
+                                ->select('a.alphanum, ag.group_id')
+                                ->innerJoin(A2pAlphaNumberListGroup::tableName() . ' ag', 'ag.alphanum_list_id = a.id')
+                                ->asArray()
+                                ->all();
 
-        $alphaNames = ArrayHelper::index($alphaNames, ['alphanum'], 'group_id');
+    $alphaNames = ArrayHelper::index($alphaNames, ['alphanum'], 'group_id');
 
-        foreach ($queryResult as $queryItem) {
-            if (!in_array($queryItem['pl__id'], $locationsProcessed)) {
-                self::processQueryArray($mccIdArray, $queryItem['pl__mcc']);
-                self::processQueryArray($simImsiPartnerIdArray, $queryItem['pl__sim_partner']);
-                self::processQueryArray($simImsiProfileIdArray, $queryItem['pl__sim_profile']);
-                
-                $locationsProcessed[] = $queryItem['pl__id'];
-            }
-            
-            if (!in_array($queryItem['pfa__id'], $filtersAProcessed)) {
-                self::processQueryArray($nnpCountryIdArray, $queryItem['pfa__nnp_country']);
-                self::processQueryArray($nnpDestinationIdArray, $queryItem['pfa__nnp_destination']);
-                self::processQueryArray($nnpOperatorIdArray, $queryItem['pfa__nnp_operator']);
-                self::processQueryArray($nnpRegionIdArray, $queryItem['pfa__nnp_region']);
-                self::processQueryArray($nnpCityIdArray, $queryItem['pfa__nnp_city']);
-                self::processQueryArray($nnpNdcTypeIdArray, $queryItem['pfa__nnp_ndc_type']);
-                
-                $filtersAProcessed[] = $queryItem['pfa__id'];
-            }
-            
-            if (!in_array($queryItem['pfb__id'], $filtersBProcessed)) {
-                self::processQueryArray($nnpCountryIdArray, $queryItem['pfb__nnp_country']);
-                self::processQueryArray($nnpDestinationIdArray, $queryItem['pfb__nnp_destination']);
-                self::processQueryArray($nnpOperatorIdArray, $queryItem['pfb__nnp_operator']);
-                self::processQueryArray($nnpRegionIdArray, $queryItem['pfb__nnp_region']);
-                self::processQueryArray($nnpCityIdArray, $queryItem['pfb__nnp_city']);
-                self::processQueryArray($nnpNdcTypeIdArray, $queryItem['pfb__nnp_ndc_type']);
-                
-                $filtersBProcessed[] = $queryItem['pfb__id'];
+    foreach ($queryResult as $queryItem) {
+        if (!in_array($queryItem['pl__id'], $locationsProcessed)) {
+            self::processQueryArray($mccIdArray, $queryItem['pl__mcc']);
+            self::processQueryArray($simImsiPartnerIdArray, $queryItem['pl__sim_partner']);
+            self::processQueryArray($simImsiProfileIdArray, $queryItem['pl__sim_profile']);
+            $locationsProcessed[] = $queryItem['pl__id'];
+        }
+        if (!in_array($queryItem['pfa__id'], $filtersAProcessed)) {
+            self::processQueryArray($nnpCountryIdArray, $queryItem['pfa__nnp_country']);
+            self::processQueryArray($nnpDestinationIdArray, $queryItem['pfa__nnp_destination']);
+            self::processQueryArray($nnpOperatorIdArray, $queryItem['pfa__nnp_operator']);
+            self::processQueryArray($nnpRegionIdArray, $queryItem['pfa__nnp_region']);
+            self::processQueryArray($nnpCityIdArray, $queryItem['pfa__nnp_city']);
+            self::processQueryArray($nnpNdcTypeIdArray, $queryItem['pfa__nnp_ndc_type']);
+            $filtersAProcessed[] = $queryItem['pfa__id'];
+        }
+        if (!in_array($queryItem['pfb__id'], $filtersBProcessed)) {
+            self::processQueryArray($nnpCountryIdArray, $queryItem['pfb__nnp_country']);
+            self::processQueryArray($nnpDestinationIdArray, $queryItem['pfb__nnp_destination']);
+            self::processQueryArray($nnpOperatorIdArray, $queryItem['pfb__nnp_operator']);
+            self::processQueryArray($nnpRegionIdArray, $queryItem['pfb__nnp_region']);
+            self::processQueryArray($nnpCityIdArray, $queryItem['pfb__nnp_city']);
+            self::processQueryArray($nnpNdcTypeIdArray, $queryItem['pfb__nnp_ndc_type']);
+            $filtersBProcessed[] = $queryItem['pfb__id'];
+        }
+    }
+    foreach ($idArrays as $key => &$item) {
+        $item['ids'] = array_unique($item['ids']);
+        if (count($item['ids'])) {
+            $tempIds = (new Query())->select(['id' => $item['id_field'], 'name' => $item['name_field']])->from($key)->where([$item['id_field'] => $item['ids']])->all();
+            $item['ids'] = [];
+            foreach ($tempIds as $tempId) {
+                $item['ids'][$tempId['id']] = $tempId['name'];
             }
         }
-        
-        foreach ($idArrays as $key => &$item) {
-            $item['ids'] = array_unique($item['ids']);
-            
-            if (count($item['ids'])) {
-                $tempIds = (new Query())->select(['id' => $item['id_field'], 'name' => $item['name_field']])->from($key)->where([$item['id_field'] => $item['ids']])->all();
-                $item['ids'] = [];
-                foreach ($tempIds as $tempId) {
-                    $item['ids'][$tempId['id']] = $tempId['name'];
-                }
+    }
+    $result = [];
+    $counter = 0;
+    $locationKey = 0;
+    $filterAKey = 0;
+    $filterBKey = 0;
+    self::sortAlphabetically($queryResult, $idArrays);
+    foreach ($queryResult as $queryItem) {
+        if (empty($result)) {
+            $result[0] = self::createPricelistRow($queryItem);
+            $counter++;
+        }
+        if (empty($queryItem['pl__id'])) {
+            continue;
+        }
+        if (!isset($result[$locationKey]['is_location']) || ($result[$locationKey]['is_location'] && $result[$locationKey]['id'] != $queryItem['pl__id'])) {
+            $result[$counter] = self::createLocationRow($queryItem, $idArrays);
+            $locationKey = $counter;
+            $counter++;
+        }
+        if (empty($queryItem['pfa__id'])) {
+            continue;
+        }
+        if (!isset($result[$filterAKey]['is_filter_a_header']) || ($result[$filterAKey]['is_filter_a_header'] && $result[$filterAKey]['filter_a_id'] != $queryItem['pfa__id'])) {
+            $realCount = (new Query())
+                ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
+                ->distinct()
+                ->from('billing_uu.pricelist_prefix_price')
+                ->where('pricelist_filter_b_id = :b_id')
+                ->andWhere('date_to > now()')
+                ->addParams([':b_id' => $queryItem['pfb__id']])
+                ->count();
+            if ($realCount >= PricelistPrefixPrice::PAGE_LIMIT) {
+                $count = PricelistPrefixPrice::PAGE_LIMIT + 1;
+            } else {
+                $count = $realCount;
+            }
+            if ($count > 0) {
+                $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $realCount, $alphaNames);
+                $filterAKey = $counter;
+                $filterBKey = $counter;
+                $counter++;
             }
         }
-        
-        $result = [];
-        $counter = 0;
-        $locationKey = 0;
-        $filterAKey = 0;
-        $filterBKey = 0;
-        
-        self::sortAlphabetically($queryResult, $idArrays);
-        
-        foreach ($queryResult as $queryItem) {
-            if (empty($result)) {
-                $result[0] = self::createPricelistRow($queryItem);
+        if (empty($queryItem['pfb__id'])) {
+            continue;
+        }
+        if (!isset($result[$filterBKey]['is_filter_b_header']) || ($result[$filterBKey]['is_filter_b_header'] && $result[$filterBKey]['filter_b_id'] != $queryItem['pfb__id'])) {
+            $realCount = (new Query())
+                ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
+                ->distinct()
+                ->from('billing_uu.pricelist_prefix_price')
+                ->where('pricelist_filter_b_id = :b_id')
+                ->andWhere('date_to > now()')
+                ->addParams([':b_id' => $queryItem['pfb__id']])
+                ->count();
+            if ($realCount >= PricelistPrefixPrice::PAGE_LIMIT) {
+                $count = PricelistPrefixPrice::PAGE_LIMIT + 1;
+            } else {
+                $count = $realCount;
+            }
+            if ($count > 0) {
+                $result[$counter] = self::createFilterBPrefixRow($queryItem, $idArrays, $count, $realCount);
+                $filterBKey = $counter;
                 $counter++;
+                $result[$filterAKey]['total_prefix_count'] += $count;
             }
-            
-            if (empty($queryItem['pl__id'])) {
-                continue;
+        }
+        if (empty($queryItem['ppp__id'])) {
+            continue;
+        }
+        if ($result[$counter - 1]['prefixes'][0]['prefix_price_id'] != $queryItem['ppp__id']) {
+            $isPrefixSet = false;
+            for ($i = $filterBKey; $i < $counter; $i++) {
+                if ($result[$i]['prefix_b'] == $queryItem['ppp__prefix_b'] . ' ') {
+                    $result[$i]['prefixes'][] = self::createPrefixItem($queryItem, $result[$i]['prefixes']);
+                    usort($result[$i]['prefixes'], array(self::class, 'sortPrefixes'));
+                    self::recalcPrefixesDynamics($result[$i]['prefixes']);
+                    $isPrefixSet = true;
+                    break;
+                }
             }
-            
-            if (!isset($result[$locationKey]['is_location']) || ($result[$locationKey]['is_location'] && $result[$locationKey]['id'] != $queryItem['pl__id'])) {
-                $result[$counter] = self::createLocationRow($queryItem, $idArrays);
-                $locationKey = $counter;
+            if (!$isPrefixSet && ($counter - $filterBKey) < PricelistPrefixPrice::PAGE_LIMIT) {
+                $result[$counter] = self::createPrefixRow($queryItem);
                 $counter++;
-            }
-            
-            if (empty($queryItem['pfa__id'])) {
-                continue;
-            }
-            
-            if (!isset($result[$filterAKey]['is_filter_a_header']) || ($result[$filterAKey]['is_filter_a_header'] && $result[$filterAKey]['filter_a_id'] != $queryItem['pfa__id'])) {
-                $realCount = (new Query())
-                    ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
-                    ->distinct()
-                    ->from('billing_uu.pricelist_prefix_price')
-                    ->where('pricelist_filter_b_id = :b_id')
-                    ->andWhere('date_to > now()')
-                    ->addParams([':b_id' => $queryItem['pfb__id']])
-                    ->count();
-                
-                if ($realCount >= PricelistPrefixPrice::PAGE_LIMIT) {
-                    $count = PricelistPrefixPrice::PAGE_LIMIT + 1;
-                } else {
-                    $count = $realCount;
-                }
-                
-                if ($count > 0) {
-                    $result[$counter] = self::createFilterAFilterBPrefixRow($queryItem, $idArrays, $count, $realCount, $alphaNames);
-                    $filterAKey = $counter;
-                    $filterBKey = $counter;
-                    $counter++;
-                }
-            }
-            
-            if (empty($queryItem['pfb__id'])) {
-                continue;
-            }
-            
-            if (!isset($result[$filterBKey]['is_filter_b_header']) || ($result[$filterBKey]['is_filter_b_header'] && $result[$filterBKey]['filter_b_id'] != $queryItem['pfb__id'])) {
-                $realCount = (new Query())
-                    ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
-                    ->distinct()
-                    ->from('billing_uu.pricelist_prefix_price')
-                    ->where('pricelist_filter_b_id = :b_id')
-                    ->andWhere('date_to > now()')
-                    ->addParams([':b_id' => $queryItem['pfb__id']])
-                    ->count();
-                
-                if ($realCount >= PricelistPrefixPrice::PAGE_LIMIT) {
-                    $count = PricelistPrefixPrice::PAGE_LIMIT + 1;
-                } else {
-                    $count = $realCount;
-                }
-                
-                if ($count > 0) {
-                    $result[$counter] = self::createFilterBPrefixRow($queryItem, $idArrays, $count, $realCount);
-                    $filterBKey = $counter;
-                    $counter++;
-                    $result[$filterAKey]['total_prefix_count'] += $count;
-                }
-            }
-            
-            if (empty($queryItem['ppp__id'])) {
-                continue;
-            }
-            
-            if ($result[$counter - 1]['prefixes'][0]['prefix_price_id'] != $queryItem['ppp__id']) {
-                $isPrefixSet = false;
-                
-                for ($i = $filterBKey; $i < $counter; $i++) {
-                    if ($result[$i]['prefix_b'] == $queryItem['ppp__prefix_b'] . ' ') {
-                        $result[$i]['prefixes'][] = self::createPrefixItem($queryItem, $result[$i]['prefixes']);
-                        usort($result[$i]['prefixes'], array(self::class, 'sortPrefixes'));
-                        self::recalcPrefixesDynamics($result[$i]['prefixes']);
-                        $isPrefixSet = true;
-                        break;
-                    }
-                }
-                
-                if (!$isPrefixSet && ($counter - $filterBKey) < PricelistPrefixPrice::PAGE_LIMIT) {
-                    $result[$counter] = self::createPrefixRow($queryItem);
-                    $counter++;
-                    if (($counter - $filterBKey) == PricelistPrefixPrice::PAGE_LIMIT) {
-                        $count = (new Query())
+                if (($counter - $filterBKey) == PricelistPrefixPrice::PAGE_LIMIT) {
+                    $count = (new Query())
                         ->select(new Expression('case when prefix_b is not null and prefix_b <> \'\' then prefix_b else \'\' end'))
                         ->distinct()
                         ->from('billing_uu.pricelist_prefix_price')
@@ -376,16 +350,15 @@ class PricelistView
                         ->andWhere('date_to > now()')
                         ->addParams([':b_id' => $queryItem['pfb__id']])
                         ->count();
-                    
                     $result[$counter] = self::createPrefixFooterRow($queryItem, $result[$filterBKey]['filter_b_id'], $count);
                     $counter++;
-                    }
                 }
             }
         }
-        
-        return $result;
     }
+    return $result;
+}
+
     
     private static function sortPrefixes($a, $b)
     {
