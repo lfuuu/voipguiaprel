@@ -87,7 +87,8 @@ var PricelistLocationEditCtrl = function($scope, List, SimImsi, PricelistLocatio
     rounding_threshold: 0,
     raw: '',
     preview: { rows: [], errors: [] },
-    error: null
+    error: null,
+    replace: false
   };
 
   // === ЗАМЕНИ ЭТУ ФУНКЦИЮ В PricelistLocationEditCtrl ===
