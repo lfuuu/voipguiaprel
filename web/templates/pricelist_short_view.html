@@ -5,130 +5,96 @@
         margin: initial;
     }
     .search-input {
-        width: 142px;
-        height: 25px;
-    }
+    width: 142px;
+    height: 25px;
+}
 </style>
-
 <form class="form-horizontal" name="form" ng-if="item">
-  <div class="modal-header">
-    <h3 ng-if="item.id">
-      Прайслист v2. {{pricelistServiceTypeId == 1 ? 'Голос' : 'СМС'}}. {{pricelistName}}
-      <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
-    </h3>
-  </div>
-
-  <div class="modal-body">
-    <table class="table table-condensed">
-      <tbody>
-        <!-- ВАЖНО: добавили track by $index и ng-if="shouldRenderRow(item, $index)" -->
-        <tr ng-repeat="item in list track by $index" ng-if="shouldRenderRow(item, $index)">
-          <!-- Заголовок прайс-листа -->
-          <td ng-if="item.is_pricelist" colspan="8" style="text-align: center;">
-            {{item.name}} | {{item.orig ? 'Оригинация' : 'Терминация'}} | Создан: {{item.date_created}}{{item.is_active ? ' | Активен с: ' + item.date_start : ''}}
-            <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
-
-            <span style="float:right">
-              <a popover="Полный прайслист" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/p{{item.id}}" class="btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-search"></span>
-              </a>
-              <a popover="Местоположения" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-locations?id={{item.id}}" class="btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-picture"></span>
-              </a>
-              <a popover="Префиксы (новые)" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcelPrefixesNew()" href="#" class="btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-list"></span>
-              </a>
-              <a popover="Прайслист" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcel()" href="#" class="btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-list-alt"></span>
-              </a>
-              <a style="display: none" popover="Прайслист (фильтр В)" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-filter-b?id={{item.id}}" class="btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-list"></span>
-              </a>
-              <a popover="Single&nbsp;Line" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-single-line?id={{item.id}}" class="btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-list"></span>
-              </a>
-            </span>
-          </td>
-
-          <!-- Локация -->
-          <td ng-if="item.is_location"
-              data-has-mark="{{item.has_location_mark}}"
-              colspan="8"
-              style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">
-            {{item.location_text}}
-            <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span>
-          </td>
-
-          <!-- Заголовок Filter A (rowspan скорректирован) -->
-          <td ng-if="item.is_prefix_price && item.is_filter_a_header"
-              data-has-mark="{{item.has_filter_a_mark}}"
-              rowspan="{{ (item.total_prefix_count || item.prefix_count || 1) }}"
-              style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
-            {{item.filter_a_name}}
-            <span style="color: grey; cursor: pointer" ng-click="editFilterA(item.filter_a_id)">(#{{item.filter_a_id}})</span>
-          </td>
-
-          <!-- Заголовок Filter B (rowspan c fallback на 1) -->
-          <td colspan="3"
-              ng-if="item.is_prefix_price && item.is_filter_b_header"
-              data-has-mark="{{item.has_filter_b_mark}}"
-              rowspan="{{ item.prefix_count || 1 }}"
-              style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey; white-space: normal;">
-            {{item.filter_b_name}}
-            <span style="color: red;" ng-if="item.filter_b_use_for_minimum" popover="Используется для минималок" data-popover-trigger="mouseenter" popover-placement="bottom"> (MIN)</span>
-            <span style="color: grey; cursor: pointer" ng-click="editFilterB(item.filter_b_id)">(#{{item.filter_b_id}})</span>
-            <comment-icon key="{{item.filter_b_id}}" type="trunk_filter_b" comment="item.object_comment" style="display: inline-block;"></comment-icon>
-          </td>
-          <td ng-if="item.is_prefix_price && item.is_filter_b_header"
-              rowspan="{{ item.prefix_count || 1 }}"
-              style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
-            <span ng-if="item.filter_b_rating !== ''">Рейтинг:&nbsp;{{item.filter_b_rating}}</span>
-          </td>
-          <td ng-if="item.is_prefix_price && item.is_filter_b_header"
-              rowspan="{{ item.prefix_count || 1 }}"
-              style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
-            И:&nbsp;{{item.interconnect_price}}
-          </td>
-
-          <!-- Строка префикса -->
-          <td ng-if="item.is_prefix_price">
-            {{item.prefix_b}}
-          </td>
-          <td ng-if="item.is_prefix_price">
-            <span ng-repeat="prefixItem in item.prefixes track by prefixItem.prefix_price_id">
-              <div style="display: flex; align-items: center;">
-                <span ng-if="$first" ng-click="editPrefixPrice(prefixItem.prefix_price_id)" style="margin-right: 5px;">
-                  {{prefixItem.b_number_price}}
-                </span>
-                <button ng-if="$first" class="btn btn-xs glyphicon glyphicon-list" style="padding-bottom:3px; margin-right: 5px;" ng-click="viewPrefixHistory(item.prefix_b, item.filter_b_id)"></button>
-              </div>
-
-              <span ng-if="$first && prefixItem.date_from > dateNow" style="color: blue; margin-left: 10px;">+ c {{prefixItem.date_from}}</span>
-              <span ng-if="!$first && prefixItem.price_change == 'decrease'" style="color: green;">{{prefixItem.b_number_price}} понижение c {{prefixItem.date_from}}</span>
-              <span ng-if="!$first && prefixItem.price_change == 'increase'" style="color: red;">{{prefixItem.b_number_price}} повышение c {{prefixItem.date_from}}</span>
-              <span ng-if="!$first && prefixItem.price_change == 'none'" style="color: gray;">{{prefixItem.b_number_price}} продление c {{prefixItem.date_from}}</span>
-              <span ng-if="$last && prefixItem.date_to != '3000-01-01'" style="color: black; font-weight: bold;">до {{prefixItem.date_to}}</span>
-            </span>
-          </td>
-
-          <!-- Футер блока префиксов (поиск + пагинация) -->
-          <td ng-if="item.is_prefix_price_footer" colspan="2">
-            <div class="search-box">
-              <input type="text" class="search-input" ng-model="searchPrefixId" placeholder="Введите ID для поиска" />
-              <button type="button" class="btn btn-primary btn-xs" ng-click="searchPrefixById(searchPrefixId, item.filter_b_id)">Поиск</button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="modal-footer">
-    <div class="pull-left">
-      <button type="button" class="btn btn-success btn-sm" ng-click="back()">Закрыть</button>
+    <div class="modal-header">
+        <h3 ng-if="item.id">Прайслист v2. {{pricelistServiceTypeId == 1 ? 'Голос' : 'СМС'}}. {{pricelistName}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span></h3>
     </div>
-    <div class="pull-right">
-      <a href="{{host}}/billing?pricelistShortView&{{item.id}}&{{pricelistServiceTypeId}}"></a>
+    <div class="modal-body">
+        <table class="table table-condensed">
+            <tbody>
+            <tr ng-repeat="item in list">
+                <td ng-if="item.is_pricelist" colspan="8" style="text-align: center;">
+                    {{item.name}} | {{item.orig ? 'Оригинация' : 'Терминация'}} | Создан: {{item.date_created}}{{item.is_active ? ' | Активен с: ' + item.date_start : ''}} <span style="color: grey; cursor: pointer" ng-click="viewPricelist(item.id)">(#{{item.id}})</span>
+                    <span style="float:right">
+                        <a popover="Полный прайслист" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/p{{item.id}}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </a>
+                        <a popover="Местоположения" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-locations?id={{item.id}}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-picture"></span>
+                        </a>
+                        <a popover="Префиксы (новые)" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcelPrefixesNew()" href="#" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-list"></span>
+                        </a>
+                        <!-- <a popover="Префиксы" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-prefixes?id={{item.id}}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-list"></span>
+                        </a> -->
+                        <a popover="Прайслист" data-popover-trigger="mouseenter" popover-placement="bottom" ng-click="printToExcel()" href="#" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                        </a>
+                        <a style="display: none" popover="Прайслист (фильтр В)" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-filter-b?id={{item.id}}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-list"></span>
+                        </a>
+                        <a popover="Single&nbsp;Line" data-popover-trigger="mouseenter" popover-placement="bottom" target="_blank" href="/pricelist/excel-single-line?id={{item.id}}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-list"></span>
+                        </a>
+                    </span>
+                </td>
+                <!---------------------------------------------------->
+                <td ng-if="item.is_location" data-has-mark="{{item.has_location_mark}}" colspan="8" style="border-bottom: 2px solid black;text-align: center;{{item.is_basic ? ' background-color: lightgrey;' : ''}}">{{item.location_text}} <span style="color: grey; cursor: pointer" ng-click="editLocation(item.id)">(#{{item.id}})</span></td>
+                <!---------------------------------------------------->
+                <td ng-if="item.is_prefix_price && item.is_filter_a_header" data-has-mark="{{item.has_filter_a_mark}}" rowspan="{{item.total_prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
+                    {{item.filter_a_name}} <span style="color: grey; cursor: pointer" ng-click="editFilterA(item.filter_a_id)">(#{{item.filter_a_id}})</span>
+                </td>
+                <td colspan="3" ng-if="item.is_prefix_price && item.is_filter_b_header" data-has-mark="{{item.has_filter_b_mark}}" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey; white-space: normal;">
+                    {{item.filter_b_name}}<span style="color: red;" ng-if="item.filter_b_use_for_minimum" popover="Используется для минималок" data-popover-trigger="mouseenter" popover-placement="bottom"> (MIN)</span> <span style="color: grey; cursor: pointer" ng-click="editFilterB(item.filter_b_id)">(#{{item.filter_b_id}})</span>
+                    <comment-icon key="{{item.filter_b_id}}" type="trunk_filter_b" comment="item.object_comment" style="display: inline-block;"></comment-icon>
+                </td>
+                <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
+                    <span ng-if="item.filter_b_rating !== ''">Рейтинг:&nbsp;{{item.filter_b_rating}}</span>
+                </td>
+                <td ng-if="item.is_prefix_price && item.is_filter_b_header" rowspan="{{item.prefix_count}}" style="text-align: center; vertical-align: middle; border-right: 1px solid lightgrey">
+                    И:&nbsp;{{item.interconnect_price}}</span>
+                </td>
+                <td ng-if="item.is_prefix_price">{{item.prefix_b}}</td>
+                    <td ng-if="item.is_prefix_price">
+                        <span ng-repeat="prefixItem in item.prefixes track by prefixItem.prefix_price_id">
+                            <div style="display: flex; align-items: center;">
+                                <span ng-if="$first" ng-click="editPrefixPrice(prefixItem.prefix_price_id)" style="margin-right: 5px;">
+                                    {{prefixItem.b_number_price}}
+                                </span>
+                                <button ng-if="$first" class="btn btn-xs glyphicon glyphicon-list" style="padding-bottom:3px; margin-right: 5px;" ng-click="viewPrefixHistory(item.prefix_b, item.filter_b_id)"></button>
+                            </div>
+                            <span ng-if="$first && prefixItem.date_from > dateNow" style="color: blue; margin-left: 10px;">+ c {{prefixItem.date_from}}</span>
+                            <span ng-if="!$first && prefixItem.price_change == 'decrease'" style="color: green;">{{prefixItem.b_number_price}} понижение c {{prefixItem.date_from}}</span>
+                            <span ng-if="!$first && prefixItem.price_change == 'increase'" style="color: red;">{{prefixItem.b_number_price}} повышение c {{prefixItem.date_from}}</span>
+                            <span ng-if="!$first && prefixItem.price_change == 'none'" style="color: gray;">{{prefixItem.b_number_price}} продление c {{prefixItem.date_from}}</span>
+                            <span ng-if="$last && prefixItem.date_to != '3000-01-01'" style="color: black; font-weight: bold;">до {{prefixItem.date_to}}</span>
+                        </span>
+                    </td>
+                <!----------------------------------------------------->
+                <td ng-if="item.is_prefix_price_footer" colspan="2">
+                <!-- Поле поиска и кнопка -->
+                <div class="search-box">
+                    <input type="text" class="search-input" ng-model="searchPrefixId" placeholder="Введите ID для поиска" />
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="searchPrefixById(searchPrefixId, item.filter_b_id)">Поиск</button>
+                </div>
+                </td>                        
+            </tr>
+            </tbody>
+        </table>
     </div>
-  </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-success btn-sm" ng-click="back()">Закрыть</button>
+        </div>
+        <div class="pull-right">
+            <a href="{{host}}/billing?pricelistShortView&{{item.id}}&{{pricelistServiceTypeId}}"></a>
+        </div>
+    </div>
+
 </form>
+
