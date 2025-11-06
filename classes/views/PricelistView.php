@@ -188,232 +188,228 @@ class PricelistView
     
     public static function getForShortForm($queryResult)
 {
-    // === множества для O(1) ===
-    $locationsProcessed = [];
-    $filtersAProcessed  = [];
-    $filtersBProcessed  = [];
+    $locationsProcessed     = [];
+    $filtersAProcessed      = [];
+    $filtersBProcessed      = [];
 
-    // === сбор ID для справочников ===
-    $mccIdArray = [];
-    $simImsiPartnerIdArray = [];
-    $simImsiProfileIdArray = [];
-    $nnpCountryIdArray = [];
-    $nnpDestinationIdArray = [];
-    $nnpOperatorIdArray = [];
-    $nnpRegionIdArray = [];
-    $nnpCityIdArray = [];
-    $nnpNdcTypeIdArray = [];
+    $mccIdArray             = [];
+    $simImsiPartnerIdArray  = [];
+    $simImsiProfileIdArray  = [];
+    $nnpCountryIdArray      = [];
+    $nnpDestinationIdArray  = [];
+    $nnpOperatorIdArray     = [];
+    $nnpRegionIdArray       = [];
+    $nnpCityIdArray         = [];
+    $nnpNdcTypeIdArray      = [];
 
     $idArrays = [
-        'nnp.mcc' => ['ids' => &$mccIdArray, 'name_field' => 'country', 'id_field' => 'mcc'],
-        'billing_uu.sim_imsi_profile' => ['ids' => &$simImsiProfileIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-        'billing_uu.sim_imsi_partner' => ['ids' => &$simImsiPartnerIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-        'nnp.country' => ['ids' => &$nnpCountryIdArray, 'name_field' => 'name_rus', 'id_field' => 'code'],
-        'nnp.destination' => ['ids' => &$nnpDestinationIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-        'nnp.operator' => ['ids' => &$nnpOperatorIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-        'nnp.region' => ['ids' => &$nnpRegionIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-        'nnp.city' => ['ids' => &$nnpCityIdArray, 'name_field' => 'name', 'id_field' => 'id'],
-        'nnp.ndc_type' => ['ids' => &$nnpNdcTypeIdArray, 'name_field' => 'name', 'id_field' => 'id'],
+        'nnp.mcc'                     => ['ids' => &$mccIdArray,            'name_field' => 'country',  'id_field' => 'mcc'],
+        'billing_uu.sim_imsi_profile' => ['ids' => &$simImsiProfileIdArray, 'name_field' => 'name',     'id_field' => 'id'],
+        'billing_uu.sim_imsi_partner' => ['ids' => &$simImsiPartnerIdArray, 'name_field' => 'name',     'id_field' => 'id'],
+        'nnp.country'                 => ['ids' => &$nnpCountryIdArray,     'name_field' => 'name_rus', 'id_field' => 'code'],
+        'nnp.destination'             => ['ids' => &$nnpDestinationIdArray, 'name_field' => 'name',     'id_field' => 'id'],
+        'nnp.operator'                => ['ids' => &$nnpOperatorIdArray,    'name_field' => 'name',     'id_field' => 'id'],
+        'nnp.region'                  => ['ids' => &$nnpRegionIdArray,      'name_field' => 'name',     'id_field' => 'id'],
+        'nnp.city'                    => ['ids' => &$nnpCityIdArray,        'name_field' => 'name',     'id_field' => 'id'],
+        'nnp.ndc_type'                => ['ids' => &$nnpNdcTypeIdArray,     'name_field' => 'name',     'id_field' => 'id'],
     ];
 
-    // === алфанумерики (как было) ===
+    // Группы альфа-имён
     $alphaNames = A2pAlphaNumbers::find()
         ->alias('a')
         ->select('a.alphanum, ag.group_id')
-        ->innerJoin(A2pAlphaNumberListGroup::tableName() . ' ag', 'ag.alphanum_list_id = a.id')
+        ->innerJoin(A2pAlphaNumberListGroup::tableName().' ag','ag.alphanum_list_id = a.id')
         ->asArray()
         ->all();
     $alphaNames = ArrayHelper::index($alphaNames, ['alphanum'], 'group_id');
 
-    // === первый проход: собираем справочные id ===
+    // Первый проход: собрать ID для маппингов
     foreach ($queryResult as $row) {
-        $plId  = $row['pl__id']  ?? null;
-        $pfaId = $row['pfa__id'] ?? null;
-        $pfbId = $row['pfb__id'] ?? null;
-
-        if ($plId !== null && !isset($locationsProcessed[$plId])) {
-            self::processQueryArray($mccIdArray, $row['pl__mcc']);
-            self::processQueryArray($simImsiPartnerIdArray, $row['pl__sim_partner']);
-            self::processQueryArray($simImsiProfileIdArray, $row['pl__sim_profile']);
-            $locationsProcessed[$plId] = true;
+        if (!in_array($row['pl__id'], $locationsProcessed, true)) {
+            self::processQueryArray($mccIdArray,           $row['pl__mcc']);
+            self::processQueryArray($simImsiPartnerIdArray,$row['pl__sim_partner']);
+            self::processQueryArray($simImsiProfileIdArray,$row['pl__sim_profile']);
+            $locationsProcessed[] = $row['pl__id'];
         }
-        if ($pfaId !== null && !isset($filtersAProcessed[$pfaId])) {
-            self::processQueryArray($nnpCountryIdArray, $row['pfa__nnp_country']);
+        if (!in_array($row['pfa__id'], $filtersAProcessed, true)) {
+            self::processQueryArray($nnpCountryIdArray,     $row['pfa__nnp_country']);
             self::processQueryArray($nnpDestinationIdArray, $row['pfa__nnp_destination']);
-            self::processQueryArray($nnpOperatorIdArray, $row['pfa__nnp_operator']);
-            self::processQueryArray($nnpRegionIdArray, $row['pfa__nnp_region']);
-            self::processQueryArray($nnpCityIdArray, $row['pfa__nnp_city']);
-            self::processQueryArray($nnpNdcTypeIdArray, $row['pfa__nnp_ndc_type']);
-            $filtersAProcessed[$pfaId] = true;
+            self::processQueryArray($nnpOperatorIdArray,    $row['pfa__nnp_operator']);
+            self::processQueryArray($nnpRegionIdArray,      $row['pfa__nnp_region']);
+            self::processQueryArray($nnpCityIdArray,        $row['pfa__nnp_city']);
+            self::processQueryArray($nnpNdcTypeIdArray,     $row['pfa__nnp_ndc_type']);
+            $filtersAProcessed[] = $row['pfa__id'];
         }
-        if ($pfbId !== null && !isset($filtersBProcessed[$pfbId])) {
-            self::processQueryArray($nnpCountryIdArray, $row['pfb__nnp_country']);
+        if (!in_array($row['pfb__id'], $filtersBProcessed, true)) {
+            self::processQueryArray($nnpCountryIdArray,     $row['pfb__nnp_country']);
             self::processQueryArray($nnpDestinationIdArray, $row['pfb__nnp_destination']);
-            self::processQueryArray($nnpOperatorIdArray, $row['pfb__nnp_operator']);
-            self::processQueryArray($nnpRegionIdArray, $row['pfb__nnp_region']);
-            self::processQueryArray($nnpCityIdArray, $row['pfb__nnp_city']);
-            self::processQueryArray($nnpNdcTypeIdArray, $row['pfb__nnp_ndc_type']);
-            $filtersBProcessed[$pfbId] = true;
+            self::processQueryArray($nnpOperatorIdArray,    $row['pfb__nnp_operator']);
+            self::processQueryArray($nnpRegionIdArray,      $row['pfb__nnp_region']);
+            self::processQueryArray($nnpCityIdArray,        $row['pfb__nnp_city']);
+            self::processQueryArray($nnpNdcTypeIdArray,     $row['pfb__nnp_ndc_type']);
+            $filtersBProcessed[] = $row['pfb__id'];
         }
     }
 
-    // === батчи справочников ===
-    foreach ($idArrays as $key => &$item) {
-        $item['ids'] = array_values(array_unique($item['ids']));
-        if (!empty($item['ids'])) {
-            $temp = (new Query())
-                ->select(['id' => $item['id_field'], 'name' => $item['name_field']])
-                ->from($key)
-                ->where([$item['id_field'] => $item['ids']])
+    // Подтянуть названия для собранных ID
+    foreach ($idArrays as $table => &$meta) {
+        $meta['ids'] = array_unique($meta['ids']);
+        if (count($meta['ids']) > 0) {
+            $rows = (new Query())
+                ->select(['id' => $meta['id_field'], 'name' => $meta['name_field']])
+                ->from($table)
+                ->where([$meta['id_field'] => $meta['ids']])
                 ->all();
-            $map = [];
-            foreach ($temp as $t) {
-                $map[$t['id']] = $t['name'];
+            $mapped = [];
+            foreach ($rows as $r) {
+                $mapped[$r['id']] = $r['name'];
             }
-            $item['ids'] = $map;
+            $meta['ids'] = $mapped;
         }
     }
-    unset($item);
+    unset($meta);
 
-    // === кэш счётчиков по filter_b ===
-    $pfbCounters = []; // pfb_id => ['real'=>int, 'display'=>int, 'pages'=>int]
+    // Подготовка вывода
+    $result        = [];
+    $counter       = 0;
+    $locationKey   = -1;
+    $filterAKey    = -1;
+    $filterBKey    = -1;
 
-    $calcCounters = static function(array $row) use (&$pfbCounters) {
-        $pfbId = $row['pfb__id'] ?? null;
-        if ($pfbId === null) return ['real'=>0,'display'=>0,'pages'=>0];
+    // Карта "prefix_b => индекс строки префикса" для текущего B-блока
+    $rowIndexByPrefixB = [];
 
-        if (isset($pfbCounters[$pfbId])) return $pfbCounters[$pfbId];
-
-        // 1) если в выборке уже есть аггрегаты из LATERAL — используем их
-        $real  = isset($row['pfb__total_prefix_count'])     ? (int)$row['pfb__total_prefix_count']     : null;
-        $pages = isset($row['pfb__total_pagination_count']) ? (int)$row['pfb__total_pagination_count'] : null;
-
-        if ($real === null) {
-            // 2) иначе — один SQL на pfb_id
-            $real = (int)(new Query())
-                ->select(new Expression("CASE WHEN prefix_b IS NOT NULL AND prefix_b <> '' THEN prefix_b ELSE '' END"))
-                ->distinct()
-                ->from('billing_uu.pricelist_prefix_price')
-                ->where('pricelist_filter_b_id = :b', [':b' => $pfbId])
-                ->andWhere('date_to > now()')
-                ->count();
-        }
-        if ($pages === null) {
-            $lim = (int)PricelistPrefixPrice::PAGE_LIMIT;
-            $pages = ($lim > 0) ? (int)ceil($real / $lim) : 0;
-        }
-
-        $display = ($real >= (int)PricelistPrefixPrice::PAGE_LIMIT)
-            ? (int)PricelistPrefixPrice::PAGE_LIMIT + 1
-            : $real;
-
-        return $pfbCounters[$pfbId] = ['real'=>$real, 'display'=>$display, 'pages'=>$pages];
-    };
-
-    // === сбор результата ===
-    $result = [];
-    $counter = 0;
-    $locationKey = 0;
-    $filterAKey = 0;
-    $filterBKey = 0;
-
-    // карта для быстрого поиска строки по prefix_b в текущем блоке B
-    $prefixIndexMap = [];
-
+    // Стабильный порядок
     self::sortAlphabetically($queryResult, $idArrays);
 
+    $pageLimit = (int) PricelistPrefixPrice::PAGE_LIMIT;
+
     foreach ($queryResult as $row) {
+        // 0) Заголовок прайс-листа (первая строка)
         if (empty($result)) {
             $result[0] = self::createPricelistRow($row);
             $counter++;
         }
 
-        if (empty($row['pl__id'])) {
-            continue;
-        }
-        if (!isset($result[$locationKey]['is_location']) ||
-            ($result[$locationKey]['is_location'] && $result[$locationKey]['id'] != $row['pl__id'])) {
-            $result[$counter] = self::createLocationRow($row, $idArrays);
-            $locationKey = $counter;
-            $counter++;
-        }
-
-        if (empty($row['pfa__id'])) {
-            continue;
-        }
-        if (!isset($result[$filterAKey]['is_filter_a_header']) ||
-            ($result[$filterAKey]['is_filter_a_header'] && $result[$filterAKey]['filter_a_id'] != $row['pfa__id'])) {
-
-            $cnt = $calcCounters($row); // ['real','display','pages']
-            if ($cnt['display'] > 0) {
-                // ВАЖНО: сюда передаём и display, и real — чтобы формат остался прежним
-                $result[$counter] = self::createFilterAFilterBPrefixRow($row, $idArrays, $cnt['display'], $cnt['real'], $alphaNames);
-                $filterAKey = $counter;
-                $filterBKey = $counter;
+        // 1) Локация
+        if (!empty($row['pl__id'])) {
+            if ($locationKey < 0 || !isset($result[$locationKey]['is_location']) || $result[$locationKey]['id'] !== $row['pl__id']) {
+                $result[$counter] = self::createLocationRow($row, $idArrays);
+                $locationKey = $counter;
                 $counter++;
-
-                $prefixIndexMap = []; // новый блок B
+                // новый блок — сбросить текущие ключи и карту префиксов
+                $filterAKey = -1;
+                $filterBKey = -1;
+                $rowIndexByPrefixB = [];
             }
-        }
-
-        if (empty($row['pfb__id'])) {
-            continue;
-        }
-        if (!isset($result[$filterBKey]['is_filter_b_header']) ||
-            ($result[$filterBKey]['is_filter_b_header'] && $result[$filterBKey]['filter_b_id'] != $row['pfb__id'])) {
-
-            $cnt = $calcCounters($row);
-            if ($cnt['display'] > 0) {
-                $result[$counter] = self::createFilterBPrefixRow($row, $idArrays, $cnt['display'], $cnt['real']);
-                $filterBKey = $counter;
-                $counter++;
-
-                // как в исходнике: суммируем в заголовок A отображаемое число (display), а не real
-                if (isset($result[$filterAKey]['total_prefix_count'])) {
-                    $result[$filterAKey]['total_prefix_count'] += $cnt['display'];
-                }
-
-                $prefixIndexMap = []; // новый блок B
-            }
-        }
-
-        if (empty($row['ppp__id'])) {
-            continue;
-        }
-
-        $currentPrefix = ($row['ppp__prefix_b'] ?? '') . ' ';
-
-        // как и было — защита от дубля
-        if (($result[$counter - 1]['prefixes'][0]['prefix_price_id'] ?? null) == $row['ppp__id']) {
-            continue;
-        }
-
-        if (isset($prefixIndexMap[$currentPrefix])) {
-            $idx = $prefixIndexMap[$currentPrefix];
-            $result[$idx]['prefixes'][] = self::createPrefixItem($row, $result[$idx]['prefixes']);
-            // порядок уже отсортирован SQL’ем; динамику пересчитываем
-            self::recalcPrefixesDynamics($result[$idx]['prefixes']);
         } else {
-            // создаём новую строку префикса, пока не достигли лимита
-            $rowsUnderB = $counter - $filterBKey; // как в исходнике
-            if ($rowsUnderB < PricelistPrefixPrice::PAGE_LIMIT) {
+            continue;
+        }
+
+        // 2) Заголовок Filter A + первый B (совмещённый)
+        if (!empty($row['pfa__id'])) {
+            $needAHeader = ($filterAKey < 0)
+                || !isset($result[$filterAKey]['is_filter_a_header'])
+                || ($result[$filterAKey]['is_filter_a_header'] && $result[$filterAKey]['filter_a_id'] !== $row['pfa__id']);
+            if ($needAHeader) {
+                $realCountForB = (int) ($row['pfb__total_prefix_count'] ?? 0);
+                $pageCountForB = min($realCountForB, $pageLimit);
+                if ($pageCountForB > 0) {
+                    $result[$counter] = self::createFilterAFilterBPrefixRow(
+                        $row,
+                        $idArrays,
+                        $pageCountForB,   // display count for first B
+                        $realCountForB,   // real count for first B
+                        $alphaNames
+                    );
+                    $filterAKey = $counter;
+                    $filterBKey = $counter;
+                    $counter++;
+                    // Сброс карты префиксов под новый B-блок
+                    $rowIndexByPrefixB = [];
+                }
+            }
+        } else {
+            continue; // без A нет смысла продолжать
+        }
+
+        // 3) Заголовок Filter B
+        if (!empty($row['pfb__id'])) {
+            $needBHeader = ($filterBKey < 0)
+                || !isset($result[$filterBKey]['is_filter_b_header'])
+                || ($result[$filterBKey]['is_filter_b_header'] && $result[$filterBKey]['filter_b_id'] !== $row['pfb__id']);
+            if ($needBHeader) {
+                $realCountForB = (int) ($row['pfb__total_prefix_count'] ?? 0);
+                $pageCountForB = min($realCountForB, $pageLimit);
+                if ($pageCountForB > 0) {
+                    $result[$counter] = self::createFilterBPrefixRow(
+                        $row,
+                        $idArrays,
+                        $pageCountForB,   // display for this B
+                        $realCountForB    // real for this B
+                    );
+                    $filterBKey = $counter;
+                    $counter++;
+
+                    // ⬅️ важно: суммируем в A, как делал исходный код
+                    if ($filterAKey >= 0 && isset($result[$filterAKey]['is_filter_a_header']) && $result[$filterAKey]['is_filter_a_header']) {
+                        if (!isset($result[$filterAKey]['total_prefix_count'])) {
+                            $result[$filterAKey]['total_prefix_count'] = 0;
+                        }
+                        $result[$filterAKey]['total_prefix_count'] += $pageCountForB;
+                    }
+
+                    // новый B-блок — чистим карту
+                    $rowIndexByPrefixB = [];
+                }
+            }
+        } else {
+            continue; // без B не выводим префиксы
+        }
+
+        // 4) Префиксные строки (внутри текущего B)
+        if (empty($row['ppp__id'])) {
+            continue; // нет фактической записи префикса — пропускаем
+        }
+
+        $currentPrefixKey = trim((string) ($row['ppp__prefix_b'] ?? ''));
+        if ($currentPrefixKey === '') {
+            continue; // пустой префикс не отображаем
+        }
+
+        $hasMore = ((int) ($row['pfb__total_prefix_count'] ?? 0)) > $pageLimit;
+
+        if (isset($rowIndexByPrefixB[$currentPrefixKey])) {
+            $idx = $rowIndexByPrefixB[$currentPrefixKey];
+            if (isset($result[$idx]['is_prefix_price']) && $result[$idx]['is_prefix_price']) {
+                $result[$idx]['prefixes'][] = self::createPrefixItem($row, $result[$idx]['prefixes']);
+                usort($result[$idx]['prefixes'], [self::class, 'sortPrefixes']);
+                self::recalcPrefixesDynamics($result[$idx]['prefixes']);
+            }
+        } else {
+            $renderedAfterBHeader = $counter - $filterBKey;
+            if ($renderedAfterBHeader < $pageLimit) {
                 $result[$counter] = self::createPrefixRow($row);
-                $prefixIndexMap[$currentPrefix] = $counter;
+                $rowIndexByPrefixB[$currentPrefixKey] = $counter;
                 $counter++;
 
-                if (($counter - $filterBKey) == PricelistPrefixPrice::PAGE_LIMIT) {
-                    // добиваем футер реальным количеством
-                    $cnt = $calcCounters($row);
-                    $result[$counter] = self::createPrefixFooterRow($row, $result[$filterBKey]['filter_b_id'], $cnt['real']);
+                if ($hasMore && ($counter - $filterBKey) == $pageLimit) {
+                    $realCountForB = (int) ($row['pfb__total_prefix_count'] ?? 0);
+                    $result[$counter] = self::createPrefixFooterRow(
+                        $row,
+                        $result[$filterBKey]['filter_b_id'],
+                        $realCountForB
+                    );
                     $counter++;
                 }
+            } else {
+                // достигнут лимит — футер уже добавлен (или добавится)
             }
         }
     }
 
     return $result;
 }
-
 
     
     private static function sortPrefixes($a, $b)
