@@ -291,9 +291,6 @@ class PricelistView
         }
     }
 
-    // ========= 5) Сортировка исхода (как у вас) =========
-    self::sortAlphabetically($queryResult, $idArrays);
-
     // ========= 6) Сборка результата с O(1) индексами =========
     $result = [];
     $counter = 0;
