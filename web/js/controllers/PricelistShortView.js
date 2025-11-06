@@ -4,16 +4,14 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
     $scope.limit = 10;
     $scope.prefixes = [];
-    
     var date = new Date();
     $scope.dateNow = date.toISOString().slice(0, 10);
 
     $scope.drawTable = function (data) {
         $scope.list = data;
-
         setTimeout($scope.focusOnMark, 0);
     };
-    
+
     $scope.simplifyPrefixList = function (data) {
         var simplifiedPrefixList = {};
         var prefixCount = 0;
@@ -30,11 +28,11 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 }
             }
         });
-        
         for (var prefixPriceKey in data) {
             var prefixItem = data[prefixPriceKey];
             var bNumberPrice = (parseFloat(prefixItem.b_number_price)).toFixed(6);
             var hasPrefixMark = $scope.elementType === 'prefix' && $scope.elementId == prefixItem.id;
+
             if (simplifiedPrefixList[prefixItem.prefix_b + ' '] && prefixItem.date_from >= $scope.dateNow) {
                 var previousItem = simplifiedPrefixList[prefixItem.prefix_b + ' '][(simplifiedPrefixList[prefixItem.prefix_b + ' '].length - 1)];
                 var previousPrice = parseFloat(previousItem.b_number_price);
@@ -51,7 +49,6 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                 if (!simplifiedPrefixList[prefixItem.prefix_b + ' ']) {
                     prefixCount++;
                 }
-                
                 simplifiedPrefixList[prefixItem.prefix_b + ' '] = [{
                     prefix_price_id: prefixItem.id,
                     has_prefix_mark: hasPrefixMark,
@@ -71,17 +68,35 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         }
     };
 
+    // Фильтрация «дублирующей» строки префикса сразу после B-хедера
+    $scope.shouldRenderRow = function(item, idx) {
+        if (!item) return false;
+
+        // Прячем дубль первой строки префикса: когда прямо после B-хедера
+        // идёт строка с тем же filter_b_id и тем же prefix_b
+        if (item.is_prefix_price === true && item.is_filter_b_header === false) {
+            var prev = $scope.list && $scope.list[idx - 1];
+            if (prev
+                && prev.is_prefix_price === true
+                && prev.is_filter_b_header === true
+                && prev.filter_b_id === item.filter_b_id
+                && (prev.prefix_b || '') === (item.prefix_b || '')) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
     $scope.initData = function (id, markType, markId) {
         Pricelist.getWithDependentsNew({id: id, mark_type: markType, mark_id: markId, type: 'short'}).then(function (data) {
             $scope.item = {};
             $scope.item.id = data[0]['id'];
             $scope.item.date_start = data[0]['date_start'];
-        
             $scope.pricelistIsActive = data[0]['is_active'];
             $scope.pricelistDateStart = data[0]['date_start'];
             $scope.pricelistServiceTypeId = data[0]['service_type_id'];
             $scope.pricelistName = data[0]['name'];
-            
             $scope.drawTable(data);
         });
     };
@@ -90,7 +105,6 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
         if (params.element_type && params.element_id) {
             $scope.initData(params.id, params.element_type, params.element_id);
         }
-        
         $scope.initData(params.id, null, null);
     } else {
         $scope.item = {};
@@ -99,46 +113,44 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
     $scope.back = function () {
         $modalInstance.dismiss();
     };
-    
     $scope.setPagingData = function (page, filterBId) {
         $scope.getPrefixPriceList(filterBId, page);
     };
-    
     $scope.getPrefixPriceList = function (filter_b_id, page) {
         PricelistPrefixPrice.readPage({pricelist_filter_b_id: filter_b_id, page_number: page}).then(function (data) {
             $scope.prefixes[filter_b_id] = data;
-            
+
             var simplifiedPrefixResult = $scope.simplifyPrefixList(data);
             var simplifiedPrefixList = simplifiedPrefixResult.list;
             var prefixCount = simplifiedPrefixResult.count + 1;
 
             var index = '';
+            var headerItem = null;
 
             for (var i in $scope.list) {
                 if ($scope.list[i].is_prefix_price == true && $scope.list[i].filter_b_id == filter_b_id) {
                     if (index == '') {
-                        var headerItem = $scope.list[i];
+                        headerItem = $scope.list[i];
                         index = i;
                         break;
                     }
                 }
             }
-            
-            for (var i in $scope.list) {
-                if ($scope.list[i].is_filter_a_header == true && $scope.list[i].filter_a_id == headerItem.filter_a_id && index != i) {
-                    $scope.list[i].total_prefix_count = parseInt($scope.list[i].total_prefix_count);
+            for (var j in $scope.list) {
+                if ($scope.list[j].is_filter_a_header == true && $scope.list[j].filter_a_id == headerItem.filter_a_id && index != j) {
+                    $scope.list[j].total_prefix_count = parseInt($scope.list[j].total_prefix_count);
                 }
             }
 
             $scope.list.splice(index, headerItem.prefix_count);
-            
+
             var hasFilterBHeader = false;
             var hasFilterAHeader = headerItem.is_filter_a_header;
-            
             var indexCounter = 0;
-            
+
             for (var prefixB in simplifiedPrefixList) {
                 var item = simplifiedPrefixList[prefixB];
+
                 if (!hasFilterBHeader) {
                     var toPush = {
                         is_filter_b_header: true,
@@ -159,12 +171,11 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                         interconnect_price: headerItem.interconnect_price,
                         prefixes: item
                     };
-                    
                     $scope.list.splice(parseInt(index) + parseInt(indexCounter), 0, toPush);
 
                     hasFilterBHeader = true;
                 } else {
-                    var toPush = {
+                    var toPush2 = {
                         is_filter_b_header: false,
                         filter_b_id: headerItem.filter_b_id,
                         is_filter_a_header: !hasFilterAHeader,
@@ -172,13 +183,12 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
                         prefix_b: prefixB == 'null' ? '' : prefixB,
                         prefixes: item
                     };
-                    $scope.list.splice(parseInt(index) + parseInt(indexCounter), 0, toPush);
+                    $scope.list.splice(parseInt(index) + parseInt(indexCounter), 0, toPush2);
                 }
-                
                 indexCounter++;
                 hasFilterAHeader = true;
             }
-            
+
             $scope.list.splice(parseInt(index) + parseInt(indexCounter), 0, {
                 is_filter_b_header: false,
                 is_filter_a_header: false,
@@ -231,7 +241,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             $scope.initData($scope.item.id);
         });
     };
-    
+
     $scope.viewPrefixHistory = function (prefixB, pricelistFilterBId) {
         Redirect.pricelistSinglePrefixHistoryView(pricelistFilterBId, prefixB).then(function () {
             $scope.initData($scope.item.id);
@@ -245,34 +255,27 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             alert('Пожалуйста, введите значение prefix_b для поиска.');
             return;
         }
-    
         var requestData = { pricelist_filter_b_id: filterBId };
-    
         PricelistPrefixPrice.readAll(requestData).then(function(data) {
             // Удаление дубликатов по prefix_b
             const uniqueData = Array.from(data.reduce((map, item) => map.set(item.prefix_b, item), new Map()).values());
-    
             // Сортировка данных по prefix_b в возрастающем порядке
             uniqueData.sort(function(a, b) {
                 if (a.prefix_b < b.prefix_b) return -1;
                 if (a.prefix_b > b.prefix_b) return 1;
                 return 0;
             });
-    
             var index = uniqueData.findIndex(function(item) {
                 return item.prefix_b && item.prefix_b.trim() === searchValue.trim();
             });
-    
             if (index !== -1) {
                 var pageNumber = Math.floor(index / $scope.limit) + 1;
-              
                 // Обновляем currentPage для конкретного item
                 $scope.list.forEach(function(item) {
                     if (item.filter_b_id === filterBId) {
                         item.currentPage = pageNumber;
                     }
                 });
-    
                 $scope.setPagingData(pageNumber, filterBId);
                 if (!$scope.$$phase) $scope.$apply();
             } else {
@@ -282,7 +285,7 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
             console.error("Произошла ошибка при поиске:", error);
         });
     };
-    
+
     $scope.printToExcelExpanded = function () {
         window.open('/pricelist/excel?id=' + $scope.item.id, '_blank');
     };
