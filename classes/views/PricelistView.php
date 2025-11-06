@@ -188,12 +188,12 @@ class PricelistView
     
     public static function getForShortForm($queryResult)
 {
-    // ==== множества для O(1) ====
+    // === множества для O(1) ===
     $locationsProcessed = [];
     $filtersAProcessed  = [];
     $filtersBProcessed  = [];
 
-    // ==== сбор ID для справочников ====
+    // === сбор ID для справочников ===
     $mccIdArray = [];
     $simImsiPartnerIdArray = [];
     $simImsiProfileIdArray = [];
@@ -216,7 +216,7 @@ class PricelistView
         'nnp.ndc_type' => ['ids' => &$nnpNdcTypeIdArray, 'name_field' => 'name', 'id_field' => 'id'],
     ];
 
-    // ==== алфанумерики ====
+    // === алфанумерики (как было) ===
     $alphaNames = A2pAlphaNumbers::find()
         ->alias('a')
         ->select('a.alphanum, ag.group_id')
@@ -225,7 +225,7 @@ class PricelistView
         ->all();
     $alphaNames = ArrayHelper::index($alphaNames, ['alphanum'], 'group_id');
 
-    // ==== первый проход для сборов ====
+    // === первый проход: собираем справочные id ===
     foreach ($queryResult as $row) {
         $plId  = $row['pl__id']  ?? null;
         $pfaId = $row['pfa__id'] ?? null;
@@ -257,7 +257,7 @@ class PricelistView
         }
     }
 
-    // ==== батчи для справочников ====
+    // === батчи справочников ===
     foreach ($idArrays as $key => &$item) {
         $item['ids'] = array_values(array_unique($item['ids']));
         if (!empty($item['ids'])) {
@@ -275,40 +275,49 @@ class PricelistView
     }
     unset($item);
 
-    // ==== кэш счётчиков префиксов ====
-    $prefixCountCache = [];
-    $getCounts = static function (array $row) use (&$prefixCountCache) {
+    // === кэш счётчиков по filter_b ===
+    $pfbCounters = []; // pfb_id => ['real'=>int, 'display'=>int, 'pages'=>int]
+
+    $calcCounters = static function(array $row) use (&$pfbCounters) {
         $pfbId = $row['pfb__id'] ?? null;
-        if ($pfbId === null) return ['real' => 0, 'display' => 0];
+        if ($pfbId === null) return ['real'=>0,'display'=>0,'pages'=>0];
 
-        if (isset($prefixCountCache[$pfbId])) return $prefixCountCache[$pfbId];
+        if (isset($pfbCounters[$pfbId])) return $pfbCounters[$pfbId];
 
-        $realCount = isset($row['pfb__total_prefix_count'])
-            ? (int)$row['pfb__total_prefix_count']
-            : (int)(new Query())
+        // 1) если в выборке уже есть аггрегаты из LATERAL — используем их
+        $real  = isset($row['pfb__total_prefix_count'])     ? (int)$row['pfb__total_prefix_count']     : null;
+        $pages = isset($row['pfb__total_pagination_count']) ? (int)$row['pfb__total_pagination_count'] : null;
+
+        if ($real === null) {
+            // 2) иначе — один SQL на pfb_id
+            $real = (int)(new Query())
                 ->select(new Expression("CASE WHEN prefix_b IS NOT NULL AND prefix_b <> '' THEN prefix_b ELSE '' END"))
                 ->distinct()
                 ->from('billing_uu.pricelist_prefix_price')
                 ->where('pricelist_filter_b_id = :b', [':b' => $pfbId])
                 ->andWhere('date_to > now()')
                 ->count();
+        }
+        if ($pages === null) {
+            $lim = (int)PricelistPrefixPrice::PAGE_LIMIT;
+            $pages = ($lim > 0) ? (int)ceil($real / $lim) : 0;
+        }
 
-        $display = ($realCount >= PricelistPrefixPrice::PAGE_LIMIT)
-            ? PricelistPrefixPrice::PAGE_LIMIT + 1
-            : $realCount;
+        $display = ($real >= (int)PricelistPrefixPrice::PAGE_LIMIT)
+            ? (int)PricelistPrefixPrice::PAGE_LIMIT + 1
+            : $real;
 
-        return $prefixCountCache[$pfbId] = ['real' => $realCount, 'display' => $display];
+        return $pfbCounters[$pfbId] = ['real'=>$real, 'display'=>$display, 'pages'=>$pages];
     };
 
-    // ==== сбор результата ====
+    // === сбор результата ===
     $result = [];
     $counter = 0;
     $locationKey = 0;
     $filterAKey = 0;
     $filterBKey = 0;
 
-    // карта "prefix_b с пробелом" → индекс строки результата
-    // пересоздаётся на каждый новый заголовок B
+    // карта для быстрого поиска строки по prefix_b в текущем блоке B
     $prefixIndexMap = [];
 
     self::sortAlphabetically($queryResult, $idArrays);
@@ -335,15 +344,15 @@ class PricelistView
         if (!isset($result[$filterAKey]['is_filter_a_header']) ||
             ($result[$filterAKey]['is_filter_a_header'] && $result[$filterAKey]['filter_a_id'] != $row['pfa__id'])) {
 
-            $counts = $getCounts($row);
-            if ($counts['display'] > 0) {
-                $result[$counter] = self::createFilterAFilterBPrefixRow($row, $idArrays, $counts['display'], $counts['real'], $alphaNames);
+            $cnt = $calcCounters($row); // ['real','display','pages']
+            if ($cnt['display'] > 0) {
+                // ВАЖНО: сюда передаём и display, и real — чтобы формат остался прежним
+                $result[$counter] = self::createFilterAFilterBPrefixRow($row, $idArrays, $cnt['display'], $cnt['real'], $alphaNames);
                 $filterAKey = $counter;
                 $filterBKey = $counter;
                 $counter++;
 
-                // новый блок B → сбрасываем карту префиксов
-                $prefixIndexMap = [];
+                $prefixIndexMap = []; // новый блок B
             }
         }
 
@@ -353,15 +362,18 @@ class PricelistView
         if (!isset($result[$filterBKey]['is_filter_b_header']) ||
             ($result[$filterBKey]['is_filter_b_header'] && $result[$filterBKey]['filter_b_id'] != $row['pfb__id'])) {
 
-            $counts = $getCounts($row);
-            if ($counts['display'] > 0) {
-                $result[$counter] = self::createFilterBPrefixRow($row, $idArrays, $counts['display'], $counts['real']);
+            $cnt = $calcCounters($row);
+            if ($cnt['display'] > 0) {
+                $result[$counter] = self::createFilterBPrefixRow($row, $idArrays, $cnt['display'], $cnt['real']);
                 $filterBKey = $counter;
                 $counter++;
-                $result[$filterAKey]['total_prefix_count'] += $counts['display'];
 
-                // новый блок B → обнуляем карту
-                $prefixIndexMap = [];
+                // как в исходнике: суммируем в заголовок A отображаемое число (display), а не real
+                if (isset($result[$filterAKey]['total_prefix_count'])) {
+                    $result[$filterAKey]['total_prefix_count'] += $cnt['display'];
+                }
+
+                $prefixIndexMap = []; // новый блок B
             }
         }
 
@@ -369,28 +381,30 @@ class PricelistView
             continue;
         }
 
-        // ----- добавление префиксов с O(1) поиском строки -----
-        $currentPrefix = $row['ppp__prefix_b'] . ' ';
+        $currentPrefix = ($row['ppp__prefix_b'] ?? '') . ' ';
 
-        // если последняя строка уже про этот префикс — быстрый путь
+        // как и было — защита от дубля
         if (($result[$counter - 1]['prefixes'][0]['prefix_price_id'] ?? null) == $row['ppp__id']) {
-            continue; // защита от дубля, как было
+            continue;
         }
 
         if (isset($prefixIndexMap[$currentPrefix])) {
             $idx = $prefixIndexMap[$currentPrefix];
             $result[$idx]['prefixes'][] = self::createPrefixItem($row, $result[$idx]['prefixes']);
-            self::recalcPrefixesDynamics($result[$idx]['prefixes']); // порядок не трогаем
+            // порядок уже отсортирован SQL’ем; динамику пересчитываем
+            self::recalcPrefixesDynamics($result[$idx]['prefixes']);
         } else {
-            // ещё нет строки для такого prefix_b в текущем блоке B
-            if (($counter - $filterBKey) < PricelistPrefixPrice::PAGE_LIMIT) {
+            // создаём новую строку префикса, пока не достигли лимита
+            $rowsUnderB = $counter - $filterBKey; // как в исходнике
+            if ($rowsUnderB < PricelistPrefixPrice::PAGE_LIMIT) {
                 $result[$counter] = self::createPrefixRow($row);
                 $prefixIndexMap[$currentPrefix] = $counter;
                 $counter++;
 
                 if (($counter - $filterBKey) == PricelistPrefixPrice::PAGE_LIMIT) {
-                    $counts = $getCounts($row);
-                    $result[$counter] = self::createPrefixFooterRow($row, $result[$filterBKey]['filter_b_id'], $counts['real']);
+                    // добиваем футер реальным количеством
+                    $cnt = $calcCounters($row);
+                    $result[$counter] = self::createPrefixFooterRow($row, $result[$filterBKey]['filter_b_id'], $cnt['real']);
                     $counter++;
                 }
             }
@@ -399,6 +413,7 @@ class PricelistView
 
     return $result;
 }
+
 
     
     private static function sortPrefixes($a, $b)
