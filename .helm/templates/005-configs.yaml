@@ -270,7 +270,7 @@ data:
             'http://reg19.mcntelecom.ru:8032/test/healthcheck',
             'http://reg20.mcntelecom.ru:8032/test/healthcheck',
             'http://reg99.mcntelecom.ru:8032/test/healthcheck',
-            'http://reg99.mcntelecom.ru:8101/test/healthcheck',
+
             'http://reg1001.mcntelecom.ru:8032/test/healthcheck',
             'http://reg1002.mcntelecom.ru:8032/test/healthcheck',
             ['url' => 'https://apibill1.kompaas.tech/api/health/','title' => 'apibill01eu'],
