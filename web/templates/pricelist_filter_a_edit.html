@@ -77,20 +77,20 @@
             <!-- ВКЛАДКИ -->
             <ul class="nav nav-tabs">
                 <!-- ННП-вкладки показываем только при type_id = 4 -->
-                <li ng-if="item.pricelist_type_id == 4" class="{{(nnpMode == NNP_MODE_FILTER) ? 'active' : '' }}">
+                <li class="{{(nnpMode == NNP_MODE_FILTER) ? 'active' : '' }}">
                     <a href="#nnp-filter" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_FILTER)">ННП-Фильтр</a>
                 </li>
-                <li ng-if="item.pricelist_type_id == 4" class="{{(nnpMode == NNP_MODE_PARAMETERS) ? 'active' : '' }}">
+                <li class="{{(nnpMode == NNP_MODE_PARAMETERS) ? 'active' : '' }}">
                     <a href="#nnp-parameters" data-toggle="tab" ng-click="setNnpMode(NNP_MODE_PARAMETERS)">ННП-Параметры</a>
                 </li>
 
                 <!-- Импорт всегда доступен -->
-                <li class="{{ (!item.pricelist_type_id || (item.pricelist_type_id != 2 && item.pricelist_type_id != 4)) ? 'active' : '' }}">
+                <li>
                     <a href="#nnp-filter-import" data-toggle="tab">Импорт NNP-фильтров</a>
                 </li>
 
                 <!-- Альфанумера показываем только при type_id = 2 -->
-                <li ng-if="item.pricelist_type_id == 2">
+                <li>
                     <a href="#alphanums" data-toggle="tab">Альфа номера</a>
                 </li>
             </ul>
@@ -100,8 +100,7 @@
             <div class="tab-content">
 
                 <!-- ННП-Фильтр (type_id = 4) -->
-                <div ng-if="item.pricelist_type_id == 4"
-                     class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filter">
+                <div class="tab-pane{{(nnpMode == NNP_MODE_FILTER) ? ' active' : '' }}" id="nnp-filter">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Страна</label>
                         <div class="col-sm-10">
@@ -127,8 +126,7 @@
                 </div>
 
                 <!-- ННП-Параметры (type_id = 4) -->
-                <div ng-if="item.pricelist_type_id == 4"
-                     class="tab-pane{{(nnpMode == NNP_MODE_PARAMETERS) ? ' active' : '' }}" id="nnp-parameters">
+                <div class="tab-pane{{(nnpMode == NNP_MODE_PARAMETERS) ? ' active' : '' }}" id="nnp-parameters">
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Страна</label>
@@ -339,7 +337,7 @@
                 </div>
 
                 <!-- Альфа номера (type_id = 2) -->
-                <div class="tab-pane" id="alphanums" ng-if="item.pricelist_type_id == 2">
+                <div class="tab-pane" id="alphanums">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Группа номеров</label>
                         <div class="col-sm-7">
