@@ -13,6 +13,10 @@ var PricelistShortViewCtrl = function ($scope, Redirect, List, Pricelist, Pricel
 
         setTimeout($scope.focusOnMark, 0);
     };
+
+      var pl = Array.isArray(data) ? data.find(function (r) { return r && r.is_pricelist; }) : null;
+
+      
     
     $scope.simplifyPrefixList = function (data) {
         var simplifiedPrefixList = {};
