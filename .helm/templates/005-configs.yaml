@@ -270,6 +270,7 @@ data:
             'http://reg19.mcntelecom.ru:8032/test/healthcheck',
             'http://reg20.mcntelecom.ru:8032/test/healthcheck',
             'http://reg99.mcntelecom.ru:8032/test/healthcheck',
+            'http://reg99.mcntelecom.ru:8101/api/health/',
 
             'http://reg1001.mcntelecom.ru:8032/test/healthcheck',
             'http://reg1002.mcntelecom.ru:8032/test/healthcheck',
@@ -278,7 +279,6 @@ data:
             ['url' => 'http://apibill.mcn.ru:8110/api/health/','title' => 'apibill01'],
             ['url' => 'http://apibill2.mcn.ru:8110/api/health/', 'title' => 'apibill02'],
             ['url' => 'http://reg99.mcntelecom.ru:8101/api/health/', 'title' => 'ocslte (Квотирующий биллер)'],
-            ['url' => 'http://eridanus5.mcn.ru:8101/api/health/', 'title' => 'ocslte (Квотирующий биллер)'],
             ['url' => 'https://ocslte1.kompaas.tech/api/health/', 'title' => 'ocslte1eu'],
             ['url' => 'http://reg200.kompaas.tech:8032/test/healthcheck', 'title' => 'reg200'],
             ['url' => 'https://ocslte2.kompaas.tech/api/health/', 'title' => 'ocslte2eu'],
