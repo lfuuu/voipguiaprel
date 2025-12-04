@@ -234,9 +234,9 @@ class PricelistController extends JsonController
             throw new ForbiddenHttpException('Access denied');
         }
 
-        $groupName     = trim((string)($this->request['groupName'] ?? 'Global1SIM'));
+        $groupName     = trim((string)($this->request['groupName'] ?? 'Roaming Data'));
         $serviceTypeId = (int)($this->request['serviceTypeId'] ?? 3);
-        $onlyActive    = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : true;
+        $onlyActive    = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : false;
 
         if ($groupName === '') {
             throw new HttpException(400, 'Parameter "groupName" is required');
@@ -283,7 +283,7 @@ class PricelistController extends JsonController
             ->from(['p' => 'billing_uu.pricelist'])
             ->innerJoin(['loc' => 'billing_uu.pricelist_location'], 'loc.pricelist_id = p.id')
             ->join('JOIN LATERAL', 'unnest(loc.mcc) AS mcc_value(mcc)', 'TRUE')
-            ->innerJoin(['mcc_table' => 'nnp.mcc'], 'mcc_table.mcc = mcc_value.mcc::int')
+            ->innerJoin(['mcc_table' => 'nnp.mcc'], 'mcc_table.mcc::int = mcc_value.mcc::int')
             ->where(['p.id' => $pricelistIds])
             ->andWhere('loc.delta_price IS NOT NULL');
 
