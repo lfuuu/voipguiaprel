@@ -20,12 +20,29 @@ use yii\db\Query;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
+use yii\filters\AccessControl;
 
 class PricelistController extends JsonController
 {
     const SEARCH_LIMIT_PER_PRICELIST = 5;
     const DISABLE_TRIGGER = 'disable_trigger';
     const ENABLE_TRIGGER  = 'enable_trigger';
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+
+        // Разрешаем гостевой доступ к агрегату минимальных интернет-цен.
+        if (isset($behaviors['access'])) {
+            array_unshift($behaviors['access']['rules'], [
+                'allow'   => true,
+                'actions' => ['group-internet-min-prices'],
+                'roles'   => ['?'],
+            ]);
+        }
+
+        return $behaviors;
+    }
 
     public function actionList()
     {
@@ -230,10 +247,6 @@ class PricelistController extends JsonController
      */
     public function actionGroupInternetMinPrices()
     {
-        if (!\Yii::$app->user->can('pricelist_list')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-
         $groupName     = trim((string)($this->request['groupName'] ?? 'Roaming Data'));
         $serviceTypeId = (int)($this->request['serviceTypeId'] ?? 3);
         $onlyActive    = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : false;
