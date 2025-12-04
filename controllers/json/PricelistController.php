@@ -283,7 +283,7 @@ class PricelistController extends JsonController
             ->from(['p' => 'billing_uu.pricelist'])
             ->innerJoin(['loc' => 'billing_uu.pricelist_location'], 'loc.pricelist_id = p.id')
             ->join('JOIN LATERAL', 'unnest(loc.mcc) AS mcc_value(mcc)', 'TRUE')
-            ->innerJoin(['mcc_table' => 'nnp.mcc'], 'mcc_table.mcc = mcc_value.mcc')
+            ->innerJoin(['mcc_table' => 'nnp.mcc'], 'mcc_table.mcc = mcc_value.mcc::int')
             ->where(['p.id' => $pricelistIds])
             ->andWhere('loc.delta_price IS NOT NULL');
 
