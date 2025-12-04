@@ -194,7 +194,7 @@ class SwaggerController extends Controller
                                         'properties' => [
                                             'groupName' => [
                                                 'type' => 'string',
-                                                'description' => 'Название группы прайслистов. Если не указано, используется Global1SIM.',
+                                                'description' => 'Название группы прайслистов. По умолчанию Roaming Data.',
                                             ],
                                             'serviceTypeId' => [
                                                 'type' => 'integer',
@@ -204,14 +204,14 @@ class SwaggerController extends Controller
                                             'onlyActive' => [
                                                 'type' => 'boolean',
                                                 'description' => 'Если true — берём только активные прайсы.',
-                                                'default' => true,
+                                                'default' => false,
                                             ],
                                         ],
                                     ],
                                     'example' => [
-                                        'groupName' => 'Global1SIM',
+                                        'groupName' => 'Roaming Data',
                                         'serviceTypeId' => 3,
-                                        'onlyActive' => true,
+                                        'onlyActive' => false,
                                     ],
                                 ],
                             ],
