@@ -178,6 +178,83 @@ class SwaggerController extends Controller
                         ],
                     ],
                 ],
+
+                // ===== Минимальные цены на интернет по группе =====
+                '/json/pricelist/group-internet-min-prices' => [
+                    'post' => [
+                        'tags' => ['Pricelist'],
+                        'summary' => 'Минимальные цены на интернет по группе прайслистов',
+                        'description' => 'Проходит по всем прайслистам в указанной группе (по умолчанию Global1SIM) и возвращает по каждой стране (MCC) минимальную цену на интернет с указанием прайса, где она найдена. Требуются права `pricelist_list`.',
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'groupName' => [
+                                                'type' => 'string',
+                                                'description' => 'Название группы прайслистов. Если не указано, используется Global1SIM.',
+                                            ],
+                                            'serviceTypeId' => [
+                                                'type' => 'integer',
+                                                'description' => 'Тип услуги (3 — Data).',
+                                                'default' => 3,
+                                            ],
+                                            'onlyActive' => [
+                                                'type' => 'boolean',
+                                                'description' => 'Если true — берём только активные прайсы.',
+                                                'default' => true,
+                                            ],
+                                        ],
+                                    ],
+                                    'example' => [
+                                        'groupName' => 'Global1SIM',
+                                        'serviceTypeId' => 3,
+                                        'onlyActive' => true,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '200' => [
+                                'description' => 'Список стран с минимальными ценами на интернет по группе.',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            'type' => 'array',
+                                            'items' => [
+                                                '$ref' => '#/components/schemas/InternetGroupPriceItem',
+                                            ],
+                                        ],
+                                        'example' => [
+                                            [
+                                                'name' => 'Russia',
+                                                'numericCountryCode' => '250',
+                                                'minPrices' => [
+                                                    'internet' => [
+                                                        'price' => 0.02,
+                                                        'priceListId' => '2354',
+                                                        'priceListName' => 'S6',
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            '400' => [
+                                'description' => 'Некорректный запрос (например, пустое имя группы).',
+                            ],
+                            '403' => [
+                                'description' => 'Недостаточно прав (`pricelist_list`).',
+                            ],
+                            '404' => [
+                                'description' => 'Группа прайслистов не найдена.',
+                            ],
+                        ],
+                    ],
+                ],
             ],
 
             // ===== Компоненты (схемы) =====
@@ -199,6 +276,34 @@ class SwaggerController extends Controller
                                         ],
                                         'message' => [
                                             'type' => 'string',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+
+                    // Ответ с минимальными ценами на интернет по стране
+                    'InternetGroupPriceItem' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'name' => [
+                                'type' => 'string',
+                                'description' => 'Название страны из справочника MCC.',
+                            ],
+                            'numericCountryCode' => [
+                                'type' => 'string',
+                                'description' => 'MCC (3 цифры) из прайслиста, например 250.',
+                            ],
+                            'minPrices' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'internet' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'price' => ['type' => 'number', 'format' => 'float'],
+                                            'priceListId' => ['type' => 'string'],
+                                            'priceListName' => ['type' => 'string'],
                                         ],
                                     ],
                                 ],

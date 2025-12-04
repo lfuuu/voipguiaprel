@@ -4,6 +4,7 @@ namespace app\controllers\json;
 
 use app\models\billing_uu\Pricelist;
 use app\models\billing_uu\PricelistFilterB;
+use app\models\billing_uu\PricelistGroup;
 use app\models\billing_uu\PricelistPrefixPrice;
 use Yii;
 use app\classes\JsonController;
@@ -221,6 +222,95 @@ class PricelistController extends JsonController
             ->asArray();
 
         return $query->all();
+    }
+
+    /**
+     * Возвращает минимальные цены на интернет по всем странам в группе прайслистов.
+     * По умолчанию берёт только активные прайсы из группы Global1SIM и сервис 3 (Data).
+     */
+    public function actionGroupInternetMinPrices()
+    {
+        if (!\Yii::$app->user->can('pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $groupName     = trim((string)($this->request['groupName'] ?? 'Global1SIM'));
+        $serviceTypeId = (int)($this->request['serviceTypeId'] ?? 3);
+        $onlyActive    = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : true;
+
+        if ($groupName === '') {
+            throw new HttpException(400, 'Parameter "groupName" is required');
+        }
+
+        $group = PricelistGroup::find()
+            ->select(['id', 'name'])
+            ->where(['name' => $groupName])
+            ->asArray()
+            ->one();
+
+        if ($group === null) {
+            throw new HttpException(404, "Pricelist group '{$groupName}' not found");
+        }
+
+        $pricelistQuery = Pricelist::find()
+            ->alias('p')
+            ->select(['p.id', 'p.name'])
+            ->where(['p.pricelist_group_id' => $group['id']]);
+
+        if ($serviceTypeId > 0) {
+            $pricelistQuery->andWhere(['p.service_type_id' => $serviceTypeId]);
+        }
+        if ($onlyActive) {
+            $pricelistQuery->andWhere(['p.is_active' => true]);
+        }
+
+        $pricelists = $pricelistQuery->asArray()->all();
+        if (empty($pricelists)) {
+            return [];
+        }
+
+        $pricelistIds = array_map('intval', array_column($pricelists, 'id'));
+
+        $baseQuery = (new Query())
+            ->select([
+                'mcc_value'      => 'mcc_table.mcc',
+                'country_name'   => 'mcc_table.country',
+                'price'          => new Expression('loc.delta_price::numeric'),
+                'pricelist_id'   => 'p.id',
+                'pricelist_name' => 'p.name',
+                'row_num'        => new Expression('row_number() OVER (PARTITION BY mcc_table.mcc ORDER BY loc.delta_price::numeric, p.id)'),
+            ])
+            ->from(['p' => 'billing_uu.pricelist'])
+            ->innerJoin(['loc' => 'billing_uu.pricelist_location'], 'loc.pricelist_id = p.id')
+            ->join('JOIN LATERAL', 'unnest(loc.mcc) AS mcc_value(mcc)', 'TRUE')
+            ->innerJoin(['mcc_table' => 'nnp.mcc'], 'mcc_table.mcc = mcc_value.mcc')
+            ->where(['p.id' => $pricelistIds])
+            ->andWhere('loc.delta_price IS NOT NULL');
+
+        $rows = (new Query())
+            ->from(['t' => $baseQuery])
+            ->where(['row_num' => 1])
+            ->orderBy(['mcc_value' => SORT_ASC])
+            ->all();
+
+        $result = [];
+        foreach ($rows as $row) {
+            $mcc = isset($row['mcc_value']) ? str_pad((string)$row['mcc_value'], 3, '0', STR_PAD_LEFT) : '';
+
+            $result[] = [
+                'name'               => $row['country_name'] ?? '',
+                'numericCountryCode' => $mcc,
+                'minPrices'          => [
+                    'internet' => [
+                        'price'         => isset($row['price']) ? (float)$row['price'] : null,
+                        'priceListId'   => (string)$row['pricelist_id'],
+                        'priceListName' => $row['pricelist_name'],
+                    ],
+                ],
+            ];
+        }
+
+        return $result;
     }
 
     /**
