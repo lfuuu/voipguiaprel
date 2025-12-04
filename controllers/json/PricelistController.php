@@ -247,6 +247,9 @@ class PricelistController extends JsonController
      */
     public function actionGroupInternetMinPrices()
     {
+        // Открытый метод: не логируем, иначе для гостя упадёт на user_id NOT NULL.
+        $this->doNotLog = true;
+
         $groupName     = trim((string)($this->request['groupName'] ?? 'Roaming Data'));
         $serviceTypeId = (int)($this->request['serviceTypeId'] ?? 3);
         $onlyActive    = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : false;
