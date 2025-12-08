@@ -20,25 +20,24 @@ class SmsController extends JsonController
 
     /**
      * База внешнего сервиса с учётом региона:
-     *   EU  → http://eukannel3.kompaas.tech:8085
-     *   RU  → http://kannel2.mcn.ru:8085
+     *   EU  → https://smsgate-api.kompaas.tech
+     *   RU  → https://smsgate-api.mcn.ru
      */
     private function getExtBase(): string
     {
-    // 1) Жёсткое переопределение через params, если нужно
-    if (!empty(Yii::$app->params['kannelBase'])) {
-        return rtrim(Yii::$app->params['kannelBase'], '/');
-    }
+        // 1) Жёсткое переопределение через params, если нужно
+        if (!empty(Yii::$app->params['kannelBase'])) {
+            return rtrim(Yii::$app->params['kannelBase'], '/');
+        }
 
-    // 2) Автовыбор по isEuropean (или ручной флаг)
-    $isEu = is_bool($eu) ? $eu : (Yii::$app->params['isEuropean'] ?? false);
+        // 2) Автовыбор по isEuropean
+        $isEu = Yii::$app->params['isEuropean'] ?? false;
 
-    if ($isEu) {
-        // Используем IP напрямую
-        return 'http://10.250.30.44:8085';
-    }
+        if ($isEu) {
+            return 'https://smsgate-api.kompaas.tech';
+        }
 
-    return 'http://kannel2.mcn.ru:8085';
+        return 'https://smsgate-api.mcn.ru';
     }
 
     /** Универсальный вызов внешнего HTTP JSON API */
