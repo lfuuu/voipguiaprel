@@ -39,6 +39,8 @@ class CdrController extends JsonController
         $source = $this->request['source'];
         $sessionTime = $this->request['session_time'];
         $sessionCompare = $this->request['session_compare'];
+        $instanceId = isset($this->request['instance_id']) ? $this->request['instance_id'] : null;
+        $serverId = isset($this->request['server_id']) ? $this->request['server_id'] : null;
         $where = [];
         if ($srcNumber) {
             $where['c.src_number'] = $srcNumber;
@@ -63,6 +65,12 @@ class CdrController extends JsonController
         }
         if ($dstRoute) {
             $where['c.dst_route'] = $dstRoute;
+        }
+        if ($instanceId !== null && $instanceId !== '') {
+            $where['c.instance_id'] = $instanceId;
+        }
+        if ($serverId !== null && $serverId !== '') {
+            $where['c.server_id'] = $serverId;
         }
         if ($disconnectCauseId) {
             $where['c.disconnect_cause'] = $disconnectCauseId;

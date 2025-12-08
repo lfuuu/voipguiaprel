@@ -99,7 +99,9 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
             out_redirect_number: '',
             source: 'all',
             session_compare: '',
-            session_time: ''
+            session_time: '',
+            instance_id: '',
+            server_id: ''
         };
 
         if (params.object_type && params.object_id) {
