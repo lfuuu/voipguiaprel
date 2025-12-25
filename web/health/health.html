@@ -13,6 +13,7 @@
                 requestTimeout: 10000,
 
                 extendsInstanceId: 100,
+                billingInstanceIds: [1001, 1002],
 
                 monitorId: '#monitor',
                 lastUpdateId: '#last-update',
@@ -222,13 +223,15 @@
                         return false;
                     }
 
-                    // Choose render
-                    if (instanceId >= this.extendsInstanceId) {
-                        // Extends resources
-                        views.extends(this, $block, params);
-                    } else {
-                        // Billing resources
+                    // Choose render (with exceptions)
+                    var isBilling =
+                        this.billingInstanceIds.indexOf(instanceId) !== -1 ||
+                        instanceId < this.extendsInstanceId;
+
+                    if (isBilling) {
                         views.billing(this, $block, params);
+                    } else {
+                        views.extends(this, $block, params);
                     }
 
                     if ($block.className == 'block status-4') {
