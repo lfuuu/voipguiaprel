@@ -100,44 +100,50 @@ $scope.bulkParse = function () {
   var raw = (bulk.raw || '');
   if (!raw.trim()) return;
 
-  // 1) Нормализация: NBSP -> пробел, удаляем BOM
+  // Нормализация: NBSP -> пробел, убираем BOM
   raw = raw.replace(/[\u00A0\u2007\u202F]/g, ' ').replace(/\uFEFF/g, '');
 
-  // 2) Преобразуем явные разделители (;, |, таб) в пробел — это безопасно
-  raw = raw.replace(/[;\t|]+/g, ' ');
-
-  // 3) Разбиваем на строки; если переносов нет — будет одна строка
-  var lines = raw.split(/\r?\n/).filter(function (l) { return l.trim() !== ''; });
+  var lines = raw.split(/\r?\n/).filter(function (l) { return trim(l) !== ''; });
   if (!lines.length) lines = [raw];
 
-  var intRe = /^\d+$/;
-  var priceRe = /^-?\d{1,4}(\.\d{1,6})?$/; // numeric(10,6), точка как десятичный
-  function trim(s){ return (s || '').replace(/^\s+|\s+$/g, ''); }
+  function splitLine(line) {
+    var delimiter = detectDelimiter(line);
+    var parts = (delimiter && line.indexOf(delimiter) !== -1) ? line.split(delimiter) : [line];
+
+    // если явного разделителя нет, пробуем классический пробельный разбор
+    if (parts.length === 1 && /\s+/.test(line)) {
+      parts = line.trim().split(/\s+/);
+    }
+
+    return parts.map(function (p) { return trim(p); });
+  }
 
   function pushRow(mccTok, mncTok, priceTok, rowNum, descrTok) {
     var bad = [];
-    if (!intRe.test(mccTok)) bad.push('MCC');
-    if (!intRe.test(mncTok)) bad.push('MNC');
+    var mccStr = trim(mccTok);
+    var mncRaw = (mncTok === undefined || mncTok === null) ? '' : trim(mncTok);
+    var mncStr = (mncRaw === '') ? '0' : mncRaw; // пустой MNC трактуем как 0 (страна)
 
     // цена может быть с запятой — конвертируем в точку
     var p = (priceTok || '').replace(',', '.');
+    if (!intRe.test(mccStr)) bad.push('MCC');
+    if (!intRe.test(mncStr)) bad.push('MNC');
     if (!priceRe.test(p)) bad.push('Цена');
 
     if (bad.length) {
       bulk.preview.errors.push({ row: rowNum, message: 'Неверные поля: ' + bad.join(', ') });
     } else {
       bulk.preview.rows.push({
-        mcc: parseInt(mccTok, 10),
-        mnc: parseInt(mncTok, 10),
+        mcc: parseInt(mccStr, 10),
+        mnc: parseInt(mncStr, 10),
         delta_price: p,
-        description: descrTok || ''
+        description: trim(descrTok || '')
       });
     }
   }
 
   for (var li = 0; li < lines.length; li++) {
-    // Нормализуем множественные пробелы до одного
-    var line = lines[li].replace(/\s+/g, ' ').trim();
+    var line = trim(lines[li]);
     if (!line) continue;
 
     // Пропускаем возможную строку‑заголовок
@@ -146,8 +152,7 @@ $scope.bulkParse = function () {
       continue;
     }
 
-    // Разбиваем по пробелам — теперь запятые в цене не мешают
-    var parts = line.split(' ');
+    var parts = splitLine(line);
 
     // Если в строке «лента» из нескольких троек подряд (mcc mnc price mcc mnc price ...)
     // и НЕТ описаний, разрежем её на куски по 3 токена.
@@ -159,7 +164,9 @@ $scope.bulkParse = function () {
     }
 
     // Обычный случай: 3..N токенов, где после первых трёх — описание
-    var mcc = parts[0], mnc = parts[1], price = parts[2];
+    var mcc = parts[0];
+    var mnc = parts.length > 1 ? parts[1] : '';
+    var price = parts.length > 2 ? parts[2] : '';
     var descr = parts.length > 3 ? parts.slice(3).join(' ') : '';
     pushRow(mcc, mnc, price, li + 1, descr);
   }
