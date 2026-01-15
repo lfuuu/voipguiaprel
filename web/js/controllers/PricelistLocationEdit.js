@@ -1,5 +1,5 @@
 /* js/controllers/PricelistLocationEdit.js */
-var PricelistLocationEditCtrl = function($scope, List, SimImsi, PricelistLocation, Mcc, Mnc, params, $modal, $modalInstance, $window, Redirect) {
+var PricelistLocationEditCtrl = function($scope, List, SimImsi, PricelistLocation, Mcc, Mnc, params, $modal, $modalInstance, $window, Redirect, $timeout) {
 
   // --- UI Tabs ---
   $scope.ui = { activeTab: 'single' }; // 'single' | 'bulk'
@@ -104,7 +104,7 @@ var PricelistLocationEditCtrl = function($scope, List, SimImsi, PricelistLocatio
       input._plXlsxBound = true;
     }
 
-    input.click();
+    $timeout(function(){ input.click(); }, 0, false);
   };
 
   $scope.onXlsxFileChange = function (evt) {
