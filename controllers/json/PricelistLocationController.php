@@ -126,7 +126,7 @@ class PricelistLocationController extends JsonController
     foreach ($rows as $r) {
         $i++;
         $mcc   = isset($r['mcc']) ? (int)$r['mcc'] : 0;
-        $mnc   = isset($r['mnc']) ? (int)$r['mnc'] : -1;
+        $mnc   = (isset($r['mnc']) && $r['mnc'] !== '') ? (int)$r['mnc'] : 0;
         $delta = isset($r['delta_price']) ? (string)$r['delta_price'] : '';
         $descr = isset($r['description']) ? (string)$r['description'] : '';
 
@@ -270,7 +270,7 @@ class PricelistLocationController extends JsonController
         throw new HttpException(500, 'Ошибка импорта: ' . $e->getMessage());
     }
 
-    return [
+    $result = [
         'mode'     => $replace ? 'replace' : 'upsert',
         'inserted' => $inserted,
         'updated'  => $updated,
@@ -278,6 +278,11 @@ class PricelistLocationController extends JsonController
         'failed'   => count($errors),
         'errors'   => $errors
     ];
+    if (empty($errors)) {
+        unset($result['errors']);
+    }
+
+    return $result;
 }
 
     /**
