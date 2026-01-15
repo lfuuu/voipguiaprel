@@ -2828,7 +2828,8 @@ app.factory('PricelistFilterB', function ($q, ApiLoader, $rootScope, $http) {
         saveAndUpdate: function (data) { return unwrap(ApiLoader.post(url + 'save-and-update', data)); },
         delete: function (id) { return unwrap(ApiLoader.post(url + 'delete', { id: id })); },
         deleteHistoryItem: id  => unwrap(ApiLoader.post(url + 'delete-history-with-prefixes', { id: id })),
-        bulkImport: function (payload) { return unwrap(ApiLoader.post(url + 'bulk-import', payload)); }
+        bulkImport: function (payload) { return unwrap(ApiLoader.post(url + 'bulk-import', payload)); },
+        parseXlsx: function (fileBase64) { return unwrap(ApiLoader.post(url + 'parse-xlsx', { file_base64: fileBase64 })); }
     };
 });
 
