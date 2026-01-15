@@ -95,16 +95,7 @@ var PricelistLocationEditCtrl = function($scope, List, SimImsi, PricelistLocatio
 
   $scope.triggerXlsxImport = function () {
     var input = document.getElementById('pl-bulk-xlsx-file');
-    if (!input) return;
-
-    if (!input._plXlsxBound) {
-      input.addEventListener('change', function (evt) {
-        $scope.onXlsxFileChange(evt);
-      });
-      input._plXlsxBound = true;
-    }
-
-    input.click();
+    if (input) { input.click(); }
   };
 
   $scope.onXlsxFileChange = function (evt) {
@@ -158,7 +149,7 @@ var PricelistLocationEditCtrl = function($scope, List, SimImsi, PricelistLocatio
       });
     };
     reader.onerror = function () {
-      $scope.$applyAsync(function () {
+      $scope.$apply(function () {
         $scope.bulk.loadingFile = false;
         $scope.bulk.error = 'Ошибка чтения файла';
       });
