@@ -88,7 +88,73 @@ var PricelistLocationEditCtrl = function($scope, List, SimImsi, PricelistLocatio
     raw: '',
     preview: { rows: [], errors: [] },
     error: null,
-    replace: false
+    replace: false,
+    loadingFile: false,
+    xlsxFileName: ''
+  };
+
+  $scope.triggerXlsxImport = function () {
+    var input = document.getElementById('pl-bulk-xlsx-file');
+    if (input) { input.click(); }
+  };
+
+  $scope.onXlsxFileChange = function (evt) {
+    var target = evt && evt.target;
+    var files = target && target.files;
+    if (!files || !files.length) return;
+
+    var file = files[0];
+    if (target) target.value = '';
+
+    $scope.$applyAsync(function () {
+      $scope.bulk.loadingFile = true;
+      $scope.bulk.error = null;
+      $scope.bulk.preview = { rows: [], errors: [] };
+    });
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var base64 = e.target.result;
+
+      PricelistLocation.parseXlsx(base64).then(function (res) {
+        var data = (res && res.data) ? res.data : res;
+        $scope.bulk.preview.rows = data.rows || [];
+        $scope.bulk.preview.errors = [];
+
+        var issues = data.issues || [];
+        for (var i = 0; i < issues.length; i++) {
+          var issue = issues[i] || {};
+          $scope.bulk.preview.errors.push({
+            row: issue.row || '-',
+            message: issue.message || issue
+          });
+        }
+
+        if (!$scope.bulk.raw) {
+          // заполним сырой текст для наглядности
+          var lines = [];
+          $scope.bulk.preview.rows.forEach(function (r) {
+            lines.push([r.mcc, r.mnc, r.delta_price, r.description || ''].join(';'));
+          });
+          $scope.bulk.raw = lines.join('\n');
+        }
+      }, function (err) {
+        var msg =
+          (err && err.data && (err.data.message || err.data.error)) ||
+          (err && err.statusText) ||
+          'Не удалось разобрать XLSX';
+        $scope.bulk.error = String(msg);
+      }).finally(function () {
+        $scope.bulk.loadingFile = false;
+      });
+    };
+    reader.onerror = function () {
+      $scope.$apply(function () {
+        $scope.bulk.loadingFile = false;
+        $scope.bulk.error = 'Ошибка чтения файла';
+      });
+    };
+    reader.readAsDataURL(file);
   };
 
   // === ЗАМЕНИ ЭТУ ФУНКЦИЮ В PricelistLocationEditCtrl ===

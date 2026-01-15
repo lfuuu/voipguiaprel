@@ -9,6 +9,8 @@ use app\exceptions\FormValidationException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\db\StaleObjectException;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class PricelistLocationController extends JsonController
 {
@@ -284,6 +286,126 @@ class PricelistLocationController extends JsonController
 
     return $result;
 }
+
+    /**
+     * Разбор XLSX в формате с колонками MCCMNC/Price (+доп. Country/Network/Note для описания)
+     */
+    public function actionParseXlsx()
+    {
+        if (!\Yii::$app->user->can('pricelist_create') && !\Yii::$app->user->can('pricelist_edit')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $content = $this->request['file_base64'] ?? '';
+        if (!$content) {
+            throw new HttpException(400, 'Файл не передан');
+        }
+
+        if (strpos($content, 'base64,') !== false) {
+            $content = substr($content, strpos($content, 'base64,') + 7);
+        }
+
+        $binary = base64_decode($content, true);
+        if ($binary === false) {
+            throw new HttpException(400, 'Не удалось декодировать файл');
+        }
+
+        $tmp = tempnam(sys_get_temp_dir(), 'pl_xlsx_') . '.xlsx';
+        file_put_contents($tmp, $binary);
+
+        try {
+            $spreadsheet = IOFactory::load($tmp);
+        } catch (\Throwable $e) {
+            @unlink($tmp);
+            throw new HttpException(400, 'Ошибка чтения XLSX: ' . $e->getMessage());
+        }
+        @unlink($tmp);
+
+        $sheet = $spreadsheet->getSheet(0);
+        $highestRow = $sheet->getHighestRow();
+        $highestCol = Coordinate::columnIndexFromString($sheet->getHighestColumn());
+
+        $headerRow = null;
+        $cols = [];
+        for ($r = 1; $r <= $highestRow; $r++) {
+            $cols = [];
+            for ($c = 1; $c <= $highestCol; $c++) {
+                $val = trim((string)$sheet->getCellByColumnAndRow($c, $r)->getValue());
+                $lower = mb_strtolower($val);
+                if (in_array($lower, ['mccmnc', 'mcc mnc', 'mcc/mnc', 'mcc+mnc'], true)) {
+                    $cols['code'] = $c;
+                } elseif (in_array($lower, ['price', 'cost', 'tariff'], true)) {
+                    $cols['price'] = $c;
+                } elseif ($lower === 'country') {
+                    $cols['country'] = $c;
+                } elseif ($lower === 'network') {
+                    $cols['network'] = $c;
+                } elseif ($lower === 'note') {
+                    $cols['note'] = $c;
+                }
+            }
+            if (isset($cols['code']) && isset($cols['price'])) {
+                $headerRow = $r;
+                break;
+            }
+        }
+
+        if ($headerRow === null) {
+            throw new HttpException(400, 'Не найден заголовок с колонками MCCMNC и Price');
+        }
+
+        $rows = [];
+        $issues = [];
+        for ($r = $headerRow + 1; $r <= $highestRow; $r++) {
+            $codeRaw = trim((string)$sheet->getCellByColumnAndRow($cols['code'], $r)->getFormattedValue());
+            $priceVal = $sheet->getCellByColumnAndRow($cols['price'], $r)->getCalculatedValue();
+            $priceRaw = is_numeric($priceVal)
+                ? rtrim(rtrim(number_format((float)$priceVal, 6, '.', ''), '0'), '.')
+                : trim((string)$priceVal);
+
+            if ($codeRaw === '' && $priceRaw === '') {
+                continue;
+            }
+
+            $digits = preg_replace('/\D+/', '', $codeRaw);
+            $mcc = (int)substr($digits, 0, 3);
+            $mncStr = substr($digits, 3);
+            $mnc = ($mncStr === '') ? 0 : (int)$mncStr;
+
+            $priceStr = str_replace(',', '.', $priceRaw);
+
+            $bad = [];
+            if ($mcc <= 0) $bad[] = 'MCC';
+            if ($mnc < 0)  $bad[] = 'MNC';
+            if ($priceStr === '' || !preg_match('/^-?\d{1,4}(\.\d{1,6})?$/', $priceStr)) $bad[] = 'Price';
+
+            if ($bad) {
+                $issues[] = ['row' => $r, 'message' => 'Неверные поля: ' . implode(', ', $bad)];
+                continue;
+            }
+
+            $country = isset($cols['country']) ? trim((string)$sheet->getCellByColumnAndRow($cols['country'], $r)->getValue()) : '';
+            $network = isset($cols['network']) ? trim((string)$sheet->getCellByColumnAndRow($cols['network'], $r)->getValue()) : '';
+            $note = isset($cols['note']) ? trim((string)$sheet->getCellByColumnAndRow($cols['note'], $r)->getValue()) : '';
+
+            $descParts = [];
+            if ($country !== '') $descParts[] = $country;
+            if ($network !== '') $descParts[] = $network;
+            if ($note !== '')    $descParts[] = $note;
+
+            $rows[] = [
+                'mcc'         => $mcc,
+                'mnc'         => $mnc,
+                'delta_price' => $priceStr,
+                'description' => implode(' / ', $descParts),
+            ];
+        }
+
+        return [
+            'rows' => $rows,
+            'issues' => $issues,
+        ];
+    }
 
     /**
      * @throws StaleObjectException

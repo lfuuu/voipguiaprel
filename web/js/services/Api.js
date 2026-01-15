@@ -2772,6 +2772,9 @@ app.factory('PricelistLocation', function ($q, ApiLoader, $rootScope) {
         },
         bulkImport: function (payload) {
             return ApiLoader.post(url + 'bulk-import', payload);
+        },
+        parseXlsx: function (fileBase64) {
+            return ApiLoader.post(url + 'parse-xlsx', { file_base64: fileBase64 });
         }
     };
 });
