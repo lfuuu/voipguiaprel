@@ -698,6 +698,7 @@ SQL;
 
         if (!$b->save()) throw new FormValidationException($b);
         return ['action' => 'create', 'model' => $b];
+    }
 }
 
     /**
@@ -828,7 +829,6 @@ SQL;
             'issues'    => $issues,
         ];
     }
-}
 
 
     /**
