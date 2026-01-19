@@ -147,15 +147,6 @@
         <div class="form-group">
           <label class="col-sm-2 control-label">Данные</label>
           <div class="col-sm-10">
-            <div class="clearfix" style="margin-bottom:6px;">
-              <button type="button" class="btn btn-default btn-sm"
-                      ng-click="triggerXlsxImport()"
-                      ng-disabled="bulk.loadingFile">
-                Импорт из XLSX
-              </button>
-              <span class="text-muted" ng-if="bulk.loadingFile"> &nbsp;Загрузка файла…</span>
-              <input type="file" id="pl-bulk-xlsx-file" style="display:none" accept=".xlsx">
-            </div>
             <textarea class="form-control" rows="10"
                       ng-model="bulk.raw"
                       ng-change="bulkParse()"
