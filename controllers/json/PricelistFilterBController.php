@@ -18,9 +18,6 @@ use yii\db\Expression;
 use yii\db\Query;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
 class PricelistFilterBController extends JsonController
 {
@@ -221,9 +218,8 @@ class PricelistFilterBController extends JsonController
                 return ['error' => 'Некорректный формат даты начала действия!', 'field' => 'prefixes'];
             }
 
-            $today = DateTime::createFromFormat("Y-m-d", date('Y-m-d'));
-            if ($today && DateTime::createFromFormat("Y-m-d", $dateStart) < $today) {
-                $dateStart = $today->format('Y-m-d');
+            if (DateTime::createFromFormat("Y-m-d", $dateStart) < DateTime::createFromFormat("Y-m-d", date('Y-m-d'))) {
+                return ['error' => 'Дата начала действия не может быть раньше, чем сейчас!', 'field' => 'prefixes'];
             }
         } else {
             $dateStart = date('Y-m-d');
@@ -451,95 +447,17 @@ public function actionBulkImport()
 
     /* ---------- Справочники ---------- */
 
-    $normalizeMcc = function ($val) {
-        $digits = preg_replace('/\D+/', '', (string)$val);
-        if ($digits === '') return '';
-        if (strlen($digits) < 3) $digits = str_pad($digits, 3, '0', STR_PAD_LEFT);
-        return $digits;
-    };
-    $normalizeName = function ($val) {
-        $val = mb_strtolower((string)$val);
-        $val = preg_replace('/\s+/u', ' ', trim($val));
-        return $val;
-    };
-
-    // MCC -> [code (internal), name_rus] с динамическим маппингом через nnp.mcc
+    // MCC -> [code (internal), name_rus]
     $countryRows = (new \yii\db\Query())
-        ->select(['code', 'mcc', 'name_rus', 'name_eng', 'alpha_2', 'prefix'])
+        ->select(['code', 'mcc', 'name_rus'])
         ->from('nnp.country')
         ->all();
 
     $countryByMcc = []; // '276' => ['code'=>8, 'name'=>'Германия']
-    $countryByAlpha2 = [];
-    $countryByPrefix = [];
-    $nameEngCounts = [];
-    $nameRusCounts = [];
-
     foreach ($countryRows as $cr) {
-        $mcc = $normalizeMcc($cr['mcc']);
-        if ($mcc !== '') {
-            $countryByMcc[$mcc] = ['code' => (int)$cr['code'], 'name' => (string)$cr['name_rus']];
-        }
-
-        $alpha2 = strtoupper(trim((string)$cr['alpha_2']));
-        if ($alpha2 !== '' && !isset($countryByAlpha2[$alpha2])) {
-            $countryByAlpha2[$alpha2] = ['code' => (int)$cr['code'], 'name' => (string)$cr['name_rus']];
-        }
-
-        $prefix = trim((string)$cr['prefix']);
-        if ($prefix !== '' && !isset($countryByPrefix[$prefix])) {
-            $countryByPrefix[$prefix] = ['code' => (int)$cr['code'], 'name' => (string)$cr['name_rus']];
-        }
-
-        $nameEng = $normalizeName($cr['name_eng']);
-        if ($nameEng !== '') $nameEngCounts[$nameEng] = ($nameEngCounts[$nameEng] ?? 0) + 1;
-        $nameRus = $normalizeName($cr['name_rus']);
-        if ($nameRus !== '') $nameRusCounts[$nameRus] = ($nameRusCounts[$nameRus] ?? 0) + 1;
-    }
-
-    $countryByNameEng = [];
-    $countryByNameRus = [];
-    foreach ($countryRows as $cr) {
-        $nameEng = $normalizeName($cr['name_eng']);
-        if ($nameEng !== '' && ($nameEngCounts[$nameEng] ?? 0) === 1) {
-            $countryByNameEng[$nameEng] = ['code' => (int)$cr['code'], 'name' => (string)$cr['name_rus']];
-        }
-        $nameRus = $normalizeName($cr['name_rus']);
-        if ($nameRus !== '' && ($nameRusCounts[$nameRus] ?? 0) === 1) {
-            $countryByNameRus[$nameRus] = ['code' => (int)$cr['code'], 'name' => (string)$cr['name_rus']];
-        }
-    }
-
-    $mccRows = (new \yii\db\Query())
-        ->select(['mcc', 'iso', 'country_code', 'country'])
-        ->from('nnp.mcc')
-        ->all();
-
-    foreach ($mccRows as $mr) {
-        $mcc = $normalizeMcc($mr['mcc']);
-        if ($mcc === '' || isset($countryByMcc[$mcc])) continue;
-
-        $iso = strtoupper(trim((string)$mr['iso']));
-        if ($iso !== '' && isset($countryByAlpha2[$iso])) {
-            $countryByMcc[$mcc] = $countryByAlpha2[$iso];
-            continue;
-        }
-
-        $cc = trim((string)$mr['country_code']);
-        if ($cc !== '' && isset($countryByPrefix[$cc])) {
-            $countryByMcc[$mcc] = $countryByPrefix[$cc];
-            continue;
-        }
-
-        $nameKey = $normalizeName($mr['country']);
-        if ($nameKey !== '' && isset($countryByNameEng[$nameKey])) {
-            $countryByMcc[$mcc] = $countryByNameEng[$nameKey];
-            continue;
-        }
-        if ($nameKey !== '' && isset($countryByNameRus[$nameKey])) {
-            $countryByMcc[$mcc] = $countryByNameRus[$nameKey];
-            continue;
-        }
+        $mcc = trim((string)$cr['mcc']);
+        if ($mcc === '') continue;
+        $countryByMcc[$mcc] = ['code' => (int)$cr['code'], 'name' => (string)$cr['name_rus']];
     }
 
     // (country_code (INTERNAL, тот же что в nnp.country.code), mnc) -> [id, name]
@@ -549,41 +467,11 @@ public function actionBulkImport()
         ->all();
 
     $operatorByCcMnc = []; // [internal_code][mnc] = ['id'=>.., 'name'=>..]
-    $operatorById = [];
-    $operatorByCcName = [];
     foreach ($opRows as $or) {
-        $id = (int)$or['id'];
-        $cc  = (int)$or['country_code'];
-        $name = (string)$or['name'];
-
-        $operatorById[$id] = ['id' => $id, 'name' => $name];
-
-        if ($or['mnc'] !== null) {
-            $mnc = (int)$or['mnc'];
-            $operatorByCcMnc[$cc][$mnc] = ['id' => $id, 'name' => $name];
-        }
-
-        $nameKey = $normalizeName($name);
-        if ($nameKey !== '' && !isset($operatorByCcName[$cc][$nameKey])) {
-            $operatorByCcName[$cc][$nameKey] = ['id' => $id, 'name' => $name];
-        }
-    }
-
-    $mncRows = (new \yii\db\Query())
-        ->select(['mcc', 'mnc', 'operator_id', 'network'])
-        ->from('nnp.mnc')
-        ->all();
-
-    $mncByMccMnc = []; // [mcc][mnc] = ['operator_id'=>.., 'network'=>..]
-    foreach ($mncRows as $mn) {
-        $mcc = $normalizeMcc($mn['mcc']);
-        $mncDigits = preg_replace('/\D+/', '', (string)$mn['mnc']);
-        if ($mcc === '' || $mncDigits === '') continue;
-        $mncInt = (int)$mncDigits;
-        $mncByMccMnc[$mcc][$mncInt] = [
-            'operator_id' => $mn['operator_id'] ? (int)$mn['operator_id'] : null,
-            'network' => (string)$mn['network'],
-        ];
+        if ($or['mnc'] === null) continue;
+        $cc  = (int)$or['country_code'];   // это ВНУТРЕННИЙ code из nnp.country
+        $mnc = (int)$or['mnc'];
+        $operatorByCcMnc[$cc][$mnc] = ['id' => (int)$or['id'], 'name' => (string)$or['name']];
     }
 
     /* ---------- Парсинг ---------- */
@@ -594,7 +482,6 @@ public function actionBulkImport()
     $preview  = [];
     $errors   = [];
     $normRows = [];
-    $debug    = [];
     $lineNo   = 0;
 
     foreach ($parsed['rows'] as $r) {
@@ -608,15 +495,9 @@ public function actionBulkImport()
         list($mccRaw, $mncRaw, $priceRaw, $dfRaw, $dtRaw) = $r;
 
         // --- страна по MCC
-        $mccStr = $normalizeMcc($mccRaw);
+        $mccStr = trim((string)$mccRaw);
         $country = $countryByMcc[$mccStr] ?? null;
         if ($country === null) {
-            $debug[] = [
-                'line' => $lineNo,
-                'type' => 'country_not_found',
-                'mcc_raw' => trim((string)$mccRaw),
-                'mcc_norm' => $mccStr,
-            ];
             $errors[] = ['line' => $lineNo, 'message' => "Страна не найдена по MCC '{$mccStr}'"];
             continue;
         }
@@ -639,28 +520,6 @@ public function actionBulkImport()
                 $operatorId   = $operatorByCcMnc[$countryCodeInternal][$mncInt]['id'];
                 $operatorName = $operatorByCcMnc[$countryCodeInternal][$mncInt]['name'];
             } else {
-                $mncRef = $mncByMccMnc[$mccStr][$mncInt] ?? null;
-                if ($mncRef && $mncRef['operator_id'] && isset($operatorById[$mncRef['operator_id']])) {
-                    $operatorId   = $operatorById[$mncRef['operator_id']]['id'];
-                    $operatorName = $operatorById[$mncRef['operator_id']]['name'];
-                } elseif ($mncRef && $mncRef['network'] !== '') {
-                    $nameKey = $normalizeName($mncRef['network']);
-                    if (isset($operatorByCcName[$countryCodeInternal][$nameKey])) {
-                        $operatorId   = $operatorByCcName[$countryCodeInternal][$nameKey]['id'];
-                        $operatorName = $operatorByCcName[$countryCodeInternal][$nameKey]['name'];
-                    }
-                }
-            }
-
-            if ($operatorId === null) {
-                $debug[] = [
-                    'line' => $lineNo,
-                    'type' => 'operator_not_found',
-                    'country_code' => $countryCodeInternal,
-                    'mcc' => $mccStr,
-                    'mnc_raw' => trim((string)$mncRaw),
-                    'mnc_norm' => $mncInt,
-                ];
                 $errors[] = ['line' => $lineNo,
                     'message' => "Оператор не найден (country_code='{$countryCodeInternal}', MNC='{$mncTrim}')"];
                 continue;
@@ -711,11 +570,11 @@ public function actionBulkImport()
 
     if ($dryRun) {
         $summary = "Готово к обработке " . count($normRows) . " строк" . ($replace ? " (режим полной замены фильтров B)" : "");
-        return ['ok' => empty($errors), 'dry_run' => true, 'preview' => $preview, 'errors' => $errors, 'summary' => $summary, 'debug' => $debug];
+        return ['ok' => empty($errors), 'dry_run' => true, 'preview' => $preview, 'errors' => $errors, 'summary' => $summary];
     }
 
     if (!empty($errors)) {
-        return ['ok' => false, 'dry_run' => false, 'preview' => $preview, 'errors' => $errors, 'summary' => 'Исправьте ошибки и повторите', 'debug' => $debug];
+        return ['ok' => false, 'dry_run' => false, 'preview' => $preview, 'errors' => $errors, 'summary' => 'Исправьте ошибки и повторите'];
     }
 
     /* ---------- Сохранение ---------- */
@@ -838,142 +697,6 @@ SQL;
         return ['action' => 'create', 'model' => $b];
     }
 }
-
-    /**
-     * Парсинг XLSX с колонками MCCMNC / Price / Effective DateTime в текст для bulk-импорта
-     */
-    public function actionParseXlsx()
-    {
-        if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
-            throw new ForbiddenHttpException('Access denied');
-        }
-
-        $content = $this->request['file_base64'] ?? '';
-        if (!$content) {
-            throw new HttpException(400, 'Файл не передан');
-        }
-
-        if (strpos($content, 'base64,') !== false) {
-            $content = substr($content, strpos($content, 'base64,') + 7);
-        }
-
-        $binary = base64_decode($content, true);
-        if ($binary === false) {
-            throw new HttpException(400, 'Не удалось декодировать файл');
-        }
-
-        $tmp = tempnam(sys_get_temp_dir(), 'pfb_xlsx_') . '.xlsx';
-        file_put_contents($tmp, $binary);
-
-        try {
-            $spreadsheet = IOFactory::load($tmp);
-        } catch (\Throwable $e) {
-            @unlink($tmp);
-            throw new HttpException(400, 'Ошибка чтения XLSX: ' . $e->getMessage());
-        }
-        @unlink($tmp);
-
-        $sheet = $spreadsheet->getSheet(0);
-        $highestRow = $sheet->getHighestRow();
-        $highestCol = Coordinate::columnIndexFromString($sheet->getHighestColumn());
-
-        $headerRow = null;
-        $cols = [];
-        for ($r = 1; $r <= $highestRow; $r++) {
-            $cols = [];
-            for ($c = 1; $c <= $highestCol; $c++) {
-                $val = trim((string)$sheet->getCellByColumnAndRow($c, $r)->getValue());
-                $lower = mb_strtolower($val);
-                if (in_array($lower, ['mccmnc', 'mcc mnc', 'mcc/mnc', 'mcc+mnc', 'mccmcn'], true)) {
-                    $cols['code'] = $c;
-                } elseif (in_array($lower, ['price', 'cost', 'rate', 'tariff'], true)) {
-                    $cols['price'] = $c;
-                } elseif (strpos($lower, 'effective') !== false || in_array($lower, ['date from', 'start date'], true)) {
-                    $cols['date'] = $c;
-                }
-            }
-            if (isset($cols['code']) && isset($cols['price'])) {
-                $headerRow = $r;
-                break;
-            }
-        }
-
-        if ($headerRow === null) {
-            throw new HttpException(400, 'Не найден заголовок с колонками MCCMNC и Price');
-        }
-
-        $lines = [];
-        $issues = [];
-
-        for ($r = $headerRow + 1; $r <= $highestRow; $r++) {
-            $codeRaw = trim((string)$sheet->getCellByColumnAndRow($cols['code'], $r)->getFormattedValue());
-            $priceVal = $sheet->getCellByColumnAndRow($cols['price'], $r)->getCalculatedValue();
-            $dateVal  = isset($cols['date']) ? $sheet->getCellByColumnAndRow($cols['date'], $r)->getValue() : '';
-
-            if ($codeRaw === '' && ($priceVal === null || $priceVal === '')) continue;
-
-            $digits = preg_replace('/\D+/', '', $codeRaw);
-            $mcc = (int)substr($digits, 0, 3);
-            $mncStr = substr($digits, 3);
-            $mnc = ($mncStr === '') ? 0 : (int)$mncStr;
-
-            $priceStr = '';
-            if (is_numeric($priceVal)) {
-                $priceStr = rtrim(rtrim(number_format((float)$priceVal, 6, '.', ''), '0'), '.');
-            } else {
-                $priceStr = trim((string)$priceVal);
-            }
-            $priceStr = str_replace(',', '.', $priceStr);
-
-            $dateFrom = '';
-            if ($dateVal !== null && $dateVal !== '') {
-                if (is_numeric($dateVal)) {
-                    try {
-                        $dt = ExcelDate::excelToDateTimeObject($dateVal);
-                        $dateFrom = $dt ? $dt->format('Y-m-d') : '';
-                    } catch (\Throwable $e) {
-                        $dateFrom = '';
-                    }
-                } else {
-                    $ts = strtotime((string)$dateVal);
-                    if ($ts !== false) $dateFrom = date('Y-m-d', $ts);
-                }
-            }
-
-            if ($dateFrom !== '') {
-                $today = date('Y-m-d');
-                if ($dateFrom < $today) {
-                    $dateFrom = $today;
-                }
-            }
-
-            $bad = [];
-            if ($mcc <= 0) $bad[] = 'MCC';
-            if ($mnc < 0)  $bad[] = 'MNC';
-            if ($priceStr === '' || !preg_match('/^-?\d{1,4}(\.\d{1,6})?$/', $priceStr)) $bad[] = 'Price';
-            if ($dateFrom === '') $bad[] = 'DateFrom';
-
-            if ($bad) {
-                $issues[] = ['row' => $r, 'message' => 'Неверные поля: ' . implode(', ', $bad)];
-                continue;
-            }
-
-            // Формат: MCC;MNC;Price;DateFrom;DateTo(пусто)
-            $lines[] = implode(';', [
-                trim((string)$mcc),
-                trim((string)$mnc),
-                $priceStr,
-                $dateFrom,
-                ''
-            ]);
-        }
-
-        return [
-            'rows_text' => implode("\n", $lines),
-            'count'     => count($lines),
-            'issues'    => $issues,
-        ];
-    }
 
 
     /**

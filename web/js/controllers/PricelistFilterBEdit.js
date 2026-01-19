@@ -233,82 +233,10 @@ var PricelistFilterBEditCtrl = function(
     // =========================
     // Массовый импорт — предпросмотр (через $http)
     // =========================
-    $scope.bulk = { rows: '', replace: false, dry_run: true, loadingFile: false };
+    $scope.bulk = { rows: '', replace: false, dry_run: true };
     $scope.bulkLoading = false;
     $scope.bulkResult = null;
     $scope.bulkSummary = null;
-
-    $scope.triggerXlsxImport = function () {
-        var input = document.getElementById('pfb-bulk-xlsx-file');
-        if (!input) return;
-
-        if (!input._pfbBound) {
-            input.addEventListener('change', function (evt) {
-                $scope.onXlsxFileChange(evt);
-            });
-            input._pfbBound = true;
-        }
-
-        $timeout(function(){ input.click(); }, 0, false);
-    };
-
-    $scope.onXlsxFileChange = function (evt) {
-        var target = evt && evt.target;
-        var files = target && target.files;
-        if (!files || !files.length) return;
-
-        var file = files[0];
-        if (target) target.value = '';
-
-        $scope.$applyAsync(function () {
-            $scope.bulk.loadingFile = true;
-            $scope.bulkResult = null;
-        });
-
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var base64 = e.target.result;
-
-            PricelistFilterB.parseXlsx(base64).then(function (res) {
-                var data = (res && res.data) ? res.data : res;
-                $scope.bulk.rows = data.rows_text || '';
-
-                var issues = data.issues || [];
-                if (issues.length) {
-                    $scope.bulkResult = {
-                        preview: [],
-                        errors: issues.map(function (i) {
-                            return { line: i.row || '-', message: i.message || i };
-                        })
-                    };
-                }
-
-                if ($scope.bulk.rows) {
-                    // сразу запустить проверку
-                    $scope.bulkCheck();
-                }
-            }, function (err) {
-                var msg =
-                    (err && err.data && (err.data.message || err.data.error)) ||
-                    (err && err.statusText) ||
-                    'Не удалось разобрать XLSX';
-                $scope.bulkResult = {
-                    preview: [],
-                    errors: [{ line: '-', message: msg }]
-                };
-            }).finally(function () {
-                $scope.bulk.loadingFile = false;
-            });
-        };
-        reader.onerror = function () {
-            $scope.$applyAsync(function () {
-                $scope.bulk.loadingFile = false;
-                $scope.bulkResult = { preview: [], errors: [{ line: '-', message: 'Ошибка чтения файла' }] };
-            });
-        };
-
-        reader.readAsDataURL(file);
-    };
 
     function normalize(resData) {
         // сервер всегда присылает объект — просто подстрахуемся
