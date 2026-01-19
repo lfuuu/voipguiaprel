@@ -197,7 +197,9 @@
             <label class="col-sm-2 control-label">Страна</label>
             <div class="col-sm-7">
               <select ui-select2 ng-model="item.nnp_country" multiple="multiple" style="width: 100%">
-                <option ng-repeat="country in countryList" value="{{::country.code}}">{{::country.name_rus}}</option>
+                <option ng-repeat="country in countryList" value="{{::country.code}}">
+                  {{::country.name_rus}} ({{::country.code}}{{country.mcc ? ' / ' + country.mcc : ''}})
+                </option>
               </select>
             </div>
             <div class="col-sm-3">
@@ -250,7 +252,9 @@
             <label class="col-sm-2 control-label">Оператор</label>
             <div ng-if="operatorList && operatorList.length > 0" class="col-sm-7">
               <select ui-select2 ng-model="item.nnp_operator" multiple="multiple" style="width: 100%">
-                <option ng-repeat="operator in operatorList" value="{{::operator.id}}">{{::operator.name}}</option>
+                <option ng-repeat="operator in operatorList" value="{{::operator.id}}">
+                  {{::operator.name}} ({{operator.mnc ? operator.mnc : ('id ' + operator.id)}})
+                </option>
               </select>
             </div>
             <div ng-if="!operatorList || operatorList.length == 0" class="col-sm-7">

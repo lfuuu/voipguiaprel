@@ -129,8 +129,10 @@ class NnpController extends JsonController
         }
         
         $query = Operator::find()
-            ->select(['id', 'name'])
-            ->where(['country_code' => $countryCode])
+            ->alias('mv')
+            ->select(['id' => 'mv.id', 'name' => 'mv.name', 'mnc' => 'op.mnc'])
+            ->leftJoin('nnp.operator op', 'op.id = mv.id')
+            ->where(['mv.country_code' => $countryCode])
             ->asArray();
 
         return $query->all();
