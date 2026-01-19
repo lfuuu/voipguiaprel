@@ -221,9 +221,8 @@ class PricelistFilterBController extends JsonController
                 return ['error' => 'Некорректный формат даты начала действия!', 'field' => 'prefixes'];
             }
 
-            $today = DateTime::createFromFormat("Y-m-d", date('Y-m-d'));
-            if ($today && DateTime::createFromFormat("Y-m-d", $dateStart) < $today) {
-                $dateStart = $today->format('Y-m-d');
+            if (DateTime::createFromFormat("Y-m-d", $dateStart) < DateTime::createFromFormat("Y-m-d", date('Y-m-d'))) {
+                return ['error' => 'Дата начала действия не может быть раньше, чем сейчас!', 'field' => 'prefixes'];
             }
         } else {
             $dateStart = date('Y-m-d');
@@ -800,13 +799,6 @@ SQL;
                 } else {
                     $ts = strtotime((string)$dateVal);
                     if ($ts !== false) $dateFrom = date('Y-m-d', $ts);
-                }
-            }
-
-            if ($dateFrom !== '') {
-                $today = date('Y-m-d');
-                if ($dateFrom < $today) {
-                    $dateFrom = $today;
                 }
             }
 
