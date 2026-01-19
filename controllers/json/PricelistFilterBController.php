@@ -802,6 +802,13 @@ SQL;
                 }
             }
 
+            if ($dateFrom !== '') {
+                $today = date('Y-m-d');
+                if ($dateFrom < $today) {
+                    $dateFrom = $today;
+                }
+            }
+
             $bad = [];
             if ($mcc <= 0) $bad[] = 'MCC';
             if ($mnc < 0)  $bad[] = 'MNC';
