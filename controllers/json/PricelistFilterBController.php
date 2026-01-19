@@ -594,6 +594,7 @@ public function actionBulkImport()
     $preview  = [];
     $errors   = [];
     $normRows = [];
+    $debug    = [];
     $lineNo   = 0;
 
     foreach ($parsed['rows'] as $r) {
@@ -610,6 +611,12 @@ public function actionBulkImport()
         $mccStr = $normalizeMcc($mccRaw);
         $country = $countryByMcc[$mccStr] ?? null;
         if ($country === null) {
+            $debug[] = [
+                'line' => $lineNo,
+                'type' => 'country_not_found',
+                'mcc_raw' => trim((string)$mccRaw),
+                'mcc_norm' => $mccStr,
+            ];
             $errors[] = ['line' => $lineNo, 'message' => "Страна не найдена по MCC '{$mccStr}'"];
             continue;
         }
@@ -646,6 +653,14 @@ public function actionBulkImport()
             }
 
             if ($operatorId === null) {
+                $debug[] = [
+                    'line' => $lineNo,
+                    'type' => 'operator_not_found',
+                    'country_code' => $countryCodeInternal,
+                    'mcc' => $mccStr,
+                    'mnc_raw' => trim((string)$mncRaw),
+                    'mnc_norm' => $mncInt,
+                ];
                 $errors[] = ['line' => $lineNo,
                     'message' => "Оператор не найден (country_code='{$countryCodeInternal}', MNC='{$mncTrim}')"];
                 continue;
@@ -696,11 +711,11 @@ public function actionBulkImport()
 
     if ($dryRun) {
         $summary = "Готово к обработке " . count($normRows) . " строк" . ($replace ? " (режим полной замены фильтров B)" : "");
-        return ['ok' => empty($errors), 'dry_run' => true, 'preview' => $preview, 'errors' => $errors, 'summary' => $summary];
+        return ['ok' => empty($errors), 'dry_run' => true, 'preview' => $preview, 'errors' => $errors, 'summary' => $summary, 'debug' => $debug];
     }
 
     if (!empty($errors)) {
-        return ['ok' => false, 'dry_run' => false, 'preview' => $preview, 'errors' => $errors, 'summary' => 'Исправьте ошибки и повторите'];
+        return ['ok' => false, 'dry_run' => false, 'preview' => $preview, 'errors' => $errors, 'summary' => 'Исправьте ошибки и повторите', 'debug' => $debug];
     }
 
     /* ---------- Сохранение ---------- */
