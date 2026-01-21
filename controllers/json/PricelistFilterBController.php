@@ -18,6 +18,9 @@ use yii\db\Expression;
 use yii\db\Query;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
 class PricelistFilterBController extends JsonController
 {
@@ -531,12 +534,13 @@ public function actionBulkImport()
 
         // --- оператор (опционален)
         $mncTrim      = trim((string)$mncRaw);
-        $hasOperator  = ($mncTrim !== '');
+        $mncDigits    = preg_replace('/\D+/', '', $mncTrim);
+        $hasOperator  = ($mncDigits !== '' && (int)$mncDigits !== 0);
         $operatorId   = null;
         $operatorName = '';
 
         if ($hasOperator) {
-            $mncInt = (int)preg_replace('/\D+/', '', $mncTrim);
+            $mncInt = (int)$mncDigits;
             if ($mncInt <= 0) {
                 $errors[] = ['line' => $lineNo, 'message' => "Некорректный MNC '{$mncRaw}'"];
                 continue;
@@ -722,6 +726,141 @@ SQL;
         return ['action' => 'create', 'model' => $b];
     }
 }
+
+    /**
+     * Парсинг XLSX с колонками MCCMNC / Price / Effective DateTime в текст для bulk-импорта
+     */
+    public function actionParseXlsx()
+    {
+        if (!\Yii::$app->user->can('pricelist_edit') && !\Yii::$app->user->can('pricelist_create')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $content = $this->request['file_base64'] ?? '';
+        if (!$content) {
+            throw new HttpException(400, 'Файл не передан');
+        }
+
+        if (strpos($content, 'base64,') !== false) {
+            $content = substr($content, strpos($content, 'base64,') + 7);
+        }
+
+        $binary = base64_decode($content, true);
+        if ($binary === false) {
+            throw new HttpException(400, 'Не удалось декодировать файл');
+        }
+
+        $tmp = tempnam(sys_get_temp_dir(), 'pfb_xlsx_') . '.xlsx';
+        file_put_contents($tmp, $binary);
+
+        try {
+            $spreadsheet = IOFactory::load($tmp);
+        } catch (\Throwable $e) {
+            @unlink($tmp);
+            throw new HttpException(400, 'Ошибка чтения XLSX: ' . $e->getMessage());
+        }
+        @unlink($tmp);
+
+        $sheet = $spreadsheet->getSheet(0);
+        $highestRow = $sheet->getHighestRow();
+        $highestCol = Coordinate::columnIndexFromString($sheet->getHighestColumn());
+
+        $headerRow = null;
+        $cols = [];
+        for ($r = 1; $r <= $highestRow; $r++) {
+            $cols = [];
+            for ($c = 1; $c <= $highestCol; $c++) {
+                $val = trim((string)$sheet->getCellByColumnAndRow($c, $r)->getValue());
+                $lower = mb_strtolower($val);
+                if (in_array($lower, ['mccmnc', 'mcc mnc', 'mcc/mnc', 'mcc+mnc', 'mccmcn'], true)) {
+                    $cols['code'] = $c;
+                } elseif (in_array($lower, ['price', 'cost', 'rate', 'tariff'], true)) {
+                    $cols['price'] = $c;
+                } elseif (strpos($lower, 'effective') !== false || in_array($lower, ['date from', 'start date'], true)) {
+                    $cols['date'] = $c;
+                }
+            }
+            if (isset($cols['code']) && isset($cols['price'])) {
+                $headerRow = $r;
+                break;
+            }
+        }
+
+        if ($headerRow === null) {
+            throw new HttpException(400, 'Не найден заголовок с колонками MCCMNC и Price');
+        }
+
+        $lines = [];
+        $issues = [];
+        $today = date('Y-m-d');
+
+        for ($r = $headerRow + 1; $r <= $highestRow; $r++) {
+            $codeRaw = trim((string)$sheet->getCellByColumnAndRow($cols['code'], $r)->getFormattedValue());
+            $priceVal = $sheet->getCellByColumnAndRow($cols['price'], $r)->getCalculatedValue();
+            $dateVal  = isset($cols['date']) ? $sheet->getCellByColumnAndRow($cols['date'], $r)->getValue() : '';
+
+            if ($codeRaw === '' && ($priceVal === null || $priceVal === '')) continue;
+
+            $digits = preg_replace('/\D+/', '', $codeRaw);
+            $mccStr = substr($digits, 0, 3);
+            $mncStr = substr($digits, 3);
+            if ($mncStr !== '' && preg_match('/^0+$/', $mncStr)) {
+                $mncStr = '';
+            }
+
+            $priceStr = '';
+            if (is_numeric($priceVal)) {
+                $priceStr = rtrim(rtrim(number_format((float)$priceVal, 6, '.', ''), '0'), '.');
+            } else {
+                $priceStr = trim((string)$priceVal);
+            }
+            $priceStr = str_replace(',', '.', $priceStr);
+
+            $dateFrom = '';
+            if ($dateVal !== null && $dateVal !== '') {
+                if (is_numeric($dateVal)) {
+                    try {
+                        $dt = ExcelDate::excelToDateTimeObject($dateVal);
+                        $dateFrom = $dt ? $dt->format('Y-m-d') : '';
+                    } catch (\Throwable $e) {
+                        $dateFrom = '';
+                    }
+                } else {
+                    $ts = strtotime((string)$dateVal);
+                    if ($ts !== false) $dateFrom = date('Y-m-d', $ts);
+                }
+            }
+
+            if ($dateFrom !== '' && $dateFrom < $today) {
+                $dateFrom = $today;
+            }
+
+            $bad = [];
+            if ($mccStr === '' || !preg_match('/^\\d{3}$/', $mccStr)) $bad[] = 'MCC';
+            if ($priceStr === '' || !preg_match('/^-?\\d{1,4}(\\.\\d{1,6})?$/', $priceStr)) $bad[] = 'Price';
+            if ($dateFrom === '') $bad[] = 'DateFrom';
+
+            if ($bad) {
+                $issues[] = ['row' => $r, 'message' => 'Неверные поля: ' . implode(', ', $bad)];
+                continue;
+            }
+
+            // Формат: MCC;MNC;Price;DateFrom;DateTo(пусто)
+            $lines[] = implode(';', [
+                trim((string)$mccStr),
+                trim((string)$mncStr),
+                $priceStr,
+                $dateFrom,
+                ''
+            ]);
+        }
+
+        return [
+            'rows_text' => implode("\n", $lines),
+            'count'     => count($lines),
+            'issues'    => $issues,
+        ];
+    }
 
 
     /**

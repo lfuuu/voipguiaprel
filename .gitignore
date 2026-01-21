@@ -6,3 +6,4 @@ vendor
 
 .werf_secret_key
 .helm/.werf/tmp/.pgpass
+.history
