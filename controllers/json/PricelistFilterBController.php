@@ -502,6 +502,20 @@ public function actionBulkImport()
         ];
     }
 
+    // Фолбэк: (iso_country_code, mnc) -> [id, name] через nnp.operator
+    $operatorRows = (new \yii\db\Query())
+        ->select(['id', 'country_code', 'mnc', 'name'])
+        ->from('nnp.operator')
+        ->all();
+
+    $operatorByIsoMnc = []; // [iso_country_code][mnc] = ['id'=>.., 'name'=>..]
+    foreach ($operatorRows as $or) {
+        if ($or['mnc'] === null) continue;
+        $cc  = (int)$or['country_code'];
+        $mnc = (int)$or['mnc'];
+        $operatorByIsoMnc[$cc][$mnc] = ['id' => (int)$or['id'], 'name' => (string)$or['name']];
+    }
+
     /* ---------- Парсинг ---------- */
 
     $parsed = $this->bulkParseRows($rows, $delimiter);
@@ -548,6 +562,9 @@ public function actionBulkImport()
             if (isset($operatorByMccMnc[$mccStr][$mncInt])) {
                 $operatorId   = $operatorByMccMnc[$mccStr][$mncInt]['id'];
                 $operatorName = $operatorByMccMnc[$mccStr][$mncInt]['name'];
+            } elseif (isset($operatorByIsoMnc[$countryCodeInternal][$mncInt])) {
+                $operatorId   = $operatorByIsoMnc[$countryCodeInternal][$mncInt]['id'];
+                $operatorName = $operatorByIsoMnc[$countryCodeInternal][$mncInt]['name'];
             } else {
                 $errors[] = ['line' => $lineNo,
                     'message' => "Оператор не найден (MCC='{$mccStr}', iso_country_code='{$countryCodeInternal}', MNC='{$mncTrim}')"];
