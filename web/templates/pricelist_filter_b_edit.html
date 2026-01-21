@@ -358,8 +358,17 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">Данные</label>
             <div class="col-sm-10">
+              <div class="clearfix" style="margin-bottom:6px;">
+                <button type="button" class="btn btn-default btn-sm"
+                        ng-click="triggerXlsxImport()"
+                        ng-disabled="bulk.loadingFile">
+                  Импорт из XLSX
+                </button>
+                <span class="text-muted" ng-if="bulk.loadingFile"> &nbsp;Загрузка файла…</span>
+                <input type="file" id="pfb-bulk-xlsx-file" style="display:none" accept=".xlsx">
+              </div>
               <textarea class="form-control" rows="8"
-                        placeholder="КодСтраны  КодОператора  Цена  ДатаНачала  ДатаОкончания"
+                        placeholder="MCC  MNC  Цена  ДатаНачала  ДатаОкончания"
                         ng-model="bulk.rows"></textarea>
               <p class="help-block">Разделители: таб / ; / , / несколько пробелов. Даты: DD.MM.YYYY или YYYY-MM-DD.</p>
             </div>
