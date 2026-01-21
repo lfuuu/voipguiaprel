@@ -422,7 +422,8 @@ class PricelistFilterBController extends JsonController
  * Массовый импорт фильтров B и прайсов префикса ('') по формату:
  * mcc  operator_code  price  date_from  date_to
  *
- * ВАЖНО: первая колонка — ТОЛЬКО MCC. Резолвим MCC → внутренний nnp.country.code.
+ * ВАЖНО: первая колонка — ТОЛЬКО MCC. Резолвим MCC → внутренний nnp.country.code
+ * через nnp.mcc.iso_country_code.
  * Если MCC не найден — строка идёт в ошибки.
  */
 public function actionBulkImport()
@@ -447,31 +448,55 @@ public function actionBulkImport()
 
     /* ---------- Справочники ---------- */
 
-    // MCC -> [code (internal), name_rus]
+    // MCC -> [code (internal), name_rus] через nnp.mcc.iso_country_code
     $countryRows = (new \yii\db\Query())
-        ->select(['code', 'mcc', 'name_rus'])
-        ->from('nnp.country')
+        ->select([
+            'mcc' => 'm.mcc',
+            'iso_country_code' => 'm.iso_country_code',
+            'country' => 'm.country',
+            'name_rus' => 'c.name_rus',
+        ])
+        ->from(['m' => 'nnp.mcc'])
+        ->leftJoin(['c' => 'nnp.country'], 'c.code = m.iso_country_code')
         ->all();
 
-    $countryByMcc = []; // '276' => ['code'=>8, 'name'=>'Германия']
+    $countryByMcc = []; // '404' => ['code'=>356, 'name'=>'Индия']
     foreach ($countryRows as $cr) {
         $mcc = trim((string)$cr['mcc']);
         if ($mcc === '') continue;
-        $countryByMcc[$mcc] = ['code' => (int)$cr['code'], 'name' => (string)$cr['name_rus']];
+        $isoRaw = $cr['iso_country_code'];
+        if ($isoRaw === null || $isoRaw === '') continue;
+        $isoCode = (int)$isoRaw;
+        if ($isoCode <= 0) continue;
+        $name = (string)($cr['name_rus'] ?: $cr['country']);
+        $countryByMcc[$mcc] = ['code' => $isoCode, 'name' => $name];
     }
 
-    // (country_code (INTERNAL, тот же что в nnp.country.code), mnc) -> [id, name]
+    // (mcc, mnc) -> [operator_id_nnp, name] через nnp.mnc.operator_id_nnp
     $opRows = (new \yii\db\Query())
-        ->select(['id', 'country_code', 'mnc', 'name'])
-        ->from('nnp.operator')
+        ->select([
+            'mcc' => 'm.mcc',
+            'mnc' => 'm.mnc',
+            'operator_id_nnp' => 'm.operator_id_nnp',
+            'operator_name' => 'o.name',
+        ])
+        ->from(['m' => 'nnp.mnc'])
+        ->leftJoin(['o' => 'nnp.operator'], 'o.id = m.operator_id_nnp')
         ->all();
 
-    $operatorByCcMnc = []; // [internal_code][mnc] = ['id'=>.., 'name'=>..]
+    $operatorByMccMnc = []; // [mcc][mnc] = ['id'=>.., 'name'=>..]
     foreach ($opRows as $or) {
-        if ($or['mnc'] === null) continue;
-        $cc  = (int)$or['country_code'];   // это ВНУТРЕННИЙ code из nnp.country
-        $mnc = (int)$or['mnc'];
-        $operatorByCcMnc[$cc][$mnc] = ['id' => (int)$or['id'], 'name' => (string)$or['name']];
+        if ($or['operator_id_nnp'] === null || $or['operator_id_nnp'] === '') continue;
+        $mcc = trim((string)$or['mcc']);
+        if ($mcc === '') continue;
+        $mncNorm = preg_replace('/\D+/', '', (string)$or['mnc']);
+        if ($mncNorm === '') continue;
+        $mncInt = (int)$mncNorm;
+        if ($mncInt <= 0) continue;
+        $operatorByMccMnc[$mcc][$mncInt] = [
+            'id' => (int)$or['operator_id_nnp'],
+            'name' => (string)$or['operator_name'],
+        ];
     }
 
     /* ---------- Парсинг ---------- */
@@ -516,12 +541,12 @@ public function actionBulkImport()
                 $errors[] = ['line' => $lineNo, 'message' => "Некорректный MNC '{$mncRaw}'"];
                 continue;
             }
-            if (isset($operatorByCcMnc[$countryCodeInternal][$mncInt])) {
-                $operatorId   = $operatorByCcMnc[$countryCodeInternal][$mncInt]['id'];
-                $operatorName = $operatorByCcMnc[$countryCodeInternal][$mncInt]['name'];
+            if (isset($operatorByMccMnc[$mccStr][$mncInt])) {
+                $operatorId   = $operatorByMccMnc[$mccStr][$mncInt]['id'];
+                $operatorName = $operatorByMccMnc[$mccStr][$mncInt]['name'];
             } else {
                 $errors[] = ['line' => $lineNo,
-                    'message' => "Оператор не найден (country_code='{$countryCodeInternal}', MNC='{$mncTrim}')"];
+                    'message' => "Оператор не найден (MCC='{$mccStr}', iso_country_code='{$countryCodeInternal}', MNC='{$mncTrim}')"];
                 continue;
             }
         }
