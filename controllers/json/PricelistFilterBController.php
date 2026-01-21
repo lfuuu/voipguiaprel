@@ -535,6 +535,7 @@ public function actionBulkImport()
         }
 
         list($mccRaw, $mncRaw, $priceRaw, $dfRaw, $dtRaw) = $r;
+        $networkRaw = $r[5] ?? '';
 
         // --- страна по MCC
         $mccStr = trim((string)$mccRaw);
@@ -566,8 +567,16 @@ public function actionBulkImport()
                 $operatorId   = $operatorByIsoMnc[$countryCodeInternal][$mncInt]['id'];
                 $operatorName = $operatorByIsoMnc[$countryCodeInternal][$mncInt]['name'];
             } else {
-                $errors[] = ['line' => $lineNo,
-                    'message' => "Оператор не найден (MCC='{$mccStr}', iso_country_code='{$countryCodeInternal}', MNC='{$mncTrim}')"];
+                $networkStr = trim((string)$networkRaw);
+                if ($networkStr !== '') {
+                    $networkStr = preg_replace('/\\s+/u', ' ', $networkStr);
+                }
+                if ($networkStr !== '') {
+                    $message = "Оператор '{$networkStr}' не найден (MCC='{$mccStr}', iso_country_code='{$countryCodeInternal}', MNC='{$mncTrim}')";
+                } else {
+                    $message = "Оператор не найден (MCC='{$mccStr}', iso_country_code='{$countryCodeInternal}', MNC='{$mncTrim}')";
+                }
+                $errors[] = ['line' => $lineNo, 'message' => $message];
                 continue;
             }
         }
@@ -795,6 +804,8 @@ SQL;
                     $cols['price'] = $c;
                 } elseif (strpos($lower, 'effective') !== false || in_array($lower, ['date from', 'start date'], true)) {
                     $cols['date'] = $c;
+                } elseif (in_array($lower, ['network', 'operator'], true)) {
+                    $cols['network'] = $c;
                 }
             }
             if (isset($cols['code']) && isset($cols['price'])) {
@@ -815,6 +826,7 @@ SQL;
             $codeRaw = trim((string)$sheet->getCellByColumnAndRow($cols['code'], $r)->getFormattedValue());
             $priceVal = $sheet->getCellByColumnAndRow($cols['price'], $r)->getCalculatedValue();
             $dateVal  = isset($cols['date']) ? $sheet->getCellByColumnAndRow($cols['date'], $r)->getValue() : '';
+            $networkVal = isset($cols['network']) ? $sheet->getCellByColumnAndRow($cols['network'], $r)->getFormattedValue() : '';
 
             if ($codeRaw === '' && ($priceVal === null || $priceVal === '')) continue;
 
@@ -852,6 +864,12 @@ SQL;
                 $dateFrom = $today;
             }
 
+            $networkStr = trim((string)$networkVal);
+            if ($networkStr !== '') {
+                $networkStr = preg_replace('/\\s+/u', ' ', $networkStr);
+                $networkStr = str_replace(';', ' ', $networkStr);
+            }
+
             $bad = [];
             if ($mccStr === '' || !preg_match('/^\\d{3}$/', $mccStr)) $bad[] = 'MCC';
             if ($priceStr === '' || !preg_match('/^-?\\d{1,4}(\\.\\d{1,6})?$/', $priceStr)) $bad[] = 'Price';
@@ -868,7 +886,8 @@ SQL;
                 trim((string)$mncStr),
                 $priceStr,
                 $dateFrom,
-                ''
+                '',
+                $networkStr
             ]);
         }
 
