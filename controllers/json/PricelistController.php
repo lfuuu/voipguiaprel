@@ -257,15 +257,14 @@ class PricelistController extends JsonController
         $onlyActive    = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : false;
         $currency      = $this->request['currency'] ?? ($queryParams['currency'] ?? null);
 
-        if ($currency === null && empty($this->request) && empty($queryParams)) {
-            $currency = 'RUB';
-        }
-
         if ($currency !== null) {
             $currency = strtoupper(trim((string)$currency));
             if ($currency === '') {
                 $currency = null;
             }
+        }
+        if ($currency === null) {
+            $currency = 'RUB';
         }
 
         if ($groupName === '') {
