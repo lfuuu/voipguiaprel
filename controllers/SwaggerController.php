@@ -185,6 +185,17 @@ class SwaggerController extends Controller
                         'tags' => ['Pricelist'],
                         'summary' => 'Минимальные цены на интернет по группе прайслистов',
                         'description' => 'Проходит по всем прайслистам в указанной группе (по умолчанию Roaming Data) и возвращает по каждой стране (MCC) минимальную цену на интернет с указанием прайса, где она найдена. Доступ открыт (без проверки прав).',
+                        'parameters' => [
+                            [
+                                'name' => 'currency',
+                                'in' => 'query',
+                                'required' => false,
+                                'schema' => [
+                                    'type' => 'string',
+                                ],
+                                'description' => 'Код валюты ISO 4217 (например, EUR, USD, RUB, HUF). Если не задан — берутся все.',
+                            ],
+                        ],
                         'requestBody' => [
                             'required' => true,
                             'content' => [
@@ -195,6 +206,10 @@ class SwaggerController extends Controller
                                             'groupName' => [
                                                 'type' => 'string',
                                                 'description' => 'Название группы прайслистов. По умолчанию Roaming Data.',
+                                            ],
+                                            'currency' => [
+                                                'type' => 'string',
+                                                'description' => 'Код валюты ISO 4217 (например, EUR, USD, RUB, HUF). Если не задан — берутся все.',
                                             ],
                                             'serviceTypeId' => [
                                                 'type' => 'integer',
@@ -210,6 +225,7 @@ class SwaggerController extends Controller
                                     ],
                                     'example' => [
                                         'groupName' => 'Roaming Data',
+                                        'currency' => 'EUR',
                                         'serviceTypeId' => 3,
                                         'onlyActive' => false,
                                     ],

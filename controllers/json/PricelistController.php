@@ -253,6 +253,14 @@ class PricelistController extends JsonController
         $groupName     = trim((string)($this->request['groupName'] ?? 'Roaming Data'));
         $serviceTypeId = (int)($this->request['serviceTypeId'] ?? 3);
         $onlyActive    = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : false;
+        $currency      = $this->request['currency'] ?? Yii::$app->request->get('currency');
+
+        if ($currency !== null) {
+            $currency = strtoupper(trim((string)$currency));
+            if ($currency === '') {
+                $currency = null;
+            }
+        }
 
         if ($groupName === '') {
             throw new HttpException(400, 'Parameter "groupName" is required');
@@ -278,6 +286,9 @@ class PricelistController extends JsonController
         }
         if ($onlyActive) {
             $pricelistQuery->andWhere(['p.is_active' => true]);
+        }
+        if ($currency !== null) {
+            $pricelistQuery->andWhere(['p.currency_id' => $currency]);
         }
 
         $pricelists = $pricelistQuery->asArray()->all();
