@@ -36,7 +36,7 @@ class PricelistController extends JsonController
         if (isset($behaviors['access'])) {
             array_unshift($behaviors['access']['rules'], [
                 'allow'   => true,
-                'actions' => ['group-internet-min-prices'],
+                'actions' => ['group-internet-min-prices', 'get-with-dependents-all'],
                 'roles'   => ['?'],
             ]);
         }
@@ -578,9 +578,8 @@ SQL;
      */
     public function actionGetWithDependentsAll()
     {
-        if (!\Yii::$app->user->can('pricelist_list')) {
-            throw new \yii\web\ForbiddenHttpException('Access denied');
-        }
+        // Открытый метод: не логируем, иначе для гостя упадёт на user_id NOT NULL.
+        $this->doNotLog = true;
 
         $pageLimit   = (int) PricelistPrefixPrice::PAGE_LIMIT;
         $pageNumber  = max(1, (int)($this->request['prefix_page'] ?? 1));

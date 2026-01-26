@@ -104,7 +104,7 @@ class SwaggerController extends Controller
                     'post' => [
                         'tags' => ['Pricelist'],
                         'summary' => 'Полный прайслист без пагинации',
-                        'description' => 'Возвращает все данные прайслиста (Location → FilterA → FilterB → PrefixPrice) в виде плоской структуры с алиасами `p__*`, `pl__*`, `pfa__*`, `pfb__*`, `ppp__*`. Поддерживает `type=short|full`. Требуются права `pricelist_list`.',
+                        'description' => 'Возвращает все данные прайслиста (Location → FilterA → FilterB → PrefixPrice) в виде плоской структуры с алиасами `p__*`, `pl__*`, `pfa__*`, `pfb__*`, `ppp__*`. Поддерживает `type=short|full`. Доступ открыт (без авторизации).',
                         'requestBody' => [
                             'required' => true,
                             'content' => [
