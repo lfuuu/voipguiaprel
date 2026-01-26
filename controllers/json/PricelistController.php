@@ -250,10 +250,16 @@ class PricelistController extends JsonController
         // Открытый метод: не логируем, иначе для гостя упадёт на user_id NOT NULL.
         $this->doNotLog = true;
 
+        $queryParams = Yii::$app->request->get();
+
         $groupName     = trim((string)($this->request['groupName'] ?? 'Roaming Data'));
         $serviceTypeId = (int)($this->request['serviceTypeId'] ?? 3);
         $onlyActive    = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : false;
-        $currency      = $this->request['currency'] ?? Yii::$app->request->get('currency');
+        $currency      = $this->request['currency'] ?? ($queryParams['currency'] ?? null);
+
+        if ($currency === null && empty($this->request) && empty($queryParams)) {
+            $currency = 'RUB';
+        }
 
         if ($currency !== null) {
             $currency = strtoupper(trim((string)$currency));

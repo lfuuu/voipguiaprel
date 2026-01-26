@@ -193,7 +193,7 @@ class SwaggerController extends Controller
                                 'schema' => [
                                     'type' => 'string',
                                 ],
-                                'description' => 'Код валюты ISO 4217 (например, EUR, USD, RUB, HUF). Если не задан — берутся все.',
+                                'description' => 'Код валюты ISO 4217 (например, EUR, USD, RUB, HUF). Если не задан — берутся все; если запрос пустой (нет body и query) — по умолчанию RUB.',
                             ],
                         ],
                         'requestBody' => [
@@ -209,7 +209,7 @@ class SwaggerController extends Controller
                                             ],
                                             'currency' => [
                                                 'type' => 'string',
-                                                'description' => 'Код валюты ISO 4217 (например, EUR, USD, RUB, HUF). Если не задан — берутся все.',
+                                                'description' => 'Код валюты ISO 4217 (например, EUR, USD, RUB, HUF). Если не задан — берутся все; если запрос пустой (нет body и query) — по умолчанию RUB.',
                                             ],
                                             'serviceTypeId' => [
                                                 'type' => 'integer',
