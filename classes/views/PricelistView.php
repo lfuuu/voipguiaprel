@@ -22,6 +22,7 @@ class PricelistView
         $filtersBProcessed = [];
         
         $mccIdArray = [];
+        $simImsiProfileIdArray = [];
         $nnpCountryIdArray = [];
         $nnpDestinationIdArray = [];
         $nnpOperatorIdArray = [];
@@ -31,6 +32,7 @@ class PricelistView
         
         $idArrays = [
             'nnp.mcc' => ['ids' => &$mccIdArray, 'name_field' => 'country', 'id_field' => 'mcc'],
+            'billing_uu.sim_imsi_profile' => ['ids' => &$simImsiProfileIdArray, 'name_field' => 'name', 'id_field' => 'id'],
             'nnp.country' => ['ids' => &$nnpCountryIdArray, 'name_field' => 'name_rus', 'id_field' => 'code'],
             'nnp.destination' => ['ids' => &$nnpDestinationIdArray, 'name_field' => 'name', 'id_field' => 'id'],
             'nnp.operator' => ['ids' => &$nnpOperatorIdArray, 'name_field' => 'name', 'id_field' => 'id'],
@@ -42,6 +44,7 @@ class PricelistView
         foreach ($queryResult as $queryItem) {
             if (!in_array($queryItem['pl__id'], $locationsProcessed)) {
                 self::processQueryArray($mccIdArray, $queryItem['pl__mcc']);
+                self::processQueryArray($simImsiProfileIdArray, $queryItem['pl__sim_profile']);
                 
                 $locationsProcessed[] = $queryItem['pl__id'];
             }
@@ -515,6 +518,7 @@ class PricelistView
                 
         $locationText = self::formLocationText($item, $isBasic, $idArrays);
         $continent = self::getNameFromDictionary($item['pl__mcc'], $idArrays['nnp.mcc_continent']['ids'] ?? []);
+        $simProfile = self::getNameFromDictionary($item['pl__sim_profile'], $idArrays['billing_uu.sim_imsi_profile']['ids'] ?? []);
         
         return [
             'is_location' => true,
@@ -522,6 +526,7 @@ class PricelistView
             'has_location_mark' => false,
             'location_text' => $locationText,
             'continent' => $continent,
+            'sim_profile' => $simProfile,
             'has_children' => isset($item['pfa__id']),
             'is_basic' => $isBasic
         ];
@@ -532,6 +537,7 @@ class PricelistView
         $mcc = self::getNameFromDictionary($item['pl__mcc'], $idArrays['nnp.mcc']['ids']);
         $continent = self::getNameFromDictionary($item['pl__mcc'], $idArrays['nnp.mcc_continent']['ids'] ?? []);
         $mnc = self::formMncText($item);
+        $simProfile = self::getNameFromDictionary($item['pl__sim_profile'], $idArrays['billing_uu.sim_imsi_profile']['ids'] ?? []);
         
         return [
             'delta_price' => $item['pl__delta_price'],
@@ -542,6 +548,7 @@ class PricelistView
             'mcc' => $mcc,
             'continent' => $continent,
             'mnc' => $mnc,
+            'sim_profile' => $simProfile,
             'parent_id' => $item['p__id'],
             'pricelist_service_type_id' => $item['p__service_type_id'],
             'rounding_treshold' => $item['pl__rounding_threshold']

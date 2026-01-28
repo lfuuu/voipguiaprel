@@ -83,9 +83,10 @@
           <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">Местоположение</td>
           <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">MCC</td>
           <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">MNC</td>
+          <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">SIM профиль</td>
           <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns">Добавочная цена</td>
           <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns && pricelistServiceTypeId == 3">Порог округления</td>
-          <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns" colspan="{{pricelistServiceTypeId == 3 ? 9 : 10}}"></td>
+          <td style="background-color: #BBAABB" ng-if="item.is_location_header_columns" colspan="{{pricelistServiceTypeId == 3 ? 8 : 9}}"></td>
 
           <!-- Данные местоположения -->
           <td style="border-left: 1px solid grey;" ng-if="item.is_location"></td>
@@ -94,9 +95,10 @@
           <td ng-if="item.is_location">{{item.location_id}}</td>
           <td ng-if="item.is_location" style="text-align: left;">{{item.mcc}}</td>
           <td ng-if="item.is_location" style="text-align: left;">{{item.mnc}}</td>
+          <td ng-if="item.is_location" style="text-align: left;">{{item.sim_profile}}</td>
           <td ng-if="item.is_location" style="text-align: left;">{{item.delta_price}}</td>
           <td ng-if="item.is_location && pricelistServiceTypeId == 3" style="text-align: left;">{{item.rounding_threshold}}</td>
-          <td ng-if="item.is_location" colspan="{{pricelistServiceTypeId == 3 ? 5 : 6}}"></td>
+          <td ng-if="item.is_location" colspan="{{pricelistServiceTypeId == 3 ? 4 : 5}}"></td>
           <td ng-if="item.is_location">
             <a popover="Добавить местоположение" data-popover-trigger="mouseenter" popover-placement="bottom" class="btn btn-success btn-xs" ng-click="addLocation(item.parent_id)">
               <span class="glyphicon glyphicon-repeat"></span>
