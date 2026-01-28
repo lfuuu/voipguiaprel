@@ -22,25 +22,32 @@
                 <span ng-show="sortType == 'mcc' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
-        <th width="29%">
+        <th width="24%">
             <a href="#" ng-click="sortType = 'country'; sortReverse = !sortReverse">
                 Страна
                 <span ng-show="sortType == 'country' && sortReverse" class="caret-down"></span>
                 <span ng-show="sortType == 'country' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
-        <th width="29%">
+        <th width="14%">
             <a href="#" ng-click="sortType = 'iso'; sortReverse = !sortReverse">
                 ISO
                 <span ng-show="sortType == 'iso' && sortReverse" class="caret-down"></span>
                 <span ng-show="sortType == 'iso' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
-        <th width="29%">
+        <th width="14%">
             <a href="#" ng-click="sortType = 'country_code'; sortReverse = !sortReverse">
                 Код страны
                 <span ng-show="sortType == 'country_code' && sortReverse" class="caret-down"></span>
                 <span ng-show="sortType == 'country_code' && !sortReverse" class="caret-up"></span>
+            </a>
+        </th>
+        <th width="24%">
+            <a href="#" ng-click="sortType = 'continent'; sortReverse = !sortReverse">
+                Часть света
+                <span ng-show="sortType == 'continent' && sortReverse" class="caret-down"></span>
+                <span ng-show="sortType == 'continent' && !sortReverse" class="caret-up"></span>
             </a>
         </th>
         <th ng-if="userPermissions['mcc_delete']">&nbsp;</th>
@@ -53,6 +60,7 @@
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.country}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.iso}}</td>
         <td style="cursor: pointer" ng-click="clickItem(item)">{{item.country_code}}</td>
+        <td style="cursor: pointer" ng-click="clickItem(item)">{{item.continent}}</td>
         <td ng-if="userPermissions['mcc_delete']"><button type="button" class="btn btn-danger btn-sm glyphicon glyphicon-minus" ng-click="deleteItem(item)"></button></td>
     </tr>
 

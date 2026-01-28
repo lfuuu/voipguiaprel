@@ -80,6 +80,20 @@ class PricelistView
                 }
             }
         }
+
+        $mccContinentMap = [];
+        $mccIds = array_keys($idArrays['nnp.mcc']['ids'] ?? []);
+        if ($mccIds) {
+            $rows = (new Query())
+                ->select(['id' => 'mcc', 'continent'])
+                ->from('nnp.mcc')
+                ->where(['mcc' => $mccIds])
+                ->all();
+            foreach ($rows as $row) {
+                $mccContinentMap[$row['id']] = $row['continent'];
+            }
+        }
+        $idArrays['nnp.mcc_continent'] = ['ids' => $mccContinentMap];
         
         $result = [];
         $counter = 0;
@@ -259,6 +273,20 @@ class PricelistView
             $item['ids'] = [];
         }
     }
+
+    $mccContinentMap = [];
+    $mccIds = array_keys($idArrays['nnp.mcc']['ids'] ?? []);
+    if ($mccIds) {
+        $rows = (new Query())
+            ->select(['id' => 'mcc', 'continent'])
+            ->from('nnp.mcc')
+            ->where(['mcc' => $mccIds])
+            ->all();
+        foreach ($rows as $row) {
+            $mccContinentMap[$row['id']] = $row['continent'];
+        }
+    }
+    $idArrays['nnp.mcc_continent'] = ['ids' => $mccContinentMap];
 
     // ========= 3) Альфы (как было) =========
     $alphaNames = A2pAlphaNumbers::find()
@@ -486,12 +514,14 @@ class PricelistView
         $isBasic = ($item['pl__id'] == $item['p__basic_pricelist_location_id']);
                 
         $locationText = self::formLocationText($item, $isBasic, $idArrays);
+        $continent = self::getNameFromDictionary($item['pl__mcc'], $idArrays['nnp.mcc_continent']['ids'] ?? []);
         
         return [
             'is_location' => true,
             'id' => $item['pl__id'],
             'has_location_mark' => false,
             'location_text' => $locationText,
+            'continent' => $continent,
             'has_children' => isset($item['pfa__id']),
             'is_basic' => $isBasic
         ];
@@ -500,6 +530,7 @@ class PricelistView
     private static function createLocationRowFull($item, $idArrays)
     {
         $mcc = self::getNameFromDictionary($item['pl__mcc'], $idArrays['nnp.mcc']['ids']);
+        $continent = self::getNameFromDictionary($item['pl__mcc'], $idArrays['nnp.mcc_continent']['ids'] ?? []);
         $mnc = self::formMncText($item);
         
         return [
@@ -509,6 +540,7 @@ class PricelistView
             'is_location' => true,
             'location_id' => PricelistLocation::LOCATION_TYPE_NAMES[$item['pl__location_id']],
             'mcc' => $mcc,
+            'continent' => $continent,
             'mnc' => $mnc,
             'parent_id' => $item['p__id'],
             'pricelist_service_type_id' => $item['p__service_type_id'],
