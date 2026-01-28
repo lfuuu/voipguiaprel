@@ -5,7 +5,7 @@ var MccListCtrl = function ($scope, Mcc, Redirect, $window) {
     $scope.searchQuery = '';
 
     $scope.filterFields = [
-        'mcc', 'country', 'iso', 'country_code'
+        'mcc', 'country', 'iso', 'country_code', 'continent'
     ];
 
     $scope.init = function (tab) {

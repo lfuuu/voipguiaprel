@@ -1,5 +1,15 @@
 var MccEditCtrl = function ($scope, Mcc, params, $modalInstance, $window) {
 
+    $scope.continentOptions = [
+        'Европа',
+        'Азия',
+        'Африка',
+        'Ближний Восток',
+        'Северная Америка',
+        'Южная Америка',
+        'Океания'
+    ];
+
     if (params.mcc) {
         Mcc.get({mcc: params.mcc}).then(function (data) {
             $scope.item = data;

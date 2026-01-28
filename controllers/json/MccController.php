@@ -34,7 +34,7 @@ class MccController extends JsonController
         
         return
             Mcc::find()
-                ->select([new Expression('LPAD(mcc::text, 3, \'0\') as mcc'), 'country', 'iso', 'country_code'])
+                ->select([new Expression('LPAD(mcc::text, 3, \'0\') as mcc'), 'country', 'iso', 'country_code', 'continent'])
                 ->orderBy('country')
                 ->asArray()
                 ->all();

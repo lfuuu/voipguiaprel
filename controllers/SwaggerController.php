@@ -104,7 +104,7 @@ class SwaggerController extends Controller
                     'post' => [
                         'tags' => ['Pricelist'],
                         'summary' => 'Полный прайслист без пагинации',
-                        'description' => 'Возвращает все данные прайслиста (Location → FilterA → FilterB → PrefixPrice) в виде плоской структуры с алиасами `p__*`, `pl__*`, `pfa__*`, `pfb__*`, `ppp__*`. Поддерживает `type=short|full`. Доступ открыт (без авторизации).',
+                        'description' => 'Возвращает все данные прайслиста (Location → FilterA → FilterB → PrefixPrice) в виде плоской структуры с алиасами `p__*`, `pl__*`, `pfa__*`, `pfb__*`, `ppp__*`. Поддерживает `type=short|full`. В строках локаций есть поле `continent` (часть света). Доступ открыт (без авторизации).',
                         'requestBody' => [
                             'required' => true,
                             'content' => [
@@ -330,6 +330,12 @@ class SwaggerController extends Controller
                         'description' => 'Результат работы PricelistView::getForShortForm()',
                         'items' => [
                             'type' => 'object',
+                            'properties' => [
+                                'continent' => [
+                                    'type' => 'string',
+                                    'description' => 'Часть света из справочника MCC (для строк локаций).',
+                                ],
+                            ],
                             'additionalProperties' => true,
                         ],
                     ],
@@ -345,6 +351,10 @@ class SwaggerController extends Controller
                                 'p__name' => ['type' => 'string'],
                                 'ppp__prefix_b' => ['type' => 'string'],
                                 'ppp__b_number_price' => ['type' => 'string'],
+                                'continent' => [
+                                    'type' => 'string',
+                                    'description' => 'Часть света из справочника MCC (для строк локаций).',
+                                ],
                             ],
                             'additionalProperties' => true,
                         ],

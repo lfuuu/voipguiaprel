@@ -7,6 +7,7 @@ use app\queries\nnp\MccQuery;
  * @property int $id
  * @property string $country
  * @property string $iso
+ * @property string $continent
  * @property integer $country_code
  */
 class Mcc extends \yii\db\ActiveRecord
@@ -22,7 +23,7 @@ class Mcc extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['country', 'iso'], 'string'],
+            [['country', 'iso', 'continent'], 'string'],
             [['mcc', 'country_code'], 'integer']
         ];
     }
