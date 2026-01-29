@@ -33,7 +33,7 @@ class PricelistLocation extends \yii\db\ActiveRecord
         self::LOCATION_TYPE_GUEST => 'Гостевой регион',
         self::LOCATION_TYPE_MN => 'Международный регион',
         self::LOCATION_TYPE_MVNO => 'MVNO',
-        self::LOCATION_TYPE_NONE => 'Не использовать',
+        self::LOCATION_TYPE_NONE => 'Не учитывать',
         self::LOCATION_TYPE_INCOMING => 'Входящие в международном регионе',
     ];
     
