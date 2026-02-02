@@ -32,6 +32,8 @@ use yii\db\Query;
  * @property string $additional_pricelist
  * @property int $minimum_margin_type
  * @property string $num_c_nnp_filter
+ * @property string $connection_setup_fee_label
+ * @property string $connection_setup_fee_mav
  */
 class Pricelist extends \yii\db\ActiveRecord
 {
@@ -45,7 +47,8 @@ class Pricelist extends \yii\db\ActiveRecord
     private static function rulesStatic()
     {
         return [
-            [['name', 'currency_id', 'date_created', 'date_start', 'date_end', 'description','num_c_nnp_filter'], 'string'],
+            [['name', 'currency_id', 'date_created', 'date_start', 'date_end', 'description', 'num_c_nnp_filter',
+                'connection_setup_fee_label', 'connection_setup_fee_mav'], 'string'],
             [['pricelist_version', 'pricelist_group_id', 'type_id', 'basic_pricelist_location_id',
                 'default_tarification_free_seconds', 'default_tarification_interval_seconds',
                 'default_tarification_min_paid_seconds', 'service_type_id', 'default_tarification_type',
