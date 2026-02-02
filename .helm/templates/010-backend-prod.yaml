@@ -73,6 +73,8 @@ spec:
         resources:
           limits:
             memory: "18Gi"
+          requests:
+            memory: "1Gi"
         image: {{ .Values.werf.image.voip_gui_php_fpm_prod }}
         volumeMounts:
         - name: config-volume
