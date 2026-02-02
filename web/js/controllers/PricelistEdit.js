@@ -34,6 +34,8 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
             minimal_cost: 0,
             minimum_margin: '0',
             minimum_margin_type: 1,
+            connection_setup_fee_label: '0',
+            connection_setup_fee_mav: '0',
             nnp_filter: null
         };
 
