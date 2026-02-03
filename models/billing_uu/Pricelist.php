@@ -54,6 +54,7 @@ class Pricelist extends \yii\db\ActiveRecord
                 'default_tarification_min_paid_seconds', 'service_type_id', 'default_tarification_type',
                 'minimum_minutes', 'minimum_cost', 'minimum_margin_type','additional_pricelist'], 'integer'],
             [['orig', 'is_global', 'is_active', 'is_redirect_pricelist'], 'boolean'],
+            [['connection_setup_fee_label', 'connection_setup_fee_mav'], 'default', 'value' => '0'],
             [['minimum_margin'], 'string']
         ];
     }

@@ -14,6 +14,12 @@ var PricelistEditCtrl = function($scope, List, Pricelist, PricelistLocation, par
             });
             
             $scope.item.nnp_filter = $scope.item.num_c_nnp_filter;
+            if ($scope.item.connection_setup_fee_label == null) {
+                $scope.item.connection_setup_fee_label = '0';
+            }
+            if ($scope.item.connection_setup_fee_mav == null) {
+                $scope.item.connection_setup_fee_mav = '0';
+            }
         });
     } else {
         var date = new Date();
