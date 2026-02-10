@@ -248,6 +248,7 @@ class SwaggerController extends Controller
                                                 'name' => 'Russia',
                                                 'mcc' => '250',
                                                 'numericCountryCode' => '7',
+                                                'isoCountryCode' => 643,
                                                 'minPrices' => [
                                                     'internet' => [
                                                         'price' => 0.02,
@@ -313,6 +314,11 @@ class SwaggerController extends Controller
                             'numericCountryCode' => [
                                 'type' => 'string',
                                 'description' => 'Код страны (поле nnp.mcc.country_code).',
+                            ],
+                            'isoCountryCode' => [
+                                'type' => 'integer',
+                                'format' => 'int64',
+                                'description' => 'ISO-код страны (поле nnp.mcc.iso_country_code).',
                             ],
                             'minPrices' => [
                                 'type' => 'object',
