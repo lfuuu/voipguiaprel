@@ -306,6 +306,7 @@ class PricelistController extends JsonController
         $baseQuery = (new Query())
             ->select([
                 'mcc_value'      => 'mcc_table.mcc',
+                'country_code'   => 'mcc_table.country_code',
                 'country_name'   => 'mcc_table.country',
                 'price'          => new Expression('loc.delta_price::numeric'),
                 'pricelist_id'   => 'p.id',
@@ -350,7 +351,8 @@ class PricelistController extends JsonController
 
             $result[] = [
                 'name'               => $row['country_name'] ?? '',
-                'numericCountryCode' => $mcc,
+                'mcc'                => $mcc,
+                'numericCountryCode' => isset($row['country_code']) ? (string)$row['country_code'] : null,
                 'minPrices'          => [
                     'internet' => [
                         'price'         => isset($row['price']) ? (float)$row['price'] : null,
