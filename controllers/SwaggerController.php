@@ -246,7 +246,8 @@ class SwaggerController extends Controller
                                         'example' => [
                                             [
                                                 'name' => 'Russia',
-                                                'numericCountryCode' => '250',
+                                                'mcc' => '250',
+                                                'numericCountryCode' => '7',
                                                 'minPrices' => [
                                                     'internet' => [
                                                         'price' => 0.02,
@@ -305,9 +306,13 @@ class SwaggerController extends Controller
                                 'type' => 'string',
                                 'description' => 'Название страны из справочника MCC.',
                             ],
+                            'mcc' => [
+                                'type' => 'string',
+                                'description' => 'MCC (3 цифры) из справочника MCC/прайслиста, например 250.',
+                            ],
                             'numericCountryCode' => [
                                 'type' => 'string',
-                                'description' => 'MCC (3 цифры) из прайслиста, например 250.',
+                                'description' => 'Код страны (поле nnp.mcc.country_code).',
                             ],
                             'minPrices' => [
                                 'type' => 'object',
