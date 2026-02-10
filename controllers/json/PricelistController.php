@@ -309,6 +309,7 @@ class PricelistController extends JsonController
                 'country_code'   => 'mcc_table.country_code',
                 'iso_country_code' => 'mcc_table.iso_country_code',
                 'country_name'   => 'mcc_table.country',
+                'continent'      => 'mcc_table.continent',
                 'price'          => new Expression('loc.delta_price::numeric'),
                 'pricelist_id'   => 'p.id',
                 'pricelist_name' => 'p.name',
@@ -355,6 +356,7 @@ class PricelistController extends JsonController
                 'mcc'                => $mcc,
                 'numericCountryCode' => isset($row['country_code']) ? (string)$row['country_code'] : null,
                 'isoCountryCode'     => isset($row['iso_country_code']) ? (int)$row['iso_country_code'] : null,
+                'continent'          => $row['continent'] ?? null,
                 'minPrices'          => [
                     'internet' => [
                         'price'         => isset($row['price']) ? (float)$row['price'] : null,
