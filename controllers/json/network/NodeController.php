@@ -207,6 +207,7 @@ class NodeController extends BaseController
             "CONCAT(name, ' - ', id) AS name_display"
         ])
         ->from('public.server')
+        ->where(['is_visible' => true])
         ->all();
         
     return $servers;

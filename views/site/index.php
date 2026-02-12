@@ -46,7 +46,7 @@ $items = [];
             <?php foreach($item->servers as $item2): ?>
                 <?php 
                     if (
-                        !$item2->active || 
+                        !$item2->is_visible || 
                         $item2->id == 10 || 
                         $item2->id > 1000
                     ) {
@@ -97,3 +97,75 @@ $items = [];
         </tbody>
     </table>
 <?php endforeach; ?>
+
+<?php
+    $serversWithoutHub = [];
+    foreach ($servers as $serverItem) {
+        if (
+            !$serverItem->is_visible ||
+            $serverItem->id == 10 ||
+            $serverItem->id > 1000
+        ) {
+            continue;
+        }
+        $serversWithoutHub[] = $serverItem;
+    }
+?>
+
+<?php if (!empty($serversWithoutHub)): ?>
+    <h4><?= Html::encode('Сервера без хаба'); ?></h4>
+    <table class="table table-striped table-hover table-condensed">
+        <thead>
+            <tr>
+                <th style="width:20%">Код</th>
+                <th style="width:20%">Название</th>
+                <th style="width:20%">Название короткое</th>
+                <th style="width:35%">Флаги</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($serversWithoutHub as $item2): ?>
+                <tr>
+                    <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item2->id]); ?>'">
+                        <?= Html::encode($item2->id) ?>
+                    </td>
+                    <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item2->id]); ?>'">
+                        <?= Html::encode($item2->name) ?>
+                    </td>
+                    <td style="cursor: pointer" onclick="location.href='<?= Url::toRoute(['server/index', 'serverId' => $item2->id]); ?>'">
+                        <?= Html::encode($item2->name_short) ?>
+                    </td>
+                    <td>
+                        <?php if (!empty($item2->preparedPrefixlists)): ?>
+                            <span class="label label-danger">Префикслист</span>
+                        <?php endif; ?>
+
+                        <?php if (isset($item2->instanceSettings) && !$item2->instanceSettings->active): ?>
+                            <span class="label label-warning">Не активен</span>
+                        <?php endif; ?>
+
+                        <?php if (isset($item2->instanceSettings) && $item2->instanceSettings->is_can_recalculate): ?>
+                            <span class="label label-info">Пересчитывать</span>
+                        <?php endif; ?>
+
+                        <?php if ($item2->is_need_db_do_migrate): ?>
+                            <span class="label label-success">Мигрировать БД</span>
+                        <?php endif; ?>
+
+                        <?php if ($item2->is_sormed): ?>
+                            <span class="label label-warning">СОРМ</span>
+                        <?php endif; ?>
+
+                        <?php if (isset($item2->instanceSettings) && !$item2->instanceSettings->auto_lock_finance): ?>
+                            <span class="label label-warning">Финансовая автоблокировка выкл</span>
+                        <?php endif; ?>
+
+                        <?php if (!empty($item2->is_production)): ?>
+                            <span class="label label-danger">В коммерции</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php endif; ?>
