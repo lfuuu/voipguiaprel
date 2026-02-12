@@ -2634,6 +2634,10 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope, $http) {
         },
         notifyEventToAll: function () {
             return ApiLoader.post(url + 'notify-event-to-all');
+        },
+        syncStatus: function () {
+            return $http.get(url + 'sync-status', { responseType: 'json' })
+                .then(function (res) { return res.data; }, function (err) { return $q.reject(err); });
         }
     };
 });

@@ -1152,6 +1152,33 @@ SQL;
         return ['success' => 1];
     }
 
+    public function actionSyncStatus()
+    {
+        if (!\Yii::$app->user->can('pricelist_list')) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+
+        $events = [
+            'nnp_pricelist',
+            'nnp_pricelist_location',
+            'nnp_pricelist_filter_a',
+            'nnp_pricelist_filter_b',
+            'nnp_pricelist_prefix_price',
+        ];
+
+        $queueCount = (new Query())
+            ->from('event.queue')
+            ->where(['event' => $events])
+            ->count('*');
+
+        $queueCount = (int)$queueCount;
+
+        return [
+            'status' => $queueCount > 0 ? 'in_progress' : 'done',
+            'queue_count' => $queueCount,
+        ];
+    }
+
     public function actionRelations()
     {
         if (!\Yii::$app->user->can('pricelist_list')) {
