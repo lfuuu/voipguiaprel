@@ -1,4 +1,7 @@
 var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window, $timeout) {
+  var syncPollPromise = null;
+  var syncPollEnabled = false;
+  var syncPollIntervalMs = 3000;
 
   $scope.sortType = 'name';
   $scope.sortReverse = false;
@@ -24,6 +27,11 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window, $t
   $scope.limit = 15;
   $scope.offset = (($scope.currentPage - 1) * $scope.limit);
   $scope.totalItems = 0;
+  $scope.syncStatus = {
+    status: 'done',
+    queue_count: 0,
+    error: null
+  };
 
   // =========================
   // POPUP-ошибки (красная шапка)
@@ -108,7 +116,68 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window, $t
   $scope.init = function (tab) {
     if (tab) tab.title = 'Pricelist';
     $scope.refreshList();
+    requestSyncStatus().then(function () {
+      if ($scope.syncStatus.status === 'in_progress') {
+        startSyncPolling();
+      }
+    });
   };
+
+  function applySyncStatus(data) {
+    var queueCount = parseInt(data && data.queue_count, 10);
+    if (isNaN(queueCount) || queueCount < 0) queueCount = 0;
+
+    var status = data && data.status === 'in_progress' ? 'in_progress' : 'done';
+    if (queueCount > 0) status = 'in_progress';
+
+    $scope.syncStatus.status = status;
+    $scope.syncStatus.queue_count = queueCount;
+    $scope.syncStatus.error = null;
+    return $scope.syncStatus;
+  }
+
+  function requestSyncStatus() {
+    return Pricelist.syncStatus()
+      .then(function (data) {
+        return applySyncStatus(data);
+      })
+      .catch(function (xhr) {
+        $scope.syncStatus.error = extractErrorMessage(xhr, 'Ошибка получения статуса синхронизации');
+        throw xhr;
+      });
+  }
+
+  function stopSyncPolling() {
+    syncPollEnabled = false;
+    if (syncPollPromise) {
+      $timeout.cancel(syncPollPromise);
+      syncPollPromise = null;
+    }
+  }
+
+  function scheduleSyncPolling() {
+    syncPollPromise = $timeout(function () {
+      if (!syncPollEnabled) return;
+
+      requestSyncStatus()
+        .then(function (status) {
+          if (status.status === 'in_progress') {
+            scheduleSyncPolling();
+          } else {
+            stopSyncPolling();
+          }
+        })
+        .catch(function () {
+          if (syncPollEnabled) scheduleSyncPolling();
+        });
+    }, syncPollIntervalMs);
+  }
+
+  function startSyncPolling() {
+    if (syncPollEnabled) return;
+    syncPollEnabled = true;
+    scheduleSyncPolling();
+  }
 
   $scope.refreshList = function () {
     Pricelist.read({
@@ -279,7 +348,17 @@ var PricelistListCtrl = function ($scope, Pricelist, List, Redirect, $window, $t
   };
 
   $scope.notifyEventToAll = function () {
-    Pricelist.notifyEventToAll().then(function () { $window.alert('Синхронизация завершена'); })
+    Pricelist.notifyEventToAll().then(function () {
+      $scope.syncStatus.status = 'in_progress';
+      $scope.syncStatus.error = null;
+      requestSyncStatus().finally(function () {
+        startSyncPolling();
+      });
+    })
       .catch(function (xhr) { showErrorsPopup(xhr, 'Ошибка при синхронизации событий'); });
   };
+
+  $scope.$on('$destroy', function () {
+    stopSyncPolling();
+  });
 };
