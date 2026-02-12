@@ -260,7 +260,6 @@ data:
       return [
         'resources' => [
             'http://iberus.mcn.ru:8099/healthcheck',
-            'http://reg11.mcntelecom.ru:8032/test/healthcheck',
             'http://reg12.mcntelecom.ru:8032/test/healthcheck',
             'http://reg13.mcntelecom.ru:8032/test/healthcheck',
             'http://reg14.mcntelecom.ru:8032/test/healthcheck',
