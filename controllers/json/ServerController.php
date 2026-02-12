@@ -13,6 +13,7 @@ class ServerController extends JsonController
         return
             Server::find()
                 ->select(['id', 'concat(name, \' (\', id, \')\') as name'])
+                ->where(['is_visible' => true])
                 ->orderBy('id')
                 ->asArray()
                 ->all();
@@ -31,6 +32,7 @@ class ServerController extends JsonController
         $result = Server::find()
                 ->select(['id', 'concat(name, \' (\', id, \')\') as name'])
                 ->where($where)
+                ->andWhere(['is_visible' => true])
                 ->orderBy('id')
                 ->asArray()
                 ->all();
@@ -53,6 +55,7 @@ class ServerController extends JsonController
             ->innerJoin('auth.trunk t', 't.server_id = server.id')
             ->innerJoin('billing.service_trunk st', 'st.trunk_id = t.id')
             ->where($where)
+            ->andWhere(['server.is_visible' => true])
             ->andWhere('t.our_trunk = false')
             ->andWhere('st.activation_dt < now()')
             ->andWhere('st.expire_dt > now()')
