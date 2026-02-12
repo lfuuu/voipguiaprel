@@ -126,7 +126,7 @@
   <div class="form-group">
     <div class="row">
       <div class="pull-right form-group col-sm-4 search-form-item">
-        <button style="margin-top: 10px;" ng-click="notifyEventToAll()" class="btn btn-success" ng-disabled="syncStatus.status === 'in_progress'">Синхронизация прайслистов полностью</button>
+        <button style="margin-top: 10px;" ng-click="notifyEventToAll()" class="btn btn-success">Синхронизация прайслистов полностью</button>
         <div style="margin-top: 10px;" class="text-info" ng-if="syncStatus.status === 'in_progress'">
           Синхронизация в процессе. В очереди {{syncStatus.queue_count}} задач.
         </div>
