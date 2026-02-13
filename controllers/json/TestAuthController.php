@@ -102,7 +102,8 @@ class TestAuthController extends JsonController
           SELECT DISTINCT ON (id_auth)
                  id_auth, passed, tm
           FROM auth.test_result
-          WHERE type = 'auth'
+          WHERE type = 'auth'" .
+          ($server->id == 11 ? " AND server_id = 11 AND instance_id = 1001" : "") . "
           ORDER BY id_auth, tm DESC
         ) tr";
 
@@ -177,7 +178,7 @@ class TestAuthController extends JsonController
                 'auth.test_result tr',
                 "tr.type = 'auth' 
                  AND tr.id_auth = auth.test_auth.id 
-                 AND (tr.server_id = 11 and tr.instance_id = 1001 OR tr.server_id = tr.instance_id)"
+                 AND tr.server_id = tr.instance_id"
             )
             ->where(['test_auth.id' => $this->request['id']])
             ->asArray()
