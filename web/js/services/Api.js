@@ -1844,6 +1844,9 @@ app.factory('TrunkNodeLink', function($q, ApiLoader, $rootScope) {
       get: function(data) {
         return ApiLoader.post(url + 'get', data);
       },
+      getSs7: function(data) {
+        return ApiLoader.post(url + 'get-ss7', data);
+      },
       save: function(data) {
         return ApiLoader.post(url + 'save', data);
       }
