@@ -5,7 +5,12 @@ var ApiBillingApiPricelistItemEditCtrl = function($rootScope, $scope, ApiBilling
         });
     } else {
         $scope.item = {
-            name: ''
+            api_id: '',
+            api_method_id: '',
+            pricelist_id: '',
+            price: 0,
+            cost: 0,
+            enabled: true
         };
     }
 

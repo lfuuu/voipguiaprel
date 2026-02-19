@@ -72,6 +72,7 @@ var ApiBillingApiPricelistEditCtrl = function (
             api_id: '',
             api_method_id: '',
             price: 0,
+            cost: 0,
             enabled: true
             // id не задаём — сервер различит новые/старые по наличию id
         });
