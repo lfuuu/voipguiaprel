@@ -171,7 +171,10 @@
             <div class="form-group col-sm-4 search-form-item">
                 <label class="col-sm-2 search-field-label">Server ID</label>
                 <div class="col-sm-10 search-input">
-                    <input class="form-control" placeholder="99" ng-model="item.server_id">
+                    <select class="search-form-select" ui-select2 style="width: 100%" tags="true" ng-model="item.server_id" placeholder="Выберите сервер">
+                        <option value="">-- Выберите --</option>
+                        <option ng-repeat="server in serverList" value="{{server.id}}">{{server.id}}: {{server.name}}</option>
+                    </select>
                 </div>
             </div>
         </div>
