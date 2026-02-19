@@ -5,6 +5,7 @@ namespace app\controllers\json;
 use app\classes\JsonController;
 use app\models\billing\DisconnectCause;
 use app\models\calls_cdr\Cdr;
+use app\models\nnp\Operator as NnpOperator;
 use yii\base\Request;
 use yii\db\Expression;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -162,11 +163,97 @@ class CdrController extends JsonController
         usort($items, function($a, $b) {
             return $a['connect_time'] < $b['connect_time'] ? 1 : -1;
         });
+
+        $operatorCache = [];
+        foreach ($items as &$item) {
+            $item['src_number_operator_name'] = $this->resolveNumberOperatorName($item['src_number'] ?? '', $operatorCache);
+            $item['dst_number_operator_name'] = $this->resolveNumberOperatorName($item['dst_number'] ?? '', $operatorCache);
+            $item['dst_replace_operator_name'] = $this->resolveNumberOperatorName($item['dst_replace'] ?? '', $operatorCache);
+        }
+        unset($item);
+
         $link = \Yii::$app->params['isEuropean'] ? 'https://stat.kompaas.tech/' : 'https://stat.mcn.ru/';
         $result = [
             'items' => $items,
             'link'  => $link,
         ];
+
+        return $result;
+    }
+
+    private function resolveNumberOperatorName($number, array &$cache)
+    {
+        $cleanNumber = preg_replace('~\D~', '', (string)$number);
+        if ($cleanNumber === '') {
+            return null;
+        }
+
+        if (array_key_exists($cleanNumber, $cache)) {
+            return $cache[$cleanNumber];
+        }
+
+        $numberRange = $this->getNumberRangeByNum($cleanNumber);
+        if (empty($numberRange)) {
+            $cache[$cleanNumber] = null;
+            return null;
+        }
+
+        $operatorName = null;
+        $isPorted = !empty($numberRange['is_number_ported']);
+        if ($isPorted) {
+            $operatorName = $numberRange['ported_operator_id_name'] ?? $numberRange['nnp_operator_id_name'] ?? null;
+        } else {
+            $operatorName = $numberRange['nnp_operator_id_name'] ?? $numberRange['ported_operator_id_name'] ?? null;
+        }
+
+        $cache[$cleanNumber] = $operatorName;
+        return $operatorName;
+    }
+
+    private function getNumberRangeByNum($number)
+    {
+        $apiParams = [
+            'cmd' => 'getNumberRangeByNum',
+            'num' => $number,
+        ];
+
+        $baseUrls = [
+            'https://api-gw.mcn.ru/voipbilld/reg/',
+            'https://api-gw.kompaas.tech/voipbilld/reg/',
+        ];
+
+        $result = [];
+        foreach ($baseUrls as $baseUrl) {
+            $request = $baseUrl . 'test/nnpcalc?' . http_build_query($apiParams);
+            $response = @file_get_contents($request);
+            if ($response === false) {
+                continue;
+            }
+
+            $decoded = json_decode($response, true);
+            if (is_array($decoded)) {
+                $result = $decoded;
+                break;
+            }
+        }
+
+        if (empty($result)) {
+            return [];
+        }
+
+        if (!empty($result['nnp_operator_id']) && empty($result['nnp_operator_id_name'])) {
+            $operator = NnpOperator::findOne(['id' => $result['nnp_operator_id']]);
+            if ($operator) {
+                $result['nnp_operator_id_name'] = $operator->name;
+            }
+        }
+
+        if (!empty($result['ported_operator_id']) && empty($result['ported_operator_id_name'])) {
+            $portedOperator = NnpOperator::findOne(['id' => $result['ported_operator_id']]);
+            if ($portedOperator) {
+                $result['ported_operator_id_name'] = $portedOperator->name;
+            }
+        }
 
         return $result;
     }

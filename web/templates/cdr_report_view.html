@@ -57,11 +57,25 @@
                         <span ng-show="sortType == 'src_number' && !sortReverse" class="caret-up"></span>
                     </a>
                 </th>
+                <th width="6%">
+                    <a href="#" ng-click="sortType = 'src_number_operator_name'; sortReverse = !sortReverse">
+                        SRC operator
+                        <span ng-show="sortType == 'src_number_operator_name' && sortReverse" class="caret-down"></span>
+                        <span ng-show="sortType == 'src_number_operator_name' && !sortReverse" class="caret-up"></span>
+                    </a>
+                </th>
                 <th width="5%">
                     <a href="#" ng-click="sortType = 'dst_number'; sortReverse = !sortReverse">
                         DST number
                         <span ng-show="sortType == 'dst_number' && sortReverse" class="caret-down"></span>
                         <span ng-show="sortType == 'dst_number' && !sortReverse" class="caret-up"></span>
+                    </a>
+                </th>
+                <th width="6%">
+                    <a href="#" ng-click="sortType = 'dst_number_operator_name'; sortReverse = !sortReverse">
+                        DST operator
+                        <span ng-show="sortType == 'dst_number_operator_name' && sortReverse" class="caret-down"></span>
+                        <span ng-show="sortType == 'dst_number_operator_name' && !sortReverse" class="caret-up"></span>
                     </a>
                 </th>
                 <!-- Новая колонка NOA -->
@@ -77,6 +91,13 @@
                         DST replace
                         <span ng-show="sortType == 'dst_replace' && sortReverse" class="caret-down"></span>
                         <span ng-show="sortType == 'dst_replace' && !sortReverse" class="caret-up"></span>
+                    </a>
+                </th>
+                <th width="6%">
+                    <a href="#" ng-click="sortType = 'dst_replace_operator_name'; sortReverse = !sortReverse">
+                        DST replace operator
+                        <span ng-show="sortType == 'dst_replace_operator_name' && sortReverse" class="caret-down"></span>
+                        <span ng-show="sortType == 'dst_replace_operator_name' && !sortReverse" class="caret-up"></span>
                     </a>
                 </th>
                 <th width="7%">
@@ -140,9 +161,12 @@
                 <td>{{item.src_route}}</td>
                 <td>{{item.dst_route}}</td>
                 <td>{{item.src_number}}</td>
+                <td>{{item.src_number_operator_name || '-'}}</td>
                 <td>{{item.dst_number}}</td>
+                <td>{{item.dst_number_operator_name || '-'}}</td>
                 <td>{{item.src_noa}}, {{item.dst_noa}}, {{item.redirect_noa}}</td>
                 <td>{{item.dst_replace}}</td>
+                <td>{{item.dst_replace_operator_name || '-'}}</td>
                 <td>in: {{item.redirect_number}}<br/>out: {{item.out_redirect_number}}</td>
                 <td>{{item.out_redirect_number}}</td>
                 <td>{{item.session_time}}</td>
