@@ -131,6 +131,10 @@ var CdrReportReadCtrl = function($rootScope, $scope, Cdr, TestDial, Trunk, List,
         $scope.disconnectCauseList = data;
     });
 
+    List.server().then(function (data) {
+        $scope.serverList = data;
+    });
+
     if (!(params.object_type && params.object_id)) {
         List.hub().then(function (data) {
             $scope.hubList = data;
