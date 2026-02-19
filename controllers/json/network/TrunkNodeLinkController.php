@@ -2,6 +2,7 @@
 
 namespace app\controllers\json\network;
 
+use app\models\calligrapher\TrunkNodeLink;
 use Yii;
 use yii\web\HttpException;
 use app\classes\BaseController;
@@ -46,6 +47,7 @@ SELECT
     t.service_trunk_id,
     t.node_id,
     t.comment,
+    t.ss7,
     CONCAT(n.node_name_id, ' - ', n.node_id) AS node_display,
     COALESCE(tc.type_connection, 'Не задан') AS connection_type_text,
     t.type_connection_id,
@@ -149,6 +151,7 @@ SQL;
         }
 
         $model->load($postData, '');
+        $model->ss7 = $this->resolveSs7ByServiceTrunkId($model->service_trunk_id);
 
         if ($model->save()) {
             return [
@@ -162,5 +165,59 @@ SQL;
             'success' => false,
             'errors'  => $model->errors,
         ];
+    }
+
+    /**
+     * Получение SS7 КПС по ID логического транка для автоподстановки в форме.
+     *
+     * @return array
+     */
+    public function actionGetSs7()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $serviceTrunkId = Yii::$app->request->post('service_trunk_id');
+
+        return [
+            'ss7' => $this->resolveSs7ByServiceTrunkId($serviceTrunkId),
+        ];
+    }
+
+    /**
+     * Возвращает SS7 КПС физического транка, связанного с service_trunk_id.
+     * Для транков не типа trunk-SS7 возвращает null.
+     *
+     * @param mixed $serviceTrunkId
+     * @return string|null
+     */
+    private function resolveSs7ByServiceTrunkId($serviceTrunkId)
+    {
+        if (empty($serviceTrunkId)) {
+            return null;
+        }
+
+        $sql = <<<SQL
+SELECT
+    CASE
+        WHEN ct.source_type_id = 3 THEN NULLIF(BTRIM(ct.spc), '')
+        ELSE NULL
+    END AS ss7
+FROM billing.service_trunk st
+LEFT JOIN LATERAL (
+    SELECT c.source_type_id, c.spc
+    FROM copm.trunk c
+    WHERE c.code_trunk = st.trunk_id
+      AND c.region_id = st.server_id
+    ORDER BY c.id DESC
+    LIMIT 1
+) ct ON TRUE
+WHERE st.id = :service_trunk_id
+SQL;
+
+        $value = Yii::$app->db
+            ->createCommand($sql, [':service_trunk_id' => (int)$serviceTrunkId])
+            ->queryScalar();
+
+        return $value !== false ? $value : null;
     }
 }

@@ -17,6 +17,7 @@ use app\classes\traits\ModelRules;
  * @property string|null $start_date       // TIMESTAMP без часового пояса
  * @property string|null $end_date         // TIMESTAMP без часового пояса
  * @property int|null    $id_phys_trunk
+ * @property string|null $ss7
  */
 class TrunkNodeLink extends ActiveRecord
 {
@@ -59,6 +60,7 @@ class TrunkNodeLink extends ActiveRecord
 
             // текстовое поле
             [['comment'], 'string'],
+            [['ss7'], 'string', 'max' => 32],
 
             // даты — безопасны для массовой загрузки
             [['start_date', 'end_date'], 'safe'],
@@ -79,6 +81,10 @@ class TrunkNodeLink extends ActiveRecord
 
         if ($this->comment !== null && trim($this->comment) === '') {
             $this->comment = null;
+        }
+
+        if ($this->ss7 !== null && trim($this->ss7) === '') {
+            $this->ss7 = null;
         }
 
         return true;
