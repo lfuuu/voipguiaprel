@@ -12,6 +12,7 @@ use yii\db\ActiveQuery;
  * @property int $api_method_id
  * @property bool $enabled
  * @property string $price
+ * @property string $cost
  *
  * @property Api $api
  * @property ApiMethod $apiMethod
@@ -40,7 +41,7 @@ class ApiPricelistItem extends \yii\db\ActiveRecord
     {
         return [
             [['pricelist_id', 'api_id', 'api_method_id'], 'integer'],
-            [['price'], 'string'],
+            [['price', 'cost'], 'string'],
             [['enabled'], 'boolean'],
         ];
     }

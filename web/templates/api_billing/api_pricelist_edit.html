@@ -19,6 +19,7 @@
                 <th>API</th>
                 <th>Метод API</th>
                 <th>Цена</th>
+                <th>Себестоимость</th>
                 <th>Включено</th>
                 <th>Удалить</th>
             </tr>
@@ -37,6 +38,9 @@
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
                     <input class="form-control" placeholder="Цена" ng-model="line.price" required>
                 </td>
+                <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="11%">
+                    <input class="form-control" placeholder="Себестоимость" ng-model="line.cost">
+                </td>
                 <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%"">
                     <div class="btn-group" ng-click="line.enabled = !line.enabled">
                         <button type="button" class="btn btn-sm {{line.enabled ? 'btn-success active' : 'btn-default'}}">Да</button>
@@ -48,7 +52,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                     <button type="button" class="btn btn-success btn-xs" ng-click="addPricelistItem()"><i class="glyphicon glyphicon-plus"></i> Добавить элемент</button>
                 </td>
             </tr>
