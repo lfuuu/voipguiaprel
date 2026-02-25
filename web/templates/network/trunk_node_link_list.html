@@ -143,13 +143,21 @@
         </a>
       </th>
       <th>
-      <a href="#"
-        ng-click="sortType='ip_address'; sortReverse = !sortReverse">
+        <a href="#"
+          ng-click="sortType='ip_address'; sortReverse = !sortReverse">
         IP адрес
         <span ng-show="sortType=='ip_address' && sortReverse" class="caret-down"></span>
         <span ng-show="sortType=='ip_address' && !sortReverse" class="caret-up"></span>
       </a>
     </th>
+      <th>
+        <a href="#"
+          ng-click="sortType='ss7'; sortReverse = !sortReverse">
+          SS7 код
+          <span ng-show="sortType=='ss7' && sortReverse" class="caret-down"></span>
+          <span ng-show="sortType=='ss7' && !sortReverse" class="caret-up"></span>
+        </a>
+      </th>
       <th>
         <a href="#" ng-click="sortType='phys_trunk_name'; sortReverse=!sortReverse">
           Имя физического транка
@@ -197,6 +205,7 @@
         </a>
       </td>
       <td>{{ link.ip_address }}</td>
+      <td>{{ link.ss7 }}</td>
       <td>{{ link.phys_trunk_name }}</td>
       <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"
           title="{{ link.contragent_name }}">
