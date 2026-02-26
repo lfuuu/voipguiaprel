@@ -5,7 +5,7 @@ var ApiBillingApiPricelistItemListCtrl = function($scope, ApiBillingApiPricelist
     $scope.searchQuery = '';
 
     $scope.filterFields = [
-        'id', 'name', 'pricelist_id', 'api_id', 'api_method_id', 'enabled', 'price', 'cost', 'is_active'
+        'id', 'name', 'pricelist_id', 'api_id', 'api_method_id', 'enabled', 'price', 'price_currency_id', 'cost', 'cost_currency_id', 'is_active'
     ];
 
     $scope.init = function(tab) {

@@ -143,7 +143,11 @@
                 <td>{{item.dst_number}}<br><span ng-if="item.dst_number_operator_name">({{item.dst_number_operator_name}})</span></td>
                 <td>{{item.src_noa}}, {{item.dst_noa}}, {{item.redirect_noa}}</td>
                 <td>{{item.dst_replace}}<br><span ng-if="item.dst_replace_operator_name">({{item.dst_replace_operator_name}})</span></td>
-                <td>in: {{item.redirect_number}}<br/>out: {{item.out_redirect_number}}</td>
+                <td>
+                    in: {{item.redirect_number}}
+                    <br><span ng-if="item.redirect_number_operator_name">({{item.redirect_number_operator_name}})</span>
+                    <br/>out: {{item.out_redirect_number}}
+                </td>
                 <td>{{item.out_redirect_number}}</td>
                 <td>{{item.session_time}}</td>
                 <td>{{item.disconnect_cause}}</td>

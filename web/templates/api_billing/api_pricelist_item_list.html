@@ -43,11 +43,25 @@
                     <span ng-show="sortType == 'price' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
+            <th width="5%">
+                <a href="#" ng-click="sortType = 'price_currency_id'; sortReverse = !sortReverse">
+                    Валюта цены
+                    <span ng-show="sortType == 'price_currency_id' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'price_currency_id' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
             <th width="7%">
                 <a href="#" ng-click="sortType = 'cost'; sortReverse = !sortReverse">
                     Себестоимость
                     <span ng-show="sortType == 'cost' && sortReverse" class="caret-down"></span>
                     <span ng-show="sortType == 'cost' && !sortReverse" class="caret-up"></span>
+                </a>
+            </th>
+            <th width="5%">
+                <a href="#" ng-click="sortType = 'cost_currency_id'; sortReverse = !sortReverse">
+                    Валюта себестоимости
+                    <span ng-show="sortType == 'cost_currency_id' && sortReverse" class="caret-down"></span>
+                    <span ng-show="sortType == 'cost_currency_id' && !sortReverse" class="caret-up"></span>
                 </a>
             </th>
             <th width="10%">
@@ -81,7 +95,9 @@
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.api_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.api_method_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.price}}</td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.price_currency_id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.cost}}</td>
+            <td style="cursor: pointer" ng-click="clickItem(item)">{{item.cost_currency_id}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.pricelist_name}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.enabled ? 'Да' : 'Нет'}}</td>
             <td style="cursor: pointer" ng-click="clickItem(item)">{{item.is_active ? 'Да' : 'Нет'}}</td>

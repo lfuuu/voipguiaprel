@@ -6,8 +6,16 @@ var ApiBillingApiPricelistEditCtrl = function (
     $modalInstance,
     $window // используется в exportToExcel
 ) {
+    $scope.currencyOptions = ['RUB', 'EUR', 'HUF'];
+
     if (params.id) {
         ApiBillingApiPricelist.get({ id: params.id }).then(function (data) {
+            if (data && data.items) {
+                data.items.forEach(function (line) {
+                    if (!line.price_currency_id) line.price_currency_id = 'RUB';
+                    if (!line.cost_currency_id) line.cost_currency_id = 'RUB';
+                });
+            }
             $scope.item = data;
         });
     } else {
@@ -73,6 +81,8 @@ var ApiBillingApiPricelistEditCtrl = function (
             api_method_id: '',
             price: 0,
             cost: 0,
+            price_currency_id: 'RUB',
+            cost_currency_id: 'RUB',
             enabled: true
             // id не задаём — сервер различит новые/старые по наличию id
         });
