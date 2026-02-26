@@ -282,7 +282,9 @@ class ApiPricelistController extends JsonController
                 $line->api->name ?? '—',
                 $line->apiMethod->name ?? '—',
                 $line->price,
+                $line->price_currency_id,
                 $line->cost,
+                $line->cost_currency_id,
                 $line->enabled ? 'Да' : 'Нет',
             ];
         }
@@ -302,7 +304,7 @@ class ApiPricelistController extends JsonController
         $sheet = $spreadsheet->getActiveSheet();
 
         // Заголовки
-        $headers = ['API', 'Метод API', 'Цена', 'Себестоимость', 'Включено'];
+        $headers = ['API', 'Метод API', 'Цена', 'Валюта цены', 'Себестоимость', 'Валюта себестоимости', 'Включено'];
 
         // Стили для заголовка (как в CDR)
         $headerStyle = [
@@ -313,7 +315,8 @@ class ApiPricelistController extends JsonController
 
         // Титул (опционально)
         $sheet->setCellValue('A1', $title);
-        $sheet->mergeCells('A1:E1');
+        $lastHeaderCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(count($headers));
+        $sheet->mergeCells("A1:{$lastHeaderCol}1");
         $sheet->getStyle('A1')->getFont()->setBold(true);
         $sheet->getRowDimension(1)->setRowHeight(20);
 

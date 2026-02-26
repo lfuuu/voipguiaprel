@@ -13,6 +13,8 @@ use yii\db\ActiveQuery;
  * @property bool $enabled
  * @property string $price
  * @property string $cost
+ * @property string $price_currency_id
+ * @property string $cost_currency_id
  *
  * @property Api $api
  * @property ApiMethod $apiMethod
@@ -34,6 +36,12 @@ class ApiPricelistItem extends \yii\db\ActiveRecord
         $item = new self();
         $item->load($data, '');
         $item->pricelist_id = $pricelist->id;
+        if (empty($item->price_currency_id)) {
+            $item->price_currency_id = 'RUB';
+        }
+        if (empty($item->cost_currency_id)) {
+            $item->cost_currency_id = 'RUB';
+        }
         return $item;
     }
 
@@ -42,6 +50,9 @@ class ApiPricelistItem extends \yii\db\ActiveRecord
         return [
             [['pricelist_id', 'api_id', 'api_method_id'], 'integer'],
             [['price', 'cost'], 'string'],
+            [['price_currency_id', 'cost_currency_id'], 'required'],
+            [['price_currency_id', 'cost_currency_id'], 'string', 'length' => 3],
+            [['price_currency_id', 'cost_currency_id'], 'in', 'range' => ['RUB', 'EUR', 'HUF']],
             [['enabled'], 'boolean'],
         ];
     }
