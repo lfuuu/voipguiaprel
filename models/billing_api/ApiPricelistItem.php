@@ -52,7 +52,7 @@ class ApiPricelistItem extends \yii\db\ActiveRecord
             [['price', 'cost'], 'string'],
             [['price_currency_id', 'cost_currency_id'], 'required'],
             [['price_currency_id', 'cost_currency_id'], 'string', 'length' => 3],
-            [['price_currency_id', 'cost_currency_id'], 'in', 'range' => ['RUB', 'EUR', 'HUF']],
+            [['price_currency_id', 'cost_currency_id'], 'in', 'range' => ['RUB', 'EUR', 'HUF', 'USD']],
             [['enabled'], 'boolean'],
         ];
     }
