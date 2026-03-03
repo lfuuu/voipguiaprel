@@ -6,7 +6,7 @@ var ApiBillingApiPricelistEditCtrl = function (
     $modalInstance,
     $window // используется в exportToExcel
 ) {
-    $scope.currencyOptions = ['RUB', 'EUR', 'HUF'];
+    $scope.currencyOptions = ['RUB', 'EUR', 'HUF', 'USD'];
 
     if (params.id) {
         ApiBillingApiPricelist.get({ id: params.id }).then(function (data) {

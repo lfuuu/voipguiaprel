@@ -1,5 +1,5 @@
 var ApiBillingApiPricelistItemEditCtrl = function($rootScope, $scope, ApiBillingApiPricelistItem, params, $modalInstance) {
-    $scope.currencyOptions = ['RUB', 'EUR', 'HUF'];
+    $scope.currencyOptions = ['RUB', 'EUR', 'HUF', 'USD'];
 
     if (params.id) {
         ApiBillingApiPricelistItem.get({id: params.id}).then(function (data) {
