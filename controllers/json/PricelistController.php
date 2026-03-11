@@ -256,6 +256,7 @@ class PricelistController extends JsonController
         $serviceTypeId = (int)($this->request['serviceTypeId'] ?? 3);
         $onlyActive    = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : false;
         $currency      = $this->request['currency'] ?? ($queryParams['currency'] ?? null);
+        $simProfileIds = $this->request['simProfileIds'] ?? null;
 
         if ($currency !== null) {
             $currency = strtoupper(trim((string)$currency));
@@ -269,6 +270,29 @@ class PricelistController extends JsonController
 
         if ($groupName === '') {
             throw new HttpException(400, 'Parameter "groupName" is required');
+        }
+
+        if ($simProfileIds !== null) {
+            $simProfileIds = array_values(array_unique(array_filter(array_map('intval', (array)$simProfileIds), static function ($value) {
+                return $value > 0;
+            })));
+
+            if (empty($simProfileIds)) {
+                throw new HttpException(400, 'Parameter "simProfileIds" is empty');
+            }
+        } else {
+            $simProfileIds = (new Query())
+                ->select(['id'])
+                ->from('billing_uu.sim_imsi_profile')
+                ->where(['name' => ['S2', 'S6', 'SP1']])
+                ->orderBy(['id' => SORT_ASC])
+                ->column();
+
+            $simProfileIds = array_values(array_unique(array_map('intval', $simProfileIds)));
+
+            if (empty($simProfileIds)) {
+                throw new HttpException(400, 'Default sim profiles not found');
+            }
         }
 
         $group = PricelistGroup::find()
@@ -302,44 +326,47 @@ class PricelistController extends JsonController
         }
 
         $pricelistIds = array_map('intval', array_column($pricelists, 'id'));
+        $simProfilesSqlArray = '{' . implode(',', $simProfileIds) . '}';
 
         $baseQuery = (new Query())
             ->select([
-                'mcc_value'      => 'mcc_table.mcc',
-                'country_code'   => 'mcc_table.country_code',
+                'mcc_value'        => 'mcc_table.mcc',
+                'country_code'     => 'mcc_table.country_code',
                 'iso_country_code' => 'mcc_table.iso_country_code',
-                'country_name'   => 'mcc_table.country',
-                'continent'      => 'mcc_table.continent',
-                'price'          => new Expression('loc.delta_price::numeric'),
-                'pricelist_id'   => 'p.id',
-                'pricelist_name' => 'p.name',
-                'sim_profile'    => 'loc.sim_profile',
-                'row_num'        => new Expression('row_number() OVER (PARTITION BY mcc_table.mcc ORDER BY loc.delta_price::numeric, p.id)'),
+                'country_name'     => 'mcc_table.country',
+                'continent'        => 'mcc_table.continent',
+                'price'            => new Expression('loc.delta_price::numeric'),
+                'pricelist_id'     => 'p.id',
+                'pricelist_name'   => 'p.name',
+                'sim_profile'      => 'loc.sim_profile',
+                'country_key'      => new Expression('COALESCE(mcc_table.iso_country_code::text, mcc_table.country_code::text, mcc_table.country)'),
+                'row_num'          => new Expression('row_number() OVER (PARTITION BY COALESCE(mcc_table.iso_country_code::text, mcc_table.country_code::text, mcc_table.country) ORDER BY loc.delta_price::numeric, p.id)'),
             ])
             ->from(['p' => 'billing_uu.pricelist'])
             ->innerJoin(['loc' => 'billing_uu.pricelist_location'], 'loc.pricelist_id = p.id')
             ->join('JOIN LATERAL', 'unnest(loc.mcc) AS mcc_value(mcc)', 'TRUE')
             ->innerJoin(['mcc_table' => 'nnp.mcc'], 'mcc_table.mcc::int = mcc_value.mcc::int')
             ->where(['p.id' => $pricelistIds])
-            ->andWhere('loc.delta_price IS NOT NULL');
+            ->andWhere('loc.delta_price IS NOT NULL')
+            ->andWhere('loc.sim_profile && :sim_profiles::int[]', [':sim_profiles' => $simProfilesSqlArray]);
 
         $rows = (new Query())
             ->from(['t' => $baseQuery])
             ->where(['row_num' => 1])
-            ->orderBy(['mcc_value' => SORT_ASC])
+            ->orderBy(['country_name' => SORT_ASC])
             ->all();
 
-        $simProfileIds = [];
+        $resultSimProfileIds = [];
         foreach ($rows as $row) {
-            PricelistView::processQueryArray($simProfileIds, $row['sim_profile'] ?? null);
+            PricelistView::processQueryArray($resultSimProfileIds, $row['sim_profile'] ?? null);
         }
         $simProfileNames = [];
-        if (!empty($simProfileIds)) {
-            $simProfileIds = array_values(array_unique($simProfileIds));
+        if (!empty($resultSimProfileIds)) {
+            $resultSimProfileIds = array_values(array_unique($resultSimProfileIds));
             $simProfileRows = (new Query())
                 ->select(['id', 'name'])
                 ->from('billing_uu.sim_imsi_profile')
-                ->where(['id' => $simProfileIds])
+                ->where(['id' => $resultSimProfileIds])
                 ->all();
             foreach ($simProfileRows as $simProfileRow) {
                 $simProfileNames[$simProfileRow['id']] = $simProfileRow['name'];
