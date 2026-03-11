@@ -252,11 +252,11 @@ class PricelistController extends JsonController
 
         $queryParams = Yii::$app->request->get();
 
-        $groupName     = trim((string)($this->request['groupName'] ?? 'Roaming Data'));
-        $serviceTypeId = (int)($this->request['serviceTypeId'] ?? 3);
-        $onlyActive    = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : false;
-        $currency      = $this->request['currency'] ?? ($queryParams['currency'] ?? null);
-        $simProfileIds = $this->request['simProfileIds'] ?? null;
+        $groupName       = trim((string)($this->request['groupName'] ?? 'Roaming Data'));
+        $serviceTypeId   = (int)($this->request['serviceTypeId'] ?? 3);
+        $onlyActive      = array_key_exists('onlyActive', $this->request) ? (bool)$this->request['onlyActive'] : false;
+        $currency        = $this->request['currency'] ?? ($queryParams['currency'] ?? null);
+        $simProfileNames = $this->request['simProfileNames'] ?? null;
 
         if ($currency !== null) {
             $currency = strtoupper(trim((string)$currency));
@@ -272,27 +272,31 @@ class PricelistController extends JsonController
             throw new HttpException(400, 'Parameter "groupName" is required');
         }
 
-        if ($simProfileIds !== null) {
-            $simProfileIds = array_values(array_unique(array_filter(array_map('intval', (array)$simProfileIds), static function ($value) {
-                return $value > 0;
+        if ($simProfileNames !== null) {
+            $simProfileNames = array_values(array_unique(array_filter(array_map(static function ($value) {
+                return trim((string)$value);
+            }, (array)$simProfileNames), static function ($value) {
+                return $value !== '';
             })));
 
-            if (empty($simProfileIds)) {
-                throw new HttpException(400, 'Parameter "simProfileIds" is empty');
+            if (empty($simProfileNames)) {
+                throw new HttpException(400, 'Parameter "simProfileNames" is empty');
             }
         } else {
-            $simProfileIds = (new Query())
-                ->select(['id'])
-                ->from('billing_uu.sim_imsi_profile')
-                ->where(['name' => ['S2', 'S6', 'SP1']])
-                ->orderBy(['id' => SORT_ASC])
-                ->column();
+            $simProfileNames = ['S2', 'S6', 'SP1'];
+        }
 
-            $simProfileIds = array_values(array_unique(array_map('intval', $simProfileIds)));
+        $simProfileIds = (new Query())
+            ->select(['id'])
+            ->from('billing_uu.sim_imsi_profile')
+            ->where(['name' => $simProfileNames])
+            ->orderBy(['id' => SORT_ASC])
+            ->column();
 
-            if (empty($simProfileIds)) {
-                throw new HttpException(400, 'Default sim profiles not found');
-            }
+        $simProfileIds = array_values(array_unique(array_map('intval', $simProfileIds)));
+
+        if (empty($simProfileIds)) {
+            throw new HttpException(400, $this->request['simProfileNames'] ?? null ? 'Sim profiles not found' : 'Default sim profiles not found');
         }
 
         $group = PricelistGroup::find()
