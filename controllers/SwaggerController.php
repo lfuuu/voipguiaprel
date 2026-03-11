@@ -184,7 +184,7 @@ class SwaggerController extends Controller
                     'post' => [
                         'tags' => ['Pricelist'],
                         'summary' => 'Минимальные цены на интернет по группе прайслистов',
-                        'description' => 'Проходит по всем прайслистам в указанной группе (по умолчанию Roaming Data) и возвращает по каждой стране (MCC) минимальную цену на интернет с указанием прайса, где она найдена. Доступ открыт (без проверки прав).',
+                        'description' => 'Проходит по всем прайслистам в указанной группе (по умолчанию Roaming Data) и возвращает по одной записи на страну минимальную цену на интернет с указанием прайса, где она найдена. Если `simProfileIds` не передан, используются профили S2, S6 и SP1. Поле `mcc` в ответе содержит MCC строки, на которой найдена минимальная цена. Доступ открыт (без проверки прав).',
                         'parameters' => [
                             [
                                 'name' => 'currency',
@@ -221,6 +221,13 @@ class SwaggerController extends Controller
                                                 'description' => 'Если true — берём только активные прайсы.',
                                                 'default' => false,
                                             ],
+                                            'simProfileIds' => [
+                                                'type' => 'array',
+                                                'description' => 'Список ID sim-профилей для фильтрации. Если не передан, используются профили S2, S6 и SP1.',
+                                                'items' => [
+                                                    'type' => 'integer',
+                                                ],
+                                            ],
                                         ],
                                     ],
                                     'example' => [
@@ -228,6 +235,7 @@ class SwaggerController extends Controller
                                         'currency' => 'EUR',
                                         'serviceTypeId' => 3,
                                         'onlyActive' => false,
+                                        'simProfileIds' => [1, 2, 3],
                                     ],
                                 ],
                             ],
@@ -310,7 +318,7 @@ class SwaggerController extends Controller
                             ],
                             'mcc' => [
                                 'type' => 'string',
-                                'description' => 'MCC (3 цифры) из справочника MCC/прайслиста, например 250.',
+                                'description' => 'MCC (3 цифры) строки прайслиста, на которой найдена минимальная цена по стране.',
                             ],
                             'numericCountryCode' => [
                                 'type' => 'string',
