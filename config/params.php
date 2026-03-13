@@ -11,7 +11,7 @@ return [
     's3' => [
         'access_key' => 'CBXZ0LX7FS8NIWFX2L4M',
         'secret_key' => 'XvrACDB6lhoQWhnU5MxphgOqzXrCEYKDi5KA0wIu',
-        'host' => 'rados.mcn.ru',
+        'host' => 's3.mcnloc.ru',
         'bucket_name' => 'autocaller',
         'use_ssl' => true,
     ],
