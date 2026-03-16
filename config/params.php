@@ -13,6 +13,7 @@ return [
         'secret_key' => 'XvrACDB6lhoQWhnU5MxphgOqzXrCEYKDi5KA0wIu',
         'host' => 's3.mcnloc.ru',
         'bucket_name' => 'autocaller',
+        'records_path' => 'vpbx/autocall/records/',
         'use_ssl' => true,
     ],
 ];
