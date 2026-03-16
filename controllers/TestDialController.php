@@ -19,7 +19,8 @@ class TestDialController extends BaseController
         \S3::setSSL($s3Config["use_ssl"]);
         \S3::setExceptions(true);
 
-        $s3File = \S3::getObject($s3Config['bucket_name'], 'autocall/' . $testDial->autocall_uuid . '.wav');
+        $recordsPath = isset($s3Config['records_path']) ? $s3Config['records_path'] : 'autocall/';
+        $s3File = \S3::getObject($s3Config['bucket_name'], $recordsPath . $testDial->autocall_uuid . '.wav');
         $fileName = sprintf('autocall_%s_%s_%s', $id, $testDial->autocall_uuid, date('Y-m-d_H-i'));
 
         header('Content-type: audio/mpeg');
