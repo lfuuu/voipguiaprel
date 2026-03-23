@@ -12,7 +12,7 @@ use yii\db\ActiveQuery;
  * @property int $api_method_id
  * @property bool $enabled
  * @property string $price
- * @property string $cost
+ * @property string $rate
  * @property string $price_currency_id
  * @property string $cost_currency_id
  *
@@ -49,7 +49,7 @@ class ApiPricelistItem extends \yii\db\ActiveRecord
     {
         return [
             [['pricelist_id', 'api_id', 'api_method_id'], 'integer'],
-            [['price', 'cost'], 'string'],
+            [['price', 'rate'], 'string'],
             [['price_currency_id', 'cost_currency_id'], 'required'],
             [['price_currency_id', 'cost_currency_id'], 'string', 'length' => 3],
             [['price_currency_id', 'cost_currency_id'], 'in', 'range' => ['RUB', 'EUR', 'HUF', 'USD']],

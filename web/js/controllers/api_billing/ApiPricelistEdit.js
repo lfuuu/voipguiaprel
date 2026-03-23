@@ -80,7 +80,7 @@ var ApiBillingApiPricelistEditCtrl = function (
             api_id: '',
             api_method_id: '',
             price: 0,
-            cost: 0,
+            rate: 0,
             price_currency_id: 'RUB',
             cost_currency_id: 'RUB',
             enabled: true
