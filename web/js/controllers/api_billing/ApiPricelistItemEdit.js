@@ -13,7 +13,7 @@ var ApiBillingApiPricelistItemEditCtrl = function($rootScope, $scope, ApiBilling
             api_method_id: '',
             pricelist_id: '',
             price: 0,
-            cost: 0,
+            rate: 0,
             price_currency_id: 'RUB',
             cost_currency_id: 'RUB',
             enabled: true
