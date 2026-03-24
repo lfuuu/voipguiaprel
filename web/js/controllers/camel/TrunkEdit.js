@@ -45,6 +45,14 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
             camelGtRules: [],
             is_route_incoming_calls: false,
             gt_rule_default_allowed: false,
+            camelTrunkRulesAntifraud: [],
+            camelTrunkRulesAntifraudEpvvOrig: [],
+            camelTrunkRulesAntifraudEpvvTerm: [],
+
+            mts_orig: false,
+            epvv_orig: false,
+            mts_term: false,
+            epvv_term: false,
         };
 
     }
@@ -80,11 +88,11 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
 
     $scope.save = function () {
         $scope.item.camelTrunkRulesAntifraud = [];
-        $.each($scope.item.camelTrunkRulesAntifraudEpvvOrig, function () {
+        $.each($scope.item.camelTrunkRulesAntifraudEpvvOrig || [], function () {
             $scope.item.camelTrunkRulesAntifraud.push(this);
         });
 
-        $.each($scope.item.camelTrunkRulesAntifraudEpvvTerm, function () {
+        $.each($scope.item.camelTrunkRulesAntifraudEpvvTerm || [], function () {
             $scope.item.camelTrunkRulesAntifraud.push(this);
         });
         CamelTrunk.save($scope.item).then(function () {
@@ -93,7 +101,7 @@ var CamelTrunkEditCtrl = function($rootScope, $scope, Redirect, CamelTrunk, Came
     };
 
     $scope.addCamelTrunkAntifraudRule = function (defaultMode, type, is_orig) {
-        antifraudDefaultModes = {
+        var antifraudDefaultModes = {
             "mts_orig": $scope.item.mts_orig,
             "mts_term": $scope.item.mts_term,
             "epvv_orig": $scope.item.epvv_orig,
