@@ -71,6 +71,22 @@ class TrunkController extends JsonController
         return CamelTrunkNumberPreprocessing::find()->where(['camel_trunk_id' => $this->request['id']])->all();
     }
 
+    protected function performBeforeSaveActions($item, $request)
+    {
+        $item->prefixlist_id = null;
+
+        if (!isset($request['camelGtRules']) || !is_array($request['camelGtRules'])) {
+            return;
+        }
+
+        foreach ($request['camelGtRules'] as $ruleData) {
+            if (!empty($ruleData['prefixlist_id'])) {
+                $item->prefixlist_id = (int)$ruleData['prefixlist_id'];
+                break;
+            }
+        }
+    }
+
     protected function performAfterSaveActions($item, $request)
     {
         CamelTrunkNumberPreprocessing::deleteByTrunk($item);
