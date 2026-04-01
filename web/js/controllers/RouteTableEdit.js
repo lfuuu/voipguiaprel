@@ -3,21 +3,19 @@ var RouteTableEditCtrl = function ($scope, $q, RouteTable, List, Outcome, params
     $scope.isFormReady = false;
 
     if (params.id) {
-        RouteTable.get({id: params.id}).then(function (data) {
-            $scope.item = data;
+        $q.all([
+            RouteTable.get({id: params.id}),
+            List.number(1),
+            List.number(2),
+            List.number(3),
+            List.cpc(),
+            List.headerRule(),
+            List.outcome(),
+            List.routeTable(),
+            List.trunkGroup()
+        ]).then(function (results) {
+            $scope.item = results[0];
             $scope.initialServerId = $scope.item.server_id;
-
-            return $q.all([
-                List.number(1, $scope.item.server_id),
-                List.number(2, $scope.item.server_id),
-                List.number(3, $scope.item.server_id),
-                List.cpc(),
-                List.headerRule(),
-                List.outcome($scope.item.server_id),
-                List.routeTable($scope.item.server_id),
-                List.trunkGroup()
-            ]);
-        }).then(function () {
             $scope.isFormReady = true;
         });
     } else {
