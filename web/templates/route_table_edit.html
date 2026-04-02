@@ -76,10 +76,10 @@
                                     <button type="button" class="btn btn-sm {{!line.is_locked ? 'btn-primary active' : 'btn-default'}}">Нет</button>
                                 </div>
                             </td>
-                            <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%" ng-if="userPermissions['route_table_route_lock']">
-                                <div class="btn-group" ng-click="line.ac_mode = !line.ac_mode">
-                                    <button type="button" class="btn btn-sm {{line.ac_mode ? 'btn-success active' : 'btn-default'}}">Да</button>
-                                    <button type="button" class="btn btn-sm {{!line.ac_mode ? 'btn-primary active' : 'btn-default'}}">Нет</button>
+                            <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px; min-width: 70px;" width="7%">
+                                <div class="btn-group" ng-click="userPermissions['route_table_route_lock'] && (line.ac_mode = !line.ac_mode)">
+                                    <button type="button" class="btn btn-sm {{line.ac_mode ? 'btn-success active' : 'btn-default'}}" ng-disabled="!userPermissions['route_table_route_lock']">Да</button>
+                                    <button type="button" class="btn btn-sm {{!line.ac_mode ? 'btn-primary active' : 'btn-default'}}" ng-disabled="!userPermissions['route_table_route_lock']">Нет</button>
                                 </div>
                             </td>
                             <td style="padding-bottom: 3px;padding-top: 3px;padding-right: 1px;padding-left: 1px;" width="5%" ng-if="userPermissions['route_table_route_lock']">
