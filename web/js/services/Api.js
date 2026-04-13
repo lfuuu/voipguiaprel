@@ -2610,6 +2610,9 @@ app.factory('Pricelist', function ($q, ApiLoader, $rootScope, $http) {
         },
         notifyEventToAll: function () {
             return ApiLoader.post(url + 'notify-event-to-all');
+        },
+        syncStatus: function () {
+            return ApiLoader.post(url + 'sync-status');
         }
     };
 });
