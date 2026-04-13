@@ -1,4 +1,4 @@
-var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstance) {
+var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstance, $window) {
   $scope.AGG_ID = null;
   $scope.smppSourceAddrTonOptions = [
     'UNKNOWN',
@@ -64,6 +64,7 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
         connector_proto_id: null,
         a2psms_route_table_id: null
       };
+      $scope.formLink = '';
       SmsList.routeTable({ server_id: 9 }).then(function(rt){ $scope.routeTableList = rt; });
       setupWatchers();
       recalcFlags();
@@ -81,6 +82,7 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
           connector_proto_id:      data.connector_proto_id,
           a2psms_route_table_id:   data.a2psms_route_table_id
         };
+        $scope.formLink = $window.location.origin + '/ms' + data.server_id + '?smsTrunkEdit&' + data.id;
         recalcFlags();
         return SmsList.routeTable({ server_id: data.server_id });
       })

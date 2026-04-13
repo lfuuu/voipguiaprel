@@ -260,6 +260,9 @@
         type="json/sms/trunk">
       </action-log-view-button>
     </div>
+    <div class="pull-right" ng-if="item.id && formLink">
+      <a ng-href="{{formLink}}" target="_blank">Ссылка на эту форму</a>
+    </div>
   </div>
 
 </form>
