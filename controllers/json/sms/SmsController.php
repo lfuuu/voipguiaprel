@@ -87,6 +87,81 @@ class SmsController extends JsonController
         return is_array($decoded) ? $decoded : [];
     }
 
+    private function buildSmppPayload(array $post, ?string $fallbackName = null): array
+    {
+        $name = $post['name'] ?? $fallbackName;
+
+        $payload = [
+            'name'              => (string)$name,
+            'host'              => $post['host'] ?? '',
+            'port'              => $post['port'] ?? '',
+            'smsc-username'     => $post['smsc-username'] ?? '',
+            'smsc-password'     => $post['smsc-password'] ?? '',
+            'use-ssl'           => isset($post['use-ssl']) ? (bool)$post['use-ssl'] : false,
+            'transceiver-mode'  => isset($post['transceiver-mode']) ? (bool)$post['transceiver-mode'] : false,
+        ];
+
+        if (!empty($post['system-type'])) {
+            $payload['system-type'] = (string)$post['system-type'];
+        }
+
+        $sourceAddr = $post['source-addr'] ?? null;
+        if ($sourceAddr === null && (isset($post['source-addr-ton']) || isset($post['source-addr-npi']))) {
+            $sourceAddr = [
+                'ton' => $post['source-addr-ton'] ?? null,
+                'npi' => $post['source-addr-npi'] ?? null,
+            ];
+        }
+
+        if ($sourceAddr !== null) {
+            $ton = is_array($sourceAddr) ? trim((string)($sourceAddr['ton'] ?? '')) : '';
+            $npi = is_array($sourceAddr) ? trim((string)($sourceAddr['npi'] ?? '')) : '';
+
+            if ($ton === '' xor $npi === '') {
+                throw new \InvalidArgumentException('source-addr must contain both ton and npi.');
+            }
+
+            if ($ton !== '' && $npi !== '') {
+                $payload['source-addr'] = [
+                    'ton' => $ton,
+                    'npi' => $npi,
+                ];
+            }
+        }
+
+        return $payload;
+    }
+
+    private function normalizeSmppConfig(array $config): array
+    {
+        unset($config['allowed-smsc-id'], $config['allowedSmscId'], $config['smsc']);
+
+        if (array_key_exists('transceiver-mode', $config)) {
+            $config['transceiver-mode'] = (bool)$config['transceiver-mode'];
+        } elseif (array_key_exists('transceiverMode', $config)) {
+            $config['transceiver-mode'] = (bool)$config['transceiverMode'];
+        }
+
+        $sourceAddr = $config['source-addr'] ?? ($config['sourceAddr'] ?? null);
+        if (is_array($sourceAddr)) {
+            $ton = trim((string)($sourceAddr['ton'] ?? ''));
+            $npi = trim((string)($sourceAddr['npi'] ?? ''));
+
+            if ($ton !== '' && $npi !== '') {
+                $config['source-addr'] = [
+                    'ton' => $ton,
+                    'npi' => $npi,
+                ];
+            } else {
+                unset($config['source-addr']);
+            }
+        }
+
+        unset($config['sourceAddr']);
+
+        return $config;
+    }
+
     // -------------------- CRUD локальной модели --------------------
 
     public function actionRead()
@@ -132,7 +207,11 @@ class SmsController extends JsonController
     public function actionGetConfigurationTrunksSmpp()
     {
         // /v1/trunks/smpp (GET)
-        return $this->httpCall('GET', '/v1/trunks/smpp');
+        $response = $this->httpCall('GET', '/v1/trunks/smpp');
+
+        return array_map(function ($item) {
+            return is_array($item) ? $this->normalizeSmppConfig($item) : [];
+        }, $response);
     }
 
     /** POST создать SMPP транк */
@@ -142,23 +221,10 @@ class SmsController extends JsonController
         $trunkId = $post['trunk_id'] ?? null;
         $name    = $post['name'] ?? ($trunkId ? (SmsTrunk::findOne($trunkId)->name ?? null) : null);
 
-        $payload = [
-            'name'           => (string)$name,
-            'host'           => $post['host'] ?? '',
-            'port'           => $post['port'] ?? '',
-            'smsc-username'  => $post['smsc-username'] ?? '',
-            'smsc-password'  => $post['smsc-password'] ?? '',
-            // новые поля:
-            'use-ssl'        => isset($post['use-ssl']) ? (bool)$post['use-ssl'] : false,
-            ];
+        $payload = $this->buildSmppPayload($post, $name);
 
-            // system-type только если непустой
-            if (!empty($post['system-type'])) {
-            $payload['system-type'] = (string)$post['system-type'];
-            }
-
-            $this->httpCall('POST', '/v1/trunks/smpp', $payload);
-            return ['status' => 'ok'];
+        $this->httpCall('POST', '/v1/trunks/smpp', $payload);
+        return ['status' => 'ok'];
 
     }
 
@@ -192,21 +258,10 @@ class SmsController extends JsonController
         }
 
         // формируем тело без id/trunk_id
-        $payload = [
-            'name'           => $post['name'],
-            'host'           => $post['host'],
-            'port'           => $post['port'],
-            'smsc-username'  => $post['smsc-username'],
-            'smsc-password'  => $post['smsc-password'],
-            'use-ssl'        => isset($post['use-ssl']) ? (bool)$post['use-ssl'] : false,
-            ];
+        $payload = $this->buildSmppPayload($post);
 
-            if (!empty($post['system-type'])) {
-            $payload['system-type'] = (string)$post['system-type'];
-            }
-
-            $this->httpCall('PUT', "/v1/trunks/smpp/{$configId}", $payload);
-            return ['status' => 'ok', 'config_id' => (int)$configId];
+        $this->httpCall('PUT', "/v1/trunks/smpp/{$configId}", $payload);
+        return ['status' => 'ok', 'config_id' => (int)$configId];
     }
 
     /** DELETE удалить SMPP транк по trunk_id */

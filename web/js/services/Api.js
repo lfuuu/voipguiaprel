@@ -152,7 +152,7 @@ app.factory('SmsTrunk', function ($q, ApiLoader, $rootScope) {
     addSmppConfiguration: function (data) {
       return ApiLoader.post(url + 'add-configuration-trunk-smpp', data);
     },
-    // PUT изменить (ожидает { trunk_id, name, host, port, smsc-username, smsc-password })
+    // PUT изменить SMPP-конфиг (поддерживает system-type, use-ssl, transceiver-mode, source-addr)
     modifySmppConfiguration: function (data) {
       return ApiLoader.post(url + 'modify-configuration-trunk-smpp', data);
     },

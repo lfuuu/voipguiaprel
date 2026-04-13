@@ -152,10 +152,44 @@
                       </div>
                     </div>
                   </div>
+
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">transceiver-mode</label>
+                    <div class="col-sm-10">
+                      <div class="checkbox" style="margin:6px 0;">
+                        <label>
+                          <input type="checkbox" ng-model="smpp.transceiver_mode"> Включить transceiver mode
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">source-addr.ton</label>
+                    <div class="col-sm-10">
+                      <select class="form-control" ng-model="smpp.source_addr_ton">
+                        <option value="">(не указывать)</option>
+                        <option ng-repeat="option in smppSourceAddrTonOptions" value="{{option}}">{{option}}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">source-addr.npi</label>
+                    <div class="col-sm-10">
+                      <select class="form-control" ng-model="smpp.source_addr_npi">
+                        <option value="">(не указывать)</option>
+                        <option ng-repeat="option in smppSourceAddrNpiOptions" value="{{option}}">{{option}}</option>
+                      </select>
+                      <p class="help-block" ng-if="(smpp.source_addr_ton && !smpp.source_addr_npi) || (!smpp.source_addr_ton && smpp.source_addr_npi)">
+                        `source-addr` отправляется только целиком: укажите оба поля `ton` и `npi`.
+                      </p>
+                    </div>
+                  </div>
                   <div class="form-group">
                     <div class="col-sm-10 col-sm-offset-2">
                       <button type="button" class="btn btn-info btn-sm"
-                              ng-click="modifyConfig()" ng-disabled="form.$invalid">Modify SMPP</button>
+                              ng-click="modifyConfig()" ng-disabled="form.$invalid || hasPartialSourceAddr()">Modify SMPP</button>
                       <button type="button" class="btn btn-danger btn-sm"
                               ng-click="deleteConfig()">Delete SMPP</button>
                     </div>
@@ -215,7 +249,7 @@
     <div class="pull-left">
       <button type="submit"
               class="btn btn-success"
-              ng-disabled="form.$invalid"
+              ng-disabled="form.$invalid || hasPartialSourceAddr()"
               ng-click="save()">Сохранить</button>
       <button type="button"
               class="btn btn-default btn-sm"

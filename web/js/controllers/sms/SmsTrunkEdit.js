@@ -1,9 +1,34 @@
 var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstance) {
   $scope.AGG_ID = null;
+  $scope.smppSourceAddrTonOptions = [
+    'UNKNOWN',
+    'INTERNATIONAL',
+    'NATIONAL',
+    'NETWORK_SPECIFIC',
+    'SUBSCRIBER',
+    'ALPHANUMERIC',
+    'ABBREVIATED',
+    'RESERVED'
+  ];
+  $scope.smppSourceAddrNpiOptions = [
+    'UNKNOWN',
+    'E164',
+    'X121',
+    'TELEX',
+    'NATIONAL',
+    'PRIVATE',
+    'ERMES',
+    'INTERNET',
+    'RESERVED',
+    'WAP_CLIENT_ID'
+  ];
 
   $scope.smpp = {
     system_type: '',   // строка или '' (не указывать)
-    use_ssl: false     // boolean
+    use_ssl: false,    // boolean
+    transceiver_mode: false,
+    source_addr_ton: '',
+    source_addr_npi: ''
   };
   $scope.rest = {};
 
@@ -137,6 +162,13 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
           // use-ssl: camelCase + kebab-case -> boolean
           var ssl = (entry['use-ssl'] != null ? entry['use-ssl'] : entry.useSsl);
           $scope.smpp.use_ssl = !!ssl;
+
+          var transceiverMode = (entry['transceiver-mode'] != null ? entry['transceiver-mode'] : entry.transceiverMode);
+          $scope.smpp.transceiver_mode = !!transceiverMode;
+
+          var sourceAddr = entry['source-addr'] != null ? entry['source-addr'] : entry.sourceAddr;
+          $scope.smpp.source_addr_ton = sourceAddr && sourceAddr.ton ? sourceAddr.ton : '';
+          $scope.smpp.source_addr_npi = sourceAddr && sourceAddr.npi ? sourceAddr.npi : '';
         }
       });
 
@@ -153,6 +185,33 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
     }
   }
 
+  function appendSmppOptionalFields(payload) {
+    payload['transceiver-mode'] = !!$scope.smpp.transceiver_mode;
+
+    if ($scope.smpp.system_type && $scope.smpp.system_type.trim().length > 0) {
+      payload['system-type'] = $scope.smpp.system_type.trim();
+    }
+
+    var ton = ($scope.smpp.source_addr_ton || '').trim();
+    var npi = ($scope.smpp.source_addr_npi || '').trim();
+    if (ton || npi) {
+      if (!ton || !npi) {
+        throw new Error('source-addr должен содержать и ton, и npi.');
+      }
+
+      payload['source-addr'] = {
+        ton: ton,
+        npi: npi
+      };
+    }
+  }
+
+  $scope.hasPartialSourceAddr = function() {
+    var ton = !!($scope.smpp.source_addr_ton || '').trim();
+    var npi = !!($scope.smpp.source_addr_npi || '').trim();
+    return ton !== npi;
+  };
+
   // сохранение (создание внешней конфигурации при необходимости)
   $scope.save = function() {
     $scope.item.route_name = $scope.item.name;
@@ -164,18 +223,21 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
 
       // вместо сравнения по ID — опора на тип шлюза:
       if ($scope.isMCMCN && isAgg && pt === 'smpp') {
-        var payload = {
-          trunk_id:        trunkId,
-          name:            $scope.item.name,
-          host:            $scope.smpp.url,
-          port:            $scope.smpp.port,
-          'smsc-username': $scope.smpp.smsc_username,
-          'smsc-password': $scope.smpp.smsc_password,
-          'use-ssl':       !!$scope.smpp.use_ssl
-        };
-        // system-type отправляем ТОЛЬКО если непустой
-        if ($scope.smpp.system_type && $scope.smpp.system_type.trim().length > 0) {
-          payload['system-type'] = $scope.smpp.system_type.trim();
+        var payload;
+        try {
+          payload = {
+            trunk_id:        trunkId,
+            name:            $scope.item.name,
+            host:            $scope.smpp.url,
+            port:            $scope.smpp.port,
+            'smsc-username': $scope.smpp.smsc_username,
+            'smsc-password': $scope.smpp.smsc_password,
+            'use-ssl':       !!$scope.smpp.use_ssl
+          };
+          appendSmppOptionalFields(payload);
+        } catch (err) {
+          alert(err.message);
+          return;
         }
 
         return SmsTrunk.addSmppConfiguration(payload)
@@ -208,17 +270,21 @@ var SmsTrunkEditCtrl = function($scope, SmsTrunk, SmsList, params, $modalInstanc
     if (!trunkId) return;
 
     if (t === 'smpp') {
-      var payload = {
-        trunk_id:        trunkId,
-        name:            $scope.item.name,
-        host:            $scope.smpp.url,
-        port:            $scope.smpp.port,
-        'smsc-username': $scope.smpp.smsc_username,
-        'smsc-password': $scope.smpp.smsc_password,
-        'use-ssl':       !!$scope.smpp.use_ssl
-      };
-      if ($scope.smpp.system_type && $scope.smpp.system_type.trim().length > 0) {
-        payload['system-type'] = $scope.smpp.system_type.trim();
+      var payload;
+      try {
+        payload = {
+          trunk_id:        trunkId,
+          name:            $scope.item.name,
+          host:            $scope.smpp.url,
+          port:            $scope.smpp.port,
+          'smsc-username': $scope.smpp.smsc_username,
+          'smsc-password': $scope.smpp.smsc_password,
+          'use-ssl':       !!$scope.smpp.use_ssl
+        };
+        appendSmppOptionalFields(payload);
+      } catch (err) {
+        alert(err.message);
+        return;
       }
 
       return SmsTrunk.modifySmppConfiguration(payload);
